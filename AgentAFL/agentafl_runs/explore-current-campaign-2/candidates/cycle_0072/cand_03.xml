@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (stock)*>
+  <!ELEMENT stock (#PCDATA)>
+  <!ENTITY itemA "Widget A">
+  <!ENTITY itemB "Widget B &itemA;">
+  <!ENTITY % internalParam "<!ELEMENT stock (#PCDATA | sub)*>">
+  %internalParam;
+  <!ELEMENT sub (#PCDATA)>
+]>
+<?xml-model href="schema.rng" type="application/xml-relax-ng"?>
+<inventory xmlns="http://inventory.org/ns" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <!-- Inventory comment explaining entities &itemB; -->
+  <stock>
+    <![CDATA[
+      <sub-element>Raw CDATA block content</sub-element>
+    ]]>
+    &itemB;
+  </stock>
+</inventory>

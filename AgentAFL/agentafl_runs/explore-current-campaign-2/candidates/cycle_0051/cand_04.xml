@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE system [
+  <!ELEMENT system (node)*>
+  <!ELEMENT node (#PCDATA)>
+  <!ENTITY token "SecurityToken">
+  <!ENTITY auth "&token;-Verified">
+  <!ENTITY % dtd-frag "
+    <!NOTATION txt SYSTEM 'text/plain'>
+    <!ENTITY doc-file 'readme.txt' NDATA txt>
+  ">
+  %dtd-frag;
+]>
+<?xml-audit log="enabled"?>
+<system xmlns="http://system.net/ns" xmlns:sec="http://system.net/ns/security">
+  <!-- Security boundary configuration comment -->
+  <sec:policy id="p1">
+    <?sec:enforce mode="strict"?>
+    <![CDATA[
+      Protected zone CDATA: <sec:policy>untrusted</sec:policy>
+    ]]>
+  </sec:policy>
+  <node>&auth;</node>
+</system>

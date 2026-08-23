@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % ent "<!ENTITY internal 'Nested &amp; parsed'>">
+  %ent;
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.com/ns/root" xmlns:sub="http://example.com/ns/sub">
+  <!-- Comment containing XML-like markup <child> and &internal; -->
+  <sub:child id="1">
+    <![CDATA[
+      CDATA section containing <tags>, &entities;, and -- hyphens --
+    ]]>
+  </sub:child>
+  <child>&internal;</child>
+</root>

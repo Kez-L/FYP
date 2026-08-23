@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (product)*>
+  <!ELEMENT product (#PCDATA)>
+  <!ENTITY alpha "Alpha Product">
+  <!ENTITY beta "&alpha; &amp; Beta Product">
+  <!NOTATION txt SYSTEM "text/plain">
+  <!ENTITY manual SYSTEM "manual.txt" NDATA txt>
+]>
+<?xml-target processing-instruction-data?>
+<catalog xmlns="http://catalog.org/ns" xmlns:meta="http://catalog.org/meta">
+  <!-- Catalog section comment: check entity resolution & CDATA handling -->
+  <meta:details>
+    <?meta-pi load="config"?>
+    <![CDATA[
+      Nested CDATA block: <catalog><product>&beta;</product></catalog>
+    ]]>
+  </meta:details>
+  <product>&beta;</product>
+</catalog>

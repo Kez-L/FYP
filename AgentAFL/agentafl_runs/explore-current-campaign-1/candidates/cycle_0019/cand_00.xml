@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % pe " <!ENTITY ent 'parameter entity value'> ">
+  %pe;
+  <!ENTITY base "Base Entity">
+  <!ENTITY extended "&base; and &ent;">
+  <?target-pi data="processing instruction content"?>
+  <!-- Root level comment before doctype closure -->
+]>
+<root xmlns="http://example.com/ns/root" xmlns:sub="http://example.com/ns/sub" xmlns:other="http://example.com/ns/other">
+  <!-- Comment inside root element -->
+  <?sub:pi action="test"?>
+  <sub:child sub:attr="value">
+    &extended;
+    <![CDATA[
+      Some CDATA content with markup-like characters: <tag> &amp; "quotes"
+    ]]>
+  </sub:child>
+</root>

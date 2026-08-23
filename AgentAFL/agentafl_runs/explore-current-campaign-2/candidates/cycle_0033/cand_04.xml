@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-space preserve?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (file*)>
+  <!ELEMENT file (#PCDATA)>
+  <!ENTITY header-text "Standard Archive Header">
+  <!ENTITY % p-macro "<!ENTITY dynamic-ent '&header-text; - Version 2.0'>">
+  %p-macro;
+  <!NOTATION xml-notation SYSTEM "text/xml">
+  <!ENTITY schema-doc "schema.xsd">
+]>
+<archive xmlns="http://example.org/archive" xmlns:arc="http://example.org/archive/schema">
+  <!-- Top-level archive comment discussing schema validation -->
+  <arc:file arc:format="xml">
+    <?arc-command execute="validate-schema"?>
+    <![CDATA[
+      Archive contents include markup characters: <file>, </file>, and &dynamic-ent; inside CDATA.
+    ]]>
+  </arc:file>
+  <file>&dynamic-ent;</file>
+</archive>

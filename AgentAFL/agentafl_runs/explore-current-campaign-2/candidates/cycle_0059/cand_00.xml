@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % pe " <!ENTITY ent 'parsed entity value'> ">
+  %pe;
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY ext SYSTEM "logo.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.com/ns/root" xmlns:sub="http://example.com/ns/sub">
+  <!-- Main root element comment containing <tags> & entities -->
+  <sub:child sub:id="1">
+    <?sub-pi target="data" content="processing instruction value"?>
+    <![CDATA[
+      CDATA section with special characters: <root>&ent;</root>
+    ]]>
+    &ent;
+  </sub:child>
+</root>

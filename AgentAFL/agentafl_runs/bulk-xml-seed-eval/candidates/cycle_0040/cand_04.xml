@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (product*)>
+  <!ELEMENT product (#PCDATA)>
+  <!ENTITY prodA "Product Alpha">
+  <!ENTITY prodB "&prodA; Beta">
+  <!ENTITY % attrDecl "<!ATTLIST product code ID #REQUIRED>">
+  %attrDecl;
+  <?xml-debug log="enabled"?>
+]>
+<!-- Inventory System DTD and Namespace test -->
+<inventory xmlns="http://example.org/inv" xmlns:store="http://example.org/store">
+  <!-- Comment inside inventory body -->
+  <?store:config refresh="true"?>
+  <product code="P001">
+    <![CDATA[
+      Inventory CDATA with &prodB; reference.
+    ]]>
+  </product>
+  <product code="P002">&prodB;</product>
+</inventory>

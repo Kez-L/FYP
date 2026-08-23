@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE database [
+  <!ELEMENT database (table)*>
+  <!ELEMENT table (col)*>
+  <!ELEMENT col (#PCDATA)>
+  <!ENTITY db_name "TestDB">
+  <!ENTITY % dtd_frag "<!ENTITY table_prefix 'tbl_'>">
+  %dtd_frag;
+  <!NOTATION sql SYSTEM "text/sql">
+  <!ENTITY init_script SYSTEM "init.sql" NDATA sql>
+]>
+<?xml-action execute-query="true"?>
+<database xmlns="http://db.example.org/ns" xmlns:db="http://db.example.org/ns">
+  <!-- Database structural definitions and CDATA -->
+  <db:table>
+    <col>
+      <![CDATA[
+        CREATE TABLE &table_prefix;&db_name; (id INT PRIMARY KEY);
+      ]]>
+    </col>
+  </db:table>
+</database>

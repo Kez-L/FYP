@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child*)>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \" <!ENTITY ent 'parameterized'> \">\n  %pe;\n  <!ENTITY base \"Root &ent;\">\n  <?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n]>\n<root xmlns=\"http://example.com/ns\" xmlns:sub=\"http://example.com/sub\" sub:id=\"1\">\n  <!-- Parent level comment with special chars <>& -->\n  <sub:child>\n    <?sub-pi data=\"process-start\"?>\n    <![CDATA[\n      CDATA section containing unescaped markup: <tag attr=\"val\">&base;</tag>\n    ]]>\n  </sub:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY ext SYSTEM \"http://localhost/external.ent\">\n  <!ENTITY % int_pe \"<!ELEMENT section (#PCDATA | sub)*>\">\n  %int_pe;\n  <?target-pi data=\"initialize\"?>\n]>\n<doc xmlns=\"http://test.org/base\" xmlns:ext=\"http://test.org/ext\">\n  <!-- Document root comment -->\n  <ext:section>\n    <![CDATA[\n      Nested CDATA with ENTITY reference &ext;\n    ]]>\n  </ext:section>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item+)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY % remote SYSTEM \"http://localhost/remote.dtd\">\n  %remote;\n  <!ENTITY brand \"Acme Corp\">\n  <?xml-stylesheet type=\"text/css\" href=\"style.css\"?>\n]>\n<catalog xmlns=\"http://schema.org/catalog\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n  <!-- Begin catalog items -->\n  <item>\n    <?catalog-action type=\"refresh\"?>\n    <![CDATA[\n      CDATA block inside catalog item using &brand;\n    ]]>\n  </item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE note [\n  <!ELEMENT note (to, from, body)>\n  <!ELEMENT to (#PCDATA)>\n  <!ELEMENT from (#PCDATA)>\n  <!ELEMENT body (#PCDATA)>\n  <!ENTITY sig \"Manager\">\n  <!ENTITY % general_pe \"<!ENTITY dyn 'Dynamic Value'>\">\n  %general_pe;\n  <?xml-meta version=\"1.0\"?>\n]>\n<note xmlns=\"http://w3.org/note\" xmlns:custom=\"http://w3.org/custom\">\n  <!-- Confidential internal memo -->\n  <to>All Staff</to>\n  <from>&sig;</from>\n  <custom:body>\n    <?custom-render mode=\"fast\"?>\n    <![CDATA[\n      Critical security update information: &dyn; <script>alert(1)</script>\n    ]]>\n  </custom:body>\n</note>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (product*)>\n  <!ELEMENT product (#PCDATA)>\n  <!ENTITY item1 \"Widget A\">\n  <!ENTITY item2 \"&item1; and Widget B\">\n  <!ENTITY % dtd_ext SYSTEM \"http://localhost/inventory.dtd\">\n  %dtd_ext;\n  <?inventory-debug log=\"enabled\"?>\n]>\n<inventory xmlns=\"http://inventory.org/ns\" xmlns:m=\"http://inventory.org/ns/meta\">\n  <!-- Inventory manifest comment -->\n  <m:product>\n    <?m-action execute=\"true\"?>\n    <![CDATA[\n      Product inventory details including entities: &item2;\n    ]]>\n  </m:product>\n</inventory>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child*)>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \" <!ENTITY ent 'parameterized'> \">\n  %pe;\n  <!ENTITY base \"Root &ent;\">\n  <?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n]>\n<root xmlns=\"http://example.com/ns\" xmlns:sub=\"http://example.com/sub\" sub:id=\"1\">\n  <!-- Parent level comment with special chars <>& -->\n  <sub:child>\n    <?sub-pi data=\"process-start\"?>\n    <![CDATA[\n      CDATA section containing unescaped markup: <tag attr=\"val\">&base;</tag>\n    ]]>\n  </sub:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY ext SYSTEM \"http://localhost/external.ent\">\n  <!ENTITY % int_pe \"<!ELEMENT section (#PCDATA | sub)*>\">\n  %int_pe;\n  <?target-pi data=\"initialize\"?>\n]>\n<doc xmlns=\"http://test.org/base\" xmlns:ext=\"http://test.org/ext\">\n  <!-- Document root comment -->\n  <ext:section>\n    <![CDATA[\n      Nested CDATA with ENTITY reference &ext;\n    ]]>\n  </ext:section>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item+)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY % remote SYSTEM \"http://localhost/remote.dtd\">\n  %remote;\n  <!ENTITY brand \"Acme Corp\">\n  <?xml-stylesheet type=\"text/css\" href=\"style.css\"?>\n]>\n<catalog xmlns=\"http://schema.org/catalog\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n  <!-- Begin catalog items -->\n  <item>\n    <?catalog-action type=\"refresh\"?>\n    <![CDATA[\n      CDATA block inside catalog item using &brand;\n    ]]>\n  </item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE note [\n  <!ELEMENT note (to, from, body)>\n  <!ELEMENT to (#PCDATA)>\n  <!ELEMENT from (#PCDATA)>\n  <!ELEMENT body (#PCDATA)>\n  <!ENTITY sig \"Manager\">\n  <!ENTITY % general_pe \"<!ENTITY dyn 'Dynamic Value'>\">\n  %general_pe;\n  <?xml-meta version=\"1.0\"?>\n]>\n<note xmlns=\"http://w3.org/note\" xmlns:custom=\"http://w3.org/custom\">\n  <!-- Confidential internal memo -->\n  <to>All Staff</to>\n  <from>&sig;</from>\n  <custom:body>\n    <?custom-render mode=\"fast\"?>\n    <![CDATA[\n      Critical security update information: &dyn; <script>alert(1)</script>\n    ]]>\n  </custom:body>\n</note>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (product*)>\n  <!ELEMENT product (#PCDATA)>\n  <!ENTITY item1 \"Widget A\">\n  <!ENTITY item2 \"&item1; and Widget B\">\n  <!ENTITY % dtd_ext SYSTEM \"http://localhost/inventory.dtd\">\n  %dtd_ext;\n  <?inventory-debug log=\"enabled\"?>\n]>\n<inventory xmlns=\"http://inventory.org/ns\" xmlns:m=\"http://inventory.org/ns/meta\">\n  <!-- Inventory manifest comment -->\n  <m:product>\n    <?m-action execute=\"true\"?>\n    <![CDATA[\n      Product inventory details including entities: &item2;\n    ]]>\n  </m:product>\n</inventory>\n```",
+              "thoughtSignature": "EjQKMgERTTIP+NwNK9N/9fndKEMF6Q3JzDt2jBuKRG3CWRwYttrYML7LtmfeP0MQq+/gC7eF"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2675,
+      "candidatesTokenCount": 941,
+      "totalTokenCount": 3616,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 2675
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "Xtl1aoXzHMnmjuMP6-D1iQ0"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (#PCDATA|child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % pe "<!-- nested parameter entity comment -->">
+  <!ENTITY ent "Resolved Entity Content">
+  %pe;
+  <?target-pi data="processing-instruction-value"?>
+]>
+<root xmlns="http://example.com/ns" xmlns:sub="http://example.com/sub">
+  <!-- Top level comment exploring parser state -->
+  <?root-pi attr="value"?>
+  <sub:child>
+    <![CDATA[
+      Unparsed CDATA section containing entities like &ent; and tags <tag> &lt; &amp;
+    ]]>
+  </sub:child>
+  <child>&ent;</child>
+</root>

@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY % pe \" <!ENTITY ent 'parameterized'> \">\n  %pe;\n  <!ENTITY base \"Root &ent;\">\n  <?target-pi data=\"processing instruction value\"?>\n]>\n<catalog xmlns=\"http://example.com/ns\" xmlns:sub=\"http://example.com/sub\" sub:id=\"1\">\n  <!-- Top-level comment explaining the catalog -->\n  <item>\n    <![CDATA[\n      CDATA section containing <tags> & entities like &base; unexpanded.\n    ]]>\n  </item>\n  <sub:item>&base;</sub:item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % dtd-ent SYSTEM \"http://example.com/external.dtd\">\n  <!ENTITY local-ent \"Local Entity Text\">\n  <?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n]>\n<root xmlns=\"http://default.ns\" xmlns:ext=\"http://external.ns\">\n  <!-- Multi-line \n       comment with various symbols: <>&'\" -->\n  <ext:child>\n    <![CDATA[\n      First CDATA block with internal markup <hello>world</hello>\n    ]]>\n  </ext:child>\n  <child>&local-ent;</child>\n  <?custom-pi action=\"run\" param=\"test'value\"?>\n  <ext:child>\n    <![CDATA[Second CDATA block]]>\n  </ext:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE testDoc [\n  <!ELEMENT testDoc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY entA \"Value A\">\n  <!ENTITY entB \"&entA; and Value B\">\n  <!ENTITY % paramEntity \"<!ELEMENT nested EMPTY>\">\n  %paramEntity;\n  <?xml-meta category=\"fuzzing\"?>\n]>\n<testDoc xmlns=\"http://test.org/doc\" xmlns:ns1=\"http://test.org/ns1\" xmlns:ns2=\"http://test.org/ns2\">\n  <!-- Section 1 Comment: testing entity expansion & CDATA -->\n  <ns1:section>\n    <![CDATA[\n      <!-- Nested comment inside CDATA -->\n      Some text data <>&\"'\n    ]]>\n  </ns1:section>\n  <ns2:section>&entB;</ns2:section>\n  <?ns1-target data=\"processing instruction payload\"?>\n</testDoc>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE database [\n  <!ELEMENT database (record*)>\n  <!ELEMENT record (#PCDATA)>\n  <!ENTITY admin \"Administrator\">\n  <!ENTITY security \"&admin; Role\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n  <?db-control mode=\"active\"?>\n]>\n<database xmlns=\"http://xml.database.org\" xmlns:sec=\"http://xml.database.org/security\">\n  <!--\n    Database documentation comment block\n    Author: &admin;\n  -->\n  <sec:record>\n    <![CDATA[\n      Secured record data with special characters <>&'\"\n    ]]>\n  </sec:record>\n  <record>Access level: &security;</record>\n  <?sec-pi verify=\"true\"?>\n</database>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (header, body)>\n  <!ELEMENT header (#PCDATA)>\n  <!ELEMENT body (#PCDATA)>\n  <!ENTITY % custom-pe \"CDATA\">\n  <!ENTITY doc-title \"Comprehensive Document\">\n  <?xml-stylesheet type=\"text/css\" href=\"style.css\"?>\n]>\n<document xmlns=\"http://ns.example.com/doc\" xmlns:html=\"http://www.w3.org/1999/xhtml\">\n  <!-- Header section comment -->\n  <header>\n    <![CDATA[\n      Header CDATA: <html:b>Bold Title</html:b>\n    ]]>\n  </header>\n  <body>\n    &doc-title; - Body content with comments and PIs.\n    <?html-pi render=\"full\"?>\n  </body>\n</document>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY % pe \" <!ENTITY ent 'parameterized'> \">\n  %pe;\n  <!ENTITY base \"Root &ent;\">\n  <?target-pi data=\"processing instruction value\"?>\n]>\n<catalog xmlns=\"http://example.com/ns\" xmlns:sub=\"http://example.com/sub\" sub:id=\"1\">\n  <!-- Top-level comment explaining the catalog -->\n  <item>\n    <![CDATA[\n      CDATA section containing <tags> & entities like &base; unexpanded.\n    ]]>\n  </item>\n  <sub:item>&base;</sub:item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % dtd-ent SYSTEM \"http://example.com/external.dtd\">\n  <!ENTITY local-ent \"Local Entity Text\">\n  <?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n]>\n<root xmlns=\"http://default.ns\" xmlns:ext=\"http://external.ns\">\n  <!-- Multi-line \n       comment with various symbols: <>&'\" -->\n  <ext:child>\n    <![CDATA[\n      First CDATA block with internal markup <hello>world</hello>\n    ]]>\n  </ext:child>\n  <child>&local-ent;</child>\n  <?custom-pi action=\"run\" param=\"test'value\"?>\n  <ext:child>\n    <![CDATA[Second CDATA block]]>\n  </ext:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE testDoc [\n  <!ELEMENT testDoc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY entA \"Value A\">\n  <!ENTITY entB \"&entA; and Value B\">\n  <!ENTITY % paramEntity \"<!ELEMENT nested EMPTY>\">\n  %paramEntity;\n  <?xml-meta category=\"fuzzing\"?>\n]>\n<testDoc xmlns=\"http://test.org/doc\" xmlns:ns1=\"http://test.org/ns1\" xmlns:ns2=\"http://test.org/ns2\">\n  <!-- Section 1 Comment: testing entity expansion & CDATA -->\n  <ns1:section>\n    <![CDATA[\n      <!-- Nested comment inside CDATA -->\n      Some text data <>&\"'\n    ]]>\n  </ns1:section>\n  <ns2:section>&entB;</ns2:section>\n  <?ns1-target data=\"processing instruction payload\"?>\n</testDoc>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE database [\n  <!ELEMENT database (record*)>\n  <!ELEMENT record (#PCDATA)>\n  <!ENTITY admin \"Administrator\">\n  <!ENTITY security \"&admin; Role\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n  <?db-control mode=\"active\"?>\n]>\n<database xmlns=\"http://xml.database.org\" xmlns:sec=\"http://xml.database.org/security\">\n  <!--\n    Database documentation comment block\n    Author: &admin;\n  -->\n  <sec:record>\n    <![CDATA[\n      Secured record data with special characters <>&'\"\n    ]]>\n  </sec:record>\n  <record>Access level: &security;</record>\n  <?sec-pi verify=\"true\"?>\n</database>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (header, body)>\n  <!ELEMENT header (#PCDATA)>\n  <!ELEMENT body (#PCDATA)>\n  <!ENTITY % custom-pe \"CDATA\">\n  <!ENTITY doc-title \"Comprehensive Document\">\n  <?xml-stylesheet type=\"text/css\" href=\"style.css\"?>\n]>\n<document xmlns=\"http://ns.example.com/doc\" xmlns:html=\"http://www.w3.org/1999/xhtml\">\n  <!-- Header section comment -->\n  <header>\n    <![CDATA[\n      Header CDATA: <html:b>Bold Title</html:b>\n    ]]>\n  </header>\n  <body>\n    &doc-title; - Body content with comments and PIs.\n    <?html-pi render=\"full\"?>\n  </body>\n</document>\n```",
+              "thoughtSignature": "EjQKMgERTTIPgOSQRJBxR0j3XTOFqLZguPJ5tttrafJaFt33NVcjrL/EDe2hdGRyttQKIAva"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2675,
+      "candidatesTokenCount": 1060,
+      "totalTokenCount": 3735,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 2675
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "cJl0aoSOKLqxjuMPy5uuoAo"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

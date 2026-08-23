@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document [
+  <!ELEMENT document (node)*>
+  <!ELEMENT node (#PCDATA)>
+  <!ENTITY ent-one "EntityOne">
+  <!ENTITY ent-two "&ent-one; EntityTwo">
+  <!ENTITY ent-three "&ent-two; EntityThree">
+  <!ENTITY % internal-macro "
+    <!ELEMENT extra (#PCDATA)>
+    <!ENTITY extra-ent 'ExtraEntityValue'>
+  ">
+  %internal-macro;
+]>
+<?xml-stylesheet type="text/css" href="print.css"?>
+<document xmlns="http://xml.org/document" xmlns:n="http://xml.org/document/node">
+  <!-- Top-level documentation comment covering complex entities -->
+  <n:node id="node_1">
+    <?n-action execute="true"?>
+    <![CDATA[
+      Deep CDATA section with &ent-three; and <extra>&extra-ent;</extra>
+    ]]>
+    &ent-three;
+    &extra-ent;
+  </n:node>
+</document>

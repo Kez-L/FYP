@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY eA "Entity A">
+  <!ENTITY eB "&eA; &eC;">
+  <!ENTITY eC "Entity C">
+  <?xml-app-info name="fuzzing-test" version="2.0"?>
+]>
+<root xmlns="http://test.org/ns/root" xmlns:ns1="http://test.org/ns/child">
+  <!-- Complex comment block with DTD references: &eA; -->
+  <ns1:child ns1:attribute="test">
+    <?ns1:pi command="execute" arg="value"?>
+    <![CDATA[
+      CDATA block evaluating entities literally: &eA; &eB;
+    ]]>
+  </ns1:child>
+</root>

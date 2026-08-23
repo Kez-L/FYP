@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ELEMENT doc (section+)>
+  <!ELEMENT section (#PCDATA)>
+  <!ENTITY % param "<!ENTITY internal 'Parametric Entity Text'>">
+  %param;
+  <!ENTITY ref "&internal;">
+]>
+<?xml-processing-instruction target="afl" data="test-mode=true"?>
+<doc xmlns="http://example.org/doc" xmlns:m="http://example.org/meta">
+  <!-- Comment 1: Before CDATA -->
+  <section m:type="primary">
+    <![CDATA[Some complex data with markup <script>alert(1)</script>]]>
+  </section>
+  <section>&ref;</section>
+</doc>

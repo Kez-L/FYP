@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % ent \"<!ENTITY internal 'Expanded Value'>\">\n  %ent;\n  <!ENTITY ext SYSTEM \"external.dtd\">\n  <?pi-target processing instruction data?>\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<root xmlns=\"http://example.com/ns\" xmlns:sub=\"http://example.com/sub\">\n  <!-- Leading comment explaining child nodes -->\n  <child sub:id=\"1\">\n    <![CDATA[ CDATA block with <tags> & entities like &internal; ]]>&internal;\n  </child>\n  <sub:child id=\"2\">Normal text content</sub:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (book+)>\n  <!ELEMENT book (title, author)>\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT author (#PCDATA)>\n  <!ENTITY pub \"Academics Press\">\n  <!ENTITY % dtdAttr \"ATTLIST book rating CDATA #IMPLIED\">\n  <!%dtdAttr;>\n  <?catalog-info version=\"2.0\"?>\n]>\n<catalog xmlns=\"http://library.org/catalog\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Comment: Section 1 books -->\n  <book rating=\"5\">\n    <title><![CDATA[Advanced XML & Parsing]]></title>\n    <author>&pub;</author>\n  </book>\n  <?custom-pi data=\"reparse\"?>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY baseEnt \"Standard Item\">\n  <!ENTITY complexEnt \"&baseEnt; - Deluxe Edition\">\n  <!ENTITY % paramMacro \"<!ELEMENT item (#PCDATA)>\">\n  %paramMacro;\n  <?inventory-log status=\"active\"?>\n]>\n<inventory xmlns=\"http://inventory.org/ns\" xmlns:loc=\"http://inventory.org/location\">\n  <!-- Inventory manifest comment -->\n  <loc:warehouse shelf=\"A4\">\n    <![CDATA[ \n       Special handling required for items containing <>&'\" \n    ]]>\n    <item>&complexEnt;</item>\n  </loc:warehouse>\n</inventory>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY secTitle \"Introduction\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n  <!ENTITY % extDecl \"<!ENTITY secEnt '&secTitle; Subsection'>\">\n  %extDecl;\n  <?doc-info author=\"Tester\"?>\n]>\n<doc xmlns=\"http://doc.org/ns\" xmlns:custom=\"http://doc.org/custom\">\n  <!-- Multi-namespace and entity stress test -->\n  <section custom:type=\"primary\">\n    <![CDATA[ \n       Section CDATA: &secEnt; inside CDATA remains literal.\n    ]]>\n    &secEnt;\n  </section>\n  <?custom-action execute=\"true\"?>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE suite [\n  <!ELEMENT suite (test*)>\n  <!ELEMENT test (#PCDATA)>\n  <!ENTITY t1 \"Test Alpha\">\n  <!ENTITY t2 \"&t1; and Beta\">\n  <!ENTITY % p1 \"<!ENTITY t3 '&t2; and Gamma'>\">\n  %p1;\n  <?suite-meta run=\"nightly\"?>\n]>\n<suite xmlns=\"http://suite.org/schema\" xmlns:tr=\"http://suite.org/tr\">\n  <!-- Suite configuration wrapper -->\n  <tr:test id=\"t-001\">\n    <![CDATA[\n       CDATA containing arbitrary markup: <test attr=\"val\"> &t3; </test>\n    ]]>\n    <test>&t3;</test>\n  </tr:test>\n</suite>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % ent \"<!ENTITY internal 'Expanded Value'>\">\n  %ent;\n  <!ENTITY ext SYSTEM \"external.dtd\">\n  <?pi-target processing instruction data?>\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<root xmlns=\"http://example.com/ns\" xmlns:sub=\"http://example.com/sub\">\n  <!-- Leading comment explaining child nodes -->\n  <child sub:id=\"1\">\n    <![CDATA[ CDATA block with <tags> & entities like &internal; ]]>&internal;\n  </child>\n  <sub:child id=\"2\">Normal text content</sub:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (book+)>\n  <!ELEMENT book (title, author)>\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT author (#PCDATA)>\n  <!ENTITY pub \"Academics Press\">\n  <!ENTITY % dtdAttr \"ATTLIST book rating CDATA #IMPLIED\">\n  <!%dtdAttr;>\n  <?catalog-info version=\"2.0\"?>\n]>\n<catalog xmlns=\"http://library.org/catalog\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Comment: Section 1 books -->\n  <book rating=\"5\">\n    <title><![CDATA[Advanced XML & Parsing]]></title>\n    <author>&pub;</author>\n  </book>\n  <?custom-pi data=\"reparse\"?>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY baseEnt \"Standard Item\">\n  <!ENTITY complexEnt \"&baseEnt; - Deluxe Edition\">\n  <!ENTITY % paramMacro \"<!ELEMENT item (#PCDATA)>\">\n  %paramMacro;\n  <?inventory-log status=\"active\"?>\n]>\n<inventory xmlns=\"http://inventory.org/ns\" xmlns:loc=\"http://inventory.org/location\">\n  <!-- Inventory manifest comment -->\n  <loc:warehouse shelf=\"A4\">\n    <![CDATA[ \n       Special handling required for items containing <>&'\" \n    ]]>\n    <item>&complexEnt;</item>\n  </loc:warehouse>\n</inventory>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY secTitle \"Introduction\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n  <!ENTITY % extDecl \"<!ENTITY secEnt '&secTitle; Subsection'>\">\n  %extDecl;\n  <?doc-info author=\"Tester\"?>\n]>\n<doc xmlns=\"http://doc.org/ns\" xmlns:custom=\"http://doc.org/custom\">\n  <!-- Multi-namespace and entity stress test -->\n  <section custom:type=\"primary\">\n    <![CDATA[ \n       Section CDATA: &secEnt; inside CDATA remains literal.\n    ]]>\n    &secEnt;\n  </section>\n  <?custom-action execute=\"true\"?>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE suite [\n  <!ELEMENT suite (test*)>\n  <!ELEMENT test (#PCDATA)>\n  <!ENTITY t1 \"Test Alpha\">\n  <!ENTITY t2 \"&t1; and Beta\">\n  <!ENTITY % p1 \"<!ENTITY t3 '&t2; and Gamma'>\">\n  %p1;\n  <?suite-meta run=\"nightly\"?>\n]>\n<suite xmlns=\"http://suite.org/schema\" xmlns:tr=\"http://suite.org/tr\">\n  <!-- Suite configuration wrapper -->\n  <tr:test id=\"t-001\">\n    <![CDATA[\n       CDATA containing arbitrary markup: <test attr=\"val\"> &t3; </test>\n    ]]>\n    <test>&t3;</test>\n  </tr:test>\n</suite>\n```",
+              "thoughtSignature": "EjQKMgERTTIPNcIUyN54rRXMcKCeI45bCtGHg0mNQQSdUeP5j1QB8nxESMUu2UTyg5o5qU8N"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2613,
+      "candidatesTokenCount": 998,
+      "totalTokenCount": 3611,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 2613
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "uMt2aoCFL_vIjuMPg9TnkAE"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

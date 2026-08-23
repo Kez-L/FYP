@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE test [
+  <!ELEMENT test (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % ext SYSTEM "http://localhost/external.dtd">
+  %ext;
+  <!ENTITY internal "nested &subent; entity">
+  <!ENTITY subent "deeply nested">
+]>
+<?target data instruction?>
+<test xmlns="http://default.ns.uri" xmlns:custom="http://custom.ns.uri">
+  <!-- Comment containing <!-- nested-like dashes --> -->
+  <custom:child>
+    <![CDATA[First CDATA section]]>
+  </custom:child>
+  <child>
+    &internal;
+    <![CDATA[Second CDATA with a string like ]]> inside]]>
+  </child>
+</test>

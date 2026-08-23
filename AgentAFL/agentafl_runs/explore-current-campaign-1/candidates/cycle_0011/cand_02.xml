@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-app-info name="fuzzer-test"?>
+<!DOCTYPE document [
+  <!ELEMENT document (section*)>
+  <!ELEMENT section (#PCDATA)>
+  <!ENTITY % p1 "<!ENTITY ent1 'Param Value 1'>">
+  <!ENTITY % p2 "<!ENTITY ent2 'Param Value 2'>">
+  %p1;
+  %p2;
+  <!ENTITY combined "&ent1; and &ent2;">
+]>
+<document xmlns="http://xml.org/doc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- Multi-namespace container with comments -->
+  <section xsi:schemaLocation="http://xml.org/doc schema.xsd">
+    <?target-processing-instruction data="value'"?>
+    <![CDATA[
+      Nesting CDATA sections <inside> tag structures.
+    ]]>
+    &combined;
+  </section>
+</document>

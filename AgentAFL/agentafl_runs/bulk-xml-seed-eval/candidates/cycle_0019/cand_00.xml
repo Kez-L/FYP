@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % ent "<!ENTITY internal 'Expanded Text'>">
+  %ent;
+  <?target-pi data="processing-instruction"?>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="style.xsl"?>
+<root xmlns="http://example.com/ns" xmlns:sub="http://example.com/sub" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Top level comment block exploring parser boundaries -->
+  <sub:child xlink:type="simple">
+    <![CDATA[
+      CDATA section containing <tags>, &internal;, and unescaped entities!
+    ]]>
+  </sub:child>
+  <child>&internal;</child>
+</root>

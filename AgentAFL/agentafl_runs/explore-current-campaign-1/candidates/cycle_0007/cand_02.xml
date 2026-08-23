@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE testsuite [
+  <!ELEMENT testsuite (case*)>
+  <!ELEMENT case (#PCDATA)>
+  <!ENTITY ent-a "Alpha">
+  <!ENTITY ent-b "Beta &ent-a;">
+  <!ENTITY ent-c "Gamma &ent-b;">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <?test-pi param="start"?>
+]>
+<testsuite xmlns="http://test.org/ns" xmlns:ns2="http://test.org/ns2" xmlns:ns3="http://test.org/ns3">
+  <!-- Comment inside root element -->
+  <ns2:case>
+    <?ns2:instruction target="run"?>
+    <![CDATA[
+      CDATA inside namespaced element with entity &ent-c;
+    ]]>
+  </ns2:case>
+  <ns3:case>&ent-c;</ns3:case>
+</testsuite>

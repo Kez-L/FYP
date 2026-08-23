@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY ent1 "First Entity">
+  <!ENTITY ent2 "Second &ent1;">
+  <!ENTITY % pe "<!ENTITY pe-ent 'Parameter Entity Value'>">
+  %pe;
+]>
+<?xml-model href="schema.rng" type="application/xml-relax-ng"?>
+<catalog xmlns="http://www.w3.org/default" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Comment 1: Testing multiple comments and PIs -->
+  <?target-pi data="processing-instruction-value"?>
+  <!-- Comment 2: Inside catalog -->
+  <item xlink:type="simple">
+    <![CDATA[
+      Unparsed CDATA section with &ent2; and %pe-ent; references inside text.
+    ]]>
+  </item>
+  <item>&ent2; and %pe-ent;</item>
+</catalog>

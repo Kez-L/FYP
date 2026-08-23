@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % pe "<!ENTITY internal 'parameter-entity-content'>">
+  %pe;
+  <!ENTITY gen "general-entity-&internal;">
+  <?pi-target pi-data="value"?>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY ext SYSTEM "logo.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="style.xsl"?>
+<root xmlns="http://example.com/ns/root" xmlns:sub="http://example.com/ns/sub" sub:id="123">
+  <!-- Comment containing DTD references and CDATA -->
+  <sub:child sub:attr="&gen;">
+    <![CDATA[
+      Some raw CDATA text with <tags> and entities &gen; inside.
+    ]]>
+  </sub:child>
+</root>

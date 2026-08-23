@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \"<!ENTITY ent 'Parsed Entity Value'>\">\n  %pe;\n  <!ENTITY ext SYSTEM \"http://localhost/nonexistent\" NDATA bin>\n  <!NOTATION bin SYSTEM \"urn:notation\">\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<root xmlns=\"http://example.com/ns/root\" xmlns:sub=\"http://example.com/ns/sub\">\n  <!-- This is a top-level comment describing the root element -->\n  <sub:child>\n    <?sub-pi target=\"data\" processing=\"true\"?>\n    <![CDATA[\n      CDATA section containing complex markup characters: <tag> &amp; \"quotes\"\n    ]]>\n    &ent;\n  </sub:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (#PCDATA | section)*>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY ent1 \"First Entity\">\n  <!ENTITY ent2 \"&ent1; and Second Entity\">\n  <!NOTATION png SYSTEM \"image/png\">\n]>\n<doc xmlns=\"http://w3.org/xml/default\" xmlns:custom=\"http://example.org/custom\">\n  <?xml-stylesheet type=\"text/css\" href=\"style.css\"?>\n  <!-- Author: Test Suite -->\n  <custom:section>\n    <![CDATA[ Unparsed CDATA with <tag> and &entity; reference inside. ]]>\n    &ent2;\n  </custom:section>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item+)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY % remote SYSTEM \"http://example.com/dtd-fragment.dtd\">\n  %remote;\n  <!ENTITY local \"Local Entity\">\n  <?target-pi data=\"processingInstructionValue\"?>\n]>\n<catalog xmlns=\"urn:iso:std:iso:20022:tech:xsd:auth.008\" xmlns:ns1=\"urn:schema:one\">\n  <!-- Root level comment -->\n  <ns1:item>\n    <![CDATA[\n      Some nested CDATA block with arbitrary text & symbols.\n    ]]>\n    &local;\n  </ns1:item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (node)*>\n  <!ELEMENT node (#PCDATA)>\n  <!ENTITY reference \"Entity expansion string\">\n  <!NOTATION pdf SYSTEM \"application/pdf\">\n  <!ENTITY externalDoc SYSTEM \"file:///etc/hosts\" NDATA pdf>\n]>\n<document xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <?xml-model href=\"schema.rng\" type=\"application/xml-relax-ng\"?>\n  <!-- A comment before the main node structure -->\n  <node xlink:type=\"simple\" xlink:href=\"http://example.com\">\n    <![CDATA[\n      <!DOCTYPE nested-cdata-simulation>\n      <tag>content inside cdata</tag>\n    ]]>\n    &reference;\n  </node>\n</document>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (book)*>\n  <!ELEMENT book (#PCDATA)>\n  <!ENTITY author \"Jane Doe\">\n  <!ENTITY bio \"&author; is a writer.\">\n  <!NOTATION gif SYSTEM \"image/gif\">\n]>\n<inventory xmlns=\"http://books.example.com/ns\" xmlns:bib=\"http://books.example.com/bib\">\n  <?book-manager action=\"initialize\" version=\"1.0\"?>\n  <!-- Comprehensive inventory list containing rare constructs -->\n  <bib:book>\n    <![CDATA[\n      Special CDATA block: &author; will not be expanded here.\n    ]]>\n    &bio;\n  </bib:book>\n</inventory>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \"<!ENTITY ent 'Parsed Entity Value'>\">\n  %pe;\n  <!ENTITY ext SYSTEM \"http://localhost/nonexistent\" NDATA bin>\n  <!NOTATION bin SYSTEM \"urn:notation\">\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<root xmlns=\"http://example.com/ns/root\" xmlns:sub=\"http://example.com/ns/sub\">\n  <!-- This is a top-level comment describing the root element -->\n  <sub:child>\n    <?sub-pi target=\"data\" processing=\"true\"?>\n    <![CDATA[\n      CDATA section containing complex markup characters: <tag> &amp; \"quotes\"\n    ]]>\n    &ent;\n  </sub:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (#PCDATA | section)*>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY ent1 \"First Entity\">\n  <!ENTITY ent2 \"&ent1; and Second Entity\">\n  <!NOTATION png SYSTEM \"image/png\">\n]>\n<doc xmlns=\"http://w3.org/xml/default\" xmlns:custom=\"http://example.org/custom\">\n  <?xml-stylesheet type=\"text/css\" href=\"style.css\"?>\n  <!-- Author: Test Suite -->\n  <custom:section>\n    <![CDATA[ Unparsed CDATA with <tag> and &entity; reference inside. ]]>\n    &ent2;\n  </custom:section>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item+)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY % remote SYSTEM \"http://example.com/dtd-fragment.dtd\">\n  %remote;\n  <!ENTITY local \"Local Entity\">\n  <?target-pi data=\"processingInstructionValue\"?>\n]>\n<catalog xmlns=\"urn:iso:std:iso:20022:tech:xsd:auth.008\" xmlns:ns1=\"urn:schema:one\">\n  <!-- Root level comment -->\n  <ns1:item>\n    <![CDATA[\n      Some nested CDATA block with arbitrary text & symbols.\n    ]]>\n    &local;\n  </ns1:item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (node)*>\n  <!ELEMENT node (#PCDATA)>\n  <!ENTITY reference \"Entity expansion string\">\n  <!NOTATION pdf SYSTEM \"application/pdf\">\n  <!ENTITY externalDoc SYSTEM \"file:///etc/hosts\" NDATA pdf>\n]>\n<document xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <?xml-model href=\"schema.rng\" type=\"application/xml-relax-ng\"?>\n  <!-- A comment before the main node structure -->\n  <node xlink:type=\"simple\" xlink:href=\"http://example.com\">\n    <![CDATA[\n      <!DOCTYPE nested-cdata-simulation>\n      <tag>content inside cdata</tag>\n    ]]>\n    &reference;\n  </node>\n</document>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (book)*>\n  <!ELEMENT book (#PCDATA)>\n  <!ENTITY author \"Jane Doe\">\n  <!ENTITY bio \"&author; is a writer.\">\n  <!NOTATION gif SYSTEM \"image/gif\">\n]>\n<inventory xmlns=\"http://books.example.com/ns\" xmlns:bib=\"http://books.example.com/bib\">\n  <?book-manager action=\"initialize\" version=\"1.0\"?>\n  <!-- Comprehensive inventory list containing rare constructs -->\n  <bib:book>\n    <![CDATA[\n      Special CDATA block: &author; will not be expanded here.\n    ]]>\n    &bio;\n  </bib:book>\n</inventory>\n```",
+              "thoughtSignature": "EjQKMgERTTIPFsz/teysMTVu9uZHA083a9nUCSZ4c0H8PqEIY9xbeA7LoLEc8REsDD7oV00L"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 3040,
+      "candidatesTokenCount": 989,
+      "totalTokenCount": 4029,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 3040
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "zGx0atDbMImxjuMP44aegAw"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

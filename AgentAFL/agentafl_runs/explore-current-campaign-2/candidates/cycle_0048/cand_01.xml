@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY ent1 "First Entity">
+  <!ENTITY ent2 "&ent1; and Second">
+  <!ENTITY % nested_pe "<!ENTITY ent3 '&ent2; with PE'>">
+  %nested_pe;
+  <?target-pi data-attr="test"?>
+]>
+<catalog xmlns="http://example.org/catalog" xmlns:x="http://example.org/x" xmlns:y="http://example.org/y">
+  <!-- Multi-namespace comment block -->
+  <x:item>&ent3;</x:item>
+  <y:item>
+    <![CDATA[
+      CDATA inside a prefixed element with a &ent3; reference.
+    ]]>
+  </y:item>
+</catalog>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="schema.rng" type="application/xml-relax-ng"?>
+<!DOCTYPE document [
+  <!ELEMENT document (header, body)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT body (#PCDATA)>
+  <!ENTITY ent1 "First Entity">
+  <!ENTITY ent2 "&ent1; and Second Entity">
+  <!ENTITY % pEnt "<!ELEMENT body (#PCDATA | note)*> <!ELEMENT note (#PCDATA)>">
+  %pEnt;
+]>
+<document xmlns="http://xml.org/document" xmlns:meta="http://xml.org/meta" xmlns:ns="http://xml.org/ns">
+  <!-- Document Header Comment -->
+  <?meta-pi action="init"?>
+  <header meta:version="1.0">
+    <![CDATA[
+      Header CDATA block with entities: &ent2;
+    ]]>
+  </header>
+  <body ns:role="primary">
+    Normal body text referencing entities: &ent2;
+  </body>
+</document>

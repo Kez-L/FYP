@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (product)*>
+  <!ELEMENT product (#PCDATA)>
+  <!ENTITY entA "Value A">
+  <!ENTITY entB "&entA; Value B">
+  <!NOTATION bmp SYSTEM "image/bmp">
+  <!ENTITY icon SYSTEM "icon.bmp" NDATA bmp>
+  <!ENTITY % ext_macro "<!ATTLIST product sku ID #IMPLIED>">
+  %ext_macro;
+]>
+<?xml-stylesheet type="text/css" href="style.css"?>
+<catalog xmlns="http://example.com/catalog" xmlns:store="http://example.com/store">
+  <!-- Comment outlining schema constraints -->
+  <store:product sku="SKU001">
+    <![CDATA[
+      Unparsed block: &entB; inside CDATA section.
+    ]]>
+  </store:product>
+  <product>&entB;</product>
+</catalog>

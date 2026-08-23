@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE database [
+  <!ELEMENT database (record*)>
+  <!ELEMENT record (#PCDATA)>
+  <!ENTITY % local_macro "<!ENTITY macro_ent 'macro-val'>">
+  %local_macro;
+  <!ENTITY combined "&macro_ent; and more">
+  <!NOTATION txt SYSTEM "text/plain">
+  <!ENTITY ext_file SYSTEM "external.txt" NDATA txt>
+]>
+<?xml-model href="schema.rng" type="application/xml-relax-ng"?>
+<database xmlns="http://schemas.example.org/db" xmlns:meta="http://schemas.example.org/meta" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- Comment placed right after root start -->
+  <meta:info>
+    <?meta-pi command="verify"?>
+    <![CDATA[
+      Nested CDATA section with entities inside: &combined;
+    ]]>
+  </meta:info>
+  <record>&combined;</record>
+</database>

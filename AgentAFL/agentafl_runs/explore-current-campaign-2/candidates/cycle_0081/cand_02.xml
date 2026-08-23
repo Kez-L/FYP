@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record)*>
+  <!ELEMENT record (#PCDATA)>
+  <!ENTITY ent1 "First Level">
+  <!ENTITY ent2 "&ent1; and Second Level">
+  <!NOTATION pdf SYSTEM "application/pdf">
+  <!ENTITY doc SYSTEM "file.pdf" NDATA pdf>
+  <!ENTITY % sub_macro "<!ELEMENT record (#PCDATA)>">
+  %sub_macro;
+]>
+<?xml-processing-instruction test="true" data="sample"?>
+<archive xmlns="http://schemas.org/archive" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <!-- Complex comment block with DTD imitation -->
+  <record xlink:type="simple" dc:title="Test">
+    <![CDATA[
+      <record>Nested CDATA &ent2;</record>
+    ]]>
+  </record>
+  <record>&ent2;</record>
+</archive>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % param "<!ENTITY ent 'Parsed Entity'>">
+  %param;
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY ext-img SYSTEM "logo.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.org/ns/base" xmlns:sub="http://example.org/ns/sub">
+  <!-- Top-level comment exercising parser comment state -->
+  <sub:child id="1">
+    <![CDATA[
+      CDATA block with <tags> & &ent; references inside.
+    ]]>
+  </sub:child>
+  <child>&ent;</child>
+</root>

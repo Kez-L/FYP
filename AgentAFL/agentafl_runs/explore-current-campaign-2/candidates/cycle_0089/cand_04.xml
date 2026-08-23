@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/css" href="style.css"?>
+<!DOCTYPE enterprise [
+  <!ELEMENT enterprise (department)*>
+  <!ELEMENT department (employee)*>
+  <!ELEMENT employee (#PCDATA)>
+  <!ENTITY corp "Corporation Name">
+  <!ENTITY subsidiary "&corp; - Subsidiary">
+  <!ENTITY % entity-macro "<!ATTLIST department code ID #REQUIRED>">
+  %entity-macro;
+]>
+<enterprise xmlns="http://xml.org/enterprise" xmlns:hr="http://xml.org/hr" xmlns:fin="http://xml.org/fin">
+  <!-- Enterprise root comment block -->
+  <?hr-pi department="engineering" action="audit"?>
+  <department code="D01" hr:manager="John Doe">
+    <employee>
+      <![CDATA[
+        Employee record containing internal CDATA and entity reference: &subsidiary;
+      ]]>
+    </employee>
+  </department>
+</enterprise>

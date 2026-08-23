@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \"<!ENTITY internal 'parameter-entity-content'>\">\n  %pe;\n  <!ENTITY gen \"general-entity-&internal;\">\n  <?pi-target pi-data=\"value\"?>\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY ext SYSTEM \"logo.png\" NDATA png>\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"style.xsl\"?>\n<root xmlns=\"http://example.com/ns/root\" xmlns:sub=\"http://example.com/ns/sub\" sub:id=\"123\">\n  <!-- Comment containing DTD references and CDATA -->\n  <sub:child sub:attr=\"&gen;\">\n    <![CDATA[\n      Some raw CDATA text with <tags> and entities &gen; inside.\n    ]]>\n  </sub:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY ent1 \"First Entity\">\n  <!ENTITY ent2 \"&ent1; and Second\">\n  <!ENTITY % nested_pe \"<!ENTITY ent3 '&ent2; with PE'>\">\n  %nested_pe;\n  <?target-pi data-attr=\"test\"?>\n]>\n<catalog xmlns=\"http://example.org/catalog\" xmlns:x=\"http://example.org/x\" xmlns:y=\"http://example.org/y\">\n  <!-- Multi-namespace comment block -->\n  <x:item>&ent3;</x:item>\n  <y:item>\n    <![CDATA[\n      CDATA inside a prefixed element with a &ent3; reference.\n    ]]>\n  </y:item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY % ext_pe SYSTEM \"http://localhost/nonexistent.dtd\">\n  %ext_pe;\n  <!ENTITY base \"Base Entity\">\n  <!ENTITY derived \"&base; + Extra\">\n  <?xml-debug level=\"high\"?>\n]>\n<doc xmlns=\"http://xml.org/doc\" xmlns:m=\"http://xml.org/meta\">\n  <!-- Complex comment with hyphens -- -- inside -->\n  <m:section m:verified=\"true\">\n    <![CDATA[\n      Nested CDATA block testing parser robustness against CDATA edge cases.\n    ]]>\n    &derived;\n  </m:section>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (record*)>\n  <!ELEMENT record (#PCDATA)>\n  <!ENTITY ref \"ReferenceValue\">\n  <!ENTITY % defs \"\n    <!ENTITY entA 'A'>\n    <!ENTITY entB '&entA;B'>\n  \">\n  %defs;\n  <?archive-info status=\"active\"?>\n]>\n<archive xmlns=\"http://archive.org/ns\" xmlns:meta=\"http://archive.org/meta\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Comment with xml entity references &ref; inside -->\n  <meta:record xlink:type=\"simple\" xlink:href=\"http://example.com\">\n    <![CDATA[\n      CDATA section with entity expansion attempt: &entB;\n    ]]>\n  </meta:record>\n</archive>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE container [\n  <!ELEMENT container (data)*>\n  <!ELEMENT data (#PCDATA)>\n  <!ENTITY alpha \"Alpha\">\n  <!ENTITY beta \"&alpha; Beta\">\n  <!ENTITY gamma \"&beta; Gamma\">\n  <!ENTITY delta \"&gamma; Delta\">\n  <?container-processor engine=\"v2\"?>\n  <!NOTATION txt SYSTEM \"text/plain\">\n  <!ENTITY manual SYSTEM \"manual.txt\" NDATA txt>\n]>\n<container xmlns=\"http://ns.example.com/container\" xmlns:ext=\"http://ns.example.com/ext\">\n  <!-- Top-level comment before deep entity reference -->\n  <ext:data ext:index=\"1\">\n    <![CDATA[\n      CDATA block checking processing of multiple entity chains: &delta;\n    ]]>\n  </ext:data>\n  <data>&delta;</data>\n</container>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \"<!ENTITY internal 'parameter-entity-content'>\">\n  %pe;\n  <!ENTITY gen \"general-entity-&internal;\">\n  <?pi-target pi-data=\"value\"?>\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY ext SYSTEM \"logo.png\" NDATA png>\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"style.xsl\"?>\n<root xmlns=\"http://example.com/ns/root\" xmlns:sub=\"http://example.com/ns/sub\" sub:id=\"123\">\n  <!-- Comment containing DTD references and CDATA -->\n  <sub:child sub:attr=\"&gen;\">\n    <![CDATA[\n      Some raw CDATA text with <tags> and entities &gen; inside.\n    ]]>\n  </sub:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY ent1 \"First Entity\">\n  <!ENTITY ent2 \"&ent1; and Second\">\n  <!ENTITY % nested_pe \"<!ENTITY ent3 '&ent2; with PE'>\">\n  %nested_pe;\n  <?target-pi data-attr=\"test\"?>\n]>\n<catalog xmlns=\"http://example.org/catalog\" xmlns:x=\"http://example.org/x\" xmlns:y=\"http://example.org/y\">\n  <!-- Multi-namespace comment block -->\n  <x:item>&ent3;</x:item>\n  <y:item>\n    <![CDATA[\n      CDATA inside a prefixed element with a &ent3; reference.\n    ]]>\n  </y:item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY % ext_pe SYSTEM \"http://localhost/nonexistent.dtd\">\n  %ext_pe;\n  <!ENTITY base \"Base Entity\">\n  <!ENTITY derived \"&base; + Extra\">\n  <?xml-debug level=\"high\"?>\n]>\n<doc xmlns=\"http://xml.org/doc\" xmlns:m=\"http://xml.org/meta\">\n  <!-- Complex comment with hyphens -- -- inside -->\n  <m:section m:verified=\"true\">\n    <![CDATA[\n      Nested CDATA block testing parser robustness against CDATA edge cases.\n    ]]>\n    &derived;\n  </m:section>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (record*)>\n  <!ELEMENT record (#PCDATA)>\n  <!ENTITY ref \"ReferenceValue\">\n  <!ENTITY % defs \"\n    <!ENTITY entA 'A'>\n    <!ENTITY entB '&entA;B'>\n  \">\n  %defs;\n  <?archive-info status=\"active\"?>\n]>\n<archive xmlns=\"http://archive.org/ns\" xmlns:meta=\"http://archive.org/meta\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Comment with xml entity references &ref; inside -->\n  <meta:record xlink:type=\"simple\" xlink:href=\"http://example.com\">\n    <![CDATA[\n      CDATA section with entity expansion attempt: &entB;\n    ]]>\n  </meta:record>\n</archive>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE container [\n  <!ELEMENT container (data)*>\n  <!ELEMENT data (#PCDATA)>\n  <!ENTITY alpha \"Alpha\">\n  <!ENTITY beta \"&alpha; Beta\">\n  <!ENTITY gamma \"&beta; Gamma\">\n  <!ENTITY delta \"&gamma; Delta\">\n  <?container-processor engine=\"v2\"?>\n  <!NOTATION txt SYSTEM \"text/plain\">\n  <!ENTITY manual SYSTEM \"manual.txt\" NDATA txt>\n]>\n<container xmlns=\"http://ns.example.com/container\" xmlns:ext=\"http://ns.example.com/ext\">\n  <!-- Top-level comment before deep entity reference -->\n  <ext:data ext:index=\"1\">\n    <![CDATA[\n      CDATA block checking processing of multiple entity chains: &delta;\n    ]]>\n  </ext:data>\n  <data>&delta;</data>\n</container>\n```",
+              "thoughtSignature": "EjQKMgERTTIPjxSxLzki3nF083d1Wb1OGFzjLi5wYX/QgRIZTUyy/cr3V3oFNdx7EaDJXhkP"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2613,
+      "candidatesTokenCount": 1060,
+      "totalTokenCount": 3673,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 2613
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "Q392atvDJ6u2juMP4M7mCQ"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

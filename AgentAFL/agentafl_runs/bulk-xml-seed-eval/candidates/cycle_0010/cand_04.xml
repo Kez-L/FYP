@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record*)>
+  <!ELEMENT record (#PCDATA)>
+  <!ENTITY e1 "Value One">
+  <!ENTITY e2 "Value Two &e1;">
+  <!ENTITY e3 "Value Three &e2;">
+  <!NOTATION pdf SYSTEM "application/pdf">
+  <!ENTITY doc SYSTEM "file.pdf" NDATA pdf>
+]>
+<?xml-stylesheet href="print.xsl" type="text/xsl"?>
+<archive xmlns="http://xml.org/archive" xmlns:ref="http://xml.org/ref">
+  <!-- Multi-entity resolution and CDATA embedding -->
+  <?ref-pi target="process"?>
+  <record ref:id="R-001">
+    <![CDATA[
+      Archive record content with entity reference &e3;
+    ]]>
+  </record>
+  <record>&e3;</record>
+</archive>

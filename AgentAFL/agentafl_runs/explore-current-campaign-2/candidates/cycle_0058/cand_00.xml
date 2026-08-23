@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % ent "<!ELEMENT ext (#PCDATA)>">
+  %ent;
+  <!ENTITY base "BaseEntity">
+  <!ENTITY ref "&base; Expanded">
+  <?pi-target processing instruction data here?>
+  <!-- Comment inside DOCTYPE internal subset -->
+]>
+<root xmlns="http://example.org/ns1" xmlns:sub="http://example.org/ns2">
+  <!-- Top level comment before element -->
+  <?custom-pi data="test"?>
+  <child sub:id="1">
+    <![CDATA[
+      Some raw CDATA text containing <tags> and &ref; references inside.
+    ]]>
+  </child>
+  <child>&ref;</child>
+</root>

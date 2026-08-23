@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \"<!-- Parameter entity comment -->\">\n  %pe;\n  <!ENTITY ent \"Resolved Entity &subent;\">\n  <!ENTITY subent \"Sub-entity Value\">\n  <?pi-target processing instruction data?>\n]>\n<root xmlns=\"http://example.com/ns1\" xmlns:ns2=\"http://example.com/ns2\">\n  <!-- Top-level comment exercising parser comments -->\n  <?another-pi data=\"test\"?>\n  <child ns2:attr=\"value\">\n    <![CDATA[ CDATA section containing <tags> and &entities; literally. ]]>\n  </child>\n  <ns2:child>&ent;</ns2:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY % ext_param SYSTEM \"http://example.com/dtd-part\">\n  <!ENTITY base_ent \"Base Entity\">\n  <!ENTITY complex_ent \"&base_ent; plus extra\">\n  <?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n]>\n<doc xmlns=\"http://example.org/base\" xmlns:xml=\"http://www.w3.org/XML/1998/namespace\">\n  <!-- Document structure comment -->\n  <?target data?>\n  <section xml:id=\"sec1\">\n    <![CDATA[\n      First CDATA block with arbitrary text & symbols.\n    ]]>\n    &complex_ent;\n  </section>\n  <section>\n    <![CDATA[\n      Second CDATA block.\n    ]]>\n  </section>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY e1 \"Value 1\">\n  <!ENTITY e2 \"Value 2 &e1;\">\n  <!ENTITY % macro \"<!ELEMENT item (#PCDATA)>\">\n  %macro;\n  <?catalog-pi action=\"init\"?>\n]>\n<catalog xmlns=\"urn:catalog:ns\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:html=\"http://www.w3.org/1999/xhtml\">\n  <!-- Catalog root element comment -->\n  <item xlink:type=\"simple\" xlink:href=\"http://example.com\">\n    <![CDATA[\n      <html:div>HTML fragment inside CDATA</html:div>\n    ]]>\n  </item>\n  <item>&e2;</item>\n  <?custom-pi data=\"content\"?>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (stock)*>\n  <!ELEMENT stock (#PCDATA)>\n  <!ENTITY itemA \"Alpha\">\n  <!ENTITY itemB \"Beta &itemA;\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n  <?xml-debug level=\"verbose\"?>\n]>\n<inventory xmlns=\"http://inventory.org/ns\" xmlns:store=\"http://inventory.org/store\">\n  <!-- Inventory header comment -->\n  <?store:config mode=\"strict\"?>\n  <store:stock>\n    <![CDATA[\n      Special characters: <script>alert(1)</script> &amp; unparsed.\n    ]]>\n  </store:stock>\n  <stock>&itemB;</stock>\n</inventory>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (record+)>\n  <!ELEMENT record (#PCDATA)>\n  <!ENTITY ent_a \"Entity A\">\n  <!ENTITY ent_b \"Entity B &ent_a;\">\n  <!ENTITY % parser_trick \"<!ELEMENT record (#PCDATA)>\">\n  %parser_trick;\n  <?archive-meta version=\"1.0\"?>\n]>\n<archive xmlns=\"http://archive.org/schema\" xmlns:meta=\"http://archive.org/meta\" xmlns:dig=\"http://archive.org/digital\">\n  <!-- Archive description comment -->\n  <dig:record dig:type=\"digital\">\n    <?dig:action execute?>\n    <![CDATA[\n      Deep CDATA payload with nested structures and entities &ent_a; inside.\n    ]]>\n  </dig:record>\n  <record>&ent_b;</record>\n</archive>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \"<!-- Parameter entity comment -->\">\n  %pe;\n  <!ENTITY ent \"Resolved Entity &subent;\">\n  <!ENTITY subent \"Sub-entity Value\">\n  <?pi-target processing instruction data?>\n]>\n<root xmlns=\"http://example.com/ns1\" xmlns:ns2=\"http://example.com/ns2\">\n  <!-- Top-level comment exercising parser comments -->\n  <?another-pi data=\"test\"?>\n  <child ns2:attr=\"value\">\n    <![CDATA[ CDATA section containing <tags> and &entities; literally. ]]>\n  </child>\n  <ns2:child>&ent;</ns2:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY % ext_param SYSTEM \"http://example.com/dtd-part\">\n  <!ENTITY base_ent \"Base Entity\">\n  <!ENTITY complex_ent \"&base_ent; plus extra\">\n  <?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n]>\n<doc xmlns=\"http://example.org/base\" xmlns:xml=\"http://www.w3.org/XML/1998/namespace\">\n  <!-- Document structure comment -->\n  <?target data?>\n  <section xml:id=\"sec1\">\n    <![CDATA[\n      First CDATA block with arbitrary text & symbols.\n    ]]>\n    &complex_ent;\n  </section>\n  <section>\n    <![CDATA[\n      Second CDATA block.\n    ]]>\n  </section>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY e1 \"Value 1\">\n  <!ENTITY e2 \"Value 2 &e1;\">\n  <!ENTITY % macro \"<!ELEMENT item (#PCDATA)>\">\n  %macro;\n  <?catalog-pi action=\"init\"?>\n]>\n<catalog xmlns=\"urn:catalog:ns\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:html=\"http://www.w3.org/1999/xhtml\">\n  <!-- Catalog root element comment -->\n  <item xlink:type=\"simple\" xlink:href=\"http://example.com\">\n    <![CDATA[\n      <html:div>HTML fragment inside CDATA</html:div>\n    ]]>\n  </item>\n  <item>&e2;</item>\n  <?custom-pi data=\"content\"?>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (stock)*>\n  <!ELEMENT stock (#PCDATA)>\n  <!ENTITY itemA \"Alpha\">\n  <!ENTITY itemB \"Beta &itemA;\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n  <?xml-debug level=\"verbose\"?>\n]>\n<inventory xmlns=\"http://inventory.org/ns\" xmlns:store=\"http://inventory.org/store\">\n  <!-- Inventory header comment -->\n  <?store:config mode=\"strict\"?>\n  <store:stock>\n    <![CDATA[\n      Special characters: <script>alert(1)</script> &amp; unparsed.\n    ]]>\n  </store:stock>\n  <stock>&itemB;</stock>\n</inventory>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (record+)>\n  <!ELEMENT record (#PCDATA)>\n  <!ENTITY ent_a \"Entity A\">\n  <!ENTITY ent_b \"Entity B &ent_a;\">\n  <!ENTITY % parser_trick \"<!ELEMENT record (#PCDATA)>\">\n  %parser_trick;\n  <?archive-meta version=\"1.0\"?>\n]>\n<archive xmlns=\"http://archive.org/schema\" xmlns:meta=\"http://archive.org/meta\" xmlns:dig=\"http://archive.org/digital\">\n  <!-- Archive description comment -->\n  <dig:record dig:type=\"digital\">\n    <?dig:action execute?>\n    <![CDATA[\n      Deep CDATA payload with nested structures and entities &ent_a; inside.\n    ]]>\n  </dig:record>\n  <record>&ent_b;</record>\n</archive>\n```",
+              "thoughtSignature": "EjQKMgERTTIPbLaloKdumNRR+CQ93A8Wng7k246w4FYVuBPREAqLWZCcP95exXioNrNDxd9r"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2613,
+      "candidatesTokenCount": 1081,
+      "totalTokenCount": 3694,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 2613
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "Yg93aoHwO_njjuMP88qOiA4"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

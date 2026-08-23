@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % ent "<!ENTITY internal 'Expanded Value'>">
+  %ent;
+  <!ENTITY ext SYSTEM "ext.ent">
+  <?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+]>
+<!-- Root level comment combining namespaces and entities -->
+<root xmlns="http://example.com/ns/root" xmlns:sub="http://example.com/ns/sub" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <?target-pi data="processing-instruction-content"?>
+  <child sub:id="1" xlink:type="simple">&internal;</child>
+  <child>
+    <![CDATA[
+      CDATA section containing <tags>, &entities;, and <!-- comments --> inside.
+    ]]>
+  </child>
+</root>

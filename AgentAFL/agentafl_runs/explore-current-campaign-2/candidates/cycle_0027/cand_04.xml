@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite [
+  <!ELEMENT suite (case*)>
+  <!ELEMENT case (#PCDATA)>
+  <!ENTITY entA "EntityA">
+  <!ENTITY entB "EntityB &entA;">
+  <!ENTITY entC "EntityC &entB;">
+  <!ENTITY % dtdMacro "<!ENTITY entD 'EntityD &entC;'>">
+  %dtdMacro;
+]>
+<?xml-model href="schema.rng" type="application/xml-relax-ng"?>
+<suite xmlns="http://www.w3.org/2002/ws/policy" xmlns:ws="http://www.w3.org/ns/ws-policy">
+  <!-- Top-level comment block -->
+  <!-- Another comment with special chars: <, >, &, ", ' -->
+  <ws:case>
+    <![CDATA[
+      <suite><case>&entD;</case></suite>
+    ]]>
+  </ws:case>
+  <case>&entD;</case>
+</suite>

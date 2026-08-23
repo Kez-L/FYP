@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document [
+  <!ELEMENT document (section*)>
+  <!ELEMENT section (#PCDATA)>
+  <!ENTITY alpha "Alpha Entity">
+  <!ENTITY beta "&alpha; -> Beta Entity">
+  <!ENTITY gamma "&beta; -> Gamma Entity">
+  <!NOTATION txt SYSTEM "text/plain">
+  <!ENTITY doc-ext SYSTEM "external.txt" NDATA txt>
+  <!ENTITY % ext-entity SYSTEM "http://localhost/external.dtd">
+  %ext-entity;
+]>
+<?target-pi data="test-mode"?>
+<document xmlns="http://schemas.example.org/doc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- Comment explaining the entity chain -->
+  <section xsi:schemaLocation="http://schemas.example.org/doc schema.xsd">
+    <![CDATA[
+      Parsing complex chain: &gamma;
+    ]]>
+  </section>
+  <section>
+    &gamma;
+  </section>
+</document>

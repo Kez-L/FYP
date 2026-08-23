@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY base "Root Base">
+  <!ENTITY combined "&base; Extended">
+  <!ENTITY % paramDTD "<!ENTITY paramEnt 'Parameter Entity Text'>">
+  %paramDTD;
+  <!NOTATION txt SYSTEM "text/plain">
+  <!ENTITY sample SYSTEM "sample.txt" NDATA txt>
+]>
+<?target-pi processing instruction data with &paramEnt; reference?>
+<catalog xmlns="http://example.org/catalog" xmlns:meta="http://example.org/org/meta">
+  <!-- Comment: Testing nested parameter entities and PIs -->
+  <meta:details>
+    <?meta-action type="validate"?>
+    <![CDATA[
+      Raw CDATA block with unparsed entity reference &sample;
+    ]]>
+  </meta:details>
+  <item>&paramEnt;</item>
+  <item>&combined;</item>
+</catalog>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?processing-instruction-one data="test-mode"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (book*)>
+  <!ELEMENT book (title, chapter+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT chapter (#PCDATA)>
+  <!ENTITY author-name "Jane Doe">
+  <!ENTITY % outer-macro "<!ENTITY nested-entity 'Author: &author-name;'>">
+  %outer-macro;
+  <!NOTATION pdf SYSTEM "application/pdf">
+  <!ENTITY manual SYSTEM "manual.pdf" NDATA pdf>
+]>
+<catalog xmlns="http://schemas.example.org/catalog" xmlns:pub="http://schemas.example.org/publication">
+  <!-- Catalog level comment with trailing dashes --- -->
+  <pub:book pub:id="BK-001">
+    <?pub-pi target="layout" value="grid"?>
+    <title>Advanced XML Parsing Techniques</title>
+    <chapter>
+      <![CDATA[
+        Chapter 1 CDATA block: processing instructions <?pi test?> and entities &nested-entity; are ignored here.
+      ]]>
+    </chapter>
+  </pub:book>
+</catalog>

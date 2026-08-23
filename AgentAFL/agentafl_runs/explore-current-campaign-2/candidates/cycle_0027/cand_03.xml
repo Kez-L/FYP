@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE testDoc [
+  <!ELEMENT testDoc (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY e1 "Value1">
+  <!ENTITY e2 "Value2 &e1;">
+  <!ENTITY e3 "Value3 &e2;">
+  <!ENTITY % internal "
+    <!ELEMENT nested (#PCDATA)>
+    <!ENTITY deep 'DeepEntity'>
+  ">
+  %internal;
+]>
+<?xml-stylesheet type="text/css" href="style.css"?>
+<testDoc xmlns="http://test.org/doc" xmlns:p="http://test.org/p" xmlns:q="http://test.org/q">
+  <!-- Comment before CDATA -->
+  <p:item>
+    <![CDATA[
+      CDATA block containing entity reference &e3; inside p:item
+    ]]>
+  </p:item>
+  <q:item>
+    <?p:target attr="val"?>
+    &deep;
+  </q:item>
+</testDoc>

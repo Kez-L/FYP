@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY ent1 "Data 1">
+  <!ENTITY ent2 "&ent1; and Data 2">
+  <!ENTITY % local_ext SYSTEM "http://localhost/external.dtd">
+  %local_ext;
+  <?xml-model href="schema.rng" type="application/xml-relax-ng"?>
+]>
+<archive xmlns="http://www.w3.org/XML/1998/namespace" xmlns:arc="http://example.org/archive">
+  <!-- Archival metadata comment -->
+  <arc:record>
+    <?arc-pi action="verify" status="pending"?>
+    <item>
+      <![CDATA[
+        Some raw CDATA payload with &ent2; reference inside.
+      ]]>
+    </item>
+  </arc:record>
+</archive>

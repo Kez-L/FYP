@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % ent "<!ENTITY internal 'Expanded Value'>">
+  %ent;
+  <!ENTITY external SYSTEM "file:///etc/passwd">
+  <!NOTATION png SYSTEM "image/png">
+  <?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+]>
+<root xmlns="http://example.com/ns" xmlns:sub="http://example.com/sub">
+  <!-- Top level comment before processing instruction and CDATA -->
+  <?target data="value"?>
+  <sub:child sub:id="1">
+    <![CDATA[
+      CDATA section containing <tags>, &internal;, and entities.
+    ]]>
+  </sub:child>
+  <child>&internal;</child>
+</root>

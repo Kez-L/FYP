@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY e_base "Base Item">
+  <!ENTITY e_ref "&e_base; Extended">
+  <!NOTATION text SYSTEM "text/plain">
+  <!ENTITY external_doc SYSTEM "data.txt" NDATA text>
+  <!ENTITY % dtd_macro "<!ATTLIST item cat CDATA #REQUIRED>">
+  %dtd_macro;
+]>
+<?xml-target role="validation" value="strict"?>
+<inventory xmlns="urn:inventory:schema" xmlns:meta="urn:inventory:meta">
+  <!-- Comment containing markup-like strings <item>&e_ref;</item> -->
+  <meta:details>
+    <![CDATA[
+      Raw payload with internal entities &e_ref; and CDATA nesting.
+    ]]>
+  </meta:details>
+  <item cat="primary">&e_ref;</item>
+</inventory>

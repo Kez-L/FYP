@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE system [
+  <!ELEMENT system (node)*>
+  <!ELEMENT node (#PCDATA)>
+  <!ENTITY alpha "Alpha">
+  <!ENTITY beta "&alpha; Beta">
+  <!ENTITY gamma "&beta; Gamma">
+  <?system-audit user="admin" timestamp="2025-01-01"?>
+  <!NOTATION xml SYSTEM "text/xml">
+  <!ENTITY schema SYSTEM "schema.xsd" NDATA xml>
+]>
+<system xmlns="http://sys.example.org/schema" xmlns:meta="http://sys.example.org/meta">
+  <!-- Comment: checking multiple rare constructs (DOCTYPE, ENTITY, PI, CDATA, xmlns) simultaneously -->
+  <meta:node id="node-1">
+    <![CDATA[
+      CDATA block enclosing entity reference: &gamma; and some <xml> tags.
+    ]]>
+  </meta:node>
+  <node>&gamma;</node>
+</system>

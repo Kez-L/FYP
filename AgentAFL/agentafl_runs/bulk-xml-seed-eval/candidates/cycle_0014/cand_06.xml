@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE response [
+  <!ELEMENT response (payload*)>
+  <!ELEMENT payload (#PCDATA)>
+  <!ENTITY % builder "<!ENTITY built-ent 'Built-in Entity Value'>">
+  %builder;
+  <!ENTITY final-ref "Final: &built-ent;">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY raw-bin SYSTEM "binary.bin" NDATA bin>
+]>
+<?xml-log target="syslog" facility="daemon"?>
+<response xmlns="http://api.example.com/v1" xmlns:res="http://api.example.com/v1/response">
+  <!-- Response payload container comment -->
+  <payload res:format="xml">
+    <![CDATA[
+      Raw payload payload <payload-inner>&built-ent;</payload-inner>
+    ]]>
+  </payload>
+  <payload>&final-ref;</payload>
+</response>

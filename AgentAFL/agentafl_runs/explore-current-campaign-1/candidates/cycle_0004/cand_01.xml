@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE test [
+  <!ELEMENT test (node*)>
+  <!ELEMENT node (#PCDATA)>
+  <!ENTITY % inner "<!ENTITY deep 'nested-replacement'>">
+  %inner;
+  <!ENTITY base "&deep; and more">
+]>
+<test xmlns="urn:test" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <!-- Comment before PI -->
+  <?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+  <node>
+    <![CDATA[
+      Another CDATA block testing parsing boundaries.
+    ]]>
+    &base;
+  </node>
+</test>

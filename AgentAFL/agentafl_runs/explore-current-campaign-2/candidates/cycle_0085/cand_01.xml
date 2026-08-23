@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE enterprise [
+  <!ELEMENT enterprise (section)*>
+  <!ELEMENT section (#PCDATA)>
+  <!ENTITY internal "DataChunk">
+  <!ENTITY complex "&internal; &internal;">
+  <!NOTATION pdf SYSTEM "application/pdf">
+  <!ENTITY report SYSTEM "annual.pdf" NDATA pdf>
+  <!ENTITY % macro "<!ELEMENT meta EMPTY>">
+  %macro;
+]>
+<?xml-app-logger level="DEBUG"?>
+<enterprise xmlns="http://xml.company.org/ns" xmlns:meta="http://xml.company.org/meta">
+  <!-- Processing complex nested entity expansions inside elements -->
+  <section id="s1">
+    <![CDATA[
+      Strictly parsed CDATA section: &complex; -- not expanded here.
+    ]]>
+  </section>
+  <section>&complex;</section>
+</enterprise>

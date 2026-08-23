@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % inner "sub-element">
+  <!ENTITY % outer "<!ELEMENT %inner; (#PCDATA)>">
+  %outer;
+  <!ENTITY base "RootEntity">
+  <!ENTITY ref "&base; Extended">
+]>
+<?xml-stylesheet type="text/css" href="style.css"?>
+<root xmlns="http://xml.org/ns/base" xmlns:ns="http://xml.org/ns/other">
+  <!-- Deep comment block with special chars <>&'" -->
+  <ns:child>
+    <?target-pi data="processing..."?>
+    <![CDATA[
+      Nesting entities inside CDATA: &ref; -> ignored literally but parsed if outside.
+    ]]>
+    &ref;
+  </ns:child>
+</root>

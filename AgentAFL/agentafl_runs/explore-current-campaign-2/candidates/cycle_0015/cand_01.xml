@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE database [
+  <!ELEMENT database (record*)>
+  <!ELEMENT record (#PCDATA)>
+  <!ENTITY prefix "DATA_">
+  <!ENTITY combined "&prefix;SUFFIX">
+  <!ENTITY % paramDecl "<!ELEMENT record (#PCDATA | subrec)*>">
+  %paramDecl;
+  <!ELEMENT subrec (#PCDATA)>
+]>
+<?target-pi data="processing-instruction-value"?>
+<database xmlns="http://www.xml.org/database" xmlns:m="http://www.xml.org/metadata">
+  <!-- Metadata and processing instructions inside root -->
+  <?xml-meta version="1.0"?>
+  <m:record id="rec1">
+    <![CDATA[
+      Nested CDATA block with entity reference &combined; inside.
+    ]]>
+  </m:record>
+  <record>&combined;</record>
+</database>

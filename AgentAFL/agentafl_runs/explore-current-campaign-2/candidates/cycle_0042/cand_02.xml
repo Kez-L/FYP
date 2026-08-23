@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY ent1 "First Entity">
+  <!ENTITY ent2 "&ent1; &amp; Second Entity">
+  <!ENTITY % pe "<!ENTITY pe-ent 'Parameter Value'>">
+  %pe;
+]>
+<?xml-debug level="high"?>
+<root xmlns="urn:test:namespace" xmlns:sub="urn:test:sub">
+  <!-- First comment block -->
+  <sub:child>
+    <![CDATA[
+      First CDATA block with entities like &ent2;
+    ]]>
+  </sub:child>
+  <!-- Second comment block -->
+  <child>
+    <![CDATA[
+      Second CDATA block with raw symbols: <, >, &, ", '
+    ]]>
+  </child>
+  <child>&pe-ent;</child>
+</root>

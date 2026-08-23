@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (stock)*>
+  <!ELEMENT stock (#PCDATA)>
+  <!ENTITY itemA "Widget-A">
+  <!ENTITY itemB "Widget-B &itemA;">
+  <!NOTATION bmp SYSTEM "image/bmp">
+  <!ENTITY blueprint SYSTEM "blueprint.bmp" NDATA bmp>
+  <!ENTITY % macro_decl "<!ENTITY internal-macro 'macro-val'>">
+  %macro_decl;
+]>
+<?xml-log level="debug" target="stdout"?>
+<inventory xmlns="http://example.org/inventory" xmlns:inv="http://example.org/inventory/sub">
+  <!-- Comment before complex namespaced elements and CDATA -->
+  <inv:stock inv:category="primary">
+    <![CDATA[
+      CDATA section with embedded tags: <inv:stock>&itemB;</inv:stock>
+    ]]>
+  </inv:stock>
+  <stock>&internal-macro;</stock>
+</inventory>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % pe "<!ENTITY ent 'ExpandedEntity'>">
+  %pe;
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY ext-img SYSTEM "logo.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.org/ns/base" xmlns:sub="http://example.org/ns/sub">
+  <!-- Top-level comment containing an entity reference and PI -->
+  <?target-pi data="test"?>
+  <sub:child id="node1">
+    <![CDATA[
+      CDATA block enclosing <tags> and &ent; references safely.
+    ]]>
+  </sub:child>
+  <child>&ent;</child>
+</root>

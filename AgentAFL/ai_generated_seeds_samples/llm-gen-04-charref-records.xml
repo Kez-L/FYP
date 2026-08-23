@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE data [
+  <!ENTITY alpha "&#65;&#66;&#67;">
+  <!ENTITY beta "&#x3C;&#x3E;&#x26;">
+  <!-- entity with char refs for angle brackets -->
+  <!ELEMENT data (record*)>
+  <!ELEMENT record (#PCDATA)>
+  <!ATTLIST record
+    xmlns:dc CDATA #IMPLIED
+    type (a|b|c) "a"
+    xml:space (default|preserve) 'preserve'>
+]>
+<?xml-model href="schema.rng" type="application/xml"?>
+<!-- file-level comment -->
+<data xmlns="http://data.ns/" xmlns:dc="http://dc.ns/">
+  <!-- record 1 -->
+  <?pi-1?>
+  <record xmlns:dc="http://dc2.ns/" type="a" xml:space="preserve"><![CDATA[cdata: &alpha; not expanded, <tags> not parsed]]></record>
+  <!-- record 2 -->
+  <?pi-2 with data?>
+  <record type="b">&alpha;&beta;<![CDATA[mixed content after entity refs]]></record>
+  <!-- record 3 -->
+  <record type="c"><![CDATA[CDATA with
+newline and	tab and ]] double bracket]]></record>
+  <?pi-3?>
+  <!-- end comment -->
+</data>
+<?final-pi?>

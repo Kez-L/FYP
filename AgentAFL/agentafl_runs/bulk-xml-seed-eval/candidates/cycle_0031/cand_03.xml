@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE database [
+  <!ELEMENT database (record*)>
+  <!ELEMENT record (#PCDATA)>
+  <!ENTITY alpha "Alpha">
+  <!ENTITY beta "&alpha; Beta">
+  <!ENTITY gamma "&beta; Gamma">
+  <!ENTITY % local.attrs "xmlns:ext CDATA #IMPLIED">
+  <!ATTLIST record %local.attrs;>
+]>
+<?db-setup mode="safe" cache="no"?>
+<database xmlns="http://db.org/schema" xmlns:ext="http://db.org/ext">
+  <!-- Database containing nested entity chains and mixed content -->
+  <record ext:type="primary">
+    <?ext-pi execute="verify"?>
+    <![CDATA[
+      Raw record contents with <tag> and &gamma; entities inside CDATA.
+    ]]>
+    &gamma;
+  </record>
+</database>

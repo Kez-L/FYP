@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE testsuite [
+  <!ELEMENT testsuite (testcase+)>
+  <!ELEMENT testcase (#PCDATA)>
+  <!ENTITY ent-a "Alpha">
+  <!ENTITY ent-b "Beta &ent-a;">
+  <!ENTITY % entity-set '
+    <!ENTITY ent-c "Gamma">
+    <!ENTITY ent-d "&ent-c; &ent-b;">
+  '>
+  %entity-set;
+  <?log-target level="debug"?>
+  <!-- DTD tracking comment -->
+]>
+<testsuite xmlns="http://test.org/schema" xmlns:tr="http://test.org/track">
+  <!-- Main body comment -->
+  <?tr:action type="initialize"?>
+  <testcase tr:id="tc001">
+    &ent-d;
+    <![CDATA[
+      CDATA section verifying entity references like &ent-a; are literal inside CDATA.
+    ]]>
+  </testcase>
+</testsuite>

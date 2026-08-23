@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record*)>
+  <!ELEMENT record (#PCDATA)>
+  <!ENTITY entA "ValueA">
+  <!ENTITY entB "ValueB &entA;">
+  <!ENTITY entC "ValueC &entB;">
+  <!NOTATION html SYSTEM "text/html">
+  <!ENTITY page SYSTEM "index.html" NDATA html>
+  <!ENTITY % global-macros "<!ELEMENT record (#PCDATA | details)*><!ELEMENT details (#PCDATA)>">
+  %global-macros;
+]>
+<?xml-processing-instruction test="true" mode="strict"?>
+<archive xmlns="http://archive.org/ns" xmlns:v1="http://archive.org/ns/v1">
+  <!-- Comment: Complex archive structure with multi-level entity references -->
+  <v1:record>
+    <v1:details>
+      <![CDATA[
+        <details>Nested markup in CDATA &entC;</details>
+      ]]>
+    </v1:details>
+    &entC;
+  </v1:record>
+  <?v1-action cleanup="false"?>
+</archive>

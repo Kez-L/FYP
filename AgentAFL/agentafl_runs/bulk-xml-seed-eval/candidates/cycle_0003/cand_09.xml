@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE container [
+  <!ELEMENT container (element)*>
+  <!ELEMENT element (#PCDATA)>
+  <!ENTITY default_val "DefaultValue">
+  <!ENTITY % param_block "<!ENTITY nested_val 'NestedEntityValue'>">
+  %param_block;
+  <!NOTATION html-notation SYSTEM "text/html">
+  <!ENTITY external_doc SYSTEM "doc.html" NDATA html-notation>
+]>
+<?xml-processing-instruction test="true"?>
+<container xmlns="http://container.org/ns" xmlns:sub="http://container.org/sub">
+  <!-- Container validation comment -->
+  <sub:element id="el-1">
+    <![CDATA[
+      Nested payload block:
+      <inner>&nested_val;</inner>
+    ]]>
+  </sub:element>
+  <element>&default_val; and &nested_val;</element>
+</container>

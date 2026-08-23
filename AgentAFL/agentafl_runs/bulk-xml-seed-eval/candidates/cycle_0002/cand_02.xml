@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE doc [
+  <!ELEMENT doc (section)*>
+  <!ELEMENT section (#PCDATA)>
+  <!ENTITY ent1 "First Entity">
+  <!ENTITY ent2 "Second &ent1;">
+  <!ENTITY % p1 "<!ELEMENT section (#PCDATA | sub)*>">
+  %p1;
+  <!ELEMENT sub (#PCDATA)>
+]>
+<?xml-model href="schema.rng" type="application/xml-relax-ng"?>
+<doc xmlns="http://doc.org/ns" xmlns:meta="http://doc.org/ns/meta">
+  <!-- Document root comment -->
+  <meta:section>
+    <?meta-pi command="render"?>
+    <![CDATA[
+      CDATA content inside meta:section with &ent2; reference string.
+    ]]>
+  </meta:section>
+  <section>&ent2;</section>
+</doc>

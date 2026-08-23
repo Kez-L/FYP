@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite [
+  <!ELEMENT suite (testcase+)>
+  <!ELEMENT testcase (#PCDATA)>
+  <!ENTITY test-ent "ExpandedText">
+  <!ENTITY % macro-ent "<!ENTITY inner-ent 'MacroExpanded'>">
+  %macro-ent;
+  <?suite-meta author="QA"?>
+  <!-- Suite DTD comment -->
+]>
+<suite xmlns="http://test.org/suite" xmlns:tr="http://test.org/suite/tr">
+  <!-- Test case wrapper -->
+  <tr:testcase id="t1">
+    <?tr-action run="always"?>
+    <![CDATA[
+      CDATA block with &test-ent; and &inner-ent;
+    ]]>
+  </tr:testcase>
+  <testcase>&inner-ent;</testcase>
+</suite>

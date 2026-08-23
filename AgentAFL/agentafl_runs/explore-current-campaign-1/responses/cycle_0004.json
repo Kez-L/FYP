@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \" <!ENTITY ent 'resolved-entity'> \">\n  %pe;\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY ext SYSTEM \"external.ent\" NDATA png>\n]>\n<root xmlns=\"http://example.com/ns\" xmlns:sub=\"http://example.com/sub\">\n  <!-- Top-level comment spanning parser edge cases -->\n  <?target processing-instruction-data attribute=\"value\"?>\n  <sub:child>\n    <![CDATA[ CDATA section containing <tags>, &entities;, and <!-- comments --> inside ]]>\n    &ent;\n  </sub:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE test [\n  <!ELEMENT test (node*)>\n  <!ELEMENT node (#PCDATA)>\n  <!ENTITY % inner \"<!ENTITY deep 'nested-replacement'>\">\n  %inner;\n  <!ENTITY base \"&deep; and more\">\n]>\n<test xmlns=\"urn:test\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n  <!-- Comment before PI -->\n  <?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n  <node>\n    <![CDATA[\n      Another CDATA block testing parsing boundaries.\n    ]]>\n    &base;\n  </node>\n</test>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (#PCDATA | item)*>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY ent1 \"Data 1\">\n  <!ENTITY ent2 \"Data 2 &ent1;\">\n  <!ENTITY % param \"<!ELEMENT item (#PCDATA)>\">\n  %param;\n]>\n<doc xmlns=\"http://schemas.xmlsoap.org/doc/\" xmlns:ns=\"http://schemas.xmlsoap.org/ns/\">\n  <?xml-model href=\"schema.rng\" type=\"application/xml-relax-ng\"?>\n  <!-- Document comment block -->\n  <ns:item>\n    <![CDATA[\n      <ns:tag>CDATA content with markup-like strings</ns:tag>\n    ]]>\n    &ent2;\n  </ns:item>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (book*)>\n  <!ELEMENT book (title, author)>\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT author (#PCDATA)>\n  <!ENTITY % dtd-ext SYSTEM \"http://localhost/nonexistent.dtd\">\n  %dtd-ext;\n  <!ENTITY publisher \"O'Reilly &amp; Associates\">\n]>\n<catalog xmlns=\"http://bookstore.org/ns\" xmlns:p=\"http://bookstore.org/ns/prices\">\n  <?catalog-info version=\"1.0\"?>\n  <!-- This is a comment inside the catalog root -->\n  <book>\n    <title>XML Parsing Strategies</title>\n    <author>&publisher;</author>\n    <![CDATA[\n      Free-form text block inside CDATA with unescaped < > & \" ' characters.\n    ]]>\n  </book>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (section*)>\n  <!ELEMENT section (paragraph*)>\n  <!ELEMENT paragraph (#PCDATA)>\n  <!ENTITY e-acute \"&#xE9;\">\n  <!ENTITY sample \"Caf&e-acute;\">\n  <!ENTITY % ext-entity SYSTEM \"internal.ent\">\n  %ext-entity;\n]>\n<document xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <?xml-stylesheet type=\"text/css\" href=\"style.css\"?>\n  <!-- Multi-line \n       XML Comment \n       with rare construct focus -->\n  <section>\n    <paragraph>\n      <![CDATA[\n        Strict CDATA block: no parsing of entities like &sample; here.\n      ]]>\n      Real entity usage: &sample;\n    </paragraph>\n  </section>\n</document>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \" <!ENTITY ent 'resolved-entity'> \">\n  %pe;\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY ext SYSTEM \"external.ent\" NDATA png>\n]>\n<root xmlns=\"http://example.com/ns\" xmlns:sub=\"http://example.com/sub\">\n  <!-- Top-level comment spanning parser edge cases -->\n  <?target processing-instruction-data attribute=\"value\"?>\n  <sub:child>\n    <![CDATA[ CDATA section containing <tags>, &entities;, and <!-- comments --> inside ]]>\n    &ent;\n  </sub:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE test [\n  <!ELEMENT test (node*)>\n  <!ELEMENT node (#PCDATA)>\n  <!ENTITY % inner \"<!ENTITY deep 'nested-replacement'>\">\n  %inner;\n  <!ENTITY base \"&deep; and more\">\n]>\n<test xmlns=\"urn:test\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n  <!-- Comment before PI -->\n  <?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n  <node>\n    <![CDATA[\n      Another CDATA block testing parsing boundaries.\n    ]]>\n    &base;\n  </node>\n</test>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (#PCDATA | item)*>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY ent1 \"Data 1\">\n  <!ENTITY ent2 \"Data 2 &ent1;\">\n  <!ENTITY % param \"<!ELEMENT item (#PCDATA)>\">\n  %param;\n]>\n<doc xmlns=\"http://schemas.xmlsoap.org/doc/\" xmlns:ns=\"http://schemas.xmlsoap.org/ns/\">\n  <?xml-model href=\"schema.rng\" type=\"application/xml-relax-ng\"?>\n  <!-- Document comment block -->\n  <ns:item>\n    <![CDATA[\n      <ns:tag>CDATA content with markup-like strings</ns:tag>\n    ]]>\n    &ent2;\n  </ns:item>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (book*)>\n  <!ELEMENT book (title, author)>\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT author (#PCDATA)>\n  <!ENTITY % dtd-ext SYSTEM \"http://localhost/nonexistent.dtd\">\n  %dtd-ext;\n  <!ENTITY publisher \"O'Reilly &amp; Associates\">\n]>\n<catalog xmlns=\"http://bookstore.org/ns\" xmlns:p=\"http://bookstore.org/ns/prices\">\n  <?catalog-info version=\"1.0\"?>\n  <!-- This is a comment inside the catalog root -->\n  <book>\n    <title>XML Parsing Strategies</title>\n    <author>&publisher;</author>\n    <![CDATA[\n      Free-form text block inside CDATA with unescaped < > & \" ' characters.\n    ]]>\n  </book>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (section*)>\n  <!ELEMENT section (paragraph*)>\n  <!ELEMENT paragraph (#PCDATA)>\n  <!ENTITY e-acute \"&#xE9;\">\n  <!ENTITY sample \"Caf&e-acute;\">\n  <!ENTITY % ext-entity SYSTEM \"internal.ent\">\n  %ext-entity;\n]>\n<document xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <?xml-stylesheet type=\"text/css\" href=\"style.css\"?>\n  <!-- Multi-line \n       XML Comment \n       with rare construct focus -->\n  <section>\n    <paragraph>\n      <![CDATA[\n        Strict CDATA block: no parsing of entities like &sample; here.\n      ]]>\n      Real entity usage: &sample;\n    </paragraph>\n  </section>\n</document>\n```",
+              "thoughtSignature": "EjQKMgERTTIPqCNJOG4bsneOlT24bdnJiyS0x+vUelL9ZagWqVH6AOGD9GW8R14M6QHgbJil"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 3040,
+      "candidatesTokenCount": 1012,
+      "totalTokenCount": 4052,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 3040
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "4CN0au6VL5P7g8UP9tbI8AY"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

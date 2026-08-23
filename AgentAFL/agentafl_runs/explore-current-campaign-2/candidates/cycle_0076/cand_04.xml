@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (stock+)>
+  <!ELEMENT stock (#PCDATA)>
+  <!ENTITY itemA "Widget">
+  <!ENTITY itemB "Gadget &itemA;">
+  <!ENTITY % entSet "<!ENTITY itemC 'Super &itemB;'>">
+  %entSet;
+  <!NOTATION pdf SYSTEM "application/pdf">
+  <!ENTITY manual SYSTEM "manual.pdf" NDATA pdf>
+  <?xml-app-info status="active"?>
+]>
+<inventory xmlns="urn:inventory:schema" xmlns:data="urn:inventory:data" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Top comment outlining schema rules -->
+  <?data:processor mode="strict"?>
+  <stock data:id="S-001" xlink:type="simple">
+    <![CDATA[
+      CDATA block containing entity references &itemC;
+      and arbitrary text <stock>invalid-tag</stock>
+    ]]>
+  </stock>
+  <stock>&itemC;</stock>
+</inventory>

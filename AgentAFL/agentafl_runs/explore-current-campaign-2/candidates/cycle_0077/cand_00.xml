@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % ent "<!ENTITY ent_resolved 'parameter-resolved'>">
+  %ent;
+  <!ENTITY base "Base Entity">
+  <!ENTITY complex "&base; &ent_resolved;">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY binData SYSTEM "logo.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.com/ns/root" xmlns:sub="http://example.com/ns/sub" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Initial root level comment -->
+  <?target-pi data="processing-instruction-content"?>
+  <child sub:id="1" xlink:type="simple">
+    <![CDATA[
+      CDATA block containing markup-like strings: <child>&complex;</child>
+    ]]>
+  </child>
+  <sub:child id="2">
+    &complex;
+  </sub:child>
+</root>

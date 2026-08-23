@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE document [
+  <!ELEMENT document (section)*>
+  <!ELEMENT section (#PCDATA)>
+  <!ENTITY e1 "Value 1">
+  <!ENTITY e2 "&e1; and Value 2">
+  <!ENTITY % localParam "<!ELEMENT section (#PCDATA | sub)*> <!ELEMENT sub (#PCDATA)>">
+  %localParam;
+  <?custom-notation test?>
+]>
+<?xml-model href="schema.rng" type="application/xml-rng"?>
+<document xmlns="http://schemas.example.com/doc" xmlns:ns="http://schemas.example.com/ns">
+  <!-- Complex comment block with DTD parameter entity side-effects -->
+  <section ns:id="s1">
+    <![CDATA[
+      <sub xmlns="http://schemas.example.com/ns">Nested CDATA content &e2;</sub>
+    ]]>
+  </section>
+  <sub ns:id="s2">&e2;</sub>
+</document>

@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % param \"<!ENTITY ent 'expanded_param'>\">\n  %param;\n  <!ENTITY base \"Base Entity &ent;\">\n  <?target data?>\n]>\n<root xmlns=\"http://example.com/ns1\" xmlns:ns2=\"http://example.com/ns2\">\n  <!-- First comment block exploring parser state -->\n  <ns2:child id=\"c1\">\n    <![CDATA[ CDATA section containing entity reference: &base; ]]>\n  </ns2:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (book*)>\n  <!ELEMENT book (#PCDATA)>\n  <!ENTITY internal \"internal value\">\n  <!ENTITY % ext_param SYSTEM \"http://example.com/dtd\">\n  %ext_param;\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"style.xsl\"?>\n<catalog xmlns=\"http://xml.org/catalog\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Comment containing markup-like strings <book>&internal;</book> -->\n  <book xlink:type=\"simple\">\n    <![CDATA[ Nested CDATA with <tag> and &internal; ]]>\n  </book>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (section)*>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY ent1 \"First entity\">\n  <!ENTITY ent2 \"&ent1; Second entity\">\n  <!ENTITY % subst \"<!ENTITY complex '&ent2; Complex'>\">\n  %subst;\n]>\n<?pi-target processing-instruction-data?>\n<document xmlns=\"http://example.org/doc\" xmlns:m=\"http://example.org/meta\">\n  <!-- Multi-line comment\n       spanning several lines\n       with entities &ent2; -->\n  <m:section>\n    <![CDATA[ <p>Unparsed data block</p> ]]>\n  </m:section>\n  <section>&complex;</section>\n</document>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE test [\n  <!ELEMENT test (node)*>\n  <!ELEMENT node (#PCDATA)>\n  <!ENTITY % block \"<!ELEMENT node (#PCDATA)*>\">\n  %block;\n  <!ENTITY ref \"EntityText\">\n]>\n<?xml-model href=\"schema.rng\" type=\"application/xml-relax-ng\"?>\n<test xmlns=\"urn:test:ns\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n  <!-- Comment before CDATA and processing instruction -->\n  <?custom-pi attr=\"value\"?>\n  <node>\n    <![CDATA[\n      CDATA block with entity &ref; inside.\n    ]]>\n  </node>\n</test>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (item)*>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY eA \"Alpha\">\n  <!ENTITY eB \"&eA; Beta\">\n  <!ENTITY eC \"&eB; Gamma\">\n  <!NOTATION pdf SYSTEM \"application/pdf\">\n  <!ENTITY doc SYSTEM \"file.pdf\" NDATA pdf>\n]>\n<?xml-debug level=\"high\" mode=\"test\"?>\n<archive xmlns=\"http://example.org/archive\" xmlns:v=\"http://example.org/archive/v2\">\n  <!-- Top level comment block -->\n  <v:item>\n    <?v:pi action=\"process\"?>\n    <![CDATA[\n      Raw payload with entity reference &eC; and tags <item>test</item>\n    ]]>\n  </v:item>\n</archive>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % param \"<!ENTITY ent 'expanded_param'>\">\n  %param;\n  <!ENTITY base \"Base Entity &ent;\">\n  <?target data?>\n]>\n<root xmlns=\"http://example.com/ns1\" xmlns:ns2=\"http://example.com/ns2\">\n  <!-- First comment block exploring parser state -->\n  <ns2:child id=\"c1\">\n    <![CDATA[ CDATA section containing entity reference: &base; ]]>\n  </ns2:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (book*)>\n  <!ELEMENT book (#PCDATA)>\n  <!ENTITY internal \"internal value\">\n  <!ENTITY % ext_param SYSTEM \"http://example.com/dtd\">\n  %ext_param;\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"style.xsl\"?>\n<catalog xmlns=\"http://xml.org/catalog\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Comment containing markup-like strings <book>&internal;</book> -->\n  <book xlink:type=\"simple\">\n    <![CDATA[ Nested CDATA with <tag> and &internal; ]]>\n  </book>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (section)*>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY ent1 \"First entity\">\n  <!ENTITY ent2 \"&ent1; Second entity\">\n  <!ENTITY % subst \"<!ENTITY complex '&ent2; Complex'>\">\n  %subst;\n]>\n<?pi-target processing-instruction-data?>\n<document xmlns=\"http://example.org/doc\" xmlns:m=\"http://example.org/meta\">\n  <!-- Multi-line comment\n       spanning several lines\n       with entities &ent2; -->\n  <m:section>\n    <![CDATA[ <p>Unparsed data block</p> ]]>\n  </m:section>\n  <section>&complex;</section>\n</document>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE test [\n  <!ELEMENT test (node)*>\n  <!ELEMENT node (#PCDATA)>\n  <!ENTITY % block \"<!ELEMENT node (#PCDATA)*>\">\n  %block;\n  <!ENTITY ref \"EntityText\">\n]>\n<?xml-model href=\"schema.rng\" type=\"application/xml-relax-ng\"?>\n<test xmlns=\"urn:test:ns\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n  <!-- Comment before CDATA and processing instruction -->\n  <?custom-pi attr=\"value\"?>\n  <node>\n    <![CDATA[\n      CDATA block with entity &ref; inside.\n    ]]>\n  </node>\n</test>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (item)*>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY eA \"Alpha\">\n  <!ENTITY eB \"&eA; Beta\">\n  <!ENTITY eC \"&eB; Gamma\">\n  <!NOTATION pdf SYSTEM \"application/pdf\">\n  <!ENTITY doc SYSTEM \"file.pdf\" NDATA pdf>\n]>\n<?xml-debug level=\"high\" mode=\"test\"?>\n<archive xmlns=\"http://example.org/archive\" xmlns:v=\"http://example.org/archive/v2\">\n  <!-- Top level comment block -->\n  <v:item>\n    <?v:pi action=\"process\"?>\n    <![CDATA[\n      Raw payload with entity reference &eC; and tags <item>test</item>\n    ]]>\n  </v:item>\n</archive>\n```",
+              "thoughtSignature": "EjQKMgERTTIPQ4HmqugXfrKZOmZ+33vWc6ILUfhdEyIYBrX5e/xvihrFbSo8Mv/96pybtdtK"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2613,
+      "candidatesTokenCount": 950,
+      "totalTokenCount": 3563,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 2613
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "oZ52areREsXL4-EP8buL8Qk"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

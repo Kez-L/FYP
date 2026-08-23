@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE database [
+  <!ELEMENT database (record*)>
+  <!ELEMENT record (#PCDATA)>
+  <!ENTITY ent-a "Alpha">
+  <!ENTITY ent-b "&ent-a; Beta">
+  <!ENTITY ent-c "&ent-b; Gamma">
+  <?db-control mode="read-write"?>
+]>
+<database xmlns="http://example.org/db" xmlns:query="http://example.org/db/query">
+  <!-- Comment explaining query context -->
+  <query:select query:id="q1">
+    <?query-hint use-index="true"?>
+    <![CDATA[
+      SELECT * FROM table WHERE val = '&ent-c;';
+    ]]>
+  </query:select>
+  <record>&ent-c;</record>
+</database>

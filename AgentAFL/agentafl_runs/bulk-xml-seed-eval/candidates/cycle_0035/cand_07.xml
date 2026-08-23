@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (entry)*>
+  <!ELEMENT entry (#PCDATA)>
+  <!ENTITY ent-one "Value One">
+  <!ENTITY ent-two "Value Two: &ent-one;">
+  <!ENTITY % pe-def "<!ENTITY pe-str 'Parameter String'>">
+  %pe-def;
+]>
+<?xml-log level="debug" target="stdout"?>
+<registry xmlns="http://registry.org/ns" xmlns:reg="http://registry.org/ns/reg">
+  <!-- Registry header comment -->
+  <reg:entry>
+    <![CDATA[
+      CDATA block containing &ent-two; and %pe-str; inside unparsed zone.
+    ]]>
+  </reg:entry>
+  <entry>&ent-two; (%pe-str;)</entry>
+</registry>

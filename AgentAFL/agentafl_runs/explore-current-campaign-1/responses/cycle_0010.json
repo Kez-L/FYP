@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child*)>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY ent \"General Entity\">\n  <!ENTITY % pent \"Parameter Entity\">\n  %pent;\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY img SYSTEM \"test.png\" NDATA png>\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<root xmlns=\"http://example.com/ns1\" xmlns:ns2=\"http://example.com/ns2\">\n  <!-- Top level comment exercising comment parsing paths -->\n  <ns2:child>\n    <?ns2-pi data=\"value\"?>\n    <![CDATA[\n      CDATA block containing markup-like strings: <root>&ent;</root>\n    ]]>\n  </ns2:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (#PCDATA | sub)*>\n  <!ELEMENT sub (#PCDATA)>\n  <!ENTITY % extDTD SYSTEM \"http://localhost/external.dtd\">\n  %extDTD;\n  <!ENTITY ref \"Expanded &subref;\">\n  <!ENTITY subref \"Nested Value\">\n]>\n<?processing-instruction target=\"test\" data=\"data=\\\"foo\\\"\"?>\n<doc xmlns=\"urn:doc:base\" xmlns:x=\"urn:doc:x\">\n  <!-- Comment inside document root -->\n  <x:sub>\n    <![CDATA[Another CDATA section with entity reference candidate &ref;]]>\n  </x:sub>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item+)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY % markup \"<!ELEMENT item (#PCDATA)>\">\n  %markup;\n  <?target-pi data-attr=\"test\"?>\n  <!ENTITY custom-entity \"Entity Content\">\n]>\n<catalog xmlns:foo=\"http://foo.org\" xmlns=\"http://bar.org\">\n  <!-- Multiple comments\n       across lines -->\n  <foo:item>\n    <![CDATA[\n      <foo:item>Nested CDATA</foo:item>\n    ]]>\n    &custom-entity;\n  </foo:item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (book*)>\n  <!ELEMENT book (title, author)>\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT author (#PCDATA)>\n  <!ENTITY b1 \"XML Parsing Guide\">\n  <!ENTITY b2 \"Advanced Fuzzing\">\n  <!ENTITY % param \"<!ENTITY pEnt 'Parameter Content'>\">\n  %param;\n]>\n<?xml-stylesheet href=\"style.css\" type=\"text/css\"?>\n<inventory xmlns=\"http://inventory.org\" xmlns:bk=\"http://books.org\">\n  <!-- Inventory main container -->\n  <bk:book>\n    <bk:title>&b1;</bk:title>\n    <bk:author>\n      <![CDATA[Author Name with <brackets> & ampersands]]>\n    </bk:author>\n  </bk:book>\n</inventory>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE note [\n  <!ELEMENT note (to, from, heading, body)>\n  <!ELEMENT to (#PCDATA)>\n  <!ELEMENT from (#PCDATA)>\n  <!ELEMENT heading (#PCDATA)>\n  <!ELEMENT body (#PCDATA)>\n  <!ENTITY cdata-proxy \"Proxy text\">\n  <!ENTITY % nested-param \"<!ENTITY deep 'Deep entity'>\">\n  %nested-param;\n]>\n<?target data?>\n<note xmlns=\"http://w3.org/note\" xmlns:pref=\"http://w3.org/pref\">\n  <!-- Reminder comment -->\n  <pref:to>Tove</pref:to>\n  <pref:from>Jani</pref:from>\n  <heading>Reminder</heading>\n  <body>\n    <![CDATA[\n      Don't forget the meeting! &deep;\n    ]]>\n  </body>\n</note>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child*)>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY ent \"General Entity\">\n  <!ENTITY % pent \"Parameter Entity\">\n  %pent;\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY img SYSTEM \"test.png\" NDATA png>\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<root xmlns=\"http://example.com/ns1\" xmlns:ns2=\"http://example.com/ns2\">\n  <!-- Top level comment exercising comment parsing paths -->\n  <ns2:child>\n    <?ns2-pi data=\"value\"?>\n    <![CDATA[\n      CDATA block containing markup-like strings: <root>&ent;</root>\n    ]]>\n  </ns2:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (#PCDATA | sub)*>\n  <!ELEMENT sub (#PCDATA)>\n  <!ENTITY % extDTD SYSTEM \"http://localhost/external.dtd\">\n  %extDTD;\n  <!ENTITY ref \"Expanded &subref;\">\n  <!ENTITY subref \"Nested Value\">\n]>\n<?processing-instruction target=\"test\" data=\"data=\\\"foo\\\"\"?>\n<doc xmlns=\"urn:doc:base\" xmlns:x=\"urn:doc:x\">\n  <!-- Comment inside document root -->\n  <x:sub>\n    <![CDATA[Another CDATA section with entity reference candidate &ref;]]>\n  </x:sub>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item+)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY % markup \"<!ELEMENT item (#PCDATA)>\">\n  %markup;\n  <?target-pi data-attr=\"test\"?>\n  <!ENTITY custom-entity \"Entity Content\">\n]>\n<catalog xmlns:foo=\"http://foo.org\" xmlns=\"http://bar.org\">\n  <!-- Multiple comments\n       across lines -->\n  <foo:item>\n    <![CDATA[\n      <foo:item>Nested CDATA</foo:item>\n    ]]>\n    &custom-entity;\n  </foo:item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (book*)>\n  <!ELEMENT book (title, author)>\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT author (#PCDATA)>\n  <!ENTITY b1 \"XML Parsing Guide\">\n  <!ENTITY b2 \"Advanced Fuzzing\">\n  <!ENTITY % param \"<!ENTITY pEnt 'Parameter Content'>\">\n  %param;\n]>\n<?xml-stylesheet href=\"style.css\" type=\"text/css\"?>\n<inventory xmlns=\"http://inventory.org\" xmlns:bk=\"http://books.org\">\n  <!-- Inventory main container -->\n  <bk:book>\n    <bk:title>&b1;</bk:title>\n    <bk:author>\n      <![CDATA[Author Name with <brackets> & ampersands]]>\n    </bk:author>\n  </bk:book>\n</inventory>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE note [\n  <!ELEMENT note (to, from, heading, body)>\n  <!ELEMENT to (#PCDATA)>\n  <!ELEMENT from (#PCDATA)>\n  <!ELEMENT heading (#PCDATA)>\n  <!ELEMENT body (#PCDATA)>\n  <!ENTITY cdata-proxy \"Proxy text\">\n  <!ENTITY % nested-param \"<!ENTITY deep 'Deep entity'>\">\n  %nested-param;\n]>\n<?target data?>\n<note xmlns=\"http://w3.org/note\" xmlns:pref=\"http://w3.org/pref\">\n  <!-- Reminder comment -->\n  <pref:to>Tove</pref:to>\n  <pref:from>Jani</pref:from>\n  <heading>Reminder</heading>\n  <body>\n    <![CDATA[\n      Don't forget the meeting! &deep;\n    ]]>\n  </body>\n</note>\n```",
+              "thoughtSignature": "EjQKMgERTTIPlA2/ImBnftYJkiQaOh0iLBoyT/8Gicp+5lwO8J2fTXjoJoLXud3Z0cWaXDoF"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 3040,
+      "candidatesTokenCount": 982,
+      "totalTokenCount": 4022,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 3040
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "0U90aueNB66Ag8UPv_qZ8AY"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE testsuite [
+  <!ELEMENT testsuite (case+)>
+  <!ELEMENT case (#PCDATA)>
+  <!ENTITY % inner "
+    <!ENTITY ent1 'Value 1'>
+    <!ENTITY ent2 '&ent1; and Value 2'>
+  ">
+  %inner;
+]>
+<?xml-model href="schema.rng" type="application/xml-relax-ng"?>
+<testsuite xmlns="http://ns.example.org/test" xmlns:t="http://ns.example.org/test">
+  <!-- Comprehensive comment block with markup-like text <case> &ent2; -->
+  <t:case>
+    <![CDATA[
+      First CDATA block spanning multiple lines.
+      Entity reference check: &ent2;
+    ]]>
+  </t:case>
+  <case>&ent2;</case>
+</testsuite>

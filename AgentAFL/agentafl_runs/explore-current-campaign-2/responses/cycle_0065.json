@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % param \"<!ENTITY ent 'expanded_value'>\">\n  %param;\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<root xmlns=\"http://example.com/ns/root\" xmlns:sub=\"http://example.com/ns/sub\">\n  <!-- Top-level comment exercising parser comment handler -->\n  <sub:child sub:id=\"1\">\n    <![CDATA[\n      CDATA section containing markup-like text: <child>&ent;</child>\n    ]]>\n  </sub:child>\n  <child>&ent;</child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE database [\n  <!ELEMENT database (record*)>\n  <!ELEMENT record (#PCDATA)>\n  <!ENTITY base \"RecordEntity\">\n  <!ENTITY combined \"&base; Extended\">\n  <!ENTITY % ext_macro \"<!ENTITY nested 'ParamEntityContent'>\">\n  %ext_macro;\n]>\n<?target-pi data=\"processing-instruction-content\"?>\n<database xmlns=\"http://xml.org/db\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:type=\"extended\">\n  <!-- Comment inside database element -->\n  <record xlink:type=\"locator\" xlink:href=\"http://example.com\">\n    <![CDATA[\n      CDATA block with entity reference representation: &combined; &nested;\n    ]]>\n  </record>\n</database>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY ent1 \"FirstEntity\">\n  <!ENTITY ent2 \"&ent1; SecondEntity\">\n  <!ENTITY % dtd_par \"<!ENTITY deep 'DeepEntity'>\">\n  %dtd_par;\n]>\n<?xml-meta version=\"1.0\"?>\n<catalog xmlns=\"http://example.org/catalog\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n  <!-- Comment preceding item element -->\n  <item>\n    <![CDATA[\n      CDATA content with &ent2; and &deep; embedded.\n    ]]>\n  </item>\n  <item>&ent2;</item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (stock*)>\n  <!ELEMENT stock (#PCDATA)>\n  <!ENTITY itemA \"Widget A\">\n  <!ENTITY itemB \"Widget B: &itemA;\">\n  <!ENTITY % macro_ent \"<!ENTITY meta_ent 'MetaValue'>\">\n  %macro_ent;\n]>\n<?xml-debug level=\"verbose\"?>\n<inventory xmlns=\"http://example.com/inventory\" xmlns:store=\"http://example.com/store\">\n  <!-- Inventory tracking comment -->\n  <store:stock store:code=\"A1\">\n    <![CDATA[\n      Raw inventory notes: <stock>&itemB;</stock> &meta_ent;\n    ]]>\n  </store:stock>\n  <stock>&itemB;</stock>\n</inventory>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (section*)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY secEnt \"SectionEntity\">\n  <!ENTITY % pEnt \"<!ENTITY pVal 'ParamVal'>\">\n  %pEnt;\n  <!NOTATION txt SYSTEM \"text/plain\">\n  <!ENTITY extDoc SYSTEM \"doc.txt\" NDATA txt>\n]>\n<?xml-stylesheet href=\"style.css\"?>\n<document xmlns=\"http://example.org/doc\" xmlns:ns=\"http://example.org/ns\">\n  <!-- Comment detailing the multi-namespace document -->\n  <ns:section ns:attr=\"test\">\n    <![CDATA[\n      CDATA block with &secEnt; and &pVal; and special chars <>&\"'.\n    ]]>\n  </ns:section>\n  <section>&secEnt;</section>\n</document>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % param \"<!ENTITY ent 'expanded_value'>\">\n  %param;\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<root xmlns=\"http://example.com/ns/root\" xmlns:sub=\"http://example.com/ns/sub\">\n  <!-- Top-level comment exercising parser comment handler -->\n  <sub:child sub:id=\"1\">\n    <![CDATA[\n      CDATA section containing markup-like text: <child>&ent;</child>\n    ]]>\n  </sub:child>\n  <child>&ent;</child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE database [\n  <!ELEMENT database (record*)>\n  <!ELEMENT record (#PCDATA)>\n  <!ENTITY base \"RecordEntity\">\n  <!ENTITY combined \"&base; Extended\">\n  <!ENTITY % ext_macro \"<!ENTITY nested 'ParamEntityContent'>\">\n  %ext_macro;\n]>\n<?target-pi data=\"processing-instruction-content\"?>\n<database xmlns=\"http://xml.org/db\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:type=\"extended\">\n  <!-- Comment inside database element -->\n  <record xlink:type=\"locator\" xlink:href=\"http://example.com\">\n    <![CDATA[\n      CDATA block with entity reference representation: &combined; &nested;\n    ]]>\n  </record>\n</database>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY ent1 \"FirstEntity\">\n  <!ENTITY ent2 \"&ent1; SecondEntity\">\n  <!ENTITY % dtd_par \"<!ENTITY deep 'DeepEntity'>\">\n  %dtd_par;\n]>\n<?xml-meta version=\"1.0\"?>\n<catalog xmlns=\"http://example.org/catalog\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n  <!-- Comment preceding item element -->\n  <item>\n    <![CDATA[\n      CDATA content with &ent2; and &deep; embedded.\n    ]]>\n  </item>\n  <item>&ent2;</item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (stock*)>\n  <!ELEMENT stock (#PCDATA)>\n  <!ENTITY itemA \"Widget A\">\n  <!ENTITY itemB \"Widget B: &itemA;\">\n  <!ENTITY % macro_ent \"<!ENTITY meta_ent 'MetaValue'>\">\n  %macro_ent;\n]>\n<?xml-debug level=\"verbose\"?>\n<inventory xmlns=\"http://example.com/inventory\" xmlns:store=\"http://example.com/store\">\n  <!-- Inventory tracking comment -->\n  <store:stock store:code=\"A1\">\n    <![CDATA[\n      Raw inventory notes: <stock>&itemB;</stock> &meta_ent;\n    ]]>\n  </store:stock>\n  <stock>&itemB;</stock>\n</inventory>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (section*)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY secEnt \"SectionEntity\">\n  <!ENTITY % pEnt \"<!ENTITY pVal 'ParamVal'>\">\n  %pEnt;\n  <!NOTATION txt SYSTEM \"text/plain\">\n  <!ENTITY extDoc SYSTEM \"doc.txt\" NDATA txt>\n]>\n<?xml-stylesheet href=\"style.css\"?>\n<document xmlns=\"http://example.org/doc\" xmlns:ns=\"http://example.org/ns\">\n  <!-- Comment detailing the multi-namespace document -->\n  <ns:section ns:attr=\"test\">\n    <![CDATA[\n      CDATA block with &secEnt; and &pVal; and special chars <>&\"'.\n    ]]>\n  </ns:section>\n  <section>&secEnt;</section>\n</document>\n```",
+              "thoughtSignature": "EjQKMgERTTIPTJ28Vyb6w11t+eJRKsetu+xmlbQVWLFtJImuKwj8L+h4RKo3zL7eK9R7vt6D"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2613,
+      "candidatesTokenCount": 1011,
+      "totalTokenCount": 3624,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 2613
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "esB2ar28GLXPjuMPsLbsGQ"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

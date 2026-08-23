@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document [
+  <!ELEMENT document (section)+>
+  <!ELEMENT section (paragraph)*>
+  <!ELEMENT paragraph (#PCDATA)>
+  <!ENTITY e1 "Alpha">
+  <!ENTITY e2 "&e1; Beta">
+  <!ENTITY e3 "&e2; Gamma">
+  <!ENTITY % p-ent "<!ELEMENT custom (#PCDATA)>">
+  %p-ent;
+]>
+<?xml-debug level="verbose" mode="test"?>
+<document xmlns="http://doc.org/ns" xmlns:foo="http://doc.org/ns/foo">
+  <!-- Section comment explaining the hierarchical layout -->
+  <section foo:id="s1">
+    <?foo-pi action="execute"?>
+    <paragraph>
+      <![CDATA[
+        CDATA block 1: <paragraph>&e3;</paragraph>
+      ]]>
+    </paragraph>
+    <paragraph>
+      <![CDATA[
+        CDATA block 2: Another raw section with markup.
+      ]]>
+    </paragraph>
+  </section>
+</document>

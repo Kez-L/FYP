@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % ent-param "<!ENTITY ent-val 'Parameter Expanded'>">
+  %ent-param;
+  <!ENTITY ent-general "General &ent-val;">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.com/ns" xmlns:sub="http://example.com/sub" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Complex root comment with CDATA inside comment: <!-- test --> -->
+  <sub:child xlink:type="simple" xlink:href="http://example.com">
+    <?sub:pi target="data" processing="true"?>
+    <![CDATA[
+      CDATA section containing markup <child>&ent-general;</child>
+    ]]>
+  </sub:child>
+  <child>&ent-general;</child>
+</root>

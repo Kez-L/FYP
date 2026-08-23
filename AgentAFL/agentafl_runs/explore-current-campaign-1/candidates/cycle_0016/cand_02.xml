@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document [
+  <!ELEMENT document (section+)>
+  <!ELEMENT section (#PCDATA|subsection)*>
+  <!ELEMENT subsection (#PCDATA)>
+  <!ENTITY ent1 "First Entity">
+  <!ENTITY ent2 "Second &ent1; Entity">
+  <!ENTITY ent3 "Third &ent2; Entity">
+]>
+<?xml-process-instruction directive="init"?>
+<document xmlns="urn:document:ns" xmlns:meta="urn:document:meta">
+  <!-- Section comment with multiple lines
+       and diverse symbols: !@#$%^&*()_+{}[]|\:;"'<>,.?/ -->
+  <section meta:id="s1">
+    <?meta-pi action="verify"?>
+    <subsection>
+      <![CDATA[
+        <!DOCTYPE fake-nested-cdata>
+        <not-a-tag>content inside cdata</not-a-tag>
+      ]]>
+      &ent3;
+    </subsection>
+  </section>
+</document>

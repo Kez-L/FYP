@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (file)*>
+  <!ELEMENT file (#PCDATA)>
+  <!ENTITY f1 "File Alpha">
+  <!ENTITY f2 "File Beta">
+  <!ENTITY % entity-set "<!ENTITY combined '&f1; + &f2;'>">
+  %entity-set;
+  <?archive-handler name="tar"?>
+]>
+<archive xmlns="http://example.org/archive" xmlns:zip="http://example.org/zip">
+  <!-- Archive contents description comment -->
+  <zip:item>
+    <![CDATA[
+      <zip:item>Archive payload &combined;</zip:item>
+    ]]>
+    <?zip-comment verify="checksum"?>
+    <file>&combined;</file>
+  </zip:item>
+</archive>

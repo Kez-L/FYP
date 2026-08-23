@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document [
+  <!ELEMENT document (section)*>
+  <!ELEMENT section (#PCDATA)>
+  <!ENTITY e1 "First Entity">
+  <!ENTITY e2 "Second &e1;">
+  <!ENTITY e3 "Third &e2;">
+  <!ENTITY % dtdMacro "<!ENTITY macroEntity 'MacroText'>">
+  %dtdMacro;
+  <!NOTATION tiff SYSTEM "image/tiff">
+  <!ENTITY sample SYSTEM "sample.tiff" NDATA tiff>
+]>
+<?xml-stylesheet type="text/css" href="style.css"?>
+<document xmlns="http://schemas.example.com/doc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.example.com/doc doc.xsd">
+  <!-- Multiple nested entities and comments -->
+  <section>
+    <![CDATA[
+      CDATA section containing &e3; reference text.
+    ]]>
+    &macroEntity;
+  </section>
+</document>

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<?xml-debug level="high" mode="test"?>
+<!DOCTYPE database [
+  <!ELEMENT database (record*)>
+  <!ELEMENT record (#PCDATA)>
+  <!ENTITY alpha "Alpha Entity">
+  <!ENTITY beta "&alpha; -> Beta Entity">
+  <!ENTITY gamma "&beta; -> Gamma Entity">
+  <!NOTATION pdf SYSTEM "application/pdf">
+  <!ENTITY doc SYSTEM "document.pdf" NDATA pdf>
+]>
+<database xmlns="http://example.com/db" xmlns:db="http://example.com/db/v2">
+  <!-- Comment block 1: describing database parameters -->
+  <record db:ID="R1">
+    <?db-action query="select *"?>
+    <![CDATA[
+      Raw text data with entity references that should be literal: &gamma;
+    ]]>
+    &gamma;
+  </record>
+  <!-- Comment block 2: trailing comment -->
+</database>

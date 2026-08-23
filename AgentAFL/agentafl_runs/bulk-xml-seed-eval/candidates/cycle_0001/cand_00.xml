@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % ent-param "<!ENTITY ent-val 'Parameter Expanded'>">
+  %ent-param;
+  <!ENTITY ent-general "General &ent-val;">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY ext-ent SYSTEM "external.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.com/ns/root" xmlns:sub="http://example.com/ns/sub">
+  <!-- Top-level comment testing parser handling before CDATA and entities -->
+  <sub:child sub:attr="&ent-general;">
+    <![CDATA[
+      CDATA section containing unescaped markup <child> &ent-general; </child>
+    ]]>
+  </sub:child>
+</root>

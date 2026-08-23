@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % ent \"<!-- internal parameter entity comment -->\">\n  <!ENTITY ent-ref \"resolved entity value\">\n  %ent;\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<root xmlns=\"http://example.com/ns/root\" xmlns:sub=\"http://example.com/ns/sub\">\n  <!-- Top level comment exercising parser comment state -->\n  <sub:child id=\"c1\">\n    <![CDATA[\n      CDATA block containing markup-like text: <child>&ent-ref;</child>\n    ]]>\n  </sub:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (book*)>\n  <!ELEMENT book (#PCDATA)>\n  <!ENTITY author \"Jane Doe\">\n  <!ENTITY % pe \"<!ENTITY pub 'Acme Publishing'>\">\n  %pe;\n]>\n<?pi-target processing instruction data with &author; reference?>\n<catalog xmlns=\"http://example.com/catalog\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Comment before CDATA section -->\n  <book xlink:type=\"simple\">\n    <![CDATA[\n      Book published by &pub; authored by &author;.\n    ]]>\n  </book>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY % ext SYSTEM \"http://example.com/external.ent\">\n  <!ENTITY local-ent \"Local Entity Text\">\n  %ext;\n]>\n<?xml-model href=\"schema.rng\" type=\"application/xml\"?>\n<doc xmlns=\"http://example.org/doc\" xmlns:m=\"http://example.org/math\">\n  <!-- Comment section detailing mathematical extension namespace -->\n  <m:section>\n    <![CDATA[\n      Math content &local-ent; inside CDATA.\n    ]]>\n  </m:section>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (item)*>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY icon SYSTEM \"icon.png\" NDATA png>\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY bundle \"Bundle Entity\">\n]>\n<?xml-debug level=\"verbose\" mode=\"test\"?>\n<archive xmlns=\"http://schema.example.org/archive\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Comment preceding the primary item list with entities and CDATA -->\n  <item xlink:href=\"urn:item:1\">\n    <![CDATA[\n      Data segment using &bundle; and checking parser limits.\n    ]]>\n  </item>\n</archive>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (stock)*>\n  <!ELEMENT stock (#PCDATA)>\n  <!ENTITY % macro \"<!ENTITY nested 'Nested &amp; Deep Entity'>\">\n  %macro;\n  <!ENTITY base \"&nested; extension\">\n]>\n<?xml-stylesheet type=\"text/css\" href=\"style.css\"?>\n<inventory xmlns=\"http://inventory.example.com\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n  <!-- Comment highlighting entity usage and namespace interaction -->\n  <stock>\n    <![CDATA[\n      Raw inventory record: &base;\n    ]]>\n  </stock>\n</inventory>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % ent \"<!-- internal parameter entity comment -->\">\n  <!ENTITY ent-ref \"resolved entity value\">\n  %ent;\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<root xmlns=\"http://example.com/ns/root\" xmlns:sub=\"http://example.com/ns/sub\">\n  <!-- Top level comment exercising parser comment state -->\n  <sub:child id=\"c1\">\n    <![CDATA[\n      CDATA block containing markup-like text: <child>&ent-ref;</child>\n    ]]>\n  </sub:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (book*)>\n  <!ELEMENT book (#PCDATA)>\n  <!ENTITY author \"Jane Doe\">\n  <!ENTITY % pe \"<!ENTITY pub 'Acme Publishing'>\">\n  %pe;\n]>\n<?pi-target processing instruction data with &author; reference?>\n<catalog xmlns=\"http://example.com/catalog\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Comment before CDATA section -->\n  <book xlink:type=\"simple\">\n    <![CDATA[\n      Book published by &pub; authored by &author;.\n    ]]>\n  </book>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY % ext SYSTEM \"http://example.com/external.ent\">\n  <!ENTITY local-ent \"Local Entity Text\">\n  %ext;\n]>\n<?xml-model href=\"schema.rng\" type=\"application/xml\"?>\n<doc xmlns=\"http://example.org/doc\" xmlns:m=\"http://example.org/math\">\n  <!-- Comment section detailing mathematical extension namespace -->\n  <m:section>\n    <![CDATA[\n      Math content &local-ent; inside CDATA.\n    ]]>\n  </m:section>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (item)*>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY icon SYSTEM \"icon.png\" NDATA png>\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY bundle \"Bundle Entity\">\n]>\n<?xml-debug level=\"verbose\" mode=\"test\"?>\n<archive xmlns=\"http://schema.example.org/archive\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Comment preceding the primary item list with entities and CDATA -->\n  <item xlink:href=\"urn:item:1\">\n    <![CDATA[\n      Data segment using &bundle; and checking parser limits.\n    ]]>\n  </item>\n</archive>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (stock)*>\n  <!ELEMENT stock (#PCDATA)>\n  <!ENTITY % macro \"<!ENTITY nested 'Nested &amp; Deep Entity'>\">\n  %macro;\n  <!ENTITY base \"&nested; extension\">\n]>\n<?xml-stylesheet type=\"text/css\" href=\"style.css\"?>\n<inventory xmlns=\"http://inventory.example.com\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n  <!-- Comment highlighting entity usage and namespace interaction -->\n  <stock>\n    <![CDATA[\n      Raw inventory record: &base;\n    ]]>\n  </stock>\n</inventory>\n```",
+              "thoughtSignature": "EjQKMgERTTIPRWOtM1v5HI8nattlQu1jQYE++Zorre26bxeH+OBPnk1mgu9qlZ+i3gpAe9V8"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2613,
+      "candidatesTokenCount": 881,
+      "totalTokenCount": 3494,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 2613
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "FwR3asOkD8XGjuMP0sTz6Q4"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

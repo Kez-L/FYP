@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % pe " <!ENTITY ent 'resolved-entity'> ">
+  %pe;
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY ext SYSTEM "external.ent" NDATA png>
+]>
+<root xmlns="http://example.com/ns" xmlns:sub="http://example.com/sub">
+  <!-- Top-level comment spanning parser edge cases -->
+  <?target processing-instruction-data attribute="value"?>
+  <sub:child>
+    <![CDATA[ CDATA section containing <tags>, &entities;, and <!-- comments --> inside ]]>
+    &ent;
+  </sub:child>
+</root>

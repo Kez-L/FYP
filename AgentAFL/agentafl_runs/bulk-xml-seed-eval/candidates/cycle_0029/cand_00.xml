@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % ent_macro "<!ENTITY ent 'resolved-entity'>">
+  %ent_macro;
+  <!ENTITY ext SYSTEM "nonexistent.ent">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY bin SYSTEM "logo.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="style.xsl"?>
+<root xmlns="http://example.com/ns/root" xmlns:sub="http://example.com/ns/sub">
+  <!-- Top-level comment testing parser paths -->
+  <?target data="processing-instruction-value"?>
+  <child sub:id="1">
+    <![CDATA[ CDATA block with entities &ent; and tags <child> ]]>
+  </child>
+  <sub:item>&ent;</sub:item>
+</root>

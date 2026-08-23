@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % pe " <!ENTITY ent 'parsed-entity-value'> ">
+  %pe;
+  <!ENTITY ext SYSTEM "nonexistent.ent">
+]>
+<?target data="processing-instruction-test"?>
+<root xmlns="http://example.com/ns" xmlns:sub="http://example.com/sub">
+  <!-- Leading comment explaining the test case -->
+  <sub:child id="c1">&ent;</sub:child>
+  <child>
+    <![CDATA[
+      Some raw CDATA text with markup: <child>nested</child> &ent;
+    ]]>
+  </child>
+</root>

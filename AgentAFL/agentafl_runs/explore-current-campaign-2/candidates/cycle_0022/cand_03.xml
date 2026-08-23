@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (product*)>
+  <!ELEMENT product (#PCDATA)>
+  <!ATTLIST product sku ID #REQUIRED>
+  <!ENTITY desc "Standard Product Description">
+  <!ENTITY promo "Special Offer! &desc;">
+  <!NOTATION xml SYSTEM "text/xml">
+  <!ENTITY extdoc SYSTEM "external.xml" NDATA xml>
+  <!ENTITY % markup "<!ENTITY internal 'InternalMacro'>">
+  %markup;
+]>
+<?xml-log level="debug" target="stdout"?>
+<inventory xmlns="http://inventory.org/schema" xmlns:store="http://inventory.org/schema/store">
+  <!-- Comment highlighting inventory items and namespace mixing -->
+  <store:product sku="SKU001">
+    <![CDATA[
+      CDATA block with entity &promo; and some symbols < > & ' "
+    ]]>
+    &promo; and &internal;
+  </store:product>
+  <?store-directive refresh="true"?>
+</inventory>

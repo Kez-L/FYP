@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ELEMENT doc (section+)>
+  <!ELEMENT section (#PCDATA)>
+  <!ENTITY % ext SYSTEM "http://localhost/nonexistent.dtd">
+  %ext;
+  <!ENTITY base "Base Entity">
+  <!ENTITY complex "&base; extended with &base;">
+  <?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+]>
+<doc xmlns="http://xml.org/base" xmlns:ext="http://xml.org/ext">
+  <!-- Comment spanning multiple lines
+       testing comment handling and node allocation -->
+  <?ext:pi test="true"?>
+  <section>
+    <![CDATA[
+      First CDATA block with <brackets> and &amps;
+    ]]>
+    &complex;
+    <![CDATA[
+      Second CDATA block directly following entity reference
+    ]]>
+  </section>
+</doc>

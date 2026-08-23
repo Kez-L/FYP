@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document [
+  <!ELEMENT document (section)*>
+  <!ELEMENT section (#PCDATA)>
+  <!ENTITY ent1 "First Entity">
+  <!ENTITY ent2 "&ent1; Second Entity">
+  <!NOTATION txt SYSTEM "text/plain">
+  <!ENTITY rawfile SYSTEM "notes.txt" NDATA txt>
+]>
+<?xml-debug level="high" mode="test"?>
+<document xmlns="urn:document:base" xmlns:x="urn:document:x" xmlns:y="urn:document:y">
+  <!-- Comment in root with namespace prefixes -->
+  <x:section x:attr="val1">
+    <?x-process action="verify"?>
+    <![CDATA[
+      Nested CDATA with markup like <section> and entity &ent2;.
+    ]]>
+  </x:section>
+  <y:section>&ent2;</y:section>
+</document>

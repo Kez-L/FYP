@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item id ID #REQUIRED>
+  <!ENTITY % local_macro "<!ENTITY ent_macro 'macro-value'>">
+  %local_macro;
+  <!ENTITY reference "Entity &ent_macro; Test">
+]>
+<?xml-processing-instruction test="true" value="123"?>
+<catalog xmlns="http://schemas.example.com/catalog" xmlns:m="http://schemas.example.com/metadata">
+  <!-- Multi-line comment 
+       with extra details and entities inside -->
+  <m:section>
+    <?m:pi-target attr="value"?>
+    <![CDATA[
+      Nested CDATA block with unescaped <tags> and &entities;
+    ]]>
+  </m:section>
+  <item id="i1">&reference;</item>
+</catalog>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % param "
+    <!ENTITY ent 'expanded value'>
+    <!NOTATION png SYSTEM 'image/png'>
+    <!ENTITY ext SYSTEM 'ext.png' NDATA png>
+  ">
+  %param;
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.org/ns/base" xmlns:sub="http://example.org/ns/sub">
+  <!-- Comment testing parser states -->
+  <sub:child id="c1">
+    <![CDATA[
+      CDATA section containing markup <child>&ent;</child>
+    ]]>
+  </sub:child>
+</root>

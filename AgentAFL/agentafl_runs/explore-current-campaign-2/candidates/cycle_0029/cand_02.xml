@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY ref "Catalog Item Reference">
+  <!ENTITY % param_ent "<!ENTITY param_use 'Parameter expansion test'>">
+  %param_ent;
+  <!NOTATION pdf SYSTEM "application/pdf">
+  <!ENTITY manual SYSTEM "manual.pdf" NDATA pdf>
+]>
+<?xml-base href="http://example.org/base/"?>
+<catalog xmlns="http://example.org/catalog" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Comment before complex elements -->
+  <item xlink:type="simple" xlink:href="item1.xml">
+    <?xml-pipeline debug="on" trace="full"?>
+    <![CDATA[
+      Complex CDATA with various symbols: <>&'"--
+    ]]>
+    &param_use;
+  </item>
+  <item>&ref;</item>
+</catalog>

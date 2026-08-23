@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE database [
+  <!ELEMENT database (record*)>
+  <!ELEMENT record (#PCDATA)>
+  <!ENTITY ent1 "Value 1">
+  <!ENTITY ent2 "&ent1; Value 2">
+  <!ENTITY % pe "<!ELEMENT record (#PCDATA)>">
+  %pe;
+]>
+<?xml-model href="schema.rng" type="application/xml-relax-ng"?>
+<database xmlns="http://example.com/db" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- Comment 1: Testing multiple entities and CDATA interaction -->
+  <record xsi:nil="false">
+    <![CDATA[
+      Some raw text with entities like &ent2; embedded directly.
+    ]]>
+  </record>
+  <record>&ent2;</record>
+</database>

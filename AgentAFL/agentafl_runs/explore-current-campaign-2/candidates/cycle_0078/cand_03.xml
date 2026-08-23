@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (stock)*>
+  <!ELEMENT stock (#PCDATA)>
+  <!ENTITY e1 "Item One">
+  <!ENTITY e2 "&e1; - Item Two">
+  <!ENTITY e3 "&e2; - Item Three">
+  <?inventory-log level="debug" target="stdout"?>
+  <!NOTATION json SYSTEM "application/json">
+  <!ENTITY conf SYSTEM "config.json" NDATA json>
+]>
+<inventory xmlns="http://inventory.example.com/ns" xmlns:v="http://inventory.example.com/version">
+  <!-- Comment: verifying parser behavior on deeply nested entity expansions -->
+  <v:stock code="XYZ-999">
+    <![CDATA[
+      Unparsed block with nested structure: <stock>&e3;</stock>
+    ]]>
+  </v:stock>
+  <stock>&e3;</stock>
+</inventory>

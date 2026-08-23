@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE enterprise [
+  <!ELEMENT enterprise (department*)>
+  <!ELEMENT department (#PCDATA)>
+  <!ENTITY entA "Alpha">
+  <!ENTITY entB "Beta &entA;">
+  <!ENTITY entC "Gamma &entB;">
+  <!ENTITY % ext-macro "<!ENTITY entD 'Delta'>">
+  %ext-macro;
+  <?enterprise-config status="active"?>
+]>
+<enterprise xmlns="http://enterprise.org/schema" xmlns:hr="http://enterprise.org/hr">
+  <!-- Top-level enterprise comment -->
+  <hr:department id="hr01">
+    <?hr-pi audit="pending"?>
+    <![CDATA[
+      Confidential CDATA payload: &entC; with <xml> tags.
+    ]]>
+  </hr:department>
+  <department>&entC; &entD;</department>
+</enterprise>

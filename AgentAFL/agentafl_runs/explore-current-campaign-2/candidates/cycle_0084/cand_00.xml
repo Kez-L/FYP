@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY ent "Entity value with <tag>">
+  <!ENTITY % param "<!ENTITY ent2 'Parameter entity value'>">
+  %param;
+]>
+<?target data="processing instruction"?>
+<root xmlns="http://example.org/ns" xmlns:sub="http://example.org/sub">
+  <!-- Comment containing special characters: <>&'" -->
+  <sub:child id="1">
+    <![CDATA[
+      CDATA block containing <tags>, &entities; and -- comments --
+    ]]>
+  </sub:child>
+  <child>&ent; and &ent2;</child>
+</root>

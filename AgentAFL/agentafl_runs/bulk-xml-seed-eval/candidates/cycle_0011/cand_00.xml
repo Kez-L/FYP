@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % ent "<!ENTITY internal 'Expanded Entity Value'>">
+  %ent;
+  <!ENTITY ext SYSTEM "nonexistent.ent">
+  <!NOTATION png SYSTEM "image/png">
+  <?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+]>
+<?target-pi data="processing instruction value with <tags>"?>
+<root xmlns="http://example.org/ns/base" xmlns:sub="http://example.org/ns/sub">
+  <!-- Main configuration comment block containing entities: &internal; -->
+  <sub:child id="1">
+    <![CDATA[
+      CDATA section with embedded XML tags: <child>test</child> &internal;
+    ]]>
+  </sub:child>
+  <child>&internal;</child>
+</root>

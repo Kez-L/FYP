@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % ent "<!ENTITY internal 'Expanded value'>">
+  %ent;
+  <!ENTITY ext SYSTEM "nonexistent.ent">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY binary SYSTEM "logo.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.org/ns1" xmlns:sub="http://example.org/ns2" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Comment containing a PI and CDATA-like text: <?pi?> <tag> -->
+  <sub:child xlink:type="simple">
+    <![CDATA[
+      CDATA block with entity reference &internal; and XML markup <child>test</child>
+    ]]>
+  </sub:child>
+  <child>&internal;</child>
+</root>

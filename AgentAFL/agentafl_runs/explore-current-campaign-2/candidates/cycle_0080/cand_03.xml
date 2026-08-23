@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE database [
+  <!ELEMENT database (table*)>
+  <!ELEMENT table (#PCDATA)>
+  <!ENTITY primary "PrimaryEntity">
+  <!ENTITY secondary "&primary; + SecondaryEntity">
+  <!ENTITY % p-entity "<!ENTITY tertiary 'TertiaryEntity'>">
+  %p-entity;
+  <?db-info status="active"?>
+]>
+<database xmlns="http://schemas.example.com/db" xmlns:sql="http://schemas.example.com/db/sql">
+  <!-- Comment highlighting database configuration details -->
+  <sql:table sql:name="main">
+    <?sql-command execute?>
+    <![CDATA[
+      SQL script or raw data: SELECT * FROM table WHERE x = '&secondary;';
+    ]]>
+  </sql:table>
+  <table>&tertiary;</table>
+</database>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % pe " <!ENTITY ent 'parameterized'> ">
+  %pe;
+  <!ENTITY base "Root &ent;">
+  <?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+]>
+<root xmlns="http://example.com/ns" xmlns:sub="http://example.com/sub" sub:id="1">
+  <!-- Parent level comment with special chars <>& -->
+  <sub:child>
+    <?sub-pi data="process-start"?>
+    <![CDATA[
+      CDATA section containing unescaped markup: <tag attr="val">&base;</tag>
+    ]]>
+  </sub:child>
+</root>

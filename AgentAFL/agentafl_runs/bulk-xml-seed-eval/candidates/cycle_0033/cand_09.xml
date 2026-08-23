@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE soap:Envelope [
+  <!ELEMENT soap:Envelope (soap:Body)>
+  <!ELEMENT soap:Body (soap:Fault)>
+  <!ELEMENT soap:Fault (faultcode, faultstring)>
+  <!ELEMENT faultcode (#PCDATA)>
+  <!ELEMENT faultstring (#PCDATA)>
+  <!ENTITY errorCode "Server.Processing">
+  <!ENTITY errorDesc "An unexpected error occurred during processing.">
+  <!NOTATION soap-error SYSTEM "urn:soap-error">
+]>
+<?xml-rpc-trace enabled="true"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <!-- SOAP Fault envelope test case -->
+  <soap:Body>
+    <soap:Fault>
+      <faultcode>&errorCode;</faultcode>
+      <faultstring>
+        <![CDATA[
+          Detailed Error: &errorDesc; <stacktrace>NullPointerException</stacktrace>
+        ]]>
+      </faultstring>
+    </soap:Fault>
+  </soap:Body>
+</soap:Envelope>

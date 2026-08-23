@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ELEMENT config (setting)*>
+  <!ELEMENT setting (#PCDATA)>
+  <!ENTITY e1 "Value1">
+  <!ENTITY e2 "Value2 &e1;">
+  <!ENTITY % internal "
+    <!ELEMENT subconfig (#PCDATA)
+    <!ENTITY ent-in-pe 'internal-pe-value'>
+  ">
+  %internal;
+  <?debug-pi mode="verbose"?>
+]>
+<config xmlns="urn:config:base" xmlns:cfg="urn:config:ns">
+  <!-- Configuration file comment header -->
+  <?cfg:processor step="parse"?>
+  <setting>
+    <![CDATA[
+      <!-- Nested comment-like structure inside CDATA --!>
+      &e2;
+    ]]>
+  </setting>
+  <cfg:subconfig>&ent-in-pe;</cfg:subconfig>
+</config>

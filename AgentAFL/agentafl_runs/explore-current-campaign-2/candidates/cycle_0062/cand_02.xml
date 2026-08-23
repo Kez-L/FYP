@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document [
+  <!ELEMENT document (section)*>
+  <!ELEMENT section (#PCDATA)>
+  <!ENTITY base "BaseEntity">
+  <!ENTITY extended "&base; &amp; MoreText">
+  <!NOTATION pdf SYSTEM "application/pdf">
+  <!ENTITY docFile SYSTEM "spec.pdf" NDATA pdf>
+  <!ENTITY % local_macro "<!ENTITY nested_macro 'DeepMacro'>">
+  %local_macro;
+]>
+<?xml-model href="schema.rng" type="application/xml-relax-ng"?>
+<document xmlns="http://schema.example.net/doc" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Comment: Testing entity expansion inside CDATA and attributes -->
+  <section xlink:type="simple" xlink:href="&base;">
+    <![CDATA[
+      Inside CDATA: &extended; and &nested_macro;
+    ]]>
+  </section>
+</document>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY ent1 "Value1">
+  <!ENTITY ent2 "&ent1; Value2">
+  <!ENTITY % ext_pe SYSTEM "external.dtd">
+  %ext_pe;
+]>
+<?xml-model href="schema.rng" type="application/xml-relax-ng"?>
+<catalog xmlns="http://example.org/catalog" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:html="http://www.w3.org/1999/xhtml">
+  <!-- Comment detailing namespace abuse and entity nesting -->
+  <item xlink:type="simple" xlink:href="http://example.org">
+    <![CDATA[
+      <!-- Nested comment-like string inside CDATA -->
+      <html:div>HTML fragment inside CDATA with &ent2;</html:div>
+    ]]>
+  </item>
+  <html:p>&ent2;</html:p>
+</catalog>

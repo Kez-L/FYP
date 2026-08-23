@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE testDoc [
+  <!ELEMENT testDoc (section+)>
+  <!ELEMENT section (#PCDATA)>
+  <!ENTITY entA "Value A">
+  <!ENTITY entB "&entA; and Value B">
+  <!ENTITY % paramEntity "<!ELEMENT nested EMPTY>">
+  %paramEntity;
+  <?xml-meta category="fuzzing"?>
+]>
+<testDoc xmlns="http://test.org/doc" xmlns:ns1="http://test.org/ns1" xmlns:ns2="http://test.org/ns2">
+  <!-- Section 1 Comment: testing entity expansion & CDATA -->
+  <ns1:section>
+    <![CDATA[
+      <!-- Nested comment inside CDATA -->
+      Some text data <>&"'
+    ]]>
+  </ns1:section>
+  <ns2:section>&entB;</ns2:section>
+  <?ns1-target data="processing instruction payload"?>
+</testDoc>

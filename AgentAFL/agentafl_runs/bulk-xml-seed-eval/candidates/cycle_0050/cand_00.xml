@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % ent "<!ENTITY internal 'parsed entity text'>">
+  %ent;
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY ext SYSTEM "logo.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.com/ns" xmlns:sub="http://example.com/sub">
+  <!-- Comment containing a PI-like string <?pi test?> and entity &internal; -->
+  <sub:child sub:id="1">
+    <![CDATA[
+      CDATA block with <tags> & internal references inside.
+    ]]>
+    &internal;
+  </sub:child>
+</root>

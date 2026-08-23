@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \" <!ENTITY ent 'resolved-entity'> \">\n  %pe;\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY ext SYSTEM \"logo.png\" NDATA png>\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<root xmlns=\"http://example.com/ns\" xmlns:sub=\"http://example.com/ns/sub\">\n  <!-- Comment containing special chars: <>&\"' -->\n  <sub:child id=\"1\">\n    <![CDATA[\n      Some CDATA content with <tags> and &entities; inside.\n    ]]>\n  </sub:child>\n  <child>&ent;</child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (item+)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY base \"Standard Item\">\n  <!ENTITY extended \"&base; Deluxe\">\n  <!ENTITY % remote_macro SYSTEM \"http://example.com/notfound.dtd\">\n  %remote_macro;\n]>\n<?xml-processing-instruction target=\"afl\" data=\"test-mode=true\"?>\n<inventory xmlns=\"http://inventory.org/schema\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Multi-line comment \n       with DTD entities and CDATA interaction -->\n  <item xlink:type=\"simple\" xlink:href=\"http://example.com\">\n    <![CDATA[\n      <item-details>\n        Description goes here: &extended;\n      </item-details>\n    ]]>\n  </item>\n</inventory>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (book)*>\n  <!ELEMENT book (#PCDATA)>\n  <!ENTITY pub \"O'Reilly\">\n  <!ENTITY reference \"Book ID: 12345\">\n  <!NOTATION pdf SYSTEM \"application/pdf\">\n  <!ENTITY sample SYSTEM \"sample.pdf\" NDATA pdf>\n]>\n<?xml-stylesheet type=\"text/css\" href=\"style.css\"?>\n<catalog xmlns=\"http://catalog.org/ns\" xmlns:bk=\"http://catalog.org/ns/book\">\n  <!-- Comment before complex elements -->\n  <bk:book id=\"b1\">\n    <![CDATA[\n      CDATA section with embedded XML-like markup: <book>&reference;</book>\n    ]]>\n  </bk:book>\n  <book>&pub; - &reference;</book>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (record)*>\n  <!ELEMENT record (#PCDATA)>\n  <!ENTITY % internal_ent \"Internal Entity Value\">\n  <!ENTITY % nested_macro \"<!ENTITY combined '&internal_ent; Extended'>\">\n  %nested_macro;\n]>\n<?xml-timestamp value=\"2023-10-25\"?>\n<archive xmlns=\"http://archive.org/ns\" xmlns:arc=\"http://archive.org/ns/record\">\n  <!-- Archival record root comment -->\n  <arc:record>\n    <![CDATA[\n      Unparsed data block containing &combined; and other metadata.\n    ]]>\n  </arc:record>\n  <record>&combined;</record>\n</archive>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE config [\n  <!ELEMENT config (setting)*>\n  <!ELEMENT setting (#PCDATA)>\n  <!ENTITY default-val \"enabled\">\n  <!ENTITY override-val \"disabled\">\n  <!NOTATION conf SYSTEM \"text/plain\">\n  <!ENTITY external-conf SYSTEM \"config.txt\" NDATA conf>\n]>\n<?xml-app-info name=\"fuzzer-target\" version=\"1.0\"?>\n<config xmlns=\"http://config.org/schema\" xmlns:cfg=\"http://config.org/schema/setting\">\n  <!-- Configuration block comment with parameters -->\n  <cfg:setting name=\"mode\">\n    <![CDATA[\n      Mode is set via CDATA: <setting>&default-val;</setting>\n    ]]>\n  </cfg:setting>\n  <setting>&override-val;</setting>\n</config>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \" <!ENTITY ent 'resolved-entity'> \">\n  %pe;\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY ext SYSTEM \"logo.png\" NDATA png>\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<root xmlns=\"http://example.com/ns\" xmlns:sub=\"http://example.com/ns/sub\">\n  <!-- Comment containing special chars: <>&\"' -->\n  <sub:child id=\"1\">\n    <![CDATA[\n      Some CDATA content with <tags> and &entities; inside.\n    ]]>\n  </sub:child>\n  <child>&ent;</child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (item+)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY base \"Standard Item\">\n  <!ENTITY extended \"&base; Deluxe\">\n  <!ENTITY % remote_macro SYSTEM \"http://example.com/notfound.dtd\">\n  %remote_macro;\n]>\n<?xml-processing-instruction target=\"afl\" data=\"test-mode=true\"?>\n<inventory xmlns=\"http://inventory.org/schema\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Multi-line comment \n       with DTD entities and CDATA interaction -->\n  <item xlink:type=\"simple\" xlink:href=\"http://example.com\">\n    <![CDATA[\n      <item-details>\n        Description goes here: &extended;\n      </item-details>\n    ]]>\n  </item>\n</inventory>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (book)*>\n  <!ELEMENT book (#PCDATA)>\n  <!ENTITY pub \"O'Reilly\">\n  <!ENTITY reference \"Book ID: 12345\">\n  <!NOTATION pdf SYSTEM \"application/pdf\">\n  <!ENTITY sample SYSTEM \"sample.pdf\" NDATA pdf>\n]>\n<?xml-stylesheet type=\"text/css\" href=\"style.css\"?>\n<catalog xmlns=\"http://catalog.org/ns\" xmlns:bk=\"http://catalog.org/ns/book\">\n  <!-- Comment before complex elements -->\n  <bk:book id=\"b1\">\n    <![CDATA[\n      CDATA section with embedded XML-like markup: <book>&reference;</book>\n    ]]>\n  </bk:book>\n  <book>&pub; - &reference;</book>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (record)*>\n  <!ELEMENT record (#PCDATA)>\n  <!ENTITY % internal_ent \"Internal Entity Value\">\n  <!ENTITY % nested_macro \"<!ENTITY combined '&internal_ent; Extended'>\">\n  %nested_macro;\n]>\n<?xml-timestamp value=\"2023-10-25\"?>\n<archive xmlns=\"http://archive.org/ns\" xmlns:arc=\"http://archive.org/ns/record\">\n  <!-- Archival record root comment -->\n  <arc:record>\n    <![CDATA[\n      Unparsed data block containing &combined; and other metadata.\n    ]]>\n  </arc:record>\n  <record>&combined;</record>\n</archive>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE config [\n  <!ELEMENT config (setting)*>\n  <!ELEMENT setting (#PCDATA)>\n  <!ENTITY default-val \"enabled\">\n  <!ENTITY override-val \"disabled\">\n  <!NOTATION conf SYSTEM \"text/plain\">\n  <!ENTITY external-conf SYSTEM \"config.txt\" NDATA conf>\n]>\n<?xml-app-info name=\"fuzzer-target\" version=\"1.0\"?>\n<config xmlns=\"http://config.org/schema\" xmlns:cfg=\"http://config.org/schema/setting\">\n  <!-- Configuration block comment with parameters -->\n  <cfg:setting name=\"mode\">\n    <![CDATA[\n      Mode is set via CDATA: <setting>&default-val;</setting>\n    ]]>\n  </cfg:setting>\n  <setting>&override-val;</setting>\n</config>\n```",
+              "thoughtSignature": "EjQKMgERTTIPYzqP26gX/17RKZcCCRSG9V6qvuNt2Yv/ge7KyPPM1l1l17rpx8xJhXCHSDpz"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2613,
+      "candidatesTokenCount": 1044,
+      "totalTokenCount": 3657,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 2613
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "F0N2aoTIPPr8juMPh5SQuQ8"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % pe "<!-- Parameter entity comment --> <!ENTITY ent 'resolved-entity'>">
+  %pe;
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY ext-img SYSTEM "data.png" NDATA png>
+]>
+<?target-pi data="processing instruction content &ent;"?>
+<root xmlns="http://example.com/ns1" xmlns:ns2="http://example.com/ns2">
+  <!-- Main document comment involving &ent; -->
+  <ns2:child>
+    <![CDATA[
+      Nested CDATA block with unescaped markup <tags> & entities inside.
+    ]]>
+    &ent;
+  </ns2:child>
+</root>

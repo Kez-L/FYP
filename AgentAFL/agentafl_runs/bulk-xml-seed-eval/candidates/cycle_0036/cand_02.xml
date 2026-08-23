@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (book*)>
+  <!ELEMENT book (#PCDATA)>
+  <!ENTITY ent1 "First Entity">
+  <!ENTITY ent2 "&ent1; and Second">
+  <!NOTATION txt SYSTEM "text/plain">
+  <!ENTITY note SYSTEM "notes.txt" NDATA txt>
+  <!ENTITY % pe "<!ENTITY paramEnt 'Parameter Value'>">
+  %pe;
+]>
+<?xml-model href="schema.rng" type="application/xml-relax-ng"?>
+<catalog xmlns="http://example.org/catalog" xmlns:m="http://example.org/meta">
+  <!-- Comment about catalog entries -->
+  <m:details>
+    <?meta-pi command="update"?>
+    <![CDATA[
+      CDATA block containing &ent2; and literal tags <book>
+    ]]>
+  </m:details>
+  <book>&paramEnt;</book>
+</catalog>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (node)*>
+  <!ELEMENT node (#PCDATA)>
+  <!ENTITY greeting "Hello World">
+  <!ENTITY complex "&greeting;! Welcome to XML fuzzing.">
+  <!NOTATION pdf SYSTEM "application/pdf">
+  <!ENTITY manual SYSTEM "manual.pdf" NDATA pdf>
+]>
+<?xml-debug level="high" mode="verbose"?>
+<root xmlns="http://ns.example.com/core" xmlns:ns1="http://ns.example.com/ns1">
+  <!-- Processing instructions and entity expansion tests -->
+  <ns1:node id="n1">
+    <![CDATA[
+      CDATA block enclosing an entity reference &complex; inside text.
+    ]]>
+  </ns1:node>
+  <node>&complex;</node>
+</root>

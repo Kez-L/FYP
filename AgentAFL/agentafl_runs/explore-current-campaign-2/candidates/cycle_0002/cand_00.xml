@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % pe " <!ENTITY ent 'parameterized'> ">
+  %pe;
+  <!ENTITY base "Expanded &ent;">
+  <?target-pi data="processing-instruction-value"?>
+]>
+<root xmlns="http://example.com/ns1" xmlns:sub="http://example.com/ns2" sub:attr="value">
+  <!-- Top level document comment -->
+  <sub:child>
+    <?sub:pi processing="true"?>
+    <![CDATA[
+      CDATA section containing markup-like characters: <tag> &amp; "quotes"
+    ]]>
+    &base;
+  </sub:child>
+</root>

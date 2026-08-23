@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % param '
+    <!ENTITY ent "parsed entity value">
+    <!ENTITY % subparam "<!ELEMENT nested (#PCDATA)>">
+    %subparam;
+  '>
+  %param;
+  <?pi-target pi-data?>
+]>
+<root xmlns="http://example.com/ns1" xmlns:ns2="http://example.com/ns2">
+  <!-- Comment containing another comment-like structure -->
+  <ns2:child ns2:id="1">
+    <![CDATA[ CDATA block with entity reference &ent; inside ]]>
+  </ns2:child>
+  <child>&ent;</child>
+</root>

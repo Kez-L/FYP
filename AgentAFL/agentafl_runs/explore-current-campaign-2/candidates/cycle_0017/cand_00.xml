@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY % ent-decl "<!ENTITY internal 'Resolved Internal Entity'>">
+  %ent-decl;
+  <!ENTITY ext SYSTEM "ext.ent">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY banner "logo.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<catalog xmlns="http://example.org/ns/catalog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- Comment: Testing complex entity expansion and CDATA sections -->
+  <item id="1">
+    <?item-processing-instruction mode="verbose"?>
+    <![CDATA[
+      CDATA block containing markup-like strings: <item>&internal;</item>
+    ]]>
+    &ext;
+  </item>
+</catalog>

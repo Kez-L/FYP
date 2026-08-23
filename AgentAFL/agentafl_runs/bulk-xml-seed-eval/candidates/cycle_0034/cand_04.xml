@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (file)*>
+  <!ELEMENT file (#PCDATA)>
+  <!ENTITY textEnt "Standard Text">
+  <!ENTITY % extEnt "<!ENTITY nested 'Nested &textEnt;'>">
+  %extEnt;
+  <!NOTATION pdf SYSTEM "application/pdf">
+  <!ENTITY docFile SYSTEM "manual.pdf" NDATA pdf>
+]>
+<?xml-debug level="high" mode="test"?>
+<archive xmlns="http://example.org/archive" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Comment with &nested; entity -->
+  <file xlink:type="simple">
+    <![CDATA[
+      Raw content: &nested; inside CDATA remains unparsed.
+    ]]>
+  </file>
+  <file>&nested;</file>
+</archive>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE payload [
+  <!ELEMENT payload (data)*>
+  <!ELEMENT data (#PCDATA)>
+  <!ENTITY d1 "Data fragment one">
+  <!ENTITY d2 "Data fragment two: &d1;">
+  <!ENTITY % ext-macro "<!ENTITY ext-val 'Expanded external-like macro'>">
+  %ext-macro;
+  <?payload-processor version="1.0"?>
+  <!NOTATION mp3 SYSTEM "audio/mpeg">
+  <!ENTITY sound SYSTEM "track.mp3" NDATA mp3>
+]>
+<payload xmlns="http://example.org/payload" xmlns:ext="http://example.org/ext">
+  <!-- Comment detailing payload specifics -->
+  <ext:data ext:type="stream">
+    <![CDATA[
+      <!-- Nested comment-like syntax inside CDATA -->
+      <nested-tag>&d2;</nested-tag>
+    ]]>
+    &ext-val;
+  </ext:data>
+</payload>

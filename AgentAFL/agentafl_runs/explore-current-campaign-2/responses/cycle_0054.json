@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY % pe \"<!ELEMENT subitem (#PCDATA)>\">\n  %pe;\n  <!ENTITY ent \"Standard Entity\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<catalog xmlns=\"http://example.org/catalog\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n  <!-- Top level comment exercising comment and namespace features -->\n  <item xmlns:foo=\"http://example.org/foo\">\n    <?foo-processing-instruction data=\"value\"?>\n    <![CDATA[\n      CDATA section containing markup <item>&ent;</item> and entities.\n    ]]>\n    &ent;\n  </item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % local_macro \"<!ENTITY nested 'Deeply nested entity value'>\">\n  %local_macro;\n  <!ENTITY ext SYSTEM \"nonexistent.ent\">\n]>\n<?xml-debug level=\"high\" mode=\"test\"?>\n<root xmlns=\"urn:test:root\" xmlns:sub=\"urn:test:sub\">\n  <!-- Multi-line comment \n       with various symbols <>&'\" -->\n  <sub:child>\n    <![CDATA[\n      First CDATA block with <sub:child> markup.\n    ]]>\n    &nested;\n  </sub:child>\n  <child>\n    <![CDATA[\n      Second CDATA block.\n    ]]>\n  </child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (product*)>\n  <!ELEMENT product (#PCDATA)>\n  <!ENTITY base \"Base Entity\">\n  <!ENTITY derived \"&base; with extra text\">\n  <!NOTATION pdf SYSTEM \"application/pdf\">\n  <!ENTITY manual SYSTEM \"manual.pdf\" NDATA pdf>\n]>\n<?xml-tool name=\"validator\" version=\"1.0\"?>\n<inventory xmlns=\"http://inventory.org/schema\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Comment: Inventory items follow -->\n  <product xlink:type=\"simple\" xlink:href=\"http://example.org/prod1\">\n    <![CDATA[\n      Product description with special characters <>&'\" inside CDATA.\n    ]]>\n    &derived;\n  </product>\n</inventory>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE database [\n  <!ELEMENT database (record*)>\n  <!ELEMENT record (#PCDATA)>\n  <!ENTITY ent1 \"Entity One\">\n  <!ENTITY ent2 \"&ent1; and Entity Two\">\n  <!ENTITY % param_ent \"<!ELEMENT meta (#PCDATA)>\">\n  %param_ent;\n]>\n<?xml-server port=\"8080\" protocol=\"http\"?>\n<database xmlns=\"http://db.org/ns\" xmlns:db=\"http://db.org/ns/ext\">\n  <!-- Comment before a complex mixed content node -->\n  <record>\n    <?db-action query=\"select *\"?>\n    <![CDATA[\n      Raw payload data containing <record>&ent2;</record> tags.\n    ]]>\n    &ent2;\n  </record>\n</database>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (doc*)>\n  <!ELEMENT doc (#PCDATA)>\n  <!ENTITY core \"Core Data\">\n  <!ENTITY ref \"&core; Reference\">\n  <!NOTATION txt SYSTEM \"text/plain\">\n  <!ENTITY notes SYSTEM \"notes.txt\" NDATA txt>\n]>\n<?xml-meta author=\"TestAgent\" date=\"2023-10-01\"?>\n<archive xmlns=\"http://archive.org/ns\" xmlns:meta=\"http://archive.org/meta\">\n  <!-- Comprehensive comment block testing parser limits -->\n  <doc meta:id=\"doc1\">\n    <?meta-command execute=\"true\"?>\n    <![CDATA[\n      Complex CDATA with nested structures and &ref; expansions.\n    ]]>\n    &ref;\n  </doc>\n</archive>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY % pe \"<!ELEMENT subitem (#PCDATA)>\">\n  %pe;\n  <!ENTITY ent \"Standard Entity\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<catalog xmlns=\"http://example.org/catalog\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n  <!-- Top level comment exercising comment and namespace features -->\n  <item xmlns:foo=\"http://example.org/foo\">\n    <?foo-processing-instruction data=\"value\"?>\n    <![CDATA[\n      CDATA section containing markup <item>&ent;</item> and entities.\n    ]]>\n    &ent;\n  </item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % local_macro \"<!ENTITY nested 'Deeply nested entity value'>\">\n  %local_macro;\n  <!ENTITY ext SYSTEM \"nonexistent.ent\">\n]>\n<?xml-debug level=\"high\" mode=\"test\"?>\n<root xmlns=\"urn:test:root\" xmlns:sub=\"urn:test:sub\">\n  <!-- Multi-line comment \n       with various symbols <>&'\" -->\n  <sub:child>\n    <![CDATA[\n      First CDATA block with <sub:child> markup.\n    ]]>\n    &nested;\n  </sub:child>\n  <child>\n    <![CDATA[\n      Second CDATA block.\n    ]]>\n  </child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (product*)>\n  <!ELEMENT product (#PCDATA)>\n  <!ENTITY base \"Base Entity\">\n  <!ENTITY derived \"&base; with extra text\">\n  <!NOTATION pdf SYSTEM \"application/pdf\">\n  <!ENTITY manual SYSTEM \"manual.pdf\" NDATA pdf>\n]>\n<?xml-tool name=\"validator\" version=\"1.0\"?>\n<inventory xmlns=\"http://inventory.org/schema\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Comment: Inventory items follow -->\n  <product xlink:type=\"simple\" xlink:href=\"http://example.org/prod1\">\n    <![CDATA[\n      Product description with special characters <>&'\" inside CDATA.\n    ]]>\n    &derived;\n  </product>\n</inventory>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE database [\n  <!ELEMENT database (record*)>\n  <!ELEMENT record (#PCDATA)>\n  <!ENTITY ent1 \"Entity One\">\n  <!ENTITY ent2 \"&ent1; and Entity Two\">\n  <!ENTITY % param_ent \"<!ELEMENT meta (#PCDATA)>\">\n  %param_ent;\n]>\n<?xml-server port=\"8080\" protocol=\"http\"?>\n<database xmlns=\"http://db.org/ns\" xmlns:db=\"http://db.org/ns/ext\">\n  <!-- Comment before a complex mixed content node -->\n  <record>\n    <?db-action query=\"select *\"?>\n    <![CDATA[\n      Raw payload data containing <record>&ent2;</record> tags.\n    ]]>\n    &ent2;\n  </record>\n</database>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (doc*)>\n  <!ELEMENT doc (#PCDATA)>\n  <!ENTITY core \"Core Data\">\n  <!ENTITY ref \"&core; Reference\">\n  <!NOTATION txt SYSTEM \"text/plain\">\n  <!ENTITY notes SYSTEM \"notes.txt\" NDATA txt>\n]>\n<?xml-meta author=\"TestAgent\" date=\"2023-10-01\"?>\n<archive xmlns=\"http://archive.org/ns\" xmlns:meta=\"http://archive.org/meta\">\n  <!-- Comprehensive comment block testing parser limits -->\n  <doc meta:id=\"doc1\">\n    <?meta-command execute=\"true\"?>\n    <![CDATA[\n      Complex CDATA with nested structures and &ref; expansions.\n    ]]>\n    &ref;\n  </doc>\n</archive>\n```",
+              "thoughtSignature": "EjQKMgERTTIPz6LEZ1MjSDZq5csCf08o4vYg/jOs/2x+l2NOoCjzY63SNUd5AvFgBoVTLkgw"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2613,
+      "candidatesTokenCount": 1052,
+      "totalTokenCount": 3665,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 2613
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "6pV2aoP2CsmAjuMP3pimwQw"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (entry)*>
+  <!ELEMENT entry (#PCDATA)>
+  <!ENTITY tokenA "ValueA">
+  <!ENTITY tokenB "&tokenA; and ValueB">
+  <!NOTATION mp3 SYSTEM "audio/mpeg">
+  <!ENTITY sound SYSTEM "track.mp3" NDATA mp3>
+  <!ENTITY % dtd-param "<!ENTITY param-ent 'ParameterEntityValue'>">
+  %dtd-param;
+]>
+<?xml-metrics tracking="enabled"?>
+<registry xmlns="http://registry.org/net" xmlns:ext="http://registry.org/net/ext">
+  <!-- Comment emphasizing extreme edge combinations of CDATA, PI, and entities -->
+  <?ext:pi command="init"?>
+  <entry>
+    <![CDATA[
+      CDATA section containing &param-ent; and other strings.
+    ]]>
+  </entry>
+  <entry>&tokenB;</entry>
+</registry>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % ent "<!ENTITY ent_inner 'Expanded Text'>">
+  %ent;
+  <!ENTITY ext SYSTEM "nonexistent.ent">
+]>
+<?target-pi data="processing instruction content with &ent_inner;"?>
+<root xmlns="http://example.org/ns1" xmlns:ns2="http://example.org/ns2">
+  <!-- Comment containing an entity reference &ent_inner; -->
+  <child ns2:id="1">
+    <![CDATA[
+      CDATA section containing <tags> and entity references &ent_inner;
+    ]]>
+  </child>
+  <child>&ent_inner;</child>
+</root>

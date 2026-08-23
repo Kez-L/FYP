@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \"<!ELEMENT sub (#PCDATA)> <!ENTITY ent 'expanded_entity'>\">\n  %pe;\n  <!ENTITY ext SYSTEM \"nonexistent.ent\">\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<root xmlns=\"http://example.com/ns1\" xmlns:ns2=\"http://example.com/ns2\">\n  <!-- Comment containing markup-like chars <child>&ent;</child> -->\n  <ns2:child>\n    <![CDATA[\n      CDATA section with embedded tags <root> &ext; </root>\n    ]]>\n  </ns2:child>\n  <child>&ent;</child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE database [\n  <!ELEMENT database (record*)>\n  <!ELEMENT record (#PCDATA)>\n  <!ENTITY % ext_pe SYSTEM \"http://example.com/dtd.dtd\">\n  %ext_pe;\n  <!ENTITY base \"BaseText\">\n  <!ENTITY complex \"&base; &base; &base;\">\n>\n<?target data=\"processing instruction value\"?>\n<database xmlns=\"http://xml.org/db\" xmlns:foo=\"http://xml.org/foo\">\n  <!-- Deeply nested comment structure with hyphens - -- - -->\n  <foo:record foo:id=\"1\">\n    <![CDATA[\n      First CDATA block with entity reference &complex;\n    ]]>\n  </foo:record>\n  <record>\n    <![CDATA[\n      Second CDATA block\n    ]]>\n  </record>\n  <record>&complex;</record>\n</database>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<!DOCTYPE system [\n  <!ELEMENT system (node*)>\n  <!ELEMENT node (#PCDATA)>\n  <!ENTITY alpha \"Alpha\">\n  <!ENTITY beta \"&alpha; Beta\">\n  <!ENTITY gamma \"&beta; Gamma\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n]>\n<?xml-rpc service=\"api\"?>\n<system xmlns=\"http://schemas.xmlsoap.org/system/\" xmlns:custom=\"http://custom.ns/\">\n  <?custom-pi processing=\"true\"?>\n  <!-- Author: Test Suite -->\n  <!-- Description: Complex entity chaining and namespace scopes -->\n  <custom:node custom:attr=\"&gamma;\">\n    <![CDATA[\n      <node>Unparsed CDATA content with entities &gamma;</node>\n    ]]>\n  </custom:node>\n  <node>&gamma;</node>\n</system>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE testDoc [\n  <!ELEMENT testDoc (item+)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY e1 \"Value1\">\n  <!ENTITY e2 \"Value2 &e1;\">\n  <!ENTITY e3 \"Value3 &e2;\">\n  <!ENTITY % internal \"\n    <!ELEMENT nested (#PCDATA)>\n    <!ENTITY deep 'DeepEntity'>\n  \">\n  %internal;\n]>\n<?xml-stylesheet type=\"text/css\" href=\"style.css\"?>\n<testDoc xmlns=\"http://test.org/doc\" xmlns:p=\"http://test.org/p\" xmlns:q=\"http://test.org/q\">\n  <!-- Comment before CDATA -->\n  <p:item>\n    <![CDATA[\n      CDATA block containing entity reference &e3; inside p:item\n    ]]>\n  </p:item>\n  <q:item>\n    <?p:target attr=\"val\"?>\n    &deep;\n  </q:item>\n</testDoc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE suite [\n  <!ELEMENT suite (case*)>\n  <!ELEMENT case (#PCDATA)>\n  <!ENTITY entA \"EntityA\">\n  <!ENTITY entB \"EntityB &entA;\">\n  <!ENTITY entC \"EntityC &entB;\">\n  <!ENTITY % dtdMacro \"<!ENTITY entD 'EntityD &entC;'>\">\n  %dtdMacro;\n]>\n<?xml-model href=\"schema.rng\" type=\"application/xml-relax-ng\"?>\n<suite xmlns=\"http://www.w3.org/2002/ws/policy\" xmlns:ws=\"http://www.w3.org/ns/ws-policy\">\n  <!-- Top-level comment block -->\n  <!-- Another comment with special chars: <, >, &, \", ' -->\n  <ws:case>\n    <![CDATA[\n      <suite><case>&entD;</case></suite>\n    ]]>\n  </ws:case>\n  <case>&entD;</case>\n</suite>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \"<!ELEMENT sub (#PCDATA)> <!ENTITY ent 'expanded_entity'>\">\n  %pe;\n  <!ENTITY ext SYSTEM \"nonexistent.ent\">\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<root xmlns=\"http://example.com/ns1\" xmlns:ns2=\"http://example.com/ns2\">\n  <!-- Comment containing markup-like chars <child>&ent;</child> -->\n  <ns2:child>\n    <![CDATA[\n      CDATA section with embedded tags <root> &ext; </root>\n    ]]>\n  </ns2:child>\n  <child>&ent;</child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE database [\n  <!ELEMENT database (record*)>\n  <!ELEMENT record (#PCDATA)>\n  <!ENTITY % ext_pe SYSTEM \"http://example.com/dtd.dtd\">\n  %ext_pe;\n  <!ENTITY base \"BaseText\">\n  <!ENTITY complex \"&base; &base; &base;\">\n>\n<?target data=\"processing instruction value\"?>\n<database xmlns=\"http://xml.org/db\" xmlns:foo=\"http://xml.org/foo\">\n  <!-- Deeply nested comment structure with hyphens - -- - -->\n  <foo:record foo:id=\"1\">\n    <![CDATA[\n      First CDATA block with entity reference &complex;\n    ]]>\n  </foo:record>\n  <record>\n    <![CDATA[\n      Second CDATA block\n    ]]>\n  </record>\n  <record>&complex;</record>\n</database>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<!DOCTYPE system [\n  <!ELEMENT system (node*)>\n  <!ELEMENT node (#PCDATA)>\n  <!ENTITY alpha \"Alpha\">\n  <!ENTITY beta \"&alpha; Beta\">\n  <!ENTITY gamma \"&beta; Gamma\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n]>\n<?xml-rpc service=\"api\"?>\n<system xmlns=\"http://schemas.xmlsoap.org/system/\" xmlns:custom=\"http://custom.ns/\">\n  <?custom-pi processing=\"true\"?>\n  <!-- Author: Test Suite -->\n  <!-- Description: Complex entity chaining and namespace scopes -->\n  <custom:node custom:attr=\"&gamma;\">\n    <![CDATA[\n      <node>Unparsed CDATA content with entities &gamma;</node>\n    ]]>\n  </custom:node>\n  <node>&gamma;</node>\n</system>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE testDoc [\n  <!ELEMENT testDoc (item+)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY e1 \"Value1\">\n  <!ENTITY e2 \"Value2 &e1;\">\n  <!ENTITY e3 \"Value3 &e2;\">\n  <!ENTITY % internal \"\n    <!ELEMENT nested (#PCDATA)>\n    <!ENTITY deep 'DeepEntity'>\n  \">\n  %internal;\n]>\n<?xml-stylesheet type=\"text/css\" href=\"style.css\"?>\n<testDoc xmlns=\"http://test.org/doc\" xmlns:p=\"http://test.org/p\" xmlns:q=\"http://test.org/q\">\n  <!-- Comment before CDATA -->\n  <p:item>\n    <![CDATA[\n      CDATA block containing entity reference &e3; inside p:item\n    ]]>\n  </p:item>\n  <q:item>\n    <?p:target attr=\"val\"?>\n    &deep;\n  </q:item>\n</testDoc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE suite [\n  <!ELEMENT suite (case*)>\n  <!ELEMENT case (#PCDATA)>\n  <!ENTITY entA \"EntityA\">\n  <!ENTITY entB \"EntityB &entA;\">\n  <!ENTITY entC \"EntityC &entB;\">\n  <!ENTITY % dtdMacro \"<!ENTITY entD 'EntityD &entC;'>\">\n  %dtdMacro;\n]>\n<?xml-model href=\"schema.rng\" type=\"application/xml-relax-ng\"?>\n<suite xmlns=\"http://www.w3.org/2002/ws/policy\" xmlns:ws=\"http://www.w3.org/ns/ws-policy\">\n  <!-- Top-level comment block -->\n  <!-- Another comment with special chars: <, >, &, \", ' -->\n  <ws:case>\n    <![CDATA[\n      <suite><case>&entD;</case></suite>\n    ]]>\n  </ws:case>\n  <case>&entD;</case>\n</suite>\n```",
+              "thoughtSignature": "EjQKMgERTTIPFrksU14p2xobpyyiyKKGMwBysMsRYplh+5yn0S941kWiw7xsmBjrq3NSYLhq"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2613,
+      "candidatesTokenCount": 1143,
+      "totalTokenCount": 3756,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 2613
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "YTB2ao-fJ97kqfkP-8rtwQk"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \" <!ENTITY ent 'parsed-entity-value'> \">\n  %pe;\n  <!ENTITY ext SYSTEM \"nonexistent.ent\">\n]>\n<?target data=\"processing-instruction-test\"?>\n<root xmlns=\"http://example.com/ns\" xmlns:sub=\"http://example.com/sub\">\n  <!-- Leading comment explaining the test case -->\n  <sub:child id=\"c1\">&ent;</sub:child>\n  <child>\n    <![CDATA[\n      Some raw CDATA text with markup: <child>nested</child> &ent;\n    ]]>\n  </child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (book)*>\n  <!ELEMENT book (#PCDATA)>\n  <!ENTITY author \"John Doe\">\n  <!ENTITY % dtdMacro \"<!ELEMENT note (#PCDATA)>\">\n  %dtdMacro;\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"style.xsl\"?>\n<catalog xmlns=\"http://schemas.example.org/catalog\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Comment containing special characters <>&'\" -->\n  <book xlink:type=\"simple\">Book authored by &author;</book>\n  <note>\n    <![CDATA[\n      CDATA section containing unescaped entities &author; and tags <book>.\n    ]]>\n  </note>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section)*>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY base \"BaseEntity\">\n  <!ENTITY derived \"&base;Derived\">\n  <!ENTITY % extDecl \" <!ELEMENT extra (#PCDATA)> \">\n  %extDecl;\n]>\n<?pi-target processing instruction data here?>\n<doc xmlns=\"http://ns.example.net/doc\" xmlns:ns1=\"http://ns.example.net/ns1\">\n  <!-- Nested comment block --><!-- Another comment -->\n  <ns1:section id=\"s1\">&derived;</ns1:section>\n  <extra>\n    <![CDATA[\n      <!-- Inside CDATA, looks like a comment but isn't -->\n      <section>CDATA section content</section>\n    ]]>\n  </extra>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (item)*>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY ent1 \"First Entity\">\n  <!ENTITY ent2 \"&ent1; Second Entity\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n]>\n<?xml-debug log-level=\"verbose\"?>\n<archive xmlns=\"http://www.example.org/archive\" xmlns:meta=\"http://www.example.org/meta\">\n  <!-- Complex comment header -->\n  <meta:details>\n    <![CDATA[\n      Metadata payload: &ent2; with <tags> and attributes.\n    ]]>\n  </meta:details>\n  <item>&ent2;</item>\n</archive>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (product)*>\n  <!ELEMENT product (#PCDATA)>\n  <!ENTITY company \"Widgets Inc.\">\n  <!ENTITY % entitySet \"\n    <!ENTITY internal 'Internal Data'>\n    <!ELEMENT description (#PCDATA)>\n  \">\n  %entitySet;\n]>\n<?custom-pi action=\"validate\" target=\"inventory\"?>\n<inventory xmlns=\"http://inventory.example.com\" xmlns:x=\"http://inventory.example.com/x\">\n  <!-- Comment about the product list and entities -->\n  <product id=\"p1\">&company; - &internal;</product>\n  <description>\n    <![CDATA[\n      Description section with <product>&internal;</product> markup.\n    ]]>\n  </description>\n  <x:product>Extra namespace product</x:product>\n</inventory>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \" <!ENTITY ent 'parsed-entity-value'> \">\n  %pe;\n  <!ENTITY ext SYSTEM \"nonexistent.ent\">\n]>\n<?target data=\"processing-instruction-test\"?>\n<root xmlns=\"http://example.com/ns\" xmlns:sub=\"http://example.com/sub\">\n  <!-- Leading comment explaining the test case -->\n  <sub:child id=\"c1\">&ent;</sub:child>\n  <child>\n    <![CDATA[\n      Some raw CDATA text with markup: <child>nested</child> &ent;\n    ]]>\n  </child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (book)*>\n  <!ELEMENT book (#PCDATA)>\n  <!ENTITY author \"John Doe\">\n  <!ENTITY % dtdMacro \"<!ELEMENT note (#PCDATA)>\">\n  %dtdMacro;\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"style.xsl\"?>\n<catalog xmlns=\"http://schemas.example.org/catalog\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Comment containing special characters <>&'\" -->\n  <book xlink:type=\"simple\">Book authored by &author;</book>\n  <note>\n    <![CDATA[\n      CDATA section containing unescaped entities &author; and tags <book>.\n    ]]>\n  </note>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section)*>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY base \"BaseEntity\">\n  <!ENTITY derived \"&base;Derived\">\n  <!ENTITY % extDecl \" <!ELEMENT extra (#PCDATA)> \">\n  %extDecl;\n]>\n<?pi-target processing instruction data here?>\n<doc xmlns=\"http://ns.example.net/doc\" xmlns:ns1=\"http://ns.example.net/ns1\">\n  <!-- Nested comment block --><!-- Another comment -->\n  <ns1:section id=\"s1\">&derived;</ns1:section>\n  <extra>\n    <![CDATA[\n      <!-- Inside CDATA, looks like a comment but isn't -->\n      <section>CDATA section content</section>\n    ]]>\n  </extra>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (item)*>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY ent1 \"First Entity\">\n  <!ENTITY ent2 \"&ent1; Second Entity\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n]>\n<?xml-debug log-level=\"verbose\"?>\n<archive xmlns=\"http://www.example.org/archive\" xmlns:meta=\"http://www.example.org/meta\">\n  <!-- Complex comment header -->\n  <meta:details>\n    <![CDATA[\n      Metadata payload: &ent2; with <tags> and attributes.\n    ]]>\n  </meta:details>\n  <item>&ent2;</item>\n</archive>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (product)*>\n  <!ELEMENT product (#PCDATA)>\n  <!ENTITY company \"Widgets Inc.\">\n  <!ENTITY % entitySet \"\n    <!ENTITY internal 'Internal Data'>\n    <!ELEMENT description (#PCDATA)>\n  \">\n  %entitySet;\n]>\n<?custom-pi action=\"validate\" target=\"inventory\"?>\n<inventory xmlns=\"http://inventory.example.com\" xmlns:x=\"http://inventory.example.com/x\">\n  <!-- Comment about the product list and entities -->\n  <product id=\"p1\">&company; - &internal;</product>\n  <description>\n    <![CDATA[\n      Description section with <product>&internal;</product> markup.\n    ]]>\n  </description>\n  <x:product>Extra namespace product</x:product>\n</inventory>\n```",
+              "thoughtSignature": "EjQKMgERTTIP0VWdt6LS7xZPcoQLhfUq/WZyS6Pi7iV5HGG6wgGjmUTjZtF7LvaEZFmGaKbd"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2613,
+      "candidatesTokenCount": 989,
+      "totalTokenCount": 3602,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 2613
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "03N2aqywCeqqjuMP-dOUiQE"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

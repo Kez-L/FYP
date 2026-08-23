@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE response [
+  <!ELEMENT response (payload)*>
+  <!ELEMENT payload (#PCDATA)>
+  <!ENTITY e_alpha "Alpha">
+  <!ENTITY e_beta "Beta &e_alpha;">
+  <!ENTITY e_gamma "Gamma &e_beta;">
+  <!NOTATION txt SYSTEM "text/plain">
+  <!ENTITY note SYSTEM "readme.txt" NDATA txt>
+]>
+<?xml-log level="debug" component="parser"?>
+<response xmlns="http://example.net/response" xmlns:api="http://example.net/api">
+  <!-- Comment block containing entity references &e_gamma; inside -->
+  <api:payload api:version="2.0">
+    <?api-control mode="strict"?>
+    <![CDATA[
+      Raw payload payload block: <response>&e_gamma;</response>
+    ]]>
+  </api:payload>
+  <payload>&e_gamma;</payload>
+</response>

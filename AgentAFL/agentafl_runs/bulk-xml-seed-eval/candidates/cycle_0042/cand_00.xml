@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % ent "<!ENTITY internal 'Expanded value'>">
+  %ent;
+  <!ENTITY ext SYSTEM "nonexistent.ent">
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.com/ns" xmlns:sub="http://example.com/sub">
+  <!-- Top-level comment exercising parser comment state machine -->
+  <sub:child id="c1">
+    <![CDATA[ CDATA block with <tags> & entities like &internal; inside ]]>
+  </sub:child>
+  <child>&internal;</child>
+</root>

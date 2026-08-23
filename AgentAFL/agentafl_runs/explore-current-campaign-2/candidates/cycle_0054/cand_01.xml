@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % local_macro "<!ENTITY nested 'Deeply nested entity value'>">
+  %local_macro;
+  <!ENTITY ext SYSTEM "nonexistent.ent">
+]>
+<?xml-debug level="high" mode="test"?>
+<root xmlns="urn:test:root" xmlns:sub="urn:test:sub">
+  <!-- Multi-line comment 
+       with various symbols <>&'" -->
+  <sub:child>
+    <![CDATA[
+      First CDATA block with <sub:child> markup.
+    ]]>
+    &nested;
+  </sub:child>
+  <child>
+    <![CDATA[
+      Second CDATA block.
+    ]]>
+  </child>
+</root>

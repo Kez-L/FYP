@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE system [
+  <!ELEMENT system (node)*>
+  <!ELEMENT node (#PCDATA)>
+  <!ENTITY alpha "Alpha">
+  <!ENTITY beta "&alpha; Beta">
+  <!ENTITY gamma "&beta; Gamma">
+  <!ENTITY % p1 "<!ENTITY delta '&gamma; Delta'>">
+  %p1;
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY rawdata SYSTEM "data.bin" NDATA bin>
+]>
+<?perf-log active="yes" level="debug"?>
+<system xmlns="http://system.org/schema" xmlns:cfg="http://system.org/schema/config">
+  <!-- Deep entity chain test inside comment -->
+  <cfg:node cfg:name="main">
+    <![CDATA[
+      <node>&delta;</node> inside CDATA section.
+    ]]>
+  </cfg:node>
+  <node>&delta;</node>
+</system>

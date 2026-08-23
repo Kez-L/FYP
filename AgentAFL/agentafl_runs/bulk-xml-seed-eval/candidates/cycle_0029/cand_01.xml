@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ELEMENT doc (section+)>
+  <!ELEMENT section (#PCDATA | sub)*>
+  <!ELEMENT sub (#PCDATA)>
+  <!ENTITY % p1 "<!ENTITY inner 'parameter-expanded'>">
+  %p1;
+  <!ENTITY ref "&inner; and more">
+]>
+<?xml-model href="schema.rng" type="application/xml-relax-ng"?>
+<doc xmlns="http://xml.org/doc" xmlns:m="http://xml.org/math">
+  <!-- Section comment with some special chars <>& -->
+  <section id="s1">
+    <?pi-target data="value"?>
+    <![CDATA[
+      Nesting CDATA: &ref; <m:math></m:math>
+    ]]>
+    <m:sub>&ref;</m:sub>
+  </section>
+</doc>

@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % param \"<!ENTITY ent 'ResolvedParamEntity'>\">\n  %param;\n  <!ENTITY entRef \"&ent;\">\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<root xmlns=\"http://example.org/ns/base\" xmlns:sub=\"http://example.org/ns/sub\">\n  <!-- Leading comment with multiple rare constructs -->\n  <sub:child id=\"1\">\n    <![CDATA[ CDATA section containing &entRef; and tags <child> ]]>\n  </sub:child>\n  <child>&entRef;</child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY % extEnt SYSTEM \"external.ent\">\n  %extEnt;\n  <!ENTITY baseEnt \"Base Entity\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n]>\n<?xml-processing-instruction target=\"validator\" status=\"active\"?>\n<catalog xmlns=\"http://schema.org/catalog\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Comment about namespace and processing instructions -->\n  <item xlink:type=\"simple\">\n    <![CDATA[\n      Some raw data with entities: &baseEnt;\n    ]]>\n  </item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (data)*>\n  <!ELEMENT data (#PCDATA)>\n  <!ENTITY % macroDefs \"\n    <!ENTITY e1 'First'>\n    <!ENTITY e2 '&e1; Second'>\n  \">\n  %macroDefs;\n]>\n<?target-pi data=\"test-mode\"?>\n<archive xmlns=\"urn:archive:root\" xmlns:meta=\"urn:archive:meta\">\n  <!-- Comment block containing markup: <data>not parsed</data> -->\n  <meta:info>\n    <![CDATA[\n      CDATA inside metadata with &e2;\n    ]]>\n  </meta:info>\n  <data>&e2;</data>\n</archive>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (stock)*>\n  <!ELEMENT stock (#PCDATA)>\n  <!ENTITY itemA \"Widget A\">\n  <!ENTITY itemB \"Widget B &itemA;\">\n  <!ENTITY % internalParam \"<!ELEMENT stock (#PCDATA | sub)*>\">\n  %internalParam;\n  <!ELEMENT sub (#PCDATA)>\n]>\n<?xml-model href=\"schema.rng\" type=\"application/xml-relax-ng\"?>\n<inventory xmlns=\"http://inventory.org/ns\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n  <!-- Inventory comment explaining entities &itemB; -->\n  <stock>\n    <![CDATA[\n      <sub-element>Raw CDATA block content</sub-element>\n    ]]>\n    &itemB;\n  </stock>\n</inventory>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (section)*>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY ref1 \"Value 1\">\n  <!ENTITY ref2 \"Value 2 &ref1;\">\n  <!ENTITY % dtdMacro \"<!ENTITY complexRef '&ref2; Final'>\">\n  %dtdMacro;\n]>\n<?xml-debug level=\"verbose\" target=\"parser\"?>\n<document xmlns=\"http://example.com/ns/doc\" xmlns:ns=\"http://example.com/ns/other\">\n  <!-- Top comment preceding deep entity and CDATA usage -->\n  <ns:section>\n    <![CDATA[\n      Unparsed CDATA region with entities &complexRef; inside\n    ]]>\n  </ns:section>\n  <section>&complexRef;</section>\n</document>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % param \"<!ENTITY ent 'ResolvedParamEntity'>\">\n  %param;\n  <!ENTITY entRef \"&ent;\">\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<root xmlns=\"http://example.org/ns/base\" xmlns:sub=\"http://example.org/ns/sub\">\n  <!-- Leading comment with multiple rare constructs -->\n  <sub:child id=\"1\">\n    <![CDATA[ CDATA section containing &entRef; and tags <child> ]]>\n  </sub:child>\n  <child>&entRef;</child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY % extEnt SYSTEM \"external.ent\">\n  %extEnt;\n  <!ENTITY baseEnt \"Base Entity\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n]>\n<?xml-processing-instruction target=\"validator\" status=\"active\"?>\n<catalog xmlns=\"http://schema.org/catalog\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Comment about namespace and processing instructions -->\n  <item xlink:type=\"simple\">\n    <![CDATA[\n      Some raw data with entities: &baseEnt;\n    ]]>\n  </item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (data)*>\n  <!ELEMENT data (#PCDATA)>\n  <!ENTITY % macroDefs \"\n    <!ENTITY e1 'First'>\n    <!ENTITY e2 '&e1; Second'>\n  \">\n  %macroDefs;\n]>\n<?target-pi data=\"test-mode\"?>\n<archive xmlns=\"urn:archive:root\" xmlns:meta=\"urn:archive:meta\">\n  <!-- Comment block containing markup: <data>not parsed</data> -->\n  <meta:info>\n    <![CDATA[\n      CDATA inside metadata with &e2;\n    ]]>\n  </meta:info>\n  <data>&e2;</data>\n</archive>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (stock)*>\n  <!ELEMENT stock (#PCDATA)>\n  <!ENTITY itemA \"Widget A\">\n  <!ENTITY itemB \"Widget B &itemA;\">\n  <!ENTITY % internalParam \"<!ELEMENT stock (#PCDATA | sub)*>\">\n  %internalParam;\n  <!ELEMENT sub (#PCDATA)>\n]>\n<?xml-model href=\"schema.rng\" type=\"application/xml-relax-ng\"?>\n<inventory xmlns=\"http://inventory.org/ns\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n  <!-- Inventory comment explaining entities &itemB; -->\n  <stock>\n    <![CDATA[\n      <sub-element>Raw CDATA block content</sub-element>\n    ]]>\n    &itemB;\n  </stock>\n</inventory>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (section)*>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY ref1 \"Value 1\">\n  <!ENTITY ref2 \"Value 2 &ref1;\">\n  <!ENTITY % dtdMacro \"<!ENTITY complexRef '&ref2; Final'>\">\n  %dtdMacro;\n]>\n<?xml-debug level=\"verbose\" target=\"parser\"?>\n<document xmlns=\"http://example.com/ns/doc\" xmlns:ns=\"http://example.com/ns/other\">\n  <!-- Top comment preceding deep entity and CDATA usage -->\n  <ns:section>\n    <![CDATA[\n      Unparsed CDATA region with entities &complexRef; inside\n    ]]>\n  </ns:section>\n  <section>&complexRef;</section>\n</document>\n```",
+              "thoughtSignature": "EjQKMgERTTIPm7tRf1FWnjhD0fYWMtTyqMpRBsV+uj49YIRrqRLxnu85oDMsfq1wjvwV/3LW"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2613,
+      "candidatesTokenCount": 969,
+      "totalTokenCount": 3582,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 2613
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "uNp2at-9L_njjuMP88qOiA4"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

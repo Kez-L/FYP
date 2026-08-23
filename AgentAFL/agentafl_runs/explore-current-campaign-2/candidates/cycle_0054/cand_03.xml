@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE database [
+  <!ELEMENT database (record*)>
+  <!ELEMENT record (#PCDATA)>
+  <!ENTITY ent1 "Entity One">
+  <!ENTITY ent2 "&ent1; and Entity Two">
+  <!ENTITY % param_ent "<!ELEMENT meta (#PCDATA)>">
+  %param_ent;
+]>
+<?xml-server port="8080" protocol="http"?>
+<database xmlns="http://db.org/ns" xmlns:db="http://db.org/ns/ext">
+  <!-- Comment before a complex mixed content node -->
+  <record>
+    <?db-action query="select *"?>
+    <![CDATA[
+      Raw payload data containing <record>&ent2;</record> tags.
+    ]]>
+    &ent2;
+  </record>
+</database>

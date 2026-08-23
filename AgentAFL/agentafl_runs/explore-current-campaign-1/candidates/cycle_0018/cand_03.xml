@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE testsuite [
+  <!ELEMENT testsuite (case*)>
+  <!ELEMENT case (#PCDATA)>
+  <!ENTITY e1 "Val1">
+  <!ENTITY e2 "&e1; Val2">
+  <!ENTITY e3 "&e2; Val3">
+]>
+<?checker-instruction mode="strict"?>
+<testsuite xmlns="http://qa.org/test" xmlns:custom="http://qa.org/custom">
+  <!-- High recursion potential entity combination test -->
+  <custom:case id="1">
+    <?custom-meta debug="true"?>
+    <![CDATA[
+      CDATA inside a heavily namespaced custom element structure.
+    ]]>
+    &e3;
+  </custom:case>
+</testsuite>

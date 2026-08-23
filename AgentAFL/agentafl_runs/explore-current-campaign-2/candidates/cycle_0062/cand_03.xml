@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record)*>
+  <!ELEMENT record (#PCDATA)>
+  <!ENTITY entA "Value A">
+  <!ENTITY entB "Value B: &entA;">
+  <!ENTITY % param "<!ENTITY entC 'Value C'>">
+  %param;
+  <!NOTATION tiff SYSTEM "image/tiff">
+  <!ENTITY scan SYSTEM "scan.tiff" NDATA tiff>
+]>
+<?xml-debug level="verbose" mode="test"?>
+<archive xmlns="http://archive.org/ns" xmlns:meta="http://archive.org/ns/meta">
+  <!-- Comment before complex structured sections -->
+  <meta:record id="rec1">
+    <![CDATA[
+      Raw CDATA record containing &entB; and &entC;
+    ]]>
+  </meta:record>
+  <meta:record id="rec2">&entB;</meta:record>
+</archive>

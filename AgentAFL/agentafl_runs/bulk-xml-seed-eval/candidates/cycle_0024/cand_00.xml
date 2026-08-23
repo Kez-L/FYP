@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % ent "<!ENTITY internal 'parsed value'>">
+  %ent;
+  <!ENTITY ext SYSTEM "nonexistent.ent">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY binary-data SYSTEM "logo.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.com/ns/root" xmlns:sub="http://example.com/ns/sub" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Root level comment with entity reference &internal; -->
+  <?target-pi data="processing instruction content with &internal;"?>
+  <child sub:id="1" xlink:type="simple">
+    <![CDATA[
+      CDATA section containing markup <child>&internal;</child> and symbols.
+    ]]>
+  </child>
+  <child sub:id="2">&internal;</child>
+</root>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE container [
+  <!ELEMENT container (content)*>
+  <!ELEMENT content (#PCDATA)>
+  <!ENTITY token "SecretToken">
+  <!ENTITY % secDef "<!ENTITY secToken 'Secured-&token;'>">
+  %secDef;
+  <!NOTATION txt SYSTEM "text/plain">
+  <!ENTITY readme SYSTEM "README.txt" NDATA txt>
+]>
+<?xml-security policy="strict"?>
+<container xmlns="http://example.org/container" xmlns:c="http://example.org/container" xmlns:x="http://example.org/ext">
+  <!-- Comment containing entity &secToken; -->
+  <c:content>
+    <![CDATA[
+      Protected CDATA content with markup <node>&secToken;</node>
+    ]]>
+  </c:content>
+  <x:content>&secToken;</x:content>
+</container>

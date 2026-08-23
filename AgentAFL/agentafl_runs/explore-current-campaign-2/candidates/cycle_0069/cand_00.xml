@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % param "
+    <!ENTITY ent 'Parsed Entity Data'>
+    <!NOTATION png SYSTEM 'image/png'>
+    <!ENTITY ext SYSTEM 'ext.png' NDATA png>
+  ">
+  %param;
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.com/ns" xmlns:sub="http://example.com/sub" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- This is a comment containing an entity reference &ent; -->
+  <sub:child xlink:type="simple">
+    <![CDATA[
+      CDATA section with <tags>, &ent;, and other entities inside.
+    ]]>
+  </sub:child>
+  <child id="elem2">&ent;</child>
+</root>

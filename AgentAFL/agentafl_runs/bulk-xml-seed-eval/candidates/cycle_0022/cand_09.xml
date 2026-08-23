@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (property*)>
+  <!ELEMENT property (name, value)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ENTITY prop.val "DynamicValue">
+  <!ENTITY % dtd.macro "<!ENTITY prop.val.ext 'ExtendedDynamicValue'>">
+  %dtd.macro;
+  <!NOTATION conf SYSTEM "text/plain">
+  <!ENTITY readme SYSTEM "README.txt" NDATA conf>
+]>
+<?config-processing mode="auto"?>
+<configuration xmlns="http://example.com/config" xmlns:ns="http://example.com/ns">
+  <!-- Configuration property list -->
+  <property>
+    <name>Param1</name>
+    <value>
+      <![CDATA[
+        Raw property value with <markup> and entity &prop.val; &prop.val.ext;
+      ]]>
+    </value>
+  </property>
+  <property>
+    <name>Param2</name>
+    <value>&prop.val.ext;</value>
+  </property>
+</configuration>

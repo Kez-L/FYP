@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (stock)*>
+  <!ELEMENT stock (#PCDATA)>
+  <!ENTITY alpha "Alpha Entity">
+  <!ENTITY beta "&alpha; + Beta Entity">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+]>
+<?xml-model href="schema.rng" type="application/xml-relax-ng"?>
+<inventory xmlns="http://example.org/inventory" xmlns:loc="http://example.org/inventory/loc">
+  <!-- Detailed inventory comment with entity references &beta; -->
+  <stock loc:warehouse="central">
+    <![CDATA[
+      <stock-item id="001">
+        Data inside CDATA with special chars <>&"'
+      </stock-item>
+    ]]>
+  </stock>
+  <?loc:audit status="verified" timestamp="2023-10-01"?>
+  <stock>&beta;</stock>
+</inventory>

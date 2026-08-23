@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE database [
+  <!ELEMENT database (table)*>
+  <!ELEMENT table (#PCDATA)>
+  <!ENTITY db-user "AdminUser">
+  <!ENTITY db-pass "SecretPass">
+  <!ENTITY db-conn "&db-user;:&db-pass@localhost">
+  <!ENTITY % db-macro "<!ELEMENT column (#PCDATA)>">
+  %db-macro;
+]>
+<?xml-init script="startup.js"?>
+<database xmlns="http://db.org/schema" xmlns:db="http://db.org/schema/db">
+  <!-- Database connection parameters comment -->
+  <db:table name="users">
+    <?db-cmd action="connect"?>
+    <![CDATA[
+      Connection string inside CDATA: &db-conn;
+    ]]>
+    &db-user;
+  </db:table>
+</database>

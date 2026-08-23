@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite [
+  <!ELEMENT suite (test)*>
+  <!ELEMENT test (#PCDATA)>
+  <!ENTITY base "BaseEntity">
+  <!ENTITY derived "&base;Derived">
+  <!ENTITY % macroParam "<!ENTITY extraParam 'ExtraValue'>">
+  %macroParam;
+]>
+<?xml-stylesheet type="text/xsl" href="suite.xsl"?>
+<suite xmlns="http://example.org/suite" xmlns:s="http://example.org/suite" xmlns:meta="http://example.org/meta">
+  <!-- Suite-level comment for testing parser robustness -->
+  <meta:info>
+    <![CDATA[
+      CDATA block with &base; and &derived; references.
+    ]]>
+  </meta:info>
+  <s:test>&derived; - &extraParam;</s:test>
+</suite>

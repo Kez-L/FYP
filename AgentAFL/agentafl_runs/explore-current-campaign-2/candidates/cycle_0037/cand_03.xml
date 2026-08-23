@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record)*>
+  <!ELEMENT record (#PCDATA)>
+  <!ENTITY alpha "Alpha Value">
+  <!ENTITY beta "&alpha; -> Beta Value">
+  <!ENTITY % inner "
+    <!ELEMENT record (#PCDATA)>
+    <!ENTITY gamma 'Gamma Value'>
+  ">
+  %inner;
+]>
+<?xml-log level="debug" destination="stdout"?>
+<archive xmlns="http://example.org/archive" xmlns:log="http://example.org/archive/log">
+  <!-- Comment highlighting entity expansions -->
+  <record log:level="info">
+    &beta; &gamma;
+  </record>
+  <record>
+    <![CDATA[
+      CDATA text with entities like &beta; (unexpanded)
+    ]]>
+  </record>
+</archive>

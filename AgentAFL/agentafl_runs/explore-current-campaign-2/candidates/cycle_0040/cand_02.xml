@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE enterprise [
+  <!ELEMENT enterprise (department*)>
+  <!ELEMENT department (#PCDATA)>
+  <!ENTITY ent_a "Alpha">
+  <!ENTITY ent_b "&ent_a; Beta">
+  <!ENTITY % pe "<!ELEMENT department (#PCDATA)>">
+  %pe;
+  <?xml-debug log-level="verbose"?>
+]>
+<enterprise xmlns="http://enterprise.org/ns" xmlns:hr="http://enterprise.org/ns/hr">
+  <!-- Begin enterprise root structure -->
+  <?hr:audit status="pending"?>
+  <hr:department>
+    <![CDATA[
+      CDATA block containing legacy entities: &ent_b;
+    ]]>
+  </hr:department>
+  <department>&ent_b;</department>
+</enterprise>

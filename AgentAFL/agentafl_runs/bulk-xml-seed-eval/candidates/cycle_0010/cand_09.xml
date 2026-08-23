@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE container [
+  <!ELEMENT container (node*)>
+  <!ELEMENT node (#PCDATA)>
+  <!ENTITY % defs "<!ENTITY inner 'InnerContent'>">
+  %defs;
+  <!ENTITY outer 'OuterWrapper &inner;'>
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY bin-data SYSTEM "data.bin" NDATA binary>
+]>
+<?xml-model href="val.sch" type="application/xml-schematron"?>
+<container xmlns="http://xml.org/container" xmlns:ns="http://xml.org/container/ns">
+  <!-- Container root comment block -->
+  <?ns-pi command="verify"?>
+  <ns:element>
+    <![CDATA[
+      Container CDATA section with entity: &outer;
+    ]]>
+  </ns:element>
+  <node>&outer;</node>
+</container>

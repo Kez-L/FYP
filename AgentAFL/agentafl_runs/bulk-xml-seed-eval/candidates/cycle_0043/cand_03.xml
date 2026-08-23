@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (product*)>
+  <!ELEMENT product (#PCDATA)>
+  <!ENTITY e1 "Alpha">
+  <!ENTITY e2 "&e1; Beta">
+  <!ENTITY e3 "&e2; Gamma">
+  <!NOTATION notation-type SYSTEM "notation.dat">
+  <!ENTITY ent-ndata SYSTEM "binary.dat" NDATA notation-type>
+]>
+<?xml-stylesheet type="text/css" href="inventory.css"?>
+<inventory xmlns="http://example.com/inv" xmlns:inv="http://example.com/inv/sub">
+  <!-- Comment: Testing deep entity expansions and CDATA coexistence -->
+  <inv:product>
+    <![CDATA[
+      <product-info code="XYZ">
+        Description: &e3;
+      </product-info>
+    ]]>
+  </inv:product>
+  <product>&e3;</product>
+</inventory>

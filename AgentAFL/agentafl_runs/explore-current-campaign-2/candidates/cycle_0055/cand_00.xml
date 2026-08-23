@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % param "<!ENTITY ent 'Parsed Entity Value'>">
+  %param;
+  <!ENTITY ext SYSTEM "nonexistent.ent">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY imgdata SYSTEM "logo.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.com/ns/root" xmlns:sub="http://example.com/ns/sub" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Top level comment exercising processor comment handlers -->
+  <?sub:pi processing-instruction-data="true"?>
+  <sub:child xlink:type="simple" xlink:href="http://example.com">
+    <![CDATA[
+      CDATA section containing markup-like strings: <child>&ent;</child>
+    ]]>
+  </sub:child>
+  <child>&ent;</child>
+</root>

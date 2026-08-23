@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \" <!ENTITY ent 'parameterized'> \">\n  %pe;\n  <!ENTITY base \"Expanded &ent;\">\n  <?target-pi data=\"processing-instruction-value\"?>\n]>\n<root xmlns=\"http://example.com/ns1\" xmlns:sub=\"http://example.com/ns2\" sub:attr=\"value\">\n  <!-- Top level document comment -->\n  <sub:child>\n    <?sub:pi processing=\"true\"?>\n    <![CDATA[\n      CDATA section containing markup-like characters: <tag> &amp; \"quotes\"\n    ]]>\n    &base;\n  </sub:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY customEntity \"Entity expansion text\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY externalImg SYSTEM \"img.png\" NDATA png>\n  <?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n]>\n<doc xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:custom=\"http://example.org/custom\">\n  <!-- Multi-line\n       comment block with special tokens <>& -->\n  <custom:section id=\"s1\">\n    <?target instruction-data?>\n    <![CDATA[Nested CDATA with <tag> and &entity; syntax inside]]>\n    &customEntity;\n  </custom:section>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY ent1 \"First\">\n  <!ENTITY ent2 \"&ent1; and Second\">\n  <?catalog-meta version=\"2.0\"?>\n]>\n<catalog xmlns=\"urn:iso:std:iso:20022:tech:xsd:head.001.001.01\" xmlns:ns=\"http://example.com/ns\">\n  <!-- Important catalog comment describing layout -->\n  <ns:item>\n    <?ns-action run?>\n    <![CDATA[Raw data block 1: <root>&copy;</root>]]>\n    &ent2;\n  </ns:item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE testsuite [\n  <!ELEMENT testsuite (testcase+)>\n  <!ELEMENT testcase (#PCDATA)>\n  <!ENTITY % external_param SYSTEM \"http://localhost/external.dtd\">\n  %external_param;\n  <!ENTITY resolved \"Successfully resolved\">\n  <?logger debug=\"on\"?>\n]>\n<testsuite xmlns=\"http://example.org/ts\" xmlns:t=\"http://example.org/ts/types\">\n  <!-- Test suite initialization comment -->\n  <t:testcase name=\"case1\">\n    <?t:directive execute=\"now\"?>\n    <![CDATA[\n      <testcase-data>\n        <value>Some &resolved; CDATA payload</value>\n      </testcase-data>\n    ]]>\n  </t:testcase>\n</testsuite>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (content)*>\n  <!ELEMENT content (#PCDATA)>\n  <!ENTITY % local_pe \"<!ELEMENT internal (#PCDATA)>\">\n  %local_pe;\n  <!ENTITY textEnt \"Safe text substitution\">\n  <?render-engine type=\"vector\"?>\n]>\n<document xmlns=\"http://docbook.org/ns/docbook\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Document level descriptive comment -->\n  <content>\n    <?xlink-link act0=\"load\"?>\n    <![CDATA[\n      Complex CDATA with unescaped markup: <foo attr=\"bar\">&textEnt;</foo>\n    ]]>\n    &textEnt;\n  </content>\n</document>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \" <!ENTITY ent 'parameterized'> \">\n  %pe;\n  <!ENTITY base \"Expanded &ent;\">\n  <?target-pi data=\"processing-instruction-value\"?>\n]>\n<root xmlns=\"http://example.com/ns1\" xmlns:sub=\"http://example.com/ns2\" sub:attr=\"value\">\n  <!-- Top level document comment -->\n  <sub:child>\n    <?sub:pi processing=\"true\"?>\n    <![CDATA[\n      CDATA section containing markup-like characters: <tag> &amp; \"quotes\"\n    ]]>\n    &base;\n  </sub:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY customEntity \"Entity expansion text\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY externalImg SYSTEM \"img.png\" NDATA png>\n  <?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n]>\n<doc xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:custom=\"http://example.org/custom\">\n  <!-- Multi-line\n       comment block with special tokens <>& -->\n  <custom:section id=\"s1\">\n    <?target instruction-data?>\n    <![CDATA[Nested CDATA with <tag> and &entity; syntax inside]]>\n    &customEntity;\n  </custom:section>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY ent1 \"First\">\n  <!ENTITY ent2 \"&ent1; and Second\">\n  <?catalog-meta version=\"2.0\"?>\n]>\n<catalog xmlns=\"urn:iso:std:iso:20022:tech:xsd:head.001.001.01\" xmlns:ns=\"http://example.com/ns\">\n  <!-- Important catalog comment describing layout -->\n  <ns:item>\n    <?ns-action run?>\n    <![CDATA[Raw data block 1: <root>&copy;</root>]]>\n    &ent2;\n  </ns:item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE testsuite [\n  <!ELEMENT testsuite (testcase+)>\n  <!ELEMENT testcase (#PCDATA)>\n  <!ENTITY % external_param SYSTEM \"http://localhost/external.dtd\">\n  %external_param;\n  <!ENTITY resolved \"Successfully resolved\">\n  <?logger debug=\"on\"?>\n]>\n<testsuite xmlns=\"http://example.org/ts\" xmlns:t=\"http://example.org/ts/types\">\n  <!-- Test suite initialization comment -->\n  <t:testcase name=\"case1\">\n    <?t:directive execute=\"now\"?>\n    <![CDATA[\n      <testcase-data>\n        <value>Some &resolved; CDATA payload</value>\n      </testcase-data>\n    ]]>\n  </t:testcase>\n</testsuite>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (content)*>\n  <!ELEMENT content (#PCDATA)>\n  <!ENTITY % local_pe \"<!ELEMENT internal (#PCDATA)>\">\n  %local_pe;\n  <!ENTITY textEnt \"Safe text substitution\">\n  <?render-engine type=\"vector\"?>\n]>\n<document xmlns=\"http://docbook.org/ns/docbook\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Document level descriptive comment -->\n  <content>\n    <?xlink-link act0=\"load\"?>\n    <![CDATA[\n      Complex CDATA with unescaped markup: <foo attr=\"bar\">&textEnt;</foo>\n    ]]>\n    &textEnt;\n  </content>\n</document>\n```",
+              "thoughtSignature": "EjQKMgERTTIPDg+lFBTQkNBR/1/7MMS0ywTCFyqMuARtLKaQ9CDfdi1QGMLEmbcAWh/xLsxe"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2675,
+      "candidatesTokenCount": 977,
+      "totalTokenCount": 3652,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 2675
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "I851aunpDsmujuMP9YmjuQU"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

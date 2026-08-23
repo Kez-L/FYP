@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (#PCDATA)>\n  <!ENTITY % pe \"<!-- internal parameter entity comment -->\">\n  %pe;\n  <!ENTITY ent \"General Entity Value\">\n  <?pi-target processing instruction data?>\n]>\n<root xmlns=\"http://example.com/ns\" xmlns:sub=\"http://example.com/sub\">\n  <!-- Top level comment -->\n  <sub:child>\n    <![CDATA[ CDATA section containing <tags> & entities like &ent; ]]>\n  </sub:child>\n  &ent;\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section*)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY % ext SYSTEM \"http://localhost/external.dtd\">\n  <!ENTITY ent \"EntityText\">\n  <?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n]>\n<doc xmlns=\"http://test.org/ns\" xmlns:m=\"http://test.org/ns/meta\">\n  <!-- Comment in root -->\n  <m:section>\n    <?target data?>\n    <![CDATA[\n      Some more CDATA with &ent; and markup-like text <foo></foo>\n    ]]>\n  </m:section>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY e1 \"Value 1\">\n  <!ENTITY e2 \"Value 2 &e1;\">\n  <!ENTITY % param \"<!ELEMENT nested (#PCDATA)>\">\n  %param;\n  <?xml-pi-test attr=\"val\"?>\n]>\n<catalog xmlns=\"http://example.org/catalog\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n  <!-- Comment describing catalog items -->\n  <item>\n    <?processing-instruction test?>\n    <![CDATA[\n      <nested>This is raw CDATA text with &e2;</nested>\n    ]]>\n  </item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE note [\n  <!ELEMENT note (to,from,body)>\n  <!ELEMENT to (#PCDATA)>\n  <!ELEMENT from (#PCDATA)>\n  <!ELEMENT body (#PCDATA)>\n  <!ENTITY writer \"John Doe\">\n  <!ENTITY recipient \"Jane Doe\">\n  <!ENTITY % dtd_comment \"<!-- DTD internal subset comment -->\">\n  %dtd_comment;\n  <?xml-stylesheet href=\"style.css\" type=\"text/css\"?>\n]>\n<note xmlns=\"http://www.w3.org/TR/html4/\" xmlns:custom=\"http://example.com/custom\">\n  <!-- Document header comment -->\n  <custom:header>\n    <?custom-pi action=\"process\"?>\n    <![CDATA[\n      <!-- Nested comment-like syntax inside CDATA -->\n      <to>&recipient;</to>\n      <from>&writer;</from>\n    ]]>\n  </custom:header>\n  <body>Hello World!</body>\n</note>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (#PCDATA)>\n  <!ENTITY base \"BaseEntity\">\n  <!ENTITY derived \"&base; Extended\">\n  <!ENTITY % markup \"<!ELEMENT subdata (#PCDATA)>\">\n  %markup;\n  <?pi-target data=\"value\"?>\n]>\n<document xmlns=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ns1=\"http://example.com/ns1\">\n  <!-- Start of document comment -->\n  <ns1:content>\n    <?target-instruction param=\"data\"?>\n    <![CDATA[\n      CDATA block containing special characters: <, >, &, ', \"\n      and entity reference simulation: &derived;\n    ]]>\n  </ns1:content>\n</document>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (#PCDATA)>\n  <!ENTITY % pe \"<!-- internal parameter entity comment -->\">\n  %pe;\n  <!ENTITY ent \"General Entity Value\">\n  <?pi-target processing instruction data?>\n]>\n<root xmlns=\"http://example.com/ns\" xmlns:sub=\"http://example.com/sub\">\n  <!-- Top level comment -->\n  <sub:child>\n    <![CDATA[ CDATA section containing <tags> & entities like &ent; ]]>\n  </sub:child>\n  &ent;\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section*)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY % ext SYSTEM \"http://localhost/external.dtd\">\n  <!ENTITY ent \"EntityText\">\n  <?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n]>\n<doc xmlns=\"http://test.org/ns\" xmlns:m=\"http://test.org/ns/meta\">\n  <!-- Comment in root -->\n  <m:section>\n    <?target data?>\n    <![CDATA[\n      Some more CDATA with &ent; and markup-like text <foo></foo>\n    ]]>\n  </m:section>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY e1 \"Value 1\">\n  <!ENTITY e2 \"Value 2 &e1;\">\n  <!ENTITY % param \"<!ELEMENT nested (#PCDATA)>\">\n  %param;\n  <?xml-pi-test attr=\"val\"?>\n]>\n<catalog xmlns=\"http://example.org/catalog\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n  <!-- Comment describing catalog items -->\n  <item>\n    <?processing-instruction test?>\n    <![CDATA[\n      <nested>This is raw CDATA text with &e2;</nested>\n    ]]>\n  </item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE note [\n  <!ELEMENT note (to,from,body)>\n  <!ELEMENT to (#PCDATA)>\n  <!ELEMENT from (#PCDATA)>\n  <!ELEMENT body (#PCDATA)>\n  <!ENTITY writer \"John Doe\">\n  <!ENTITY recipient \"Jane Doe\">\n  <!ENTITY % dtd_comment \"<!-- DTD internal subset comment -->\">\n  %dtd_comment;\n  <?xml-stylesheet href=\"style.css\" type=\"text/css\"?>\n]>\n<note xmlns=\"http://www.w3.org/TR/html4/\" xmlns:custom=\"http://example.com/custom\">\n  <!-- Document header comment -->\n  <custom:header>\n    <?custom-pi action=\"process\"?>\n    <![CDATA[\n      <!-- Nested comment-like syntax inside CDATA -->\n      <to>&recipient;</to>\n      <from>&writer;</from>\n    ]]>\n  </custom:header>\n  <body>Hello World!</body>\n</note>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (#PCDATA)>\n  <!ENTITY base \"BaseEntity\">\n  <!ENTITY derived \"&base; Extended\">\n  <!ENTITY % markup \"<!ELEMENT subdata (#PCDATA)>\">\n  %markup;\n  <?pi-target data=\"value\"?>\n]>\n<document xmlns=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ns1=\"http://example.com/ns1\">\n  <!-- Start of document comment -->\n  <ns1:content>\n    <?target-instruction param=\"data\"?>\n    <![CDATA[\n      CDATA block containing special characters: <, >, &, ', \"\n      and entity reference simulation: &derived;\n    ]]>\n  </ns1:content>\n</document>\n```",
+              "thoughtSignature": "EjQKMgERTTIPpEjwl0qclaZG8la8s8rd8XOfT+rfV1P5/CXOX3aRAfJ2vMxRdWdPD5a478DE"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 3040,
+      "candidatesTokenCount": 939,
+      "totalTokenCount": 3979,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 3040
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "oxx0aoXvEN6-g8UPwdnc8Q8"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

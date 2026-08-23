@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % ent \"<!ENTITY internal 'Expanded Entity Value'>\">\n  %ent;\n  <!ENTITY ext SYSTEM \"nonexistent.ent\">\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<root xmlns=\"http://example.org/ns1\" xmlns:ns2=\"http://example.org/ns2\" ns2:attr=\"value\">\n  <!-- This is a top-level comment describing the root element -->\n  <child ns2:id=\"c1\">\n    <![CDATA[\n      Some raw CDATA content with <tags> and &internal; references.\n    ]]>\n  </child>\n  <child>&internal;</child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (item+)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY % param \"CDATA\">\n  <!ENTITY base \"BaseEntity\">\n  <!ENTITY ref \"&base; Extended\">\n]>\n<?xml-processing-instruction target=\"validation\" status=\"pending\"?>\n<inventory xmlns=\"http://xml.example.com/inventory\" xmlns:v=\"http://xml.example.com/version\">\n  <!-- Primary Inventory Document Comment -->\n  <item v:id=\"item-001\">\n    <![CDATA[\n      CDATA block inside inventory item #1.\n    ]]>\n  </item>\n  <item v:id=\"item-002\">&ref;</item>\n</inventory>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (entry)*>\n  <!ELEMENT entry (#PCDATA)>\n  <!ENTITY ent1 \"First Entity\">\n  <!ENTITY ent2 \"&ent1; and Second\">\n  <!ENTITY % pe \"<!ELEMENT entry (#PCDATA)>\">\n  %pe;\n]>\n<?target-pi data=\"test-processing-instruction\"?>\n<catalog xmlns=\"http://catalog.org/ns\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Comment wrapping the catalog entries -->\n  <entry xlink:type=\"simple\">\n    <![CDATA[\n      Unparsed data section containing markup <entry> &ent2;\n    ]]>\n  </entry>\n  <entry>&ent2;</entry>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (record)*>\n  <!ELEMENT record (#PCDATA)>\n  <!ENTITY rec-ent \"Record Entity Value\">\n  <!ENTITY % local-pe \"<!ENTITY pe-test 'Param Entity'>\">\n  %local-pe;\n]>\n<?archive-meta author=\"TestRunner\" version=\"1.0\"?>\n<archive xmlns=\"http://archive.org/schema\" xmlns:meta=\"http://archive.org/meta\" meta:secure=\"true\">\n  <!-- Archive container comment block -->\n  <record meta:id=\"rec1\">\n    <![CDATA[\n      CDATA block with complex &rec-ent; and other symbols <>&'\"\n    ]]>\n  </record>\n  <record>&rec-ent;</record>\n</archive>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE project [\n  <!ELEMENT project (module)*>\n  <!ELEMENT module (#PCDATA)>\n  <!ENTITY shared \"Shared Value\">\n  <!ENTITY complex \"&shared; -> Nested\">\n  <!ENTITY % dtd-macro \"<!ENTITY macro-ent 'Macro Value'>\">\n  %dtd-macro;\n]>\n<?project-info status=\"active\" stage=\"fuzzing\"?>\n<project xmlns=\"http://project.net/ns\" xmlns:cfg=\"http://project.net/cfg\" cfg:mode=\"strict\">\n  <!-- Top-level comment explaining project configuration -->\n  <module cfg:id=\"mod1\">\n    <![CDATA[\n      Raw text container inside CDATA with &complex; &macro-ent;\n    ]]>\n  </module>\n  <module cfg:id=\"mod2\">&complex;</module>\n</project>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % ent \"<!ENTITY internal 'Expanded Entity Value'>\">\n  %ent;\n  <!ENTITY ext SYSTEM \"nonexistent.ent\">\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<root xmlns=\"http://example.org/ns1\" xmlns:ns2=\"http://example.org/ns2\" ns2:attr=\"value\">\n  <!-- This is a top-level comment describing the root element -->\n  <child ns2:id=\"c1\">\n    <![CDATA[\n      Some raw CDATA content with <tags> and &internal; references.\n    ]]>\n  </child>\n  <child>&internal;</child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (item+)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY % param \"CDATA\">\n  <!ENTITY base \"BaseEntity\">\n  <!ENTITY ref \"&base; Extended\">\n]>\n<?xml-processing-instruction target=\"validation\" status=\"pending\"?>\n<inventory xmlns=\"http://xml.example.com/inventory\" xmlns:v=\"http://xml.example.com/version\">\n  <!-- Primary Inventory Document Comment -->\n  <item v:id=\"item-001\">\n    <![CDATA[\n      CDATA block inside inventory item #1.\n    ]]>\n  </item>\n  <item v:id=\"item-002\">&ref;</item>\n</inventory>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (entry)*>\n  <!ELEMENT entry (#PCDATA)>\n  <!ENTITY ent1 \"First Entity\">\n  <!ENTITY ent2 \"&ent1; and Second\">\n  <!ENTITY % pe \"<!ELEMENT entry (#PCDATA)>\">\n  %pe;\n]>\n<?target-pi data=\"test-processing-instruction\"?>\n<catalog xmlns=\"http://catalog.org/ns\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Comment wrapping the catalog entries -->\n  <entry xlink:type=\"simple\">\n    <![CDATA[\n      Unparsed data section containing markup <entry> &ent2;\n    ]]>\n  </entry>\n  <entry>&ent2;</entry>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (record)*>\n  <!ELEMENT record (#PCDATA)>\n  <!ENTITY rec-ent \"Record Entity Value\">\n  <!ENTITY % local-pe \"<!ENTITY pe-test 'Param Entity'>\">\n  %local-pe;\n]>\n<?archive-meta author=\"TestRunner\" version=\"1.0\"?>\n<archive xmlns=\"http://archive.org/schema\" xmlns:meta=\"http://archive.org/meta\" meta:secure=\"true\">\n  <!-- Archive container comment block -->\n  <record meta:id=\"rec1\">\n    <![CDATA[\n      CDATA block with complex &rec-ent; and other symbols <>&'\"\n    ]]>\n  </record>\n  <record>&rec-ent;</record>\n</archive>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE project [\n  <!ELEMENT project (module)*>\n  <!ELEMENT module (#PCDATA)>\n  <!ENTITY shared \"Shared Value\">\n  <!ENTITY complex \"&shared; -> Nested\">\n  <!ENTITY % dtd-macro \"<!ENTITY macro-ent 'Macro Value'>\">\n  %dtd-macro;\n]>\n<?project-info status=\"active\" stage=\"fuzzing\"?>\n<project xmlns=\"http://project.net/ns\" xmlns:cfg=\"http://project.net/cfg\" cfg:mode=\"strict\">\n  <!-- Top-level comment explaining project configuration -->\n  <module cfg:id=\"mod1\">\n    <![CDATA[\n      Raw text container inside CDATA with &complex; &macro-ent;\n    ]]>\n  </module>\n  <module cfg:id=\"mod2\">&complex;</module>\n</project>\n```",
+              "thoughtSignature": "EjQKMgERTTIPSf+902tocmgjDidgGQtRdd1nE9r0H9m1cJFwxt47eUyQMGXvujFSTyedCPvj"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2613,
+      "candidatesTokenCount": 991,
+      "totalTokenCount": 3604,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 2613
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "9uV2atr5I_r8juMPh5SQuQ8"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \" <!ENTITY ent 'expanded_entity_value'> \">\n  %pe;\n  <!ENTITY base \"Base Entity &ent;\">\n  <?target data-processing-instruction?>\n]>\n<root xmlns=\"http://example.com/ns\" xmlns:sub=\"http://example.com/sub\">\n  <!-- Top-level comment containing markup-like chars <>&\"' -->\n  <sub:child>\n    <?sub:pi target=\"value\"?>\n    <![CDATA[\n      CDATA section with entities &base; and tags <root></root> inside.\n    ]]>\n    &base;\n  </sub:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc ANY>\n  <!ENTITY % ext SYSTEM \"nonexistent.ent\">\n  %ext;\n  <!ENTITY test \"Test &amp; Entity\">\n  <?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n]>\n<doc xmlns:x=\"http://example.org/x\" xmlns=\"http://example.org/default\">\n  <!-- Comment in default namespace -->\n  <x:element>\n    <?pi-target data=\"value\"?>\n    <![CDATA[\n      Nested CDATA block with xmlns:x attribute text.\n    ]]>\n    &test;\n  </x:element>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE note [\n  <!ELEMENT note (to,from,body)>\n  <!ELEMENT to (#PCDATA)>\n  <!ELEMENT from (#PCDATA)>\n  <!ELEMENT body (#PCDATA)>\n  <!ENTITY writer \"John Doe\">\n  <!ENTITY copyright \"Copyright \u00a9 2023\">\n  <!ENTITY % paramDTD \"<!ENTITY dynamic 'dynamic_value'>\">\n  %paramDTD;\n  <?xml-stylesheet type=\"text/css\" href=\"style.css\"?>\n]>\n<note xmlns=\"http://www.w3.org/TR/html4/\" xmlns:author=\"http://example.com/author\" xmlns:foo=\"http://example.com/foo\">\n  <!-- Author and copyright notice comment -->\n  <author:to>&writer;</author:to>\n  <from>&copyright;</from>\n  <foo:body>\n    <?foo-pi action=\"run\"?>\n    <![CDATA[\n      CDATA containing <foo:bar> and entity &dynamic; reference.\n    ]]>\n    &dynamic;\n  </foo:body>\n</note>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (book*)>\n  <!ELEMENT book (title, author)>\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT author (#PCDATA)>\n  <!ENTITY pub \"Global Publishing\">\n  <!ENTITY % entitySet \"<!ENTITY internal 'Nested &pub;'>\">\n  %entitySet;\n  <?catalog-control mode=\"strict\"?>\n]>\n<catalog xmlns:lib=\"http://library.org\" xmlns=\"http://default.org\">\n  <!-- Catalog comment block with entity &internal; hint -->\n  <lib:book>\n    <?lib:action type=\"refresh\"?>\n    <![CDATA[\n      Book description CDATA with special symbols: <, >, &, \", '\n    ]]>\n    <title>&internal;</title>\n    <author>Anonymous</author>\n  </lib:book>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (section)*>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY header \"Document Header\">\n  <!ENTITY content \"Document Content &header;\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n  <?doc-info author=\"Tester\" version=\"1.0\"?>\n]>\n<document xmlns=\"http://xml.org/document\" xmlns:sec=\"http://xml.org/section\">\n  <!-- Comprehensive test comment covering multiple subsystems -->\n  <sec:section>\n    <?sec:process command=\"compile\"?>\n    <![CDATA[\n      <!-- HTML/XML comment inside CDATA -->\n      <sec:inner>CDATA block content with &content;</sec:inner>\n    ]]>\n    &content;\n  </sec:section>\n</document>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \" <!ENTITY ent 'expanded_entity_value'> \">\n  %pe;\n  <!ENTITY base \"Base Entity &ent;\">\n  <?target data-processing-instruction?>\n]>\n<root xmlns=\"http://example.com/ns\" xmlns:sub=\"http://example.com/sub\">\n  <!-- Top-level comment containing markup-like chars <>&\"' -->\n  <sub:child>\n    <?sub:pi target=\"value\"?>\n    <![CDATA[\n      CDATA section with entities &base; and tags <root></root> inside.\n    ]]>\n    &base;\n  </sub:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc ANY>\n  <!ENTITY % ext SYSTEM \"nonexistent.ent\">\n  %ext;\n  <!ENTITY test \"Test &amp; Entity\">\n  <?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n]>\n<doc xmlns:x=\"http://example.org/x\" xmlns=\"http://example.org/default\">\n  <!-- Comment in default namespace -->\n  <x:element>\n    <?pi-target data=\"value\"?>\n    <![CDATA[\n      Nested CDATA block with xmlns:x attribute text.\n    ]]>\n    &test;\n  </x:element>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE note [\n  <!ELEMENT note (to,from,body)>\n  <!ELEMENT to (#PCDATA)>\n  <!ELEMENT from (#PCDATA)>\n  <!ELEMENT body (#PCDATA)>\n  <!ENTITY writer \"John Doe\">\n  <!ENTITY copyright \"Copyright \u00a9 2023\">\n  <!ENTITY % paramDTD \"<!ENTITY dynamic 'dynamic_value'>\">\n  %paramDTD;\n  <?xml-stylesheet type=\"text/css\" href=\"style.css\"?>\n]>\n<note xmlns=\"http://www.w3.org/TR/html4/\" xmlns:author=\"http://example.com/author\" xmlns:foo=\"http://example.com/foo\">\n  <!-- Author and copyright notice comment -->\n  <author:to>&writer;</author:to>\n  <from>&copyright;</from>\n  <foo:body>\n    <?foo-pi action=\"run\"?>\n    <![CDATA[\n      CDATA containing <foo:bar> and entity &dynamic; reference.\n    ]]>\n    &dynamic;\n  </foo:body>\n</note>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (book*)>\n  <!ELEMENT book (title, author)>\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT author (#PCDATA)>\n  <!ENTITY pub \"Global Publishing\">\n  <!ENTITY % entitySet \"<!ENTITY internal 'Nested &pub;'>\">\n  %entitySet;\n  <?catalog-control mode=\"strict\"?>\n]>\n<catalog xmlns:lib=\"http://library.org\" xmlns=\"http://default.org\">\n  <!-- Catalog comment block with entity &internal; hint -->\n  <lib:book>\n    <?lib:action type=\"refresh\"?>\n    <![CDATA[\n      Book description CDATA with special symbols: <, >, &, \", '\n    ]]>\n    <title>&internal;</title>\n    <author>Anonymous</author>\n  </lib:book>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (section)*>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY header \"Document Header\">\n  <!ENTITY content \"Document Content &header;\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n  <?doc-info author=\"Tester\" version=\"1.0\"?>\n]>\n<document xmlns=\"http://xml.org/document\" xmlns:sec=\"http://xml.org/section\">\n  <!-- Comprehensive test comment covering multiple subsystems -->\n  <sec:section>\n    <?sec:process command=\"compile\"?>\n    <![CDATA[\n      <!-- HTML/XML comment inside CDATA -->\n      <sec:inner>CDATA block content with &content;</sec:inner>\n    ]]>\n    &content;\n  </sec:section>\n</document>\n```",
+              "thoughtSignature": "EjQKMgERTTIP+0K6j/5UWfT7lt7+wAPbTFwkyK0jfFoB2bViprTQ4TPwg3UiOKP54FqNtpZL"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 3040,
+      "candidatesTokenCount": 1040,
+      "totalTokenCount": 4080,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 3040
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "Hit0ar2BHMX1juMPwomi4Qw"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

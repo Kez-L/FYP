@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record*)>
+  <!ELEMENT record (#PCDATA)>
+  <!ENTITY e1 "Value1">
+  <!ENTITY e2 "&e1; and Value2">
+  <!ENTITY % dtd-mod "<!ELEMENT record (#PCDATA|subrecord)*>">
+  %dtd-mod;
+  <!ELEMENT subrecord (#PCDATA)>
+]>
+<?xml-debug log="verbose"?>
+<archive xmlns="http://example.com/archive" xmlns:meta="http://example.com/meta">
+  <!-- Archive header comment -->
+  <meta:info>
+    <?meta-action type="refresh"?>
+    <![CDATA[
+      <subrecord>Unparsed CDATA inside meta</subrecord>
+    ]]>
+  </meta:info>
+  <record>&e2;</record>
+</archive>

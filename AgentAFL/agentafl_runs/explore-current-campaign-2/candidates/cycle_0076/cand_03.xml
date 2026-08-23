@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ENTITY eA "Alpha">
+  <!ENTITY eB "Beta &eA;">
+  <!ENTITY eC "Gamma &eB;">
+  <!ENTITY % dtdMacro "<!ENTITY eD 'Delta'>">
+  %dtdMacro;
+  <!NOTATION jpg SYSTEM "image/jpeg">
+  <!ENTITY photo SYSTEM "photo.jpg" NDATA jpg>
+  <?log level="debug"?>
+]>
+<archive xmlns="http://schemas.example.com/archive" xmlns:meta="http://schemas.example.com/metadata">
+  <!-- Comment: Testing deep entity expansion with CDATA and multiple namespaces -->
+  <?meta:action execute="true"?>
+  <meta:details>
+    <![CDATA[
+      <archive>
+        <entry>&eC;</entry>
+        <entry>&eD;</entry>
+      </archive>
+    ]]>
+  </meta:details>
+  <entry>&eC;</entry>
+</archive>

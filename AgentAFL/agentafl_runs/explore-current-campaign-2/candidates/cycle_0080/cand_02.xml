@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record*)>
+  <!ELEMENT record (#PCDATA)>
+  <!ENTITY ent1 "Data One">
+  <!ENTITY ent2 "&ent1; and Data Two">
+  <!ENTITY % nested-macro "<!ENTITY ent3 '&ent2;'>">
+  %nested-macro;
+  <?archive-meta version="1.0"?>
+]>
+<archive xmlns="http://example.org/archive" xmlns:meta="http://example.org/archive/meta">
+  <!-- Comment: testing entity expansion inside namespaced elements -->
+  <meta:record>
+    <?meta-action type="log"?>
+    <![CDATA[
+      CDATA section with special characters <>&'" and entity-like text &ent3;
+    ]]>
+  </meta:record>
+  <record>&ent3;</record>
+</archive>

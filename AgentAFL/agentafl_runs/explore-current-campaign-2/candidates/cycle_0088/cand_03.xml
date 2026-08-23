@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (stock*)>
+  <!ELEMENT stock (#PCDATA)>
+  <!ENTITY itemA "Alpha">
+  <!ENTITY itemB "Beta: &itemA;">
+  <!NOTATION tiff SYSTEM "image/tiff">
+  <!ENTITY photo SYSTEM "photo.tiff" NDATA tiff>
+  <!ENTITY % parameter-ent "<!ENTITY dynEnt 'Dynamic Entity Value'>">
+  %parameter-ent;
+]>
+<?xml-hub route="dispatch" priority="high"?>
+<inventory xmlns="http://inventory.org/ns" xmlns:meta="http://inventory.org/meta" meta:dept="logistics">
+  <!-- Inventory header comment containing structural notes -->
+  <?meta:log action="audit" user="system"?>
+  <stock id="s1">
+    <![CDATA[
+      CDATA section containing &itemB; and unescaped characters: <stock>&dynEnt;</stock>
+    ]]>
+  </stock>
+  <stock id="s2">&dynEnt;</stock>
+</inventory>

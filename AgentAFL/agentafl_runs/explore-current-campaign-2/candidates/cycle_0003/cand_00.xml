@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % pe " <!ENTITY ent 'parameter entity value'> ">
+  %pe;
+  <!ENTITY base "Resolved &ent;">
+  <?target-pi data="processing instruction content"?>
+]>
+<root xmlns="http://example.com/ns" xmlns:sub="http://example.com/sub">
+  <!-- Top-level comment containing markup-like chars <>&"' -->
+  <sub:child sub:attr="value">
+    <?another-pi test="123"?>
+    <![CDATA[
+      CDATA block inside namespaced element with <tags> & entities &base;
+    ]]>
+  </sub:child>
+</root>

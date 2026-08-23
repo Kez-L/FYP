@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % ent-param "<!ENTITY ent-val 'Parameter Expanded'>">
+  %ent-param;
+  <!ENTITY ent-general "General Entity &ent-val;">
+  <?target-pi data="processing instruction content"?>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY ext-img SYSTEM "logo.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.org/ns/base" xmlns:sub="http://example.org/ns/sub">
+  <!-- Top level comment exercising rare construct -->
+  <sub:child sub:id="1">
+    <![CDATA[ CDATA block containing <tags> and &entities; unescaped. ]]>
+    &ent-general;
+  </sub:child>
+</root>

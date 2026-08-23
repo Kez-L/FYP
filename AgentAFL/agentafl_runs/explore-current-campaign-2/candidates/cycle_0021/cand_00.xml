@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % ent "<!ENTITY ent_expanded 'expanded_value'>">
+  %ent;
+  <?target-pi data="processing_instruction"?>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY ext-ent SYSTEM "external.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.com/ns/root" xmlns:sub="http://example.com/ns/sub" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Comment encompassing multiple elements and entities -->
+  <sub:child xlink:type="simple" xlink:href="http://example.com">
+    <![CDATA[
+      CDATA section containing <tags>, &entities; and -- comments-- inside.
+    ]]>
+  </sub:child>
+  <child>&ent_expanded;</child>
+</root>

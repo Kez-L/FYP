@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE document [
+  <!ELEMENT document (section*)>
+  <!ELEMENT section (#PCDATA)>
+  <!ENTITY ent1 "First Entity">
+  <!ENTITY ent2 "Second &ent1;">
+  <!ENTITY % dtd_fragment "<!ELEMENT section (#PCDATA | paragraph)*> <!ELEMENT paragraph (#PCDATA)>">
+  %dtd_fragment;
+  <?xml-log level="debug" target="stdout"?>
+]>
+<document xmlns="http://xml.namespace.test" xmlns:custom="http://xml.namespace.test/custom">
+  <!-- Comment testing entity expansion limits and namespace scopes -->
+  <section custom:id="s1">
+    <![CDATA[
+      Content inside CDATA with entities &ent2; and markup <p>test</p>
+    ]]>
+  </section>
+  <section>&ent2;</section>
+</document>

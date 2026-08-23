@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (product)*>
+  <!ELEMENT product (#PCDATA)>
+  <!ENTITY base "BaseEntity">
+  <!ENTITY derived "&base;Derived">
+  <!ENTITY % extEnt "<!ENTITY deep 'Nested &derived;'>">
+  %extEnt;
+  <?pi-target instruction-data?>
+]>
+<catalog xmlns="http://schema.org/catalog" xmlns:p="http://schema.org/product">
+  <!-- Comment emphasizing deep entity and CDATA interaction -->
+  <p:product id="p1">
+    <![CDATA[
+      <!DOCTYPE nested-cdata-attempt>
+      <tag>&deep;</tag>
+    ]]>
+  </p:product>
+  <product>&deep;</product>
+</catalog>

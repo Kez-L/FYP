@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % ent-decl "<!ENTITY internal-ent 'Nested Entity Value'>">
+  %ent-decl;
+  <!ENTITY ext-ent SYSTEM "external.ent">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY bin-ent SYSTEM "binary.png" NDATA png>
+  <!ATTLIST root version CDATA #REQUIRED>
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.com/ns/root" xmlns:sub="http://example.com/ns/sub" version="1.0">
+  <!-- Top-level commentary block covering namespace and processing instructions -->
+  <?custom-pi data="process-start"?>
+  <sub:child sub:id="c1">
+    <![CDATA[
+      CDATA section containing markup-like strings: <child>&internal-ent;</child>
+    ]]>
+  </sub:child>
+  <child>&ext-ent;</child>
+</root>

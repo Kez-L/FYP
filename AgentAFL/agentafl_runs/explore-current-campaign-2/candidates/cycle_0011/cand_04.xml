@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite [
+  <!ELEMENT suite (testcase+)>
+  <!ELEMENT testcase (#PCDATA)>
+  <!ENTITY test-ent "Passed">
+  <!ENTITY macro "&test-ent; and Verified">
+  <!ENTITY % p-ent "<!ENTITY deep-macro '&macro;'>">
+  %p-ent;
+  <?xml-stylesheet href="report.xsl" type="text/xsl"?>
+]>
+<suite xmlns="http://test.org/suite" xmlns:t="http://test.org/suite/types" t:execution="parallel">
+  <!-- Test suite description comment -->
+  <?t:directive name="load-resources"?>
+  <testcase>
+    <![CDATA[
+      <testcase>CDATA content containing reserved characters <, >, &, and quotes '"</testcase>
+    ]]>
+  </testcase>
+  <t:testcase>&deep-macro;</t:testcase>
+</suite>

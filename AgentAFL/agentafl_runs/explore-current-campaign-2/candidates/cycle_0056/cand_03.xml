@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE test [
+  <!ELEMENT test (node)*>
+  <!ELEMENT node (#PCDATA)>
+  <!ENTITY % block "<!ELEMENT node (#PCDATA)*>">
+  %block;
+  <!ENTITY ref "EntityText">
+]>
+<?xml-model href="schema.rng" type="application/xml-relax-ng"?>
+<test xmlns="urn:test:ns" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <!-- Comment before CDATA and processing instruction -->
+  <?custom-pi attr="value"?>
+  <node>
+    <![CDATA[
+      CDATA block with entity &ref; inside.
+    ]]>
+  </node>
+</test>

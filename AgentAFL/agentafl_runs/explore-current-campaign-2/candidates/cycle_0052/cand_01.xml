@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE doc [
+  <!ELEMENT doc (section+)>
+  <!ELEMENT section (#PCDATA)>
+  <!ENTITY e1 "First Entity">
+  <!ENTITY e2 "&e1; and Second Entity">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY % param "<!ELEMENT meta (#PCDATA)>">
+  %param;
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<doc xmlns="http://xml.org/base" xmlns:custom="http://xml.org/custom">
+  <!-- Top-level comment testing parser resilience -->
+  <section custom:attr="value">
+    <![CDATA[
+      Nested CDATA with markup: <section> &e2; </section>
+    ]]>
+    &e2;
+  </section>
+</doc>

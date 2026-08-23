@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE database [
+  <!ELEMENT database (record*)>
+  <!ELEMENT record (#PCDATA)>
+  <!ENTITY % ext_pe SYSTEM "http://example.com/dtd.dtd">
+  %ext_pe;
+  <!ENTITY base "BaseText">
+  <!ENTITY complex "&base; &base; &base;">
+>
+<?target data="processing instruction value"?>
+<database xmlns="http://xml.org/db" xmlns:foo="http://xml.org/foo">
+  <!-- Deeply nested comment structure with hyphens - -- - -->
+  <foo:record foo:id="1">
+    <![CDATA[
+      First CDATA block with entity reference &complex;
+    ]]>
+  </foo:record>
+  <record>
+    <![CDATA[
+      Second CDATA block
+    ]]>
+  </record>
+  <record>&complex;</record>
+</database>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY ent "General Entity">
+  <!ENTITY % pent "Parameter Entity">
+  %pent;
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY img SYSTEM "test.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.com/ns1" xmlns:ns2="http://example.com/ns2">
+  <!-- Top level comment exercising comment parsing paths -->
+  <ns2:child>
+    <?ns2-pi data="value"?>
+    <![CDATA[
+      CDATA block containing markup-like strings: <root>&ent;</root>
+    ]]>
+  </ns2:child>
+</root>

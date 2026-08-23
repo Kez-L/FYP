@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (entry*)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ENTITY % core-macro "<!ENTITY core-ref 'Core Definition'>">
+  %core-macro;
+  <!ENTITY extended-ref "&core-ref; Extended">
+  <!NOTATION xml SYSTEM "text/xml">
+  <!ENTITY schema SYSTEM "schema.xml" NDATA xml>
+]>
+<?xml-debug level="verbose" mode="interactive"?>
+<registry xmlns="http://example.com/registry" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Registry root comment verifying CDATA and entity interactions -->
+  <entry xlink:type="simple" xlink:href="http://example.com">
+    <?registry-log event="access"?>
+    <![CDATA[
+      Raw payload inside CDATA containing entity &extended-ref; and tags <entry>.
+    ]]>
+    &extended-ref;
+  </entry>
+</registry>

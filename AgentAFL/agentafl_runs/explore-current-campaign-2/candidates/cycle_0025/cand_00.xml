@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % pe " <!ENTITY ent 'parameter-expanded'> ">
+  %pe;
+  <!ENTITY base "base-entity">
+  <!ENTITY combined "&base; and &ent;">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY ext SYSTEM "logo.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.org/ns/root" xmlns:sub="http://example.org/ns/sub" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Top level comment exercising namespaces and PIs -->
+  <?target-pi data="processing instruction content"?>
+  <sub:child xlink:type="simple" xlink:href="http://example.org">
+    <![CDATA[
+      CDATA section containing markup-like strings: <child>&combined;</child>
+    ]]>
+  </sub:child>
+  <child>&combined;</child>
+</root>

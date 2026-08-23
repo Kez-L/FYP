@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % pe " <!ENTITY ent 'parsed entity'> ">
+  %pe;
+  <!ENTITY ext SYSTEM "http://localhost/external.dtd">
+  <!NOTATION png SYSTEM "image/png">
+  <?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+]>
+<root xmlns="http://example.com/ns1" xmlns:ns2="http://example.com/ns2" ns2:id="123">
+  <!-- Top-level comment enclosing CDATA and entity reference -->
+  <child>
+    <![CDATA[
+      Some CDATA text with <tags> and &ent; and <!-- nested comment-like text -->
+    ]]>
+  </child>
+  <ns2:child>&ent;</ns2:child>
+</root>

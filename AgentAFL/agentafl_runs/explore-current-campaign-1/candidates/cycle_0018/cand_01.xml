@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY ent "EntityValue">
+  <!ENTITY ref "&ent; Expanded">
+  <!NOTATION n SYSTEM "file://notation">
+]>
+<?target-pi data="processing-instruction-content"?>
+<root xmlns="http://example.com/root" xmlns:sub="http://example.com/sub">
+  <!-- Comment covering DTD behavior and entity expansion limits -->
+  <sub:child>
+    <?sub:pi attr="value"?>
+    <![CDATA[
+      Another CDATA block with <>&'" characters inside namespace context.
+    ]]>
+    &ref;
+  </sub:child>
+</root>

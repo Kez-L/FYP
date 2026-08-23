@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (stock)*>
+  <!ELEMENT stock (#PCDATA)>
+  <!ENTITY standard "Standard Stock">
+  <!ENTITY complex "&standard; with additions">
+  <!NOTATION txt SYSTEM "text/plain">
+  <!ENTITY manual SYSTEM "manual.txt" NDATA txt>
+  <!ENTITY % externalMacro SYSTEM "http://example.org/macro.dtd">
+  %externalMacro;
+]>
+<?xml-model href="schema.rng" type="application/xml-relax-ng"?>
+<inventory xmlns="http://example.org/inv" xmlns:m="http://example.org/inv/meta">
+  <!-- Nested processing and comments -->
+  <m:details>
+    <?m:action execute?>
+    <![CDATA[
+      <stock>Nested CDATA block</stock>
+    ]]>
+  </m:details>
+  <stock>&complex;</stock>
+</inventory>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY ent "Entity text">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY bin SYSTEM "logo.png" NDATA png>
+  <!ENTITY % macro "<!ELEMENT child (#PCDATA | sub)*>">
+  %macro;
+  <!ELEMENT sub (#PCDATA)>
+]>
+<?pi-target processing instruction data with "quotes"?>
+<root xmlns="http://example.com/ns" xmlns:sub="http://example.com/sub">
+  <!-- Comment before child elements -->
+  <child>
+    <![CDATA[
+      First CDATA block with entity reference: &ent;
+    ]]>
+  </child>
+  <sub:child>
+    <![CDATA[Another CDATA with <tag> syntax]]>
+  </sub:child>
+</root>

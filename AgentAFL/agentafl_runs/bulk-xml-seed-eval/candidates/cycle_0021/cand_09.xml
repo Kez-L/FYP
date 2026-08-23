@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (item)*>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY m1 "Manifest Item 1">
+  <!ENTITY m2 "Manifest Item 2">
+  <!ENTITY % internal-subset "<!ENTITY m3 '&m1; and &m2;'>">
+  %internal-subset;
+  <?manifest-processor type="default"?>
+]>
+<manifest xmlns="http://example.com/manifest" xmlns:man="http://example.com/man">
+  <!-- Manifest comment block detailing entities and namespaces -->
+  <man:entry>
+    <![CDATA[
+      CDATA block inside manifest: &m3;
+    ]]>
+    <?man-directive action="validate"?>
+    <item>&m3;</item>
+  </man:entry>
+</manifest>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (book)*>
+  <!ELEMENT book (title, description)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA)>
+  <!ENTITY author "Jane Doe">
+  <!ENTITY % outer "<!-- internal DTD comment --> <!ENTITY inner 'Nested Entity'>">
+  %outer;
+]>
+<?xml-model href="schema.rng" type="application/xml-relax-ng"?>
+<catalog xmlns="http://schemas.example.org/catalog" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Catalog section comment -->
+  <book xlink:type="simple" xlink:href="#book1">
+    <title>XML Parsing &inner;</title>
+    <description>
+      <![CDATA[
+        Written by &author;. Contains <tags> and &inner; references.
+      ]]>
+    </description>
+  </book>
+</catalog>

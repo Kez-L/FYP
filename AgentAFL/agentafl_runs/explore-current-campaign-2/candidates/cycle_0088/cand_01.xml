@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (#PCDATA)>
+  <!ENTITY ent1 "Data Part One">
+  <!ENTITY ent2 "&ent1; and Part Two">
+  <!NOTATION pdf SYSTEM "application/pdf">
+  <!ENTITY doc SYSTEM "sample.pdf" NDATA pdf>
+  <!ENTITY % ext-macro "<!ELEMENT record (#PCDATA|sub)*>">
+  %ext-macro;
+  <!ELEMENT sub (#PCDATA)>
+]>
+<?xml-model href="schema.rng" type="application/xml-relax-ng"?>
+<archive xmlns="http://example.org/archive" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <!-- Multi-namespace archive document with processing instruction and comments -->
+  <?archive-info status="active"?>
+  <record xlink:type="simple" xlink:href="http://example.org">
+    <![CDATA[
+      CDATA block with complex markup: <sub id="1">sub-element content &ent2;</sub>
+    ]]>
+  </record>
+  <sub>&ent2;</sub>
+</archive>

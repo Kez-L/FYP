@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \"<!-- Parameter entity comment --> <!ENTITY ent 'resolved-entity'>\">\n  %pe;\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY ext-img SYSTEM \"data.png\" NDATA png>\n]>\n<?target-pi data=\"processing instruction content &ent;\"?>\n<root xmlns=\"http://example.com/ns1\" xmlns:ns2=\"http://example.com/ns2\">\n  <!-- Main document comment involving &ent; -->\n  <ns2:child>\n    <![CDATA[\n      Nested CDATA block with unescaped markup <tags> & entities inside.\n    ]]>\n    &ent;\n  </ns2:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY e_base \"Base Entity\">\n  <!ENTITY e_ref \"&e_base; Extended\">\n  <!ENTITY % ext_dtd SYSTEM \"http://localhost/nonexistent.dtd\">\n  %ext_dtd;\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<doc xmlns=\"http://xml.org/base\" xmlns:sub=\"http://xml.org/sub\">\n  <!-- Section comment with CDATA ahead -->\n  <sub:section>\n    <![CDATA[CDATA section content #1]]>\n    &e_ref;\n  </sub:section>\n  <section>\n    <![CDATA[CDATA section content #2]]>\n  </section>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY ent-cdata \"CDATA-like entity text\">\n  <!ENTITY % local_pe \"<!ELEMENT item (#PCDATA | sub)*> <!ELEMENT sub EMPTY>\">\n  %local_pe;\n]>\n<?pi-target data=\"value\"?>\n<catalog xmlns=\"http://example.org/catalog\" xmlns:x=\"http://example.org/x\" xmlns:y=\"http://example.org/y\">\n  <!-- Comment containing entity reference &ent-cdata; -->\n  <item>\n    <![CDATA[\n      <x:sub/> Data payload inside CDATA with attributes and namespaces.\n    ]]>\n  </item>\n  <x:item>Value &ent-cdata;</x:item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE testsuite [\n  <!ELEMENT testsuite (case+)>\n  <!ELEMENT case (#PCDATA)>\n  <!ENTITY % inner \"\n    <!ENTITY ent1 'Value 1'>\n    <!ENTITY ent2 '&ent1; and Value 2'>\n  \">\n  %inner;\n]>\n<?xml-model href=\"schema.rng\" type=\"application/xml-relax-ng\"?>\n<testsuite xmlns=\"http://ns.example.org/test\" xmlns:t=\"http://ns.example.org/test\">\n  <!-- Comprehensive comment block with markup-like text <case> &ent2; -->\n  <t:case>\n    <![CDATA[\n      First CDATA block spanning multiple lines.\n      Entity reference check: &ent2;\n    ]]>\n  </t:case>\n  <case>&ent2;</case>\n</testsuite>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (content)*>\n  <!ELEMENT content (#PCDATA)>\n  <!ENTITY reference \"EntityContent\">\n  <!NOTATION gif SYSTEM \"image/gif\">\n  <!ENTITY external SYSTEM \"logo.gif\" NDATA gif>\n  <!ENTITY % macro \"<!ATTLIST content id ID #IMPLIED>\">\n  %macro;\n]>\n<?xml-debug trace=\"true\"?>\n<document xmlns=\"http://xml.org/doc\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Top level comment before CDATA and namespace usages -->\n  <content id=\"c1\" xlink:type=\"simple\">\n    <![CDATA[\n      Raw data block inside CDATA: <content>&reference;</content>\n    ]]>\n  </content>\n  <content id=\"c2\">&reference;</content>\n</document>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \"<!-- Parameter entity comment --> <!ENTITY ent 'resolved-entity'>\">\n  %pe;\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY ext-img SYSTEM \"data.png\" NDATA png>\n]>\n<?target-pi data=\"processing instruction content &ent;\"?>\n<root xmlns=\"http://example.com/ns1\" xmlns:ns2=\"http://example.com/ns2\">\n  <!-- Main document comment involving &ent; -->\n  <ns2:child>\n    <![CDATA[\n      Nested CDATA block with unescaped markup <tags> & entities inside.\n    ]]>\n    &ent;\n  </ns2:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY e_base \"Base Entity\">\n  <!ENTITY e_ref \"&e_base; Extended\">\n  <!ENTITY % ext_dtd SYSTEM \"http://localhost/nonexistent.dtd\">\n  %ext_dtd;\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<doc xmlns=\"http://xml.org/base\" xmlns:sub=\"http://xml.org/sub\">\n  <!-- Section comment with CDATA ahead -->\n  <sub:section>\n    <![CDATA[CDATA section content #1]]>\n    &e_ref;\n  </sub:section>\n  <section>\n    <![CDATA[CDATA section content #2]]>\n  </section>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY ent-cdata \"CDATA-like entity text\">\n  <!ENTITY % local_pe \"<!ELEMENT item (#PCDATA | sub)*> <!ELEMENT sub EMPTY>\">\n  %local_pe;\n]>\n<?pi-target data=\"value\"?>\n<catalog xmlns=\"http://example.org/catalog\" xmlns:x=\"http://example.org/x\" xmlns:y=\"http://example.org/y\">\n  <!-- Comment containing entity reference &ent-cdata; -->\n  <item>\n    <![CDATA[\n      <x:sub/> Data payload inside CDATA with attributes and namespaces.\n    ]]>\n  </item>\n  <x:item>Value &ent-cdata;</x:item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE testsuite [\n  <!ELEMENT testsuite (case+)>\n  <!ELEMENT case (#PCDATA)>\n  <!ENTITY % inner \"\n    <!ENTITY ent1 'Value 1'>\n    <!ENTITY ent2 '&ent1; and Value 2'>\n  \">\n  %inner;\n]>\n<?xml-model href=\"schema.rng\" type=\"application/xml-relax-ng\"?>\n<testsuite xmlns=\"http://ns.example.org/test\" xmlns:t=\"http://ns.example.org/test\">\n  <!-- Comprehensive comment block with markup-like text <case> &ent2; -->\n  <t:case>\n    <![CDATA[\n      First CDATA block spanning multiple lines.\n      Entity reference check: &ent2;\n    ]]>\n  </t:case>\n  <case>&ent2;</case>\n</testsuite>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (content)*>\n  <!ELEMENT content (#PCDATA)>\n  <!ENTITY reference \"EntityContent\">\n  <!NOTATION gif SYSTEM \"image/gif\">\n  <!ENTITY external SYSTEM \"logo.gif\" NDATA gif>\n  <!ENTITY % macro \"<!ATTLIST content id ID #IMPLIED>\">\n  %macro;\n]>\n<?xml-debug trace=\"true\"?>\n<document xmlns=\"http://xml.org/doc\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Top level comment before CDATA and namespace usages -->\n  <content id=\"c1\" xlink:type=\"simple\">\n    <![CDATA[\n      Raw data block inside CDATA: <content>&reference;</content>\n    ]]>\n  </content>\n  <content id=\"c2\">&reference;</content>\n</document>\n```",
+              "thoughtSignature": "EjQKMgERTTIPo24ZePUFplxaZTZtfwKl77LBgAXHEbkGiKkPLi3D3oNhxiJB+ffIA0urCPr3"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2676,
+      "candidatesTokenCount": 1053,
+      "totalTokenCount": 3729,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 2676
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "C_t1ap-BH8L9juMPxomB8Q8"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

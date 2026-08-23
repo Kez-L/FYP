@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY company "ACME Corp">
+  <!ENTITY % dtdMacro "<!ENTITY secret 'Confidential Payload'>">
+  %dtdMacro;
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <?pi-node target="init" status="active"?>
+]>
+<catalog xmlns="http://catalog.org/ns" xmlns:custom="http://catalog.org/custom">
+  <!-- Multi-namespace container with comments and CDATA -->
+  <custom:item>
+    <?custom-pi action="parse"?>
+    <![CDATA[
+      Some raw CDATA text with entities: &company; - &secret;
+    ]]>
+  </custom:item>
+  <item>&secret;</item>
+</catalog>

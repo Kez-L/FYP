@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item id ID #REQUIRED>
+  <!ENTITY base "CatalogBase">
+  <!ENTITY composite "&base; &amp; Extended">
+  <!ENTITY % extEnt "
+    <!ENTITY nestedEnt 'Nested &base;'>
+  ">
+  %extEnt;
+]>
+<?processing-instruction target="afl" data="test=true"?>
+<catalog xmlns="http://example.org/catalog" xmlns:m="http://example.org/org">
+  <!-- Comment 1: testing namespace boundaries -->
+  <m:item id="i1">
+    <?m:pi data="value"?>
+    <![CDATA[
+      <!-- Nested comment-like syntax inside CDATA --></m:item>
+    ]]>
+  </m:item>
+  <item id="i2">&composite; and &nestedEnt;</item>
+</catalog>

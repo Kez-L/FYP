@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record)*>
+  <!ELEMENT record (#PCDATA)>
+  <!ENTITY baseRef "Archive-Record-Base">
+  <!ENTITY recursiveRef "&baseRef;-Extension">
+  <!ENTITY % pe "
+    <!ELEMENT metadata (#PCDATA)>
+    <!ENTITY peEntity 'Parameter Entity Text'>
+  ">
+  %pe;
+]>
+<?xml-model href="schema.rng" type="application/xml-relax-ng"?>
+<archive xmlns="http://schemas.example.com/archive" xmlns:meta="http://schemas.example.com/archive/meta">
+  <!-- Comment wrapping around recursive entity references and CDATA -->
+  <record meta:id="rec-001">
+    <![CDATA[
+      Raw archive payload: &recursiveRef; and &peEntity;
+    ]]>
+  </record>
+  <record>&recursiveRef;</record>
+  <metadata>&peEntity;</metadata>
+</archive>

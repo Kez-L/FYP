@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY ext SYSTEM "http://127.0.0.1:80/nonexistent">
+  <!NOTATION notation SYSTEM "notation.exe">
+  <!ENTITY % param " <!ENTITY internal 'nested'> ">
+  %param;
+]>
+<root xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:custom="urn:test">
+  <child custom:attr="value">&internal;&ext;</child>
+  <xi:include href="nonexistent.xml" parse="xml">
+    <xi:fallback>
+      <fallback-node>default content</fallback-node>
+    </xi:fallback>
+  </xi:include>
+</root>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite [
+  <!ELEMENT suite (test*)>
+  <!ELEMENT test (#PCDATA)>
+  <!ENTITY t1 "Test Alpha">
+  <!ENTITY t2 "&t1; and Beta">
+  <!ENTITY % p1 "<!ENTITY t3 '&t2; and Gamma'>">
+  %p1;
+  <?suite-meta run="nightly"?>
+]>
+<suite xmlns="http://suite.org/schema" xmlns:tr="http://suite.org/tr">
+  <!-- Suite configuration wrapper -->
+  <tr:test id="t-001">
+    <![CDATA[
+       CDATA containing arbitrary markup: <test attr="val"> &t3; </test>
+    ]]>
+    <test>&t3;</test>
+  </tr:test>
+</suite>

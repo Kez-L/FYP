@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (#PCDATA|child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \"<!-- nested parameter entity comment -->\">\n  <!ENTITY ent \"Resolved Entity Content\">\n  %pe;\n  <?target-pi data=\"processing-instruction-value\"?>\n]>\n<root xmlns=\"http://example.com/ns\" xmlns:sub=\"http://example.com/sub\">\n  <!-- Top level comment exploring parser state -->\n  <?root-pi attr=\"value\"?>\n  <sub:child>\n    <![CDATA[\n      Unparsed CDATA section containing entities like &ent; and tags <tag> &lt; &amp;\n    ]]>\n  </sub:child>\n  <child>&ent;</child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY % ext SYSTEM \"http://localhost/nonexistent.dtd\">\n  %ext;\n  <!ENTITY base \"Base Entity\">\n  <!ENTITY complex \"&base; extended with &base;\">\n  <?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n]>\n<doc xmlns=\"http://xml.org/base\" xmlns:ext=\"http://xml.org/ext\">\n  <!-- Comment spanning multiple lines\n       testing comment handling and node allocation -->\n  <?ext:pi test=\"true\"?>\n  <section>\n    <![CDATA[\n      First CDATA block with <brackets> and &amps;\n    ]]>\n    &complex;\n    <![CDATA[\n      Second CDATA block directly following entity reference\n    ]]>\n  </section>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<!DOCTYPE testsuite [\n  <!ELEMENT testsuite (case*)>\n  <!ELEMENT case (#PCDATA)>\n  <!ENTITY ent-a \"Alpha\">\n  <!ENTITY ent-b \"Beta &ent-a;\">\n  <!ENTITY ent-c \"Gamma &ent-b;\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n  <?test-pi param=\"start\"?>\n]>\n<testsuite xmlns=\"http://test.org/ns\" xmlns:ns2=\"http://test.org/ns2\" xmlns:ns3=\"http://test.org/ns3\">\n  <!-- Comment inside root element -->\n  <ns2:case>\n    <?ns2:instruction target=\"run\"?>\n    <![CDATA[\n      CDATA inside namespaced element with entity &ent-c;\n    ]]>\n  </ns2:case>\n  <ns3:case>&ent-c;</ns3:case>\n</testsuite>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE database [\n  <!ELEMENT database (record*)>\n  <!ELEMENT record (#PCDATA)>\n  <!ENTITY % local-ent \"<!ENTITY internal 'Internal Entity Text'>\">\n  %local-ent;\n  <?db-config cache=\"false\"?>\n]>\n<database xmlns=\"urn:db\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Database root comment -->\n  <?xlink:actuate state=\"onLoad\"?>\n  <record>\n    <![CDATA[\n      &internal; inside CDATA is literal text, but outside it resolves.\n    ]]>\n    &internal;\n  </record>\n  <!-- Trailing comment -->\n</database>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (header, content)>\n  <!ELEMENT header (#PCDATA)>\n  <!ELEMENT content (#PCDATA)>\n  <!ENTITY e1 \"First\">\n  <!ENTITY e2 \"Second &e1;\">\n  <!ENTITY e3 \"Third &e2;\">\n  <?doc-info author=\"fuzzer\" version=\"1.0\"?>\n]>\n<document xmlns=\"http://doc.org/ns\" xmlns:m=\"http://doc.org/math\" xmlns:x=\"http://doc.org/xhtml\">\n  <!-- Document level comment with <>&\"' chars -->\n  <header>\n    <?m:math mode=\"inline\"?>\n    <![CDATA[\n      Header CDATA block with entities &e3;\n    ]]>\n  </header>\n  <content>\n    &e3;\n    <x:p>\n      <![CDATA[Nested CDATA block inside namespaced element]]>\n    </x:p>\n  </content>\n</document>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (#PCDATA|child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \"<!-- nested parameter entity comment -->\">\n  <!ENTITY ent \"Resolved Entity Content\">\n  %pe;\n  <?target-pi data=\"processing-instruction-value\"?>\n]>\n<root xmlns=\"http://example.com/ns\" xmlns:sub=\"http://example.com/sub\">\n  <!-- Top level comment exploring parser state -->\n  <?root-pi attr=\"value\"?>\n  <sub:child>\n    <![CDATA[\n      Unparsed CDATA section containing entities like &ent; and tags <tag> &lt; &amp;\n    ]]>\n  </sub:child>\n  <child>&ent;</child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY % ext SYSTEM \"http://localhost/nonexistent.dtd\">\n  %ext;\n  <!ENTITY base \"Base Entity\">\n  <!ENTITY complex \"&base; extended with &base;\">\n  <?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n]>\n<doc xmlns=\"http://xml.org/base\" xmlns:ext=\"http://xml.org/ext\">\n  <!-- Comment spanning multiple lines\n       testing comment handling and node allocation -->\n  <?ext:pi test=\"true\"?>\n  <section>\n    <![CDATA[\n      First CDATA block with <brackets> and &amps;\n    ]]>\n    &complex;\n    <![CDATA[\n      Second CDATA block directly following entity reference\n    ]]>\n  </section>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<!DOCTYPE testsuite [\n  <!ELEMENT testsuite (case*)>\n  <!ELEMENT case (#PCDATA)>\n  <!ENTITY ent-a \"Alpha\">\n  <!ENTITY ent-b \"Beta &ent-a;\">\n  <!ENTITY ent-c \"Gamma &ent-b;\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n  <?test-pi param=\"start\"?>\n]>\n<testsuite xmlns=\"http://test.org/ns\" xmlns:ns2=\"http://test.org/ns2\" xmlns:ns3=\"http://test.org/ns3\">\n  <!-- Comment inside root element -->\n  <ns2:case>\n    <?ns2:instruction target=\"run\"?>\n    <![CDATA[\n      CDATA inside namespaced element with entity &ent-c;\n    ]]>\n  </ns2:case>\n  <ns3:case>&ent-c;</ns3:case>\n</testsuite>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE database [\n  <!ELEMENT database (record*)>\n  <!ELEMENT record (#PCDATA)>\n  <!ENTITY % local-ent \"<!ENTITY internal 'Internal Entity Text'>\">\n  %local-ent;\n  <?db-config cache=\"false\"?>\n]>\n<database xmlns=\"urn:db\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Database root comment -->\n  <?xlink:actuate state=\"onLoad\"?>\n  <record>\n    <![CDATA[\n      &internal; inside CDATA is literal text, but outside it resolves.\n    ]]>\n    &internal;\n  </record>\n  <!-- Trailing comment -->\n</database>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (header, content)>\n  <!ELEMENT header (#PCDATA)>\n  <!ELEMENT content (#PCDATA)>\n  <!ENTITY e1 \"First\">\n  <!ENTITY e2 \"Second &e1;\">\n  <!ENTITY e3 \"Third &e2;\">\n  <?doc-info author=\"fuzzer\" version=\"1.0\"?>\n]>\n<document xmlns=\"http://doc.org/ns\" xmlns:m=\"http://doc.org/math\" xmlns:x=\"http://doc.org/xhtml\">\n  <!-- Document level comment with <>&\"' chars -->\n  <header>\n    <?m:math mode=\"inline\"?>\n    <![CDATA[\n      Header CDATA block with entities &e3;\n    ]]>\n  </header>\n  <content>\n    &e3;\n    <x:p>\n      <![CDATA[Nested CDATA block inside namespaced element]]>\n    </x:p>\n  </content>\n</document>\n```",
+              "thoughtSignature": "EjQKMgERTTIPqF0+IYGQmpOQokKNSjFCGmr98RrSZoiONPefKkpuG7o6E/3KY539uqCHyycn"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 3040,
+      "candidatesTokenCount": 1083,
+      "totalTokenCount": 4123,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 3040
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "sDl0ao6nAa6Ag8UPv_qZ8AY"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % ent "<!ENTITY internal 'Expanded Entity Value'>">
+  %ent;
+  <!ENTITY ext SYSTEM "nonexistent.ent">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY binaryData SYSTEM "logo.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.com/ns/root" xmlns:sub="http://example.com/ns/sub" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- This is a comment containing CDATA-like markup: <![CDATA[test]]> -->
+  <sub:child xlink:type="simple" xlink:href="http://example.com">
+    <![CDATA[
+      CDATA block with some markup <tag> &internal; </tag>
+    ]]>
+  </sub:child>
+  <child>&internal;</child>
+</root>

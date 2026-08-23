@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % pe " <!ENTITY ent 'expanded_entity_value'> ">
+  %pe;
+  <!ENTITY base "Base Entity &ent;">
+  <?target data-processing-instruction?>
+]>
+<root xmlns="http://example.com/ns" xmlns:sub="http://example.com/sub">
+  <!-- Top-level comment containing markup-like chars <>&"' -->
+  <sub:child>
+    <?sub:pi target="value"?>
+    <![CDATA[
+      CDATA section with entities &base; and tags <root></root> inside.
+    ]]>
+    &base;
+  </sub:child>
+</root>

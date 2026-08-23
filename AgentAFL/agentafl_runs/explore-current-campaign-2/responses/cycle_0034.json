@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % paramEntity \"<!ENTITY internalEntity 'ExpandedValue'>\">\n  %paramEntity;\n  <!ENTITY combined \"&internalEntity; and More\">\n  <?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n]>\n<root xmlns=\"http://example.com/ns1\" xmlns:ns2=\"http://example.com/ns2\">\n  <!-- Leading comment explaining the test case with CDATA and PIs -->\n  <?target data=\"test-processing-instruction\"?>\n  <child ns2:id=\"1\">\n    <![CDATA[\n      Some raw CDATA text containing entities: &combined; and tags <foo></foo>\n    ]]>\n  </child>\n  <ns2:child>&combined;</ns2:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE system [\n  <!ELEMENT system (module*)>\n  <!ELEMENT module (#PCDATA)>\n  <!ENTITY % dtdMacro \"<!ELEMENT data (#PCDATA)>\">\n  %dtdMacro;\n  <!ENTITY ent \"Standard Entity\">\n  <?audit-log status=\"active\"?>\n]>\n<system xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:m=\"http://www.w3.org/1998/Math/MathML\">\n  <!-- Multiple comments surrounding namespace and entity usage -->\n  <!-- Second comment block -->\n  <m:module>\n    <?xml-model href=\"schema.rng\" type=\"application/xml-relax-ng\"?>\n    <![CDATA[\n      Nested CDATA with <tag> &ent; </tag>\n    ]]>\n  </m:module>\n</system>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY base \"BaseText\">\n  <!ENTITY ref \"&base; Extended\">\n  <!ENTITY % extDecl \"<!ENTITY deepRef '&ref; Deep'>\">\n  %extDecl;\n  <?xml-timestamp value=\"2023-10-01\"?>\n]>\n<inventory xmlns=\"http://inventory.org/schema\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:cust=\"http://inventory.org/cust\">\n  <!-- Comprehensive integration of DOCTYPE, entity, PI, xmlns, CDATA, comment -->\n  <cust:item xlink:type=\"simple\">\n    <?cust-action run=\"verify\"?>\n    <![CDATA[\n      CDATA section referencing &deepRef; inside inventory item.\n    ]]>\n  </cust:item>\n</inventory>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (entry+)>\n  <!ELEMENT entry (#PCDATA)>\n  <!ENTITY ent1 \"Value1\">\n  <!ENTITY ent2 \"&ent1; Value2\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n  <?custom-pi parameter=\"value\"?>\n]>\n<catalog xmlns=\"http://catalog.org/ns\" xmlns:meta=\"http://catalog.org/meta\">\n  <!-- Catalog comment with entity references and CDATA -->\n  <meta:entry>\n    <![CDATA[\n      Start CDATA &ent2; End CDATA\n    ]]>\n  </meta:entry>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE report [\n  <!ELEMENT report (section*)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY eA \"Alpha\">\n  <!ENTITY eB \"&eA; Beta\">\n  <!ENTITY % pEnt \"<!ENTITY eC '&eB; Gamma'>\">\n  %pEnt;\n  <?xml-debug level=\"high\"?>\n]>\n<report xmlns=\"http://report.org/ns\" xmlns:sub=\"http://report.org/sub\">\n  <!-- Top comment for report generation -->\n  <?sub:pi command=\"render\"?>\n  <sub:section>\n    <![CDATA[\n      Special CDATA content containing &eC; and elements <markup>\n    ]]>\n  </sub:section>\n</report>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % paramEntity \"<!ENTITY internalEntity 'ExpandedValue'>\">\n  %paramEntity;\n  <!ENTITY combined \"&internalEntity; and More\">\n  <?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n]>\n<root xmlns=\"http://example.com/ns1\" xmlns:ns2=\"http://example.com/ns2\">\n  <!-- Leading comment explaining the test case with CDATA and PIs -->\n  <?target data=\"test-processing-instruction\"?>\n  <child ns2:id=\"1\">\n    <![CDATA[\n      Some raw CDATA text containing entities: &combined; and tags <foo></foo>\n    ]]>\n  </child>\n  <ns2:child>&combined;</ns2:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE system [\n  <!ELEMENT system (module*)>\n  <!ELEMENT module (#PCDATA)>\n  <!ENTITY % dtdMacro \"<!ELEMENT data (#PCDATA)>\">\n  %dtdMacro;\n  <!ENTITY ent \"Standard Entity\">\n  <?audit-log status=\"active\"?>\n]>\n<system xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:m=\"http://www.w3.org/1998/Math/MathML\">\n  <!-- Multiple comments surrounding namespace and entity usage -->\n  <!-- Second comment block -->\n  <m:module>\n    <?xml-model href=\"schema.rng\" type=\"application/xml-relax-ng\"?>\n    <![CDATA[\n      Nested CDATA with <tag> &ent; </tag>\n    ]]>\n  </m:module>\n</system>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY base \"BaseText\">\n  <!ENTITY ref \"&base; Extended\">\n  <!ENTITY % extDecl \"<!ENTITY deepRef '&ref; Deep'>\">\n  %extDecl;\n  <?xml-timestamp value=\"2023-10-01\"?>\n]>\n<inventory xmlns=\"http://inventory.org/schema\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:cust=\"http://inventory.org/cust\">\n  <!-- Comprehensive integration of DOCTYPE, entity, PI, xmlns, CDATA, comment -->\n  <cust:item xlink:type=\"simple\">\n    <?cust-action run=\"verify\"?>\n    <![CDATA[\n      CDATA section referencing &deepRef; inside inventory item.\n    ]]>\n  </cust:item>\n</inventory>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (entry+)>\n  <!ELEMENT entry (#PCDATA)>\n  <!ENTITY ent1 \"Value1\">\n  <!ENTITY ent2 \"&ent1; Value2\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n  <?custom-pi parameter=\"value\"?>\n]>\n<catalog xmlns=\"http://catalog.org/ns\" xmlns:meta=\"http://catalog.org/meta\">\n  <!-- Catalog comment with entity references and CDATA -->\n  <meta:entry>\n    <![CDATA[\n      Start CDATA &ent2; End CDATA\n    ]]>\n  </meta:entry>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE report [\n  <!ELEMENT report (section*)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY eA \"Alpha\">\n  <!ENTITY eB \"&eA; Beta\">\n  <!ENTITY % pEnt \"<!ENTITY eC '&eB; Gamma'>\">\n  %pEnt;\n  <?xml-debug level=\"high\"?>\n]>\n<report xmlns=\"http://report.org/ns\" xmlns:sub=\"http://report.org/sub\">\n  <!-- Top comment for report generation -->\n  <?sub:pi command=\"render\"?>\n  <sub:section>\n    <![CDATA[\n      Special CDATA content containing &eC; and elements <markup>\n    ]]>\n  </sub:section>\n</report>\n```",
+              "thoughtSignature": "EjQKMgERTTIP3RXhVtxLuROlORGTg9WFAXWoFkf69QgZH4A5fwnrn+o1f+c8PcB6i+QaXfCp"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2613,
+      "candidatesTokenCount": 1019,
+      "totalTokenCount": 3632,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 2613
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "k0p2atSoB4SmjuMPqYGZ6Qw"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

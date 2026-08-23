@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY brand "Acme Corp">
+  <!ENTITY product "&brand; Widget">
+  <!ENTITY % ext_decl "<!ENTITY dynamic 'Loaded Dynamically'>">
+  %ext_decl;
+]>
+<?xml-processing-instruction data="diagnostic-mode=true"?>
+<inventory xmlns="http://schemas.example.com/inventory" xmlns:store="http://schemas.example.com/store">
+  <!-- Comment before CDATA block -->
+  <store:item code="X99">
+    <![CDATA[
+      Special inventory data: <item>&product;</item> &dynamic;
+    ]]>
+  </store:item>
+  <item>&product; - &dynamic;</item>
+</inventory>

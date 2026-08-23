@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document [
+  <!ELEMENT document (header, content)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT content (#PCDATA)>
+  <!ENTITY e1 "First">
+  <!ENTITY e2 "Second &e1;">
+  <!ENTITY e3 "Third &e2;">
+  <?doc-info author="fuzzer" version="1.0"?>
+]>
+<document xmlns="http://doc.org/ns" xmlns:m="http://doc.org/math" xmlns:x="http://doc.org/xhtml">
+  <!-- Document level comment with <>&"' chars -->
+  <header>
+    <?m:math mode="inline"?>
+    <![CDATA[
+      Header CDATA block with entities &e3;
+    ]]>
+  </header>
+  <content>
+    &e3;
+    <x:p>
+      <![CDATA[Nested CDATA block inside namespaced element]]>
+    </x:p>
+  </content>
+</document>

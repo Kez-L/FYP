@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE system [
+  <!ELEMENT system (node)*>
+  <!ELEMENT node (#PCDATA)>
+  <!ENTITY sysEnt "System Entity">
+  <!ENTITY % paramEnt "<!ENTITY nestedEnt '&sysEnt; Nested'>">
+  %paramEnt;
+  <!NOTATION pdf SYSTEM "application/pdf">
+  <!ENTITY manual SYSTEM "manual.pdf" NDATA pdf>
+  <?system-cfg mode="secure"?>
+]>
+<system xmlns="http://system.org/ns" xmlns:sys="http://system.org/sys">
+  <!-- Root system container combining all rare constructs -->
+  <sys:node id="node-alpha">
+    <?sys-pi command="verify"?>
+    <![CDATA[
+      Critical section with CDATA &nestedEnt; and literal tags <node/>
+    ]]>
+  </sys:node>
+  <node>&nestedEnt;</node>
+</system>

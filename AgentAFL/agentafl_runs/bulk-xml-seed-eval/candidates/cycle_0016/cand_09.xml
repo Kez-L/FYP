@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE container [
+  <!ELEMENT container (node)*>
+  <!ELEMENT node (#PCDATA)>
+  <!ENTITY n-id "Node Identifier">
+  <!ENTITY n-val "Value for &n-id;">
+  <!ENTITY % n-param "<!ENTITY n-macro 'Macro expansion in container'>">
+  %n-param;
+  <?container-ctrl mode="active"?>
+  <!NOTATION xml-notif SYSTEM "text/xml">
+  <!ENTITY schema-file SYSTEM "schema.xml" NDATA xml-notif>
+]>
+<container xmlns="http://example.org/cnt" xmlns:node="http://example.org/node">
+  <!-- Comment wrapping container test case -->
+  <node:node node:state="ready">
+    <![CDATA[
+      <xml-fragment>
+        Data with special chars <, >, &, and entity &n-val; inside CDATA.
+      </xml-fragment>
+    ]]>
+    &n-macro;
+  </node:node>
+</container>

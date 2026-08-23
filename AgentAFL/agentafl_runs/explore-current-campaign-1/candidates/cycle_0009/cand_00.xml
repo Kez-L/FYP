@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % param "<!ELEMENT data (#PCDATA)>">
+  %param;
+  <!ENTITY ent "Resolved Entity Content">
+  <!NOTATION png SYSTEM "image/png">
+  <?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+]>
+<root xmlns="http://example.com/ns/base" xmlns:sub="http://example.com/ns/sub">
+  <!-- Top level comment block with high structural complexity -->
+  <sub:child>
+    <?sub:pi processing-instruction-data?>
+    <![CDATA[
+      CDATA section containing markup-like strings: <tag attr="val">&ent;</tag>
+    ]]>
+    &ent;
+  </sub:child>
+</root>

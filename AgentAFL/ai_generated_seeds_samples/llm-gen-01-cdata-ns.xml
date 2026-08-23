@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!-- entity block -->
+  <!ENTITY e1 "plain &amp; text">
+  <!ENTITY e2 "text &lt;with&gt; markup chars">
+  <!ENTITY % pe1 "<!-- pe1 expands here -->">
+  %pe1;
+  <!ELEMENT root (a | b | c)*>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c (#PCDATA)>
+  <!ATTLIST root xmlns:x CDATA #IMPLIED>
+]>
+<!-- document comment -->
+<?pi-before-root data?>
+<root xmlns="http://default.ns/" xmlns:x="http://x.ns/">
+  <![CDATA[first cdata: <not-a-tag> & not-an-entity]]>
+  <!-- comment one -->
+  <a><![CDATA[]]></a>
+  <?pi-mid d?>
+  <!-- comment two -->
+  <b xmlns:x="http://x2.ns/">&e2;<![CDATA[ after entity ref]]></b>
+  <!-- comment three -->
+  <c><![CDATA[single ] bracket in cdata]]></c>
+  <![CDATA[double ]] brackets then close]]>
+</root>
+<!-- trailing comment -->

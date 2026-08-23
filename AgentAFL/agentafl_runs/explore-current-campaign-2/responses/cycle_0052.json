@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % ent \"<!ENTITY ent_inner 'Expanded Text'>\">\n  %ent;\n  <!ENTITY ext SYSTEM \"nonexistent.ent\">\n]>\n<?target-pi data=\"processing instruction content with &ent_inner;\"?>\n<root xmlns=\"http://example.org/ns1\" xmlns:ns2=\"http://example.org/ns2\">\n  <!-- Comment containing an entity reference &ent_inner; -->\n  <child ns2:id=\"1\">\n    <![CDATA[\n      CDATA section containing <tags> and entity references &ent_inner;\n    ]]>\n  </child>\n  <child>&ent_inner;</child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY e1 \"First Entity\">\n  <!ENTITY e2 \"&e1; and Second Entity\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n  <!ENTITY % param \"<!ELEMENT meta (#PCDATA)>\">\n  %param;\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<doc xmlns=\"http://xml.org/base\" xmlns:custom=\"http://xml.org/custom\">\n  <!-- Top-level comment testing parser resilience -->\n  <section custom:attr=\"value\">\n    <![CDATA[\n      Nested CDATA with markup: <section> &e2; </section>\n    ]]>\n    &e2;\n  </section>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY root_ent \"Catalog Root\">\n  <!ENTITY ref_ent \"&root_ent; - Subitem\">\n  <!ENTITY % ext_param SYSTEM \"external.dtd\">\n  %ext_param;\n]>\n<?catalog-control mode=\"strict\" verbose=\"yes\"?>\n<catalog xmlns=\"urn:catalog:ns\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Comment before elements containing entities and CDATA -->\n  <item xlink:type=\"simple\">\n    <![CDATA[\n      <item>Raw text with entity &ref_ent;</item>\n    ]]>\n    &ref_ent;\n  </item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (stock*)>\n  <!ELEMENT stock (#PCDATA)>\n  <!ENTITY stock_name \"Widget\">\n  <!ENTITY stock_desc \"A very useful &stock_name;\">\n  <!ENTITY % p_entity \"<!ENTITY p_resolved 'Resolved Parameter'>\">\n  %p_entity;\n]>\n<?inventory-log date=\"2023-10-01\" status=\"active\"?>\n<inventory xmlns=\"http://inventory.org/ns\" xmlns:v=\"http://inventory.org/v\">\n  <!-- Comment explaining the inventory items -->\n  <stock v:score=\"99\">\n    <![CDATA[\n      CDATA block: description is &stock_desc; and parameter is &p_resolved;\n    ]]>\n    &stock_desc;\n  </stock>\n</inventory>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (record*)>\n  <!ELEMENT record (#PCDATA)>\n  <!ENTITY base_rec \"Record Base\">\n  <!ENTITY full_rec \"&base_rec; Extended\">\n  <!NOTATION pdf SYSTEM \"application/pdf\">\n  <!ENTITY doc_ref \"Document\" NDATA pdf>\n  <!ENTITY % p_dec \"<!ATTLIST record code ID #IMPLIED>\">\n  %p_dec;\n]>\n<?archive-meta author=\"admin\" version=\"2.0\"?>\n<archive xmlns=\"http://archive.org/schema\" xmlns:meta=\"http://archive.org/meta\">\n  <!-- Comprehensive comment verifying CDATA, PI, DTD, ENTITY, and xmlns interplay -->\n  <record code=\"R001\" meta:category=\"primary\">\n    <![CDATA[\n      Archive entry data: &full_rec; inside CDATA section.\n    ]]>\n    &full_rec;\n  </record>\n</archive>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % ent \"<!ENTITY ent_inner 'Expanded Text'>\">\n  %ent;\n  <!ENTITY ext SYSTEM \"nonexistent.ent\">\n]>\n<?target-pi data=\"processing instruction content with &ent_inner;\"?>\n<root xmlns=\"http://example.org/ns1\" xmlns:ns2=\"http://example.org/ns2\">\n  <!-- Comment containing an entity reference &ent_inner; -->\n  <child ns2:id=\"1\">\n    <![CDATA[\n      CDATA section containing <tags> and entity references &ent_inner;\n    ]]>\n  </child>\n  <child>&ent_inner;</child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY e1 \"First Entity\">\n  <!ENTITY e2 \"&e1; and Second Entity\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n  <!ENTITY % param \"<!ELEMENT meta (#PCDATA)>\">\n  %param;\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<doc xmlns=\"http://xml.org/base\" xmlns:custom=\"http://xml.org/custom\">\n  <!-- Top-level comment testing parser resilience -->\n  <section custom:attr=\"value\">\n    <![CDATA[\n      Nested CDATA with markup: <section> &e2; </section>\n    ]]>\n    &e2;\n  </section>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY root_ent \"Catalog Root\">\n  <!ENTITY ref_ent \"&root_ent; - Subitem\">\n  <!ENTITY % ext_param SYSTEM \"external.dtd\">\n  %ext_param;\n]>\n<?catalog-control mode=\"strict\" verbose=\"yes\"?>\n<catalog xmlns=\"urn:catalog:ns\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Comment before elements containing entities and CDATA -->\n  <item xlink:type=\"simple\">\n    <![CDATA[\n      <item>Raw text with entity &ref_ent;</item>\n    ]]>\n    &ref_ent;\n  </item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (stock*)>\n  <!ELEMENT stock (#PCDATA)>\n  <!ENTITY stock_name \"Widget\">\n  <!ENTITY stock_desc \"A very useful &stock_name;\">\n  <!ENTITY % p_entity \"<!ENTITY p_resolved 'Resolved Parameter'>\">\n  %p_entity;\n]>\n<?inventory-log date=\"2023-10-01\" status=\"active\"?>\n<inventory xmlns=\"http://inventory.org/ns\" xmlns:v=\"http://inventory.org/v\">\n  <!-- Comment explaining the inventory items -->\n  <stock v:score=\"99\">\n    <![CDATA[\n      CDATA block: description is &stock_desc; and parameter is &p_resolved;\n    ]]>\n    &stock_desc;\n  </stock>\n</inventory>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (record*)>\n  <!ELEMENT record (#PCDATA)>\n  <!ENTITY base_rec \"Record Base\">\n  <!ENTITY full_rec \"&base_rec; Extended\">\n  <!NOTATION pdf SYSTEM \"application/pdf\">\n  <!ENTITY doc_ref \"Document\" NDATA pdf>\n  <!ENTITY % p_dec \"<!ATTLIST record code ID #IMPLIED>\">\n  %p_dec;\n]>\n<?archive-meta author=\"admin\" version=\"2.0\"?>\n<archive xmlns=\"http://archive.org/schema\" xmlns:meta=\"http://archive.org/meta\">\n  <!-- Comprehensive comment verifying CDATA, PI, DTD, ENTITY, and xmlns interplay -->\n  <record code=\"R001\" meta:category=\"primary\">\n    <![CDATA[\n      Archive entry data: &full_rec; inside CDATA section.\n    ]]>\n    &full_rec;\n  </record>\n</archive>\n```",
+              "thoughtSignature": "EjQKMgERTTIPwz+wpvTRsQokEmuacqD7zLVahB8nceS7ysxypVByaBsK+I4xCrDLxcz//6TF"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2613,
+      "candidatesTokenCount": 1071,
+      "totalTokenCount": 3684,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 2613
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "Xo52atXzMOrdjuMP2YGZsAM"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

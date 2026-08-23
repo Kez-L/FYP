@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % pe " <!ENTITY ent 'resolved-pe'> ">
+  %pe;
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY ext-sys SYSTEM "external.ent" NDATA png>
+  <?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+]>
+<root xmlns="http://example.com/ns" xmlns:sub="http://example.com/sub" sub:id="1">
+  <!-- Outer level comment with multiple -- hyphens or structures inside -->
+  <?sub:pi target="process" data="param='val'"?>
+  <child>
+    <![CDATA[ CDATA block containing <tags> & entities like &ent; literally ]]>
+  </child>
+  <sub:child>&ent;</sub:child>
+</root>

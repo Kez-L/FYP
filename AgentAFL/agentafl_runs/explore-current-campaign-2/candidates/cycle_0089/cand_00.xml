@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<!DOCTYPE root [
+  <!ELEMENT root (section)*>
+  <!ELEMENT section (#PCDATA)>
+  <!ENTITY % internalEntity "Parsed internal entity content">
+  <!ENTITY % paramEntity "<!ELEMENT section (#PCDATA | sub)*> <!ELEMENT sub (#PCDATA)>">
+  %paramEntity;
+  <!ENTITY externalRef SYSTEM "http://localhost/external.ent">
+]><root xmlns="http://example.com/ns" xmlns:sub="http://example.com/sub">
+  <!-- Root level comment explaining the structure -->
+  <?xml-debug target="parser" data="start"?>
+  <section sub:id="1">
+    <![CDATA[
+      CDATA section containing markup-like text: <sub:item>&internalEntity;</sub:item>
+    ]]>
+    &externalRef;
+  </section>
+</root>

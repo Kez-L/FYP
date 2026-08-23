@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (node*)>
+  <!ELEMENT node (#PCDATA)>
+  <!ENTITY % dtd-macro "<!ELEMENT note (#PCDATA)>">
+  %dtd-macro;
+  <!ENTITY dynamic "Resolved &inner;">
+  <!ENTITY inner "BaseEntity">
+]>
+<?xml-process-instruction step="init" status="ok"?>
+<root xmlns="http://example.com/ns/root" xmlns:sub="http://example.com/ns/sub">
+  <!-- Comment 1: Testing DTD parameter entities expansion -->
+  <node>
+    <![CDATA[
+      CDATA section 1: nested markup <node>&dynamic;</node>
+    ]]>
+  </node>
+  <!-- Comment 2: Testing processing instruction inside body -->
+  <?sub:pi data="value"?>
+  <node>&dynamic;</node>
+</root>

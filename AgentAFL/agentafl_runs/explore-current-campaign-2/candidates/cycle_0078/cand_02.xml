@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY entA "Value A">
+  <!ENTITY entB "&entA; and Value B">
+  <!ENTITY entC "&entB; and Value C">
+  <?catalog-action execute="refresh"?>
+  <!NOTATION txt SYSTEM "text/plain">
+  <!ENTITY readme SYSTEM "README.txt" NDATA txt>
+]>
+<catalog xmlns="http://www.example.org/catalog" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <!-- Comment: Testing deep entity chaining combined with CDATA and namespaces -->
+  <item>
+    <![CDATA[
+      Raw payload with entity reference: &entC; inside CDATA block.
+    ]]>
+  </item>
+  <item xi:include="fallback.xml">&entC;</item>
+</catalog>

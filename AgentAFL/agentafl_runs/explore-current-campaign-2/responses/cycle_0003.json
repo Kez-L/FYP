@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \" <!ENTITY ent 'parameter entity value'> \">\n  %pe;\n  <!ENTITY base \"Resolved &ent;\">\n  <?target-pi data=\"processing instruction content\"?>\n]>\n<root xmlns=\"http://example.com/ns\" xmlns:sub=\"http://example.com/sub\">\n  <!-- Top-level comment containing markup-like chars <>&\"' -->\n  <sub:child sub:attr=\"value\">\n    <?another-pi test=\"123\"?>\n    <![CDATA[\n      CDATA block inside namespaced element with <tags> & entities &base;\n    ]]>\n  </sub:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE testDoc [\n  <!ELEMENT testDoc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY % extDtd SYSTEM \"http://example.com/does-not-exist.dtd\">\n  %extDtd;\n  <!ENTITY dynamic \"&amp; nested entity &base;\">\n  <?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n]>\n<testDoc xmlns=\"http://xml.org/base\" xmlns:ext=\"http://xml.org/ext\">\n  <!-- Section comment with multi-line\n       description and special characters -->\n  <ext:section ext:id=\"S1\">\n    <?target-pi data=\"param\"?>\n    <![CDATA[\n      Nested CDATA with <tag> and &amp; references inside ext namespace.\n    ]]>\n  </ext:section>\n</testDoc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item+)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY ent1 \"First Entity\">\n  <!ENTITY ent2 \"&ent1; and Second Entity\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n  <?custom-pi action=\"init\" status=\"active\"?>\n]>\n<catalog xmlns=\"http://example.org/catalog\" xmlns:x=\"http://example.org/x\">\n  <!-- Comment in catalog root -->\n  <x:item x:code=\"001\">\n    <?x:pi target=\"refresh\"?>\n    <![CDATA[\n      CDATA containing unescaped <brackets>, &ampersands;, and quotes '\"\n    ]]>\n    &ent2;\n  </x:item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (node)*>\n  <!ELEMENT node (#PCDATA)>\n  <!ENTITY localEnt \"Local Entity Content\">\n  <?xml-client mode=\"safe\" debug=\"true\"?>\n]>\n<document xmlns=\"urn:document:root\" xmlns:n=\"urn:document:node\">\n  <!-- Comment with boundary cases: -->\n  <!-- ---- -->\n  <n:node n:name=\"test-node\">\n    <?n:pi-target instruction-data?>\n    <![CDATA[\n      <!DOCTYPE nested-cdata-lookalike>\n      <node>This is CDATA with markup inside.</node>\n    ]]>\n    &localEnt;\n  </n:node>\n</document>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY eA \"Entity A\">\n  <!ENTITY eB \"&eA; &eC;\">\n  <!ENTITY eC \"Entity C\">\n  <?xml-app-info name=\"fuzzing-test\" version=\"2.0\"?>\n]>\n<root xmlns=\"http://test.org/ns/root\" xmlns:ns1=\"http://test.org/ns/child\">\n  <!-- Complex comment block with DTD references: &eA; -->\n  <ns1:child ns1:attribute=\"test\">\n    <?ns1:pi command=\"execute\" arg=\"value\"?>\n    <![CDATA[\n      CDATA block evaluating entities literally: &eA; &eB;\n    ]]>\n  </ns1:child>\n</root>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % pe \" <!ENTITY ent 'parameter entity value'> \">\n  %pe;\n  <!ENTITY base \"Resolved &ent;\">\n  <?target-pi data=\"processing instruction content\"?>\n]>\n<root xmlns=\"http://example.com/ns\" xmlns:sub=\"http://example.com/sub\">\n  <!-- Top-level comment containing markup-like chars <>&\"' -->\n  <sub:child sub:attr=\"value\">\n    <?another-pi test=\"123\"?>\n    <![CDATA[\n      CDATA block inside namespaced element with <tags> & entities &base;\n    ]]>\n  </sub:child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE testDoc [\n  <!ELEMENT testDoc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY % extDtd SYSTEM \"http://example.com/does-not-exist.dtd\">\n  %extDtd;\n  <!ENTITY dynamic \"&amp; nested entity &base;\">\n  <?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n]>\n<testDoc xmlns=\"http://xml.org/base\" xmlns:ext=\"http://xml.org/ext\">\n  <!-- Section comment with multi-line\n       description and special characters -->\n  <ext:section ext:id=\"S1\">\n    <?target-pi data=\"param\"?>\n    <![CDATA[\n      Nested CDATA with <tag> and &amp; references inside ext namespace.\n    ]]>\n  </ext:section>\n</testDoc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item+)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY ent1 \"First Entity\">\n  <!ENTITY ent2 \"&ent1; and Second Entity\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n  <?custom-pi action=\"init\" status=\"active\"?>\n]>\n<catalog xmlns=\"http://example.org/catalog\" xmlns:x=\"http://example.org/x\">\n  <!-- Comment in catalog root -->\n  <x:item x:code=\"001\">\n    <?x:pi target=\"refresh\"?>\n    <![CDATA[\n      CDATA containing unescaped <brackets>, &ampersands;, and quotes '\"\n    ]]>\n    &ent2;\n  </x:item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE document [\n  <!ELEMENT document (node)*>\n  <!ELEMENT node (#PCDATA)>\n  <!ENTITY localEnt \"Local Entity Content\">\n  <?xml-client mode=\"safe\" debug=\"true\"?>\n]>\n<document xmlns=\"urn:document:root\" xmlns:n=\"urn:document:node\">\n  <!-- Comment with boundary cases: -->\n  <!-- ---- -->\n  <n:node n:name=\"test-node\">\n    <?n:pi-target instruction-data?>\n    <![CDATA[\n      <!DOCTYPE nested-cdata-lookalike>\n      <node>This is CDATA with markup inside.</node>\n    ]]>\n    &localEnt;\n  </n:node>\n</document>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY eA \"Entity A\">\n  <!ENTITY eB \"&eA; &eC;\">\n  <!ENTITY eC \"Entity C\">\n  <?xml-app-info name=\"fuzzing-test\" version=\"2.0\"?>\n]>\n<root xmlns=\"http://test.org/ns/root\" xmlns:ns1=\"http://test.org/ns/child\">\n  <!-- Complex comment block with DTD references: &eA; -->\n  <ns1:child ns1:attribute=\"test\">\n    <?ns1:pi command=\"execute\" arg=\"value\"?>\n    <![CDATA[\n      CDATA block evaluating entities literally: &eA; &eB;\n    ]]>\n  </ns1:child>\n</root>\n```",
+              "thoughtSignature": "EjQKMgERTTIP+j0bRLNT833ID05N+OdUnwtP6vI9GLJBQ8h/5D2Et47ZM0j/V7ikqPHD4ow9"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2675,
+      "candidatesTokenCount": 1003,
+      "totalTokenCount": 3678,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 2675
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "4dF1av6MCIrpjuMP5KPKkQo"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

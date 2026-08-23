@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % ent "<!ENTITY internal 'Expanded Entity Value'>">
+  %ent;
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY ext SYSTEM "logo.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.com/ns/root" xmlns:sub="http://example.com/ns/sub">
+  <!-- Top-level comment exercising parser comment state machine -->
+  <sub:child id="c1">
+    <![CDATA[
+      CDATA section containing markup <tags> and &internal; reference.
+    ]]>
+  </sub:child>
+  <child>&internal;</child>
+</root>

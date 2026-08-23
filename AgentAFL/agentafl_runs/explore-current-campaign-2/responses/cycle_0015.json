@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % intEnt \"<!ENTITY internal 'Expanded Internal Entity'>\">\n  %intEnt;\n  <!ENTITY extSys SYSTEM \"nonexistent.ent\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY banner SYSTEM \"banner.png\" NDATA png>\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<root xmlns=\"http://example.com/ns/root\" xmlns:sub=\"http://example.com/ns/sub\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Root level comment combining namespaces and entities -->\n  <sub:child xlink:type=\"simple\" xlink:href=\"http://example.com\">\n    <![CDATA[\n      CDATA section containing markup-like text: <sub:child>&internal;</sub:child>\n    ]]>\n  </sub:child>\n  <child>&internal;</child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE database [\n  <!ELEMENT database (record*)>\n  <!ELEMENT record (#PCDATA)>\n  <!ENTITY prefix \"DATA_\">\n  <!ENTITY combined \"&prefix;SUFFIX\">\n  <!ENTITY % paramDecl \"<!ELEMENT record (#PCDATA | subrec)*>\">\n  %paramDecl;\n  <!ELEMENT subrec (#PCDATA)>\n]>\n<?target-pi data=\"processing-instruction-value\"?>\n<database xmlns=\"http://www.xml.org/database\" xmlns:m=\"http://www.xml.org/metadata\">\n  <!-- Metadata and processing instructions inside root -->\n  <?xml-meta version=\"1.0\"?>\n  <m:record id=\"rec1\">\n    <![CDATA[\n      Nested CDATA block with entity reference &combined; inside.\n    ]]>\n  </m:record>\n  <record>&combined;</record>\n</database>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY ent1 \"First Entity\">\n  <!ENTITY ent2 \"&ent1; and Second Entity\">\n  <!ENTITY % dtdMacro \"<!ENTITY macroEnt 'Macro Value'>\">\n  %dtdMacro;\n]>\n<?catalog-control mode=\"strict\"?>\n<catalog xmlns=\"http://example.org/catalog\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n  <!-- Catalog containing multiple CDATA and entity references -->\n  <item>\n    <![CDATA[\n      First CDATA block with &ent2;\n    ]]>\n  </item>\n  <item>\n    <![CDATA[\n      Second CDATA block with &macroEnt;\n    ]]>\n  </item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (file)*>\n  <!ELEMENT file (#PCDATA)>\n  <!ENTITY baseEnt \"Base Entity String\">\n  <!ENTITY nestedEnt \"&baseEnt; - Extended\">\n  <!NOTATION pdf SYSTEM \"application/pdf\">\n  <!ENTITY doc SYSTEM \"document.pdf\" NDATA pdf>\n]>\n<?xml-script type=\"text/javascript\" src=\"parser.js\"?>\n<archive xmlns=\"http://example.net/archive\" xmlns:v=\"http://example.net/version\">\n  <!-- Archive description comment -->\n  <v:file id=\"f1\">\n    <![CDATA[\n      Archive content containing entities: &nestedEnt;\n    ]]>\n  </v:file>\n  <file>&nestedEnt;</file>\n</archive>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (stock)*>\n  <!ELEMENT stock (#PCDATA)>\n  <!ENTITY stockA \"Item A\">\n  <!ENTITY stockB \"Item B: &stockA;\">\n  <!ENTITY % batch \"<!ENTITY stockC 'Item C'>\">\n  %batch;\n]>\n<?xml-app test=\"true\"?>\n<inventory xmlns=\"http://example.com/inventory\" xmlns:ns=\"http://example.com/ns\">\n  <!-- Inventory tracking comment block -->\n  <ns:stock id=\"s1\">\n    <![CDATA[\n      Inventory notes: &stockB; and &stockC;\n    ]]>\n  </ns:stock>\n  <stock>&stockB;</stock>\n</inventory>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % intEnt \"<!ENTITY internal 'Expanded Internal Entity'>\">\n  %intEnt;\n  <!ENTITY extSys SYSTEM \"nonexistent.ent\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY banner SYSTEM \"banner.png\" NDATA png>\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<root xmlns=\"http://example.com/ns/root\" xmlns:sub=\"http://example.com/ns/sub\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Root level comment combining namespaces and entities -->\n  <sub:child xlink:type=\"simple\" xlink:href=\"http://example.com\">\n    <![CDATA[\n      CDATA section containing markup-like text: <sub:child>&internal;</sub:child>\n    ]]>\n  </sub:child>\n  <child>&internal;</child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE database [\n  <!ELEMENT database (record*)>\n  <!ELEMENT record (#PCDATA)>\n  <!ENTITY prefix \"DATA_\">\n  <!ENTITY combined \"&prefix;SUFFIX\">\n  <!ENTITY % paramDecl \"<!ELEMENT record (#PCDATA | subrec)*>\">\n  %paramDecl;\n  <!ELEMENT subrec (#PCDATA)>\n]>\n<?target-pi data=\"processing-instruction-value\"?>\n<database xmlns=\"http://www.xml.org/database\" xmlns:m=\"http://www.xml.org/metadata\">\n  <!-- Metadata and processing instructions inside root -->\n  <?xml-meta version=\"1.0\"?>\n  <m:record id=\"rec1\">\n    <![CDATA[\n      Nested CDATA block with entity reference &combined; inside.\n    ]]>\n  </m:record>\n  <record>&combined;</record>\n</database>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY ent1 \"First Entity\">\n  <!ENTITY ent2 \"&ent1; and Second Entity\">\n  <!ENTITY % dtdMacro \"<!ENTITY macroEnt 'Macro Value'>\">\n  %dtdMacro;\n]>\n<?catalog-control mode=\"strict\"?>\n<catalog xmlns=\"http://example.org/catalog\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n  <!-- Catalog containing multiple CDATA and entity references -->\n  <item>\n    <![CDATA[\n      First CDATA block with &ent2;\n    ]]>\n  </item>\n  <item>\n    <![CDATA[\n      Second CDATA block with &macroEnt;\n    ]]>\n  </item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (file)*>\n  <!ELEMENT file (#PCDATA)>\n  <!ENTITY baseEnt \"Base Entity String\">\n  <!ENTITY nestedEnt \"&baseEnt; - Extended\">\n  <!NOTATION pdf SYSTEM \"application/pdf\">\n  <!ENTITY doc SYSTEM \"document.pdf\" NDATA pdf>\n]>\n<?xml-script type=\"text/javascript\" src=\"parser.js\"?>\n<archive xmlns=\"http://example.net/archive\" xmlns:v=\"http://example.net/version\">\n  <!-- Archive description comment -->\n  <v:file id=\"f1\">\n    <![CDATA[\n      Archive content containing entities: &nestedEnt;\n    ]]>\n  </v:file>\n  <file>&nestedEnt;</file>\n</archive>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (stock)*>\n  <!ELEMENT stock (#PCDATA)>\n  <!ENTITY stockA \"Item A\">\n  <!ENTITY stockB \"Item B: &stockA;\">\n  <!ENTITY % batch \"<!ENTITY stockC 'Item C'>\">\n  %batch;\n]>\n<?xml-app test=\"true\"?>\n<inventory xmlns=\"http://example.com/inventory\" xmlns:ns=\"http://example.com/ns\">\n  <!-- Inventory tracking comment block -->\n  <ns:stock id=\"s1\">\n    <![CDATA[\n      Inventory notes: &stockB; and &stockC;\n    ]]>\n  </ns:stock>\n  <stock>&stockB;</stock>\n</inventory>\n```",
+              "thoughtSignature": "EjQKMgERTTIPaPlubPsh4FGlPid4oyVYVkNQKp71YDZ5H/tcjZz+onf78VZeBftT51vros4Y"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2613,
+      "candidatesTokenCount": 1064,
+      "totalTokenCount": 3677,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 2613
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "IgF2aonvLqydjuMP7JaGmAo"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

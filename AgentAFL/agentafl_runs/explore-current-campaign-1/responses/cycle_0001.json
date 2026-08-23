@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (#PCDATA)>\n  <!ENTITY ent \"parsed entity text\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY % param \"CDATA\">\n]>\n<?xml-stylesheet href=\"style.xsl\" type=\"text/xsl\"?>\n<root xmlns:ns=\"http://example.com/ns\" ns:attr=\"value\">\n  <!-- This is a detailed comment targeting parser branches -->\n  <![CDATA[\n    Here is some CDATA content with special characters: <>&'\"\n  ]]>\n  &ent;\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE test [\n  <!ELEMENT test (child*)>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % ext SYSTEM \"http://localhost/external.dtd\">\n  %ext;\n  <!ENTITY internal \"nested &subent; entity\">\n  <!ENTITY subent \"deeply nested\">\n]>\n<?target data instruction?>\n<test xmlns=\"http://default.ns.uri\" xmlns:custom=\"http://custom.ns.uri\">\n  <!-- Comment containing <!-- nested-like dashes --> -->\n  <custom:child>\n    <![CDATA[First CDATA section]]>\n  </custom:child>\n  <child>\n    &internal;\n    <![CDATA[Second CDATA with a string like ]]> inside]]>\n  </child>\n</test>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc ANY>\n  <!ENTITY company \"Acme Corp\">\n  <!ENTITY copy \"Copyright &company;\">\n  <?pi-in-dtd processing instruction inside dtd?>\n]>\n<doc xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Leading comment before PI -->\n  <?xml-stylesheet type=\"text/css\" href=\"print.css\"?>\n  <div xlink:type=\"simple\">\n    <p>\n      &copy;\n    </p>\n    <![CDATA[\n      Raw text section with markup-like characters <foo bar=\"baz\"/>\n    ]]>\n  </div>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ATTLIST item id ID #REQUIRED>\n  <!ENTITY g1 \"Group 1\">\n  <!ENTITY g2 \"&g1; - Group 2\">\n]>\n<?catalog-control action=\"refresh\"?>\n<catalog xmlns=\"urn:catalog:schema\" xmlns:m=\"urn:catalog:metadata\">\n  <!-- Comment block 1 -->\n  <m:item id=\"i1\">\n    <![CDATA[Item 1 CDATA]]>\n  </m:item>\n  <!-- Comment block 2 with entity reference &g2; -->\n  <m:item id=\"i2\">\n    &g2;\n  </m:item>\n  <?catalog-control action=\"log\"?>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE note [\n  <!ELEMENT note (to, from, heading, body)>\n  <!ELEMENT to (#PCDATA)>\n  <!ELEMENT from (#PCDATA)>\n  <!ELEMENT heading (#PCDATA)>\n  <!ELEMENT body (#PCDATA)>\n  <!ENTITY writer \"John Doe\">\n  <!ENTITY recipient \"Jane Doe\">\n]>\n<?note-system priority=\"high\"?>\n<note xmlns=\"http://example.org/note\" xmlns:pref=\"http://example.org/pref\" pref:security=\"confidential\">\n  <!-- Begin recipient and sender definitions -->\n  <to>&recipient;</to>\n  <from>&writer;</from>\n  <heading>Reminder</heading>\n  <body>\n    <![CDATA[Don't forget to check the XML parser edge cases with CDATA & entities.]]>\n  </body>\n  <!-- End of note body -->\n</note>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (#PCDATA)>\n  <!ENTITY ent \"parsed entity text\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY % param \"CDATA\">\n]>\n<?xml-stylesheet href=\"style.xsl\" type=\"text/xsl\"?>\n<root xmlns:ns=\"http://example.com/ns\" ns:attr=\"value\">\n  <!-- This is a detailed comment targeting parser branches -->\n  <![CDATA[\n    Here is some CDATA content with special characters: <>&'\"\n  ]]>\n  &ent;\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE test [\n  <!ELEMENT test (child*)>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % ext SYSTEM \"http://localhost/external.dtd\">\n  %ext;\n  <!ENTITY internal \"nested &subent; entity\">\n  <!ENTITY subent \"deeply nested\">\n]>\n<?target data instruction?>\n<test xmlns=\"http://default.ns.uri\" xmlns:custom=\"http://custom.ns.uri\">\n  <!-- Comment containing <!-- nested-like dashes --> -->\n  <custom:child>\n    <![CDATA[First CDATA section]]>\n  </custom:child>\n  <child>\n    &internal;\n    <![CDATA[Second CDATA with a string like ]]> inside]]>\n  </child>\n</test>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc ANY>\n  <!ENTITY company \"Acme Corp\">\n  <!ENTITY copy \"Copyright &company;\">\n  <?pi-in-dtd processing instruction inside dtd?>\n]>\n<doc xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Leading comment before PI -->\n  <?xml-stylesheet type=\"text/css\" href=\"print.css\"?>\n  <div xlink:type=\"simple\">\n    <p>\n      &copy;\n    </p>\n    <![CDATA[\n      Raw text section with markup-like characters <foo bar=\"baz\"/>\n    ]]>\n  </div>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ATTLIST item id ID #REQUIRED>\n  <!ENTITY g1 \"Group 1\">\n  <!ENTITY g2 \"&g1; - Group 2\">\n]>\n<?catalog-control action=\"refresh\"?>\n<catalog xmlns=\"urn:catalog:schema\" xmlns:m=\"urn:catalog:metadata\">\n  <!-- Comment block 1 -->\n  <m:item id=\"i1\">\n    <![CDATA[Item 1 CDATA]]>\n  </m:item>\n  <!-- Comment block 2 with entity reference &g2; -->\n  <m:item id=\"i2\">\n    &g2;\n  </m:item>\n  <?catalog-control action=\"log\"?>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE note [\n  <!ELEMENT note (to, from, heading, body)>\n  <!ELEMENT to (#PCDATA)>\n  <!ELEMENT from (#PCDATA)>\n  <!ELEMENT heading (#PCDATA)>\n  <!ELEMENT body (#PCDATA)>\n  <!ENTITY writer \"John Doe\">\n  <!ENTITY recipient \"Jane Doe\">\n]>\n<?note-system priority=\"high\"?>\n<note xmlns=\"http://example.org/note\" xmlns:pref=\"http://example.org/pref\" pref:security=\"confidential\">\n  <!-- Begin recipient and sender definitions -->\n  <to>&recipient;</to>\n  <from>&writer;</from>\n  <heading>Reminder</heading>\n  <body>\n    <![CDATA[Don't forget to check the XML parser edge cases with CDATA & entities.]]>\n  </body>\n  <!-- End of note body -->\n</note>\n```",
+              "thoughtSignature": "EjQKMgERTTIPEispbqUmSaNrjcuEQ8UQlXQ8PEfKmTssIyBqiSYcpylfUa7UIyrLe54SiWpI"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2941,
+      "candidatesTokenCount": 946,
+      "totalTokenCount": 3887,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 2941
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "Hw50asHTNeX4juMP-4idsQw"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

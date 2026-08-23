@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE testDoc [
+  <!ELEMENT testDoc (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY base "Root Entity">
+  <!ENTITY nested "&base; Extended">
+  <!ENTITY % extEnt SYSTEM "http://example.com/ext.dtd">
+  %extEnt;
+  <?xml-stylesheet type="text/xsl" href="style.xsl"?>
+]>
+<testDoc xmlns="http://default.ns" xmlns:ext="http://extension.ns">
+  <!-- Test comment explaining validation rules -->
+  <?target data="val"?>
+  <ext:item id="1">
+    <![CDATA[
+      Some raw CDATA text with arbitrary characters: <>&'"
+    ]]>
+  </ext:item>
+  <item>&nested;</item>
+</testDoc>

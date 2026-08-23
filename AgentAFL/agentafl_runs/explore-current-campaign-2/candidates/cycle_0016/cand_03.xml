@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document [
+  <!ELEMENT document (section*)>
+  <!ELEMENT section (#PCDATA)>
+  <!ENTITY refA "Reference A">
+  <!ENTITY refB "&refA; and Reference B">
+  <!ENTITY % entityMacro "<!ENTITY dynamicEnt 'Dynamic Content'>">
+  %entityMacro;
+  <?xml-log level="debug" target="stdout"?>
+]>
+<document xmlns="http://doc.org/ns" xmlns:meta="http://doc.org/meta">
+  <!-- Document root containing processing instructions and CDATA sections -->
+  <meta:section id="s1">
+    <?meta-action type="process"?>
+    <![CDATA[
+      Nested CDATA block: &dynamicEnt; with <meta:tag> elements.
+    ]]>
+  </meta:section>
+  <section>&refB;</section>
+</document>

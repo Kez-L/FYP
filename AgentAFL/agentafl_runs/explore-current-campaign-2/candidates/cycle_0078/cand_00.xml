@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % intEnt "<!ENTITY extEnt 'internal expanded'>">
+  %intEnt;
+  <!ENTITY ref "&extEnt; with recursion-like structure">
+  <?target-pi processing instruction value?>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY binaryData SYSTEM "file.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.com/ns/base" xmlns:sub="http://example.com/ns/sub">
+  <!-- Leading comment explaining the test case structure -->
+  <sub:child sub:attr="value">
+    <![CDATA[
+      CDATA section containing <tags>, &references;, and other entities: &ref;
+    ]]>
+  </sub:child>
+  <child>&ref;</child>
+</root>

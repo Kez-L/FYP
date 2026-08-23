@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document [
+  <!ELEMENT document (section)*>
+  <!ELEMENT section (#PCDATA)>
+  <!ENTITY sec-ent "Section Content">
+  <!ENTITY ref-ent "Reference to &sec-ent;">
+  <!ENTITY % ext-decl "<!ENTITY dynamic-ent 'Dynamic Value'>">
+  %ext-decl;
+]>
+<?xml-app-context name="fuzzing"?>
+<document xmlns="http://xml.org/document" xmlns:doc="http://xml.org/document/ext">
+  <!-- Document root comment block with nested dashes -- -- inside -->
+  <doc:section>
+    <![CDATA[
+      <section>Nested pseudo-tag inside CDATA with &ref-ent;</section>
+    ]]>
+  </doc:section>
+  <section>&dynamic-ent; - &ref-ent;</section>
+</document>

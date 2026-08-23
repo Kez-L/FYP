@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % ent "<!ENTITY internal 'Expanded Value'>">
+  %ent;
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY ext SYSTEM "logo.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.com/ns" xmlns:custom="http://example.com/custom" custom:id="001">
+  <!-- Comment containing special characters <>&'" -->
+  <?custom-pi target="process" data="value"?>
+  <child>
+    <![CDATA[
+      CDATA block with entity reference &internal; and tags <foo></foo>
+    ]]>
+  </child>
+  <child>&internal;</child>
+</root>

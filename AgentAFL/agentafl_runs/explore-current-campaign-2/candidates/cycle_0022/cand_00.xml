@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % param "<!ENTITY ent 'Parsed Entity Value'>">
+  %param;
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY icon SYSTEM "icon.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.org/ns/base" xmlns:sub="http://example.org/ns/sub" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Comment containing special chars: <>&"' and entity reference &ent; -->
+  <sub:child xlink:type="simple" xlink:href="http://example.org">
+    <![CDATA[
+      CDATA block containing markup-like text: <root>&ent;</root>
+    ]]>
+    &ent;
+  </sub:child>
+  <?target processing instruction data with namespaces &ent;?>
+</root>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % paramEntity "<!ENTITY internalEntity 'ExpandedValue'>">
+  %paramEntity;
+  <!ENTITY combined "&internalEntity; and More">
+  <?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+]>
+<root xmlns="http://example.com/ns1" xmlns:ns2="http://example.com/ns2">
+  <!-- Leading comment explaining the test case with CDATA and PIs -->
+  <?target data="test-processing-instruction"?>
+  <child ns2:id="1">
+    <![CDATA[
+      Some raw CDATA text containing entities: &combined; and tags <foo></foo>
+    ]]>
+  </child>
+  <ns2:child>&combined;</ns2:child>
+</root>

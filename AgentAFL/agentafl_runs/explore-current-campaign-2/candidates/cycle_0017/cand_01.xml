@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record)*>
+  <!ELEMENT record (#PCDATA)>
+  <!ATTLIST record code ID #REQUIRED>
+  <!ENTITY e1 "First Level">
+  <!ENTITY e2 "&e1; and Second Level">
+  <!ENTITY % param "<!ELEMENT nested (#PCDATA)>">
+  %param;
+]>
+<?xml-model href="schema.rng" type="application/xml-relax-ng"?>
+<archive xmlns="http://example.org/ns/archive" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:html="http://www.w3.org/1999/xhtml">
+  <!-- Parent comment block with multiple nested entity references -->
+  <record code="rec1" xlink:type="simple">
+    <?archive-pi target="validate" data="true"?>
+    <![CDATA[
+      Data payload with CDATA: <nested>&e2;</nested>
+    ]]>
+  </record>
+</archive>

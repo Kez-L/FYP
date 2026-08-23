@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % pe "<!ENTITY ent 'Parsed Entity Value'>">
+  %pe;
+  <!ENTITY ext SYSTEM "http://localhost/nonexistent" NDATA bin>
+  <!NOTATION bin SYSTEM "urn:notation">
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.com/ns/root" xmlns:sub="http://example.com/ns/sub">
+  <!-- This is a top-level comment describing the root element -->
+  <sub:child>
+    <?sub-pi target="data" processing="true"?>
+    <![CDATA[
+      CDATA section containing complex markup characters: <tag> &amp; "quotes"
+    ]]>
+    &ent;
+  </sub:child>
+</root>

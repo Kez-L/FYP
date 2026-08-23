@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % ent "<!ENTITY internal 'Expanded Entity Value'>">
+  %ent;
+  <!ENTITY ext SYSTEM "nonexistent.ent">
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.org/ns1" xmlns:ns2="http://example.org/ns2" ns2:attr="value">
+  <!-- This is a top-level comment describing the root element -->
+  <child ns2:id="c1">
+    <![CDATA[
+      Some raw CDATA content with <tags> and &internal; references.
+    ]]>
+  </child>
+  <child>&internal;</child>
+</root>

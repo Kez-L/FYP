@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record*)>
+  <!ELEMENT record (#PCDATA)>
+  <!ENTITY e1 "Alpha">
+  <!ENTITY e2 "&e1; Beta">
+  <!ENTITY e3 "&e2; Gamma">
+  <!NOTATION pdf SYSTEM "application/pdf">
+  <!ENTITY docFile "document.pdf" NDATA pdf>
+  <!ENTITY % macro "
+    <!ENTITY macroEnt 'MacroText'>
+  ">
+  %macro;
+]>
+<?xml-debug level="high" mode="fuzz"?>
+<archive xmlns="http://archive.org/schema" xmlns:meta="http://archive.org/meta" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Archival comment with entity &e3; -->
+  <meta:record id="rec1" xlink:type="simple">
+    <?meta:action execute="verify"?>
+    <![CDATA[
+      Raw payload: &e3; with <brackets> &amp; entities
+    ]]>
+  </meta:record>
+  <record>&macroEnt;</record>
+</archive>

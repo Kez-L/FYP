@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workspace [
+  <!ELEMENT workspace (project)*>
+  <!ELEMENT project (#PCDATA)>
+  <!ENTITY p-name "Project Alpha">
+  <!ENTITY p-desc "Description of &p-name;">
+  <!ENTITY % p-macro "<!ENTITY p-expanded 'Expanded via parameter'>">
+  %p-macro;
+  <?workspace-cfg debug="false"?>
+  <!NOTATION json SYSTEM "application/json">
+  <!ENTITY config-file SYSTEM "config.json" NDATA json>
+]>
+<workspace xmlns="http://example.org/ws" xmlns:p="http://example.org/project">
+  <!-- Comment on workspace elements -->
+  <p:project p:id="proj-99">
+    <![CDATA[
+      {
+        "name": "JSON inside CDATA",
+        "entity_ref": "&p-desc;"
+      }
+    ]]>
+    &p-expanded;
+  </p:project>
+</workspace>

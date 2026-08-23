@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child+)>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY ent "Expanded Entity Text">
+  <!ENTITY % pent "<!ELEMENT internal (#PCDATA)>">
+  %pent;
+]>
+<root xmlns="http://example.com/ns1" xmlns:ns2="http://example.com/ns2">
+  <!-- This is a top-level comment containing markup-like strings <test>&ent;</test> -->
+  <ns2:child>
+    <?target data-processing-instruction?>
+    <![CDATA[
+      Here is some CDATA with unescaped <tags>, &ampersands;, and quotes "'.
+    ]]>
+    &ent;
+  </ns2:child>
+</root>

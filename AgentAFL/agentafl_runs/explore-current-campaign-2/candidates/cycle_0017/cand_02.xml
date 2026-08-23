@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (section*)>
+  <!ELEMENT section (#PCDATA)>
+  <!ENTITY base "Base Entity Text">
+  <!ENTITY derived "&base; with extra suffix">
+  <!NOTATION text-format SYSTEM "text/plain">
+  <!ENTITY note SYSTEM "notes.txt" NDATA text-format>
+  <!ENTITY % p-ent "<!ENTITY param-ent 'Parameter Entity Value'>">
+  %p-ent;
+]>
+<?xml-target param="value"?>
+<root xmlns="http://example.org/ns/root" xmlns:custom="http://example.org/ns/custom">
+  <!-- Comment before custom namespace elements and CDATA -->
+  <custom:section id="sec-01">
+    <?custom-pi action="execute"?>
+    <![CDATA[
+      Raw CDATA segment: &derived; &param-ent;
+    ]]>
+  </custom:section>
+</root>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="style.css" type="text/css"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY % dtd_subset "
+    <!ELEMENT item (#PCDATA | subitem)*>
+    <!ELEMENT subitem (#PCDATA)>
+    <!ENTITY item_ent 'Item Entity Value'>
+  ">
+  %dtd_subset;
+  <!ENTITY combined_ent "&item_ent; and more">
+]>
+<catalog xmlns="http://example.org/catalog" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <!-- Comment embedded right inside the root element before any content -->
+  <item xlink:type="simple" xlink:href="http://example.org">
+    <?catalog-action execute="true"?>
+    <![CDATA[
+      Nested CDATA section with entities inside: &combined_ent;
+    ]]>
+    <subitem>&combined_ent;</subitem>
+  </item>
+</catalog>

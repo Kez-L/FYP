@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record*)>
+  <!ELEMENT record (#PCDATA)>
+  <!ENTITY ent1 "First Level">
+  <!ENTITY ent2 "Second Level &ent1;">
+  <!ENTITY ent3 "Third Level &ent2;">
+  <!ENTITY % p-ent "<!ELEMENT record (#PCDATA)*>">
+  %p-ent;
+]>
+<?xml-stylesheet type="text/css" href="style.css"?>
+<archive xmlns="http://example.org/archive" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="extended">
+  <!-- Comment block preceding complex entity usage and CDATA -->
+  <record xlink:type="locator" xlink:href="http://example.org">
+    <![CDATA[
+      Raw data payload with entities like &ent3; inside CDATA.
+    ]]>
+  </record>
+  <record>&ent3;</record>
+</archive>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-log level="debug" destination="stderr"?>
+<!DOCTYPE project [
+  <!ELEMENT project (module*)>
+  <!ELEMENT module (#PCDATA)>
+  <!ENTITY base-uri "http://example.org/schema">
+  <!ENTITY ref-item "&base-uri;/item">
+  <!NOTATION txt SYSTEM "text/plain">
+  <!ENTITY license SYSTEM "LICENSE.txt" NDATA txt>
+]>
+<project xmlns="http://xml.org/project" xmlns:core="http://xml.org/project/core" xmlns:ext="http://xml.org/project/ext">
+  <!-- Project description comment: verifies handling of multiple namespace declarations -->
+  <core:module core:name="main">
+    <?core-control action="compile" optimization="O2"?>
+    <![CDATA[
+      Source code segment:
+      if (x < y && y > z) {
+          parseXML("<node>&ref-item;</node>");
+      }
+    ]]>
+  </core:module>
+  <ext:module ext:id="secondary">
+    &ref-item;
+  </ext:module>
+</project>

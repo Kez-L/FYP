@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % pe "<!ELEMENT sub (#PCDATA)> <!ENTITY ent 'expanded_entity'>">
+  %pe;
+  <!ENTITY ext SYSTEM "nonexistent.ent">
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns="http://example.com/ns1" xmlns:ns2="http://example.com/ns2">
+  <!-- Comment containing markup-like chars <child>&ent;</child> -->
+  <ns2:child>
+    <![CDATA[
+      CDATA section with embedded tags <root> &ext; </root>
+    ]]>
+  </ns2:child>
+  <child>&ent;</child>
+</root>

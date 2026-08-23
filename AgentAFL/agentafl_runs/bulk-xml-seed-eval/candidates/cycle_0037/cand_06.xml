@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE test [
+  <!ELEMENT test (node+)>
+  <!ELEMENT node (#PCDATA)>
+  <!ENTITY entA "Alpha">
+  <!ENTITY entB "Beta &entA;">
+  <!ENTITY % macroB "<!ENTITY entC 'Gamma'>">
+  %macroB;
+]>
+<?xml-log type="audit" user="admin"?>
+<test xmlns="http://example.org/test" xmlns:ns="http://example.org/ns">
+  <!-- Comment introducing nodes -->
+  <ns:node ns:version="1.0">
+    <![CDATA[
+      Testing CDATA with &entB; and &entC;
+    ]]>
+  </ns:node>
+  <node>&entC;</node>
+</test>

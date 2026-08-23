@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<!DOCTYPE root [
+  <!ELEMENT root (section)*>
+  <!ELEMENT section (#PCDATA)>
+  <!ENTITY % ent_macro "<!ENTITY ent_internal 'Expanded Entity Data'>">
+  %ent_macro;
+  <!ENTITY ext_ent SYSTEM "external.ent">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY bin_data SYSTEM "logo.png" NDATA png>
+]>
+<root xmlns="http://example.com/ns/root" xmlns:sub="http://example.com/ns/sub">
+  <!-- Top-level comment testing parser processing of comments alongside entities and namespaces -->
+  <sub:section sub:id="sec1">
+    <?sub-pi target="process" data="param=value"?>
+    <![CDATA[
+      CDATA block containing markup-like strings: <root>&ent_internal;</root>
+    ]]>
+    &ent_internal;
+    &ext_ent;
+  </sub:section>
+</root>

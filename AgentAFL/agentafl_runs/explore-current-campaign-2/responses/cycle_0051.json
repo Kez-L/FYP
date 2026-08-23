@@ -1,0 +1,39 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % param \"\n    <!ENTITY ent 'Parsed Entity'>\n    <!NOTATION png SYSTEM 'image/png'>\n    <!ENTITY ext SYSTEM 'ext.png' NDATA png>\n  \">\n  %param;\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<root xmlns=\"http://example.org/ns\" xmlns:sub=\"http://example.org/sub\">\n  <!-- Complex comment with nested -- syntax check -->\n  <?sub:pi target=\"process\" data=\"param=1\"?>\n  <sub:child id=\"c1\">\n    <![CDATA[ CDATA block with <tags> &ent; references inside ]]>\n  </sub:child>\n  <child>&ent;</child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY e1 \"Entity 1\">\n  <!ENTITY e2 \"&e1; and Entity 2\">\n  <!ENTITY % pe \"<!ENTITY e3 '&e2;'>\">\n  %pe;\n]>\n<?target data=\"processing-instruction\"?>\n<doc xmlns=\"http://ns.example.com/doc\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Documentation section comment -->\n  <section xlink:type=\"simple\">\n    <![CDATA[\n      Unparsed character data with markup: <section>test</section>\n    ]]>\n  </section>\n  <section>&e3;</section>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY base \"Catalog Base\">\n  <!ENTITY derived \"&base; - Extended\">\n  <!NOTATION pdf SYSTEM \"application/pdf\">\n  <!ENTITY manual SYSTEM \"manual.pdf\" NDATA pdf>\n  <!ENTITY % ext-dtd SYSTEM \"external.dtd\">\n  %ext-dtd;\n]>\n<?xml-log level=\"debug\" target=\"parser\"?>\n<catalog xmlns=\"http://catalog.org/ns\" xmlns:m=\"http://catalog.org/ns/meta\">\n  <!-- Header comment for catalog -->\n  <m:metadata>\n    <?m:action type=\"initialize\"?>\n    <![CDATA[\n      <!ENTITY internal-cdata-test \"should not expand\">\n    ]]>\n  </m:metadata>\n  <item>&derived;</item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (stock)*>\n  <!ELEMENT stock (#PCDATA)>\n  <!ENTITY alpha \"Alpha Entity\">\n  <!ENTITY beta \"&alpha; &gamma;\">\n  <!ENTITY gamma \"Gamma Entity\">\n  <!ENTITY % macro \"<!ELEMENT stock (#PCDATA)>\">\n  %macro;\n]>\n<?xml-script type=\"text/javascript\" src=\"parser.js\"?>\n<inventory xmlns=\"http://inventory.org/schema\" xmlns:inv=\"http://inventory.org/schema/inv\">\n  <!-- Stock inventory tracking comment -->\n  <inv:warehouse location=\"main\">\n    <?inv:audit status=\"pending\" date=\"2023-10-01\"?>\n    <![CDATA[\n      Special symbols: & < > \" '\n    ]]>\n  </inv:warehouse>\n  <stock>&beta;</stock>\n</inventory>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE system [\n  <!ELEMENT system (node)*>\n  <!ELEMENT node (#PCDATA)>\n  <!ENTITY token \"SecurityToken\">\n  <!ENTITY auth \"&token;-Verified\">\n  <!ENTITY % dtd-frag \"\n    <!NOTATION txt SYSTEM 'text/plain'>\n    <!ENTITY doc-file 'readme.txt' NDATA txt>\n  \">\n  %dtd-frag;\n]>\n<?xml-audit log=\"enabled\"?>\n<system xmlns=\"http://system.net/ns\" xmlns:sec=\"http://system.net/ns/security\">\n  <!-- Security boundary configuration comment -->\n  <sec:policy id=\"p1\">\n    <?sec:enforce mode=\"strict\"?>\n    <![CDATA[\n      Protected zone CDATA: <sec:policy>untrusted</sec:policy>\n    ]]>\n  </sec:policy>\n  <node>&auth;</node>\n</system>\n```",
+  "finish_reason": "STOP",
+  "block_reason": null,
+  "raw": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child)*>\n  <!ELEMENT child (#PCDATA)>\n  <!ENTITY % param \"\n    <!ENTITY ent 'Parsed Entity'>\n    <!NOTATION png SYSTEM 'image/png'>\n    <!ENTITY ext SYSTEM 'ext.png' NDATA png>\n  \">\n  %param;\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"transform.xsl\"?>\n<root xmlns=\"http://example.org/ns\" xmlns:sub=\"http://example.org/sub\">\n  <!-- Complex comment with nested -- syntax check -->\n  <?sub:pi target=\"process\" data=\"param=1\"?>\n  <sub:child id=\"c1\">\n    <![CDATA[ CDATA block with <tags> &ent; references inside ]]>\n  </sub:child>\n  <child>&ent;</child>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE doc [\n  <!ELEMENT doc (section+)>\n  <!ELEMENT section (#PCDATA)>\n  <!ENTITY e1 \"Entity 1\">\n  <!ENTITY e2 \"&e1; and Entity 2\">\n  <!ENTITY % pe \"<!ENTITY e3 '&e2;'>\">\n  %pe;\n]>\n<?target data=\"processing-instruction\"?>\n<doc xmlns=\"http://ns.example.com/doc\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <!-- Documentation section comment -->\n  <section xlink:type=\"simple\">\n    <![CDATA[\n      Unparsed character data with markup: <section>test</section>\n    ]]>\n  </section>\n  <section>&e3;</section>\n</doc>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ENTITY base \"Catalog Base\">\n  <!ENTITY derived \"&base; - Extended\">\n  <!NOTATION pdf SYSTEM \"application/pdf\">\n  <!ENTITY manual SYSTEM \"manual.pdf\" NDATA pdf>\n  <!ENTITY % ext-dtd SYSTEM \"external.dtd\">\n  %ext-dtd;\n]>\n<?xml-log level=\"debug\" target=\"parser\"?>\n<catalog xmlns=\"http://catalog.org/ns\" xmlns:m=\"http://catalog.org/ns/meta\">\n  <!-- Header comment for catalog -->\n  <m:metadata>\n    <?m:action type=\"initialize\"?>\n    <![CDATA[\n      <!ENTITY internal-cdata-test \"should not expand\">\n    ]]>\n  </m:metadata>\n  <item>&derived;</item>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (stock)*>\n  <!ELEMENT stock (#PCDATA)>\n  <!ENTITY alpha \"Alpha Entity\">\n  <!ENTITY beta \"&alpha; &gamma;\">\n  <!ENTITY gamma \"Gamma Entity\">\n  <!ENTITY % macro \"<!ELEMENT stock (#PCDATA)>\">\n  %macro;\n]>\n<?xml-script type=\"text/javascript\" src=\"parser.js\"?>\n<inventory xmlns=\"http://inventory.org/schema\" xmlns:inv=\"http://inventory.org/schema/inv\">\n  <!-- Stock inventory tracking comment -->\n  <inv:warehouse location=\"main\">\n    <?inv:audit status=\"pending\" date=\"2023-10-01\"?>\n    <![CDATA[\n      Special symbols: & < > \" '\n    ]]>\n  </inv:warehouse>\n  <stock>&beta;</stock>\n</inventory>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE system [\n  <!ELEMENT system (node)*>\n  <!ELEMENT node (#PCDATA)>\n  <!ENTITY token \"SecurityToken\">\n  <!ENTITY auth \"&token;-Verified\">\n  <!ENTITY % dtd-frag \"\n    <!NOTATION txt SYSTEM 'text/plain'>\n    <!ENTITY doc-file 'readme.txt' NDATA txt>\n  \">\n  %dtd-frag;\n]>\n<?xml-audit log=\"enabled\"?>\n<system xmlns=\"http://system.net/ns\" xmlns:sec=\"http://system.net/ns/security\">\n  <!-- Security boundary configuration comment -->\n  <sec:policy id=\"p1\">\n    <?sec:enforce mode=\"strict\"?>\n    <![CDATA[\n      Protected zone CDATA: <sec:policy>untrusted</sec:policy>\n    ]]>\n  </sec:policy>\n  <node>&auth;</node>\n</system>\n```",
+              "thoughtSignature": "EjQKMgERTTIPRUuDpS8zNqESq72XLkNZ8189iOG1B3VZFkpDBB223jyqxxLczust7dLLOQMV"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2613,
+      "candidatesTokenCount": 1075,
+      "totalTokenCount": 3688,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 2613
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-3.5-flash-lite",
+    "responseId": "mYp2atD9NKf3juMP1dCF4Qs"
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

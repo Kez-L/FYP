@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document [
+  <!ELEMENT document (section+)>
+  <!ELEMENT section (#PCDATA)>
+  <!ENTITY e1 "First Entity">
+  <!ENTITY e2 "&e1; and Second">
+  <!ENTITY % internal_macro "<!ENTITY e3 'Nested Parameter &e1;'>">
+  %internal_macro;
+  <?xml-target data="processing instruction payload"?>
+]>
+<document xmlns="http://schema.example.com/doc" xmlns:meta="http://schema.example.com/meta">
+  <!-- Comment 1 before section -->
+  <section meta:id="s1">
+    <?meta-pi command="parse"?>
+    <![CDATA[
+      First CDATA block with complex text.
+    ]]>
+    &e2;
+  </section>
+  <section meta:id="s2">
+    <!-- Comment 2 inside second section -->
+    <![CDATA[
+      Second CDATA block &e3;
+    ]]>
+  </section>
+</document>

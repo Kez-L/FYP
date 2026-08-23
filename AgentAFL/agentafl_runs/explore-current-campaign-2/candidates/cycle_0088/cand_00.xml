@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY % pe "<!ENTITY internal 'Nested Entity Text'>">
+  %pe;
+  <!ENTITY rootEnt "Expanded: &internal;">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<catalog xmlns="http://example.com/ns/catalog" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <!-- Top-level comment before CDATA block -->
+  <?catalog-debug mode="verbose"?>
+  <item id="i1">
+    <![CDATA[
+      Unparsed CDATA section containing entity references like &rootEnt; and tags <item>test</item>.
+    ]]>
+  </item>
+  <item id="i2">&rootEnt;</item>
+</catalog>

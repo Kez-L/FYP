@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY % ent-decl "<!ENTITY internal-ent 'Resolved Entity Text'>">
+  %ent-decl;
+  <!ENTITY ext-ent SYSTEM "external.dtd">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+]>
+<inventory xmlns="http://example.com/ns/inv" xmlns:meta="http://example.com/ns/meta" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Root inventory comment containing special chars & tags <item> -->
+  <meta:details>
+    <?meta-action type="validate" version="1.0"?>
+    <![CDATA[
+      <meta:description>
+        CDATA section inside namespace element with entity reference: &internal-ent;
+      </meta:description>
+    ]]>
+  </meta:details>
+  <item xlink:type="simple" xlink:href="http://example.com/item1">
+    &internal-ent;
+  </item>
+</inventory>

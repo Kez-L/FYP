@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document [
+  <!ELEMENT document (section*)>
+  <!ELEMENT section (#PCDATA)>
+  <!ENTITY alpha "Alpha Entity">
+  <!ENTITY beta "&alpha; &amp; Beta Entity">
+  <!NOTATION txt SYSTEM "text/plain">
+  <!ENTITY ext SYSTEM "external.txt" NDATA txt>
+  <!ENTITY % parameter-ent "<!ATTLIST section version CDATA #IMPLIED>">
+  %parameter-ent;
+]>
+<?xml-app-info name="validator" active="yes"?>
+<document xmlns="http://example.org/document" xmlns:meta="http://example.org/meta">
+  <!-- Comment embedding an entity reference &beta; to test expansion -->
+  <section version="1.0">
+    <![CDATA[
+      CDATA containing nested markup simulation: <section> &beta; </section>
+    ]]>
+  </section>
+  <section>&beta;</section>
+</document>

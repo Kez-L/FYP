@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE container [
+  <!ELEMENT container (data*)>
+  <!ELEMENT data (#PCDATA)>
+  <!ENTITY ent_a "Alpha">
+  <!ENTITY ent_b "&ent_a; Beta">
+  <!ENTITY % def_macro "<!ELEMENT macro_elem (#PCDATA)>">
+  %def_macro;
+  <!NOTATION html SYSTEM "text/html">
+  <!ENTITY index SYSTEM "index.html" NDATA html>
+]>
+<?xml-script type="application/javascript" src="parser.js"?>
+<container xmlns="http://example.net/container" xmlns:html="http://www.w3.org/1999/xhtml">
+  <!-- Comment describing the container usage and namespaces -->
+  <data id="d1">
+    <?xml-data-source type="sql" query="SELECT * FROM data"?>
+    <![CDATA[
+      CDATA block containing unescaped <xml> tags, &amp; entities, and -- comments --.
+    ]]>
+  </data>
+  <data>&ent_b;</data>
+</container>

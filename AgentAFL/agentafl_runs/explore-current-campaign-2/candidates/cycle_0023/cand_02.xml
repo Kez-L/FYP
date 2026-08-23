@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (product*)>
+  <!ELEMENT product (#PCDATA)>
+  <!ENTITY % dtd-macro "<!ELEMENT product (#PCDATA | details)*> <!ELEMENT details (#PCDATA)>">
+  %dtd-macro;
+  <!ENTITY ref-a "Alpha">
+  <!ENTITY ref-b "&ref-a; Beta">
+  <!NOTATION txt SYSTEM "text/plain">
+  <!ENTITY notes SYSTEM "readme.txt" NDATA txt>
+]>
+<?xml-info version="1.0" author="TestBed"?>
+<inventory xmlns="http://example.net/inventory" xmlns:custom="http://example.net/custom">
+  <!-- Inventory manifest comment highlighting dynamic entities -->
+  <product id="p1">
+    <?custom-action trigger="load"?>
+    <![CDATA[
+      Multi-line CDATA block:
+      Line 1: &ref-b;
+      Line 2: <element>text</element>
+    ]]>
+    <details>&ref-b;</details>
+  </product>
+</inventory>

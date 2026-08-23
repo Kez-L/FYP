@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE system [
+  <!ELEMENT system (node*)>
+  <!ELEMENT node (#PCDATA)>
+  <!ENTITY eA "EntityA">
+  <!ENTITY eB "&eA; EntityB">
+  <!ENTITY eC "&eB; EntityC">
+  <!ENTITY % parser_macro "<!ENTITY eD '&eC; EntityD'>">
+  %parser_macro;
+  <!NOTATION json SYSTEM "application/json">
+  <!ENTITY jdata SYSTEM "data.json" NDATA json>
+]>
+<?xml-processing-directive key="value"?>
+<system xmlns="http://example.org/system" xmlns:cfg="http://example.org/system/config">
+  <!-- Multi-line comment 
+       detailing system configuration 
+       and entity expansion tests -->
+  <cfg:setting>
+    <?cfg-pi action="load-config"?>
+    <![CDATA[
+      CDATA block with embedded xml-like tags: <node>&eD;</node>
+    ]]>
+  </cfg:setting>
+  <node>&eD;</node>
+</system>

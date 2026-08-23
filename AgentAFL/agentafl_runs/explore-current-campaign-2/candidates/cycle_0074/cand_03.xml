@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record*)>
+  <!ELEMENT record (#PCDATA)>
+  <!ENTITY ent-a "Entity A">
+  <!ENTITY ent-b "Entity B &ent-a;">
+  <!ENTITY ent-c "Entity C &ent-b;">
+  <!ENTITY % core-macro "<!ENTITY ent-d 'Entity D'>">
+  %core-macro;
+]>
+<?xml-debug level="verbose" target="parser"?>
+<archive xmlns="urn:archive:schema" xmlns:meta="urn:archive:meta">
+  <!-- Comment regarding entity expansions -->
+  <record>
+    <![CDATA[
+      Raw CDATA containing entity &ent-c; and &ent-d;.
+    ]]>
+  </record>
+  <meta:record>&ent-c; &ent-d;</meta:record>
+</archive>

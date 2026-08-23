@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY % pe " <!ENTITY ent 'parsed entity value'> ">
+  %pe;
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY ext SYSTEM "http://example.com/external.ent">
+]>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<catalog xmlns="http://example.org/catalog" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <!-- Top level comment detailing namespace usage -->
+  <xi:include href="subcatalog.xml"/>
+  <item>
+    <?processing-instruction target="data" value="test"?>
+    <![CDATA[
+      CDATA section containing complex markup: <tag attr="val">&ent;</tag>
+    ]]>
+    &ent;
+  </item>
+</catalog>

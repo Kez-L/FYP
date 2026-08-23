@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!-- namespace via parameter entity -->
+  <!ENTITY % ns.x "xmlns:x CDATA #FIXED 'http://x.example.org/'">
+  <!ENTITY % ns.y "xmlns:y CDATA #FIXED 'http://y.example.org/'">
+  <!-- element declarations -->
+  <!ELEMENT doc (item*)>
+  <!ATTLIST doc
+    %ns.x;
+    %ns.y;
+    xml:space (default|preserve) 'default'>
+  <!ELEMENT item (#PCDATA)>
+  <!-- general entity for content -->
+  <!ENTITY raw "escaped &amp; content &lt;here&gt;">
+]>
+<?stylesheet type="text/css" href="style.css"?>
+<!-- before root -->
+<doc xmlns:x="http://x.example.org/" xmlns:y="http://y.example.org/" xml:space="default">
+  <!-- first item -->
+  <item><![CDATA[<x:fake> element inside cdata ]]></item>
+  <?pi-in-content data here?>
+  <!-- second item -->
+  <item><![CDATA[y:also <not> real markup]]></item>
+  <!-- third item -->
+  <item>&raw;</item>
+</doc>
+<!-- post-doc comment -->
+<?pi-after-doc?>

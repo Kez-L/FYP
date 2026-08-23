@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE doc [
+  <!ELEMENT doc (section+)>
+  <!ELEMENT section (#PCDATA)>
+  <!ENTITY % paramDTD "<!ENTITY parsedEnt 'Nested Param &subEnt;'>">
+  <!ENTITY subEnt "SubEntityData">
+  %paramDTD;
+]>
+<?xml-processing-instruction target="afl" data="test-mode=true"?>
+<doc xmlns="http://www.w3.org/1999/xhtml" xmlns:custom="http://example.org/custom">
+  <!-- Comment before complex CDATA and entities -->
+  <section id="s1">
+    <?custom-pi data="value"?>
+    <![CDATA[
+      Another CDATA block with <script>alert(1)</script> and &parsedEnt;
+    ]]>
+  </section>
+</doc>

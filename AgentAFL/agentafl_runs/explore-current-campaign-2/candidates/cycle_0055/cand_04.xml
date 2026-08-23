@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project [
+  <!ELEMENT project (task)*>
+  <!ELEMENT task (#PCDATA)>
+  <!ENTITY baseEnt "Base Entity">
+  <!ENTITY nestedEnt "&baseEnt; Extended">
+  <!ENTITY % dtdMacro "<!ELEMENT task (#PCDATA | subtask)*> <!ELEMENT subtask (#PCDATA)>">
+  %dtdMacro;
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY binData SYSTEM "data.bin" NDATA binary>
+]>
+<?xml-log level="debug" target="stdout"?>
+<project xmlns="http://xml.project.org/core" xmlns:ns="http://xml.project.org/ns" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Project description comment containing entity references like &nestedEnt; -->
+  <ns:task xlink:type="simple">
+    <?ns:directive execute="now"?>
+    <![CDATA[
+      <![CDATA[ Nested-looking CDATA construct simulation ]]>
+    ]]>
+  </ns:task>
+  <task>&nestedEnt; <subtask>Subtask Content</subtask></task>
+</project>

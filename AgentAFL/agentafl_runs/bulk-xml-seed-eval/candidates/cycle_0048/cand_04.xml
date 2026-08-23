@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (node*)>
+  <!ELEMENT node (#PCDATA)>
+  <!ENTITY e1 "Entity 1">
+  <!ENTITY e2 "Entity 2 &e1;">
+  <!ENTITY e3 "Entity 3 &e2;">
+  <!NOTATION n SYSTEM "sys">
+  <!ENTITY ent-sys SYSTEM "uri:test" NDATA n>
+  <?xml-debug level="high"?>
+]>
+<root xmlns="http://example.com/root" xmlns:foo="http://example.com/foo">
+  <!-- Comment 1 -->
+  <foo:node>
+    <![CDATA[
+      CDATA block containing entity reference &e3; directly.
+    ]]>
+  </foo:node>
+  <node>&e3;</node>
+</root>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE document [
+  <!ELEMENT document (section)*>
+  <!ELEMENT section (#PCDATA)>
+  <!ENTITY ref1 "Value 1">
+  <!ENTITY ref2 "Value 2 &ref1;">
+  <!ENTITY % dtdMacro "<!ENTITY complexRef '&ref2; Final'>">
+  %dtdMacro;
+]>
+<?xml-debug level="verbose" target="parser"?>
+<document xmlns="http://example.com/ns/doc" xmlns:ns="http://example.com/ns/other">
+  <!-- Top comment preceding deep entity and CDATA usage -->
+  <ns:section>
+    <![CDATA[
+      Unparsed CDATA region with entities &complexRef; inside
+    ]]>
+  </ns:section>
+  <section>&complexRef;</section>
+</document>
