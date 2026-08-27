@@ -11,9 +11,10 @@ good ones back in.
    coverage stats to `plateau_log.csv` (no side effects otherwise).
 3. Start `agentafl_orchestrator.py` — it periodically checks `plateau_log.csv`
    for a genuine plateau. When one hits, it calls `build_context_generic.py`
-   to assemble a prompt from live campaign state, sends it to an AI (Gemini
-   at the moment), extracts candidate seeds from the response, and injects
-   the useful ones into the campaign via `afl-addseeds`.
+   to assemble a prompt from live campaign state, sends it to an AI (Claude
+   by default; `--llm-provider gemini` switches back to Gemini), extracts
+   candidate seeds from the response, and injects the useful ones into the
+   campaign via `afl-addseeds`.
 
 ## Files
 

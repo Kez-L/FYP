@@ -1,13 +1,24 @@
 #!/usr/bin/env python3
 """
-build_context_generic.py — build a SYSTEM/USER prompt for the AgentAFL
+build_context.py — build a SYSTEM/USER prompt for the AgentAFL
 seed-generation LLM from an AFL++ campaign's on-disk state.
 
-Usage:
-  python3 build_context_generic.py \
+Usage (text format, e.g. XML):
+  python3 build_context.py \
+      --campaign-root /home/user/Documents/afl-output-libxml2 \
+      --instance main \
+      --format "XML document" \
+      --n-seeds 3 \
+      --n-generate 5 \
+      --out prompt.txt
+
+Usage (binary format, e.g. TIFF — naive full-file hex generation):
+  python3 build_context.py \
       --campaign-root /home/user/Documents/afl-output-libtiff \
       --instance main \
       --format "TIFF image" \
+      --seed-kind binary \
+      --format-hint "Byte order little-endian ('II' marker); a 12-byte IFD entry is tag(2)+type(2)+count(4)+value(4)." \
       --n-seeds 3 \
       --n-generate 5 \
       --out prompt.txt
@@ -39,7 +50,7 @@ Key aspects of context building:
   - Plateau interpretation: plateau_log.csv duration is turned into an
     explicit "coverage growth has stopped" statement rather than left as a
     raw number for the model to interpret itself.
-
+  - Seed-kind framing: --seed-kind for binary/not binary
 Output: a SYSTEM/USER prompt pair — plain text by default (--json for
 structured output, --flatten for a single pasteable block) — asking the
 model for --n-generate new seed documents in fenced code blocks.
@@ -74,8 +85,13 @@ def printable_ratio(data: bytes) -> float:
 
 
 def content_sample(path: Path, n: int = 500) -> str:
+    """Fixed-length fingerprint used ONLY for near-duplicate comparison
+    (never shown to the LLM). Uses hex rather than a lossy UTF-8 decode so
+    it behaves identically for text and binary seeds instead of collapsing
+    binary content into a wash of U+FFFD replacement characters, which would
+    make genuinely different binary seeds look artificially similar."""
     try:
-        return path.read_bytes()[:n].decode("utf-8", errors="replace")
+        return path.read_bytes()[:n].hex()
     except OSError:
         return ""
 
@@ -86,6 +102,27 @@ def is_similar(sample_a: str, sample_b: str, threshold: float = 0.6) -> bool:
     if not sample_a or not sample_b:
         return False
     return difflib.SequenceMatcher(None, sample_a, sample_b).ratio() > threshold
+
+
+def format_seed_for_prompt(data: bytes, seed_kind: str, max_chars: int = 2000) -> str:
+    """Render a seed's content the way the LLM should actually see it: as-is
+    text for seed_kind="text", or a space-separated hex dump for
+    seed_kind="binary". Raw bytes shown via decode(errors="replace") would
+    just be a wall of U+FFFD replacement characters for a binary format —
+    worse than useless as a few-shot example, since it actively teaches the
+    model the wrong pattern. Always marks truncation explicitly rather than
+    silently cutting the string."""
+    if seed_kind == "binary":
+        n_bytes = max(1, max_chars // 3)  # "xx " per byte, roughly
+        snippet = data[:n_bytes]
+        hex_str = " ".join(f"{b:02x}" for b in snippet)
+        if len(data) > n_bytes:
+            hex_str += f" ...[truncated, {len(data)} bytes total]"
+        return hex_str
+    text = data.decode("utf-8", errors="replace")
+    if len(text) > max_chars:
+        return text[:max_chars] + f"...[truncated, {len(text)} chars total]"
+    return text
 
 
 def parse_fuzzer_stats(path: Path) -> dict:
@@ -305,8 +342,22 @@ def assemble_prompt(
     plateau_log: Path,
     asan_hint: bool = True,
     fence_lang: str = "",
+    seed_kind: str = "text",
+    format_hint: str = "",
 ) -> dict:
-    """Build the actual SYSTEM/USER prompt pair — not just a context dump."""
+    """Build the actual SYSTEM/USER prompt pair — not just a context dump.
+
+    seed_kind: "text" asks the LLM for {fmt} content directly, ready to write
+    to a file as-is. "binary" asks for a hex byte stream instead — see the
+    module docstring for why, and the orchestrator for what happens to it
+    after generation.
+
+    format_hint: optional grammar/schema/byte-order hint appended to the
+    system prompt. Effectively required in practice for seed_kind="binary" —
+    without it there's nothing telling the model which byte order to commit
+    to, which makes a low validity rate uninterpretable (is the model bad at
+    this, or did it just guess the wrong convention?).
+    """
     inst_dir = campaign_root / instance
     stats = parse_fuzzer_stats(inst_dir / "fuzzer_stats")
     cmdline = parse_cmdline(inst_dir / "cmdline")
@@ -340,15 +391,31 @@ def assemble_prompt(
             "(use-after-free, heap buffer overflow, double-free, memory leak) is a valid "
             "and higher-value finding than new coverage alone — treat either as a win."
         )
+    if format_hint:
+        system_lines.append(f"Format-specific hint: {format_hint}")
 
     ##### Prompt element 9: Output formatting #####
-    system_lines.append(
-        f"Respond with exactly {n_generate} candidate {fmt} files, each in its own "
-        f"fenced {fence} code block, in the order you'd try them. No prose before, between, "
-        "or after the blocks — the response is parsed mechanically into seed files. Do not "
-        "explain, summarize, or critique the campaign data below — that is context for you "
-        "to use, not something to comment on."
-    )
+    if seed_kind == "binary":
+        system_lines.append(
+            f"Respond with exactly {n_generate} candidate {fmt} files, each represented as "
+            "a hex byte stream: only the digits 0-9 and a-f, two per byte, optionally "
+            "separated by single spaces, no '0x' prefixes and no other characters. Each "
+            f"stream goes in its own fenced {fence} code block, in the order you'd try them. "
+            "This hex is converted to raw bytes by a fixed hex-to-bytes function with no "
+            "further correction of any kind, so every field's byte width, byte order, and "
+            "position in the stream must be exactly right the first time. No prose before, "
+            "between, or after the blocks — the response is parsed mechanically into seed "
+            "files. Do not explain, summarize, or critique the campaign data below — that "
+            "is context for you to use, not something to comment on."
+        )
+    else:
+        system_lines.append(
+            f"Respond with exactly {n_generate} candidate {fmt} files, each in its own "
+            f"fenced {fence} code block, in the order you'd try them. No prose before, between, "
+            "or after the blocks — the response is parsed mechanically into seed files. Do not "
+            "explain, summarize, or critique the campaign data below — that is context for you "
+            "to use, not something to comment on."
+        )
     system = "\n".join(system_lines)
 
     ##### Prompt element 6: Input data to process (campaign state) #####
@@ -370,21 +437,22 @@ def assemble_prompt(
         u.append(f"Mutation operators that have stopped paying off recently: {ops_str}.")
     u.append("")
 
-    u.append(f"=== {len(chosen_seeds)} REAL EXAMPLE SEEDS — this is the format to match ===")
+    seed_label = "hex dump" if seed_kind == "binary" else "format"
+    u.append(f"=== {len(chosen_seeds)} REAL EXAMPLE SEEDS (shown as {seed_label}) — this is the format to match ===")
     u.append("Chosen for size/printability and mutual diversity, not just recency.")
     for f, reason in chosen_seeds:
         try:
-            content = f.read_bytes().decode("utf-8", errors="replace")
+            content = format_seed_for_prompt(f.read_bytes(), seed_kind)
         except OSError:
             content = "<unreadable>"
         u.append(f"--- {f.name} [{reason}] ---")
-        u.append(content[:2000])
+        u.append(content)
         u.append("")
 
-    u.append("=== A KNOWN EXPENSIVE INPUT (not a crash — a lead) ===")
+    u.append("=== A HIGH-COST INPUT (coverage lead) ===")
     if hang:
         try:
-            content = hang.read_bytes().decode("utf-8", errors="replace")
+            content = format_seed_for_prompt(hang.read_bytes(), seed_kind)
         except OSError:
             content = "<unreadable>"
         u.append(
@@ -393,15 +461,15 @@ def assemble_prompt(
             "adjacent/nested structures near it may reach unexplored — or unsafe — branches."
         )
         u.append(f"--- {hang.name} ---")
-        u.append(content[:2000])
+        u.append(content)
     else:
         u.append("(none available this run)")
     u.append("")
 
-    u.append("=== A KNOWN CRASH (reproduce/extend, not just a lead) ===")
+    u.append("=== A PREVIOUSLY FLAGGED INPUT (coverage lead) ===")
     if crash:
         try:
-            content = crash.read_bytes().decode("utf-8", errors="replace")
+            content = format_seed_for_prompt(crash.read_bytes(), seed_kind)
         except OSError:
             content = "<unreadable>"
         u.append(
@@ -410,7 +478,7 @@ def assemble_prompt(
             "it — is a high-value target."
         )
         u.append(f"--- {crash.name} ---")
-        u.append(content[:2000])
+        u.append(content)
     else:
         u.append("(none available this run)")
     u.append("")
@@ -431,11 +499,18 @@ def assemble_prompt(
     )
 
     ##### Prompt element 9: Output formatting (reiterated) #####
-    u.append(
-        "Prefer well-formed or near-well-formed files; a crash is a better outcome than "
-        f"mere new coverage, but either is a win. Output only the fenced {fence} code "
-        "blocks — no analysis, no commentary."
-    )
+    if seed_kind == "binary":
+        u.append(
+            "Produce byte structures that are valid or near-valid for the format and that "
+            "reach code the current corpus does not. Coverage of untested code is the goal. "
+            f"Output only the fenced {fence} hex blocks — no analysis, no commentary."
+        )
+    else:
+        u.append(
+            "Produce well-formed or near-well-formed files that reach code the current "
+            "corpus does not. Coverage of untested code is the goal. Output only the "
+            f"fenced {fence} code blocks — no analysis, no commentary."
+        )
 
     return {"system": system, "user": "\n".join(u)}
 
@@ -480,6 +555,21 @@ def main():
         help='Human-readable target file format, e.g. "XML document" or "TIFF image". '
         "Threaded into the prompt wherever the format needs naming.",
     )
+    ap.add_argument(
+        "--seed-kind",
+        choices=["text", "binary"],
+        default="text",
+        help='"text" (default): ask the LLM for {format} content directly. "binary": ask '
+        "for a hex byte stream per candidate instead, for a downstream hex-to-bytes step. "
+        "Also controls whether example seeds/hangs/crashes are shown as-is or as hex dumps.",
+    )
+    ap.add_argument(
+        "--format-hint",
+        default="",
+        help="Optional one- or two-sentence grammar/schema hint appended to the system "
+        "prompt (e.g. byte order and field widths for a binary format). Effectively "
+        "necessary for --seed-kind binary — see assemble_prompt's docstring.",
+    )
     ap.add_argument("--n-seeds", type=int, default=3, help="Few-shot example seeds to include.")
     ap.add_argument("--n-generate", type=int, default=5, help="How many new seeds to ask the LLM for.")
     ap.add_argument("--out", type=Path, default=None)
@@ -498,9 +588,10 @@ def main():
     )
     ap.add_argument(
         "--fence-lang",
-        default="",
-        help='Language tag for fenced code blocks, e.g. "xml". Defaults to bare ``` '
-        "since there's no single right tag across formats.",
+        default=None,
+        help='Language tag for fenced code blocks, e.g. "xml". Defaults to bare ``` for '
+        'text seeds, or "hex" for --seed-kind binary (informational for a human reading '
+        "the prompt only — the orchestrator's fence parser accepts any tag or none).",
     )
     ap.add_argument(
         "--json",
@@ -516,6 +607,10 @@ def main():
     )
     args = ap.parse_args()
 
+    fence_lang = args.fence_lang
+    if fence_lang is None:
+        fence_lang = "hex" if args.seed_kind == "binary" else ""
+
     plateau_log = args.plateau_log or (args.campaign_root.parent / "plateau_log.csv")
     prompt = assemble_prompt(
         args.campaign_root,
@@ -525,12 +620,14 @@ def main():
         args.n_generate,
         plateau_log,
         asan_hint=not args.no_asan_hint,
-        fence_lang=args.fence_lang,
+        fence_lang=fence_lang,
+        seed_kind=args.seed_kind,
+        format_hint=args.format_hint,
     )
     out_text = (
         json.dumps(prompt, indent=2)
         if args.json
-        else render_prompt(prompt, flatten=args.flatten, fence_lang=args.fence_lang)
+        else render_prompt(prompt, flatten=args.flatten, fence_lang=fence_lang)
     )
 
     if args.out:
