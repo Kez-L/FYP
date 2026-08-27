@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+
+#### Mostly useless report, out of date with latest changes to other files
+
 """
 generate_report.py — Build a run summary + per-seed detail + lineage trace +
 coverage-over-time plot from an agentafl_orchestrator.py run directory. Read-only

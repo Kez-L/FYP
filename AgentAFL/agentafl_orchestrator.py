@@ -1,52 +1,34 @@
 #!/usr/bin/env python3
 """
-agentafl_orchestrator.py — Unattended plateau-triggered LLM seed injection for a
-live AFL++ campaign. Polls plateau_log.csv (written by plateau_watch.py); when the
-campaign has genuinely plateaued (with a cooldown and a hard call-budget cap so a
-24h stall can't quietly run away with API spend), it assembles a prompt from live
-campaign state (build_context.py), calls the LLM, parses fenced code blocks out
-of the response, and materializes each one into a seed file. Every materialized
-seed then gets a quick per-candidate afl-showmap check (evaluate_seeds.py) —
-informational only, for logging real "how many showed new coverage" numbers —
-and is injected into the campaign via afl-addseeds regardless of that result.
-Every cycle, and the whole run, is logged: cycles.jsonl gets one record per
-cycle with full per-candidate detail; the run-end record has run-wide totals.
-
-Format-agnostic by design: --format names the target file format for the
-prompt, and --seed-kind controls how a fenced block becomes a seed file.
-  --seed-kind text   (default): the fenced block IS the seed file's content,
-                      written as-is (e.g. XML).
-  --seed-kind binary: the fenced block is a hex byte stream; converted to raw
-                      bytes by a fixed, format-agnostic hex-to-bytes step
-                      (hex_block_to_bytes) before being written. This is the
-                      naive path — no structured intermediate representation,
-                      no per-format byte-layout assembler — the LLM's hex has
-                      to be correct as given. See build_context.py's module
-                      docstring for why this is a deliberate baseline, not
-                      the intended long-run mechanism for binary formats.
-No targeting happens on the format name itself beyond substituting it into
-the prompt text (via build_context.py) — the only behavioural branch in this
-whole pipeline is the binary/text one above.
-
-Every fenced block the LLM produces is saved verbatim (cand_XX.raw) before
-any decoding is attempted, so nothing generated is ever lost even if it
-later fails to decode or turns out useless.
+agentafl_orchestrator.py — plateau-triggered LLM seed injection for a live AFL++ campaign.
 
 Usage:
   python3 agentafl_orchestrator.py \
       --campaign-root /home/user/Documents/afl-output-libxml2-treatment1 \
-      --format "XML document" \
-      --run-label treatment1
+      --format "XML document" --run-label treatment1
 
   python3 agentafl_orchestrator.py \
       --campaign-root /home/user/Documents/afl-output-libtiff-treatment1 \
-      --format "TIFF image" \
-      --seed-kind binary \
+      --format "TIFF image" --seed-kind binary \
       --format-hint "Byte order little-endian ('II'); IFD entry = tag(2)+type(2)+count(4)+value(4)." \
       --run-label treatment1
 
-Requires CLAUDE_API_KEY in the environment or in --env-file (default
-/home/user/Documents/.env). Never logs the key value.
+  needs CLAUDE_API_KEY or GEMINI_API_KEY (env or --env-file, default /home/user/Documents/.env)
+
+Pipeline (one cycle):
+  - poll plateau_log.csv (written by plateau_watch.py)
+  - plateaued + past cooldown + under call-budget cap -> run a cycle
+  - build prompt from live campaign state (build_context.py)
+  - call LLM, pull fenced code blocks from the response
+  - save each block verbatim (cand_XX.raw), then materialize -> seed file
+      text: written as-is;  binary: block is hex, decoded via hex_block_to_bytes
+  - per-seed afl-showmap check (evaluate_seeds.py) — logging only, does NOT gate injection
+  - inject every materialized seed via afl-addseeds; AFL++'s own culling is the real filter
+  - append per-cycle detail to cycles.jsonl; run-end record has run-wide totals
+
+Notes:
+  - format-agnostic: --format is only substituted into the prompt; the one real branch is text vs binary
+  - binary path is a deliberate naive baseline (LLM hex must be correct as-is) — see build_context.py
 """
 
 import argparse
@@ -71,18 +53,10 @@ GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta/models"
 ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"
 ANTHROPIC_API_VERSION = "2023-06-01"
 
-# Fenced code block: opening ``` optionally followed by a language-tag word
-# (xml, hex, json, or nothing), then the body, then a closing ```.
-# Format-agnostic — doesn't assume any particular tag, since build_context.py
-# picks a tag suited to --seed-kind (bare or "xml" for text, "hex" for
-# binary) but the model sometimes drops it regardless. Non-greedy so a
-# truncated/unterminated trailing block (e.g. cut off by MAX_TOKENS) simply
-# doesn't match rather than swallowing everything after it — earlier,
-# properly-closed blocks in the same response still parse correctly.
-# Known limitation: content containing a literal ``` sequence would
-# terminate its own block early — not defended against in V1; low-risk for
-# XML (backticks have no special meaning) and even lower risk for a hex
-# stream (only hex digits/spaces are valid output there).
+# Fenced block: ``` + optional lang tag + newline, body, closing ```.
+# Non-greedy so a truncated trailing block just doesn't match (earlier
+# closed blocks still parse). Tag-agnostic — the model drops it sometimes.
+# Known gap (V1): a literal ``` inside content ends the block early.
 FENCE_RE = re.compile(r"```[ \t]*[A-Za-z0-9_+-]*[ \t]*\n(.*?)```", re.DOTALL)
 
 
@@ -93,8 +67,7 @@ class GeminiAPIError(Exception):
         self.http_status = http_status
 
 
-# The Claude path raises the same error shape; aliased (not a new type) so the
-# existing `except GeminiAPIError` sites catch both providers unchanged.
+# Alias, not a new type, so `except GeminiAPIError` sites catch both providers.
 ClaudeAPIError = GeminiAPIError
 
 
@@ -118,10 +91,8 @@ def _count_queue(queue_dir: Path) -> int:
 
 
 def append_jsonl_record(path: Path, record: dict):
-    """Append one event to cycles.jsonl and flush immediately — the log is
-    append-only/event-sourced and meant to be safe to tail live during a 24h
-    run. default=str is a defensive catch-all so an unexpected non-JSON-
-    serializable value in a record can't crash the run mid-cycle."""
+    """Append one record to cycles.jsonl and flush — log is append-only and safe to tail live.
+    default=str so a stray non-serializable value can't crash a cycle."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a") as fh:
         fh.write(json.dumps(record, default=str) + "\n")
@@ -129,8 +100,8 @@ def append_jsonl_record(path: Path, record: dict):
 
 
 def run_subprocess_safe(cmd, logger=None, **kwargs):
-    """Run a subprocess, catching everything so one external-tool failure logs
-    and returns rather than killing the 24h run. Returns (ok, result_or_exc)."""
+    """Run a subprocess, catching everything so one tool failure can't kill the 24h run.
+    Returns (ok, result_or_exc)."""
     try:
         result = subprocess.run(cmd, capture_output=True, **kwargs)
         return True, result
@@ -153,10 +124,8 @@ def _pid_alive(pid: int) -> bool:
 
 
 def acquire_run_lock(runs_root: Path, campaign_root: Path) -> Path:
-    """Refuse to start a second orchestrator against the same campaign_root
-    while one is already running — cheap insurance against afl-addseeds's
-    id-assignment TOCTOU (it assigns ids by scanning addseeds/queue/'s
-    current contents at call time)."""
+    """Take a per-campaign lock so two orchestrators can't run the same campaign_root.
+    Guards against afl-addseeds' id-assignment TOCTOU. Stale lock (dead pid) is overwritten."""
     runs_root.mkdir(parents=True, exist_ok=True)
     campaign_hash = hashlib.sha1(str(Path(campaign_root).resolve()).encode()).hexdigest()[:12]
     lock_path = runs_root / f".orchestrator-{campaign_hash}.lock"
@@ -188,16 +157,17 @@ def release_run_lock(lock_path: Path):
 
 
 # --------------------------------------------------------------------------
-# .env / Gemini API client
+# .env / LLM API clients
 # --------------------------------------------------------------------------
 
 def load_api_key(env_file: Path, var_name: str = "CLAUDE_API_KEY") -> str:
-    """os.environ[var_name] wins if set, else parse env_file: split each
-    non-blank/non-'#' line on the first '=', strip optional surrounding
-    quotes. var_name is CLAUDE_API_KEY for --llm-provider claude (default),
-    GEMINI_API_KEY for --llm-provider gemini. Raises SystemExit with a
-    value-free message if missing. Never logs/prints the key; callers must
-    not interpolate it into any log or exception message."""
+    """Return the API key: os.environ[var_name] if set, else the matching line in env_file.
+    Raises SystemExit (value-free message) if missing.
+
+    - var_name: CLAUDE_API_KEY for --llm-provider claude (default), GEMINI_API_KEY for gemini
+    - env_file line format: KEY=value, '#' comments and blanks skipped, surrounding quotes stripped
+    - never logs/prints the key — callers must not interpolate it into any log or exception
+    """
     key = os.environ.get(var_name)
     if key:
         return key.strip()
@@ -233,13 +203,12 @@ _BLOCKED_FINISH_REASONS = {"SAFETY", "RECITATION", "PROHIBITED_CONTENT", "BLOCKL
 def call_gemini(api_key, model, system_text, user_text, max_output_tokens=4096,
                  temperature=0.9, timeout_s=60, max_retries=3, backoff_base_s=2.0,
                  logger=None) -> dict:
-    """POST to Gemini's generateContent endpoint via stdlib urllib (no extra
-    dependency needed for an unattended 24h script). Retries transient
-    failures with exponential backoff + jitter; fails fast on anything that
-    retrying can't fix (bad key, bad request, safety block).
+    """POST to Gemini's generateContent endpoint (stdlib urllib, no extra deps).
 
-    Returns {text, finish_reason, block_reason, raw, http_status,
-    attempt_count, response_truncated} on success, or raises GeminiAPIError.
+    - retries transient failures with exponential backoff + jitter
+    - fails fast on what retrying can't fix (bad key, bad request, safety block)
+    - returns {text, finish_reason, block_reason, raw, http_status, attempt_count,
+      response_truncated}, or raises GeminiAPIError
     """
     url = f"{GEMINI_API_BASE}/{model}:generateContent"
     body = {
@@ -332,21 +301,14 @@ def call_gemini(api_key, model, system_text, user_text, max_output_tokens=4096,
 def call_claude(api_key, model, system_text, user_text, max_output_tokens=4096,
                 temperature=None, timeout_s=60, max_retries=3, backoff_base_s=2.0,
                 logger=None) -> dict:
-    """POST to Anthropic's /v1/messages endpoint via stdlib urllib — same
-    no-extra-dependency contract as call_gemini() so the 24h script stays
-    importable without a virtualenv. Retries transient failures with
-    exponential backoff + jitter; fails fast on anything retrying can't fix
-    (bad key, bad request, safety refusal).
+    """POST to Anthropic's /v1/messages endpoint (stdlib urllib, no extra deps).
 
-    Returns the same dict shape as call_gemini(): {text, finish_reason,
-    block_reason, raw, http_status, attempt_count, response_truncated}, or
-    raises ClaudeAPIError (== GeminiAPIError).
+    - retries transient failures with exponential backoff + jitter
+    - fails fast on what retrying can't fix (bad key, bad request, safety refusal)
+    - returns the same dict shape as call_gemini(), or raises ClaudeAPIError (== GeminiAPIError)
 
-    temperature: left unset by default. The current Claude models
-    (claude-opus-5 / claude-sonnet-5 and the 4.6+ family) reject top-level
-    sampling params — passing `temperature` returns HTTP 400 — so it is only
-    sent when a caller explicitly provides one (e.g. for an older model).
-    Seed diversity comes from the model's default sampling instead.
+    temperature: only sent when a caller passes one. Current Claude models reject
+    top-level sampling params (HTTP 400); seed diversity comes from default sampling.
     """
     body = {
         "model": model,
@@ -441,13 +403,8 @@ def call_claude(api_key, model, system_text, user_text, max_output_tokens=4096,
 
 
 def parse_fenced_blocks(text: str) -> list:
-    """Extract every fenced code block's body from an LLM response, in
-    order. Format-agnostic: doesn't care whether the body is well-formed
-    text or a hex byte stream — that distinction is handled downstream,
-    based on seed_kind. Pure function, no I/O — unit-tested directly against
-    mocks. Zero blocks parsed is a valid, expected outcome (unterminated
-    fence, no fencing at all, stray prose only) — the caller decides what to
-    do about it, this function just reports what it found."""
+    """LLM response text -> list of fenced code block bodies, in order. Pure, no I/O.
+    Zero blocks is a valid outcome (bad/absent fencing) — the caller decides what to do."""
     if not text:
         return []
     blocks = []
@@ -463,29 +420,14 @@ _HEX_CLEAN_RE = re.compile(r"[^0-9a-fA-F]")
 
 
 def hex_block_to_bytes(text: str):
-    """Convert one fenced hex block into raw bytes for --seed-kind binary.
+    """One fenced hex block -> raw bytes (for --seed-kind binary).
+    Returns (True, bytes) or (False, error_msg); never raises.
 
-    Two cleanup passes, in order, because they're not the same operation:
-      1. Strip '0x'/'0X' prefixes as literal two-character tokens — but only
-         where they're not preceded by another hex digit, so a genuine
-         prefix ("0x49") is removed while a coincidental "...a0x1f..." run
-         isn't mangled by assuming a prefix that wasn't intended. Order
-         matters: a naive single-pass "delete every character that isn't
-         0-9a-f" removes only the 'x', leaving the leading '0' behind —
-         '0x49' becomes '049', not '49', silently shifting every byte after
-         it by one nibble.
-      2. Strip everything else that isn't a hex digit (whitespace, commas,
-         newlines) — safe now that step 1 has already handled the one case
-         where a "non-hex" character was hiding a hex digit right next to it.
-
-    What survives both passes and still isn't valid — an odd number of hex
-    digits (each byte needs exactly two), or nothing at all — is a genuine
-    failure, not something to paper over: there's no byte sequence to write
-    to disk without it, unlike the structural/semantic validity checks this
-    pipeline deliberately doesn't otherwise perform.
-
-    Returns (True, bytes) on success or (False, error_message) on failure;
-    never raises.
+    - pass 1: strip '0x'/'0X' prefixes, only when not preceded by a hex digit.
+      done first so '0x49' -> '49', not '049' (a naive strip leaves the '0',
+      shifting every later byte by a nibble)
+    - pass 2: strip all remaining non-hex chars (whitespace, commas, newlines)
+    - odd digit count or empty after cleanup = real failure, not patched over
     """
     text = _HEX_PREFIX_RE.sub("", text)
     cleaned = _HEX_CLEAN_RE.sub("", text)
@@ -500,13 +442,9 @@ def hex_block_to_bytes(text: str):
 
 
 def _dry_run_fixture_response(n_generate: int = 5, seed_kind: str = "text") -> dict:
-    """Canned response used when --dry-run is set and no mock_llm_fn is
-    supplied — exercises the real parse -> (hex-decode ->) write path
-    without a real API call. For seed_kind="text", n_generate trivial
-    well-formed fenced XML-shaped blocks; for "binary", n_generate copies of
-    a small valid hex byte stream, so the dry run also exercises
-    hex_block_to_bytes on real hex rather than only ever the empty-input
-    code path."""
+    """Canned LLM response for --dry-run (no mock_llm_fn): n_generate fenced blocks,
+    XML-shaped for text / a small valid hex stream for binary, so the real
+    parse -> (hex-decode ->) write path runs without an API call."""
     if seed_kind == "binary":
         sample_hex = "49 49 2a 00 08 00 00 00"
         blocks = [f"```hex\n{sample_hex}\n```" for _ in range(n_generate)]
@@ -549,36 +487,22 @@ def run_cycle(cycle_id, campaign_root, instance, plateau_log, run_dir, api_key, 
               temperature=None, max_output_tokens=4096, timeout_s=60, max_retries=3,
               asan_hint=False, afl_showmap_timeout_s=30, dry_run=False, mock_llm_fn=None,
               inject=True, baseline=None, provider="claude", logger=None):
-    """
-    Runs one full generate -> materialize -> mini-test -> inject cycle.
-    Never raises — any failure is captured in the returned record's "errors"
-    list so a single bad cycle can't kill the 24h run.
+    """One generate -> materialize -> mini-test -> inject cycle.
+    Never raises; failures are collected in record["errors"] so one bad cycle
+    can't kill the 24h run.
 
-    fmt: human-readable target format name (e.g. "XML document", "TIFF
-    image"), passed straight through to build_context.assemble_prompt.
+    - fmt: human-readable format name, passed to build_context.assemble_prompt
+    - seed_kind: text (block written as-is) | binary (block is hex -> bytes).
+      raw block always saved (cand_XX.raw) before decode; decode fail ->
+      status "HEX_DECODE_ERROR", no seed_path
+    - seed_ext: seed file extension; default ".bin" (binary) / ".seed" (text)
+    - inject=False: still generate + materialize + evaluate, but skip
+      afl-addseeds (offline/bulk runs against a campaign you don't want to mutate)
+    - baseline: reuse a precomputed full-queue edge set instead of rebuilding
+      it this cycle (queue known static across cycles)
 
-    seed_kind: "text" writes each fenced block to a seed file as-is.
-    "binary" treats each fenced block as a hex byte stream and converts it
-    via hex_block_to_bytes before writing. Either way, the raw block text is
-    always saved first (cand_XX.raw), before any decoding is attempted — a
-    block that fails to decode is recorded as "HEX_DECODE_ERROR" and simply
-    has no seed_path, since there's no byte sequence to evaluate or inject.
-
-    seed_ext: candidate seed-file extension. Defaults to ".bin" for binary,
-    ".seed" for text, if not given explicitly.
-
-    Every candidate that DOES materialize into a seed file is injected via
-    afl-addseeds in one batched call, regardless of what the mini
-    afl-showmap check below says about it — see the module docstring for
-    why. inject=False skips that call entirely (candidates are still
-    generated, materialized, and evaluated) — useful for offline/bulk runs
-    against a campaign you don't want to mutate.
-
-    baseline: precomputed full-queue edge set to reuse instead of calling
-    evaluate_seeds.build_baseline() fresh this cycle. Pass this when the
-    queue is known static across many cycles in the same run (e.g. a bulk
-    generation run against an idle campaign) to avoid paying the full-queue
-    afl-showmap pass on every single cycle.
+    Every materialized seed is injected regardless of the afl-showmap result
+    (see module docstring).
     """
     log = logger or logging.getLogger("agentafl_orchestrator")
     tag = _cycle_tag(cycle_id)
@@ -645,10 +569,8 @@ def run_cycle(cycle_id, campaign_root, instance, plateau_log, run_dir, api_key, 
     record["llm_attempt_count"] = llm_result.get("attempt_count")
     record["response_truncated"] = bool(llm_result.get("response_truncated"))
 
-    # 3. Parse fenced blocks and materialize each one into a seed file.
-    # Every block is saved raw (cand_XX.raw) BEFORE any decoding is
-    # attempted — nothing the LLM produced is ever lost, even a candidate
-    # that later fails hex decoding.
+    # 3. Parse fenced blocks -> seed files. Each block saved raw (cand_XX.raw)
+    # before any decode, so nothing the LLM produced is ever lost.
     blocks = parse_fenced_blocks(llm_result.get("text", ""))
     record["n_candidates_parsed"] = len(blocks)
     if len(blocks) != n_generate:
@@ -691,9 +613,8 @@ def run_cycle(cycle_id, campaign_root, instance, plateau_log, run_dir, api_key, 
         log.warning(f"[{tag}] No writable candidates this cycle.")
         return finish()
 
-    # 4. Mini test: quick per-candidate afl-showmap check, informational
-    # only (see module docstring) — never gates step 5. Skipped under
-    # --dry-run, same as the real API call.
+    # 4. Per-candidate afl-showmap check — informational only, never gates
+    # step 5. Skipped under --dry-run, same as the real API call.
     if dry_run:
         for idx, raw_path, seed_path in materialized:
             record["candidates"].append(_candidate_record(
@@ -711,12 +632,9 @@ def run_cycle(cycle_id, campaign_root, instance, plateau_log, run_dir, api_key, 
         except Exception as e:
             errors.append(f"build_baseline failed: {e}")
             log.error(f"[{tag}] build_baseline failed: {e}")
-            # Fall back to an empty baseline rather than aborting the cycle —
-            # candidates still get evaluated (everything will look "new",
-            # which is wrong) and, per this module's design, still get
-            # injected regardless either way. The wrong new_edges numbers
-            # this cycle are visible via the logged error above rather than
-            # silently trusted.
+            # Empty-baseline fallback: keep the cycle alive. Every candidate
+            # will look "new" (wrong), but they'd be injected anyway. The
+            # logged error above flags the bad numbers.
             baseline = set()
 
     for idx, raw_path, seed_path in materialized:
@@ -737,9 +655,8 @@ def run_cycle(cycle_id, campaign_root, instance, plateau_log, run_dir, api_key, 
         if ev["status"] == "GOOD (novel coverage)":
             record["n_new_coverage"] += 1
 
-    # 5. Inject every materialized candidate in one batched afl-addseeds
-    # call, regardless of what step 4 found. AFL++'s own calibration/culling
-    # is the real filter here, not this script.
+    # 5. Inject every materialized candidate in one batched afl-addseeds call,
+    # regardless of step 4. AFL++'s own calibration/culling is the real filter.
     if inject:
         seed_paths = [seed_path for _, _, seed_path in materialized]
         cmd = [afl_addseeds_bin, "-o", str(campaign_root)] + [str(p) for p in seed_paths]
@@ -794,9 +711,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
         required=True,
         dest="fmt",
         help='Human-readable target file format, e.g. "XML document" or "TIFF image". '
-        "Passed straight through to build_context.assemble_prompt. The only other "
-        "user input this pipeline branches on is --seed-kind — the format name itself "
-        "is never used for special-casing beyond naming it in the prompt.",
+        "Only substituted into the prompt — never used for special-casing (the one "
+        "branch is --seed-kind).",
     )
     ap.add_argument(
         "--seed-kind",
@@ -834,13 +750,11 @@ def build_arg_parser() -> argparse.ArgumentParser:
                      "key CLAUDE_API_KEY. 'gemini' -> Google generateContent, key "
                      "GEMINI_API_KEY. Both code paths are kept so you can switch back.")
     ap.add_argument("--llm-model", default=None,
-                     help="Pin to a specific model id, not a -latest alias, so it can't "
-                     "silently drift across a multi-day sequence of runs. Defaults per "
-                     "provider: claude -> 'claude-opus-5', gemini -> 'gemini-3.5-flash-lite'. "
-                     "gemini-2.5-flash-lite/-flash were the cheaper tier but returned "
-                     "HTTP 404 'no longer available to new users' when sanity-checked "
-                     "against this project's real API key (2026-08-06) — confirm current "
-                     "availability/pricing again before a real run if this changes.")
+                     help="Pin a concrete model id (not a -latest alias) so it can't drift "
+                     "across a multi-day run sequence. Defaults: claude -> 'claude-opus-5', "
+                     "gemini -> 'gemini-3.5-flash-lite'. Note: gemini-2.5-flash-lite/-flash "
+                     "returned HTTP 404 'no longer available to new users' on 2026-08-06 — "
+                     "recheck availability/pricing before a real run.")
     ap.add_argument("--llm-temperature", type=float, default=None,
                      help="Only sent to the API when set. Current Claude models reject "
                      "top-level sampling params (HTTP 400), so leave unset for claude; "
@@ -941,8 +855,7 @@ def main():
     deadline = run_start_time + args.run_duration_hours * 3600
     stop_reason = "duration_elapsed"
 
-    # Run-wide totals — the "log total number of seeds, how many successful"
-    # summary, updated every cycle and written into the run_end record.
+    # Run-wide totals — updated every cycle, written into the run_end record.
     totals = {
         "total_generated": 0, "total_materialized": 0,
         "total_new_coverage": 0, "total_injected": 0,

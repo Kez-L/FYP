@@ -1,41 +1,24 @@
 #!/usr/bin/env python3
 """
-evaluate_seeds.py — Offline, format-agnostic check for candidate seeds: does
-a given file exercise any edge tuple not already present anywhere in the
-existing queue? This mirrors what AFL++ itself checks internally for
-favouring/culling, just done up front so a report can quote a real new-
-coverage rate without waiting through a live campaign.
-
-Format-agnostic: this only ever runs the real target binary against a file
-and reads back afl-showmap's coverage output — it never looks at the file's
-own structure or content, so it behaves identically for a text-format (XML)
-or binary-format (TIFF) seed. There is no well-formedness check in this
-module any more (that was XML-specific and only lived here because this
-file started out XML-only). If you want a format-specific validity signal,
-it belongs next to whatever format-specific tooling produced the seed, not
-in a shared, format-agnostic evaluator.
-
-Note on how this is used by agentafl_orchestrator.py: the classification
-here (CRASH / TIMEOUT / NO_COVERAGE / GOOD / BAD) is informational only —
-the orchestrator injects every candidate that materialized into a real seed
-file regardless of this result, and uses this purely to populate its
-per-cycle and per-run logs (how many showed new coverage, etc.). It doesn't
-gate afl-addseeds.
+evaluate_seeds.py — offline check: does a candidate file hit any edge not already
+in the existing queue? Mirrors AFL++'s own favour/cull check, run up front so a
+report can quote a real new-coverage rate without waiting through a live campaign.
 
 Usage:
   python3 evaluate_seeds.py \
-      --target /path/to/xmllint-afl \
-      --target-args "--noout @@" \
+      --target /path/to/xmllint-afl --target-args "--noout @@" \
       --queue-dir /home/user/Documents/afl-output-libxml2/main/queue \
-      --candidates-dir ./llm_candidates \
-      --out results.csv
+      --candidates-dir ./llm_candidates --out results.csv
 
---target-args MUST match the real campaign's invocation (check the instance's
-`cmdline` file) — using different args than the live campaign exercises a
-different code path and makes "new edges" numbers meaningless. For libxml2
-in this project that's "--noout @@", not just "@@" (the default below).
+  needs afl-showmap on PATH (built alongside your afl-cc target).
 
-Requires afl-showmap on PATH (built alongside your afl-cc target).
+Notes:
+  - format-agnostic: only runs the target + reads afl-showmap coverage, never inspects
+    file structure — behaves the same for XML or TIFF. No well-formedness check lives here.
+  - --target-args MUST match the live campaign's cmdline file, or "new edges" is meaningless
+    (libxml2 here needs "--noout @@", not just "@@")
+  - used by agentafl_orchestrator.py for logging only — the classification
+    (CRASH/TIMEOUT/NO_COVERAGE/GOOD/BAD) never gates afl-addseeds
 """
 
 import argparse
@@ -47,19 +30,13 @@ from pathlib import Path
 
 
 def run_showmap(afl_showmap_bin, target, target_args, input_path, timeout=30):
-    """
-    Returns (status, edges): status is "ok", "crash", "timeout", or
-    "no_coverage" — read from afl-showmap's own exit code (0=ok, 1=timeout/
-    exec problem, 2=crash) rather than guessed from stdout, so crash and
-    timeout are no longer indistinguishable.
+    """Run afl-showmap on one input. Returns (status, edges):
+    status = "ok" | "crash" | "timeout" | "no_coverage", from afl-showmap's exit
+    code (0/1/2) not stdout, so crash vs timeout stay distinct.
 
-    IMPORTANT: input_path must be passed the same way (absolute vs. relative)
-    that the live campaign passes it, or you'll get different target code
-    paths for the identical file — this bit us once already on libxml2 (a
-    relative-path candidate run and an absolute-path baseline run disagreed
-    on 3 edges that turned out to be pure path-handling artifacts, not real
-    new coverage). AFL always substitutes an absolute path for @@, so
-    input_path should be absolute here too.
+    input_path is resolved to absolute (AFL substitutes an absolute path for @@).
+    Passing it relative diverges the target's path handling — cost us 3 phantom
+    "new" edges on libxml2 once (relative candidate vs absolute baseline run).
     """
     cmd = [afl_showmap_bin, "-e", "-t", str(timeout * 1000), "-o", "-", "--", target]
     for a in target_args:
@@ -88,18 +65,13 @@ def run_showmap(afl_showmap_bin, target, target_args, input_path, timeout=30):
 
 
 def build_baseline(afl_showmap_bin, target, target_args, queue_dir, timeout=30):
-    """
-    Full-corpus baseline via afl-showmap's own -C (combined/union) batch
-    mode — one forkserver-backed pass over the whole queue, not one fresh
-    subprocess per file. This is both faster AND more accurate than
-    sampling: on a real ~12k-file libxml2 queue it takes under a minute, and
-    a sampled subset systematically undercounts real coverage, which
-    inflates false "new edge" claims for candidates — verified empirically
-    on that queue: a 500-file sample reported 2 and 9 "new" edges for two
-    candidates that a full-corpus baseline showed actually have 0 and 3
-    respectively. Format-agnostic — afl-showmap reads whatever's in
-    queue_dir and runs it through the real target; it doesn't care what
-    format the files are.
+    """Union edge set over the whole queue, via afl-showmap -C batch mode
+    (one forkserver pass, not a subprocess per file). ~1 min on a ~12k-file
+    libxml2 queue.
+
+    Full corpus, not a sample: sampling undercounts coverage and inflates
+    false "new edge" claims — a 500-file sample once reported 2 and 9 new
+    edges for candidates that the full baseline showed at 0 and 3.
     """
     print(f"[baseline] scanning full queue at {queue_dir} (single batched pass)...",
           file=sys.stderr)
@@ -127,16 +99,9 @@ def build_baseline(afl_showmap_bin, target, target_args, queue_dir, timeout=30):
 
 def evaluate_candidate(afl_showmap_bin, target, target_args, candidate_path: Path,
                         baseline: set, timeout: int = 30) -> dict:
-    """
-    Classify one candidate seed against a precomputed full-queue baseline.
-    Format-agnostic: purely a function of what afl-showmap reports for this
-    file against this target — never the file's own content or structure.
-
-    Returns:
-      {seed, status, new_edges, total_edges}
-    status is one of: "CRASH", "TIMEOUT", "NO_COVERAGE",
-    "GOOD (novel coverage)", "BAD (redundant)".
-    """
+    """Classify one candidate against a precomputed full-queue baseline.
+    Returns {seed, status, new_edges, total_edges}; status is one of
+    "CRASH", "TIMEOUT", "NO_COVERAGE", "GOOD (novel coverage)", "BAD (redundant)"."""
     status, edges = run_showmap(afl_showmap_bin, target, target_args, candidate_path,
                                  timeout=timeout)
 
@@ -165,9 +130,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--target", required=True)
     ap.add_argument("--target-args", default="@@",
-                     help="space-separated args, use @@ as the input placeholder — "
-                     "MUST match the live campaign's cmdline file (e.g. libxml2 in "
-                     "this project needs \"--noout @@\", not just \"@@\")")
+                     help="space-separated, @@ = input placeholder. MUST match the live "
+                     "campaign's cmdline file (libxml2 here needs \"--noout @@\", not \"@@\").")
     ap.add_argument("--queue-dir", required=True, type=Path)
     ap.add_argument("--candidates-dir", required=True, type=Path)
     ap.add_argument("--afl-showmap-bin", default="afl-showmap")
