@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST root
+    id ID #REQUIRED
+    ref IDREF #IMPLIED
+    kind (alpha|beta|gamma) "alpha"
+    flag (yes|no) #FIXED "yes"
+    notlist NOTATION (png|jpeg) #IMPLIED
+  >
+  <!NOTATION png SYSTEM "image/png">
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY internalEnt "Some &amp; internal text with &lt;markup&gt;">
+  <!ENTITY externalEnt SYSTEM "http://example.com/external.ent">
+  <!ENTITY externalNdata SYSTEM "http://example.com/image.png" NDATA png>
+  <!ENTITY % paramEnt "<!ELEMENT extra (#PCDATA)>">
+  %paramEnt;
+]>
+<?xml-stylesheet type="text/xsl" href="style.xsl"?>
+<root id="r1" kind="beta" notlist="png" xmlns:ns1="urn:example:ns1" xmlns:ns2="urn:example:ns2">
+  <ns1:child ns2:attr="value">Text with entity: &internalEnt;</ns1:child>
+  <child><![CDATA[<raw> data & stuff ]]></child>
+  <extra>Extra element from parameter entity</extra>
+  <?myapp processing instruction data?>
+  <!-- comment with special chars: <>&"' -->
+  <child xml:space="preserve">   spaced   text   </child>
+  <child xml:lang="en-US">Language tagged content</child>
+</root>

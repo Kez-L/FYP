@@ -1,6 +1,20 @@
 sudo bash -c 'echo core > /proc/sys/kernel/core_pattern'
 cd 1git-folder/AgentAFL
 
+## Running XML
+6 instances
+
+
+# Plateau watch
+
+python3 /home/user/Documents/1git-folder/AgentAFL/plateau_watch.py --output-dir /home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2 --interval 60 --plateau-secs 900 --log /home/user/Documents/1git-folder/AgentAFL/plateau_log_libxml2.csv
+
+
+# Orchestrator
+
+python3 /home/user/Documents/1git-folder/AgentAFL/agentafl_orchestrator.py --campaign-root /home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2 --instance main --format "XML document" --seed-kind text --seed-ext .xml --plateau-log /home/user/Documents/1git-folder/AgentAFL/plateau_log_libxml2.csv --runs-root /home/user/Documents/1git-folder/AgentAFL/agentafl_runs --run-label xml-run --env-file /home/user/Documents/1git-folder/AgentAFL/.env --target /home/user/Documents/1git-folder/AgentAFL/AFLPlus/libxml2-build/xmllint-afl --target-args "--noout @@" --poll-interval-s 300 --plateau-threshold-s 900 --injection-cooldown-s 900 --max-llm-calls 500 --max-queue-size 100000 --n-seeds 3 --n-generate 5 --llm-provider gemini --llm-model gemini-3.5-flash-lite --llm-temperature 0.9 --run-duration-hours 24
+
+
 ## Running TIFF
 6 instances
 

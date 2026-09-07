@@ -468,7 +468,8 @@ def _dry_run_fixture_response(n_generate: int = 5, seed_kind: str = "text") -> d
 # One full generate -> materialize -> mini-test -> inject cycle
 # --------------------------------------------------------------------------
 
-def _candidate_record(idx, raw_path, seed_path, run_dir, status, new_edges, total_edges, injected):
+def _candidate_record(idx, raw_path, seed_path, run_dir, status, new_edges, total_edges,
+                      injected, edge_sig=None, edge_ids=None):
     return {
         "candidate_idx": idx,
         "raw_path": str(raw_path.relative_to(run_dir)),
@@ -477,6 +478,10 @@ def _candidate_record(idx, raw_path, seed_path, run_dir, status, new_edges, tota
         "new_edges": new_edges,
         "total_edges": total_edges,
         "injected": injected,
+        # edge set of this seed — consumed by build_context.scan_cycle_history to
+        # cluster past failed seeds by "same path through the parser".
+        "edge_sig": edge_sig,
+        "edge_ids": edge_ids,
     }
 
 
@@ -486,7 +491,8 @@ def run_cycle(cycle_id, campaign_root, instance, plateau_log, run_dir, api_key, 
               seed_kind="text", seed_ext=None, format_hint="",
               temperature=None, max_output_tokens=4096, timeout_s=60, max_retries=3,
               asan_hint=False, afl_showmap_timeout_s=30, dry_run=False, mock_llm_fn=None,
-              inject=True, baseline=None, provider="claude", logger=None):
+              inject=True, baseline=None, provider="claude", logger=None,
+              n_history_failure=2):
     """One generate -> materialize -> mini-test -> inject cycle.
     Never raises; failures are collected in record["errors"] so one bad cycle
     can't kill the 24h run.
@@ -533,6 +539,7 @@ def run_cycle(cycle_id, campaign_root, instance, plateau_log, run_dir, api_key, 
         prompt = build_context.assemble_prompt(
             Path(campaign_root), instance, fmt, n_seeds, n_generate, plateau_log,
             asan_hint=asan_hint, seed_kind=seed_kind, format_hint=format_hint,
+            run_dir=run_dir, n_history_failure=n_history_failure,
         )
     except Exception as e:
         errors.append(f"assemble_prompt failed: {e}")
@@ -651,6 +658,7 @@ def run_cycle(cycle_id, campaign_root, instance, plateau_log, run_dir, api_key, 
             idx, raw_path, seed_path, run_dir,
             status=ev["status"], new_edges=ev["new_edges"], total_edges=ev["total_edges"],
             injected=False,  # set True below if/once actually injected
+            edge_sig=ev.get("edge_sig"), edge_ids=ev.get("edge_ids"),
         ))
         if ev["status"] == "GOOD (novel coverage)":
             record["n_new_coverage"] += 1
@@ -744,6 +752,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
     ap.add_argument("--max-llm-calls", type=int, default=500)
     ap.add_argument("--n-seeds", type=int, default=3)
     ap.add_argument("--n-generate", type=int, default=2)
+    ap.add_argument("--n-history-failure", type=int, default=2,
+                    help="How many of the LLM's own past failed seeds (0-2) to echo back "
+                    "into each prompt: the biggest recurring failure cluster's "
+                    "representative, plus one 'did not parse' seed. 0 disables.")
+    ap.add_argument("--no-seed-history", action="store_true",
+                    help="Shortcut for --n-history-failure 0: never show past seeds.")
     ap.add_argument("--max-queue-size", type=int, default=500)
     ap.add_argument("--llm-provider", choices=("claude", "gemini"), default="claude",
                      help="Which API to call. 'claude' (default) -> Anthropic /v1/messages, "
@@ -759,7 +773,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
                      help="Only sent to the API when set. Current Claude models reject "
                      "top-level sampling params (HTTP 400), so leave unset for claude; "
                      "the gemini path used 0.9 historically.")
-    ap.add_argument("--llm-max-output-tokens", type=int, default=32000)
+    ap.add_argument("--llm-max-output-tokens", type=int, default=16000)
     ap.add_argument("--llm-timeout-s", type=int, default=300)
     ap.add_argument("--llm-max-retries", type=int, default=3)
     ap.add_argument("--asan-hint", action="store_true",
@@ -894,6 +908,7 @@ def main():
                     asan_hint=args.asan_hint, afl_showmap_timeout_s=args.afl_showmap_timeout_s,
                     dry_run=args.dry_run, inject=not args.no_inject, provider=args.llm_provider,
                     logger=logger,
+                    n_history_failure=(0 if args.no_seed_history else args.n_history_failure),
                 )
                 append_jsonl_record(jsonl_path, record)
 

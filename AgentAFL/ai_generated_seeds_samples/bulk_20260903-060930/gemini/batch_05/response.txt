@@ -1,0 +1,28 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY ext SYSTEM "http://127.0.0.1:80/nonexistent">
+]><?processing-instruction data?><root xmlns:ns="http://example.com/ns" ns:attr="val">&ext;<child>Test &amp; &lt; &gt; &apos; &quot;</child></root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE test [
+  <!ENTITY % int "internal entity">
+  <!ENTITY % ext SYSTEM "file:///dev/null">
+  %ext;
+]><test xmlns="urn:test">
+  <node id="1">Data &int; more data</node>
+</test>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<root>
+  <nested attr="&#x3C;value&#x3E;">
+    <![CDATA[Unparsed <>&'"" data section]]>
+  </nested>
+</root>
+```

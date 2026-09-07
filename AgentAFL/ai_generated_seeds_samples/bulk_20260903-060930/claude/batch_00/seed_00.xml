@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST root xmlns:foo CDATA #IMPLIED>
+  <!ATTLIST child id ID #REQUIRED>
+  <!ENTITY intern "internal entity value">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+]>
+<root xmlns:foo="urn:example:foo" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <?processing-instruction some data here?>
+  <child id="a1">&intern;</child>
+  <child id="a2"><![CDATA[<not>parsed & <as/> markup>]]></child>
+  <foo:extra foo:attr="value with &amp; entity">
+    <xi:include href="nonexistent.xml" parse="text" encoding="ISO-8859-1"/>
+  </foo:extra>
+  <mixed>Text before <b>bold <i>italic</i></b> text after</mixed>
+  <ns1:tag xmlns:ns1="urn:ns1" xmlns:ns2="urn:ns2">
+    <ns2:inner ns1:attr="1"/>
+  </ns1:tag>
+  <!-- comment with weird chars: &lt; &amp; -- not a real close -->
+  <empty/>
+  <a:very:invalid:but:allowed.name-1_2>ok</a:very:invalid:but:allowed.name-1_2>
+</root>

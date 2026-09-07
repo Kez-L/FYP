@@ -1,0 +1,38 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child*)>\n  <!ELEMENT child (#PCDATA)>\n  <!ATTLIST root\n    id ID #REQUIRED\n    ref IDREF #IMPLIED\n    xs:noNamespaceSchemaLocation CDATA #IMPLIED>\n  <!ATTLIST child\n    kind (a|b|c) \"a\"\n    flag (yes|no) #FIXED \"yes\">\n  <!NOTATION png PUBLIC \"-//W3C//NOTATION PNG//EN\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n  <!ENTITY internalEnt \"some &amp; internal &lt;entity&gt; value\">\n  <!ENTITY % paramEnt \"<!ENTITY externalRef SYSTEM 'http://example.com/ent.xml'>\">\n  %paramEnt;\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"style.xsl\"?>\n<root id=\"r1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\">\n  <![CDATA[This is <raw> data & should not be parsed as markup]]>\n  <child kind=\"b\" flag=\"yes\">Text with &internalEnt; reference</child>\n  <child kind=\"c\"><!-- nested comment --></child>\n  <?processing-instruction data=\"value\"?>\n  <child xml:space=\"preserve\">   whitespace preserved   </child>\n  <ns:elem xmlns:ns=\"urn:example:ns\" ns:attr=\"value\">Namespaced content</ns:elem>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<catalog xmlns=\"urn:catalog:default\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <item xlink:type=\"simple\" xlink:href=\"http://example.com/res1\">Resource 1</item>\n  <item xlink:type=\"simple\" xlink:href=\"http://example.com/res2\">\n    <sub attr='single &apos;quoted&apos; value'>Nested &#x1F600; emoji text</sub>\n  </item>\n  <malformed-ish>\n    <a><b><c><d><e><f><g><h><i><j>deep nesting test</j></i></h></g></f></e></d></c></b></a>\n  </malformed-ish>\n  <mixed>Text before <bold>bold text</bold> text after <italic>italic</italic> end.</mixed>\n  <empty-elem/>\n  <selfclose attr=\"val\" />\n  <numeric>&#65;&#66;&#67;&#x41;&#x42;&#x43;</numeric>\n  <![CDATA[\n    <script>alert('not parsed');</script>\n    multi\n    line\n    cdata\n  ]]>\n  <comment-test><!-- comment with -- double dash inside is illegal but test anyway --></comment-test>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\"\n  \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\" [\n  <!ENTITY nbsp \"&#160;\">\n  <!ENTITY ent1 \"value1\">\n  <!ENTITY ent2 \"&ent1;&ent1;\">\n  <!ENTITY ent3 \"&ent2;&ent2;&ent2;\">\n]>\n<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"100\" height=\"100\">\n  <title>Test&nbsp;Title</title>\n  <desc>Description with &ent3; expansion</desc>\n  <g id=\"group1\" transform=\"translate(10,10) rotate(45) scale(2)\">\n    <rect x=\"0\" y=\"0\" width=\"50\" height=\"50\" fill=\"#ff0000\"/>\n    <circle cx=\"25\" cy=\"25\" r=\"10\" stroke=\"black\" stroke-width=\"2\"/>\n    <path d=\"M10 10 H 90 V 90 H 10 Z\" fill=\"none\" stroke=\"blue\"/>\n  </g>\n  <text x=\"10\" y=\"90\" font-family=\"Verdana\" font-size=\"12\">\n    Sample &lt;text&gt; with entities &amp; special chars\n  </text>\n  <foreignObject width=\"100\" height=\"100\">\n    <body xmlns=\"http://www.w3.org/1999/xhtml\">\n      <p>Embedded XHTML content</p>\n    </body>\n  </foreignObject>\n</svg>\n```",
+  "finish_reason": "end_turn",
+  "block_reason": null,
+  "raw": {
+    "model": "claude-sonnet-5",
+    "id": "msg_011Ceg2QHyGJPN2UdFBNvCC8",
+    "type": "message",
+    "role": "assistant",
+    "content": [
+      {
+        "type": "text",
+        "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child*)>\n  <!ELEMENT child (#PCDATA)>\n  <!ATTLIST root\n    id ID #REQUIRED\n    ref IDREF #IMPLIED\n    xs:noNamespaceSchemaLocation CDATA #IMPLIED>\n  <!ATTLIST child\n    kind (a|b|c) \"a\"\n    flag (yes|no) #FIXED \"yes\">\n  <!NOTATION png PUBLIC \"-//W3C//NOTATION PNG//EN\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n  <!ENTITY internalEnt \"some &amp; internal &lt;entity&gt; value\">\n  <!ENTITY % paramEnt \"<!ENTITY externalRef SYSTEM 'http://example.com/ent.xml'>\">\n  %paramEnt;\n]>\n<?xml-stylesheet type=\"text/xsl\" href=\"style.xsl\"?>\n<root id=\"r1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\">\n  <![CDATA[This is <raw> data & should not be parsed as markup]]>\n  <child kind=\"b\" flag=\"yes\">Text with &internalEnt; reference</child>\n  <child kind=\"c\"><!-- nested comment --></child>\n  <?processing-instruction data=\"value\"?>\n  <child xml:space=\"preserve\">   whitespace preserved   </child>\n  <ns:elem xmlns:ns=\"urn:example:ns\" ns:attr=\"value\">Namespaced content</ns:elem>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<catalog xmlns=\"urn:catalog:default\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <item xlink:type=\"simple\" xlink:href=\"http://example.com/res1\">Resource 1</item>\n  <item xlink:type=\"simple\" xlink:href=\"http://example.com/res2\">\n    <sub attr='single &apos;quoted&apos; value'>Nested &#x1F600; emoji text</sub>\n  </item>\n  <malformed-ish>\n    <a><b><c><d><e><f><g><h><i><j>deep nesting test</j></i></h></g></f></e></d></c></b></a>\n  </malformed-ish>\n  <mixed>Text before <bold>bold text</bold> text after <italic>italic</italic> end.</mixed>\n  <empty-elem/>\n  <selfclose attr=\"val\" />\n  <numeric>&#65;&#66;&#67;&#x41;&#x42;&#x43;</numeric>\n  <![CDATA[\n    <script>alert('not parsed');</script>\n    multi\n    line\n    cdata\n  ]]>\n  <comment-test><!-- comment with -- double dash inside is illegal but test anyway --></comment-test>\n</catalog>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\"\n  \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\" [\n  <!ENTITY nbsp \"&#160;\">\n  <!ENTITY ent1 \"value1\">\n  <!ENTITY ent2 \"&ent1;&ent1;\">\n  <!ENTITY ent3 \"&ent2;&ent2;&ent2;\">\n]>\n<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"100\" height=\"100\">\n  <title>Test&nbsp;Title</title>\n  <desc>Description with &ent3; expansion</desc>\n  <g id=\"group1\" transform=\"translate(10,10) rotate(45) scale(2)\">\n    <rect x=\"0\" y=\"0\" width=\"50\" height=\"50\" fill=\"#ff0000\"/>\n    <circle cx=\"25\" cy=\"25\" r=\"10\" stroke=\"black\" stroke-width=\"2\"/>\n    <path d=\"M10 10 H 90 V 90 H 10 Z\" fill=\"none\" stroke=\"blue\"/>\n  </g>\n  <text x=\"10\" y=\"90\" font-family=\"Verdana\" font-size=\"12\">\n    Sample &lt;text&gt; with entities &amp; special chars\n  </text>\n  <foreignObject width=\"100\" height=\"100\">\n    <body xmlns=\"http://www.w3.org/1999/xhtml\">\n      <p>Embedded XHTML content</p>\n    </body>\n  </foreignObject>\n</svg>\n```"
+      }
+    ],
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "stop_details": null,
+    "usage": {
+      "input_tokens": 3758,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 1581,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "service_tier": "standard",
+      "inference_geo": "global"
+    }
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

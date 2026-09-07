@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE root SYSTEM "http://example.com/dtd/root.dtd" [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST child
+      id ID #REQUIRED
+      ref IDREF #IMPLIED
+      lang CDATA #FIXED "en"
+      kind (a|b|c) "a">
+  <!ENTITY intern "internal entity text &amp; more">
+  <!ENTITY extparse SYSTEM "child.xml" NDATA gif>
+  <!NOTATION gif SYSTEM "viewer.exe">
+  <!ENTITY % paramInclude "<!ELEMENT extra (#PCDATA)>">
+  %paramInclude;
+]>
+<?xml-stylesheet type="text/xsl" href="style.xsl"?>
+<root xmlns="urn:example:default" xmlns:x="urn:example:x">
+  <![CDATA[Some <raw> text & data ]]>
+  <child id="c1" kind="b">Text with &intern; entity and &#x263A; char ref</child>
+  <x:child id="c2" ref="c1"><!-- comment inside --></x:child>
+  <?pi-target some pi data here?>
+  <extra>Extra element from parameter entity expanded content</extra>
+  <child id="c3" kind="c">
+    <![CDATA[<nested>not parsed</nested>]]>
+  </child>
+</root>

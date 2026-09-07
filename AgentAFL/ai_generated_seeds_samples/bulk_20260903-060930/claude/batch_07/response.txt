@@ -1,0 +1,76 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE root SYSTEM "http://example.com/dtd/root.dtd" [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST child
+      id ID #REQUIRED
+      ref IDREF #IMPLIED
+      lang CDATA #FIXED "en"
+      kind (a|b|c) "a">
+  <!ENTITY intern "internal entity text &amp; more">
+  <!ENTITY extparse SYSTEM "child.xml" NDATA gif>
+  <!NOTATION gif SYSTEM "viewer.exe">
+  <!ENTITY % paramInclude "<!ELEMENT extra (#PCDATA)>">
+  %paramInclude;
+]>
+<?xml-stylesheet type="text/xsl" href="style.xsl"?>
+<root xmlns="urn:example:default" xmlns:x="urn:example:x">
+  <![CDATA[Some <raw> text & data ]]>
+  <child id="c1" kind="b">Text with &intern; entity and &#x263A; char ref</child>
+  <x:child id="c2" ref="c1"><!-- comment inside --></x:child>
+  <?pi-target some pi data here?>
+  <extra>Extra element from parameter entity expanded content</extra>
+  <child id="c3" kind="c">
+    <![CDATA[<nested>not parsed</nested>]]>
+  </child>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE doc [
+  <!ENTITY a "value-a">
+  <!ENTITY b "&a;&a;">
+  <!ENTITY c "&b;&b;">
+]>
+<doc>
+  <ns:elem xmlns:ns="http://example.org/ns1"
+           xmlns:ns2="http://example.org/ns2"
+           ns:attr1="v1" ns2:attr2="v2">
+    <ns2:sub>&c;</ns2:sub>
+  </ns:elem>
+  <mixed>
+    Text before <b>bold <i>italic <u>underline</u></i></b> text after
+    <empty/>
+    <self-closing attr1="1" attr2='2' attr3="a&apos;b&quot;c"/>
+  </mixed>
+  <weird-attrs a="&#9;&#10;&#13;" b="line1&#10;line2" c="tab&#9;here"/>
+  <?processing instruction with = signs and "quotes"?>
+  <deeply><a1><a2><a3><a4><a5><a6><a7><a8><a9><a10>deep text</a10></a9></a8></a7></a6></a5></a4></a3></a2></a1></deeply>
+  <!-- trailing comment -->
+</doc>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-16"?>
+<root>
+  <a:b xmlns:a="urn:a" xmlns:xml="http://www.w3.org/XML/1998/namespace" xml:lang="en-US" xml:space="preserve">
+    <![CDATA[]]>
+    <empty></empty>
+    <text> </text>
+  </a:b>
+  <numbers>
+    <n>1234567890123456789012345678901234567890</n>
+    <n>-0.0000000000001e+308</n>
+    <n>NaN</n>
+  </numbers>
+  <attr-heavy a1="1" a2="2" a3="3" a4="4" a5="5" a6="6" a7="7" a8="8" a9="9" a10="10"
+              a11="11" a12="12" a13="13" a14="14" a15="15" a16="16" a17="17" a18="18"/>
+  <unicode>Ünïcödé тест 中文字符 🚀🔥</unicode>
+  <sibling1/><sibling2/><sibling3>
+    <child xmlns="">no default ns here</child>
+  </sibling3>
+  <recursive-ns xmlns:r="urn:r"><r:x><r:y><r:z/></r:y></r:x></recursive-ns>
+</root>
+```

@@ -1,0 +1,32 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY ext SYSTEM "http://127.0.0.1/nonexistent.dtd">
+  %ext;
+]>
+<root xmlns:xi="http://www.w3.org/2001/XInclude">
+  <child>Test Entity and XInclude</child>
+  <xi:include href="data:,fallback"/>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns="http://example.org/ns1" xmlns:ns2="http://example.org/ns2">
+  <ns2:element ns2:attr="value" id="123">
+    <![CDATA[Unparsed character data section with some complex <tags> & entities &#38; test.]]>
+  </ns2:element>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<?xml-stylesheet href="style.xsl" type="text/xsl"?>
+<root>
+  <node xml:base="http://example.com/base/" xml:lang="en-US" xml:space="preserve">
+    Processing instructions and namespace scopes test.
+  </node>
+</root>
+```

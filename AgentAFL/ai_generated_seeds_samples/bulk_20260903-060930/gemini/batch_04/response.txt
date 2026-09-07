@@ -1,0 +1,34 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="nonexistent.xml" parse="xml">
+    <xi:fallback>
+      <fallback-node attr="value">Default text content</fallback-node>
+    </xi:fallback>
+  </xi:include>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY internal-ent "ExpandedEntityText">
+  <!ENTITY % param-ent "<!ELEMENT external-elem (#PCDATA)>">
+  %param-ent;
+]>
+<root>
+  <child>&internal-ent;</child>
+  <external-elem>Test</external-elem>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<root>
+  <![CDATA[Unparsed character data section with special characters: <>&'"--]]>
+  <?target processing instruction data with ? and > inside?>
+  <!-- A standard XML comment with -- double hyphens inside -->
+</root>
+```

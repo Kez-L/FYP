@@ -1,0 +1,35 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY ext SYSTEM "http://127.0.0.1:80/nonexistent">
+]><?processing-instruction target="data" data="value"?><root>&ext;<child>test</child></root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE note [
+  <!ELEMENT note (to,from,heading,body)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT body (#PCDATA)>
+  <!ENTITY % remote SYSTEM "http://127.0.0.1:80/dtd.dtd">
+  %remote;
+]>
+<note>
+  <to>Tosh</to>
+  <from>Fuzzer</from>
+  <heading>Reminder</heading>
+  <body>Testing external entity expansion and DTD validation path.</body>
+</note>
+```
+
+```xml
+<root xmlns:ns="http://example.com/ns" ns:att="value">
+  <ns:element xmlns:ns="http://example.com/subns">
+    <![CDATA[Unparsed CDATA section with <tags> & entities &ns; inside.]]>
+  </ns:element>
+</root>
+```

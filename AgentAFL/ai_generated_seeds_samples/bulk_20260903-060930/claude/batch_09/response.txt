@@ -1,0 +1,73 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST root
+      id ID #REQUIRED
+      xmlns:x CDATA #FIXED "urn:example:x"
+      lang CDATA #IMPLIED>
+  <!ATTLIST child
+      ref IDREF #IMPLIED
+      kind (a|b|c) "a">
+  <!ENTITY hello "Hello, World!">
+  <!ENTITY copy "&#169;">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+]>
+<root id="r1" lang="en">
+  <?xml-stylesheet type="text/xsl" href="style.xsl"?>
+  <child ref="r1" kind="b">&hello; &copy;</child>
+  <child kind="c"><![CDATA[<not>parsed & <as> markup>]]></child>
+  <!-- comment with weird chars: <>&"' -->
+  <child>Line1
+Line2&#13;&#10;Line3</child>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<catalog xmlns="urn:catalog" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <book xlink:type="simple" xlink:href="#chap1" id="b.1">
+    <title xml:lang="fr">Caf&#233; &amp; Th&#233;</title>
+    <price currency="EUR">19.99</price>
+  </book>
+  <book id="b.2">
+    <title xml:space="preserve">   Spacey   Title   </title>
+    <price currency="USD">5</price>
+  </book>
+  <processing-instructions>
+    <?target some data here?>
+  </processing-instructions>
+  <mixed>
+    Text before <b>bold <i>italic</i> tail</b> text after
+    <empty/>
+    <selfclose attr="value" />
+  </mixed>
+  <ns:extra xmlns:ns="urn:ns2" ns:foo="bar">payload</ns:extra>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ENTITY a "value-a">
+  <!ENTITY b "&a;-and-&a;">
+  <!ENTITY c "&b;+&b;+&b;">
+  <!ENTITY external SYSTEM "http://example.com/nonexistent.ent">
+  <!ELEMENT doc ANY>
+]>
+<doc>
+  <deep>
+    <l1><l2><l3><l4><l5><l6><l7><l8><l9><l10>
+      &c;
+    </l10></l9></l8></l7></l6></l5></l4></l3></l2></l1>
+  </deep>
+  <numbers>&#x41;&#x42;&#x43;&#65;&#66;&#67;</numbers>
+  <weird attr="&quot;quoted&quot; and &apos;apos&apos;">
+    <![CDATA[nested ]]&gt; sequence]]>
+  </weird>
+  <emptyattr a="" b=" " c="	"/>
+  <unicode>&#x1F600;&#x2603;&#x00E9;</unicode>
+</doc>
+```

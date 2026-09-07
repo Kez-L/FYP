@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST root
+    id ID #REQUIRED
+    ref IDREF #IMPLIED
+    xml:lang CDATA #FIXED "en"
+    kind (a|b|c) "a"
+    nums NMTOKENS #IMPLIED>
+  <!ENTITY intern "internal entity value">
+  <!ENTITY % param "child">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+]>
+<root id="r1" ref="r1" kind="b" nums="one two three">
+  <![CDATA[<raw> & unescaped "stuff" ]]>
+  <child>&intern; &#65; &#x41; text</child>
+  <?processing-instruction data="value"?>
+  <!-- comment inside content -->
+  <child xml:space="preserve">   spaced   text   </child>
+</root>

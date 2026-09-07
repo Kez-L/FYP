@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST root
+      id ID #REQUIRED
+      xmlns:x CDATA #FIXED "urn:example:x"
+      lang CDATA #IMPLIED>
+  <!ATTLIST child
+      ref IDREF #IMPLIED
+      kind (a|b|c) "a">
+  <!ENTITY hello "Hello, World!">
+  <!ENTITY copy "&#169;">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+]>
+<root id="r1" lang="en">
+  <?xml-stylesheet type="text/xsl" href="style.xsl"?>
+  <child ref="r1" kind="b">&hello; &copy;</child>
+  <child kind="c"><![CDATA[<not>parsed & <as> markup>]]></child>
+  <!-- comment with weird chars: <>&"' -->
+  <child>Line1
+Line2&#13;&#10;Line3</child>
+</root>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE doc SYSTEM "nonexistent-external.dtd" [
+  <!ENTITY chapter1 "Chapter One Content">
+  <!ENTITY chapter2 "Chapter Two Content, referencing &chapter1;">
+  <!ENTITY amp_test "A &amp; B &lt; C &gt; D">
+  <!ENTITY empty_ent "">
+  <!ELEMENT doc (section+)>
+  <!ELEMENT section (#PCDATA|title)*>
+  <!ATTLIST section
+     level CDATA "1"
+     id ID #IMPLIED>
+]>
+<doc>
+  <section level="1" id="s1">
+    <title>Intro</title>
+    &chapter1;
+  </section>
+  <section level="2">
+    &chapter2;
+    &amp_test;
+    &empty_ent;
+  </section>
+  <section>
+    <![CDATA[
+      Some <embedded/> markup that should not be parsed
+      ]]>
+  </section>
+</doc>

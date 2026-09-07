@@ -1,0 +1,74 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST root xmlns:foo CDATA #IMPLIED>
+  <!ATTLIST child id ID #REQUIRED>
+  <!ENTITY intern "internal entity value">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+]>
+<root xmlns:foo="urn:example:foo" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <?processing-instruction some data here?>
+  <child id="a1">&intern;</child>
+  <child id="a2"><![CDATA[<not>parsed & <as/> markup>]]></child>
+  <foo:extra foo:attr="value with &amp; entity">
+    <xi:include href="nonexistent.xml" parse="text" encoding="ISO-8859-1"/>
+  </foo:extra>
+  <mixed>Text before <b>bold <i>italic</i></b> text after</mixed>
+  <ns1:tag xmlns:ns1="urn:ns1" xmlns:ns2="urn:ns2">
+    <ns2:inner ns1:attr="1"/>
+  </ns1:tag>
+  <!-- comment with weird chars: &lt; &amp; -- not a real close -->
+  <empty/>
+  <a:very:invalid:but:allowed.name-1_2>ok</a:very:invalid:but:allowed.name-1_2>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<root>
+  <![CDATA[Some &escaped; text that should not be parsed <tag/>]]>
+  <numbers>
+    <val>&#x1F600;</val>
+    <val>&#128512;</val>
+    <val>&#0;</val>
+  </numbers>
+  <deeply>
+    <l1><l2><l3><l4><l5><l6><l7><l8><l9><l10>
+      <leaf attr1="v1" attr2='v2' attr3="v3&#10;with&#9;whitespace">
+        Text with surrogate pair: 𝄞 and combining char: e&#x301;
+      </leaf>
+    </l10></l9></l8></l7></l6></l5></l4></l3></l2></l1>
+  </deeply>
+  <weird-attr a="&quot;quoted&quot;" b="&apos;apos&apos;" c="&lt;&gt;&amp;"/>
+  <self-closing-with-ns xmlns="urn:default"/>
+  <?xml-stylesheet type="text/xsl" href="style.xsl"?>
+  <namespace-test xmlns:a="urn:a" xmlns:b="urn:b" a:x="1" b:x="2" x="3"/>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog SYSTEM "catalog.dtd" [
+  <!ELEMENT catalog (item)*>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item
+    id CDATA #REQUIRED
+    type (book|cd|dvd) "book"
+    status (active|inactive) #FIXED "active"
+  >
+  <!ENTITY % items_pe "<!ELEMENT extra (#PCDATA)>">
+  %items_pe;
+]>
+<catalog>
+  <item id="1" type="cd"/>
+  <item id="2" type="dvd" status="active"/>
+  <item id="3"/>
+  <extra>Extra content parsed via parameter entity declared element</extra>
+  <!-- test conditional-like structure without real conditional section -->
+  <item id="4" type="book">
+  </item>
+</catalog>
+```

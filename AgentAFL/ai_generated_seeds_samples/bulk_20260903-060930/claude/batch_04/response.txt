@@ -1,0 +1,80 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST root
+    id ID #REQUIRED
+    ref IDREF #IMPLIED
+    xs:noNamespaceSchemaLocation CDATA #IMPLIED>
+  <!ATTLIST child
+    kind (a|b|c) "a"
+    flag (yes|no) #FIXED "yes">
+  <!NOTATION png PUBLIC "-//W3C//NOTATION PNG//EN">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY internalEnt "some &amp; internal &lt;entity&gt; value">
+  <!ENTITY % paramEnt "<!ENTITY externalRef SYSTEM 'http://example.com/ent.xml'>">
+  %paramEnt;
+]>
+<?xml-stylesheet type="text/xsl" href="style.xsl"?>
+<root id="r1" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance">
+  <![CDATA[This is <raw> data & should not be parsed as markup]]>
+  <child kind="b" flag="yes">Text with &internalEnt; reference</child>
+  <child kind="c"><!-- nested comment --></child>
+  <?processing-instruction data="value"?>
+  <child xml:space="preserve">   whitespace preserved   </child>
+  <ns:elem xmlns:ns="urn:example:ns" ns:attr="value">Namespaced content</ns:elem>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<catalog xmlns="urn:catalog:default" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <item xlink:type="simple" xlink:href="http://example.com/res1">Resource 1</item>
+  <item xlink:type="simple" xlink:href="http://example.com/res2">
+    <sub attr='single &apos;quoted&apos; value'>Nested &#x1F600; emoji text</sub>
+  </item>
+  <malformed-ish>
+    <a><b><c><d><e><f><g><h><i><j>deep nesting test</j></i></h></g></f></e></d></c></b></a>
+  </malformed-ish>
+  <mixed>Text before <bold>bold text</bold> text after <italic>italic</italic> end.</mixed>
+  <empty-elem/>
+  <selfclose attr="val" />
+  <numeric>&#65;&#66;&#67;&#x41;&#x42;&#x43;</numeric>
+  <![CDATA[
+    <script>alert('not parsed');</script>
+    multi
+    line
+    cdata
+  ]]>
+  <comment-test><!-- comment with -- double dash inside is illegal but test anyway --></comment-test>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY ent1 "value1">
+  <!ENTITY ent2 "&ent1;&ent1;">
+  <!ENTITY ent3 "&ent2;&ent2;&ent2;">
+]>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100" height="100">
+  <title>Test&nbsp;Title</title>
+  <desc>Description with &ent3; expansion</desc>
+  <g id="group1" transform="translate(10,10) rotate(45) scale(2)">
+    <rect x="0" y="0" width="50" height="50" fill="#ff0000"/>
+    <circle cx="25" cy="25" r="10" stroke="black" stroke-width="2"/>
+    <path d="M10 10 H 90 V 90 H 10 Z" fill="none" stroke="blue"/>
+  </g>
+  <text x="10" y="90" font-family="Verdana" font-size="12">
+    Sample &lt;text&gt; with entities &amp; special chars
+  </text>
+  <foreignObject width="100" height="100">
+    <body xmlns="http://www.w3.org/1999/xhtml">
+      <p>Embedded XHTML content</p>
+    </body>
+  </foreignObject>
+</svg>
+```

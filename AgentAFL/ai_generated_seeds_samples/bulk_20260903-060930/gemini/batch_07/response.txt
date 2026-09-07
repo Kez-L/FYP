@@ -1,0 +1,29 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY ext SYSTEM "http://127.0.0.1:80/nonexistent">
+]><root>&ext;</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<root xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="nonexistent.xml" parse="xml">
+    <xi:fallback>
+      <fallback-node>Content not found</fallback-node>
+    </xi:fallback>
+  </xi:include>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:ns="http://example.com/ns">
+  <ns:element ns:attr="value">
+    <![CDATA[Unparsed CDATA section with <tags> and &entities; inside.]]>
+  </ns:element>
+</root>
+```

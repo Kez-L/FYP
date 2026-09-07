@@ -23,10 +23,23 @@ Notes:
 
 import argparse
 import csv
+import hashlib
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
+
+
+def _edge_fields(edges: set) -> dict:
+    """Stable, JSON-friendly representation of a seed's afl-showmap edge set.
+    edge_ids: sorted ints (used for Jaccard similarity between seeds).
+    edge_sig: sha1 of the joined ids — cheap exact-match key for clustering.
+    Logged per candidate so build_context can later group failed seeds by
+    "drove the same path through the parser"."""
+    ids = sorted(int(e) for e in edges)
+    joined = ",".join(map(str, ids))
+    sig = hashlib.sha1(joined.encode()).hexdigest() if ids else ""
+    return {"edge_ids": ids, "edge_sig": sig}
 
 
 def run_showmap(afl_showmap_bin, target, target_args, input_path, timeout=30):
@@ -100,20 +113,22 @@ def build_baseline(afl_showmap_bin, target, target_args, queue_dir, timeout=30):
 def evaluate_candidate(afl_showmap_bin, target, target_args, candidate_path: Path,
                         baseline: set, timeout: int = 30) -> dict:
     """Classify one candidate against a precomputed full-queue baseline.
-    Returns {seed, status, new_edges, total_edges}; status is one of
-    "CRASH", "TIMEOUT", "NO_COVERAGE", "GOOD (novel coverage)", "BAD (redundant)"."""
+    Returns {seed, status, new_edges, total_edges, edge_ids, edge_sig}; status is
+    one of "CRASH", "TIMEOUT", "NO_COVERAGE", "GOOD (novel coverage)",
+    "BAD (redundant)". edge_ids/edge_sig describe the seed's own edge set (see
+    _edge_fields) — logging only, same as the rest of this dict."""
     status, edges = run_showmap(afl_showmap_bin, target, target_args, candidate_path,
                                  timeout=timeout)
 
     if status in ("crash", "timeout"):
         return {
             "seed": candidate_path.name, "status": status.upper(),
-            "new_edges": 0, "total_edges": len(edges),
+            "new_edges": 0, "total_edges": len(edges), **_edge_fields(edges),
         }
     if status == "no_coverage":
         return {
             "seed": candidate_path.name, "status": "NO_COVERAGE",
-            "new_edges": 0, "total_edges": 0,
+            "new_edges": 0, "total_edges": 0, **_edge_fields(edges),
         }
 
     new_edges = edges - baseline
@@ -123,6 +138,7 @@ def evaluate_candidate(afl_showmap_bin, target, target_args, candidate_path: Pat
         "status": "GOOD (novel coverage)" if good else "BAD (redundant)",
         "new_edges": len(new_edges),
         "total_edges": len(edges),
+        **_edge_fields(edges),
     }
 
 
@@ -162,7 +178,8 @@ def main():
 
     with args.out.open("w", newline="") as fh:
         writer = csv.DictWriter(
-            fh, fieldnames=["seed", "status", "new_edges", "total_edges"]
+            fh, fieldnames=["seed", "status", "new_edges", "total_edges"],
+            extrasaction="ignore",  # evaluate_candidate also returns edge_ids/edge_sig
         )
         writer.writeheader()
         writer.writerows(rows)

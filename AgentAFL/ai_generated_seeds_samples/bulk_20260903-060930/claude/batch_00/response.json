@@ -1,0 +1,38 @@
+{
+  "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child*)>\n  <!ELEMENT child (#PCDATA)>\n  <!ATTLIST root xmlns:foo CDATA #IMPLIED>\n  <!ATTLIST child id ID #REQUIRED>\n  <!ENTITY intern \"internal entity value\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n]>\n<root xmlns:foo=\"urn:example:foo\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n  <?processing-instruction some data here?>\n  <child id=\"a1\">&intern;</child>\n  <child id=\"a2\"><![CDATA[<not>parsed & <as/> markup>]]></child>\n  <foo:extra foo:attr=\"value with &amp; entity\">\n    <xi:include href=\"nonexistent.xml\" parse=\"text\" encoding=\"ISO-8859-1\"/>\n  </foo:extra>\n  <mixed>Text before <b>bold <i>italic</i></b> text after</mixed>\n  <ns1:tag xmlns:ns1=\"urn:ns1\" xmlns:ns2=\"urn:ns2\">\n    <ns2:inner ns1:attr=\"1\"/>\n  </ns1:tag>\n  <!-- comment with weird chars: &lt; &amp; -- not a real close -->\n  <empty/>\n  <a:very:invalid:but:allowed.name-1_2>ok</a:very:invalid:but:allowed.name-1_2>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<root>\n  <![CDATA[Some &escaped; text that should not be parsed <tag/>]]>\n  <numbers>\n    <val>&#x1F600;</val>\n    <val>&#128512;</val>\n    <val>&#0;</val>\n  </numbers>\n  <deeply>\n    <l1><l2><l3><l4><l5><l6><l7><l8><l9><l10>\n      <leaf attr1=\"v1\" attr2='v2' attr3=\"v3&#10;with&#9;whitespace\">\n        Text with surrogate pair: \ud834\udd1e and combining char: e&#x301;\n      </leaf>\n    </l10></l9></l8></l7></l6></l5></l4></l3></l2></l1>\n  </deeply>\n  <weird-attr a=\"&quot;quoted&quot;\" b=\"&apos;apos&apos;\" c=\"&lt;&gt;&amp;\"/>\n  <self-closing-with-ns xmlns=\"urn:default\"/>\n  <?xml-stylesheet type=\"text/xsl\" href=\"style.xsl\"?>\n  <namespace-test xmlns:a=\"urn:a\" xmlns:b=\"urn:b\" a:x=\"1\" b:x=\"2\" x=\"3\"/>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog SYSTEM \"catalog.dtd\" [\n  <!ELEMENT catalog (item)*>\n  <!ELEMENT item EMPTY>\n  <!ATTLIST item\n    id CDATA #REQUIRED\n    type (book|cd|dvd) \"book\"\n    status (active|inactive) #FIXED \"active\"\n  >\n  <!ENTITY % items_pe \"<!ELEMENT extra (#PCDATA)>\">\n  %items_pe;\n]>\n<catalog>\n  <item id=\"1\" type=\"cd\"/>\n  <item id=\"2\" type=\"dvd\" status=\"active\"/>\n  <item id=\"3\"/>\n  <extra>Extra content parsed via parameter entity declared element</extra>\n  <!-- test conditional-like structure without real conditional section -->\n  <item id=\"4\" type=\"book\">\n  </item>\n</catalog>\n```",
+  "finish_reason": "end_turn",
+  "block_reason": null,
+  "raw": {
+    "model": "claude-sonnet-5",
+    "id": "msg_011Ceg2Krn5zooi4V31XCcbv",
+    "type": "message",
+    "role": "assistant",
+    "content": [
+      {
+        "type": "text",
+        "text": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (child*)>\n  <!ELEMENT child (#PCDATA)>\n  <!ATTLIST root xmlns:foo CDATA #IMPLIED>\n  <!ATTLIST child id ID #REQUIRED>\n  <!ENTITY intern \"internal entity value\">\n  <!NOTATION png SYSTEM \"image/png\">\n  <!ENTITY logo SYSTEM \"logo.png\" NDATA png>\n]>\n<root xmlns:foo=\"urn:example:foo\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n  <?processing-instruction some data here?>\n  <child id=\"a1\">&intern;</child>\n  <child id=\"a2\"><![CDATA[<not>parsed & <as/> markup>]]></child>\n  <foo:extra foo:attr=\"value with &amp; entity\">\n    <xi:include href=\"nonexistent.xml\" parse=\"text\" encoding=\"ISO-8859-1\"/>\n  </foo:extra>\n  <mixed>Text before <b>bold <i>italic</i></b> text after</mixed>\n  <ns1:tag xmlns:ns1=\"urn:ns1\" xmlns:ns2=\"urn:ns2\">\n    <ns2:inner ns1:attr=\"1\"/>\n  </ns1:tag>\n  <!-- comment with weird chars: &lt; &amp; -- not a real close -->\n  <empty/>\n  <a:very:invalid:but:allowed.name-1_2>ok</a:very:invalid:but:allowed.name-1_2>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<root>\n  <![CDATA[Some &escaped; text that should not be parsed <tag/>]]>\n  <numbers>\n    <val>&#x1F600;</val>\n    <val>&#128512;</val>\n    <val>&#0;</val>\n  </numbers>\n  <deeply>\n    <l1><l2><l3><l4><l5><l6><l7><l8><l9><l10>\n      <leaf attr1=\"v1\" attr2='v2' attr3=\"v3&#10;with&#9;whitespace\">\n        Text with surrogate pair: \ud834\udd1e and combining char: e&#x301;\n      </leaf>\n    </l10></l9></l8></l7></l6></l5></l4></l3></l2></l1>\n  </deeply>\n  <weird-attr a=\"&quot;quoted&quot;\" b=\"&apos;apos&apos;\" c=\"&lt;&gt;&amp;\"/>\n  <self-closing-with-ns xmlns=\"urn:default\"/>\n  <?xml-stylesheet type=\"text/xsl\" href=\"style.xsl\"?>\n  <namespace-test xmlns:a=\"urn:a\" xmlns:b=\"urn:b\" a:x=\"1\" b:x=\"2\" x=\"3\"/>\n</root>\n```\n\n```xml\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog SYSTEM \"catalog.dtd\" [\n  <!ELEMENT catalog (item)*>\n  <!ELEMENT item EMPTY>\n  <!ATTLIST item\n    id CDATA #REQUIRED\n    type (book|cd|dvd) \"book\"\n    status (active|inactive) #FIXED \"active\"\n  >\n  <!ENTITY % items_pe \"<!ELEMENT extra (#PCDATA)>\">\n  %items_pe;\n]>\n<catalog>\n  <item id=\"1\" type=\"cd\"/>\n  <item id=\"2\" type=\"dvd\" status=\"active\"/>\n  <item id=\"3\"/>\n  <extra>Extra content parsed via parameter entity declared element</extra>\n  <!-- test conditional-like structure without real conditional section -->\n  <item id=\"4\" type=\"book\">\n  </item>\n</catalog>\n```"
+      }
+    ],
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "stop_details": null,
+    "usage": {
+      "input_tokens": 3758,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 1326,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "service_tier": "standard",
+      "inference_geo": "global"
+    }
+  },
+  "http_status": 200,
+  "attempt_count": 1,
+  "response_truncated": false
+}

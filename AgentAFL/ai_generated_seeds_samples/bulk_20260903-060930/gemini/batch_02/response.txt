@@ -1,0 +1,51 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY ext SYSTEM "http://127.0.0.1/nonexistent.dtd">
+  %ext;
+]>
+<root xmlns:xi="http://www.w3.org/2001/XInclude">
+  <child>Test Entity and XInclude</child>
+  <xi:include href="nonexistent.xml" parse="xml">
+    <xi:fallback>
+      <fallback-node>Fallback active</fallback-node>
+    </xi:fallback>
+  </xi:include>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="http://example.org/ns1" xmlns:ns2="http://example.org/ns2">
+  <ns2:element ns2:attr="value">
+    <?target data processing instruction?>
+    <!-- Comment with -- invalid dash sequence handling -->
+    <![CDATA[ CData section containing <tags> & entities &amp; unparsed data ]]>
+  </ns2:element>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (book*)>
+  <!ELEMENT book (title, author, price)>
+  <!ATTLIST book id ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ENTITY writer "John Doe">
+  <!ENTITY % pub "Publisher">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+]>
+<catalog>
+  <book id="bk101">
+    <title>XML Parsing Techniques &writer;</title>
+    <author>&writer;</author>
+    <price>29.99</price>
+  </book>
+</catalog>
+```

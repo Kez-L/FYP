@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST root xmlns:ns1 CDATA #IMPLIED
+                 xmlns:ns2 CDATA #IMPLIED
+                 id ID #REQUIRED
+                 ref IDREF #IMPLIED>
+  <!ATTLIST child lang CDATA "en">
+  <!ENTITY internalEnt "some internal text &amp; more">
+  <!ENTITY externalEnt SYSTEM "file:///nonexistent/does_not_exist.xml">
+  <!NOTATION png PUBLIC "-//W3C//NOTATION PNG//EN">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="style.xsl"?>
+<root xmlns:ns1="urn:example:ns1" xmlns:ns2="urn:example:ns2" id="root1" ref="root1">
+  <ns1:child lang="fr">Text with &internalEnt; entity reference</ns1:child>
+  <ns2:child><![CDATA[<raw> data & stuff without escaping ]]></ns2:child>
+  <child>&#x263A; unicode smiley and &#65; letter A</child>
+  <!-- a comment with -- looking dashes -- inside -->
+  <?processing instruction data here?>
+  <child xml:space="preserve">   whitespace preserved   </child>
+</root>

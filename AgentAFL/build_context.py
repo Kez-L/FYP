@@ -24,7 +24,8 @@ Sources read (all under <instance>/, plateau_log excepted):
 Pipeline:
   - parse cmdline / fuzzer_stats / plateau_log
   - scan_queue: +cov entries only -> candidates; also tally operators seen >=5x with 0 +cov (stale)
-  - select_diverse_seeds: rank by capped size + printable ratio, de-dup by content similarity
+  - select_diverse_seeds: restrict to a readable size band, rank smallest-first +
+    printable ratio, de-dup by content similarity
   - pick one hang + one crash exemplar
   - assemble_prompt: turn all of the above into a SYSTEM/USER pair
       - plateau duration -> explicit "coverage growth has stopped" statement
@@ -49,6 +50,10 @@ FNAME_RE = re.compile(
     r"id[:_](\d+).*?(?:src[:_](\d+(?:[+,]\d+)*))?.*?op[:_]([a-zA-Z0-9]+)"
 )
 
+# Prior-failed-seed feedback (scan_cycle_history / select_failure_examples):
+HISTORY_MAX_CHARS = 700   # per echoed past seed — shorter than the queue examples
+HIST_JACCARD_MIN = 0.9    # edge-set overlap for two failed seeds to be "the same mistake"
+
 
 def printable_ratio(data: bytes) -> float:
     """Fraction of bytes that are printable ASCII/whitespace — cheap "looks like text" proxy.
@@ -70,10 +75,16 @@ def content_sample(path: Path, n: int = 500) -> str:
 
 def is_similar(sample_a: str, sample_b: str, threshold: float = 0.6) -> bool:
     """True if two content_sample fingerprints are >threshold similar.
-    Keeps few-shot examples from being 3 copies of the same mutant lineage."""
+    Keeps few-shot examples from being 3 copies of the same mutant lineage.
+
+    autojunk=False is required: the default heuristic treats any character in
+    >1% of a 200+ char string as junk and drops it from matching. content_sample
+    is a hex string (16 symbols), so with autojunk on every char is "junk" and
+    two near-identical low-alphabet blobs (repeated-digit mutants, RLE binary)
+    score ~0 similar and all get kept."""
     if not sample_a or not sample_b:
         return False
-    return difflib.SequenceMatcher(None, sample_a, sample_b).ratio() > threshold
+    return difflib.SequenceMatcher(None, sample_a, sample_b, autojunk=False).ratio() > threshold
 
 
 def format_seed_for_prompt(data: bytes, seed_kind: str, max_chars: int = 2000) -> str:
@@ -213,14 +224,32 @@ def scan_queue(queue_dir: Path):
     return candidates, stale_ops, total
 
 
+# Few-shot example seeds should be small enough to read and cheap on context,
+# but not so minimal they're degenerate. Restrict to this byte band before
+# ranking, then rank by distance from FEWSHOT_TARGET_SIZE. The fuzzer's giant
+# block-extension mutants (repeated-character walls, all +cov) fall outside the
+# band; the sub-32-byte minimized fragments are excluded by the lower bound.
+FEWSHOT_MIN_SIZE = 32
+FEWSHOT_MAX_SIZE = 3000
+FEWSHOT_TARGET_SIZE = 400  # ~ the corpus median for a structurally complete seed
+
+
 def select_diverse_seeds(candidates, n_seeds):
     """Pick up to n_seeds few-shot exemplars from the candidates.
-    Ranked by capped size (so one giant file can't dominate), printable ratio as
-    tiebreak, then de-duped by content similarity. Returns [(path, reason), ...]."""
+    Restricted to a readable size band (FEWSHOT_MIN_SIZE..FEWSHOT_MAX_SIZE), then
+    ranked by distance from FEWSHOT_TARGET_SIZE (printable ratio as tiebreak),
+    then de-duped by content similarity. Returns [(path, reason), ...].
+
+    Nearest-a-target (not largest-first, not smallest-first): a concise but
+    structurally complete seed teaches the model more per token than either a big
+    mutant blob or a 20-byte minimized fragment. The band falls back to the full
+    candidate set only if nothing lands inside it."""
     if not candidates:
         return []
 
-    ranked = sorted(candidates, key=lambda t: (-min(t[2], 2000), -t[1]))
+    banded = [c for c in candidates if FEWSHOT_MIN_SIZE <= c[2] <= FEWSHOT_MAX_SIZE]
+    ranked = sorted(banded or candidates,
+                    key=lambda t: (abs(t[2] - FEWSHOT_TARGET_SIZE), -t[1]))
 
     chosen = []
     chosen_samples = []
@@ -281,6 +310,183 @@ def pick_crash_exemplar(inst_dir: Path):
     return _pick_smallest(inst_dir / "crashes")
 
 
+# --------------------------------------------------------------------------
+# Prior-cycle feedback: echo the LLM's own recurring failed seeds back at it
+# --------------------------------------------------------------------------
+
+def _jaccard(a: set, b: set) -> float:
+    if not a and not b:
+        return 1.0
+    if not a or not b:
+        return 0.0
+    union = len(a | b)
+    return len(a & b) / union if union else 0.0
+
+
+def _sample_of(entry: dict) -> str:
+    """content_sample of a history entry's seed file, cached on the dict."""
+    if "sample" not in entry:
+        entry["sample"] = content_sample(entry["path"])
+    return entry["sample"]
+
+
+def scan_cycle_history(run_dir: Path) -> list:
+    """This run's prior FAILED LLM seeds (added no new coverage), from
+    <run_dir>/cycles.jsonl, in file order (newest cycles last).
+
+    Each item: {cycle_id, status, size, edge_ids (set[int]), edge_sig (str),
+    path (Path)}. Only BAD (redundant) / NO_COVERAGE candidates with
+    new_edges == 0 whose seed file is still on disk. Missing log -> []."""
+    run_dir = Path(run_dir)
+    log_path = run_dir / "cycles.jsonl"
+    if not log_path.exists():
+        return []
+
+    out = []
+    for line in log_path.read_text(errors="replace").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            rec = json.loads(line)
+        except ValueError:
+            continue
+        if rec.get("record_type") != "cycle":
+            continue
+        cycle_id = rec.get("cycle_id")
+        for cand in rec.get("candidates", []):
+            if cand.get("status") not in ("BAD (redundant)", "NO_COVERAGE"):
+                continue
+            if cand.get("new_edges", 0) != 0:
+                continue
+            rel = cand.get("seed_path") or cand.get("raw_path")
+            if not rel:
+                continue
+            path = run_dir / rel
+            if not path.is_file():
+                continue
+            out.append({
+                "cycle_id": cycle_id,
+                "status": cand.get("status"),
+                "size": path.stat().st_size,
+                "edge_ids": set(cand.get("edge_ids") or []),
+                "edge_sig": cand.get("edge_sig") or "",
+                "path": path,
+            })
+    return out
+
+
+def _cluster_failures(failures: list) -> list:
+    """Greedy clustering of failed-seed entries. Two seeds cluster if they drove
+    the same path through the parser — identical edge_sig, or edge_ids overlap
+    >= HIST_JACCARD_MIN. Seeds with no edge data fall back to content_sample
+    similarity. Returns [{"members": [...], "rep": entry}, ...]."""
+    clusters = []
+    for f in failures:
+        for cl in clusters:
+            rep = cl["rep"]
+            if f["edge_sig"] and rep["edge_sig"]:
+                same = (f["edge_sig"] == rep["edge_sig"]
+                        or _jaccard(f["edge_ids"], rep["edge_ids"]) >= HIST_JACCARD_MIN)
+            else:
+                same = is_similar(_sample_of(f), _sample_of(rep))
+            if same:
+                cl["members"].append(f)
+                break
+        else:
+            # "by": how members are grouped — "coverage" (edge sets) or
+            # "content" (byte similarity, when edge data is absent). Only affects
+            # the wording of the AVOID line.
+            clusters.append({"members": [f], "rep": f,
+                             "by": "coverage" if f["edge_sig"] else "content"})
+    return clusters
+
+
+def _not_parsing(cluster: dict) -> bool:
+    """True if at least half the cluster's members produced no coverage at all."""
+    nc = sum(1 for m in cluster["members"] if m["status"] == "NO_COVERAGE")
+    return nc * 2 >= len(cluster["members"])
+
+
+def _cluster_label(cluster: dict) -> str:
+    """'AVOID — ...' line describing why a whole cluster of past seeds failed."""
+    members = cluster["members"]
+    cs = sorted({m["cycle_id"] for m in members if m["cycle_id"] is not None})
+    where = (f"cycle {cs[0]}" if len(cs) == 1
+             else f"cycles {','.join(str(c) for c in cs)}" if cs else "earlier cycles")
+    if len(members) == 1:
+        why = ("produced no coverage at all (did not parse)" if _not_parsing(cluster)
+               else "added 0 new edges")
+        return f"AVOID — a seed you generated ({where}) {why}"
+    if _not_parsing(cluster):
+        why = "produced no coverage at all (did not parse)"
+    elif cluster.get("by") == "coverage":
+        why = "drove the same already-covered path with 0 new edges"
+    else:
+        why = "share the same structure and added 0 new edges"
+    return f"AVOID — {len(members)} of your past seeds ({where}) {why}"
+
+
+def select_failure_examples(failures: list, n: int, exclude_samples=None) -> list:
+    """Pick up to min(n, 2) prior failed seeds to show the LLM as 'do not repeat'.
+
+    Slot 1: smallest seed in the biggest recurring failure cluster.
+    Slot 2 (n >= 2): a NO_COVERAGE seed outside slot 1's cluster ("did not
+      parse"); if there is none, the next cluster's representative.
+    A pick is dropped if it looks like an already-shown queue example
+    (exclude_samples) or like slot 1. Returns [{"label": str, "path": Path}]."""
+    n = min(n, 2)
+    if n <= 0 or not failures:
+        return []
+
+    clusters = _cluster_failures(failures)
+    clusters.sort(
+        key=lambda cl: (len(cl["members"]),
+                        max((m["cycle_id"] or 0) for m in cl["members"])),
+        reverse=True,
+    )
+
+    chosen = []
+    seen_samples = list(exclude_samples or [])
+
+    def accept(path: Path, label: str) -> bool:
+        s = content_sample(path)
+        if any(is_similar(s, x) for x in seen_samples):
+            return False
+        chosen.append({"label": label, "path": path})
+        seen_samples.append(s)
+        return True
+
+    def smallest(members):
+        return min(members, key=lambda m: m["size"])
+
+    c1 = clusters[0]
+    c1_np = _not_parsing(c1)
+    accept(smallest(c1["members"])["path"], _cluster_label(c1))
+
+    if n < 2 or not chosen:
+        return chosen
+
+    c1_ids = {id(m) for m in c1["members"]}
+    if not c1_np:
+        lone = sorted(
+            (m for m in failures
+             if m["status"] == "NO_COVERAGE" and id(m) not in c1_ids),
+            key=lambda m: m["size"],
+        )
+        for m in lone:
+            if accept(m["path"],
+                      f"AVOID — a seed you generated (cycle {m['cycle_id']}) "
+                      f"produced no coverage at all (did not parse)"):
+                return chosen
+
+    for cl in clusters[1:]:
+        if accept(smallest(cl["members"])["path"], _cluster_label(cl)):
+            return chosen
+
+    return chosen
+
+
 def assemble_prompt(
     campaign_root: Path,
     instance: str,
@@ -292,6 +498,8 @@ def assemble_prompt(
     fence_lang: str = "",
     seed_kind: str = "text",
     format_hint: str = "",
+    run_dir: Path | None = None,
+    n_history_failure: int = 2,
 ) -> dict:
     """Build the SYSTEM/USER prompt pair from campaign state.
 
@@ -299,6 +507,10 @@ def assemble_prompt(
     - format_hint: optional grammar/schema/byte-order hint appended to the system prompt.
       Effectively required for binary — without a stated byte order, a low validity
       rate is uninterpretable (bad model, or just wrong guess?)
+    - run_dir: this run's output dir. When given (and n_history_failure > 0),
+      echo up to n_history_failure (<=2) of the LLM's own past failed seeds from
+      <run_dir>/cycles.jsonl back into the prompt as "do not repeat" examples.
+      None -> the prompt is exactly what it was before this feature.
     """
     inst_dir = campaign_root / instance
     stats = parse_fuzzer_stats(inst_dir / "fuzzer_stats")
@@ -308,6 +520,23 @@ def assemble_prompt(
     chosen_seeds = select_diverse_seeds(candidates, n_seeds)
     hang = pick_hang_exemplar(inst_dir)
     crash = pick_crash_exemplar(inst_dir)
+
+    # Prior failed seeds from this run, rendered for the "do not repeat" block.
+    history_examples = []  # [(label, rendered_content), ...]
+    if run_dir is not None and n_history_failure > 0:
+        try:
+            failures = scan_cycle_history(Path(run_dir))
+            exclude = [content_sample(f) for f, _ in chosen_seeds]
+            for pick in select_failure_examples(failures, n_history_failure, exclude):
+                try:
+                    body = format_seed_for_prompt(
+                        pick["path"].read_bytes(), seed_kind, max_chars=HISTORY_MAX_CHARS
+                    )
+                except OSError:
+                    continue
+                history_examples.append((pick["label"], body))
+        except Exception:
+            history_examples = []  # never break a cycle over history
 
     edges_found = stats.get("edges_found", "?")
     bitmap_cvg = stats.get("bitmap_cvg", "?")
@@ -382,7 +611,7 @@ def assemble_prompt(
 
     seed_label = "hex dump" if seed_kind == "binary" else "format"
     u.append(f"=== {len(chosen_seeds)} REAL EXAMPLE SEEDS (shown as {seed_label}) — this is the format to match ===")
-    u.append("Chosen for size/printability and mutual diversity, not just recency.")
+    u.append("Chosen for readable size, printability and mutual diversity, not recency.")
     for f, reason in chosen_seeds:
         try:
             content = format_seed_for_prompt(f.read_bytes(), seed_kind)
@@ -391,6 +620,18 @@ def assemble_prompt(
         u.append(f"--- {f.name} [{reason}] ---")
         u.append(content)
         u.append("")
+
+    if history_examples:
+        u.append("=== YOUR OWN PRIOR SEEDS THAT DID NOT HELP (feedback from earlier cycles this run) ===")
+        u.append(
+            "Seeds you generated on previous plateau cycles that added no new coverage. "
+            "Do NOT reproduce these or minor variants — they have already been tried. "
+            "Aim for structure meaningfully different from them."
+        )
+        for label, body in history_examples:
+            u.append(f"--- {label} ---")
+            u.append(body)
+            u.append("")
 
     u.append("=== A HIGH-COST INPUT (coverage lead) ===")
     if hang:
@@ -506,6 +747,19 @@ def main():
     )
     ap.add_argument("--n-seeds", type=int, default=3, help="Few-shot example seeds to include.")
     ap.add_argument("--n-generate", type=int, default=5, help="How many new seeds to ask the LLM for.")
+    ap.add_argument(
+        "--run-dir",
+        type=Path,
+        default=None,
+        help="An agentafl_runs/<run> dir. If given, echo up to --n-history-failure of "
+        "the LLM's own past failed seeds from its cycles.jsonl into the prompt.",
+    )
+    ap.add_argument(
+        "--n-history-failure",
+        type=int,
+        default=2,
+        help="Past failed seeds (0-2) to show as 'do not repeat'. Needs --run-dir.",
+    )
     ap.add_argument("--out", type=Path, default=None)
     ap.add_argument(
         "--plateau-log",
@@ -555,6 +809,8 @@ def main():
         fence_lang=fence_lang,
         seed_kind=args.seed_kind,
         format_hint=args.format_hint,
+        run_dir=args.run_dir,
+        n_history_failure=args.n_history_failure,
     )
     out_text = (
         json.dumps(prompt, indent=2)

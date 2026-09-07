@@ -1,0 +1,45 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY ext SYSTEM "http://127.0.0.1/nonexistent.dtd">
+  %ext;
+]>
+<root xmlns:xi="http://www.w3.org/2001/XInclude">
+  <child>Test Entity and XInclude</child>
+  <xi:include href="nonexistent.xml" parse="xml">
+    <xi:fallback>
+      <fallback-child>Fallback content activated</fallback-child>
+    </xi:fallback>
+  </xi:include>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY root PUBLIC "-//TEST//DTD Catalog//EN" "catalog.dtd" [
+    <!ENTITY sub-ent "Expanded Sub-Entity Content">
+  ]>
+]>
+<catalog xmlns="http://example.org/ns/catalog">
+  <item id="1">&root; &sub-ent;</item>
+  <item id="2" xml:base="http://example.org/base/">
+    <description>Testing namespaces, base URIs, and complex entity nesting.</description>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<?xml-stylesheet href="style.xsl" type="text/xsl"?>
+<root xmlns:foo="http://www.example.com/foo" foo:att="val">
+  <![CDATA[
+    Unparsed CDATA section with special characters: <>&'"--]]>
+  <foo:node>
+    <?processing-instruction target="data"?>
+    <!-- A nested XML comment with dashes --- inside -->
+  </foo:node>
+</root>
+```

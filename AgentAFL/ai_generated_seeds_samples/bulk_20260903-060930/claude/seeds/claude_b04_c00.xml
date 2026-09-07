@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST root
+    id ID #REQUIRED
+    ref IDREF #IMPLIED
+    xs:noNamespaceSchemaLocation CDATA #IMPLIED>
+  <!ATTLIST child
+    kind (a|b|c) "a"
+    flag (yes|no) #FIXED "yes">
+  <!NOTATION png PUBLIC "-//W3C//NOTATION PNG//EN">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY internalEnt "some &amp; internal &lt;entity&gt; value">
+  <!ENTITY % paramEnt "<!ENTITY externalRef SYSTEM 'http://example.com/ent.xml'>">
+  %paramEnt;
+]>
+<?xml-stylesheet type="text/xsl" href="style.xsl"?>
+<root id="r1" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance">
+  <![CDATA[This is <raw> data & should not be parsed as markup]]>
+  <child kind="b" flag="yes">Text with &internalEnt; reference</child>
+  <child kind="c"><!-- nested comment --></child>
+  <?processing-instruction data="value"?>
+  <child xml:space="preserve">   whitespace preserved   </child>
+  <ns:elem xmlns:ns="urn:example:ns" ns:attr="value">Namespaced content</ns:elem>
+</root>

@@ -1,0 +1,43 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY ext SYSTEM "http://127.0.0.1:80/nonexistent">
+  <!ENTITY % int_ent "internal expansion">
+  %int_ent;
+]>
+<root xmlns:xi="http://www.w3.org/2001/XInclude">
+  <child>&ext;</child>
+  <xi:include href="nonexistent.xml" parse="xml">
+    <xi:fallback>
+      <child>Fallback Content</child>
+    </xi:fallback>
+  </xi:include>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE test [
+  <!ELEMENT test ANY>
+  <!ENTITY % param "<!-- comment inside param -->">
+  %param;
+]>
+<?xml-stylesheet href="style.xsl" type="text/xsl"?>
+<test attr="val" xmlns="http://example.com/ns">
+  <![CDATA[ Unparsed CDATA section with special chars: <>&'" ]]></test>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE doc [
+  <!ELEMENT doc (section+)>
+  <!ELEMENT section (#PCDATA)>
+  <!ENTITY testentity "Entity Value">
+]>
+<doc>
+  <section id="sec1">Section 1 &testentity;</section>
+  <section id="sec2">Section 2</section>
+</doc>
+```

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST root
+    id ID #REQUIRED
+    ref IDREF #IMPLIED
+    kind (alpha|beta|gamma) "alpha"
+    note CDATA #FIXED "fixed-value"
+  >
+  <!ATTLIST child
+    xml:lang CDATA #IMPLIED
+  >
+  <!ENTITY internalEnt "some &amp; text with &lt; entities &gt;">
+  <!ENTITY % paramEnt "child">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="style.xsl"?>
+<root id="r1" kind="beta" xmlns:ns1="urn:example:ns1" xmlns:ns2="urn:example:ns2">
+  <ns1:child xml:lang="en">Text &internalEnt; more <![CDATA[raw <data> & stuff]]></ns1:child>
+  <ns2:child>
+    <?processing-instruction data goes here?>
+    Nested <!-- comment inside content --> text
+  </ns2:child>
+  <child xml:space="preserve">   whitespace preserved   </child>
+</root>

@@ -1,0 +1,104 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST root
+    id ID #REQUIRED
+    ref IDREF #IMPLIED
+    kind (alpha|beta|gamma) "alpha"
+    flag (yes|no) #FIXED "yes"
+    notlist NOTATION (png|jpeg) #IMPLIED
+  >
+  <!NOTATION png SYSTEM "image/png">
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY internalEnt "Some &amp; internal text with &lt;markup&gt;">
+  <!ENTITY externalEnt SYSTEM "http://example.com/external.ent">
+  <!ENTITY externalNdata SYSTEM "http://example.com/image.png" NDATA png>
+  <!ENTITY % paramEnt "<!ELEMENT extra (#PCDATA)>">
+  %paramEnt;
+]>
+<?xml-stylesheet type="text/xsl" href="style.xsl"?>
+<root id="r1" kind="beta" notlist="png" xmlns:ns1="urn:example:ns1" xmlns:ns2="urn:example:ns2">
+  <ns1:child ns2:attr="value">Text with entity: &internalEnt;</ns1:child>
+  <child><![CDATA[<raw> data & stuff ]]></child>
+  <extra>Extra element from parameter entity</extra>
+  <?myapp processing instruction data?>
+  <!-- comment with special chars: <>&"' -->
+  <child xml:space="preserve">   spaced   text   </child>
+  <child xml:lang="en-US">Language tagged content</child>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<catalog xmlns="urn:catalog:default" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <book xlink:type="simple" xlink:href="http://example.com/book1" id="b1">
+    <title>Title &#233;&#xE9; mixed entities</title>
+    <author>José <?ignore this pi?> Author</author>
+    <price currency="USD">19.99</price>
+    <description><![CDATA[
+      Multi-line CDATA section
+      with <fake> tags & ampersands
+      and ]]&gt; escaped sequence attempt
+    ]]></description>
+  </book>
+  <book id="b2">
+    <title>Second &amp; Book</title>
+    <chapters>
+      <chapter num="1">Intro</chapter>
+      <chapter num="2">Middle <sub>Nested <deep>Very deep text</deep></sub></chapter>
+      <chapter num="3"/>
+    </chapters>
+  </book>
+  <empty/>
+  <mixed>Text before <b>bold</b> text after <i>italic <b>bold-italic</b></i> tail text</mixed>
+  <namespaced xmlns:a="urn:a" xmlns:b="urn:b">
+    <a:elem b:attr="1">
+      <b:elem a:attr="2"/>
+    </a:elem>
+  </namespaced>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc SYSTEM "doc.dtd">
+<doc>
+  <section id="s1">
+    <p>Regular paragraph with &amp;lt; encoded entity and a literal &lt; sign.</p>
+    <p>Numeric refs: &#65;&#66;&#67; and hex &#x41;&#x42;&#x43;</p>
+    <table>
+      <row><cell>1</cell><cell>2</cell><cell>3</cell></row>
+      <row><cell>4</cell><cell>5</cell><cell>6</cell></row>
+    </table>
+  </section>
+  <section id="s2">
+    <p xml:base="http://example.com/base/">
+      Relative link test.
+    </p>
+    <script><![CDATA[
+      function test() {
+        if (a < b && c > d) { return "ok"; }
+      }
+    ]]></script>
+    <deeply>
+      <nested>
+        <structure>
+          <with>
+            <many>
+              <levels>
+                <of>
+                  <elements>Bottom text</elements>
+                </of>
+              </levels>
+            </many>
+          </with>
+        </structure>
+      </nested>
+    </deeply>
+  </section>
+  <?target instruction content here?>
+  <!-- trailing comment before end -->
+</doc>
+```

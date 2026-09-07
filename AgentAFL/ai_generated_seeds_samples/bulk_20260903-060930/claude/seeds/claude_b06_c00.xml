@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a|b)*>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b (#PCDATA)>
+  <!ATTLIST root
+    id ID #REQUIRED
+    ref IDREF #IMPLIED
+    lang CDATA #FIXED "en"
+    kind (one|two|three) "one"
+    nums NMTOKENS #IMPLIED>
+  <!ENTITY internalEnt "some &amp; internal <b>text</b>">
+  <!ENTITY % paramEnt "<!ELEMENT c (#PCDATA)>">
+  %paramEnt;
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+]>
+<?xml-stylesheet type="text/xsl" href="style.xsl"?>
+<root id="r1" ref="r1" kind="two" nums="1 2 3" xmlns:x="urn:example:ns" xmlns="urn:default:ns">
+  <a>&internalEnt;</a>
+  <x:b><![CDATA[<raw> data & stuff ]]]]><![CDATA[> more]]></x:b>
+  <c>&#x41;&#66;&amp;lt;</c>
+  <!-- comment with -- inside is illegal, so keep it simple -->
+  <?custom-pi some data here?>
+  <a xml:space="preserve" xml:lang="en-US">   whitespace preserved   </a>
+</root>

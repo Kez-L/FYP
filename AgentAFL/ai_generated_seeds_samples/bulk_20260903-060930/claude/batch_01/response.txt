@@ -1,0 +1,80 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST root
+    id ID #REQUIRED
+    ref IDREF #IMPLIED
+    xml:lang CDATA #FIXED "en"
+    kind (a|b|c) "a"
+    nums NMTOKENS #IMPLIED>
+  <!ENTITY intern "internal entity value">
+  <!ENTITY % param "child">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+]>
+<root id="r1" ref="r1" kind="b" nums="one two three">
+  <![CDATA[<raw> & unescaped "stuff" ]]>
+  <child>&intern; &#65; &#x41; text</child>
+  <?processing-instruction data="value"?>
+  <!-- comment inside content -->
+  <child xml:space="preserve">   spaced   text   </child>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ns:root xmlns:ns="urn:example:ns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="urn:example:ns example.xsd">
+  <ns:a>
+    <ns:b ns:attr="value1">
+      <ns:c/>
+    </ns:b>
+  </ns:a>
+  <ns:empty></ns:empty>
+  <ns:self-closing/>
+  <ns:mixed>
+    Text before <ns:inline>inline text</ns:inline> text after
+  </ns:mixed>
+  <default xmlns="urn:default:ns">
+    <leaf>content</leaf>
+  </default>
+  <ns:list>
+    <ns:item>1</ns:item>
+    <ns:item>2</ns:item>
+    <ns:item>3</ns:item>
+  </ns:list>
+</ns:root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc SYSTEM "nonexistent-external.dtd" [
+  <!ENTITY chapter1 "Chapter One Content">
+  <!ENTITY chapter2 "Chapter Two Content, referencing &chapter1;">
+  <!ENTITY amp_test "A &amp; B &lt; C &gt; D">
+  <!ENTITY empty_ent "">
+  <!ELEMENT doc (section+)>
+  <!ELEMENT section (#PCDATA|title)*>
+  <!ATTLIST section
+     level CDATA "1"
+     id ID #IMPLIED>
+]>
+<doc>
+  <section level="1" id="s1">
+    <title>Intro</title>
+    &chapter1;
+  </section>
+  <section level="2">
+    &chapter2;
+    &amp_test;
+    &empty_ent;
+  </section>
+  <section>
+    <![CDATA[
+      Some <embedded/> markup that should not be parsed
+      ]]>
+  </section>
+</doc>
+```
