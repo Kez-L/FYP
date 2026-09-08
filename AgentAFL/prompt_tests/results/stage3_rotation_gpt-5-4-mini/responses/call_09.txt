@@ -1,0 +1,81 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE alpha [
+  <!ELEMENT alpha (beta|gamma|delta)*>
+  <!ELEMENT beta (#PCDATA)>
+  <!ELEMENT gamma (#PCDATA)>
+  <!ELEMENT delta (#PCDATA)>
+  <!ENTITY x "X">
+  <!ENTITY y "&x;&x;">
+]>
+<alpha>
+  <beta>&y;</beta>
+  <gamma><![CDATA[<&x;>&y;]]></gamma>
+  <delta attr="one&#x0A;two&#x09;three">&amp; <![IGNORE[ignored]]></delta>
+</alpha>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ELEMENT doc (a, b, c)>
+  <!ELEMENT a EMPTY>
+  <!ELEMENT b EMPTY>
+  <!ELEMENT c (#PCDATA)>
+  <!ATTLIST a flag (yes|no) "yes">
+  <!ATTLIST b value CDATA #IMPLIED>
+]>
+<doc>
+  <a/>
+  <b value="&#65;&#66;&#67;"/>
+  <c>Text with <![CDATA[<markup>]]> and &#x3C;entities&#x3E;</c>
+</doc>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE library [
+  <!ELEMENT library (book+, note?)>
+  <!ELEMENT book (title, author)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY lang "Fran&#xE7;ais">
+  <!ENTITY copy "&#169;">
+]>
+<library>
+  <book><title>&lang;</title><author>Alice &copy;</author></book>
+  <book><title>Second</title><author>Bob</author></book>
+  <note>latin1: &#xA3; &#xE9; &#xF1;</note>
+</library>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE mixed [
+  <!ENTITY a "123">
+  <!ENTITY b "&a;456">
+  <!ELEMENT mixed ANY>
+]>
+<mixed xmlns:x="http://example.com/x" x:id="p&#x20;q">
+  <outer>
+    <inner attr="&b;">&#x0D;&#x0A;<![CDATA[&a;&b;]]></inner>
+  </outer>
+</mixed>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE z [
+  <!ENTITY % pe "PE">
+  <!ENTITY ge "GE">
+  <!ELEMENT z (#PCDATA|x|y|n)*>
+  <!ELEMENT x EMPTY>
+  <!ELEMENT y EMPTY>
+  <!ELEMENT n (#PCDATA)>
+]>
+<z>
+  <x/><y/>
+  <n><?pi target?><!---->mixed &lt; &gt; &apos; &quot; chars</n>
+</z>
+```

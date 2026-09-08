@@ -1,0 +1,67 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root id ID #REQUIRED>
+  <!ENTITY % param1 "value1">
+  <!ENTITY % param2 "%param1;%param1;">
+]>
+<root id="test1">&param2;</root>
+```
+
+```xml
+<!DOCTYPE data [
+  <!ENTITY open "<tag">
+  <!ENTITY close ">">
+  <!ENTITY content "text">
+]>
+<data>
+  &open; attr="value"&close;&content;&open;/tag&close;
+</data>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!NOTATION image SYSTEM "image/jpeg">
+  <!ENTITY % external SYSTEM "http://example.com/data.xml">
+  <!ELEMENT config (item+)>
+  <!ELEMENT item (#PCDATA)>
+]>
+<config>
+  <item>test</item>
+  <item attr="&external;">value</item>
+</config>
+```
+
+```xml
+<!DOCTYPE mixed [
+  <!ENTITY num "123">
+  <!ENTITY ref "&num;&num;&num;">
+  <!ENTITY % dyn "<!ENTITY dynamic '&ref;&ref;'>">
+  %dyn;
+]>
+<mixed>&dynamic;</mixed>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body)>
+  <!ELEMENT header (from, to)>
+  <!ELEMENT body (#PCDATA)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ENTITY sender "alice@example.com">
+  <!ENTITY recipient "bob@example.com">
+  <!ENTITY % entities "<!ENTITY msg 'Hello &sender; to &recipient;'>">
+  %entities;
+]>
+<message>
+  <header>
+    <from>&sender;</from>
+    <to>&recipient;</to>
+  </header>
+  <body>&msg;</body>
+</message>
+```

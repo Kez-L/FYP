@@ -1,0 +1,76 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root id ID #REQUIRED>
+  <!ENTITY % param1 "value1">
+  <!ENTITY % param2 "<!ENTITY internal '%param1;'>">
+  %param2;
+]>
+<root id="test1">&internal;</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE doc [
+  <!NOTATION gif PUBLIC "image/gif" "">
+  <!ENTITY image SYSTEM "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" NDATA gif>
+  <!ELEMENT doc (item*)>
+  <!ELEMENT item (#PCDATA)>
+]>
+<doc>
+  <item>Test with NDATA entity reference</item>
+</doc>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % sp SYSTEM "">
+  <!ENTITY % dtd SYSTEM "http://localhost/evil.dtd">
+  %dtd;
+]>
+<root>
+  <node attr="test">Content</node>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child+)>
+  <!ELEMENT child (subchild*)>
+  <!ELEMENT subchild (#PCDATA)>
+  <!ATTLIST root xmlns CDATA #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY copy "&#169;">
+  <!ENTITY % entities "<!ENTITY &#x25; recursive SYSTEM 'urn:recursive'>">
+  %entities;
+]>
+<root xmlns="http://example.com/ns">
+  <child id="1">&nbsp;&copy;</child>
+  <child id="2">Text with&nbsp;entity</child>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ELEMENT config (section*)>
+  <!ELEMENT section (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST section name NMTOKEN #REQUIRED>
+  <!ENTITY % start "<![CDATA[">
+  <!ENTITY % end "]]>">
+  <!ENTITY textblock "%start;Some CDATA content%end;">
+]>
+<config>
+  <section name="test1">
+    <item>&textblock;</item>
+    <item>Normal text</item>
+  </section>
+  <section name="test2">
+    <item>More content</item>
+  </section>
+</config>
+```

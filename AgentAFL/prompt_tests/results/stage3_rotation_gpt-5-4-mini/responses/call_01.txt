@@ -1,0 +1,70 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE somedoc [
+  <!ENTITY a "alpha">
+  <!ENTITY b "&a; beta">
+  <!ENTITY c "gamma &b;">
+]>
+<somedoc>
+  <somebeacon someattr="&c;" other="&#x41;&#65;">
+    Text &a; &b; &c;
+  </somebeacon>
+</somedoc>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE doc [
+  <!ENTITY % p1 "<!ENTITY % p2 'X'>">
+  <!ENTITY % p3 "%p2; &lt; &gt; &quot; &apos;">
+  %p1;
+  %p3;
+]>
+<doc>
+  <node attr="value" />
+</doc>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child+, extra?)>
+  <!ELEMENT child (#PCDATA)>
+  <!ELEMENT extra (#PCDATA)>
+  <!ATTLIST child id ID #IMPLIED>
+]>
+<root>
+  <child id="c1">one</child>
+  <child id="c2">two &amp; three</child>
+  <extra><![CDATA[<tag>&entity;</tag>]]></extra>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE somedoc [
+  <!ENTITY a "A">
+  <!ENTITY b "B">
+  <!ENTITY c "&a;&b;">
+]>
+<somedoc>
+  <somebeacon someattr="&c;" version="1.0">
+    &a;&#10;&b;&#13;&c;
+  </somebeacon>
+</somedoc>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ENTITY % z '
+    <!ENTITY e "inner">
+    <!ENTITY f "&e; &lt; &gt;">
+  '>
+  %z;
+]>
+<doc>
+  <item>&f;</item>
+  <item><![CDATA[%z;]]></item>
+</doc>
+```

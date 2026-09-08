@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST child id ID #REQUIRED>
+  <!ENTITY % param "&#60;![CDATA[nested content]]&#62;">
+  <!ENTITY internal "%param;">
+]>
+<root>
+  <child id="c1">&internal;</child>
+  <child id="c2">
+    <![CDATA[
+      <?xml version="1.0"?>
+      Embedded data with & < > " characters
+    ]]>
+  </child>
+  <child id="c3" data="attr&quot;value">Mixed &amp; content</child>
+</root>

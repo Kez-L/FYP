@@ -1,0 +1,75 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE note [
+  <!ELEMENT note (to,from,heading,body)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT body (#PCDATA)>
+  <!ENTITY writer "AFL++">
+]>
+<note>
+  <to>&writer;</to>
+  <from>fuzzer</from>
+  <heading>test</heading>
+  <body><![CDATA[<raw>&writer;]]></body>
+</note>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE data [
+  <!ELEMENT data (entry+,meta?)>
+  <!ELEMENT entry EMPTY>
+  <!ELEMENT meta (#PCDATA)>
+  <!ATTLIST entry id ID #REQUIRED kind CDATA #IMPLIED>
+]>
+<data>
+  <entry id="a1" kind="alpha"/>
+  <entry id="b2"/>
+  <meta>plain text</meta>
+</data>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (product*)>
+  <!ELEMENT product (name,price)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ENTITY euro "&#8364;">
+]>
+<catalog>
+  <product>
+    <name>Widget</name>
+    <price>19&euro;99</price>
+  </product>
+  <product>
+    <name>Gadget</name>
+    <price>0</price>
+  </product>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<ns:message xmlns:ns="urn:test" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns:message">
+  <ns:header priority="high"/>
+  <ns:payload><![CDATA[<?xml-stylesheet type="text/xsl" href="style.xsl"?>]]></ns:payload>
+  <ns:footer ns:flag="true">end</ns:footer>
+</ns:message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ENTITY % p "<!ELEMENT root ANY>">
+  %p;
+  <!ENTITY local SYSTEM "file:///dev/null">
+]>
+<root>
+  <child xml:space="preserve">  spaced  </child>
+  <child>&local;</child>
+</root>
+```

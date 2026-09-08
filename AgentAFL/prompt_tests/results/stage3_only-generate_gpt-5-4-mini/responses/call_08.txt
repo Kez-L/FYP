@@ -1,0 +1,82 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE top [
+  <!ELEMENT top (head, body)>
+  <!ELEMENT head EMPTY>
+  <!ELEMENT body (#PCDATA|node|x:child)*>
+  <!ELEMENT node (node|leaf)*>
+  <!ELEMENT leaf EMPTY>
+  <!ATTLIST body lang CDATA #IMPLIED>
+  <!ENTITY int "INTERNAL">
+  <!ENTITY mix "A &int; B">
+]>
+<top xmlns:x="urn:test">
+  <head/>
+  <body lang="en">start &mix; end<x:child><node><leaf/></node></x:child></body>
+</top>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ENTITY % p1 "<!ELEMENT doc ANY>">
+  <!ENTITY % p2 "<!ATTLIST doc id ID #IMPLIED>">
+  %p1;
+  %p2;
+]>
+<doc id="d01">
+  <a><![CDATA[<tag attr="&amp;">]]></a>
+  <b>&#65;&#x42;&#x43;</b>
+  <c xml:space="preserve">  spaced  </c>
+</doc>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE book [
+  <!ELEMENT book (title, chapter+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT chapter (para|note)*>
+  <!ELEMENT para (#PCDATA)>
+  <!ELEMENT note EMPTY>
+  <!ENTITY author "A. Writer">
+  <!ENTITY quote "&#34;quoted&#34;">
+]>
+<book>
+  <title>&author; &quote;</title>
+  <chapter>
+    <para>alpha</para>
+    <note/>
+    <para>beta <![CDATA[ ]]> gamma</para>
+  </chapter>
+</book>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE r [
+  <!ENTITY e1 "one">
+  <!ENTITY e2 "&e1;&e1;">
+  <!ENTITY e3 "&e2;&e2;">
+]>
+<r>
+  <s attr="&e3;">text<&foo;>more</s>
+  <empty/>
+</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE nsdoc [
+  <!ELEMENT nsdoc (item*, meta?)>
+  <!ELEMENT item ANY>
+  <!ELEMENT meta (#PCDATA)>
+  <!ATTLIST item xmlns CDATA #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+]>
+<nsdoc>
+  <item xmlns="urn:one"><sub>v1&nbsp;v2</sub></item>
+  <item xmlns="urn:two"><sub><![CDATA[<inner/>]]></sub></item>
+  <meta>tail &nbsp; done</meta>
+</nsdoc>
+```

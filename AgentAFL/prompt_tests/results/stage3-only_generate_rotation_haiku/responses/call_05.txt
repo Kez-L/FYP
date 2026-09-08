@@ -1,0 +1,82 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % param1 "&#60;&#62;">
+  <!ENTITY % param2 "%param1;%param1;">
+]>
+<root>
+  <element attr="%param2;">content</element>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE doc [
+  <!ELEMENT doc (item*)>
+  <!ELEMENT item (#PCDATA|sub)*>
+  <!ELEMENT sub EMPTY>
+  <!ATTLIST sub id ID #REQUIRED>
+  <!NOTATION gif PUBLIC "image/gif">
+  <!ENTITY graphic SYSTEM "image.gif" NDATA gif>
+]>
+<doc>
+  <item>
+    <sub id="x1"/>
+    text content here
+  </item>
+</doc>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ENTITY &#37;xxe SYSTEM "file:///proc/self/environ">
+  <!ELEMENT root (data)>
+  <!ELEMENT data (#PCDATA)>
+  <!ATTLIST data xmlns:evil "http://evil.com">
+]>
+<root>
+  <data xmlns:foo="http://test.com" foo:attr="value">
+    &xxe;
+  </data>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ENTITY % one "<!ENTITY two '&#38;#x25;three;'>">
+  <!ENTITY % four "&#38;#x25;one;">
+  %four;
+]>
+<config>
+  <setting name="test">&two;</setting>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header,body)>
+  <!ELEMENT header (from,to,subject)>
+  <!ELEMENT body (paragraph+)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ENTITY sender "user@domain.com">
+  <!ENTITY receiver "admin@domain.com">
+  <!ATTLIST message version CDATA #FIXED "1.0">
+]>
+<message version="1.0">
+  <header>
+    <from>&sender;</from>
+    <to>&receiver;</to>
+    <subject>Test Message</subject>
+  </header>
+  <body>
+    <paragraph>This is a <emphasis>complex</emphasis> structure.</paragraph>
+    <paragraph>With multiple nested entities and deep hierarchy.</paragraph>
+  </body>
+</message>
+```

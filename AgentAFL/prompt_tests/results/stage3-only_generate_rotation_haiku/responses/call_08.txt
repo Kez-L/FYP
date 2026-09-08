@@ -1,0 +1,62 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY % param "<!ENTITY internal 'value'>">
+  %param;
+]>
+<root>
+  <child>&internal;</child>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE test [
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY copy "&#169;">
+  <!ENTITY reg "&#174;">
+]>
+<test attr1="&nbsp;&copy;&reg;">
+  <element>&nbsp;&copy;&reg;</element>
+</test>
+```
+
+```xml
+<!DOCTYPE config [
+  <!ENTITY % file SYSTEM "file:///dev/null">
+  <!ENTITY % dtd SYSTEM "http://localhost:8080/evil.dtd">
+  %dtd;
+]>
+<config>
+  <setting>&file;</setting>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE nested [
+  <!ENTITY % outer "<!ENTITY inner '&#38;#38;#38;#x30;'>">
+  %outer;
+]>
+<nested attr="&inner;">
+  <data>&inner;</data>
+</nested>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE mixed [
+  <!ENTITY a "start">
+  <!ENTITY b "middle">
+  <!ENTITY c "end">
+  <!ENTITY combo "&a;&b;&c;">
+]>
+<mixed>
+  <part1>&a;</part1>
+  <part2>&b;</part2>
+  <part3>&c;</part3>
+  <combined>&combo;</combined>
+</mixed>
+```

@@ -1,0 +1,79 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE library [
+  <!ELEMENT library (book+)>
+  <!ELEMENT book (title,author,meta?)>
+  <!ATTLIST book id ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta lang CDATA #IMPLIED>
+]>
+<library>
+  <book id="b1">
+    <title>One</title>
+    <author>Alice</author>
+    <meta lang="en"/>
+  </book>
+  <book id="b2">
+    <title>Two</title>
+    <author>Bob</author>
+  </book>
+</library>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE x [
+  <!ENTITY % p "INTERNAL">
+  <!ENTITY e1 "A">
+  <!ENTITY e2 "&e1;&#x3A;&p;">
+]>
+<x attr="&e2;">
+  <y><![CDATA[<tag>&e1;&#10;%p;]]></y>
+  <z>&e1;&e2;</z>
+</x>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE data [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!ENTITY img SYSTEM "file:///dev/null" NDATA gif>
+]>
+<data>
+  <entry key="alpha">text</entry>
+  <entry key="beta">&img;</entry>
+  <entry key="gamma">tail</entry>
+</data>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ENTITY % pe "<!ENTITY ge 'expanded'>">
+  %pe;
+]>
+<root>
+  <node xmlns="urn:test" xmlns:t="urn:two" t:a="1" b="2">
+    <inner>&ge;</inner>
+  </node>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE a [
+  <!ENTITY x "X">
+  <!ENTITY y "Y">
+]>
+<a>
+  <b>
+    <c><![CDATA[x & y]]></c>
+    <d xml:space="preserve">  &x;  
+&y;  </d>
+  </b>
+  <e><![CDATA[&x;&y;]]></e>
+</a>
+```

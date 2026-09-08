@@ -1,0 +1,75 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (item)*>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item id ID #REQUIRED>
+  <!ENTITY ent1 "value1">
+  <!ENTITY ent2 "value2">
+]>
+<root>
+  <item id="i1">&ent1;</item>
+  <item id="i2">&ent2;</item>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ENTITY % param "default">
+  <!ENTITY normal "text">
+]>
+<doc attr="&normal;">
+  <section>Content with entity: &normal;</section>
+</doc>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (product+)>
+  <!ELEMENT product (name, price)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ENTITY currency "USD">
+  <!ENTITY tax "0.08">
+]>
+<catalog>
+  <product>
+    <name>Item1</name>
+    <price>&currency;</price>
+  </product>
+  <product>
+    <name>Item2</name>
+    <price>&tax;</price>
+  </product>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY start "<![CDATA[">
+  <!ENTITY end "]]>">
+  <!ENTITY mixed "both&start;data&end;">
+]>
+<root>
+  <element>&mixed;</element>
+  <cdata><![CDATA[literal &ent; data]]></cdata>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE root [
+  <!ENTITY copy "&#169;">
+  <!ENTITY lt "&#60;">
+  <!ENTITY gt "&#62;">
+  <!ENTITY apos "&#39;">
+  <!ENTITY quot "&#34;">
+]>
+<root attr="&quot;value&quot;">
+  <text>&lt;tag&gt;&copy;&apos;s&apos;</text>
+  <special>&apos;&apos;&apos;</special>
+</root>
+```

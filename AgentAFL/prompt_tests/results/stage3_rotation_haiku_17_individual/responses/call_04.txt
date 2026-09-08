@@ -1,0 +1,25 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE somedoc [
+  <!ENTITY % recursive "&#37;recursive;">
+  <!ENTITY a "value_a">
+  <!ENTITY b "&a;&a;&a;">
+]>
+<somedoc>
+  <element attr="&b;&b;" flag="true">
+    &a;
+    <nested>
+      &b;
+      <deep level="3">
+        &#37;recursive;
+        &a;&b;&a;
+      </deep>
+    </nested>
+    Text with &a; and &b; mixed content.
+  </element>
+  <malformed attr="unclosed">&b;
+  <self-closing/>
+  <!-- Comment with &a; entity reference -->
+  &b;&b;&b;
+</somedoc>
+```

@@ -1,0 +1,77 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root id ID #REQUIRED>
+  <!ENTITY % internal "<!ENTITY external 'value'>">
+  %internal;
+]>
+<root id="test1">
+  <child attr="&external;">content</child>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE data [
+  <!ELEMENT data (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY ent1 "&#60;&#62;">
+  <!ENTITY ent2 "&ent1;&ent1;">
+]>
+<data>
+  <item>&ent2;</item>
+  <item>&ent1;&ent2;&ent1;</item>
+</data>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ENTITY % param1 "value1">
+  <!ENTITY % param2 "value2">
+  <!NOTATION notation1 PUBLIC "pub" "sys">
+]>
+<root>
+  <?processing instruction data?>
+  <element attr1="test" attr2="&lt;tag&gt;">
+    <nested>
+      <deep/>
+    </nested>
+  </element>
+  <!-- comment with special chars: & < > " ' -->
+</root>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE mixed [
+  <!ELEMENT mixed (text|cdata)*>
+  <!ELEMENT text (#PCDATA)>
+  <!ELEMENT cdata ANY>
+  <!ENTITY recursive "&recursive;">
+]>
+<mixed>
+  <text>Plain text content</text>
+  <cdata><![CDATA[Literal <>&"' chars]]></cdata>
+  <text attr="&lt;value&gt;">Mixed &amp; content</text>
+</mixed>
+```
+
+```xml
+<!DOCTYPE document [
+  <!ELEMENT document (section*)>
+  <!ELEMENT section (title, para+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT para (#PCDATA | ref)*>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref id IDREF #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY copy "&#169;">
+]>
+<document>
+  <section>
+    <title>Test&nbsp;Title</title>
+    <para>Paragraph with&copy; symbol and <ref id="r1"/> reference.</para>
+  </section>
+</document>
+```

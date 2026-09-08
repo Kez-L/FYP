@@ -16,14 +16,20 @@ Good-seed examples come from the frozen 12-hour campaign queue
 select_diverse_seeds. The queue is frozen for the run, so it's scanned once and
 cached (scan_queue is memoised for this process).
 
-This is the base the Stage 1/2/3 hooks vary. To test a build_context change:
-edit build_context.py (or add --closing-instruction etc. later) and re-run with
-a fresh --label.
+This is the base the Stage 1/2/3 arms vary. Stage 1/2 differ only in a
+build_context hook (edit build_context.py / pass a selector) and re-run with a
+fresh --label. Stage 3 (--rotate) keeps the same 10x5 batch but cycles
+Fuzz4All's generate-new / mutate-existing / semantic-equiv closing instruction
+per call (call 0 -> generate-new x5, call 1 -> mutate-existing x5, ...) instead
+of the one fixed instruction — a flag here rather than its own file since only
+that one line changes. Everything else (good/bad seed selection, history
+feedback, scoring, report) is identical, so dropping --rotate reproduces the
+Stage 1 arm exactly.
 
-    python3 run_build_context.py --label stage1_raw \\
-        --reuse-baseline results/stage0_baseline/baseline_edges.json
-    python3 run_build_context.py --provider openai --model gpt-4o-mini --label stage1_raw_openai
-    python3 run_build_context.py --n-history-failure 0   # no avoid block (good seeds only)
+    python3 run_build_context.py --label stage1_raw            # Stage 1 (raw bad seeds)
+    python3 run_build_context.py --rotate                      # Stage 3 (-> --label stage3_rotation)
+    python3 run_build_context.py --provider openai --no-temperature --rotate
+    python3 run_build_context.py --n-history-failure 0         # no avoid block (good seeds only)
 """
 from __future__ import annotations
 
@@ -42,6 +48,7 @@ sys.path.insert(0, str(REPO_ROOT))
 sys.path.insert(0, str(HERE))
 
 import build_context as bc                                           # noqa: E402
+import strategies                                                    # noqa: E402
 from batch_harness import (                                          # noqa: E402
     BatchConfig, ProviderCaller, run_batch, DEFAULT_MODEL, model_tag,
 )
@@ -82,6 +89,11 @@ def main():
                     help="never send a top-level temperature (for models that reject it, e.g. gpt-5.x)")
     ap.add_argument("--calls", type=int, default=10)
     ap.add_argument("--seeds-per-call", type=int, default=5, help="= build_context n_generate")
+    ap.add_argument("--rotate", action="store_true",
+                    help="Stage 3: same 10x5 batch, but cycle Fuzz4All's generate-new / "
+                         "mutate-existing / semantic-equiv closing instruction per call "
+                         "(call 0 -> generate-new x5, call 1 -> mutate-existing x5, ...). "
+                         "Drop this flag to get the Stage 1 arm.")
     ap.add_argument("--n-seeds", type=int, default=2, help="good-seed examples in the prompt (PLAN.md default 2)")
     ap.add_argument("--n-history-failure", type=int, default=2,
                     help="avoid-examples drawn from this batch's own prior seeds (0 disables; PLAN.md default 2)")
@@ -89,7 +101,9 @@ def main():
     ap.add_argument("--seed-kind", choices=("text", "binary"), default="text")
     ap.add_argument("--fence-lang", default="")
     ap.add_argument("--no-asan-hint", action="store_true", help="drop the 'built with ASan' system line")
-    ap.add_argument("--label", default="stage1_raw", help="base name -> results/<label>_<tag>/")
+    ap.add_argument("--label", default=None,
+                    help="base name -> results/<label>_<tag>/ "
+                         "(default: stage3_rotation with --rotate, else stage1_raw)")
     ap.add_argument("--tag", default=None,
                     help="folder suffix for the AI used (default: auto — haiku / gpt-4o-mini / ...)")
     ap.add_argument("--out", type=Path, default=None, help="output dir (overrides --label/--tag)")
@@ -114,30 +128,38 @@ def main():
         print("NOTE: --skip-eval means no seed is classified, so the 'tried before, avoid' "
               "block will always be empty (scan_cycle_history needs BAD/NO_COVERAGE statuses).")
 
+    label = args.label or ("stage3_rotation" if args.rotate else "stage1_raw")
     model = args.model or DEFAULT_MODEL[args.provider]
     tag = args.tag or model_tag(args.provider, model)
-    out_dir = args.out or (HERE / "results" / f"{args.label}_{tag}")
+    out_dir = args.out or (HERE / "results" / f"{label}_{tag}")
     temperature = None if args.no_temperature else args.temperature
     caller = ProviderCaller(args.provider, model, temperature, args.env_file)
     _memoise_scan_queue()
 
+    # Stage 3 (--rotate): same 10x5 batch shape as Stage 1 — only the closing
+    # instruction changes, cycling per call (call 0 -> generate-new x5, call 1 ->
+    # mutate-existing x5, call 2 -> semantic-equiv x5, call 3 -> generate-new x5,
+    # ...). Without --rotate this is byte-for-byte the Stage 1 arm.
     def prompt_fn(call_index, history_dir):
+        closing = strategies.rotate(call_index) if args.rotate else None
         p = bc.assemble_prompt(
             args.campaign_root, args.instance, args.fmt,
             args.n_seeds, args.seeds_per_call,
             asan_hint=not args.no_asan_hint, fence_lang=args.fence_lang,
             seed_kind=args.seed_kind,
             run_dir=history_dir, n_history_failure=args.n_history_failure,
+            closing_instruction=closing,
         )
         return {"system": p["system"], "user": p["user"], "meta": {
             "n_seeds": args.n_seeds, "n_history_failure": args.n_history_failure,
             "used_history": history_dir is not None,
             "campaign_root": str(args.campaign_root), "instance": args.instance,
             "asan_hint": not args.no_asan_hint,
+            "strategy": strategies.name_for(call_index) if args.rotate else "single-batch",
         }}
 
     run_batch(BatchConfig(
-        out_dir=out_dir, title=f"build_context {args.label} ({tag})", arm=f"{args.label}_{tag}",
+        out_dir=out_dir, title=f"build_context {label} ({tag})", arm=f"{label}_{tag}",
         calls=args.calls, seeds_per_call=args.seeds_per_call, seed_kind=args.seed_kind,
         fmt=args.fmt, caller=caller, prompt_fn=prompt_fn,
         uses_history=(args.n_history_failure > 0),
@@ -150,6 +172,7 @@ def main():
             "n_seeds": args.n_seeds, "n_history_failure": args.n_history_failure,
             "instance": args.instance,
             "asan_hint": not args.no_asan_hint,
+            "strategy": "rotation" if args.rotate else "single-batch",
         },
     ))
 

@@ -1,0 +1,106 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, note?)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ATTLIST entry id ID #REQUIRED kind CDATA #IMPLIED>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY base "alpha">
+  <!ENTITY ext "&base; &base;">
+]>
+<catalog>
+  <entry id="e1" kind="plain">A &ext; B</entry>
+  <entry id="e2">C <![CDATA[<raw>&stuff;</raw>]]> D</entry>
+  <note>tail &base;</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE data [
+  <!ELEMENT data (section*, payload)>
+  <!ELEMENT section (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT payload (#PCDATA)>
+  <!ENTITY x "X">
+  <!ENTITY y "Y">
+  <!ENTITY combo "&x;:&y;">
+]>
+<data>
+  <section>
+    <item attr="1">one</item>
+    <item attr="2">two &combo;</item>
+  </section>
+  <section>
+    <item>three</item>
+  </section>
+  <payload>&x; &y; &combo;</payload>
+</data>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, body, footer)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header version CDATA #IMPLIED>
+  <!ELEMENT body ANY>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<report>
+  <header version="2.0"/>
+  <body>
+    <x:a xmlns:x="urn:test">
+      <x:b>text</x:b>
+    </x:a>
+    <mixed><![CDATA[abc]]>&#x41;&#65;</mixed>
+  </body>
+  <footer>end</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE store [
+  <!ELEMENT store (product+, summary)>
+  <!ELEMENT product (name, price, desc?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT desc (#PCDATA)>
+  <!ELEMENT summary (#PCDATA)>
+]>
+<store>
+  <product>
+    <name>Widget</name>
+    <price currency="USD">19.99</price>
+    <desc>Small <b>bold</b> item</desc>
+  </product>
+  <product>
+    <name>Gadget</name>
+    <price currency="EUR">29.50</price>
+  </product>
+  <summary>2 products total</summary>
+</store>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta?, body)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta created CDATA #IMPLIED>
+  <!ELEMENT body ANY>
+  <!ENTITY p "payload">
+]>
+<envelope>
+  <meta created="2026-09-08T00:00:00Z"/>
+  <body>
+    <a>
+      <b/>
+      <c attr="&p;">text</c>
+    </a>
+    <!-- comment -->
+    <?pi instruction?>
+  </body>
+</envelope>
+```

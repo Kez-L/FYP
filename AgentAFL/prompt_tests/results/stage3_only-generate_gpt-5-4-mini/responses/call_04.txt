@@ -1,0 +1,80 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a,b,c)>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c (#PCDATA)>
+  <!ENTITY x "X">
+  <!ENTITY y "&x;&#x0A;&#x0D;">
+]>
+<root>
+  <a>&y;</a>
+  <b><![CDATA[<tag>&x;</tag>]]></b>
+  <c xml:space="preserve">pre&#x0D;post</c>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE r [
+  <!ELEMENT r ANY>
+  <!ATTLIST r id ID #IMPLIED kind CDATA #IMPLIED>
+  <!ENTITY % p "<!ELEMENT x EMPTY>">
+  %p;
+]>
+<r id="n1" kind="&lt;weird&gt;">
+  <x/>
+  <!-- comment with -- tricky sequence - - >
+  -->
+</r>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY ent1 "alpha">
+  <!ENTITY ent2 "&#x41;&#65;">
+  <!ELEMENT catalog (item+)>
+  <!ELEMENT item (name,desc?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT desc (#PCDATA)>
+]>
+<catalog>
+  <item>
+    <name>&ent1;:&ent2;</name>
+    <desc>line1
+line2&#x2028;line3</desc>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns="urn:default" xmlns:p="urn:prefix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:nil="false">
+  <p:node p:attr="&quot;&apos;&amp;&lt;&gt;" xml:lang="en-US">
+    <?pi target data?>
+    <inner xmlns="">
+      text&#x09;with&#x0A;controls
+    </inner>
+  </p:node>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE z [
+  <!ELEMENT z (a|b|c)*>
+  <!ELEMENT a EMPTY>
+  <!ELEMENT b EMPTY>
+  <!ELEMENT c EMPTY>
+  <!ENTITY e1 "&#x3C;&#x26;&#x3E;">
+]>
+<z>
+  <a/>
+  <b/>
+  <c/>
+  <a attr='&e1;'/>
+</z>
+```

@@ -1,0 +1,61 @@
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE somedoc [
+  <!ENTITY a "recursive_start">
+  <!ENTITY b "&a;&a;&a;">
+  <!ENTITY c "&b;&b;">
+]>
+<somedoc>
+  <elem attr="&c;">&b;</elem>
+  <nested>&a;&b;&c;</nested>
+</somedoc>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE doc [
+    <!ENTITY % inner "content_here">
+    <!ENTITY % outer "%inner;%inner;%inner;">
+]>
+<doc>
+  <section>&outer;</section>
+</doc>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY &#37;z "&#60;tag&#62;">
+  <!ENTITY test "&&#37;z;">
+]>
+<root attr="&test;">
+  &test;
+  &test;
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE mixed [
+  <!ENTITY a "start">
+  <!ENTITY b "&a;middle&a;">
+  <!ENTITY c "&b;&b;&b;">
+]>
+<mixed>
+  <level1>&c;</level1>
+  <level2 id="&a;">&b;&c;</level2>
+</mixed>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE complex [
+    <!ENTITY % param "&#37;param;">
+    <!ENTITY test "value_%param;_end">
+]>
+<complex>
+  &test;
+  <child>&test;</child>
+  &test;
+</complex>
+```

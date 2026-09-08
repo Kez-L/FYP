@@ -1,0 +1,102 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (book+, note?)>
+  <!ELEMENT book (title, author, meta?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT meta ANY>
+  <!ATTLIST book id ID #REQUIRED lang NMTOKEN "en">
+  <!ENTITY % pe "<!ELEMENT injected ANY>">
+  %pe;
+]>
+<catalog>
+  <book id="b1" lang="en">
+    <title>XML &amp; Parsers</title>
+    <author>Anne</author>
+    <meta><![CDATA[<raw attr='1'>&invisible;</raw>]]></meta>
+  </book>
+  <book id="b2" lang="fr">
+    <title>Étude</title>
+    <author>Bob</author>
+  </book>
+  <note>tail</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE r [
+  <!ENTITY a "A">
+  <!ENTITY b "B">
+  <!ENTITY c "&a;&b;&a;">
+  <!NOTATION png SYSTEM "image/png">
+  <!ELEMENT r ANY>
+  <!ATTLIST r kind CDATA #IMPLIED ref ENTITY #IMPLIED>
+]>
+<r kind="top" ref="ent">
+  <x><![CDATA[&c;]]></x>
+  <y attr="1 &amp; 2">&c;</y>
+  <z xmlns:ns="urn:test" ns:attr="v"/>
+</r>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE data [
+  <!ELEMENT data (row*, blob?)>
+  <!ELEMENT row EMPTY>
+  <!ELEMENT blob (#PCDATA)>
+  <!ATTLIST row n CDATA #IMPLIED flag (yes|no) "no">
+]>
+<data>
+  <row n="01" flag="yes"/>
+  <row n="02"/>
+  <row n="03" flag="no"/>
+  <blob>line1&#10;line2&#13;line3&#9;end</blob>
+</data>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE outer [
+  <!ENTITY % p1 "<!ENTITY inner 'X'>">
+  %p1;
+  <!ELEMENT outer (section, section2?)>
+  <!ELEMENT section (#PCDATA)>
+  <!ELEMENT section2 (#PCDATA|sub)*>
+  <!ELEMENT sub EMPTY>
+]>
+<outer>
+  <section>&inner;</section>
+  <section2>
+    text
+    <sub/>
+    <![CDATA[<sub/>]]>
+  </section2>
+</outer>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body)>
+  <!ELEMENT header (from,to)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT body ANY>
+  <!ATTLIST message version CDATA #FIXED "2">
+]>
+<message version="2">
+  <header>
+    <from>alice@example.com</from>
+    <to>bob@example.com</to>
+  </header>
+  <body>
+    <payload xmlns:x="urn:x">
+      <x:item x:flag="true">payload</x:item>
+      <?pi target?>
+    </payload>
+  </body>
+</message>
+```

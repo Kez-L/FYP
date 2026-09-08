@@ -1,0 +1,59 @@
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE somedoc [
+  <!ENTITY a "ENTITY b    something">
+  <!ENTITY b "&a;">
+]>
+<somedoc>
+<somebeacon s8672093846347259794686720938463omeattribute="&b; &a; should appear after colon: &a;&b; should appear after colon: &a;&a; should appear after colon: &b;&b; should appear after colon: &b;"></somebeacon>
+</somedoc>
+```
+
+```xml
+<!DOCTYPE doc [
+    <!ENTITY % z "&#37;z; &#37;z; &#37;z; &#37;z; &#37;z; &#37;z; &#37;z; &#37;z; &#37;z; somebeacon someattribute &#37;z; &#37;z; &#37;z; &#37;z; &#37;z; &#37;z; &#37;z; &#37;z; &#37;z; &#37;z; &#37;z; &#37;z; &#37;z; &#37;z; &#37;z; &#37;z; &#37;z; &lt;&gt;&quot;">
+]>
+<root>
+%z;
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ENTITY % a "&#x25;b;">
+  <!ENTITY % b "&#x25;a;">
+  <!ENTITY % bomb "&#x25;b;&#x25;b;&#x25;b;&#x25;b;&#x25;b;&#x25;b;&#x25;b;&#x25;b;&#x25;b;&#x25;b;">
+]>
+<doc>
+  <data>content</data>
+</doc>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE somedoc [
+  <!ENTITY a "recursive_start">
+  <!ENTITY b "&a;&a;&a;&a;&a;">
+  <!ENTITY c "&b;&b;&b;">
+]>
+<somedoc>
+  <nested>&c;&b;&a;</nested>
+  <elem attr="&c;">
+    &b;&a;&b;&c;&a;
+  </elem>
+</somedoc>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE somedoc [
+  <!ENTITY x "loop_entity">
+  <!ENTITY y "&x;&x;">
+  <!ENTITY z "&y;&y;&y;">
+]>
+<somedoc attr="&z;">
+  <test>&z;&y;&x;</test>
+  <deep>&y;&y;&x;&x;</deep>
+</somedoc>
+```

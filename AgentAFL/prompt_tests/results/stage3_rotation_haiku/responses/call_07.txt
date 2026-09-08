@@ -1,0 +1,68 @@
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE somedoc [
+  <!ENTITY a "prefix">
+  <!ENTITY b "&a;&a;">
+  <!ENTITY c "&b;&b;&b;&b;">
+  <!ENTITY d "&c;&c;&c;">
+]>
+<somedoc>
+  <deep>&d;</deep>
+  <attrs id="&c;" val="&b;&d;"/>
+</somedoc>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ENTITY % param 'inner'>
+  <!ENTITY % recursive '&#37;param;&#37;param;&#37;param;'>
+  <!ENTITY expanded '&recursive;'>
+]>
+<doc>
+  <level1>&expanded;</level1>
+  <level2>&recursive;</level2>
+</doc>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ENTITY ent1 "&#60;tag&#62;">
+  <!ENTITY ent2 "&#38;ent1;&#38;ent1;">
+  <!ENTITY ent3 "&ent2;&ent2;">
+]>
+<root attr="&ent3;">
+  &ent1;&ent2;&ent3;
+  <child>&ent3;</child>
+</root>
+```
+
+```xml
+<!DOCTYPE doc [
+  <!ENTITY % a '&#x25;b;'>
+  <!ENTITY % b '&#x25;a;'>
+  <!ENTITY % bomb '&#x25;b;&#x25;b;&#x25;b;&#x25;b;&#x25;b;&#x25;b;'>
+]>
+<doc>
+  <data>content</data>
+</doc>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE mixed [
+  <!ENTITY simple "text">
+  <!ENTITY chain "&simple;&simple;&simple;">
+  <!ENTITY expanded "&chain;&chain;">
+  <!ELEMENT mixed (a|b)*>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b (#PCDATA)>
+  <!ATTLIST a href CDATA #IMPLIED>
+]>
+<mixed>
+  <a href="&expanded;">&simple;</a>
+  <b>&chain;&chain;</b>
+  <a>&expanded;</a>
+</mixed>
+```

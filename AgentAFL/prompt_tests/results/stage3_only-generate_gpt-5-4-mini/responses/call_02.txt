@@ -1,0 +1,75 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE alpha [
+  <!ELEMENT alpha (beta, gamma)>
+  <!ELEMENT beta (#PCDATA)>
+  <!ELEMENT gamma (#PCDATA)>
+  <!ENTITY xxe SYSTEM "file:///etc/passwd">
+]>
+<alpha>
+  <beta>&xxe;</beta>
+  <gamma>one</gamma>
+</alpha>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE r [
+  <!ELEMENT r ANY>
+  <!ATTLIST r a CDATA #IMPLIED b CDATA #IMPLIED c CDATA #IMPLIED>
+  <!ENTITY e1 "&#x41;&#x42;&#x43;">
+  <!ENTITY e2 "&e1;&e1;">
+]>
+<r a="&e2;" b="&#13;&#10;&#9;" c="&amp;&lt;&gt;&quot;">
+  <n1>&e1;</n1>
+  <n2><![CDATA[<&e2;>]]></n2>
+</r>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book [
+  <!ELEMENT book (chapter+)>
+  <!ELEMENT chapter (title, para+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT para (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ENTITY % pe "<!ENTITY inner 'inside'>">
+  %pe;
+]>
+<book>
+  <chapter id="c1">
+    <title>&inner;</title>
+    <para>start <emph>mid</emph> end</para>
+  </chapter>
+</book>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns="urn:default" xmlns:x="urn:x" xmlns:y="urn:y">
+  <x:item x:attr="1" y:attr="2">
+    <y:child xmlns:y="urn:y2">text</y:child>
+  </x:item>
+  <mixed><![CDATA[<x:item xmlns:x="urn:alt"/>]]></mixed>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE z [
+  <!ELEMENT z (a|b|c)*>
+  <!ELEMENT a EMPTY>
+  <!ELEMENT b EMPTY>
+  <!ELEMENT c EMPTY>
+  <!NOTATION n SYSTEM "note">
+  <!ENTITY ent SYSTEM "http://example.com/does-not-exist" NDATA n>
+]>
+<z>
+  <a/>
+  <b/>
+  <c/>
+  <?pi target?>
+  <!-- comment with -- tricky -->
+</z>
+```

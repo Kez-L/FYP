@@ -1,0 +1,75 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE alpha [
+  <!ELEMENT alpha (beta, gamma?)>
+  <!ELEMENT beta (#PCDATA)>
+  <!ELEMENT gamma (#PCDATA)>
+  <!ATTLIST alpha id ID #IMPLIED>
+]>
+<alpha id="a1">
+  <beta>plain text &amp; more text</beta>
+  <gamma><![CDATA[<not-markup>&amp;]]></gamma>
+</alpha>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY writer "xml">
+  <!ENTITY reader "&writer; parser">
+  <!ELEMENT root (item+)>
+  <!ELEMENT item (#PCDATA)>
+]>
+<root>
+  <item>one</item>
+  <item>two &amp; three</item>
+  <item>&reader;</item>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<catalog xmlns:x="urn:test">
+  <entry x:type="book">
+    <title>Seed A</title>
+    <author>Example</author>
+    <meta key="k1" value="v1"/>
+  </entry>
+  <entry x:type="note">
+    <title>Seed B</title>
+    <author><![CDATA[Name <hidden>]]></author>
+    <meta key="k2" value="v2"/>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ENTITY % pe "INTERNAL">
+  <!ENTITY greet "Hello">
+]>
+<message>
+  <header level="1"/>
+  <body>
+    <p>&greet;, world.</p>
+    <p>%pe; token kept as text.</p>
+  </body>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<filesystem>
+  <dir name="tmp">
+    <file name="a.txt" size="12">abc123</file>
+    <file name="b.txt" size="0"/>
+  </dir>
+  <dir name="var">
+    <file name="log.xml">
+      <line n="1">first</line>
+      <line n="2">second</line>
+    </file>
+  </dir>
+</filesystem>
+```

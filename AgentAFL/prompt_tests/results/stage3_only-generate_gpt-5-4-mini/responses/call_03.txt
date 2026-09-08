@@ -1,0 +1,103 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (book+,note?)>
+  <!ELEMENT book (title,author,year,meta?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT year (#PCDATA)>
+  <!ELEMENT meta ANY>
+  <!ATTLIST book id ID #REQUIRED lang NMTOKEN "en">
+  <!ENTITY s "seed">
+  <!ENTITY t "&s;-&#x41;">
+]>
+<catalog>
+  <book id="b1">
+    <title>&t;</title>
+    <author>Ann &amp; Bob</author>
+    <year>2024</year>
+    <meta><x a="1" b="2"/><y><![CDATA[<&>]]></y></meta>
+  </book>
+  <book id="b2" lang="fr">
+    <title>Deux</title>
+    <author xml:space="preserve">Émile</author>
+    <year>1999</year>
+  </book>
+  <note importance="high">Check &lt;entities&gt; and attributes.</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE a [
+  <!ELEMENT a (b*,c*)>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c ANY>
+  <!ENTITY % p "<!ENTITY q 'Q'>">
+  %p;
+]>
+<a>
+  <b>text&#10;line2&#9;tab</b>
+  <c xmlns:x="urn:test">
+    <x:node x:attr="&q;">payload</x:node>
+    <inner><!-- comment --><![CDATA[ ]]><?pi target?></inner>
+  </c>
+</a>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns="urn:default" xmlns:u="urn:other">
+  <u:item u:id="0001" xml:lang="en-US">
+    <u:name>alpha</u:name>
+    <u:desc>mixed <b>content</b> here</u:desc>
+  </u:item>
+  <section>
+    <entry key="k1" value="v1"/>
+    <entry key="k2" value="&amp;&lt;&gt;"/>
+  </section>
+  <tail><![CDATA[<escaped attr="1">&stuff;]]></tail>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE data [
+  <!ELEMENT data (chunk+)>
+  <!ELEMENT chunk ANY>
+  <!ATTLIST chunk kind (a|b|c) "b">
+  <!ENTITY hex "&#x3c;hex&#x3e;">
+]>
+<data>
+  <chunk kind="a">
+    <x>1</x>
+    <y>2</y>
+  </chunk>
+  <chunk kind="c">
+    <nested attr="&hex;">&#x41;&#x42;&#x43;</nested>
+  </chunk>
+  <chunk>
+    <?proc instr?>
+    <!-- tricky -->
+    <z/>
+  </chunk>
+</data>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE msg [
+  <!ENTITY alpha "A">
+  <!ENTITY beta "B">
+  <!ENTITY gamma "&alpha;&beta;">
+]>
+<msg>
+  <header version="1.2" type="fuzz"/>
+  <body>
+    <line n="1">&gamma; start</line>
+    <line n="2">middle&#13;&#10;end</line>
+    <line n="3"><![CDATA[<&alpha; &beta;]]></line>
+  </body>
+  <footer checked="yes"/>
+</msg>
+```

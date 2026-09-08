@@ -1,0 +1,81 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ENTITY % p1 SYSTEM "file:///nonexistent/%p2;">
+  <!ENTITY % p2 "INJECT">
+  <!ENTITY % p3 "<!ENTITY boom 'BOOM'>">
+  %p3;
+]>
+<root>&boom;</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE data [
+  <!ELEMENT data ANY>
+  <!ATTLIST data xml:space (default|preserve) "preserve">
+  <!NOTATION n SYSTEM "urn:test">
+  <!ENTITY ext SYSTEM "http://127.0.0.1:9/does-not-exist">
+]>
+<data xml:space="preserve">
+  <child attr="&#0;A&#x1F;B">text<![CDATA[<escaped>&not;</escaped>]]></child>
+  &ext;
+</data>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE a [
+  <!ENTITY x "1">
+  <!ENTITY y "&x;&x;&x;">
+  <!ELEMENT a (b+, c?)>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c ANY>
+]>
+<a>
+  <b>one</b>
+  <b>&y;</b>
+  <c>
+    <d><![CDATA[<x>&y;</x>]]></d>
+  </c>
+</a>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE z [
+  <!ENTITY % e1 "&#x25; e2 'xx'">
+  <!ENTITY % e2 "<!ENTITY inner SYSTEM 'ftp://127.0.0.1:21/%25;'>">
+  %e1;
+  %e2;
+]>
+<z>
+  <node><![CDATA[
+    ]]>&inner;<![CDATA[
+  ]]></node>
+</z>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book [
+  <!ELEMENT book (chapter|appendix|notes)*>
+  <!ELEMENT chapter (title,para+)>
+  <!ELEMENT appendix ANY>
+  <!ELEMENT notes (#PCDATA)>
+  <!ATTLIST chapter id ID #IMPLIED>
+  <!ENTITY alpha "A">
+  <!ENTITY beta "&#xD;&#xA;">
+]>
+<book>
+  <chapter id="c1">
+    <title>&alpha; Title</title>
+    <para>Line1&beta;Line2</para>
+  </chapter>
+  <appendix>
+    <x attr="&alpha;"/>
+    <y><![CDATA[%%%<![CDATA[ nested? ]]>%%%]]></y>
+  </appendix>
+  <notes>trail&#x0A;text</notes>
+</book>
+```

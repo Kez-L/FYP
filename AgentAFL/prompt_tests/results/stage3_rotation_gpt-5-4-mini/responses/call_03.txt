@@ -1,0 +1,75 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ELEMENT item ANY>
+  <!ATTLIST item id ID #IMPLIED>
+  <!ENTITY ext SYSTEM "file:///etc/passwd">
+]>
+<root>
+  <item id="x1">&ext;</item>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (#PCDATA|subentry)*>
+  <!ELEMENT subentry EMPTY>
+  <!ATTLIST entry name CDATA #REQUIRED>
+  <!ENTITY a "AAA">
+  <!ENTITY b "&a;&a;">
+]>
+<catalog>
+  <entry name="alpha">&b;<subentry/></entry>
+  <entry name="beta">text&#x0A;&#x09;&a;</entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ns:doc [
+  <!ENTITY % p1 "<!ELEMENT ns:doc ANY>">
+  %p1;
+]>
+<ns:doc xmlns:ns="urn:test">
+  <ns:child xmlns:ns="urn:alt" ns:attr="value"/>
+  <ns:child2><![CDATA[<tag>&stuff;]]></ns:child2>
+</ns:doc>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE r [
+  <!ENTITY % x SYSTEM "file:///dev/null">
+  %x;
+  <!ENTITY y "Y">
+]>
+<r>
+  <a attr="&#34;&y;&#34;">one</a>
+  <b attr2="&#x27;test&#x27;">two</b>
+  <!-- comment with -- tricky -->
+</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE data [
+  <!ELEMENT data (node*, tail?)>
+  <!ELEMENT node (inner|leaf)*>
+  <!ELEMENT inner (#PCDATA)>
+  <!ELEMENT leaf EMPTY>
+  <!ELEMENT tail ANY>
+  <!ENTITY e1 "one">
+  <!ENTITY e2 "&e1;two">
+]>
+<data>
+  <node>
+    <inner>&e2;</inner>
+    <leaf/>
+    <leaf></leaf>
+  </node>
+  <tail><?pi target data?></tail>
+</data>
+```

