@@ -1,0 +1,74 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a|b|c)*>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c (#PCDATA)>
+  <!ENTITY e1 "alpha">
+  <!ENTITY e2 "&e1;:&e1;">
+  <!ENTITY e3 "&#x41;&#65;">
+]>
+<root>
+  <a>&e2;</a>
+  <b>&e3;</b>
+  <c><![CDATA[<&e1;>]]></c>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE r [
+  <!ELEMENT r (x, y)>
+  <!ELEMENT x EMPTY>
+  <!ELEMENT y (#PCDATA)>
+  <!ATTLIST x k CDATA #FIXED "v1" n CDATA #IMPLIED>
+]>
+<r>
+  <x/>
+  <y xml:space="preserve">  leading and trailing  </y>
+</r>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE doc [
+  <!ELEMENT doc (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item id ID #IMPLIED class NMTOKENS #IMPLIED>
+]>
+<doc>
+  <item id="i1" class="a b c">one</item>
+  <item id="i2" class="x&#x20;y">two &amp; three</item>
+  <item class="&#x6A;&#x75;&#x6E;&#x6B;">four</item>
+</doc>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE a [
+  <!ELEMENT a ANY>
+  <!ENTITY % pe "IGNOREME">
+  <!ENTITY q "&#x3C;inner attr='1'/&#x3E;">
+]>
+<a>
+  <b attr="&q;">text</b>
+  <c><?pi data?></c>
+  <!-- comment with -- tricky -->
+</a>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE n [
+  <!ELEMENT n (m*)>
+  <!ELEMENT m (p?, q?)>
+  <!ELEMENT p (#PCDATA)>
+  <!ELEMENT q (#PCDATA)>
+  <!ENTITY g "G">
+]>
+<n>
+  <m><p>&g;</p><q><![CDATA[<p>not parsed</p>]]></q></m>
+  <m><q>plain</q></m>
+</n>
+```

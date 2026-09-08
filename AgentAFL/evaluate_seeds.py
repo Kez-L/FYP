@@ -62,11 +62,13 @@ def run_showmap(afl_showmap_bin, target, target_args, input_path, timeout=30):
 
     edges = set()
     for line in result.stdout.decode(errors="replace").splitlines():
-        # afl-showmap text format: "<edge_id>:<hit_count>"
+        # afl-showmap text format: "<edge_id>:<hit_count>", edge_id zero-padded
+        # ("000005:1"). Store as int so the id space is canonical regardless of
+        # padding — a str set would make "000005" != "5" and break every diff.
         if ":" in line:
             edge_id = line.split(":", 1)[0].strip()
             if edge_id.isdigit():
-                edges.add(edge_id)
+                edges.add(int(edge_id))
 
     if result.returncode == 2:
         return "crash", edges
@@ -104,7 +106,7 @@ def build_baseline(afl_showmap_bin, target, target_args, queue_dir, timeout=30):
             if ":" in line:
                 edge_id = line.split(":", 1)[0].strip()
                 if edge_id.isdigit():
-                    baseline.add(edge_id)
+                    baseline.add(int(edge_id))  # int, matching run_showmap
         return baseline
     finally:
         out_path.unlink(missing_ok=True)
@@ -119,6 +121,12 @@ def evaluate_candidate(afl_showmap_bin, target, target_args, candidate_path: Pat
     _edge_fields) — logging only, same as the rest of this dict."""
     status, edges = run_showmap(afl_showmap_bin, target, target_args, candidate_path,
                                  timeout=timeout)
+
+    # Canonicalise the baseline to int ids too. build_baseline already returns
+    # ints, but a caller may hand us a set reloaded from JSON or built elsewhere
+    # (e.g. as zero-padded / plain strings); without this, edges - baseline can
+    # silently subtract nothing and mark every candidate GOOD.
+    baseline = {int(e) for e in baseline}
 
     if status in ("crash", "timeout"):
         return {

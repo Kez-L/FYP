@@ -1,0 +1,98 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE r [
+  <!ELEMENT r (a+, b?, c*)>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c (#PCDATA)>
+  <!ATTLIST a id ID #IMPLIED
+                ref IDREF #IMPLIED
+                refs IDREFS #IMPLIED>
+  <!ENTITY e1 "alpha">
+  <!ENTITY e2 "&e1;:&#x41;">
+]>
+<r>
+  <a id="x1">first &e2;</a>
+  <a ref="x1">second</a>
+  <b>mix &#10; text</b>
+  <c>tail</c>
+</r>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:cat" xmlns:m="urn:meta">
+  <book m:tag="novel" xml:space="preserve">
+    <title>One &amp; Only</title>
+    <author>
+      <name><![CDATA[John <Doe>]]></name>
+      <m:born>1970-01-01</m:born>
+    </author>
+    <meta>
+      <m:entry key="k1">v1</m:entry>
+      <m:entry key="k2">v2</m:entry>
+    </meta>
+  </book>
+  <book m:tag="poem">
+    <title>Lines</title>
+    <author><name>Anonymous</name></author>
+  </book>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE data [
+  <!ELEMENT data (item | group | empty)*>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT group (item+)>
+  <!ELEMENT empty EMPTY>
+  <!ENTITY % p "INTERNAL">
+  <!ENTITY ext SYSTEM "file:///dev/null">
+]>
+<data>
+  <group>
+    <item attr="1">A</item>
+    <item attr="2">B</item>
+  </group>
+  <empty/>
+  <item>&#x20;&ext;</item>
+</data>
+```
+
+```xml
+<?xml version="1.0"?>
+<play>
+  <scene number="1">
+    <stage>Enter <character name="Hamlet"/></stage>
+    <dialogue speaker="Hamlet">
+      <line>To be</line>
+      <line>or not to be</line>
+      <aside><![CDATA[<thinking/>]]></aside>
+    </dialogue>
+  </scene>
+  <scene number="2">
+    <stage>Exit</stage>
+  </scene>
+</play>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE z [
+  <!ELEMENT z (n*, s, n*)>
+  <!ELEMENT n EMPTY>
+  <!ELEMENT s ANY>
+  <!ATTLIST n a CDATA #REQUIRED
+                b CDATA #FIXED "fixed">
+]>
+<z>
+  <n a="1"/>
+  <s>
+    <inner x="&lt;x&gt;">
+      <deep><![CDATA[<a x="1">&oops;</a>]]></deep>
+    </inner>
+  </s>
+  <n a="2" b="fixed"/>
+</z>
+```

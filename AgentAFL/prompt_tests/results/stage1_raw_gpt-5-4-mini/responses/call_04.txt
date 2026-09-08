@@ -1,0 +1,93 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child+, tail?)>
+  <!ELEMENT child (#PCDATA)>
+  <!ELEMENT tail (#PCDATA)>
+  <!ATTLIST child id ID #REQUIRED kind (alpha|beta|gamma) "alpha">
+]>
+<root>
+  <child id="c1" kind="beta">one</child>
+  <child id="c2">two</child>
+  <tail>done</tail>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE book [
+  <!ELEMENT book (chapter+, appendix?)>
+  <!ELEMENT chapter (title, para+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT para (#PCDATA)>
+  <!ELEMENT appendix (#PCDATA)>
+  <!ENTITY author "A. Writer">
+]>
+<book>
+  <chapter>
+    <title>&author;: Intro</title>
+    <para>First paragraph.</para>
+    <para>Second paragraph with &#x41; entity.</para>
+  </chapter>
+  <appendix>notes</appendix>
+</book>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE svg [
+  <!ELEMENT svg (g+, text?)>
+  <!ELEMENT g (path*)>
+  <!ELEMENT path EMPTY>
+  <!ATTLIST path d CDATA #IMPLIED stroke CDATA #FIXED "black">
+  <!ELEMENT text (#PCDATA)>
+]>
+<svg>
+  <g>
+    <path d="M0 0 L10 10"/>
+    <path d="M5 5 L15 15" stroke="red"/>
+  </g>
+  <text>café</text>
+</svg>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (product*, summary)>
+  <!ELEMENT product (name, price, desc?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT desc (#PCDATA)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ATTLIST product sku CDATA #IMPLIED available (yes|no) "yes">
+]>
+<catalog>
+  <product sku="A-100" available="no">
+    <name>widget</name>
+    <price>19.99</price>
+    <desc><![CDATA[<raw>&data;]]></desc>
+  </product>
+  <summary>1 item</summary>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE mixed [
+  <!ELEMENT mixed (pre, inner, post)>
+  <!ELEMENT pre (#PCDATA)>
+  <!ELEMENT inner ANY>
+  <!ELEMENT post (#PCDATA)>
+  <!ENTITY x "X">
+  <!ENTITY y "&x;&x;">
+]>
+<mixed>
+  <pre>start</pre>
+  <inner>
+    <node attr="&y;">&#65;</node>
+    <node><![CDATA[&x;]]></node>
+  </inner>
+  <post>end</post>
+</mixed>
+```

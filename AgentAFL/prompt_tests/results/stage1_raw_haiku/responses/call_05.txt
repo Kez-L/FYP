@@ -1,0 +1,78 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ENTITY % internal "<!ENTITY &#x25; internal2 'recursive'>">
+  %internal;
+]>
+<root>
+  <element>&internal2;</element>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ELEMENT config (section+)>
+  <!ELEMENT section (item*)>
+  <!ELEMENT item (#PCDATA|nested)*>
+  <!ELEMENT nested (#PCDATA)>
+  <!ATTLIST item id ID #REQUIRED>
+  <!ATTLIST item ref IDREF #IMPLIED>
+  <!NOTATION image SYSTEM "image/png">
+  <!ENTITY graphic SYSTEM "test.png" NDATA image>
+]>
+<config>
+  <section>
+    <item id="x1" ref="x2">Content <nested>Nested data</nested></item>
+    <item id="x2">Referenced item</item>
+  </section>
+</config>
+```
+
+```xml
+<!DOCTYPE multientity [
+  <!ENTITY e1 "text1">
+  <!ENTITY e2 "text2">
+  <!ENTITY e3 "&e1;&e2;">
+  <!ENTITY e4 "&e3;&e3;&e3;">
+  <!ENTITY e5 "&e4;&e4;&e4;&e4;&e4;">
+]>
+<multientity>
+  <data>&e5;</data>
+</multientity>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE mixed [
+  <!ELEMENT mixed (a|b|c)*>
+  <!ELEMENT a (#PCDATA|x|y)*>
+  <!ELEMENT b (z+)>
+  <!ELEMENT c (#PCDATA)>
+  <!ELEMENT x EMPTY>
+  <!ELEMENT y (#PCDATA)>
+  <!ELEMENT z (#PCDATA|a)*>
+]>
+<mixed>
+  <a>text<x/><y>inline</y></a>
+  <b><z><a>nested</a></z></b>
+  <c>content</c>
+</mixed>
+```
+
+```xml
+<!DOCTYPE attlist [
+  <!ELEMENT element EMPTY>
+  <!ATTLIST element 
+    attr1 CDATA #REQUIRED
+    attr2 ID #IMPLIED
+    attr3 IDREF #IMPLIED
+    attr4 (option1|option2|option3) "option1"
+    attr5 NMTOKENS #IMPLIED
+    attr6 ENTITY #IMPLIED
+    attr7 ENTITIES #IMPLIED>
+]>
+<root>
+  <element attr1="value" attr2="id123" attr4="option2" attr5="token1 token2"/>
+</root>
+```

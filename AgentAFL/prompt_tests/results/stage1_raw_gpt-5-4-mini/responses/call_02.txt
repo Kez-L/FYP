@@ -1,0 +1,111 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (book+)>
+  <!ELEMENT book (title,author,price)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ATTLIST book id ID #REQUIRED>
+  <!ENTITY ent "Tom &amp; Jerry">
+]>
+<catalog>
+  <book id="b1">
+    <title>&ent;</title>
+    <author>Author One</author>
+    <price>12.50</price>
+  </book>
+  <book id="b2">
+    <title>XML &lt;Parsing&gt;</title>
+    <author>Author Two</author>
+    <price>0.00</price>
+  </book>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (section*, tail?)>
+  <!ELEMENT section (item | note | data)*>
+  <!ELEMENT item EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+  <!ATTLIST item kind CDATA #IMPLIED>
+  <!ENTITY % pe "INTERNAL">
+]>
+<root>
+  <section>
+    <item kind="alpha"/>
+    <note>n1</note>
+    <data><![CDATA[raw <text> & chars]]></data>
+  </section>
+  <section>
+    <item kind="beta"/>
+    <note>n2</note>
+  </section>
+  <tail/>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messages [
+  <!ELEMENT messages (msg+)>
+  <!ELEMENT msg (header, body, footer?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT body (#PCDATA | bold | italic)*>
+  <!ELEMENT footer (#PCDATA)>
+  <!ELEMENT bold (#PCDATA)>
+  <!ELEMENT italic (#PCDATA)>
+  <!ATTLIST msg priority (low|normal|high) "normal">
+]>
+<messages>
+  <msg priority="high">
+    <header>Alert</header>
+    <body>Start <bold>now</bold> and <italic>finish</italic>.</body>
+    <footer>End</footer>
+  </msg>
+  <msg>
+    <header>Info</header>
+    <body>Plain body with &#x0A;line break.</body>
+  </msg>
+</messages>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ELEMENT config (entry*, group)>
+  <!ELEMENT entry EMPTY>
+  <!ELEMENT group (entry+)>
+  <!ATTLIST entry key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY hex "&#x41;&#x42;&#x43;">
+]>
+<config>
+  <entry key="one" value="&hex;"/>
+  <entry key="two"/>
+  <group>
+    <entry key="nested-1" value="x"/>
+    <entry key="nested-2" value="y"/>
+  </group>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ELEMENT doc (x, y, z)>
+  <!ELEMENT x (#PCDATA)>
+  <!ELEMENT y (#PCDATA)>
+  <!ELEMENT z (#PCDATA)>
+  <!ENTITY a "A">
+  <!ENTITY b "&a;B">
+  <!ENTITY c "&b;C">
+]>
+<doc>
+  <x>&c;</x>
+  <y><![CDATA[<escaped> & unescaped]]></y>
+  <z>&#13;&#10;&#9;done</z>
+</doc>
+```

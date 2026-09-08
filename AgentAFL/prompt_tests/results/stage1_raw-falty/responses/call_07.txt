@@ -1,0 +1,64 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST child id ID #REQUIRED>
+]>
+<root>
+  <child id="c1">text content</child>
+  <child id="c2">more text</child>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config [
+  <!ENTITY % external SYSTEM "file:///etc/passwd">
+  %external;
+]>
+<config>
+  <setting name="test" value="data"/>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns="http://example.com/ns" xmlns:custom="http://example.com/custom">
+  <element attr1="val1" custom:attr2="val2">
+    <nested>deep content</nested>
+  </element>
+  <empty/>
+  <cdata><![CDATA[special < > & chars]]></cdata>
+</root>
+```
+
+```xml
+<!DOCTYPE html [
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY copy "&#169;">
+  <!ENTITY reg "&#174;">
+]>
+<html>
+  <body>
+    <p>Text&nbsp;with&nbsp;entities&copy;&reg;</p>
+    <div attr="&nbsp;&copy;">content</div>
+  </body>
+</html>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE test [
+  <!ELEMENT test (a|b|c)+>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b (a,c)>
+  <!ELEMENT c EMPTY>
+  <!ATTLIST c value CDATA #IMPLIED>
+]>
+<test>
+  <a>first</a>
+  <b><a>nested</a><c value="empty"/></b>
+  <c value="standalone"/>
+</test>
+```

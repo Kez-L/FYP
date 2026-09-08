@@ -1,0 +1,71 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % param "internal">
+  <!ENTITY normal "value">
+]>
+<root attr="&normal;">
+  <element>&normal;</element>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ELEMENT doc (item+)>
+  <!ATTLIST item id ID #REQUIRED>
+  <!ENTITY start "<item id='test1'>">
+  <!ENTITY end "</item>">
+]>
+<doc>
+  &start;content&end;
+  <item id="test2">data</item>
+</doc>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config [
+  <!NOTATION svg PUBLIC "image/svg+xml" "http://www.w3.org/2000/svg">
+  <!ENTITY % external SYSTEM "file:///etc/passwd">
+  <!ENTITY localref "local_value">
+]>
+<config>
+  <setting name="key1">&localref;</setting>
+  <setting name="key2">fixed</setting>
+</config>
+```
+
+```xml
+<!DOCTYPE html [
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY copy "&#169;">
+  <!ENTITY reg "&#174;">
+  <!ENTITY times "&#215;">
+  <!ENTITY div "&#247;">
+  <!ENTITY combined "&nbsp;&copy;&reg;&times;&div;">
+]>
+<html>
+  <body>&combined;</body>
+</html>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body)>
+  <!ELEMENT header (from, to)>
+  <!ELEMENT body (#PCDATA)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ENTITY sender "alice@example.com">
+  <!ENTITY recipient "bob@example.com">
+]>
+<message>
+  <header>
+    <from>&sender;</from>
+    <to>&recipient;</to>
+  </header>
+  <body>Test message with mixed &sender; and &recipient; references</body>
+</message>
+```

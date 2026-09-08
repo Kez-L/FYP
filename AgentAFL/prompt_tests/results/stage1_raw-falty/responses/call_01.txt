@@ -1,0 +1,87 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root id ID #REQUIRED>
+  <!ENTITY internal "test">
+]>
+<root id="root1">
+  <child attr="&internal;">content</child>
+  <nested>
+    <deep level="1"/>
+    <deep level="2"/>
+  </nested>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE doc [
+  <!ENTITY % param1 "value1">
+  <!ENTITY % param2 "value2">
+  <!ELEMENT doc (section+)>
+  <!ELEMENT section (title, body)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (#PCDATA)>
+]>
+<doc>
+  <section>
+    <title>First Section</title>
+    <body>Content with special chars: &lt; &gt; &amp;</body>
+  </section>
+  <section>
+    <title>Second Section</title>
+    <body>More content here</body>
+  </section>
+</doc>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns="http://example.com/ns" xmlns:custom="http://custom.ns">
+  <custom:element attr1="value1" attr2="value2">
+    <subelem>text content</subelem>
+  </custom:element>
+  <element>
+    <![CDATA[Special characters: <>&"']]>
+  </element>
+  <mixed>Text <inline attr="val">inline element</inline> more text</mixed>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ELEMENT config (setting*)>
+  <!ELEMENT setting (#PCDATA)>
+  <!ATTLIST setting name CDATA #REQUIRED>
+  <!ATTLIST setting type (string|int|bool) "string">
+]>
+<config>
+  <setting name="timeout" type="int">3000</setting>
+  <setting name="debug" type="bool">true</setting>
+  <setting name="path" type="string">/usr/local/bin</setting>
+  <setting name="empty"/>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<collection>
+  <item id="1" version="1.0">
+    <name>Item One</name>
+    <metadata>
+      <created>2024-01-01</created>
+      <modified>2024-01-02</modified>
+      <tags>
+        <tag>tag1</tag>
+        <tag>tag2</tag>
+      </tags>
+    </metadata>
+  </item>
+  <item id="2">
+    <name>Item Two</name>
+    <data attr1="a" attr2="b" attr3="c">raw content</data>
+  </item>
+</collection>
+```

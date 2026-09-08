@@ -1,0 +1,103 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (node+, tail?)>
+  <!ELEMENT node (#PCDATA|child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ELEMENT tail (#PCDATA)>
+  <!ATTLIST node id ID #IMPLIED mode (on|off|maybe) "maybe">
+  <!ENTITY alpha "A">
+  <!ENTITY beta "&alpha;&alpha;">
+]>
+<root>
+  <node id="n1" mode="on">pre &beta; post<child>c1</child></node>
+  <node id="n2">text<![CDATA[<x>&alpha;]]><child>&alpha;</child></node>
+  <tail>fin</tail>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (book+, note)>
+  <!ELEMENT book (title, author?, meta*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST book isbn CDATA #REQUIRED lang CDATA "en">
+  <!ENTITY maker "libxml2">
+]>
+<catalog>
+  <book isbn="123-abc" lang="fr">
+    <title>&maker; &amp; test</title>
+    <author>Jane</author>
+    <meta/>
+  </book>
+  <book isbn="999-zzz">
+    <title><![CDATA[raw <title>]]></title>
+  </book>
+  <note>done</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body)>
+  <!ELEMENT header ANY>
+  <!ELEMENT body ANY>
+  <!ENTITY % pe "<!ENTITY inner 'INNER'>">
+  %pe;
+]>
+<envelope>
+  <header>
+    <x a="1" b="2"/>
+  </header>
+  <body>
+    <p>&inner; &#x41; &#65;</p>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE svg [
+  <!ELEMENT svg (g+, defs?)>
+  <!ELEMENT g (path|text|use)*>
+  <!ELEMENT path EMPTY>
+  <!ELEMENT text (#PCDATA)>
+  <!ELEMENT use EMPTY>
+  <!ATTLIST g transform CDATA #IMPLIED>
+  <!ATTLIST use href CDATA #IMPLIED>
+]>
+<svg>
+  <g transform="matrix(1,0,0,1,10,20)">
+    <path/>
+    <text>alpha</text>
+    <use href="#missing"/>
+  </g>
+  <g>
+    <text xml:space="preserve">  spaced  </text>
+  </g>
+</svg>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE a [
+  <!ELEMENT a (b?, c+, d*)>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c ANY>
+  <!ELEMENT d EMPTY>
+  <!ENTITY % p1 "x">
+  <!ENTITY % p2 "%p1;">
+]>
+<a>
+  <b>one</b>
+  <c>
+    <inner attr="&lt;&gt;&quot;&apos;">value</inner>
+  </c>
+  <c><![CDATA[&p1; %p2;]]></c>
+  <d/>
+</a>
+```

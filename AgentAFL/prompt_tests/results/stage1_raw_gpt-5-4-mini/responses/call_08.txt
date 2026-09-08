@@ -1,0 +1,152 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE library [
+  <!ELEMENT library (section+, note?)>
+  <!ELEMENT section (book*, magazine?)>
+  <!ELEMENT book (title, author, year, isbn?)>
+  <!ELEMENT magazine (title, issue)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT year (#PCDATA)>
+  <!ELEMENT isbn (#PCDATA)>
+  <!ELEMENT issue (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST book id ID #REQUIRED
+                lang NMTOKEN #IMPLIED
+                format (hardcover|paperback|ebook) "paperback">
+  <!ENTITY pub "AFL Press">
+]>
+<library>
+  <section>
+    <book id="b1" lang="en" format="ebook">
+      <title>&pub; Alpha</title>
+      <author>Jane Doe</author>
+      <year>2024</year>
+      <isbn>978-0-0000-0000-1</isbn>
+    </book>
+    <book id="b2">
+      <title>Beta</title>
+      <author>John Roe</author>
+      <year>2025</year>
+    </book>
+    <magazine>
+      <title>Scan</title>
+      <issue>42</issue>
+    </magazine>
+  </section>
+  <note>catalog complete</note>
+</library>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config [
+  <!ELEMENT config (entry+, group?)>
+  <!ELEMENT entry EMPTY>
+  <!ELEMENT group (entry*)>
+  <!ATTLIST entry key CDATA #REQUIRED
+                  value CDATA #IMPLIED
+                  enabled (true|false) "true">
+  <!ENTITY hex "&#x41;&#x42;&#x43;">
+]>
+<config>
+  <entry key="alpha" value="&hex;" enabled="true"/>
+  <entry key="beta" value="&#10;&#9;line"/>
+  <group>
+    <entry key="gamma" enabled="false"/>
+    <entry key="delta" value="&amp;&lt;&gt;&quot;&apos;"/>
+  </group>
+  <entry key="epsilon" value="end"/>
+</config>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (path|branch|leaf)+>
+  <!ELEMENT path (#PCDATA)>
+  <!ELEMENT branch (leaf+, path?)>
+  <!ELEMENT leaf EMPTY>
+  <!ATTLIST branch depth CDATA #IMPLIED>
+  <!ENTITY a1 "node">
+  <!ENTITY a2 "&a1;-child">
+]>
+<root>
+  <path>/tmp/&a2;/file</path>
+  <branch depth="1">
+    <leaf/>
+    <leaf/>
+    <path>inside branch</path>
+  </branch>
+  <leaf/>
+  <branch depth="2">
+    <leaf/>
+  </branch>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (meta, itemlist)>
+  <!ELEMENT meta (name, version, flags?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT version (#PCDATA)>
+  <!ELEMENT flags (flag*)>
+  <!ELEMENT flag EMPTY>
+  <!ELEMENT itemlist (item+)>
+  <!ELEMENT item (label, data)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+  <!ATTLIST item index CDATA #REQUIRED status (new|old|archived) "new">
+]>
+<catalog>
+  <meta>
+    <name>demo</name>
+    <version>1.2.3</version>
+    <flags>
+      <flag/>
+      <flag/>
+    </flags>
+  </meta>
+  <itemlist>
+    <item index="0" status="new">
+      <label>A</label>
+      <data><![CDATA[<x>&y;]]></data>
+    </item>
+    <item index="1">
+      <label>B</label>
+      <data>plain text</data>
+    </item>
+  </itemlist>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, footer?)>
+  <!ELEMENT header (from, to, subject)>
+  <!ELEMENT body (#PCDATA|emphasis|linebreak)*>
+  <!ELEMENT footer (#PCDATA)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT linebreak EMPTY>
+  <!ATTLIST message priority (low|normal|high) "normal">
+  <!ENTITY smile ":-)">
+]>
+<message priority="high">
+  <header>
+    <from>Alice</from>
+    <to>Bob</to>
+    <subject>Test &smile;</subject>
+  </header>
+  <body>
+    Hello <emphasis>world</emphasis><linebreak/>
+    Second line with &#13; carriage return
+  </body>
+  <footer>sent</footer>
+</message>
+```

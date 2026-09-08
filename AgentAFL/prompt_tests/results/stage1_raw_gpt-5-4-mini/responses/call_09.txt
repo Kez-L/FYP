@@ -1,0 +1,103 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (item+, trailer?)>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST item id ID #REQUIRED
+                kind (alpha|beta|gamma) "alpha"
+                ref IDREF #IMPLIED>
+]>
+<root>
+  <item id="a1" kind="beta">First</item>
+  <item id="a2" ref="a1">Second &amp; more</item>
+  <item id="a3" kind="gamma" ref="a2">Third</item>
+  <trailer>done</trailer>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE library [
+  <!ELEMENT library (book+, note?)>
+  <!ELEMENT book (title, author, meta*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST book isbn CDATA #REQUIRED>
+  <!ATTLIST meta key CDATA #REQUIRED value CDATA #IMPLIED>
+]>
+<library>
+  <book isbn="978-1-4028-9462-6">
+    <title xml:lang="en">A &lt;Weird&gt; Tale</title>
+    <author>Jane Doe</author>
+    <meta key="genre" value="fiction"/>
+    <meta key="pages"/>
+  </book>
+  <book isbn="000-0-00-000000-0">
+    <title>Second</title>
+    <author>John Roe</author>
+  </book>
+  <note>catalog checksum: 0xDEAD</note>
+</library>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE data [
+  <!ELEMENT data (section+, tail)>
+  <!ELEMENT section (entry*)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ELEMENT tail (#PCDATA)>
+  <!ENTITY company "ACME">
+  <!ENTITY punct "&#x3C;&#x26;&#x3E;">
+]>
+<data>
+  <section>
+    <entry>&company; one</entry>
+    <entry>two &punct; three</entry>
+  </section>
+  <section>
+    <entry><![CDATA[raw <xml> & text]]></entry>
+  </section>
+  <tail>finish&#x0A;line</tail>
+</data>
+```
+
+```xml
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="style.xsl"?>
+<catalog xmlns:x="urn:x" xmlns:y="urn:y">
+  <x:item x:id="i1">
+    <name>Main</name>
+    <y:desc>Namespaced node</y:desc>
+  </x:item>
+  <x:item x:id="i2">
+    <name>Nested</name>
+    <y:desc attr="value">Mixed content <!-- comment --> here</y:desc>
+  </x:item>
+  <empty/>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE svg [
+  <!ELEMENT svg (g+, text?)>
+  <!ELEMENT g (path*, text?)>
+  <!ELEMENT path EMPTY>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST svg width CDATA #IMPLIED height CDATA #IMPLIED>
+  <!ATTLIST path d CDATA #REQUIRED>
+]>
+<svg width="100" height="100">
+  <g>
+    <path d="M0 0 L10 10 Z"/>
+    <path d="M10 0 L0 10 Z"/>
+    <text>αβγ &amp; &#x1F4A9;</text>
+  </g>
+  <g>
+    <text><![CDATA[<path d="broken">]]></text>
+  </g>
+</svg>
+```

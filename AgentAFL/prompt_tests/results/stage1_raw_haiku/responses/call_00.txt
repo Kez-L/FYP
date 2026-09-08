@@ -1,0 +1,77 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST child id ID #REQUIRED>
+  <!ENTITY internal "recursive">
+]>
+<root>
+  <child id="c1">&internal;</child>
+  <child id="c2">text</child>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE data [
+  <!ELEMENT data (item+)>
+  <!ELEMENT item (name, value)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!NOTATION jpg SYSTEM "image/jpeg">
+]>
+<data>
+  <item>
+    <name>test</name>
+    <value>123</value>
+  </item>
+</data>
+```
+
+```xml
+<!DOCTYPE html [
+  <!ENTITY copy "&#169;">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY lt "&#60;">
+  <!ENTITY gt "&#62;">
+]>
+<html>
+  <head>
+    <title>Test&copy;&nbsp;2024</title>
+  </head>
+  <body>&lt;script&gt;&gt;</body>
+</html>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns="http://example.com/ns" xmlns:custom="http://custom.com/ns">
+  <element attr="value">
+    <custom:nested>
+      <![CDATA[Some <cdata> content & symbols]]>
+    </custom:nested>
+  </element>
+  <empty/>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ELEMENT config (section*)>
+  <!ELEMENT section (param*)>
+  <!ELEMENT param (#PCDATA)>
+  <!ATTLIST section name CDATA #REQUIRED>
+  <!ATTLIST param key CDATA #REQUIRED>
+]>
+<config>
+  <section name="first">
+    <param key="a">value1</param>
+    <param key="b">value2</param>
+  </section>
+  <section name="second">
+    <param key="c">value3</param>
+  </section>
+</config>
+```

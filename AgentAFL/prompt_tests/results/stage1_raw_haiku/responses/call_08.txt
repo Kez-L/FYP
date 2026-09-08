@@ -1,0 +1,65 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root id ID #REQUIRED>
+  <!ENTITY % param1 "internal">
+  <!ENTITY % param2 "%param1;">
+]>
+<root id="test1">
+  <nested attr="%param2;">content</nested>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ENTITY ext SYSTEM "file:///etc/passwd">
+  <!ENTITY chain1 "&ext;">
+  <!ENTITY chain2 "&chain1;&chain1;">
+]>
+<doc>
+  <data>&chain2;</data>
+</doc>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE manifest [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!NOTATION jpg SYSTEM "image/jpeg">
+  <!ENTITY picture1 SYSTEM "test.gif" NDATA gif>
+  <!ENTITY picture2 SYSTEM "test.jpg" NDATA jpg>
+]>
+<manifest>
+  <resource ref="picture1"/>
+  <resource ref="picture2"/>
+</manifest>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config [
+  <!ELEMENT config (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY % spaces "&#32;&#32;&#32;&#32;">
+  <!ENTITY tab "&#9;">
+]>
+<config>
+  <item name="key1" value="val&tab;ue1">&spaces;test</item>
+  <item name="key2">nested&spaces;content</item>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % xx "&#x25;yy;">
+  <!ENTITY % yy "&#x25;xx;">
+  <!ENTITY zz "%xx;">
+]>
+<root>
+  <circular>&zz;</circular>
+</root>
+```

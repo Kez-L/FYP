@@ -4,6 +4,31 @@ cd 1git-folder/AgentAFL
 ## Running XML
 6 instances
 
+AFL_SKIP_CPUFREQ=1 AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES=1 \
+afl-fuzz -i - -o /home/user/Documents/afl-output-libxml2 -M main \
+  -- /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@
+
+AFL_SKIP_CPUFREQ=1 AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES=1 \
+afl-fuzz -i - -o /home/user/Documents/afl-output-libxml2 -S sec1 \
+  -c /home/user/Documents/AFLPlus/libxml2-build/xmllint-cmplog \
+  -- /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@
+
+AFL_SKIP_CPUFREQ=1 AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES=1 \
+afl-fuzz -i - -o /home/user/Documents/afl-output-libxml2 -S sec2 \
+  -- /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@
+
+AFL_SKIP_CPUFREQ=1 AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES=1 \
+afl-fuzz -i - -o /home/user/Documents/afl-output-libxml2 -S sec3 \
+  -- /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@
+
+
+AFL_SKIP_CPUFREQ=1 AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES=1 \
+afl-fuzz -i - -o /home/user/Documents/afl-output-libxml2 -S sec4 \
+  -- /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@
+
+AFL_SKIP_CPUFREQ=1 AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES=1 \
+afl-fuzz -i - -o /home/user/Documents/afl-output-libxml2 -S sec5 \
+  -- /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@
 
 # Plateau watch
 

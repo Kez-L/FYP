@@ -6,30 +6,39 @@ from an AFL++ campaign's on-disk state.
 Usage:
   python3 build_context.py \
       --campaign-root /home/user/Documents/afl-output-libxml2 --instance main \
-      --format "XML document" --n-seeds 3 --n-generate 5 --out prompt.txt
+      --format "XML document" --n-seeds 2 --n-generate 5 --out prompt.txt
 
   binary format: + --seed-kind binary --format-hint "Byte order little-endian ('II'); "
       "IFD entry = tag(2)+type(2)+count(4)+value(4)."
 
+MINIMAL-PROMPT DESIGN (see conversation notes): state the task once, then let a
+couple of real examples do the teaching, instead of explaining campaign mechanics
+in prose. Modeled on how ChatAFL / Fuzz4All / CodaMOSA build their own generation
+prompts — short instruction + a small number of real examples, no restated
+context, no narrated reasoning steps, no campaign telemetry dump. Defaults are
+a couple of good seeds (--n-seeds 2) and a couple of bad ones (--n-history-failure
+2, unchanged). Hang/crash exemplars are set aside for now — the code to pick them
+is untouched, but they're only added to the prompt with --include-hang /
+--include-crash, so they can be reintroduced later as their own ablation arm.
+
 Sources read (all under <instance>/, plateau_log excepted):
   - cmdline        exact target invocation
-  - fuzzer_stats   campaign snapshot numbers
   - <campaign-parent>/plateau_log.csv   campaign-wide plateau duration (one file for
                                         the whole campaign; --plateau-log to override)
-  - queue/         few-shot seed candidates + stale-operator tally
-  - hangs/         one hang exemplar (falls back to the newest hangs.<timestamp>/
-                   backup if a resume just rotated hangs/)
-  - crashes/       one crash exemplar, when present
+  - queue/         few-shot seed candidates
+  - hangs/, crashes/   only read when --include-hang / --include-crash is passed
 
 Pipeline:
-  - parse cmdline / fuzzer_stats / plateau_log
-  - scan_queue: +cov entries only -> candidates; also tally operators seen >=5x with 0 +cov (stale)
+  - parse cmdline / plateau_log (duration only)
+  - scan_queue: +cov entries only -> candidates
   - select_diverse_seeds: restrict to a readable size band, rank smallest-first +
     printable ratio, de-dup by content similarity
-  - pick one hang + one crash exemplar
-  - assemble_prompt: turn all of the above into a SYSTEM/USER pair
-      - plateau duration -> explicit "coverage growth has stopped" statement
-      - hang framed as a lead toward deep/expensive paths (not a bug); crash framed as reproduce/extend
+  - assemble_prompt: turn the above into a short SYSTEM/USER pair
+      - a couple of real seeds that reached new coverage, labeled generically
+        (no AFL filename/operator metadata — that's noise for the model)
+      - a couple of the LLM's own past seeds that didn't help, labeled with why
+      - one closing line asking for N new files, structurally different from
+        everything shown
       - --seed-kind text -> ask for {fmt} content; binary -> ask for a hex byte stream
 
 Output: SYSTEM/USER prompt pair — plain text, or --json (structured) / --flatten (one pasteable block).
@@ -106,6 +115,8 @@ def format_seed_for_prompt(data: bytes, seed_kind: str, max_chars: int = 2000) -
 
 
 def parse_fuzzer_stats(path: Path) -> dict:
+    """Kept for standalone logging/debugging use — no longer surfaced in the
+    assembled prompt itself (see module docstring: minimal-prompt design)."""
     stats = {}
     if not path.exists():
         return stats
@@ -159,8 +170,10 @@ def parse_plateau_row(path: Path) -> dict:
 
 
 def parse_plateau_log(path: Path) -> str:
-    """One-line prose summary of plateau_log.csv for the prompt (or a fallback
-    message if it's missing/empty/unparseable).
+    """One-line prose summary of plateau_log.csv (or a fallback message if it's
+    missing/empty/unparseable). Kept for standalone logging/debugging use — the
+    assembled prompt now uses parse_plateau_row directly for just the duration
+    (see module docstring: minimal-prompt design).
     Schema: timestamp,best_edges,instances,total_crashes,total_hangs,plateau_secs"""
     if not path.exists():
         return f"plateau_log.csv not found at {path} — report edges_found/bitmap_cvg from fuzzer_stats only."
@@ -184,6 +197,8 @@ def scan_queue(queue_dir: Path):
     """Scan the queue dir once. Returns (candidates, stale_ops, total):
     - candidates: (path, printable_ratio, size) per +cov entry — raw material for selection
     - stale_ops: Counter of named operators seen >=5x with 0 +cov anywhere in the queue
+      (computed for possible future/debugging use — not surfaced in the assembled
+      prompt itself; see module docstring)
     - total: seed count
     """
     files = [f for f in queue_dir.iterdir() if f.is_file() and f.name != "README.txt"]
@@ -285,7 +300,8 @@ def _pick_smallest(dir_path: Path):
 
 
 def pick_hang_exemplar(inst_dir: Path):
-    """Smallest file in hangs/, or None.
+    """Smallest file in hangs/, or None. Only called when --include-hang is set
+    (see module docstring — set aside for now, reintroduce as its own ablation).
     Falls back to the newest hangs.<timestamp>/ backup: AFL++ rotates hangs/ on
     every resume, so the live dir can be empty even when real hangs exist."""
     exemplar = _pick_smallest(inst_dir / "hangs")
@@ -305,8 +321,9 @@ def pick_hang_exemplar(inst_dir: Path):
 
 
 def pick_crash_exemplar(inst_dir: Path):
-    """Smallest file in crashes/, or None. No rotation-backup fallback — unlike
-    hangs/, crashes/ isn't rotated on resume."""
+    """Smallest file in crashes/, or None. Only called when --include-crash is
+    set (see module docstring). No rotation-backup fallback — unlike hangs/,
+    crashes/ isn't rotated on resume."""
     return _pick_smallest(inst_dir / "crashes")
 
 
@@ -409,7 +426,9 @@ def _not_parsing(cluster: dict) -> bool:
 
 
 def _cluster_label(cluster: dict) -> str:
-    """'AVOID — ...' line describing why a whole cluster of past seeds failed."""
+    """'AVOID — ...' line describing why a whole cluster of past seeds failed.
+    Rendered under a section header that already says "avoid repeating", so
+    assemble_prompt strips the leading "AVOID — " to not say it twice."""
     members = cluster["members"]
     cs = sorted({m["cycle_id"] for m in members if m["cycle_id"] is not None})
     where = (f"cycle {cs[0]}" if len(cs) == 1
@@ -500,28 +519,41 @@ def assemble_prompt(
     format_hint: str = "",
     run_dir: Path | None = None,
     n_history_failure: int = 2,
+    include_hang: bool = False,
+    include_crash: bool = False,
 ) -> dict:
     """Build the SYSTEM/USER prompt pair from campaign state.
 
+    MINIMAL-PROMPT DESIGN: state the task once, then let a couple of real
+    examples do the teaching — a couple of good seeds (reached new coverage)
+    and a couple of bad ones (the LLM's own past misses) — instead of
+    explaining campaign mechanics, stats, or reasoning steps in prose.
+    Modeled on ChatAFL's plateau-escape prompt, Fuzz4All's per-iteration
+    prompt, and CodaMOSA's single-example prompt, all of which are a short
+    instruction plus a handful of real examples, nothing more.
+
     - seed_kind: "text" asks for {fmt} content directly; "binary" asks for a hex byte stream
-    - format_hint: optional grammar/schema/byte-order hint appended to the system prompt.
-      Effectively required for binary — without a stated byte order, a low validity
-      rate is uninterpretable (bad model, or just wrong guess?)
+    - format_hint: optional one-line grammar/schema hint appended to the system
+      prompt. Effectively required for binary — without a stated byte order, a
+      low validity rate is uninterpretable (bad model, or just wrong guess?)
     - run_dir: this run's output dir. When given (and n_history_failure > 0),
       echo up to n_history_failure (<=2) of the LLM's own past failed seeds from
-      <run_dir>/cycles.jsonl back into the prompt as "do not repeat" examples.
-      None -> the prompt is exactly what it was before this feature.
+      <run_dir>/cycles.jsonl back into the prompt as "avoid" examples.
+      None -> no failure block is added.
+    - include_hang / include_crash: both default False — set aside for now.
+      pick_hang_exemplar / pick_crash_exemplar are unchanged and ready for a
+      later ablation; pass True to add that block back into the user prompt.
     """
     inst_dir = campaign_root / instance
-    stats = parse_fuzzer_stats(inst_dir / "fuzzer_stats")
     cmdline = parse_cmdline(inst_dir / "cmdline")
-    plateau_line = parse_plateau_log(plateau_log)
-    candidates, stale_ops, total = scan_queue(inst_dir / "queue")
+    plateau_row = parse_plateau_row(plateau_log)
+    candidates, _stale_ops, _total = scan_queue(inst_dir / "queue")
     chosen_seeds = select_diverse_seeds(candidates, n_seeds)
-    hang = pick_hang_exemplar(inst_dir)
-    crash = pick_crash_exemplar(inst_dir)
 
-    # Prior failed seeds from this run, rendered for the "do not repeat" block.
+    hang = pick_hang_exemplar(inst_dir) if include_hang else None
+    crash = pick_crash_exemplar(inst_dir) if include_crash else None
+
+    # Prior failed seeds from this run, rendered for the "avoid" block.
     history_examples = []  # [(label, rendered_content), ...]
     if run_dir is not None and n_history_failure > 0:
         try:
@@ -538,163 +570,75 @@ def assemble_prompt(
         except Exception:
             history_examples = []  # never break a cycle over history
 
-    edges_found = stats.get("edges_found", "?")
-    bitmap_cvg = stats.get("bitmap_cvg", "?")
-    corpus_count = stats.get("corpus_count", "?")
-    saved_crashes = stats.get("saved_crashes", "?")
-    saved_hangs = stats.get("saved_hangs", "?")
-
     fence = f"```{fence_lang}" if fence_lang else "```"
 
-    # System/user structure follows Anthropic's prompt-engineering guide;
-    # element numbers below are its section labels.
-
-    # element 2: task context
+    # --- SYSTEM: state the task once, no role-play framing, no restated context ---
     system_lines = [
-        f"You are an advanced security engineer and fuzzing expert, taking the role of "
-        f"creating seeds for a coverage-guided AFL++ fuzzing campaign against a "
-        f"{fmt} parser. The goal is to have these seeds be well-formed and valid files "
-        f"that exercise new code paths in the target program.",
-        f"Target invocation: {cmdline['binary']} {cmdline['args']}".strip() + ".",
+        f"Generate seed files for AFL++ fuzzing of a {fmt} parser.",
+        f"Target: {cmdline['binary']} {cmdline['args']}".strip() + ".",
     ]
     if asan_hint:
-        system_lines.append(
-            "This binary is instrumented with AddressSanitizer, so a memory-safety bug "
-            "(use-after-free, heap buffer overflow, double-free, memory leak) is a valid "
-            "and higher-value finding than new coverage alone — treat either as a win."
-        )
+        system_lines.append("Built with ASan — a memory-safety crash is as valuable as new coverage.")
     if format_hint:
-        system_lines.append(f"Format-specific hint: {format_hint}")
-
-    # element 9: output formatting
+        system_lines.append(format_hint)
     if seed_kind == "binary":
         system_lines.append(
-            f"Respond with exactly {n_generate} candidate {fmt} files, each represented as "
-            "a hex byte stream: only the digits 0-9 and a-f, two per byte, optionally "
-            "separated by single spaces, no '0x' prefixes and no other characters. Each "
-            f"stream goes in its own fenced {fence} code block, in the order you'd try them. "
-            "This hex is converted to raw bytes by a fixed hex-to-bytes function with no "
-            "further correction of any kind, so every field's byte width, byte order, and "
-            "position in the stream must be exactly right the first time. No prose before, "
-            "between, or after the blocks — the response is parsed mechanically into seed "
-            "files. Do not explain, summarize, or critique the campaign data below — that "
-            "is context for you to use, not something to comment on."
+            f"Respond with exactly {n_generate} hex byte streams (pairs of 0-9a-f, no "
+            f"'0x', spaces optional), each in its own fenced {fence} block. Nothing else."
         )
     else:
         system_lines.append(
-            f"Respond with exactly {n_generate} candidate {fmt} files, each in its own "
-            f"fenced {fence} code block, in the order you'd try them. No prose before, between, "
-            "or after the blocks — the response is parsed mechanically into seed files. Do not "
-            "explain, summarize, or critique the campaign data below — that is context for you "
-            "to use, not something to comment on."
+            f"Respond with exactly {n_generate} {fmt} files, each in its own fenced "
+            f"{fence} code block. Nothing else."
         )
     system = "\n".join(system_lines)
 
-    # element 6: input data to process (campaign state)
+    # --- USER: a plateau line, a couple of good examples, a couple of bad ones, the ask ---
     u = []
-    u.append("=== CAMPAIGN STATE ===")
-    u.append(
-        f"edges_found: {edges_found} | bitmap_cvg: {bitmap_cvg} | corpus_count: {corpus_count} "
-        f"| saved_crashes: {saved_crashes} | saved_hangs: {saved_hangs}"
-    )
-    u.append(plateau_line)
-    u.append(
-        "Interpretation: coverage growth has stopped. Small byte-level mutation "
-        "by AFL++ has saturated what it can reach from the "
-        "current queue — the fuzzer needs structurally new documents, not incremental "
-        "tweaks of what's already there."
-    )
-    if stale_ops:
-        ops_str = ", ".join(f"{op} ({n}x, 0 new-coverage finds)" for op, n in stale_ops.most_common())
-        u.append(f"Mutation operators that have stopped paying off recently: {ops_str}.")
-    u.append("")
 
-    seed_label = "hex dump" if seed_kind == "binary" else "format"
-    u.append(f"=== {len(chosen_seeds)} REAL EXAMPLE SEEDS (shown as {seed_label}) — this is the format to match ===")
-    u.append("Chosen for readable size, printability and mutual diversity, not recency.")
-    for f, reason in chosen_seeds:
-        try:
-            content = format_seed_for_prompt(f.read_bytes(), seed_kind)
-        except OSError:
-            content = "<unreadable>"
-        u.append(f"--- {f.name} [{reason}] ---")
-        u.append(content)
+    if plateau_row is not None:
+        u.append(f"No new coverage for {plateau_row['plateau_secs'] / 3600:.1f}h.")
         u.append("")
 
+    if chosen_seeds:
+        u.append("Reached new coverage:")
+        for i, (f, _reason) in enumerate(chosen_seeds, 1):
+            try:
+                content = format_seed_for_prompt(f.read_bytes(), seed_kind)
+            except OSError:
+                content = "<unreadable>"
+            u.append(f"--- example {i} ---")
+            u.append(content)
+            u.append("")
+
     if history_examples:
-        u.append("=== YOUR OWN PRIOR SEEDS THAT DID NOT HELP (feedback from earlier cycles this run) ===")
-        u.append(
-            "Seeds you generated on previous plateau cycles that added no new coverage. "
-            "Do NOT reproduce these or minor variants — they have already been tried. "
-            "Aim for structure meaningfully different from them."
-        )
+        u.append("Tried before — no new coverage, avoid repeating:")
         for label, body in history_examples:
-            u.append(f"--- {label} ---")
+            u.append(f"--- {label.removeprefix('AVOID — ')} ---")
             u.append(body)
             u.append("")
 
-    u.append("=== A HIGH-COST INPUT (coverage lead) ===")
-    if hang:
+    if include_hang and hang:
         try:
             content = format_seed_for_prompt(hang.read_bytes(), seed_kind)
         except OSError:
             content = "<unreadable>"
-        u.append(
-            "This input makes the parser spend abnormal time/CPU — evidence of deep, "
-            "expensive code paths, not itself a bug to reproduce. Use it as a hint that "
-            "adjacent/nested structures near it may reach unexplored — or unsafe — branches."
-        )
-        u.append(f"--- {hang.name} ---")
+        u.append("Costly to run (a lead on deep paths, not itself a bug):")
+        u.append("--- hang ---")
         u.append(content)
-    else:
-        u.append("(none available this run)")
-    u.append("")
+        u.append("")
 
-    u.append("=== A PREVIOUSLY FLAGGED INPUT (coverage lead) ===")
-    if crash:
+    if include_crash and crash:
         try:
             content = format_seed_for_prompt(crash.read_bytes(), seed_kind)
         except OSError:
             content = "<unreadable>"
-        u.append(
-            "This input already crashes the target. A structurally similar but distinct "
-            "candidate that reaches the same neighborhood of code — or goes further past "
-            "it — is a high-value target."
-        )
-        u.append(f"--- {crash.name} ---")
+        u.append("Already crashes the target — a near neighbor is high-value:")
+        u.append("--- crash ---")
         u.append(content)
-    else:
-        u.append("(none available this run)")
-    u.append("")
+        u.append("")
 
-    # element 7: immediate task description
-    u.append(
-        f"Generate {n_generate} new {fmt} files that are structurally novel compared to the "
-        "examples above — not incremental tweaks of what's already there."
-    )
-
-    # element 8: precognition (think step by step)
-    u.append(
-        "Before you give the seeds, think step by step about what the current seeds and "
-        "campaign state indicate about the program, the types of inputs in this particular "
-        "file format that are likely to exercise new code paths, and how to generate new "
-        "seeds that are well-formed and valid files that exercise new code paths in the "
-        "target program."
-    )
-
-    # element 9: output formatting (reiterated)
-    if seed_kind == "binary":
-        u.append(
-            "Produce byte structures that are valid or near-valid for the format and that "
-            "reach code the current corpus does not. Coverage of untested code is the goal. "
-            f"Output only the fenced {fence} hex blocks — no analysis, no commentary."
-        )
-    else:
-        u.append(
-            "Produce well-formed or near-well-formed files that reach code the current "
-            "corpus does not. Coverage of untested code is the goal. Output only the "
-            f"fenced {fence} code blocks — no analysis, no commentary."
-        )
+    u.append(f"Generate {n_generate} new {fmt} files, structurally different from all of the above.")
 
     return {"system": system, "user": "\n".join(u)}
 
@@ -741,24 +685,40 @@ def main():
     ap.add_argument(
         "--format-hint",
         default="",
-        help="Optional one- or two-sentence grammar/schema hint appended to the system "
-        "prompt (e.g. byte order and field widths for a binary format). Effectively "
-        "necessary for --seed-kind binary — see assemble_prompt's docstring.",
+        help="Optional one-line grammar/schema hint appended to the system prompt (e.g. "
+        "byte order and field widths for a binary format). Effectively necessary for "
+        "--seed-kind binary — see assemble_prompt's docstring.",
     )
-    ap.add_argument("--n-seeds", type=int, default=3, help="Few-shot example seeds to include.")
+    ap.add_argument(
+        "--n-seeds", type=int, default=2,
+        help="Few-shot 'good' example seeds to include (a couple is the default and the "
+        "tested design point — see module docstring).",
+    )
     ap.add_argument("--n-generate", type=int, default=5, help="How many new seeds to ask the LLM for.")
     ap.add_argument(
         "--run-dir",
         type=Path,
         default=None,
         help="An agentafl_runs/<run> dir. If given, echo up to --n-history-failure of "
-        "the LLM's own past failed seeds from its cycles.jsonl into the prompt.",
+        "the LLM's own past failed ('bad') seeds from its cycles.jsonl into the prompt.",
     )
     ap.add_argument(
         "--n-history-failure",
         type=int,
         default=2,
-        help="Past failed seeds (0-2) to show as 'do not repeat'. Needs --run-dir.",
+        help="Past failed 'bad' seeds (0-2) to show as 'avoid repeating'. Needs --run-dir.",
+    )
+    ap.add_argument(
+        "--include-hang",
+        action="store_true",
+        help="Add a hang exemplar to the prompt. Off by default — set aside for a later "
+        "ablation (see module docstring).",
+    )
+    ap.add_argument(
+        "--include-crash",
+        action="store_true",
+        help="Add a crash exemplar to the prompt. Off by default — set aside for a later "
+        "ablation (see module docstring).",
     )
     ap.add_argument("--out", type=Path, default=None)
     ap.add_argument(
@@ -811,6 +771,8 @@ def main():
         format_hint=args.format_hint,
         run_dir=args.run_dir,
         n_history_failure=args.n_history_failure,
+        include_hang=args.include_hang,
+        include_crash=args.include_crash,
     )
     out_text = (
         json.dumps(prompt, indent=2)

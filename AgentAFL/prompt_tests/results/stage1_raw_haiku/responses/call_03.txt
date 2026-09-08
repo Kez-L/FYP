@@ -1,0 +1,88 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ENTITY % param1 "value1">
+  <!ENTITY % param2 "%param1;">
+  <!ELEMENT root ANY>
+  <!ATTLIST root id ID #REQUIRED>
+]>
+<root id="test1">
+  <child attr="&param2;">
+    Text content with entity reference: %param1;
+  </child>
+</root>
+```
+
+```xml
+<!DOCTYPE mixed [
+  <!ENTITY internal "nested">
+  <!NOTATION gif PUBLIC "image/gif">
+  <!ELEMENT mixed (#PCDATA|branch)*>
+  <!ELEMENT branch (#PCDATA)>
+  <!ATTLIST branch type (A|B|C) "A">
+]>
+<mixed>
+  <branch type="B">
+    Content &internal; here
+  </branch>
+  <branch type="C"/>
+  Mixed text &internal;
+</mixed>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % remote SYSTEM "http://example.com/data.xml">
+  <!ENTITY local "replacement">
+  <!ELEMENT catalog (item*)>
+  <!ELEMENT item (name, price)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ATTLIST item sku CDATA #FIXED "SKU123">
+]>
+<catalog>
+  <item sku="SKU123">
+    <name>&local;</name>
+    <price>99.99</price>
+  </item>
+</catalog>
+```
+
+```xml
+<!DOCTYPE nested [
+  <!ENTITY % xxe "<!ENTITY % internal 'internal_value'>">
+  %xxe;
+  <!ELEMENT nested (level1*)>
+  <!ELEMENT level1 (level2*)>
+  <!ELEMENT level2 (#PCDATA)>
+]>
+<nested>
+  <level1>
+    <level2>Deep nesting test</level2>
+  </level1>
+  <level1>
+    <level2>&internal;</level2>
+  </level1>
+</nested>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE strings [
+  <!ENTITY copy "&#169;">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY % dtd-entity "extra">
+  <!ELEMENT strings (entry+)>
+  <!ELEMENT entry (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST entry lang NMTOKEN #IMPLIED>
+]>
+<strings>
+  <entry lang="en">
+    <key>symbol&copy;</key>
+    <value>Copyright&nbsp;2024</value>
+  </entry>
+</strings>
+```

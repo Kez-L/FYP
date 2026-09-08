@@ -1,0 +1,77 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE alpha [
+  <!ELEMENT alpha (beta+, gamma?)>
+  <!ELEMENT beta (#PCDATA)>
+  <!ELEMENT gamma ANY>
+  <!ATTLIST beta id ID #IMPLIED>
+  <!ENTITY ent1 "value1">
+]>
+<alpha>
+  <beta id="b1">&ent1;</beta>
+  <beta id="b2">text &amp; more text</beta>
+  <gamma>
+    <inner attr="&#x41;&#x42;&#x43;">chars</inner>
+  </gamma>
+</alpha>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE notes [
+  <!ELEMENT notes (note*)>
+  <!ELEMENT note (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ENTITY writer "AFL++">
+]>
+<notes>
+  <note date="2026-09-08">Hello, &writer;!</note>
+  <note>
+    Mixed <em>content</em> with <br/> empty element.
+  </note>
+</notes>
+```
+
+```xml
+<root xmlns="http://example.com/ns" xmlns:x="http://example.com/x">
+  <x:item x:id="1" x:flag="true">
+    <x:name>alpha</x:name>
+    <x:data><![CDATA[<notxml>&stillnotxml;]]></x:data>
+  </x:item>
+  <item id="2">
+    <child xml:lang="en">plain</child>
+  </item>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ENTITY % p1 "<!ELEMENT config (section+)>" >
+  <!ENTITY % p2 " <!ELEMENT section (entry*)>" >
+  %p1;
+  %p2;
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry key CDATA #REQUIRED value CDATA #IMPLIED>
+]>
+<config>
+  <section>
+    <entry key="one" value="1"/>
+    <entry key="two"/>
+  </section>
+</config>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE data [
+  <!ENTITY x "X">
+  <!ENTITY y "&x;&x;">
+  <!ENTITY z "&#10;&#9;">
+]>
+<data>
+  <item a="&x;" b="&y;" c="&z;">line1&#10;line2</item>
+  <item><![CDATA[<&x; &y;]]></item>
+</data>
+```

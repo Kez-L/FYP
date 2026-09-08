@@ -1,0 +1,67 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST child id ID #REQUIRED>
+  <!ENTITY internal "test_value">
+]>
+<root>
+  <child id="c1">&internal;</child>
+  <child id="c2">text content</child>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE document [
+  <!ENTITY % external SYSTEM "file:///etc/passwd">
+  <!ENTITY % param "%external;">
+]>
+<document>
+  <element attr="value">
+    <nested>content</nested>
+  </element>
+</document>
+```
+
+```xml
+<root xmlns="http://example.com/ns" xmlns:custom="http://custom.com/ns">
+  <section>
+    <title>Test</title>
+    <custom:data>
+      <item index="0">First</item>
+      <item index="1">Second</item>
+    </custom:data>
+  </section>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config [
+  <!ELEMENT config (setting+)>
+  <!ELEMENT setting (#PCDATA)>
+  <!ATTLIST setting name CDATA #REQUIRED type CDATA #IMPLIED>
+  <!NOTATION gif PUBLIC "GIF">
+  <!ENTITY logo SYSTEM "logo.gif" NDATA gif>
+]>
+<config>
+  <setting name="debug" type="boolean">true</setting>
+  <setting name="timeout">3000</setting>
+  <setting name="path">/home/user</setting>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<root>
+  <![CDATA[
+    This is character data with <special> & "characters"
+  ]]>
+  <element>
+    <!-- Comment with special chars: < > & " ' -->
+    <child attr='single"quotes'>Mixed &amp; entities &#65; &#x42;</child>
+  </element>
+</root>
+```

