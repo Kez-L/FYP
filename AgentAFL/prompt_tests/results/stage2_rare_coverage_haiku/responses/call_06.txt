@@ -1,0 +1,75 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item id ID #REQUIRED type CDATA #IMPLIED>
+]>
+<root>
+  <item id="i1" type="test">Content with &lt;entities&gt;</item>
+  <item id="i2">Mixed content <![CDATA[and CDATA sections]]> here</item>
+</root>
+```
+
+```xml
+<root xmlns="http://default.ns" xmlns:x="http://x.ns" xmlns:y="http://y.ns">
+  <x:elem1 x:attr1="v1" y:attr2="v2" attr3="v3">
+    <y:nested a="1" b="2" c="3" d="4" e="5" f="6" g="7" h="8" i="9" j="10">
+      <![CDATA[Raw character data]]>
+    </y:nested>
+  </x:elem1>
+  <elem2 xmlns:z="http://z.ns" z:deep="value"/>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<doc>
+  <section attr1="" attr2="" attr3="" attr4="" attr5="">
+    <subsection a="x" b="y" c="z"/>
+    <subsection a="" b="" c="" d="" e="" f="" g="" h=""/>
+  </section>
+  <malformed xmlns:ns1="" xmlns:="urn:invalid" ns1:attr="val" :badattr="test">
+    <empty/>
+  </malformed>
+</doc>
+```
+
+```xml
+<!DOCTYPE test [
+  <!ELEMENT test (a|b|c)*>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b EMPTY>
+  <!ELEMENT c (a,b)*>
+  <!ATTLIST b x CDATA #REQUIRED y NMTOKEN #IMPLIED>
+  <!ENTITY myent "entity_value">
+]>
+<test>
+  <a>Text with &myent; expansion</a>
+  <b x="required" y="optional" z="extra"/>
+  <c>
+    <a>Nested</a>
+    <b x="v1"/>
+  </c>
+  <c b:x="prefixed" xmlns:b="http://test"/>
+</test>
+```
+
+```xml
+<root>
+  <deeply>
+    <nested>
+      <structure attr1="1" attr2="2" attr3="3" attr4="4" attr5="5" attr6="6">
+        <level4 a="10" b="20" c="30" d="40" e="50" f="60" g="70" h="80" i="90"/>
+        <level4 xmlns:ns="http://ns" ns:prefixed="value" regular="attr">
+          <level5>
+            <level6 x="y"/>
+          </level5>
+        </level4>
+      </structure>
+    </nested>
+  </deeply>
+  <duplicate xmlns:dup="http://dup" dup:same="collision" same="val"/>
+  <duplicate xmlns:dup="http://other" dup:same="different" same="val"/>
+</root>
+```

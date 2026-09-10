@@ -1,0 +1,89 @@
+```yaml
+%YAML 1.1
+---
+!!map {
+  ? !!str "flow-key"
+  : !!seq [!!int 0, !!int -1, !!int 2147483647, !!int 0x10, !!int 0755],
+  ? !!str "nested"
+  : !!map {
+      ? !!str "bools"
+      : [yes, no, ON, off, true, false],
+      ? !!str "floats"
+      : [.inf, -.Inf, .NaN, 1.2e+3, 6.022e23],
+    },
+  ? !!str "multiline"
+  : !!str "line1\nline2\tend"
+}
+```
+
+```yaml
+%YAML 1.2
+---
+- &root
+  - *root
+  - &a
+    name: "quoted: value"
+    data: {hex: 0xDEAD, oct: 0o77, bin: 0b1010}
+  - *a
+- >
+  folded
+  text
+  with
+  repeated
+  breaks
+- |
+  literal
+  text
+  with
+  a nul-like escape \0 and unicode ☃
+```
+
+```yaml
+---
+# document with directives-like content and explicit tags
+? !!str "?"   # plain question mark key
+: !!seq
+  - !!timestamp "2001-12-15T02:59:43.1Z"
+  - !!timestamp "2002-12-14t21:59:43.10-05:00"
+  - !!timestamp "2001-12-14 21:59:43.10 -5"
+  - !!null null
+  - !!binary "AAEC/f7+"
+```
+
+```yaml
+---
+flow: [
+  {a: 1, b: [2, 3, {c: d}]},
+  {x: y, z: !!str "mapped"},
+  [],
+  {},
+  [!!str "comma, inside", "brackets [ok]", "brace {ok}"]
+]
+anchor_alias:
+  first: &id001 {k1: v1, k2: v2}
+  second: *id001
+  third: *id001
+```
+
+```yaml
+---
+# mixed indentation and block scalars
+top:
+  plain: hello
+  single: 'single ''quote'' test'
+  double: "double\nquote\t\U0001F600"
+  literal: |2
+      indented
+        block
+      text
+  folded: >-
+      one
+      two
+
+      three
+seq:
+  - one
+  - two
+  - key: value
+    map: {inner: [a, b, c]}
+```

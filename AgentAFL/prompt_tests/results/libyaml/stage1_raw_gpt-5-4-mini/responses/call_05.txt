@@ -1,0 +1,104 @@
+```yaml
+---
+anchors:
+  base: &BASE
+    name: Example
+    enabled: true
+    count: 3
+    tags: [alpha, beta, gamma]
+  clone1:
+    <<: *BASE
+    count: 7
+  clone2: *BASE
+sequence:
+  - &A { k1: v1, k2: v2 }
+  - *A
+  - !!set
+      ? red
+      ? green
+      ? blue
+```
+
+```yaml
+%YAML 1.2
+%TAG !e! tag:example.com,2024:
+---
+!e!root
+metadata:
+  created: 2024-12-31T23:59:59Z
+  ratio: -12.34e-05
+  hex: 0x1A2B
+  oct: 0o755
+  sexagesimal: 1:20:30
+payload: !e!payload
+  items:
+    - !!binary "QUJDREVGR0g="
+    - !!timestamp 2001-12-15 02:59:43.1 +02:00
+    - { empty: "", inf: .inf, nan: .NaN }
+```
+
+```yaml
+---
+multidoc: first
+...
+---
+# second document with flow styles
+flow_map: {a: 1, b: [2, 3, {c: d}]}
+flow_seq: [!!str "x", !!int "42", !!bool "false", !!null ~]
+...
+---
+quoted:
+  single: 'can''t, won''t, shouldn''t'
+  double: "line1\nline2\t\u263A"
+  plain: plain-text
+```
+
+```yaml
+---
+block_styles:
+  literal_keep: |+
+    line one
+
+    line three
+  literal_strip: |-
+    keep
+    trailing
+  folded_keep: >+
+    folded
+      indented
+    text
+  folded_strip: >-
+    a
+    b
+    c
+comments:
+  - "# not a comment inside scalar"
+  - |
+    # actual text line
+    value: 1
+```
+
+```yaml
+---
+deep_nesting:
+  a:
+    b:
+      c:
+        d:
+          e:
+            f:
+              g:
+                h:
+                  i:
+                    j: end
+anchors_and_aliases:
+  seq: &S
+    - one
+    - two
+    - three
+  alias_seq: *S
+  map: &M
+    alpha: 1
+    beta: 2
+  alias_map: *M
+```

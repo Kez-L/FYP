@@ -1,0 +1,111 @@
+```yaml
+%YAML 1.1
+%TAG !e! tag:example.org,2026:alpha/
+---
+!e!root &root_anchor
+sequence:
+  - plain: yes
+    alias_to_plain: *root_anchor
+  - quoted_key: "colon: inside"
+    folded: >
+      first line
+      second line
+      third line
+  - literal: |
+      leading space
+        indented deeper
+      trailing line
+mapping:
+  ? !!str "?"
+  : !!int "7"
+  ? !!binary "AAEC"
+  : !!null ""
+...
+```
+
+```yaml
+%YAML 1.2
+---
+base: &base
+  name: test
+  values:
+    - 1
+    - 2
+    - 3
+merged:
+  <<: *base
+  name: override
+  values: [4, 5, 6]
+  extra:
+    - !!set
+      ? a
+      ? b
+      ? c
+    - !!omap
+      - one: 1
+      - two: 2
+...
+```
+
+```yaml
+---
+- !<tag:yaml.org,2002:map>
+  ? "key with spaces"
+  : "value"
+  ? "multiline\nkey"
+  : "line1\nline2"
+- &a
+  - &b
+    - *a
+    - *b
+  - [!!float ".inf", !!float "-.inf", !!float ".nan"]
+- >
+  paragraph one
+
+  paragraph two
+...
+```
+
+```yaml
+%YAML 1.1
+---
+document:
+  scalar_tests:
+    plain1: on
+    plain2: Off
+    plain3: null
+    plain4: 0xFF
+    plain5: 0123
+    quoted1: 'single ''quote'''
+    quoted2: "double \"quote\" and \u263A"
+  nested:
+    - {a: 1, b: 2, c: 3}
+    - [!!timestamp 2001-12-15T02:59:43.1Z, !!bool true, !!bool false]
+    - |
+        block
+        with
+        tabs	and spaces
+...
+```
+
+```yaml
+%TAG !x! tag:example.net,2026:types/
+---
+!x!container
+? !!str "complex key"
+: !!seq
+  - !!map { nested: { x: 1, y: 2 } }
+  - !!str "end"
+? !!int "10"
+: >
+    folded
+    text
+    with
+    blank lines
+
+    and more
+? !!bool "false"
+: !!binary |
+    QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVo=
+...
+```

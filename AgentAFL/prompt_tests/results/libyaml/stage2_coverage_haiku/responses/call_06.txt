@@ -1,0 +1,121 @@
+```yaml
+%YAML 1.2
+%TAG ! tag:example.com,2024:
+---
+!<tag:example.com,2024:custom>
+nested_anchors:
+  first: &anchor1
+    deep:
+      value: 42
+  second: &anchor2
+    ref: *anchor1
+  circular: *anchor2
+block_scalar_variants:
+  strip: |-
+    no final newline
+  keep: |+
+    preserve all
+    newlines
+
+
+  clip: |
+    single final
+    newline
+unicode_edge_cases:
+  rtl: "مرحبا بك"
+  emoji: "🔥💯🚀"
+  combining: "e\u0301"
+```
+
+```yaml
+---
+flow_style_nested:
+  outer: {inner: {deep: [1, 2, {key: value}]}, another: "string"}
+  mixed: [a, b, {c: d}, [e, f]]
+array_of_scalars: [1, "two", 3.0, true, false, null, ~]
+quoted_strings:
+  double: "escaped \" quote"
+  single: 'escaped '' quote'
+  unquoted: plain scalar here
+special_chars: "tab:\t newline:\n"
+```
+
+```yaml
+%YAML 1.1
+---
+implicit_flow: {a: 1, b: 2}
+explicit_block:
+  x: 10
+  y: 20
+merge_keys:
+  defaults: &defaults
+    timeout: 30
+    retry: 3
+  prod:
+    <<: *defaults
+    timeout: 60
+plain_scalars:
+  yes_word: yes
+  no_word: no
+  true_word: true
+  false_word: false
+  null_word: null
+  tilde: ~
+  at_sign: @value
+  ampersand: &text
+```
+
+```yaml
+---
+empty_structures:
+  empty_dict: {}
+  empty_list: []
+  empty_string: ""
+  empty_null: null
+numbers:
+  integer: 42
+  float: 3.14159
+  scientific: 1.2e-3
+  octal: 0o755
+  hex: 0x1a2b
+  binary: 0b1010
+  infinity: .inf
+  neg_infinity: -.inf
+  nan: .nan
+strings_with_colons: "key: value"
+strings_with_hashes: "text # with hash"
+```
+
+```yaml
+---
+complex_block_scalars:
+  folded_strip: >-
+    Line one continues
+    to line two and folds
+    into single paragraph
+  literal_keep: |+
+    Line one
+    Line two
+
+
+  literal_clip: |-
+    Last line
+    no trailing
+multiline_dict_keys:
+  ? |
+    This is a
+    multiline key
+  : |
+    This is a
+    multiline value
+anchors_and_aliases:
+  base: &base_anchor
+    - item1
+    - item2
+  refs:
+    - *base_anchor
+    - *base_anchor
+  override: &override
+    setting: changed
+  applied: *override
+```

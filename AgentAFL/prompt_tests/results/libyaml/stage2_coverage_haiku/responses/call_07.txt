@@ -1,0 +1,88 @@
+```yaml
+%YAML 1.2
+%TAG ! tag:example.com,2024:
+---
+!<tag:example.com,2024:custom>
+anchors_and_aliases:
+  base: &shared_anchor
+    x: 10
+    y: 20
+  ref1: *shared_anchor
+  ref2: *shared_anchor
+  nested:
+    deep: *shared_anchor
+```
+
+```yaml
+---
+flow_collections:
+  flow_map: {a: 1, b: 2, c: {nested: 3}}
+  flow_seq: [1, 2, [3, 4], 5]
+  mixed: {list: [a, b, c], dict: {x: y}}
+  empty_flow_map: {}
+  empty_flow_seq: []
+  single_item: [42]
+```
+
+```yaml
+---
+block_sequences:
+  - item1
+  - item2
+  - - nested1
+    - nested2
+    - - deeply_nested
+  - item3
+  -
+  - item_after_empty
+untagged_values:
+  null_value:
+  explicit_null: null
+  tilde_null: ~
+  boolean_yes: yes
+  boolean_no: no
+```
+
+```yaml
+%TAG !! tag:internal,2024:
+---
+!!map
+complex_keys:
+  ? !!str "key with spaces"
+  : !!int 100
+  ? {map: key}
+  : [sequence, value]
+  ? - sequence
+    - key
+  : scalar_value
+quoted_strings:
+  single: 'single quoted'
+  double: "double quoted"
+  literal: |
+    literal block
+    preserves newlines
+  folded: >
+    folded block
+    collapses newlines
+```
+
+```yaml
+---
+edge_cases:
+  unicode_text: "日本語テキスト"
+  special_chars: "!@#$%^&*()"
+  backslash: "path\\to\\file"
+  colon_in_value: "time: 12:30:45"
+  dash_prefix: "- not a list"
+  question_mark: "what? really?"
+  pipe_char: "|pipe|delimited"
+  percent_sign: "%percentage"
+  ampersand: "&reference"
+  asterisk: "*wildcard"
+  hash: "#hashtag"
+  numeric_strings:
+    octal_like: "0777"
+    hex_like: "0xDEADBEEF"
+    float_like: "3.14159"
+    exp_like: "1.5e-10"
+```

@@ -1,0 +1,120 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+<!ELEMENT root (nested*)>
+<!ELEMENT nested (data*)>
+<!ELEMENT data (#PCDATA)>
+<!ATTLIST nested id ID #REQUIRED>
+<!ATTLIST nested ref IDREF #IMPLIED>
+<!ENTITY myent "expanded_content">
+]>
+<root>
+  <nested id="n1">
+    <data>&myent;</data>
+  </nested>
+  <nested id="n2" ref="n1">
+    <data>test</data>
+  </nested>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE document [
+<!ELEMENT document (section+)>
+<!ELEMENT section (title, (paragraph|list)+)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT paragraph (#PCDATA | emphasis)*>
+<!ELEMENT emphasis (#PCDATA)>
+<!ELEMENT list (item+)>
+<!ELEMENT item (#PCDATA)>
+<!ATTLIST document version CDATA #FIXED "1.0">
+<!ATTLIST section level (1|2|3) "1">
+<!ATTLIST list type (ordered|unordered) "unordered">
+<!NOTATION svg PUBLIC "image/svg+xml">
+]>
+<document version="1.0">
+  <section level="1">
+    <title>Main Section</title>
+    <paragraph>Text with <emphasis>emphasis</emphasis></paragraph>
+    <list type="unordered">
+      <item>First item</item>
+      <item>Second item</item>
+    </list>
+  </section>
+</document>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE catalog [
+<!ELEMENT catalog (product+)>
+<!ELEMENT product (name, price, stock)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT price (#PCDATA)>
+<!ELEMENT stock (#PCDATA)>
+<!ATTLIST product sku CDATA #REQUIRED>
+<!ATTLIST product inStock (yes|no) "yes">
+<!ATTLIST price currency (USD|EUR|GBP) "USD">
+<!ENTITY discount "0.15">
+]>
+<catalog>
+  <product sku="PROD001" inStock="yes">
+    <name>Widget</name>
+    <price currency="USD">29.99</price>
+    <stock>100</stock>
+  </product>
+  <product sku="PROD002" inStock="no">
+    <name>Gadget</name>
+    <price currency="EUR">49.50</price>
+    <stock>0</stock>
+  </product>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE feed [
+<!ELEMENT feed (entry*)>
+<!ELEMENT entry (id, updated, content)>
+<!ELEMENT id (#PCDATA)>
+<!ELEMENT updated (#PCDATA)>
+<!ELEMENT content (#PCDATA)>
+<!ATTLIST feed xmlns CDATA #FIXED "http://www.w3.org/2005/Atom">
+<!ATTLIST entry published CDATA #IMPLIED>
+<!ATTLIST content type (text|html|xhtml) "text">
+<!ENTITY copy "&#169;">
+]>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <entry published="2024-01-01">
+    <id>tag:example.com,2024:entry1</id>
+    <updated>2024-01-01T12:00:00Z</updated>
+    <content type="html">&lt;p&gt;Content&lt;/p&gt;</content>
+  </entry>
+</feed>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE metadata [
+<!ELEMENT metadata (item+)>
+<!ELEMENT item (key, value)>
+<!ELEMENT key (#PCDATA)>
+<!ELEMENT value (#PCDATA | nested)*>
+<!ELEMENT nested (#PCDATA)>
+<!ATTLIST metadata version CDATA #REQUIRED>
+<!ATTLIST item index NMTOKEN #REQUIRED>
+<!ATTLIST value type (string|number|boolean) "string">
+<!ENTITY ns "http://namespace.example.org/">
+]>
+<metadata version="2.0">
+  <item index="1">
+    <key>setting_one</key>
+    <value type="string">enabled</value>
+  </item>
+  <item index="2">
+    <key>setting_two</key>
+    <value type="number">42<nested>inner</nested></value>
+  </item>
+</metadata>
+```

@@ -1,0 +1,145 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+<!ELEMENT root (item+)>
+<!ELEMENT item (name, value*)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT value (#PCDATA)>
+<!ATTLIST item id ID #REQUIRED type CDATA #IMPLIED>
+<!ATTLIST value unit NMTOKEN #IMPLIED>
+<!ENTITY % content "INCLUDE">
+]>
+<root>
+  <item id="i1" type="sensor">
+    <name>Temperature</name>
+    <value unit="C">23.5</value>
+    <value unit="F">74.3</value>
+  </item>
+  <item id="i2">
+    <name>Pressure</name>
+    <value>1013.25</value>
+  </item>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE svg [
+<!ELEMENT svg (circle | rect | polygon)*>
+<!ELEMENT circle EMPTY>
+<!ELEMENT rect EMPTY>
+<!ELEMENT polygon EMPTY>
+<!ATTLIST circle cx CDATA #REQUIRED cy CDATA #REQUIRED r CDATA #REQUIRED fill CDATA #IMPLIED>
+<!ATTLIST rect x CDATA #REQUIRED y CDATA #REQUIRED width CDATA #REQUIRED height CDATA #REQUIRED>
+<!ATTLIST polygon points CDATA #REQUIRED>
+]>
+<svg>
+  <circle cx="50" cy="50" r="40" fill="red"/>
+  <rect x="10" y="10" width="100" height="50"/>
+  <polygon points="0,0 100,0 50,100"/>
+</svg>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE message [
+<!ELEMENT message (header, body, footer?)>
+<!ELEMENT header (from, to, subject)>
+<!ELEMENT body (paragraph+)>
+<!ELEMENT footer EMPTY>
+<!ELEMENT from (#PCDATA)>
+<!ELEMENT to (#PCDATA)>
+<!ELEMENT subject (#PCDATA)>
+<!ELEMENT paragraph (#PCDATA | emphasis)*>
+<!ELEMENT emphasis (#PCDATA)>
+<!ATTLIST message priority (high|normal|low) "normal" timestamp CDATA #IMPLIED>
+<!ATTLIST footer generated CDATA #IMPLIED>
+]>
+<message priority="high" timestamp="2024-01-15T10:30:00Z">
+  <header>
+    <from>sender@example.com</from>
+    <to>recipient@example.com</to>
+    <subject>Important Update</subject>
+  </header>
+  <body>
+    <paragraph>This is the first paragraph with <emphasis>emphasized text</emphasis>.</paragraph>
+    <paragraph>Second paragraph content here.</paragraph>
+  </body>
+  <footer generated="true"/>
+</message>
+```
+
+```xml
+<!DOCTYPE config [
+<!ELEMENT config (database | cache | logging)*>
+<!ELEMENT database (connection+)>
+<!ELEMENT cache (server+)>
+<!ELEMENT logging (level, output)>
+<!ELEMENT connection (host, port, credentials)>
+<!ELEMENT server (#PCDATA)>
+<!ELEMENT host (#PCDATA)>
+<!ELEMENT port (#PCDATA)>
+<!ELEMENT credentials (#PCDATA)>
+<!ELEMENT level (#PCDATA)>
+<!ELEMENT output (#PCDATA)>
+<!ATTLIST database type CDATA #REQUIRED version CDATA #IMPLIED>
+<!ATTLIST cache ttl CDATA "3600">
+<!ATTLIST connection timeout CDATA #IMPLIED pool_size NMTOKEN #IMPLIED>
+<!NOTATION jpeg PUBLIC "image/jpeg">
+]>
+<config>
+  <database type="postgresql" version="13">
+    <connection timeout="30" pool_size="10">
+      <host>db.internal</host>
+      <port>5432</port>
+      <credentials>user:pass</credentials>
+    </connection>
+  </database>
+  <cache ttl="7200">
+    <server>cache1.local</server>
+    <server>cache2.local</server>
+  </cache>
+  <logging>
+    <level>DEBUG</level>
+    <output>/var/log/app.log</output>
+  </logging>
+</config>
+```
+
+```xml
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE feed [
+<!ELEMENT feed (entry*)>
+<!ELEMENT entry (id, title, link, published, author*)>
+<!ELEMENT id (#PCDATA)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT link EMPTY>
+<!ELEMENT published (#PCDATA)>
+<!ELEMENT author (name, email?)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT email (#PCDATA)>
+<!ATTLIST feed version CDATA #FIXED "1.0" xmlns CDATA #IMPLIED>
+<!ATTLIST link href CDATA #REQUIRED rel CDATA #IMPLIED type CDATA #IMPLIED>
+<!ATTLIST entry updated CDATA #IMPLIED status (published|draft|archived) "published">
+<!ENTITY nbsp "&#160;">
+<!ENTITY copy "&#169;">
+]>
+<feed version="1.0" xmlns="http://www.w3.org/2005/Atom">
+  <entry updated="2024-01-15" status="published">
+    <id>urn:uuid:1234-5678-90ab</id>
+    <title>First Entry Title</title>
+    <link href="http://example.com/entry1" rel="alternate" type="text/html"/>
+    <published>2024-01-15T09:00:00Z</published>
+    <author>
+      <name>Alice Author</name>
+      <email>alice@example.com</email>
+    </author>
+  </entry>
+  <entry status="draft">
+    <id>urn:uuid:abcd-ef01-2345</id>
+    <title>Draft Entry</title>
+    <link href="http://example.com/entry2"/>
+    <published>2024-01-14T15:30:00Z</published>
+  </entry>
+</feed>
+```

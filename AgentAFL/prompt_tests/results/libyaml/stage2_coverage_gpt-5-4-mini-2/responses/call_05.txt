@@ -1,0 +1,95 @@
+```yaml
+%YAML 1.1
+---
+plain: simple
+quoted: "double quoted string"
+single: 'single quoted string'
+mapping:
+  a: 1
+  b: 2
+  c:
+    - one
+    - two
+    - three
+flow_map: {x: 10, y: 20, z: [1, 2, 3]}
+...
+``` 
+
+```yaml
+---
+- simple-sequence
+- 123
+- 4.56
+- true
+- false
+- null
+- "text with \t tabs"
+- 'text with # and : characters'
+- |
+  line 1
+  line 2
+  line 3
+- >
+  folded
+  block
+  text
+``` 
+
+```yaml
+%TAG !e! tag:example.com,2024:
+---
+!e!root
+name: example
+items:
+  - !e!node
+    id: 1
+    attrs: &A
+      kind: alpha
+      enabled: yes
+  - !e!node
+    id: 2
+    attrs: *A
+    note: "alias reuse"
+meta: !e!meta {author: tester, version: 1}
+... 
+``` 
+
+```yaml
+---
+anchors:
+  first: &first_anchor
+    left: 11
+    right: 22
+  second: &second_anchor
+    left: 33
+    right: 44
+references:
+  - *first_anchor
+  - *second_anchor
+  - &inline_anchor {k1: v1, k2: v2}
+  - *inline_anchor
+matrix:
+  - [1, 2, 3]
+  - [4, 5, 6]
+  - [7, 8, 9]
+``` 
+
+```yaml
+---
+# Document with nested collections and explicit keys
+? [a, b, c]
+: { one: 1, two: 2, three: 3 }
+? { k: v, n: 5 }
+: 
+  - ? inner
+    : value
+  - ? another
+    : [10, 20, 30]
+sequence_of_maps:
+  - ? key1
+    : val1
+  - ? key2
+    : val2
+  - ? key3
+    : val3
+...

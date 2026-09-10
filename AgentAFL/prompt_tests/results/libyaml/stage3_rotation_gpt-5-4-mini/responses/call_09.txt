@@ -1,0 +1,151 @@
+```yaml
+%YAML 1.1
+%TAG !e! tag:example.com,2026:
+---
+!e!root
+name: "parser-edge"
+empty: ""
+null1: ~
+null2: null
+bools: [true, false, yes, no, on, off]
+ints:
+  dec: 12345
+  hex: 0x1f
+  oct: 0o755
+  sexagesimal: 1:2:3
+floats:
+  nan: .nan
+  inf: .inf
+  neg_inf: -.inf
+  sci: 6.022e23
+nested:
+  - key: value
+    seq:
+      - a
+      - b
+      - c
+  - { flow: "mapping", inner: [1, 2, 3] }
+...
+```
+
+```yaml
+---
+# anchors, aliases, and merge in a different shape
+defaults: &defaults
+  host: localhost
+  port: 8080
+  paths:
+    - /api
+    - /health
+  flags: { debug: true, trace: false }
+
+service-a:
+  <<: *defaults
+  port: 8081
+  paths:
+    - /v1
+    - /status
+
+service-b:
+  <<: *defaults
+  host: 127.0.0.1
+  extra: &extra
+    retries: 3
+    timeout: 5.5
+
+bundle:
+  a: *defaults
+  b: *extra
+  c:
+    <<: *defaults
+    flags:
+      debug: false
+      trace: true
+```
+
+```yaml
+---
+# block scalar edge cases with chomping and indentation
+text1: |-
+  first line
+    indented line
+  last line
+
+text2: >+
+    folded one
+      keep indent
+
+    blank above preserved
+  final folded line
+
+text3: |2
+      six spaces kept
+    four spaces kept
+      mix
+
+text4: >-
+  line A
+  line B
+    line C
+  line D
+
+document_end: "before terminator"
+...
+```
+
+```yaml
+---
+# explicit tags and non-string keys
+? !!str "key:with:colons"
+: !!seq
+  - !!int "0"
+  - !!int "1"
+  - !!int "2"
+
+? !!set
+  ? alpha
+  ? beta
+  ? gamma
+: !!map
+  nested: yes
+
+? [!!int 1, !!int 2, !!int 3]
+: tuple-like key
+
+? { a: 1, b: 2 }
+: flow-map-key
+
+typed:
+  timestamp: !!timestamp "2001-12-15T02:59:43.1Z"
+  binary: !!binary |
+    QUJDREVGR0gK
+  omap: !!omap
+    - one: 1
+    - two: 2
+```
+
+```yaml
+---
+# multi-document stream with varied content
+---
+doc1:
+  - simple
+  - "quoted: value"
+  - 'single: value'
+  - >
+    wrapped
+    text
+  - |
+    literal
+    text
+---
+doc2:
+  matrix:
+    - [1, 2, 3]
+    - [4, 5, 6]
+    - [7, 8, 9]
+  weird:
+    ? {x: 1, y: [2, 3]}
+    : {z: "nested"}
+...
+```

@@ -1,0 +1,130 @@
+```yaml
+%YAML 1.2
+%TAG !cfg! tag:example.org,2026:cfg/
+---
+!cfg!document
+meta:
+  version: 42
+  active: true
+  checksum: 0xDEADBEEF
+  note: "plain text with : colon and # hash"
+payload:
+  - id: 1
+    name: alpha
+    data: !!binary |
+      AAECAwQFBgcICQoLDA0ODw==
+  - id: 2
+    name: beta
+    data: !!null ""
+  - id: 3
+    name: gamma
+    ref: &anchor
+      x: 12
+      y: 34
+      z: 56
+  - id: 4
+    name: delta
+    ref_copy: *anchor
+...
+```
+
+```yaml
+---
+first: >
+  This is a folded
+  multiline scalar that should
+  become one line.
+second: |
+  This is a literal block.
+  It preserves line breaks.
+  It also contains special characters: [] {} , : # ! ?
+third: "Escaped \u263A and \x41 and \n newline"
+sequence:
+  - &base { key: value, count: 7 }
+  - *base
+  - !!str 12345
+  - !!int "0007"
+  - !!float ".inf"
+...
+```
+
+```yaml
+%YAML 1.1
+---
+mapping:
+  ? !!str "?"
+  : "question key"
+  ? !!str ":"
+  : "colon key"
+  ? !!str "#"
+  : "hash key"
+  ? !!str "null"
+  : null
+  ? !!str "yes"
+  : yes
+  ? !!str "no"
+  : no
+  ? !!str "on"
+  : on
+  ? !!str "off"
+  : off
+list:
+  - { a: 1, b: 2, c: 3 }
+  - [!!int 0, !!int -1, !!int +2, 03]
+  - [!!float 1.0, !!float -2.5, !!float 6.022e23]
+...
+```
+
+```yaml
+---
+# Anchors reused across nested structures
+defaults: &defaults
+  host: localhost
+  port: 9000
+  retries: 5
+
+services:
+  api:
+    <<: *defaults
+    path: /v1/api
+    secure: false
+  worker:
+    <<: *defaults
+    path: /v1/worker
+    secure: true
+
+graph:
+  - &node1 { id: n1, next: &node2 { id: n2, next: &node3 { id: n3 } } }
+  - *node2
+  - *node3
+  - { cycle_a: &A { link: *A } }
+...
+```
+
+```yaml
+---
+multi:
+  plain: simple
+  quoted_single: 'single ''quote'' example'
+  quoted_double: "double \"quote\" example"
+  block_keep: |+
+    line 1
+    line 2
+
+  block_strip: |-
+    keep one
+    keep two
+
+  folded_chomp: >-
+    alpha
+    beta
+
+  nested:
+    - >
+      outer folded
+      inner text
+    - |
+      outer literal
+      inner text
+    - [one, two, three, { four: 4, five: 5 }]
+...

@@ -1,0 +1,94 @@
+```
+%YAML 1.2
+%TAG ! tag:example.com,2024:
+--- !custom
+scalar_with_tag: !int "42"
+explicit_flow_map: {a: 1, b: 2, c: 3}
+explicit_flow_seq: [x, y, z]
+block_scalar_literal: |
+  line1
+  line2
+  line3
+block_scalar_folded: >
+  wrapped
+  text
+  here
+```
+
+```
+---
+anchor_test: &anchor_id
+  key: value
+reference_test: *anchor_id
+multiple_references:
+  ref1: *anchor_id
+  ref2: *anchor_id
+deep_nesting:
+  level1:
+    level2:
+      level3:
+        level4:
+          level5: deep_value
+          list: [a, b, c, d, e]
+```
+
+```
+---
+mixed_content:
+  - plain_string
+  - 'single quoted'
+  - "double quoted"
+  - |
+    literal
+    multiline
+  - >
+    folded
+    multiline
+  - !!str 123
+  - !!bool yes
+implicit_types:
+  integer: 42
+  float: 3.14
+  bool_yes: yes
+  bool_no: no
+  null_value: null
+  inf_value: .inf
+  nan_value: .nan
+```
+
+```
+---
+directives_and_tags:
+  tagged_value: !!binary |
+    R0lGODlhDAAMAIQAAP//9/X17unp5WZmTmzv9PDu9/
+  timestamp: !!timestamp 2001-12-15T02:59:43.1Z
+  custom: !!tag:example.com,2024:custom value
+flow_and_block_mix:
+  flow: {x: 10, y: 20}
+  block:
+    x: 10
+    y: 20
+special_chars: "key: with: colons"
+```
+
+```
+---
+unicode_and_escapes:
+  emoji: "🎉🚀"
+  escaped: "line1\nline2\ttab"
+  unicode_escape: "\u0048\u0065\u006C\u006C\u006F"
+complex_anchors:
+  &merge_base
+  default: value1
+  override_me: value2
+derived:
+  <<: *merge_base
+  override_me: value3
+  new_key: value4
+edge_cases:
+  empty_string: ""
+  just_space: " "
+  colon_at_end: "text:"
+  dash_at_start: "-text"
+  question_mark: "?"
+```

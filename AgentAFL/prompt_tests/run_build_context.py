@@ -26,10 +26,13 @@ that one line changes. Everything else (good/bad seed selection, history
 feedback, scoring, report) is identical, so dropping --rotate reproduces the
 Stage 1 arm exactly.
 
-    python3 run_build_context.py --label stage1_raw            # Stage 1 (raw bad seeds)
-    python3 run_build_context.py --rotate                      # Stage 3 (-> --label stage3_rotation)
+    python3 run_build_context.py --label stage1_raw                   # Stage 1 (raw bad seeds)
+    python3 run_build_context.py --seed-selector coverage            # Stage 2 (-> stage2_coverage)
+    python3 run_build_context.py --seed-selector coverage-per-byte   # Stage 2.1 (-> stage2_coverage_per_byte)
+    python3 run_build_context.py --seed-selector rare-coverage       # Stage 2.2 (-> stage2_rare_coverage)
+    python3 run_build_context.py --rotate                            # Stage 3 (-> stage3_rotation)
     python3 run_build_context.py --provider openai --no-temperature --rotate
-    python3 run_build_context.py --n-history-failure 0         # no avoid block (good seeds only)
+    python3 run_build_context.py --n-history-failure 0               # no avoid block (good seeds only)
 """
 from __future__ import annotations
 
@@ -51,6 +54,10 @@ import build_context as bc                                           # noqa: E40
 import strategies                                                    # noqa: E402
 from batch_harness import (                                          # noqa: E402
     BatchConfig, ProviderCaller, run_batch, DEFAULT_MODEL, model_tag,
+)
+from select_seeds_by_coverage import (                              # noqa: E402
+    make_coverage_selector, make_coverage_per_byte_selector,
+    make_rare_coverage_selector, high_coverage_selector, no_seed_selector,
 )
 
 DEFAULT_CAMPAIGN = REPO_ROOT / "afl-output-libxml2-20260907"          # the 12-hour run
@@ -95,6 +102,24 @@ def main():
                          "(call 0 -> generate-new x5, call 1 -> mutate-existing x5, ...). "
                          "Drop this flag to get the Stage 1 arm.")
     ap.add_argument("--n-seeds", type=int, default=2, help="good-seed examples in the prompt (PLAN.md default 2)")
+    ap.add_argument(
+        "--seed-selector",
+        choices=("default", "coverage", "coverage-per-byte",
+                 "high-coverage", "rare-coverage", "no-seed"),
+        default="default",
+        help="how the good-seed examples are picked from the +cov queue entries. "
+             "'default' = build_context.select_diverse_seeds (size/printability band). "
+             "'coverage' = rank by total edges hit via afl-showmap, same size band, "
+             "edge-set-Jaccard de-dup (make_coverage_selector). "
+             "'coverage-per-byte' = Stage 2.1: rank by edges-per-byte (coverage density) "
+             "in a tight 200-800 B band, fall back to 'default' if nothing is in band "
+             "(make_coverage_per_byte_selector). "
+             "'rare-coverage' = Stage 2.2: rank by edge rarity (sum of 1/frequency over "
+             "the seed's edges, frequency counted across the in-band candidates) — "
+             "AFLFast's rarely-hit-path emphasis, same 200-800 B band "
+             "(make_rare_coverage_selector). "
+             "'high-coverage'/'no-seed' = the remaining select_seeds_by_coverage stubs.",
+    )
     ap.add_argument("--n-history-failure", type=int, default=2,
                     help="avoid-examples drawn from this batch's own prior seeds (0 disables; PLAN.md default 2)")
     ap.add_argument("--fmt", default="XML document")
@@ -128,13 +153,39 @@ def main():
         print("NOTE: --skip-eval means no seed is classified, so the 'tried before, avoid' "
               "block will always be empty (scan_cycle_history needs BAD/NO_COVERAGE statuses).")
 
-    label = args.label or ("stage3_rotation" if args.rotate else "stage1_raw")
+    if args.label:
+        label = args.label
+    elif args.rotate:
+        label = "stage3_rotation"
+    elif args.seed_selector != "default":
+        label = f"stage2_{args.seed_selector.replace('-', '_')}"
+    else:
+        label = "stage1_raw"
     model = args.model or DEFAULT_MODEL[args.provider]
     tag = args.tag or model_tag(args.provider, model)
     out_dir = args.out or (HERE / "results" / f"{label}_{tag}")
     temperature = None if args.no_temperature else args.temperature
     caller = ProviderCaller(args.provider, model, temperature, args.env_file)
     _memoise_scan_queue()
+
+    # Good-seed selection strategy (Stage 2). Built ONCE here, not inside
+    # prompt_fn, so make_coverage_selector's afl-showmap edge cache is shared
+    # across all 10 calls (the frozen queue is showmap'd once, then reused).
+    if args.seed_selector == "default":
+        seed_selector = bc.select_diverse_seeds
+    elif args.seed_selector == "coverage":
+        seed_selector = make_coverage_selector(
+            args.target, args.target_args.split(), afl_showmap_bin=args.afl_showmap_bin)
+    elif args.seed_selector == "coverage-per-byte":
+        seed_selector = make_coverage_per_byte_selector(
+            args.target, args.target_args.split(), afl_showmap_bin=args.afl_showmap_bin)
+    elif args.seed_selector == "rare-coverage":
+        seed_selector = make_rare_coverage_selector(
+            args.target, args.target_args.split(), afl_showmap_bin=args.afl_showmap_bin)
+    elif args.seed_selector == "high-coverage":
+        seed_selector = high_coverage_selector
+    else:
+        seed_selector = no_seed_selector
 
     # Stage 3 (--rotate): same 10x5 batch shape as Stage 1 — only the closing
     # instruction changes, cycling per call (call 0 -> generate-new x5, call 1 ->
@@ -149,9 +200,11 @@ def main():
             seed_kind=args.seed_kind,
             run_dir=history_dir, n_history_failure=args.n_history_failure,
             closing_instruction=closing,
+            seed_selector=seed_selector,
         )
         return {"system": p["system"], "user": p["user"], "meta": {
             "n_seeds": args.n_seeds, "n_history_failure": args.n_history_failure,
+            "seed_selector": args.seed_selector,
             "used_history": history_dir is not None,
             "campaign_root": str(args.campaign_root), "instance": args.instance,
             "asan_hint": not args.no_asan_hint,
@@ -170,6 +223,7 @@ def main():
         extra_summary={
             "model_tag": tag,
             "n_seeds": args.n_seeds, "n_history_failure": args.n_history_failure,
+            "seed_selector": args.seed_selector,
             "instance": args.instance,
             "asan_hint": not args.no_asan_hint,
             "strategy": "rotation" if args.rotate else "single-batch",

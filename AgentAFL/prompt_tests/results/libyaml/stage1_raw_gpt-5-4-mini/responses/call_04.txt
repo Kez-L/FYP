@@ -1,0 +1,89 @@
+```yaml
+%YAML 1.1
+---
+? !!str "key:with:colons"
+: !!map
+  ? "[]"
+  : "empty-brackets-as-key"
+  ? "{a,b}"
+  : [!!int 1, !!int 2, !!int 3]
+  ? "leading space"
+  : >
+      folded value
+      with continuation
+  ? "tab\tkey"
+  : "tab\tvalue"
+```
+
+```yaml
+---
+base: &base
+  name: example
+  count: 0
+  enabled: true
+derived:
+  <<: *base
+  count: 42
+  extra: !!binary |
+    AAEC
+    //79
+    AAE=
+alias_chain:
+  a: &a {v: 1}
+  b: &b {ref: *a}
+  c: {ref: *b}
+```
+
+```yaml
+---
+sequence_of_documents:
+  - |
+      first block
+      ---
+      not a separator
+  - >
+      second block
+      ...
+      not an end marker
+  - !!str "third"
+...
+%YAML 1.1
+---
+tricky_scalars:
+  quoted_hash: "#notacomment"
+  quoted_dash: "-not-a-list-item"
+  colon_space: "a: b"
+  leading_zero: "0007"
+  floatish: ".inf"
+  nanish: ".NaN"
+```
+
+```yaml
+---
+nested_tags:
+  plain_tag: !foo bar
+  local_tag: !<tag:example.org,2026:thing> {x: 1, y: 2}
+  sequence_tag: !bar
+    - !!str "alpha"
+    - !!int "23"
+    - !!bool "false"
+  map_tag: !baz
+    inner: !!timestamp "2026-09-10T12:34:56Z"
+    more: !!null ""
+```
+
+```yaml
+---
+# byte-oriented and edge-encoded values
+payloads:
+  utf8: "πλὴν 😀"
+  escaped: "\\x00\\x01\\n\\r\\t"
+  literal_empty: |
+  folded_empty: >
+  invalid_utf8_like: !!binary |
+    AP8Q
+    yv8=
+  long_keys:
+    ? "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    : "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+```

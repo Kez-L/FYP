@@ -1,0 +1,98 @@
+```yaml
+%YAML 1.1
+%TAG !e! tag:example.com,2026:
+---
+!e!root
+id: 0x1A
+active: On
+threshold: .nan
+message: !!str "A\u0000B\u263A"
+payload: !!binary |
+  SGVsbG8gV29ybGQhAAECAwQF
+items:
+  - !!set
+    ? apple
+    ? banana
+    ? cherry
+  - !!omap
+    - key1: val1
+    - key2: val2
+  - !!pairs
+    - a: 1
+    - b: 2
+```
+
+```yaml
+---
+? "multi
+line
+key"
+: "value"
+? 123
+: [true, false, null, ~]
+? !!int "0777"
+: >
+  folded
+  text
+  with
+    indent
+? !!timestamp 2024-12-31T23:59:59Z
+: !!bool "yes"
+```
+
+```yaml
+---
+flow_map: {a: 1, b: 2, c: {d: 4, e: [5, 6, 7]}, "x:y": "quoted:colon"}
+flow_seq: [!!str "one", !!int "2", !!float "3.14", {nested: {k: v}}]
+alias_test: &A
+  - first
+  - second
+  - third
+alias_ref: *A
+nested:
+  - { ? [1, 2]: { inner: "yes" } }
+  - [ {a: b}, {c: d}, {e: f} ]
+```
+
+```yaml
+---
+literal_block: |
+  line1
+    line2
+  line3
+folded_block: >
+  alpha
+  beta
+
+  gamma
+  delta
+chomp_strip: |-
+  keep
+  ends
+chomp_keep: |+
+  keep
+  newline
+
+  another
+plain_special: foo # comment
+quoted_special: "foo # not comment : still scalar"
+```
+
+```yaml
+---
+---
+---
+document: 1
+...
+---
+document: 2
+sequence:
+  - !!binary "AAEC"
+  - !!binary |
+      AQIDBA==
+  - !<tag:example.com,2026/custom> "custom-tagged"
+map:
+  nullkey: null
+  empty: ""
+  bools: [y, n, Y, N, On, Off]
+```

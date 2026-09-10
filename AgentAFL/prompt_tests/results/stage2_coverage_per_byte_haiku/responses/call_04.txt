@@ -1,0 +1,82 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE test [
+  <!ELEMENT test (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY myent "expansion">
+  <!ENTITY external SYSTEM "file:///etc/passwd">
+]>
+<test>
+  <child>&myent;</child>
+  <child>&external;</child>
+</test>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (nested+)>
+  <!ELEMENT nested (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item id ID #REQUIRED type CDATA #IMPLIED>
+  <!NOTATION custom PUBLIC "data">
+]>
+<root>
+  <nested id="x1">
+    <item id="a" type="test">content</item>
+  </nested>
+</root>
+```
+
+```xml
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (book+)>
+  <!ELEMENT book (title,author)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ATTLIST book year CDATA #REQUIRED isbn CDATA #FIXED "0000">
+  <!ENTITY % paramEntity "restricted">
+]>
+<catalog>
+  <book year="2020" isbn="0000">
+    <title>Test</title>
+    <author>Name</author>
+  </book>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE data [
+  <!ELEMENT data (section*, footer?)>
+  <!ELEMENT section (#PCDATA | subsection)*>
+  <!ELEMENT subsection (#PCDATA)>
+  <!ELEMENT footer EMPTY>
+  <!ATTLIST section class NMTOKEN #IMPLIED>
+  <!ATTLIST footer created CDATA #IMPLIED>
+  <!ENTITY copy "&#169;">
+]>
+<data>
+  <section class="intro">Text &copy;</section>
+  <section>
+    <subsection>Nested</subsection>
+  </section>
+  <footer created="2024"/>
+</data>
+```
+
+```xml
+<!DOCTYPE mixed [
+  <!ELEMENT mixed (any)*>
+  <!ELEMENT any ANY>
+  <!ATTLIST any name CDATA #REQUIRED xmlns CDATA #IMPLIED version NMTOKEN #DEFAULT "1.0">
+  <!ENTITY % conditional "include">
+  <!ENTITY internal "value123">
+]>
+<mixed>
+  <any name="test1" version="2.0">
+    &internal;
+  </any>
+  <any name="test2"/>
+</mixed>
+```

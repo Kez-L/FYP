@@ -1,0 +1,131 @@
+```yaml
+%YAML 1.1
+%TAG !e! tag:example.com,2026:
+---
+!e!root
+name: "weird-surrogates"
+payload: !!binary |
+  AAECAwQFBgcICQoLDA0ODw==
+meta:
+  escaped: "line1\nline2\t\u2603"
+  single: 'contains: [brackets] and # hash'
+  tagged_null: !!null ""
+  tagged_bool: !!bool "YES"
+  tagged_int: !!int "0b101010"
+  tagged_float: !!float "3.14159"
+  tagged_timestamp: !!timestamp "2024-02-29T23:59:59Z"
+  nested:
+    - !<tag:example.com,2026/thing> {k1: v1, k2: [1, 2, 3]}
+    - "plain"
+...
+```
+
+```yaml
+---
+? !!str "complex key"
+: !!map
+  ? [a, b, c, d]
+  : {x: 1, y: 2}
+  ? {left: 10, right: 20}
+  : [true, false, null]
+  ? !!set
+    ? red
+    ? green
+    ? blue
+  : "set-as-key"
+sequence:
+  - >
+      folded
+      text
+      with
+      blank lines
+
+      and indentation
+  - |
+      literal
+      block
+      with trailing spaces  
+  - !!binary "QUJDREVGRw=="
+...
+```
+
+```yaml
+%YAML 1.2
+---
+multi:
+  first: &F
+    a: 1
+    b: 2
+  second: &S
+    c: 3
+    d: 4
+  merge_test:
+    <<: *F
+    e: 5
+  merge_list:
+    <<: [*F, *S]
+    f: 6
+  aliases:
+    one: *F
+    two: *S
+    three: *F
+  deep:
+    level1:
+      level2:
+        level3:
+          - name: item0
+            refs: [*F, *S]
+          - name: item1
+            refs: [*S, *F]
+...
+```
+
+```yaml
+---
+# tabs, spaces, and indentation edge cases
+root:
+  "tab\tkey": "value\twith\ttabs"
+  "space key": "  leading and trailing  "
+  literal: |-
+    first
+      indented
+    third
+  folded: >+
+    alpha
+      beta
+    gamma
+
+    delta
+  inline:
+    - {a: 1, b: 2, c: [3, 4, 5]}
+    - [!!str "0xFF", !!int "0777", !!float "-12.5e-2"]
+    - {empty_map: {}, empty_seq: []}
+...
+```
+
+```yaml
+%TAG !y! tag:yaml.org,2002:
+---
+!y!map
+? !!str "A"
+: !!seq
+  - !y!str "nested"
+  - !y!int "2147483647"
+  - !y!int "-2147483648"
+  - !y!float ".inf"
+  - !y!float "-.inf"
+  - !y!float ".nan"
+? !!str "B"
+: !!map
+  ? !!str "inner"
+  : !!seq
+    - !!bool "false"
+    - !!bool "true"
+    - !!null "null"
+? !!str "C"
+: |
+  multi
+  document
+  style
+...
+```

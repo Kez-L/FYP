@@ -1,0 +1,140 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+<!ELEMENT root (item+)>
+<!ELEMENT item (name, value, extra*)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT value (#PCDATA)>
+<!ELEMENT extra (#PCDATA)>
+<!ATTLIST root version CDATA #REQUIRED>
+<!ATTLIST item id ID #REQUIRED type (A|B|C) #IMPLIED>
+<!ATTLIST name lang CDATA "en">
+<!ATTLIST value precision (high|low) "high">
+]>
+<root version="1.0">
+  <item id="i1" type="A">
+    <name lang="en">First</name>
+    <value precision="high">100</value>
+    <extra>note1</extra>
+  </item>
+  <item id="i2" type="B">
+    <name>Second</name>
+    <value>200</value>
+  </item>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE library [
+<!ELEMENT library (book*, magazine*)>
+<!ELEMENT book (title, author+, isbn)>
+<!ELEMENT magazine (title, issue, pages)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT author (#PCDATA)>
+<!ELEMENT isbn (#PCDATA)>
+<!ELEMENT issue (#PCDATA)>
+<!ELEMENT pages (#PCDATA)>
+<!ATTLIST book published CDATA #REQUIRED category (fiction|nonfiction) #REQUIRED>
+<!ATTLIST magazine frequency (weekly|monthly|quarterly) "monthly">
+<!ATTLIST author role (primary|secondary) "primary">
+]>
+<library>
+  <book published="2020" category="fiction">
+    <title>Novel Title</title>
+    <author role="primary">John Doe</author>
+    <author role="secondary">Jane Smith</author>
+    <isbn>978-0-123456-78-9</isbn>
+  </book>
+  <magazine frequency="weekly">
+    <title>Tech Weekly</title>
+    <issue>42</issue>
+    <pages>50</pages>
+  </magazine>
+</library>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE network [
+<!ELEMENT network (server+, connection*)>
+<!ELEMENT server (hostname, ipaddr, port*)>
+<!ELEMENT hostname (#PCDATA)>
+<!ELEMENT ipaddr (#PCDATA)>
+<!ELEMENT port (#PCDATA)>
+<!ELEMENT connection (from, to, protocol)>
+<!ELEMENT from (#PCDATA)>
+<!ELEMENT to (#PCDATA)>
+<!ELEMENT protocol (#PCDATA)>
+<!ATTLIST server id ID #REQUIRED online (yes|no) "yes" capacity CDATA #IMPLIED>
+<!ATTLIST port number CDATA #REQUIRED service CDATA #IMPLIED>
+<!ATTLIST connection encrypted (true|false) "false">
+]>
+<network>
+  <server id="srv1" online="yes" capacity="1000">
+    <hostname>primary.local</hostname>
+    <ipaddr>192.168.1.10</ipaddr>
+    <port number="8080" service="http">8080</port>
+    <port number="8443" service="https">8443</port>
+  </server>
+  <server id="srv2" online="yes">
+    <hostname>secondary.local</hostname>
+    <ipaddr>192.168.1.20</ipaddr>
+  </server>
+  <connection encrypted="true">
+    <from>srv1</from>
+    <to>srv2</to>
+    <protocol>TCP</protocol>
+  </connection>
+</network>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dataset [
+<!ELEMENT dataset (record*)>
+<!ELEMENT record (field+)>
+<!ELEMENT field (#PCDATA)>
+<!ATTLIST dataset name CDATA #REQUIRED version CDATA "1.0">
+<!ATTLIST record timestamp CDATA #REQUIRED rowid ID #REQUIRED status (active|inactive|pending) "active">
+<!ATTLIST field columnname CDATA #REQUIRED datatype (string|integer|float|boolean) #REQUIRED nullable (yes|no) "yes">
+]>
+<dataset name="transactions" version="2.1">
+  <record timestamp="2024-01-15T10:30:00Z" rowid="r001" status="active">
+    <field columnname="txnid" datatype="string">TXN-001</field>
+    <field columnname="amount" datatype="float">150.50</field>
+    <field columnname="verified" datatype="boolean">true</field>
+  </record>
+  <record timestamp="2024-01-15T10:31:00Z" rowid="r002" status="pending">
+    <field columnname="txnid" datatype="string">TXN-002</field>
+    <field columnname="amount" datatype="float">75.25</field>
+    <field columnname="verified" datatype="boolean">false</field>
+  </record>
+</dataset>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+<!ELEMENT config (section+)>
+<!ELEMENT section (parameter*)>
+<!ELEMENT parameter (#PCDATA)>
+<!ATTLIST config application CDATA #REQUIRED>
+<!ATTLIST section name ID #REQUIRED enabled (true|false) "true" priority (1|2|3|4|5) "3">
+<!ATTLIST parameter key CDATA #REQUIRED type (string|int|bool|list) #REQUIRED override CDATA #IMPLIED>
+]>
+<config application="myapp">
+  <section name="database" enabled="true" priority="1">
+    <parameter key="host" type="string">localhost</parameter>
+    <parameter key="port" type="int">5432</parameter>
+    <parameter key="pool_size" type="int" override="env:DB_POOL">20</parameter>
+  </section>
+  <section name="security" enabled="true" priority="2">
+    <parameter key="ssl_enabled" type="bool">true</parameter>
+    <parameter key="cert_path" type="string">/etc/certs/server.crt</parameter>
+  </section>
+  <section name="logging" enabled="false" priority="5">
+    <parameter key="level" type="string">debug</parameter>
+  </section>
+</config>
+```

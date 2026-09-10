@@ -1,0 +1,130 @@
+```yaml
+%YAML 1.1
+%TAG !e! tag:example.com,2026:expr/
+---
+scalar_cases:
+  plain: hello
+  single: 'can''t'
+  double: "tab\tnewline\nunicode:\u263A"
+  literal: |
+    line 1
+      indented line
+    line 3
+  folded: >
+    alpha
+    beta
+    gamma
+typed_values:
+  yes_val: yes
+  on_val: ON
+  off_val: off
+  null1: ~
+  null2: null
+  octal: 0123
+  sexagesimal: 1:20:30
+  sexagesimal_float: 12:34.56
+path: !e!node
+  kind: leaf
+  attrs: {x: 1, y: 2}
+```
+
+```yaml
+---
+flow_mix: [1, 2, 3, {a: b, c: [d, e, {f: g}]}]
+flow_map: {empty: {}, nested: {x: [!!int "0", !!float "1.5", !!bool "false"]}}
+multidoc_marker_test: |
+  first line
+  ---
+  not a document break here
+  ...
+  also not a terminator
+anchors:
+  a: &A {name: Alice, role: admin}
+  b: &B [*A, {copy: *A, tag: !!str tagged}]
+  c:
+    left: *B
+    right: *A
+```
+
+```yaml
+%YAML 1.2
+---
+top:
+  ? simple key
+  : simple value
+  ? "quoted key with : colon"
+  : >
+    folded value
+    spanning lines
+  ? ? nested question
+    : nested mapping key
+  : [a, b, c]
+sequence:
+  - ? a: 1
+    : b
+  - - nested
+    - sequence
+    - item
+  - {m: n, o: p}
+tags:
+  explicit_str: !!str 1234
+  explicit_int: !!int "42"
+  explicit_float: !!float ".nan"
+  explicit_bool: !!bool "True"
+```
+
+```yaml
+---
+binary_blob: !!binary |
+  AAEC//79
+  aGVsbG8=
+doc:
+  title: "Parser torture"
+  sections:
+    - name: intro
+      text: "A line with # not a comment"
+    - name: block
+      text: |
+        empty:
+
+        mapping:
+          key: value
+    - name: folded
+      text: >
+        this is folded
+        but preserves paragraphs
+
+        and starts a new one
+set_value: !!set
+  ? red
+  ? green
+  ? blue
+omap_value: !!omap
+  - first: 1
+  - second: 2
+  - third: 3
+```
+
+```yaml
+%YAML 1.1
+---
+unicode_keys:
+  "emoji 😀": "smile"
+  "combining é": "accent"
+  "rtl ‏key": "value"
+numbers:
+  decimal: 12345
+  negative: -987
+  plus: +17
+  float1: 3.14159
+  float2: 6.02e23
+  float3: -.inf
+  float4: .nan
+aliases:
+  base: &base
+    k1: v1
+    k2: v2
+  alias_list: [*base, *base, {ref: *base}]
+complex_doc:
+  state: !!python/object/apply:tuple [[1, 2, 3]]
+```

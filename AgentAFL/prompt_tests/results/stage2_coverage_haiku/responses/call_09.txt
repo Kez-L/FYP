@@ -1,0 +1,263 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+<!ELEMENT root (item+)>
+<!ELEMENT item (data, meta*)>
+<!ELEMENT data (#PCDATA | nested)*>
+<!ELEMENT nested (child*)>
+<!ELEMENT child EMPTY>
+<!ELEMENT meta EMPTY>
+<!ATTLIST item id ID #REQUIRED type (A|B|C) #IMPLIED>
+<!ATTLIST nested level CDATA #REQUIRED>
+<!ATTLIST child name CDATA #FIXED "test" value CDATA #REQUIRED>
+<!ATTLIST meta timestamp CDATA #IMPLIED source (internal|external) "internal">
+<!ENTITY myent "entityvalue">
+]>
+<root>
+  <item id="item1" type="A">
+    <data>Text content &myent;</data>
+    <data>
+      <nested level="1">
+        <child name="test" value="v1"/>
+        <child name="test" value="v2"/>
+      </nested>
+    </data>
+    <meta timestamp="2024-01-01" source="external"/>
+  </item>
+  <item id="item2" type="B">
+    <data>Simple text</data>
+    <meta source="internal"/>
+  </item>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE document [
+<!ELEMENT document (section+)>
+<!ELEMENT section (title, content, subsection*)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT content (p | list)*>
+<!ELEMENT p (#PCDATA | emphasis)*>
+<!ELEMENT emphasis (#PCDATA)>
+<!ELEMENT list (entry+)>
+<!ELEMENT entry (#PCDATA)>
+<!ELEMENT subsection (title, content)>
+<!ATTLIST section id ID #REQUIRED class CDATA #IMPLIED weight (low|medium|high) "medium">
+<!ATTLIST list ordered (yes|no) "no">
+<!ATTLIST entry priority CDATA #IMPLIED>
+<!NOTATION gif SYSTEM "image/gif">
+<!ENTITY logo SYSTEM "logo.gif" NDATA gif>
+]>
+<document>
+  <section id="sec1" class="primary" weight="high">
+    <title>Main Section</title>
+    <content>
+      <p>Paragraph with <emphasis>emphasis</emphasis> text.</p>
+      <list ordered="yes">
+        <entry priority="1">First item</entry>
+        <entry priority="2">Second item</entry>
+      </list>
+    </content>
+    <subsection>
+      <title>Subsection A</title>
+      <content>
+        <p>Nested content here.</p>
+      </content>
+    </subsection>
+  </section>
+  <section id="sec2" weight="low">
+    <title>Secondary Section</title>
+    <content>
+      <p>More content.</p>
+    </content>
+  </section>
+</document>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE transaction [
+<!ELEMENT transaction (header, body, footer?)>
+<!ELEMENT header (timestamp, sender, receiver)>
+<!ELEMENT timestamp (#PCDATA)>
+<!ELEMENT sender (name, id)>
+<!ELEMENT receiver (name, id)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT id (#PCDATA)>
+<!ELEMENT body (record+)>
+<!ELEMENT record (field1, field2, field3?)>
+<!ELEMENT field1 (#PCDATA)>
+<!ELEMENT field2 (#PCDATA)>
+<!ELEMENT field3 (#PCDATA)>
+<!ELEMENT footer (checksum, signature)>
+<!ELEMENT checksum (#PCDATA)>
+<!ELEMENT signature (#PCDATA)>
+<!ATTLIST transaction version CDATA #FIXED "2.0" status (pending|completed|failed) #REQUIRED>
+<!ATTLIST record sequence CDATA #REQUIRED amount CDATA #IMPLIED currency (USD|EUR|GBP|JPY) "USD">
+<!ENTITY % common "common_data">
+]>
+<transaction version="2.0" status="completed">
+  <header>
+    <timestamp>2024-01-15T10:30:00Z</timestamp>
+    <sender>
+      <name>Alice</name>
+      <id>A001</id>
+    </sender>
+    <receiver>
+      <name>Bob</name>
+      <id>B002</id>
+    </receiver>
+  </header>
+  <body>
+    <record sequence="1" amount="100.00" currency="USD">
+      <field1>Type1</field1>
+      <field2>Value1</field2>
+      <field3>Desc1</field3>
+    </record>
+    <record sequence="2" amount="250.50">
+      <field1>Type2</field1>
+      <field2>Value2</field2>
+    </record>
+  </body>
+  <footer>
+    <checksum>ABC123XYZ</checksum>
+    <signature>SIG12345</signature>
+  </footer>
+</transaction>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE library [
+<!ELEMENT library (book | magazine)*>
+<!ELEMENT book (title, author+, isbn, pages, edition?, reviews?)>
+<!ELEMENT magazine (title, issue, articles)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT author (firstname, lastname, email?)>
+<!ELEMENT firstname (#PCDATA)>
+<!ELEMENT lastname (#PCDATA)>
+<!ELEMENT email (#PCDATA)>
+<!ELEMENT isbn (#PCDATA)>
+<!ELEMENT pages (#PCDATA)>
+<!ELEMENT edition (#PCDATA)>
+<!ELEMENT issue (#PCDATA)>
+<!ELEMENT articles (article*)>
+<!ELEMENT article (headline, wordcount)>
+<!ELEMENT headline (#PCDATA)>
+<!ELEMENT wordcount (#PCDATA)>
+<!ELEMENT reviews (review+)>
+<!ELEMENT review (#PCDATA)>
+<!ATTLIST book lang (en|fr|de|es) "en" published CDATA #REQUIRED>
+<!ATTLIST magazine issueNum CDATA #REQUIRED month (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) #IMPLIED>
+<!ATTLIST author role (primary|secondary) "primary">
+<!ATTLIST review rating (1|2|3|4|5) #REQUIRED reviewer CDATA #IMPLIED>
+<!ENTITY copyright "Copyright 2024">
+]>
+<library>
+  <book lang="en" published="2023">
+    <title>Advanced XML Parsing</title>
+    <author role="primary">
+      <firstname>John</firstname>
+      <lastname>Doe</lastname>
+      <email>john@example.com</email>
+    </author>
+    <author role="secondary">
+      <firstname>Jane</firstname>
+      <lastname>Smith</lastname>
+    </author>
+    <isbn>978-0-123456-78-9</isbn>
+    <pages>512</pages>
+    <edition>2nd</edition>
+    <reviews>
+      <review rating="5" reviewer="Expert1">Excellent coverage</review>
+      <review rating="4" reviewer="Expert2">Very good</review>
+    </reviews>
+  </book>
+  <magazine issueNum="42" month="Mar">
+    <title>Tech Weekly</title>
+    <issue>March 2024</issue>
+    <articles>
+      <article>
+        <headline>XML Security Best Practices</headline>
+        <wordcount>3500</wordcount>
+      </article>
+      <article>
+        <headline>Fuzzing Strategies</headline>
+        <wordcount>2800</wordcount>
+      </article>
+    </articles>
+  </magazine>
+</library>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+<!ELEMENT config (system, modules, rules)>
+<!ELEMENT system (name, version, environment)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT version (#PCDATA)>
+<!ELEMENT environment (#PCDATA)>
+<!ELEMENT modules (module+)>
+<!ELEMENT module (path, enabled, dependencies?)>
+<!ELEMENT path (#PCDATA)>
+<!ELEMENT enabled (#PCDATA)>
+<!ELEMENT dependencies (dep+)>
+<!ELEMENT dep (#PCDATA)>
+<!ELEMENT rules (rule+)>
+<!ELEMENT rule (condition, action, metadata?)>
+<!ELEMENT condition (#PCDATA | expression)*>
+<!ELEMENT expression (#PCDATA)>
+<!ELEMENT action (#PCDATA)>
+<!ELEMENT metadata (created, modified, owner?)>
+<!ELEMENT created (#PCDATA)>
+<!ELEMENT modified (#PCDATA)>
+<!ELEMENT owner (#PCDATA)>
+<!ATTLIST system id ID #REQUIRED build CDATA #IMPLIED>
+<!ATTLIST module name CDATA #REQUIRED priority (critical|high|normal|low) "normal">
+<!ATTLIST rule id ID #REQUIRED active (true|false) "true" severity (error|warning|info) #IMPLIED>
+<!ATTLIST condition type (AND|OR|NOT) "AND">
+<!ENTITY appname "SecuritySystem">
+]>
+<config id="cfg001" build="20240115">
+  <system>
+    <name>&appname;</name>
+    <version>3.2.1</version>
+    <environment>production</environment>
+  </system>
+  <modules>
+    <module name="auth" priority="critical">
+      <path>/opt/modules/auth</path>
+      <enabled>true</enabled>
+      <dependencies>
+        <dep>openssl</dep>
+        <dep>libcrypto</dep>
+      </dependencies>
+    </module>
+    <module name="logging" priority="high">
+      <path>/opt/modules/logging</path>
+      <enabled>true</enabled>
+    </module>
+  </modules>
+  <rules>
+    <rule id="rule1" active="true" severity="error">
+      <condition type="AND">
+        <expression>user.role == admin</expression>
+      </condition>
+      <action>allow_access</action>
+      <metadata>
+        <created>2024-01-01</created>
+        <modified>2024-01-15</modified>
+        <owner>admin</owner>
+      </metadata>
+    </rule>
+    <rule id="rule2" active="true" severity="warning">
+      <condition type="OR">
+        <expression>attempt.count > 5</expression>
+      </condition>
+      <action>log_and_alert</action>
+    </rule>
+  </rules>
+</config>
+```

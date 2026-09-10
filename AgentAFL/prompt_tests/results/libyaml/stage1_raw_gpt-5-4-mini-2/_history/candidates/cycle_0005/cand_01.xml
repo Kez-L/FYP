@@ -1,0 +1,29 @@
+---
+anchors:
+  defaults: &DEF
+    name: base
+    enabled: true
+    tags: [alpha, beta]
+  copy1:
+    <<: *DEF
+    name: first
+  copy2:
+    <<: *DEF
+    tags: [gamma, delta]
+    nested: &N
+      a: 1
+      b: 2
+  ref_to_nested: *N
+  self_list: &L
+    - one
+    - two
+    - *L
+  merge_chain:
+    <<: [*DEF, {extra: 99}]
+    enabled: false
+sequence_of_maps:
+  - &A {id: 1, role: user}
+  - &B {id: 2, role: admin}
+  - *A
+  - *B
+...

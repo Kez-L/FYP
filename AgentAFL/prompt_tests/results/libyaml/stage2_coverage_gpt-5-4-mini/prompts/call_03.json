@@ -1,0 +1,18 @@
+{
+  "call": 3,
+  "provider": "openai",
+  "model": "gpt-5.4-mini",
+  "temperature": null,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a YAML document parser.\nTarget: /home/user/Documents/1git-folder/AgentAFL/AFLPlus/libyaml-build/libyaml_parser_fuzzer-afl.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 YAML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n%TAG ! tag:clarkevans.com,2002:\n--- !shape\n  # Use the ! handle for presenting\n  # tag:clarkevans.com,2002:circle\n- !circle\n  center: &ORIGIN {x:\\\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r 73, y: 129}\n  radius: 7\n- !line\n  start: *ORIGIN\n  finish: { x: 89, y: 102 }\n- !label\n  start: *ORIGIN\n  color: 0xFFEEBB\n  text: Pretty vector drawing.\n\n\n--- example 2 ---\n---\n- name: Empty Stream\n  from: https://github.com/ingydotnet/yaml-pegex-pm/blob/master/test/misc.tml\n  tags: edge\n  yaml: |\n    \u120e\n  tree: |\n    +STR\n    -STR\n  json: '#\n\n\nTried before \u2014 no new coverage, avoid repeating:\n--- 2 of your past seeds (cycles 1,2) drove the same already-covered path with 0 new edges ---\n---\n? [a, b, c]\n: {x: 1, y: 2}\n? {k1: v1, k2: v2}\n: [true, false, null]\n? !!set\n  ? red\n  ? green\n  ? blue\n: \"color set\"\n? !!omap\n  - one: 1\n  - two: 2\n: \"ordered map\"\n...\n\n--- a seed you generated (cycle 3) added 0 new edges ---\n%YAML 1.1\n%TAG !u! tag:example.org,2024:units/\n---\n!u!catalog\nname: \"mixed-anchors\"\ndefaults: &D\n  enabled: yes\n  count: 0\n  note: \"base\"\nitems:\n  - &A !u!item\n    id: 1\n    ref: *D\n    data: [0, 1, 2, 3]\n  - !u!item\n    id: 2\n    ref: *A\n    data:\n      alpha: true\n      beta: false\n      gamma: null\n  - !u!item\n    id: 3\n    ref: *D\n    data: { x: 10, y: 20, z: 30 }\n...\n\nGenerate 5 new YAML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "seed_selector": "coverage",
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libyaml-20260909",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "ts": "2026-09-10T02:03:27.569971+00:00"
+}

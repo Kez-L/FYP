@@ -1,0 +1,131 @@
+```yaml
+# Test case 1: Merge keys with complex mappings
+defaults: &defaults
+  timeout: 30
+  retries: 3
+  enabled: true
+
+production:
+  <<: *defaults
+  timeout: 60
+  servers:
+    - host: server1
+      port: 8080
+    - host: server2
+      port: 8081
+
+development:
+  <<: *defaults
+  debug: true
+  logging:
+    level: verbose
+    format: json
+```
+
+```yaml
+# Test case 2: Mixed scalar styles and special characters
+literal_block: |
+  Line 1 with | pipe
+  Line 2 with: colon
+  Line 3 with # hash
+  Line 4 with & ampersand
+folded_block: >
+  This is a very long line that should
+  be folded across multiple lines in
+  the source but appear as a single
+  line when parsed correctly
+plain_scalars:
+  - simple
+  - "quoted string with 'nested' quotes"
+  - |2
+    preserved indented
+    literal text
+  - |-
+    stripped final newline
+quoted_key: "key: with: colons"
+```
+
+```yaml
+# Test case 3: Nested sequences with flow collections
+matrix:
+  - [1, 2, 3]
+  - [4, 5, 6]
+  - [7, 8, 9]
+
+tuples:
+  - {x: 10, y: 20}
+  - {x: 30, y: 40}
+  - {x: 50, y: 60}
+
+mixed_flow:
+  data: [{name: Alice, age: 30}, {name: Bob, age: 25}]
+  tags: [red, green, blue]
+  matrix: [[1, 2], [3, 4], [5, 6]]
+
+tags_and_types:
+  int_value: !!int "42"
+  float_value: !!float "3.14"
+  bool_true: !!bool "yes"
+  bool_false: !!bool "no"
+  null_value: !!null ~
+```
+
+```yaml
+# Test case 4: Complex path expressions and deeply nested structures
+root:
+  level1:
+    level2:
+      level3:
+        level4:
+          level5:
+            value: deep
+            array:
+              - item1
+              - item2
+              - nested:
+                  key: val
+                  list: [a, b, c]
+    siblings:
+      - name: first
+        children:
+          - grandchild1
+          - grandchild2
+      - name: second
+        metadata:
+          created: 2024-01-01
+          tags: [important, review]
+
+pathological:
+  a: {b: {c: {d: {e: {f: {g: {h: value}}}}}}}
+```
+
+```yaml
+# Test case 5: Whitespace sensitivity and comment interactions
+key1: value1  # inline comment
+key2:
+  # standalone comment
+  subkey: |
+    multiline
+    value
+  # another comment
+  subkey2: >
+    folded value
+    with comments # not parsed as comment
+  
+  # section separator
+  subkey3:
+    - item # comment after item
+    - another_item  # another comment
+    # comment before next
+    - final_item
+
+empty_mappings:
+  map1: {}
+  map2: null
+  map3:
+
+empty_sequences:
+  seq1: []
+  seq2: []
+  seq3: [~, null, ]
+```

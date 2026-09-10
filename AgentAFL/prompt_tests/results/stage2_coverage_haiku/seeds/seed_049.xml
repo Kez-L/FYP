@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!DOCTYPE config [
+<!ELEMENT config (system, modules, rules)>
+<!ELEMENT system (name, version, environment)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT version (#PCDATA)>
+<!ELEMENT environment (#PCDATA)>
+<!ELEMENT modules (module+)>
+<!ELEMENT module (path, enabled, dependencies?)>
+<!ELEMENT path (#PCDATA)>
+<!ELEMENT enabled (#PCDATA)>
+<!ELEMENT dependencies (dep+)>
+<!ELEMENT dep (#PCDATA)>
+<!ELEMENT rules (rule+)>
+<!ELEMENT rule (condition, action, metadata?)>
+<!ELEMENT condition (#PCDATA | expression)*>
+<!ELEMENT expression (#PCDATA)>
+<!ELEMENT action (#PCDATA)>
+<!ELEMENT metadata (created, modified, owner?)>
+<!ELEMENT created (#PCDATA)>
+<!ELEMENT modified (#PCDATA)>
+<!ELEMENT owner (#PCDATA)>
+<!ATTLIST system id ID #REQUIRED build CDATA #IMPLIED>
+<!ATTLIST module name CDATA #REQUIRED priority (critical|high|normal|low) "normal">
+<!ATTLIST rule id ID #REQUIRED active (true|false) "true" severity (error|warning|info) #IMPLIED>
+<!ATTLIST condition type (AND|OR|NOT) "AND">
+<!ENTITY appname "SecuritySystem">
+]>
+<config id="cfg001" build="20240115">
+  <system>
+    <name>&appname;</name>
+    <version>3.2.1</version>
+    <environment>production</environment>
+  </system>
+  <modules>
+    <module name="auth" priority="critical">
+      <path>/opt/modules/auth</path>
+      <enabled>true</enabled>
+      <dependencies>
+        <dep>openssl</dep>
+        <dep>libcrypto</dep>
+      </dependencies>
+    </module>
+    <module name="logging" priority="high">
+      <path>/opt/modules/logging</path>
+      <enabled>true</enabled>
+    </module>
+  </modules>
+  <rules>
+    <rule id="rule1" active="true" severity="error">
+      <condition type="AND">
+        <expression>user.role == admin</expression>
+      </condition>
+      <action>allow_access</action>
+      <metadata>
+        <created>2024-01-01</created>
+        <modified>2024-01-15</modified>
+        <owner>admin</owner>
+      </metadata>
+    </rule>
+    <rule id="rule2" active="true" severity="warning">
+      <condition type="OR">
+        <expression>attempt.count > 5</expression>
+      </condition>
+      <action>log_and_alert</action>
+    </rule>
+  </rules>
+</config>

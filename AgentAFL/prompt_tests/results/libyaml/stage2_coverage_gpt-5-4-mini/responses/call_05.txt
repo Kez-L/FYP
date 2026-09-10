@@ -1,0 +1,115 @@
+```yaml
+%YAML 1.2
+%TAG !e! tag:example.com,2024:
+---
+!e!root
+meta:
+  id: 0x1F
+  active: yes
+  path: C:\tmp\file
+items:
+  - &n1 {k1: "v1", k2: [1, 2, 3]}
+  - *n1
+  - !!set
+      ? alpha
+      ? beta
+      ? gamma
+matrix:
+  - [1, 2, 3, 4]
+  - [5, 6, 7, 8]
+  - [9, 10, 11, 12]
+...
+```
+
+```yaml
+---
+# Directive-free document with unusual scalar styles
+top:
+  ? complex key
+  : >
+      folded text
+      with blank
+
+      line and trailing spaces   
+  "quoted: key": "value: with colon"
+  'single: key': 'value: with # hash'
+  emoji: "😀"
+  octal_like: 01234
+  sexagesimal_like: 1:20:30
+  nullish1: ~
+  nullish2: null
+  boolish: On
+...
+```
+
+```yaml
+---
+sequence:
+  - item: 1
+    data: &A
+      name: node-a
+      refs: [*A, *A, *A]
+  - item: 2
+    data:
+      <<: *A
+      name: node-b
+      extra:
+        - a
+        - b
+        - c
+  - item: 3
+    data:
+      map:
+        ? [x, y]
+        : {z: 9}
+        ? {p: q}
+        : "nested"
+...
+```
+
+```yaml
+---
+multi:
+  line1: |-
+    first line
+    second line
+    third line
+  line2: >+
+    folded a
+    folded b
+
+    folded c
+  block: |2
+      indented one
+        indented two
+      indented three
+  flow: { a: { b: { c: { d: [ {e: 1}, {f: 2} ] } } } }
+...
+```
+
+```yaml
+---
+anchors:
+  base: &base
+    k: v
+    arr:
+      - one
+      - two
+  derived1:
+    <<: *base
+    k: override
+  derived2:
+    <<: *base
+    arr:
+      - three
+      - four
+  chain:
+    level1: &l1 {a: 1, b: 2}
+    level2: &l2 {ref: *l1, c: 3}
+    level3: {ref: *l2, d: 4}
+tagged:
+  - !!int "42"
+  - !!float "6.022e23"
+  - !!binary "SGVsbG8h"
+...
+```

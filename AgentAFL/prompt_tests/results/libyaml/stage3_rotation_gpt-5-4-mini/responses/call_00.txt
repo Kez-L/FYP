@@ -1,0 +1,97 @@
+```yaml
+%YAML 1.2
+---
+simple_map:
+  alpha: 1
+  beta: 2
+  gamma: [true, false, null]
+  nested:
+    key: value
+    number: 12345
+    float: 3.14159
+    hex: 0xDEADBEEF
+    octal: 0o755
+```
+
+```yaml
+---
+anchors:
+  base: &base
+    name: example
+    enabled: yes
+    count: 7
+  copy1:
+    <<: *base
+    count: 8
+  copy2:
+    <<: *base
+    name: overridden
+sequence:
+  - *base
+  - { inline: mapping, with: [a, b, c] }
+  - !!int "42"
+  - !!str "text"
+```
+
+```yaml
+---
+block_scalars:
+  literal: |-
+    line one
+    line two
+
+    line four
+  folded: >+
+    this is folded
+    across multiple
+    lines with trailing
+    newline preserved
+
+
+  chomped: >-
+    a
+    b
+    c
+tags:
+  timestamp: !!timestamp 2024-12-31T23:59:59Z
+  binary: !!binary "QUJDREVGRw=="
+```
+
+```yaml
+---
+special_keys:
+  ? [complex, key, 1]
+  : "value for complex key"
+  ? {a: 1, b: 2}
+  : "another value"
+  ? |
+      multi
+      line
+      key
+  : 100
+document_two:
+  !!str yes: "tagged key"
+  "quoted:colon": "works"
+  "spaces in key": "ok"
+```
+
+```yaml
+---
+repeated:
+  - &a { id: 1, name: first }
+  - &b { id: 2, name: second, ref: *a }
+  - *b
+merge_test:
+  defaults: &defaults
+    host: localhost
+    port: 8080
+    secure: false
+  prod:
+    <<: *defaults
+    host: prod.example.com
+    secure: true
+  dev:
+    <<: *defaults
+    port: 3000
+...
+```

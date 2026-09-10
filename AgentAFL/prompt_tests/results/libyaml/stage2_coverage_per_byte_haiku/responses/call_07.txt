@@ -1,0 +1,104 @@
+```yaml
+%YAML 1.1
+%TAG ! tag:yaml.org,2002:
+---
+# Test anchor/alias with nested structures
+base: &BASE
+  level1:
+    level2:
+      data: [1, 2, 3]
+      nested_ref: &NESTED
+        value: 42
+expanded:
+  ref1: *BASE
+  ref2: *NESTED
+  circular_structure:
+    parent: *BASE
+    sibling: *NESTED
+```
+
+```yaml
+---
+# Sparse tree with mixed implicit/explicit typing
+!!map
+  plain_scalar: unquoted text
+  "quoted_key": !!str 123
+  numeric_like: !!str 0xFF
+  mixed_array: !!seq
+    - !!int "999"
+    - !!float ".inf"
+    - !!float "-.inf"
+    - !!float ".nan"
+  null_tests:
+    explicit_null: !!null
+    implicit_null:
+    tilde: ~
+    empty_string: ""
+```
+
+```yaml
+%TAG !custom! tag:internal.corp,2024:
+---
+!custom!root
+  scalar_with_tag: !custom!type value
+  array_mixed_tags:
+    - !custom!item1 "data1"
+    - !custom!item2 "data2"
+    - plain_item
+  deeply_tagged: !custom!container
+    inner: !custom!leaf
+      payload: binary_like_data_€→
+      escape_sequences: "line1\nline2\ttab"
+      unicode: "🔥💀🎯"
+```
+
+```yaml
+---
+# Pathological whitespace and edge cases
+key_with_spaces: "  leading and trailing  "
+folded_indicator: >
+  Line without explicit break
+  continues here
+
+
+  after blank lines
+literal_preserve: |
+  Exact spacing preserved:
+    indented content
+  back to normal
+block_sequence:
+  -
+    nested_empty:
+  - item_after_empty
+  -
+multiline_key:
+  ? |
+    This is a
+    multiline key
+  : !!str
+    corresponding value
+empty_blocks:
+  empty_map: {}
+  empty_list: []
+  only_nulls: [~, null, ]
+```
+
+```yaml
+---
+# Pathological numeric and flow indicators
+numbers:
+  integers: [-0, +42, 0o755, 0xDEADBEEF]
+  floats: [1.23e-4, .5, -.0, 1e10]
+  special: [.inf, -.inf, .nan, 0]
+flow_collection: {a: 1, b: [2, 3], c: {nested: deep}}
+implicit_flow:
+  - {x: 10, y: 20}
+  - {x: 30, y: 40}
+edge_values:
+  yes_no: [yes, no, on, off, true, false]
+  plain_keys:
+    true: "string value true"
+    false: "string value false"
+    123: "numeric key"
+  special_strings: ["::", "-", "?", "|", ">"]
+```

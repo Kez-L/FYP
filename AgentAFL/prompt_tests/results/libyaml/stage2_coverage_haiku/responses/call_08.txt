@@ -1,0 +1,65 @@
+```yaml
+---
+!!python/object/apply:os.system
+args: ['touch /tmp/pwned']
+```
+
+```yaml
+%YAML 1.2
+%TAG ! tag:example.com,2024:
+---
+&anchor_cycle
+key: *anchor_cycle
+nested:
+  self_ref: &self
+    back: *self
+```
+
+```yaml
+---
+multiline_strings: |
+  Line 1
+  	Tab-indented line
+  Line 3 with: special: chars: {}[]
+folded_text: >
+  This is a very long line that
+  should be folded across multiple
+  physical lines in the YAML document.
+literal_plus: |+
+  Keep trailing newlines
+
+
+literal_strip: |-
+  Remove trailing newlines
+```
+
+```yaml
+---
+unicode_edge_cases:
+  bidi_text: "Hello עברית مرحبا"
+  rtl_override: "⁦RTL⁩"
+  zero_width: "zero​width​space"
+  surrogates: "emoji🎉test"
+  combining: "e\u0301"
+  control_chars: "\x00\x01\x1F"
+```
+
+```yaml
+---
+anchors_and_aliases:
+  - &id001 [1, 2, 3]
+  - *id001
+  - &id002
+    name: repeated
+    value: 42
+  - *id002
+  - nested: &id003 {a: &b 1, c: *b}
+  - *id003
+merges:
+  defaults: &defaults
+    timeout: 30
+    retries: 3
+  prod:
+    <<: *defaults
+    timeout: 60
+```

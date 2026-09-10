@@ -1,0 +1,75 @@
+```
+%YAML 1.2
+%TAG ! tag:example.com,2024:
+--- !custom/object
+string_field: "quoted value with \n escapes"
+numeric_field: 0xDEADBEEF
+float_field: 1.23e-4
+boolean_field: yes
+null_field: ~
+untagged_plain: plain scalar without quotes
+multiline: |
+  literal block scalar
+  preserves newlines
+  and formatting
+folded: >
+  folded scalar
+  collapses newlines
+  to spaces
+...
+```
+
+```
+--- &anchor1
+? !!str complex
+: !!int 42
+? !!bool true
+: !!float 3.14159
+? !!null ~
+: !!str "value for null key"
+---
+*anchor1
+```
+
+```
+---
+root:
+  level1:
+    level2:
+      level3:
+        level4:
+          level5:
+            deeply: nested
+            data: structure
+  array_in_map:
+    - first
+    - second
+    - third: value
+```
+
+```
+---
+- &id001
+  name: Item A
+  id: 100
+- <<: *id001
+  name: Item B
+  id: 101
+- <<: *id001
+  name: Item C
+  extra: data
+```
+
+```
+---
+scalar_with_special: "!@#$%^&*()"
+flow_sequence: [1, 2, 3, [4, 5, [6, 7]]]
+flow_mapping: {key1: val1, key2: {nested: val2}, key3: [a, b, c]}
+mixed: 
+  - {map_in_seq: true, count: 5}
+  - [seq_in_seq, with, items]
+  - key: value_in_mixed
+anchored: &ref
+  shared: reference
+pointer: *ref
+```

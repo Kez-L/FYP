@@ -1,0 +1,86 @@
+```yaml
+%YAML 1.2
+%TAG !e! tag:example.com,2024:
+---
+anchor_test: &A
+  first: 1
+  second: 2
+alias_test: *A
+merge_test:
+  <<: *A
+  second: 22
+flow_combo: [{k1: v1, k2: v2}, [a, b, c], {nested: [1, 2, 3]}]
+...
+```
+
+```yaml
+---
+!!map {
+  ? !!str "complex key"
+  : !!seq [!!int 1, !!int 2, !!int 3],
+  ? !!str "another key"
+  : !!map { inner: !!bool true, num: !!float 3.1415 },
+  plain: !!null null
+}
+```
+
+```yaml
+---
+- >
+  folded line one
+  folded line two
+  folded line three
+
+- |-
+  literal line A
+  literal line B
+  literal line C
+
+- !!binary |
+  RkZGRg==
+- 0o755
+- 0b101010
+- 0xDEAD_BEEF
+```
+
+```yaml
+---
+sequence_of_maps:
+  - id: 1
+    name: alpha
+    attrs:
+      enabled: yes
+      count: 0
+  - id: 2
+    name: beta
+    attrs:
+      enabled: no
+      count: 42
+  - id: 3
+    name: gamma
+    attrs:
+      enabled: on
+      count: 999999999999999999999999
+path_like:
+  windows: "C:\\temp\\file.txt"
+  unix: "/var/tmp/example"
+  uri: "https://example.org/a/b?c=d#frag"
+```
+
+```yaml
+---
+%TAG !yaml! tag:yaml.org,2002:
+---
+typed_scalars:
+  a: !yaml!str "hello"
+  b: !yaml!int "123"
+  c: !yaml!float "6.022e23"
+  d: !yaml!bool "false"
+  e: !yaml!timestamp "2001-12-15T02:59:43.1Z"
+nested:
+  outer:
+    inner:
+      - key: value
+        other: [!yaml!str x, !yaml!str y, !yaml!str z]
+      - { deep: { deeper: { deepest: end } } }
+...

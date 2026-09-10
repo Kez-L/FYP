@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE network [
+<!ELEMENT network (server+, connection*)>
+<!ELEMENT server (hostname, ipaddr, port*)>
+<!ELEMENT hostname (#PCDATA)>
+<!ELEMENT ipaddr (#PCDATA)>
+<!ELEMENT port (#PCDATA)>
+<!ELEMENT connection (from, to, protocol)>
+<!ELEMENT from (#PCDATA)>
+<!ELEMENT to (#PCDATA)>
+<!ELEMENT protocol (#PCDATA)>
+<!ATTLIST server id ID #REQUIRED online (yes|no) "yes" capacity CDATA #IMPLIED>
+<!ATTLIST port number CDATA #REQUIRED service CDATA #IMPLIED>
+<!ATTLIST connection encrypted (true|false) "false">
+]>
+<network>
+  <server id="srv1" online="yes" capacity="1000">
+    <hostname>primary.local</hostname>
+    <ipaddr>192.168.1.10</ipaddr>
+    <port number="8080" service="http">8080</port>
+    <port number="8443" service="https">8443</port>
+  </server>
+  <server id="srv2" online="yes">
+    <hostname>secondary.local</hostname>
+    <ipaddr>192.168.1.20</ipaddr>
+  </server>
+  <connection encrypted="true">
+    <from>srv1</from>
+    <to>srv2</to>
+    <protocol>TCP</protocol>
+  </connection>
+</network>

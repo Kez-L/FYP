@@ -1,0 +1,77 @@
+```yaml
+# Test multiline plain scalars with complex indentation
+plain_scalar_test: this is a very long plain scalar
+ that continues on the next line
+ with varying indentation levels
+  and some   extra    spaces
+ back to normal
+
+nested:
+  deep:
+    value: plain text
+     with continuation
+     and more text
+```
+
+```yaml
+%YAML 1.2
+%TAG ! tag:example.com,2014:
+---
+custom_tag: !<tag:example.com,2014:custom> value
+typed_int: !<tag:yaml.org,2002:int> "0xFF"
+typed_float: !<tag:yaml.org,2002:float> ".5e+3"
+typed_map: !<tag:yaml.org,2002:map>
+  key1: val1
+  key2: val2
+```
+
+```yaml
+flow_collection_stress:
+  inline_map: {key1: val1, key2: val2, key3: {nested: deep}}
+  inline_seq: [1, 2, [3, 4, [5, 6]], 7]
+  mixed: {a: [1, 2], b: {c: [3, 4]}, d: [5, {e: 6}]}
+  trailing_comma_test: {x: 1, y: 2,}
+  empty_flow: {}
+  empty_seq: []
+```
+
+```yaml
+special_scalar_contexts:
+  literal_block: |
+    Line 1 | pipe
+    Line 2 : colon
+    Line 3 - dash
+    Line 4 # hash
+    Line 5 & ampersand
+    Line 6 * asterisk
+    Line 7 ? question
+    Line 8 { bracket
+    Line 9 } bracket
+  folded_with_indicators: >+
+    This folds to
+    one long line
+    
+    
+    but preserves final newlines
+  chomping_keep: |+
+    keep trailing
+    
+  chomping_strip: |-
+    strip trailing
+```
+
+```yaml
+edge_case_keys:
+  "": empty_string_key
+  "null": quoted_null_string
+  "true": quoted_bool_string
+  "123": quoted_number_string
+  "~": quoted_tilde_string
+  ? unquoted null key
+  ? 123
+  ? true
+  ? [1, 2, 3]
+  : value_for_sequence_key
+  ? {nested: map}
+  : value_for_map_key
+```

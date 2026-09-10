@@ -1,0 +1,32 @@
+---
+# anchors, aliases, and merge in a different shape
+defaults: &defaults
+  host: localhost
+  port: 8080
+  paths:
+    - /api
+    - /health
+  flags: { debug: true, trace: false }
+
+service-a:
+  <<: *defaults
+  port: 8081
+  paths:
+    - /v1
+    - /status
+
+service-b:
+  <<: *defaults
+  host: 127.0.0.1
+  extra: &extra
+    retries: 3
+    timeout: 5.5
+
+bundle:
+  a: *defaults
+  b: *extra
+  c:
+    <<: *defaults
+    flags:
+      debug: false
+      trace: true

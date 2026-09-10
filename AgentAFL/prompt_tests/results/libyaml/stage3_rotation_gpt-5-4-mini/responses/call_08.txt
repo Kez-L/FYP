@@ -1,0 +1,96 @@
+```yaml
+explicit_string: !!str "0.5"
+python_tag: !!python/com%YAML 1.1
+gif_file: !!binary |
+  R0lGODlhDAAMAIQAAP//9/X17unp5WZmZgAAAOfn515eXvPz7Y6OjuDg4J+fn5OTk6enp56enmlpaW12.5Ojo4SEhP/++f/++f/++f/++f/++f/++f/++f/++f/++f/++f/++`/++SH+Dk1hZGUgd2l0aCBHSU1QACwAAAAADAAMAAAFLCAgjoEwnuNAFOhpEMTRiggcz4BNJHrv/zC^^^^^^^^^^^^^^^^^^^^^^^FcLiwMWYNG84BwwEeECcgggoBADs=
+---
+[1, 2, plex '1.0+2.0j'
+```
+
+```yaml
+---
+json: |
+  "\nfoldfd} line\nnext line\n  * bullet\n\n  * list\n  * lines\n\nlast line\n"
+dump: |
+  >
+
+    folded line
+
+    next line
+      * bullet
+
+      * list
+      * lines
+
+    last line
+
+tree: |
+  +STR
+   +DOC
+    =VAL >\nfolded line\nnext line\n  * bullet\n\n  * list\n  * lines\n\nlast line\n
+   -DOC
+  -STR
+  >
+
+   folded
+   line
+
+   next
+   line
+     * bullet
+
+     * list
+     * lines
+
+   last
+   line
+
+  # Com———»-ment
+```
+
+```yaml
+sequence:
+  - &base
+    name: example
+    payload: !!binary |
+      SGVsbG8sIFlBTUwh
+    enabled: yes
+    count: 7
+  - !!float '.inf'
+  - !!str "text"
+  - !!int '42'
+  - { inline: mapping, with: [a, b, c, { nested: true }] }
+anchors:
+  copy1:
+    <<: *base
+    enabled: no
+    count: 8
+  copy2:
+    payload: *base
+    <<: *base
+    name: overridden
+  base: *base
+```
+
+```yaml
+%YAML 1.1
+---
+scalars:
+  quoted: 'plain:colon'
+  plain: plain:colon
+  literal: |-
+    line1
+    line2
+  folded: >
+    line1
+    line2
+complexes:
+  - !!python/complex '-0.0-3.5j'
+  - !!python/complex '1.0+2.0j'
+  - !!str "0.5"
+map:
+  ? { k2: v2, k1: v1 }
+  : 123
+  ? [a, b, c]
+  : value
+```

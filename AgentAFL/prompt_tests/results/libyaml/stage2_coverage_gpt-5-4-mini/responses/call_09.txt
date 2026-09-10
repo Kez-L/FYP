@@ -1,0 +1,91 @@
+```yaml
+%YAML 1.1
+---
+binary: !!binary |
+  R0VGQ0lFRw==
+anchors:
+  root: &root
+    name: base
+    enabled: true
+  child:
+    <<: *root
+    enabled: false
+    values: [0, 1, 2, 3]
+unicode: "☃️ 𝄞 🚀"
+...
+```
+
+```yaml
+---
+# Explicit multi-document stream with flow-heavy content
+- !!map {a: 1, b: [2, 3, {c: 4}]}
+- !!seq
+  - {key: "value", num: -0}
+  - [!!str yes, !!str no, !!str null]
+  - &anchor { nested: { deep: { deeper: "x" } } }
+  - *anchor
+---
+? !!str "quoted-key"
+: >
+  paragraph one
+  paragraph two
+  paragraph three
+...
+```
+
+```yaml
+---
+%TAG !e! tag:example.com,2024:
+!e!record
+id: 18446744073709551615
+flags: [true, false, yes, no, on, off]
+payload:
+  - |
+    line1
+    line2
+  - >
+    folded
+    text
+  - !!binary "AAECAwQFBgc="
+meta: { empty: {}, nullish: ~, number: 3.14159 }
+...
+```
+
+```yaml
+---
+stack:
+  - &a { name: alpha, next: &b { name: beta, next: &c { name: gamma } } }
+  - *b
+  - *a
+matrix:
+  - [1, 2, 3, 4]
+  - [5, 6, 7, 8]
+  - [9, 10, 11, 12]
+special:
+  "a: b": "c: d"
+  "?": "!"
+  "-": "+"
+...
+```
+
+```yaml
+---
+!!map
+{
+  ? !!str "leading-question"
+  : !!seq [
+      !!int 0,
+      !!int 1,
+      !!int 2,
+      !!int 3,
+      !!int 4
+    ],
+  ? !!str "unicode"
+  : !!str "汉字 മലയാളം عربى",
+  ? !!str "chomp"
+  : |-
+      keep this
+      but not this newline
+}
+...
+```

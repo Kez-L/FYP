@@ -1,0 +1,77 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE test [
+  <!ENTITY myent "value">
+  <!ELEMENT test (child+)>
+  <!ELEMENT child (#PCDATA)>
+]>
+<test>
+  <child>&myent;</child>
+</test>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE root [
+  <!ELEMENT root (item*)>
+  <!ELEMENT item ANY>
+  <!ATTLIST item id ID #REQUIRED>
+]>
+<root>
+  <item id="first">content</item>
+</root>
+```
+
+```xml
+<!DOCTYPE nested [
+  <!ENTITY % param "<!ELEMENT nested (level1)>">
+  %param;
+  <!ELEMENT level1 (level2)>
+  <!ELEMENT level2 (#PCDATA)>
+]>
+<nested>
+  <level1>
+    <level2>deep text</level2>
+  </level1>
+</nested>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE mixed [
+  <!ELEMENT mixed (a|b)*>
+  <!ELEMENT a (c+)>
+  <!ELEMENT b EMPTY>
+  <!ELEMENT c (#PCDATA)>
+  <!ATTLIST b ref IDREF #IMPLIED>
+]>
+<mixed>
+  <a><c>text1</c></a>
+  <b ref="unknown"/>
+  <a><c>text2</c><c>text3</c></a>
+</mixed>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE complex [
+  <!ELEMENT complex (section+)>
+  <!ELEMENT section (title, (para|list)*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT para (#PCDATA|emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST section lang NMTOKEN "en">
+]>
+<complex>
+  <section lang="fr">
+    <title>Introduction</title>
+    <para>Start <emphasis>here</emphasis></para>
+    <list>
+      <item>first</item>
+      <item>second</item>
+    </list>
+  </section>
+</complex>
+```

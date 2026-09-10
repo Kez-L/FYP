@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+<!ELEMENT root (item+)>
+<!ELEMENT item (data, meta*)>
+<!ELEMENT data (#PCDATA | nested)*>
+<!ELEMENT nested (child*)>
+<!ELEMENT child EMPTY>
+<!ELEMENT meta EMPTY>
+<!ATTLIST item id ID #REQUIRED type (A|B|C) #IMPLIED>
+<!ATTLIST nested level CDATA #REQUIRED>
+<!ATTLIST child name CDATA #FIXED "test" value CDATA #REQUIRED>
+<!ATTLIST meta timestamp CDATA #IMPLIED source (internal|external) "internal">
+<!ENTITY myent "entityvalue">
+]>
+<root>
+  <item id="item1" type="A">
+    <data>Text content &myent;</data>
+    <data>
+      <nested level="1">
+        <child name="test" value="v1"/>
+        <child name="test" value="v2"/>
+      </nested>
+    </data>
+    <meta timestamp="2024-01-01" source="external"/>
+  </item>
+  <item id="item2" type="B">
+    <data>Simple text</data>
+    <meta source="internal"/>
+  </item>
+</root>

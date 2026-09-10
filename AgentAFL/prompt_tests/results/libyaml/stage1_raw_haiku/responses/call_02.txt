@@ -1,0 +1,76 @@
+```yaml
+%YAML 1.2
+---
+anchor_test: &anchor_ref
+  nested:
+    deep:
+      value: original
+alias_chain:
+  first: *anchor_ref
+  second: *anchor_ref
+recursive_merge:
+  <<: *anchor_ref
+  override: modified
+```
+
+```yaml
+---
+flow_mapping: {a: 1, b: {c: 2, d: {e: 3}}, f: [4, 5, 6]}
+flow_sequence: [!!str "text", !!int 42, !!float 3.14, !!bool false, !!null]
+mixed_flow_block:
+  - {x: 10, y: 20}
+  - [a, b, c]
+  - key: {nested: {deep: value}}
+```
+
+```yaml
+---
+plain_scalars:
+  integer: 123456789
+  float: 1.23e-4
+  octal: 0o755
+  hex: 0x1A2B
+  infinity: .inf
+  neg_infinity: -.inf
+  not_a_number: .nan
+  boolean_yes: yes
+  boolean_no: no
+  date_time: 2024-01-15T12:30:45Z
+  plain_string: this is a plain scalar without quotes
+```
+
+```yaml
+---
+empty_structures:
+  empty_map: {}
+  empty_sequence: []
+  empty_string: ""
+  empty_literal: |
+  empty_folded: >
+  empty_flow_seq: [ ]
+  empty_flow_map: { }
+multi_empty:
+  a:
+  b:
+  c:
+dangling_key: null
+implicit_null:
+```
+
+```yaml
+---
+!<tag:example.com,2024:custom> custom_tagged_value
+special_chars:
+  backslash: "line1\\nline2"
+  quote: "quote: \" inside"
+  tab: "column1\tcolumn2"
+  unicode: "\u0048\u0065\u006C\u006C\u006F"
+indicators:
+  colon_in_string: "key: value"
+  hash_in_string: "# not a comment"
+  dash_in_string: "- not a list"
+  ampersand_in_string: "&ref"
+  star_in_string: "*ref"
+  bracket_in_string: "[item]"
+  brace_in_string: "{item}"
+```

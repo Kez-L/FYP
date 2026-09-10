@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE config [
+<!ELEMENT config (section+)>
+<!ELEMENT section (parameter*)>
+<!ELEMENT parameter (#PCDATA)>
+<!ATTLIST config application CDATA #REQUIRED>
+<!ATTLIST section name ID #REQUIRED enabled (true|false) "true" priority (1|2|3|4|5) "3">
+<!ATTLIST parameter key CDATA #REQUIRED type (string|int|bool|list) #REQUIRED override CDATA #IMPLIED>
+]>
+<config application="myapp">
+  <section name="database" enabled="true" priority="1">
+    <parameter key="host" type="string">localhost</parameter>
+    <parameter key="port" type="int">5432</parameter>
+    <parameter key="pool_size" type="int" override="env:DB_POOL">20</parameter>
+  </section>
+  <section name="security" enabled="true" priority="2">
+    <parameter key="ssl_enabled" type="bool">true</parameter>
+    <parameter key="cert_path" type="string">/etc/certs/server.crt</parameter>
+  </section>
+  <section name="logging" enabled="false" priority="5">
+    <parameter key="level" type="string">debug</parameter>
+  </section>
+</config>

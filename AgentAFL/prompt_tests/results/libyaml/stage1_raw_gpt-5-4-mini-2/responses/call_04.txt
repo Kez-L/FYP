@@ -1,0 +1,151 @@
+```yaml
+%YAML 1.2
+---
+null_plain: ~
+empty: ""
+bools:
+  yes_like: yes
+  no_like: no
+  on_like: on
+  off_like: off
+numbers:
+  int_dec: 42
+  int_hex: 0x2A
+  int_oct: 052
+  float_exp: 6.022e23
+  negative_inf: -.inf
+  nan_val: .NaN
+timestamp: 2001-12-15T02:59:43.1Z
+mapping_key:
+  ? [a, b, c]
+  : "sequence key"
+  ? {x: 1, y: 2}
+  : "map key"
+...
+```
+
+```yaml
+---
+anchors:
+  defaults: &DEF
+    name: base
+    enabled: true
+    tags: [alpha, beta]
+  copy1:
+    <<: *DEF
+    name: first
+  copy2:
+    <<: *DEF
+    tags: [gamma, delta]
+    nested: &N
+      a: 1
+      b: 2
+  ref_to_nested: *N
+  self_list: &L
+    - one
+    - two
+    - *L
+  merge_chain:
+    <<: [*DEF, {extra: 99}]
+    enabled: false
+sequence_of_maps:
+  - &A {id: 1, role: user}
+  - &B {id: 2, role: admin}
+  - *A
+  - *B
+...
+```
+
+```yaml
+---
+block_styles:
+  literal_keep: |+
+    line 1
+      indented line
+    line 3
+
+  literal_strip: |-
+    alpha
+    beta
+
+  folded_keep: >+
+    folded one
+      more indent
+    folded three
+
+  folded_strip: >-
+    x
+    y
+    z
+
+  chomping_mix: |
+    a
+
+    b
+    c
+    d
+text_edges:
+  leading_space: "  starts with spaces"
+  trailing_space: "ends with spaces  "
+  special_chars: "!@#$%^&*()[]{}<>?,.:;|\\/"
+...
+```
+
+```yaml
+---
+explicit_tags:
+  - !!str 123
+  - !!int "00123"
+  - !!float "3.14159"
+  - !!bool "true"
+  - !!binary |
+      SGVsbG8sIFlBTVwhAAECAwQ=
+  - !!set
+    ? apple
+    ? banana
+    ? cherry
+  - !!omap
+    - first: 1
+    - second: 2
+    - third: 3
+custom_like:
+  tagged_scalar: !local/tag "value"
+  tagged_seq: !<tag:example.com,2024:seq> [1, 2, 3]
+  tagged_map: !<tag:example.com,2024:map>
+    k1: v1
+    k2: v2
+...
+```
+
+```yaml
+---
+documents:
+  doc1:
+    title: "First"
+    items:
+      - &item {name: "A", score: 10}
+      - &item2 {name: "B", score: 20}
+      - *item
+  doc2:
+    title: "Second"
+    matrix:
+      - [1, 0, 1, 0]
+      - [0, 1, 0, 1]
+      - [1, 1, 1, 1]
+    weird_keys:
+      ? "key:with:colons"
+      : "value"
+      ? "key with # hash"
+      : "comment-safe"
+      ? "?"
+      : "question"
+  doc3:
+    nested:
+      - level1:
+          - level2:
+              - level3: {a: b, c: d}
+    refs:
+      primary: *item2
+      alias_chain: [*item2, *item2, *item2]
+...
+```

@@ -1,0 +1,75 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY myent "expansion">
+]>
+<root>
+  <child>&myent;</child>
+  <child>text</child>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE article [
+  <!ELEMENT article (section+)>
+  <!ELEMENT section (title, para*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT para (#PCDATA|emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+]>
+<article>
+  <section>
+    <title>Introduction</title>
+    <para>This is <emphasis>important</emphasis>.</para>
+  </section>
+</article>
+```
+
+```xml
+<!DOCTYPE mixed [
+  <!ELEMENT mixed (a|b)*>
+  <!ELEMENT a EMPTY>
+  <!ELEMENT b (#PCDATA)>
+  <!ATTLIST a id ID #REQUIRED>
+  <!ATTLIST b ref IDREF #IMPLIED>
+  <!NOTATION pngdata PUBLIC "image/png">
+]>
+<mixed>
+  <a id="id1"/>
+  <b ref="id1">content</b>
+</mixed>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item)*>
+  <!ELEMENT item (name, price, stock)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT stock (#PCDATA)>
+  <!ATTLIST item sku CDATA #REQUIRED category CDATA #IMPLIED>
+]>
+<catalog>
+  <item sku="SKU001" category="electronics">
+    <name>Widget</name>
+    <price>9.99</price>
+    <stock>100</stock>
+  </item>
+</catalog>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ELEMENT root (elem)*>
+  <!ELEMENT elem ANY>
+  <!ATTLIST elem xmlns CDATA #FIXED "http://default.ns" data NMTOKEN #IMPLIED count NMTOKENS #IMPLIED>
+  <!ENTITY % internal "SYSTEM 'local.dtd'">
+]>
+<root>
+  <elem data="value" count="a b c">mixed content <elem>nested</elem> text</elem>
+</root>
+```

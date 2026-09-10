@@ -1,0 +1,104 @@
+```
+%YAML 1.2
+%TAG ! tag:example.com,2023:
+---
+!custom/object
+string: "value with special chars: \n\t\r"
+number: 3.14159
+boolean: true
+null_value: null
+empty_string: ""
+multiline: |
+  Line 1
+  Line 2
+  Line 3
+folded: >
+  This is a long string that
+  should be folded across
+  multiple lines
+```
+
+```
+---
+anchors_and_aliases:
+  first: &anchor1
+    data: [1, 2, 3]
+    metadata: test
+  second: *anchor1
+  third: &anchor2
+    - *anchor1
+    - nested: *anchor2
+  circular: *anchor1
+complex_key:
+  ? !!str 123
+  : !!int "456"
+```
+
+```
+---
+!!map
+block_sequence:
+  !!seq
+  - !!str item1
+  - !!int 42
+  - !!float 3.14
+  - !!bool true
+  - !!null ~
+flow_collection: [a, b, c, {x: 1, y: 2}]
+mixed: !!map {key: !!seq [1, 2, 3]}
+explicit_types:
+  str: !!str "hello"
+  int: !!int 999
+  bool: !!bool yes
+```
+
+```
+---
+&root
+key: value
+nested:
+  - &item
+    id: 1
+    ref: *root
+  - *item
+  - id: 2
+    items:
+      - *item
+      - *root
+deep:
+  level1:
+    level2:
+      level3:
+        reference: *root
+        item_ref: *item
+```
+
+```
+---
+special_strings:
+  plain: hello world
+  single_quoted: 'it''s a test'
+  double_quoted: "escaped \"quotes\" here"
+  literal: |
+    Block literal
+    Preserves newlines
+  chomp_strip: |-
+    No trailing newline
+  chomp_keep: |+
+    Keeps trailing newlines
+
+  folded_keep: >+
+    Folds text but
+    keeps final newline
+numbers_and_bools:
+  integer: 42
+  octal: 0o755
+  hex: 0xFF
+  float: 1.23e-4
+  inf: .inf
+  nan: .nan
+  yes_bool: yes
+  no_bool: no
+  on_bool: on
+  off_bool: off
+```

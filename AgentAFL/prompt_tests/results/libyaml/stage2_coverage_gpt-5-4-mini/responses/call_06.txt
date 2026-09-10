@@ -1,0 +1,116 @@
+```yaml
+%YAML 1.2
+---
+plain: >
+  folded
+  text with
+  a trailing
+  colon: still plain
+quoted: "a string with \n escapes, \t tabs, and a unicode snowman ☃"
+single: 'it''s quoted'
+sequence:
+  - 0
+  - -1
+  - 0x10
+  - 0o77
+  - 3.14159
+mapping:
+  ? key with spaces
+  : value
+  ? [a, b, c]
+  : "flow key"
+  ? {nested: yes}
+  : "flow mapping key"
+...
+```
+
+
+```yaml
+---
+%TAG !x! tag:example.org,2025:
+!x!root
+attrs: &A
+  name: demo
+  enabled: true
+  count: 42
+  notes: |
+    line 1
+    line 2
+    line 3
+ref1: *A
+ref2:
+  <<: *A
+  extra: !x!special "tagged scalar"
+  items:
+    - !!str 123
+    - !!int "456"
+    - !!bool "false"
+...
+```
+
+
+```yaml
+---
+- !!map
+  ? "a?b"
+  : 1
+  ? "c:d"
+  : 2
+- !!seq [ one, two, three ]
+- !!set
+  ? apple
+  ? orange
+  ? banana
+- !!binary |
+    SGVsbG8sIFlBTUwh
+- !!timestamp 2001-12-15T02:59:43.1Z
+...
+```
+
+
+```yaml
+---
+defaults: &D
+  host: localhost
+  port: 8080
+  tls: false
+servers:
+  prod:
+    <<: *D
+    host: prod.example.com
+    extra:
+      - { region: us-east-1, az: a }
+      - { region: us-east-1, az: b }
+  stage:
+    <<: *D
+    host: stage.example.com
+    port: 8443
+    comment: "mixing anchors, merge keys, and flow style"
+...
+```
+
+
+```yaml
+%YAML 1.1
+---
+document:
+  title: "edge cases"
+  empty1: 
+  empty2: ''
+  null1: ~
+  null2: null
+  booleans:
+    yes1: y
+    yes2: Yes
+    no1: n
+    no2: No
+  multilevel:
+    - level1:
+        - level2:
+            - level3: { a: 1, b: 2, c: [x, y, z] }
+  weird_indent:
+     - item1
+     - item2
+     - item3
+...
+```

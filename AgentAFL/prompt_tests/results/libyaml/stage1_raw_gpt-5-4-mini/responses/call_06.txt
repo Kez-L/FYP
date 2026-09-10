@@ -1,0 +1,115 @@
+```yaml
+%YAML 1.1
+%TAG !e! tag:example.com,2024:
+---
+!e!root
+name: "Parser stress"
+items:
+  - plain: simple
+    quoted: "double\nquoted\ttext"
+    single: 'single ''quote'' text'
+    taggy: !<tag:yaml.org,2002:int> "42"
+  - folded: >
+      line one
+      line two
+      line three
+    literal: |
+      alpha
+        beta
+      gamma
+  - mixed: [0, 1, 2, { a: b, c: d }]
+...
+```
+
+```yaml
+---
+? !!str "complex key"
+: !!map
+    ? "nested key"
+    : "nested value"
+    ? [one, two, three]
+    : { x: 1, y: 2 }
+    ? { a: 1, b: 2 }
+    : |
+      block
+      under
+      complex
+      key
+sequence:
+  - !!seq [!!int "7", !!float "3.14", !!bool "true"]
+  - !!null null
+  - !<tag:yaml.org,2002:binary> |
+      QUJDREVGR0hJSg==
+...
+```
+
+```yaml
+%YAML 1.2
+---
+stream:
+  - doc: first
+    value: 01
+    note: "octal-like in 1.2"
+  - doc: second
+    value: 0o17
+    alias_target: &A
+      k: v
+      n: 10
+  - doc: third
+    alias_use:
+      copy: *A
+      again: *A
+    merge_test:
+      <<: *A
+      extra: yes
+    flow: { ? key1 : val1, ? key2 : [a, b, c] }
+...
+```
+
+```yaml
+---
+unicode:
+  greek: "αβγ"
+  emoji: "😀😈"
+  rtl: "אבג"
+  escapes: "\u0000 \u001f \u00A9 \U0001F600"
+  surrogate_like: "\uD83D\uDE00"
+block_tests:
+  chomp_keep: |+
+    keep
+    this
+    trailing
+     
+  chomp_strip: |-
+    strip
+    this
+    trailing
+     
+  fold_keep: >+
+    a
+    b
+
+    c
+...
+```
+
+```yaml
+---
+sets_and_pairs: !!set
+  ? apple
+  ? banana
+  ? cherry
+pairs: !!pairs
+  - key1: value1
+  - key2: value2
+ordered: !!omap
+  - first: 1
+  - second: 2
+  - third: 3
+nested:
+  - &X { self: *X }
+  - !!merge
+      <<: { left: L, right: R }
+      middle: M
+...
+```

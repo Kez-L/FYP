@@ -1,0 +1,126 @@
+```yaml
+%YAML 1.1
+%TAG !u! tag:example.org,2024:units/
+---
+!u!catalog
+name: "mixed-anchors"
+defaults: &D
+  enabled: yes
+  count: 0
+  note: "base"
+items:
+  - &A !u!item
+    id: 1
+    ref: *D
+    data: [0, 1, 2, 3]
+  - !u!item
+    id: 2
+    ref: *A
+    data:
+      alpha: true
+      beta: false
+      gamma: null
+  - !u!item
+    id: 3
+    ref: *D
+    data: { x: 10, y: 20, z: 30 }
+...
+```
+
+```yaml
+---
+sequence:
+  - plain
+  - "double quoted"
+  - 'single quoted'
+  - >
+    folded
+    text
+  - |
+    literal
+    text
+mapping:
+  ? !!str "explicit-key"
+  : !!int "42"
+  ? !!seq [one, two, three]
+  : !!map {a: 1, b: 2}
+  ? !!set
+    ? apple
+    ? banana
+  : present
+  ? !!binary "QUJDRA=="
+  : decoded
+...
+```
+
+```yaml
+%YAML 1.2
+---
+- &root
+  kind: root
+  children:
+    - &n1 {id: 11, name: "first", meta: {a: 1, b: 2}}
+    - &n2
+      id: 12
+      name: "second"
+      meta:
+        a: 3
+        b: 4
+        c: 5
+    - *n1
+    - *n2
+- use: *root
+  check: !!bool "true"
+  count: !!int "0000009"
+  ratio: !!float "6.022e23"
+...
+```
+
+```yaml
+---
+doc: !<tag:example.net,2024:root>
+  header:
+    version: 3
+    flags: [on, off, maybe]
+  payload:
+    - !<tag:example.net,2024:point> {x: -1, y: 0}
+    - !<tag:example.net,2024:point> {x: 2147483647, y: -2147483648}
+    - !<tag:example.net,2024:point>
+      x: 0.0
+      y: -0.0
+  trailer:
+    checksum: 0xDEADBEEF
+    empty: ""
+    nullish: ~
+...
+```
+
+```yaml
+%TAG !h! tag:host.local,2025:types/
+---
+!h!bundle
+meta:
+  created: 2025-01-01
+  tags:
+    - one
+    - two
+    - three
+body:
+  - !h!entry
+    key: "k1"
+    value: "v1"
+    extra: &E {left: 7, right: 8}
+  - !h!entry
+    key: "k2"
+    value: "v2"
+    extra: *E
+  - !h!entry
+    key: "k3"
+    value: "v3"
+    extra:
+      nested:
+        - 10
+        - 20
+        - 30
+...
+```

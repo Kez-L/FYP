@@ -1,0 +1,112 @@
+```yaml
+%YAML 1.2
+%TAG !x! tag:example.net,2026:x/
+---
+anchors:
+  base: &base
+    name: "node"
+    enabled: yes
+    count: 0x10
+    ratio: .inf
+    inner: &inner
+      a: 1
+      b: 2
+  alias1: *base
+  alias2: *inner
+merge_test:
+  <<: *base
+  name: overridden
+...
+``` 
+
+```yaml
+%YAML 1.1
+---
+sequence_of_maps:
+  - id: 1
+    data: {k1: v1, k2: v2}
+  - id: 2
+    data:
+      ? !!str "multi\nline key"
+      : "value"
+      ? !!int "007"
+      : !!bool "off"
+  - id: 3
+    data: !!set
+      ? apple
+      ? banana
+      ? cherry
+timestamp_values:
+  - 2001-12-15T02:59:43.1Z
+  - 2002-12-14t21:59:43.10-05:00
+  - 2001-12-14 21:59:43.10 +05:00
+``` 
+
+```yaml
+%YAML 1.2
+---
+unicode_scalars:
+  plain: café
+  escaped: "snowman: \u2603, smile: \U0001F600"
+  multiline_key:
+    ? "ключ"
+    : "значение"
+    ? "漢字"
+    : "かな"
+  block_scalar: |+
+    line one
+    line two
+
+    line four
+  chomping: >-
+    folded
+      indented
+    text
+...
+``` 
+
+```yaml
+%YAML 1.1
+---
+nested_documents:
+  - |
+    %YAML 1.1
+    ---
+    inner: document
+    list:
+      - one
+      - two
+    ...
+  - >
+    second embedded
+    block with
+    indentation
+  - !!binary |
+    AAECAwQFBgcICQoLDA0ODw==
+specials:
+  null1: ~
+  null2: !!null ""
+  bool1: On
+  bool2: off
+  float1: 6.022e23
+``` 
+
+```yaml
+%YAML 1.2
+---
+complex_structures:
+  map_in_seq:
+    - {alpha: 1, beta: [2, 3, {gamma: 4}]}
+    - &anchored
+      ? [x, y, z]
+      : {nested: true, value: 123}
+    - *anchored
+  explicit_pairs:
+    ? !!str "left"
+    : !!str "right"
+    ? !!str "up"
+    : !!str "down"
+  tags:
+    custom1: !x!thing "payload"
+    custom2: !<tag:example.net,2026:x/raw> {a: 1, b: 2}
+...

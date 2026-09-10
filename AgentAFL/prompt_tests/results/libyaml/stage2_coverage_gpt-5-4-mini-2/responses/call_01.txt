@@ -1,0 +1,86 @@
+```yaml
+%YAML 1.1
+%TAG !e! tag:example.com,2024:env/
+---
+!e!root
+meta:
+  title: "anchor-alias mix"
+  active: yes
+items:
+  - &base
+    id: 1
+    payload: [0, 1, 2]
+  - *base
+  - !!set
+      ? alpha
+      ? beta
+      ? gamma
+```
+
+```yaml
+---
+# nested flow collections and explicit keys
+? [a, b, c]
+: { one: 1, two: [2, 2, 2], three: { x: 9, y: 8 } }
+? { k: v, n: 7 }
+: |
+  block
+  scalar
+  with
+  indentation
+sequence: [[{a: b}], [{c: d}, {e: f}], []]
+...
+```
+
+```yaml
+%YAML 1.2
+---
+- &A {name: nodeA, refs: [*A]}
+- &B
+  name: nodeB
+  child:
+    left: &L {v: 10}
+    right: *L
+- !!omap
+  - first: 1
+  - second: 2
+  - third: 3
+```
+
+```yaml
+---
+document:
+  id: 0xDEADBEEF
+  flags:
+    - on
+    - off
+    - yes
+    - no
+  unicode: "emoji: 😀, musical: 𝄞"
+  multiline: >2
+      line one
+        line two
+      line three
+  binary_like: !!binary |
+    TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5
+    byBoaXMgaW50ZWxsZWN0
+```
+
+```yaml
+%TAG !foo! tag:foo.example,2025:
+---
+- !foo!alpha
+  x: 1
+  y: 2
+- !foo!beta
+  ? !!str "complex key"
+  : !!seq
+    - !!int "42"
+    - !!float "6.022e23"
+    - !!bool "false"
+- !foo!gamma
+  <<: &merge
+    a: A
+    b: B
+  c: C
+```

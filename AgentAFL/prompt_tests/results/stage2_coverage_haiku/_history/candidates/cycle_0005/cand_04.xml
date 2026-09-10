@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE manifest [
+<!ELEMENT manifest (package+)>
+<!ELEMENT package (component*, dependency*)>
+<!ELEMENT component (resource+)>
+<!ELEMENT resource EMPTY>
+<!ELEMENT dependency EMPTY>
+<!ATTLIST package name CDATA #REQUIRED version CDATA #REQUIRED>
+<!ATTLIST component type (library|module|plugin) #REQUIRED>
+<!ATTLIST resource path CDATA #REQUIRED checksum CDATA #IMPLIED>
+<!ATTLIST dependency ref CDATA #REQUIRED optional (true|false) "false">
+]>
+<manifest>
+  <package name="core" version="2.1.0">
+    <component type="library">
+      <resource path="lib/core.jar" checksum="abc123"/>
+      <resource path="lib/util.jar"/>
+    </component>
+    <component type="module">
+      <resource path="modules/auth.so"/>
+    </component>
+    <dependency ref="openssl" optional="false"/>
+    <dependency ref="zlib" optional="true"/>
+  </package>
+  <package name="extras" version="1.0.0">
+    <dependency ref="core"/>
+  </package>
+</manifest>

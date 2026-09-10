@@ -1,0 +1,108 @@
+```yaml
+%YAML 1.2
+%TAG !e! tag:example.com,2024:
+---
+!e!root
+meta: &M
+  version: 1.0
+  enabled: yes
+  items:
+    - !e!item {id: 1, name: alpha}
+    - !e!item {id: 2, name: beta}
+    - !e!item {id: 3, name: gamma}
+doc: >
+  This is a folded block
+  with several lines
+  and a trailing newline.
+ref: *M
+...
+```
+
+```yaml
+---
+anchors:
+  a: &A
+    - 1
+    - 2
+    - 3
+  b: &B
+    key: value
+    nested:
+      x: 10
+      y: 20
+aliases:
+  first: *A
+  second: *B
+  merged:
+    <<: *B
+    extra: true
+matrix:
+  - [0, 1, 2]
+  - [3, 4, 5]
+  - [6, 7, 8]
+...
+```
+
+```yaml
+%TAG !foo! tag:foo.example.org,2001:
+---
+!foo!packet
+header: !!map
+  type: event
+  id: 0x1A
+  flags: [on, off, on]
+payload: !!seq
+  - !!str "line\nbreak"
+  - !!int 42
+  - !!float 3.14159
+  - !!bool true
+  - !!null null
+footer:
+  checksum: 0o755
+  note: "tabs\tand unicode Ω"
+...
+```
+
+```yaml
+---
+stream:
+  - |
+    first document text
+    with blank lines
+
+    and indentation
+  - >
+    second document text
+    folded across
+    multiple lines
+mapping:
+  ? key one
+  : value one
+  ? key two
+  : value two
+  ? key three
+  : [a, b, c, d]
+...
+```
+
+```yaml
+---
+sequence:
+  - &N {name: node, left: null, right: null}
+  - &L
+    name: left
+    child: *N
+  - &R
+    name: right
+    child: *N
+document:
+  root:
+    left: *L
+    right: *R
+  comment: '# not a comment inside quotes'
+  literal: |
+    ! not a tag here
+    & not an anchor here
+    * not an alias here
+...
+```

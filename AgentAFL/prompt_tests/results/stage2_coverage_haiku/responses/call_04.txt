@@ -1,0 +1,133 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+<!ELEMENT root (item+)>
+<!ELEMENT item (name, value)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT value (#PCDATA)>
+<!ATTLIST item id ID #REQUIRED type CDATA #REQUIRED>
+<!ENTITY myent "expanded_content">
+]>
+<root>
+  <item id="i1" type="text">
+    <name>First</name>
+    <value>&myent;</value>
+  </item>
+  <item id="i2" type="number">
+    <name>Second</name>
+    <value>42</value>
+  </item>
+</root>
+```
+
+```xml
+<!DOCTYPE html [
+<!ELEMENT html (head, body)>
+<!ELEMENT head (title, meta*)>
+<!ELEMENT body (div+)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT meta EMPTY>
+<!ELEMENT div (p | span)*>
+<!ELEMENT p (#PCDATA | b | i)*>
+<!ELEMENT span (#PCDATA)>
+<!ELEMENT b (#PCDATA)>
+<!ELEMENT i (#PCDATA)>
+<!ATTLIST meta name CDATA #REQUIRED content CDATA #REQUIRED>
+<!ATTLIST div class CDATA #IMPLIED id ID #IMPLIED>
+]>
+<html>
+  <head>
+    <title>Test Page</title>
+    <meta name="charset" content="utf-8"/>
+  </head>
+  <body>
+    <div class="container" id="d1">
+      <p>Text with <b>bold</b> and <i>italic</i></p>
+      <span>Span content</span>
+    </div>
+  </body>
+</html>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE data [
+<!ELEMENT data (record*)>
+<!ELEMENT record (field+)>
+<!ELEMENT field (#PCDATA | nested)*>
+<!ELEMENT nested (#PCDATA)>
+<!ATTLIST record index CDATA #REQUIRED timestamp CDATA #IMPLIED>
+<!ATTLIST field name CDATA #REQUIRED type (string|integer|boolean) "string">
+<!ATTLIST nested level CDATA #FIXED "1">
+<!NOTATION image SYSTEM "image/png">
+]>
+<data>
+  <record index="1" timestamp="2024-01-01T00:00:00Z">
+    <field name="username" type="string">alice</field>
+    <field name="count" type="integer">100<nested level="1">sub</nested></field>
+  </record>
+  <record index="2">
+    <field name="active" type="boolean">true</field>
+  </record>
+</data>
+```
+
+```xml
+<!DOCTYPE configuration [
+<!ELEMENT configuration (settings+, rules*)>
+<!ELEMENT settings (option*)>
+<!ELEMENT rules (rule+)>
+<!ELEMENT option (#PCDATA)>
+<!ELEMENT rule (condition, action)>
+<!ELEMENT condition (#PCDATA)>
+<!ELEMENT action (#PCDATA)>
+<!ATTLIST settings scope (global|local) #REQUIRED>
+<!ATTLIST option key CDATA #REQUIRED default CDATA #IMPLIED>
+<!ATTLIST rule priority CDATA #REQUIRED enabled (yes|no) "yes">
+<!ENTITY version "1.0">
+<!ENTITY author "system">
+]>
+<configuration>
+  <settings scope="global">
+    <option key="timeout" default="30">60</option>
+    <option key="retry">3</option>
+  </settings>
+  <rules>
+    <rule priority="high" enabled="yes">
+      <condition>error</condition>
+      <action>alert</action>
+    </rule>
+  </rules>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE manifest [
+<!ELEMENT manifest (package+)>
+<!ELEMENT package (component*, dependency*)>
+<!ELEMENT component (resource+)>
+<!ELEMENT resource EMPTY>
+<!ELEMENT dependency EMPTY>
+<!ATTLIST package name CDATA #REQUIRED version CDATA #REQUIRED>
+<!ATTLIST component type (library|module|plugin) #REQUIRED>
+<!ATTLIST resource path CDATA #REQUIRED checksum CDATA #IMPLIED>
+<!ATTLIST dependency ref CDATA #REQUIRED optional (true|false) "false">
+]>
+<manifest>
+  <package name="core" version="2.1.0">
+    <component type="library">
+      <resource path="lib/core.jar" checksum="abc123"/>
+      <resource path="lib/util.jar"/>
+    </component>
+    <component type="module">
+      <resource path="modules/auth.so"/>
+    </component>
+    <dependency ref="openssl" optional="false"/>
+    <dependency ref="zlib" optional="true"/>
+  </package>
+  <package name="extras" version="1.0.0">
+    <dependency ref="core"/>
+  </package>
+</manifest>
+```

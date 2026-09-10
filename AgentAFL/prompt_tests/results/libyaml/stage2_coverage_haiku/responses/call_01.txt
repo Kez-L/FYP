@@ -1,0 +1,81 @@
+```
+%YAML 1.2
+%TAG ! tag:yaml.org,2002:
+---
+!<tag:example.com,2024:stream>
+- &ref1
+  key: value
+  number: 42
+- *ref1
+- !<tag:custom:recursive>
+  self: &self
+    parent: *self
+    depth: 1
+```
+
+```
+---
+multiline: |
+  Line 1
+  Line 2
+    Indented Line 3
+  Line 4
+folded: >
+  This is a long
+  line that spans
+  multiple words
+  and should fold.
+literal: |+
+  Keep trailing newlines
+
+
+strip: |-
+  Remove trailing newline
+comment: value # inline comment
+```
+
+```
+---
+unicode_key_ñ: unicode_value_中文
+emoji_😀: test
+"quoted:key": value
+? complex_key
+  with_newline
+: complex_value
+  on_next_line
+null_key:
+null_value: null
+empty_string: ""
+```
+
+```
+---
+flow_sequence: [1, 2, &anchor {nested: value}, *anchor, 4]
+flow_mapping: {a: 1, b: [2, 3], c: {d: 4}}
+mixed:
+  - !tag:mixed
+    flow: [x, y, z]
+    mapping: {p: 1, q: 2}
+  - |
+    Block scalar in flow context
+  - &anchor2
+    ref: value
+  - *anchor2
+```
+
+```
+---
+binary: !!binary |
+  R0lGODlhDAAMAIQAAP//9/X17unp5WZmTmzsbf/z
+  7Y4hNjomNjf/9PX29/f39////f/f3//f//f/f//f
+  3//f//f/f//f//f/f//f/f/f/f/f/f/f/f/f/f//f
+  3//f/f/f/f/f/f/f/f/f/f/f/f/f/f/f/f/f/f/f/
+timestamp: 2024-01-15T10:30:00Z
+merge: &defaults
+  timeout: 30
+  retries: 3
+override:
+  <<: *defaults
+  timeout: 60
+special_floats: [.inf, -.inf, .nan]
+```

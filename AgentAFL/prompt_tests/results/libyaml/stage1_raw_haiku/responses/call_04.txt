@@ -1,0 +1,73 @@
+```yaml
+anchor: &anchor_ref
+  nested:
+    deep:
+      value: 123
+alias_chain: *anchor_ref
+circular: &circ
+  ref: *circ
+```
+
+```yaml
+merge: &defaults
+  timeout: 30
+  retry: 3
+override:
+  <<: *defaults
+  timeout: 60
+  extra: new_field
+```
+
+```yaml
+# Mixed flow and block styles
+flow_map: {a: 1, b: 2, c: {nested: value}}
+flow_seq: [1, 2, 3, [4, 5, 6]]
+block_map:
+  key1: value1
+  key2:
+    - item1
+    - item2
+mixed:
+  - {inline: map}
+  - |
+    block scalar
+  - [flow, list]
+```
+
+```yaml
+!!map
+? !!binary |
+  \x00\x01\x02\x03
+  \x04\x05\x06\x07
+: !!set
+  ? key1
+  ? key2
+  ? key3
+? !!omap
+  - item1: value1
+  - item2: value2
+: !!pairs
+  - [a, b]
+  - [c, d]
+```
+
+```yaml
+docstart: |
+  ---
+  content
+  ---
+literal_with_indent: |2
+  indented
+  content
+folded_with_strip: >-
+  folded text
+  without final newline
+clip_chomped: |-
+  clipped
+  scalar
+keep_newlines: |+
+  multiple
+
+
+  newlines
+```

@@ -1,0 +1,86 @@
+```
+---
+# Deeply nested implicit keys with mixed anchors
+a: &A1
+  b: &B1
+    c: &C1
+      d: &D1
+        e: &E1
+          f: value
+      g: *A1
+    h: *B1
+  i: *C1
+j: *D1
+k: *E1
+```
+
+```
+---
+# Complex flow collections with nested tags
+!<tag:example.com:root>
+flow_map: &FM {
+  !<tag:custom:int> int_key: 42,
+  !<tag:custom:str> str_key: "quoted",
+  nested: {inner: [1, 2, !<tag:custom:val> 3]}
+}
+flow_seq: [
+  *FM,
+  !<tag:custom:obj> {x: 10, y: 20},
+  [nested, list, here]
+]
+```
+
+```
+---
+# Block scalars with explicit chomping and indentation indicators
+scalar_literal: |2
+  
+  Explicit indentation
+  with leading blank line
+  and preserved trailing newline
+
+scalar_folded: >-
+  Folded scalar without trailing
+  newline indicator explicit
+  indentation level two
+scalar_plain: >1
+   Leading space preserved
+   in folded context
+```
+
+```
+---
+# Directives with implicit keys and merge keys
+%YAML 1.1
+%TAG !!local tag:local.example.com,2024:
+--- !!map
+defaults: &DEFAULTS
+  timeout: 30
+  retry: 3
+  enabled: true
+production:
+  <<: *DEFAULTS
+  timeout: 60
+  environment: prod
+development:
+  <<: *DEFAULTS
+  environment: dev
+  enabled: false
+```
+
+```
+---
+# Special characters in keys with various scalar forms
+? !!str |
+  Multi-line
+  explicit key
+: "Explicit string value"
+? !!str plain key with: colon
+: |
+  Literal block
+  scalar value
+? &anchor_key
+  another: key
+: *anchor_key
+"\x49\x6e\x74\x65\x72\x70\x6f\x6c\x61\x74\x65": "escaped bytes as key"
+```

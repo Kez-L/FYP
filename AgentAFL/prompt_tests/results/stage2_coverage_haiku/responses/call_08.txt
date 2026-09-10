@@ -1,0 +1,117 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+<!ELEMENT root (item+)>
+<!ELEMENT item (name, value)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT value (#PCDATA)>
+<!ATTLIST item id ID #REQUIRED type CDATA #IMPLIED>
+<!ENTITY myent "test_entity_value">
+]>
+<root>
+  <item id="i1" type="alpha">
+    <name>First</name>
+    <value>&myent;</value>
+  </item>
+  <item id="i2">
+    <name>Second</name>
+    <value>data</value>
+  </item>
+</root>
+```
+
+```xml
+<!DOCTYPE test [
+<!ELEMENT test ANY>
+<!ELEMENT nested (child*)>
+<!ELEMENT child (#PCDATA|nested)*>
+<!ATTLIST nested depth CDATA #REQUIRED xmlns:custom CDATA #FIXED "http://custom.ns">
+<!NOTATION jpeg PUBLIC "image/jpeg">
+<!ENTITY image SYSTEM "file.jpg" NDATA jpeg>
+]>
+<test>
+  <nested depth="1" xmlns:custom="http://custom.ns">
+    <child>Text content here</child>
+    <nested depth="2">
+      <child>Deeply nested</child>
+    </nested>
+  </nested>
+</test>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE document [
+<!ELEMENT document (section+)>
+<!ELEMENT section (heading, paragraph+, subsection*)>
+<!ELEMENT subsection (heading, paragraph+)>
+<!ELEMENT heading (#PCDATA)>
+<!ELEMENT paragraph (#PCDATA|emphasis|strong)*>
+<!ELEMENT emphasis (#PCDATA)>
+<!ELEMENT strong (#PCDATA)>
+<!ATTLIST section id ID #REQUIRED level (1|2|3) #REQUIRED>
+<!ATTLIST subsection id ID #REQUIRED>
+]>
+<document>
+  <section id="sec1" level="1">
+    <heading>Main Section</heading>
+    <paragraph>Text with <emphasis>emphasis</emphasis> and <strong>strong</strong></paragraph>
+    <subsection id="subsec1">
+      <heading>Subsection</heading>
+      <paragraph>More text</paragraph>
+    </subsection>
+  </section>
+</document>
+```
+
+```xml
+<!DOCTYPE data [
+<!ELEMENT data (record)*>
+<!ELEMENT record (field+)>
+<!ELEMENT field (#PCDATA)>
+<!ATTLIST record xmlns CDATA #IMPLIED status (active|inactive|pending) "active">
+<!ATTLIST field name CDATA #REQUIRED index CDATA #IMPLIED>
+<!ENTITY nbsp "&#160;">
+<!ENTITY copy "&#169;">
+]>
+<data xmlns="http://example.com/data">
+  <record status="active">
+    <field name="id">001</field>
+    <field name="text">Value&copy;&nbsp;2024</field>
+  </record>
+  <record status="pending">
+    <field name="id">002</field>
+    <field name="text">Another</field>
+  </record>
+</data>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE catalog [
+<!ELEMENT catalog (product+)>
+<!ELEMENT product (name, price, details?)>
+<!ELEMENT details (description, tags)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT price (#PCDATA)>
+<!ELEMENT description (#PCDATA)>
+<!ELEMENT tags (tag+)>
+<!ELEMENT tag (#PCDATA)>
+<!ATTLIST product sku CDATA #REQUIRED inStock (yes|no) #REQUIRED>
+<!ATTLIST price currency (USD|EUR|GBP) "USD">
+<!ATTLIST tag category CDATA #IMPLIED>
+]>
+<catalog>
+  <product sku="SKU123" inStock="yes">
+    <name>Widget</name>
+    <price currency="USD">29.99</price>
+    <details>
+      <description>A useful widget</description>
+      <tags>
+        <tag category="electronics">gadget</tag>
+        <tag category="tools">utility</tag>
+      </tags>
+    </details>
+  </product>
+</catalog>
+```

@@ -1,0 +1,65 @@
+```yaml
+%YAML 1.1
+---
+anchor_cycle: &A
+  name: node-a
+  next: &B
+    name: node-b
+    next: *A
+  self: *A
+```
+
+```yaml
+%YAML 1.2
+---
+map:
+  !!str "quoted key": !!int "42"
+  ? !!set
+    ? alpha
+    ? beta
+  : !!seq [1, 2, 3]
+  ? [a, b, c]
+  : { nested: yes, empty: null }
+```
+
+```yaml
+%YAML 1.1
+---
+block_scalars:
+  literal_keep: |+
+    line 1
+    line 2
+
+  folded_strip: >-
+    folded
+      indented
+    text
+  plain_after: end
+```
+
+```yaml
+%YAML 1.1
+---
+directives_and_docs:
+  first: true
+...
+%YAML 1.1
+---
+second:
+  - !!binary "AAECAwQFBgcICQoLDA0ODw=="
+  - !!timestamp "2001-12-15T02:59:43.1Z"
+  - !!float ".inf"
+```
+
+```yaml
+%YAML 1.2
+---
+aliases_and_tags:
+  - &item { id: 1, tag: !custom/tag "payload" }
+  - *item
+  - &item2
+      - one
+      - two
+      - three
+  - *item2
+```

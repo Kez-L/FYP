@@ -1,0 +1,145 @@
+```yaml
+%YAML 1.1
+%TAG !e! tag:example.com,2026:edge/
+---
+!e!root
+aliases:
+  a: &A
+    - 0
+    - 1
+    - 2
+  b: *A
+  c:
+    - *A
+    - &B {k: v, n: 9}
+    - *B
+nested:
+  ? &K
+    - alpha
+    - beta
+    - gamma
+  : &V
+    one: 1
+    two: 2
+    three:
+      - true
+      - false
+      - null
+  ? *K
+  : *V
+scalar_mix:
+  dec: 12345
+  hex: 0x1f
+  oct: 0o77
+  sex: 1:20:30
+  float: 6.022e23
+  inf: .inf
+  nan: .NaN
+...
+```
+
+```yaml
+---
+block_test: >2-
+    first line
+      indented more
+    second line
+
+      blank paragraph
+    third line
+  with two spaces kept
+literal_test: |+
+  line1
+    line2
+  line3
+
+chomped: >-
+  a
+  b
+  c
+
+flow_test: [ {a: [1, 2, {x: y}]}, {b: {c: d, d: [e, f, g]}}, [] ]
+flow_map: { ? [x, y] : {z: 1}, ? {m: n} : [o, p] }
+...
+```
+
+```yaml
+%YAML 1.2
+---
+document:
+  !!map {
+    ? !!str "quoted key"
+    : !!seq [!!int "7", !!bool "yes", !!null "null"],
+    ? !!str "emoji"
+    : "😀",
+    ? !!str "multiline"
+    : |
+      line a
+      line b
+      line c
+  }
+tags:
+  plain: !<tag:yaml.org,2002:str> plain-text
+  int: !<tag:yaml.org,2002:int> "00042"
+  timestamp: !<tag:yaml.org,2002:timestamp> 2001-12-15T02:59:43.1Z
+  merge:
+    <<: [{x: 1}, {y: 2}]
+    z: 3
+...
+```
+
+```yaml
+---
+setlike: !!set
+  ? red
+  ? green
+  ? blue
+omaplike: !!omap
+  - first: 1
+  - second: 2
+  - third: 3
+pairslike: !!pairs
+  - - left
+    - right
+  - - up
+    - down
+sequence_of_maps:
+  - name: item1
+    attrs: {a: 10, b: 20}
+  - name: item2
+    attrs:
+      a: 30
+      b: 40
+  - name: item3
+    attrs: [x, y, z]
+...
+```
+
+```yaml
+%YAML 1.1
+%TAG !x! tag:x.example,2026:test/
+---
+!x!outer
+? !!str "complex ? key: with colon"
+: !!seq
+  - &anchor1
+    ? [a, b]
+    : {c: d}
+  - *anchor1
+  - >
+      folded
+      text
+      with
+        indentation
+      and
+      tabs	inside
+? { nested: { map: { deep: [1, 2, 3, {four: 4}] } } }
+: |
+  literal
+  block
+  with
+  empty lines
+
+  and more
+...
+```

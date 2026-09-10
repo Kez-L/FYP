@@ -1,0 +1,136 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+<!ELEMENT root (nested*)>
+<!ELEMENT nested (nested*)>
+<!ATTLIST nested id ID #REQUIRED ref IDREF #IMPLIED>
+<!ENTITY % paramEntity "<!ELEMENT param EMPTY>">
+%paramEntity;
+]>
+<root>
+  <nested id="n1" ref="n2">
+    <nested id="n2">
+      <nested id="n3"/>
+    </nested>
+  </nested>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE article [
+<!ELEMENT article (title, body)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT body (section+)>
+<!ELEMENT section (h2, p+)>
+<!ELEMENT h2 (#PCDATA)>
+<!ELEMENT p (#PCDATA|emphasis)*>
+<!ELEMENT emphasis (#PCDATA)>
+<!ATTLIST article version CDATA #REQUIRED status (draft|final) "draft">
+<!NOTATION jpeg SYSTEM "image/jpeg">
+<!ENTITY fig1 SYSTEM "image.jpg" NDATA jpeg>
+]>
+<article version="1.0" status="final">
+  <title>Test Article</title>
+  <body>
+    <section>
+      <h2>Introduction</h2>
+      <p>This is a <emphasis>test</emphasis> paragraph.</p>
+      <p>Another paragraph with content.</p>
+    </section>
+  </body>
+</article>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE config [
+<!ELEMENT config (database|cache|logging)*>
+<!ELEMENT database (host, port, credentials)>
+<!ELEMENT cache (ttl, maxsize)>
+<!ELEMENT logging (level, output)>
+<!ELEMENT host (#PCDATA)>
+<!ELEMENT port (#PCDATA)>
+<!ELEMENT credentials (#PCDATA)>
+<!ELEMENT ttl (#PCDATA)>
+<!ELEMENT maxsize (#PCDATA)>
+<!ELEMENT level (#PCDATA)>
+<!ELEMENT output (#PCDATA)>
+<!ATTLIST database type (mysql|postgres) #REQUIRED>
+<!ATTLIST cache enabled (yes|no) "yes">
+<!ATTLIST logging format CDATA #IMPLIED>
+]>
+<config>
+  <database type="postgres">
+    <host>db.example.com</host>
+    <port>5432</port>
+    <credentials>user:pass</credentials>
+  </database>
+  <cache enabled="yes">
+    <ttl>3600</ttl>
+    <maxsize>1000</maxsize>
+  </cache>
+  <logging format="json">
+    <level>INFO</level>
+    <output>/var/log/app.log</output>
+  </logging>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE manifest [
+<!ELEMENT manifest (application, permissions?, features?)>
+<!ELEMENT application (activity+)>
+<!ELEMENT activity (intent-filter?)>
+<!ELEMENT intent-filter (action, category*)>
+<!ELEMENT action EMPTY>
+<!ELEMENT category EMPTY>
+<!ELEMENT permissions (permission*)>
+<!ELEMENT permission EMPTY>
+<!ELEMENT features (feature*)>
+<!ELEMENT feature EMPTY>
+<!ATTLIST application name CDATA #REQUIRED package CDATA #REQUIRED>
+<!ATTLIST activity name CDATA #REQUIRED>
+<!ATTLIST action name CDATA #REQUIRED>
+<!ATTLIST category name CDATA #REQUIRED>
+<!ATTLIST permission name CDATA #REQUIRED>
+<!ATTLIST feature name CDATA #REQUIRED required (true|false) "false">
+]>
+<manifest package="com.example.app" name="TestApp">
+  <application name="MainActivity" package="com.example.app">
+    <activity name=".MainActivity">
+      <intent-filter>
+        <action name="android.intent.action.MAIN"/>
+        <category name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+    </activity>
+  </application>
+  <permissions>
+    <permission name="android.permission.INTERNET"/>
+    <permission name="android.permission.ACCESS_NETWORK_STATE"/>
+  </permissions>
+  <features>
+    <feature name="android.hardware.camera" required="false"/>
+  </features>
+</manifest>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE svg [
+<!ELEMENT svg (rect|circle|path)*>
+<!ELEMENT rect EMPTY>
+<!ELEMENT circle EMPTY>
+<!ELEMENT path EMPTY>
+<!ATTLIST svg xmlns CDATA #FIXED "http://www.w3.org/2000/svg" viewBox CDATA #REQUIRED width CDATA #IMPLIED height CDATA #IMPLIED>
+<!ATTLIST rect x CDATA #REQUIRED y CDATA #REQUIRED width CDATA #REQUIRED height CDATA #REQUIRED fill CDATA #IMPLIED stroke CDATA #IMPLIED>
+<!ATTLIST circle cx CDATA #REQUIRED cy CDATA #REQUIRED r CDATA #REQUIRED fill CDATA #IMPLIED>
+<!ATTLIST path d CDATA #REQUIRED fill CDATA #IMPLIED stroke CDATA #IMPLIED stroke-width CDATA #IMPLIED>
+]>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <rect x="10" y="10" width="30" height="30" fill="red" stroke="black"/>
+  <circle cx="60" cy="25" r="15" fill="blue"/>
+  <path d="M 10 60 L 50 80 L 90 60" fill="none" stroke="green" stroke-width="2"/>
+</svg>
+```

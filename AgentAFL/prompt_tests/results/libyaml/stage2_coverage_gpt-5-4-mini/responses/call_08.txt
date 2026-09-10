@@ -1,0 +1,98 @@
+```yaml
+%YAML 1.1
+%TAG !foo! tag:example.org,2025:foo/
+---
+- !!map
+  ? "quoted key"
+  : [true, false, null, ~, .inf, -.Inf, .NAN]
+  ? 0b1010
+  : {a: 1, b: 2, c: 3}
+- !foo!node
+  value: &base
+    folded: >
+      line1
+      line2
+      line3
+    literal: |
+      alpha
+      beta
+      gamma
+  alias: *base
+...
+```
+
+```yaml
+---
+!!seq
+- &A
+  - {x: 1, y: 2}
+  - {x: 3, y: 4}
+- &B
+  <<: *A
+  extra:
+    - one
+    - two
+    - three
+- *B
+- !!set
+    ? "k"
+    ? "l"
+    ? "m"
+...
+```
+
+```yaml
+%TAG !e! tag:demo.invalid,2025:
+---
+- !e!outer
+  name: "unicode-𐍈-测试"
+  data:
+    - "\u0000"
+    - "\u001b"
+    - "\U0001F642"
+  refs:
+    self: &S
+      a: 1
+      b: 2
+    again: *S
+- !<tag:yaml.org,2002:binary> "AAEC/f7/"
+...
+```
+
+```yaml
+---
+map:
+  ? [a, b, c]
+  : { one: 1, two: 2 }
+  ? { nested: [1, 2] }
+  : >
+      folded text with
+      multiple lines
+  ? !!str 123
+  : !!int "456"
+seq:
+  - !!timestamp "2001-12-15T02:59:43.1Z"
+  - !!bool "On"
+  - !!float "6.022e23"
+...
+```
+
+```yaml
+%YAML 1.2
+---
+- &anchor1
+  - - - deep
+      - nesting
+    - [a, b, c, d]
+  - {k1: v1, k2: v2}
+- *anchor1
+- >
+  paragraph one
+  paragraph two
+- |
+  block
+  scalar
+  with
+  trailing
+  lines
+...

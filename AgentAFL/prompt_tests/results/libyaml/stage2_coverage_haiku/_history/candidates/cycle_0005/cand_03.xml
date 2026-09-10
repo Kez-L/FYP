@@ -1,0 +1,21 @@
+---
+complex_anchors: &root
+  level1: &l1
+    level2: &l2
+      data: [1, 2, 3]
+      ref: *l1
+  circular: *root
+  sibling: *l2
+merge_keys:
+  defaults: &defaults
+    timeout: 30
+    retries: 3
+  production:
+    <<: *defaults
+    timeout: 60
+  development:
+    <<: *defaults
+    debug: true
+unusual_flow:
+  flow_with_tags: [!!str 1, !!int "2", !!bool yes]
+  nested_flow: {a: {b: {c: [1, [2, [3, {d: 4}]]]}}}

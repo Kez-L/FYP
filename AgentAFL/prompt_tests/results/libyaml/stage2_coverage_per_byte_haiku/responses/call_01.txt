@@ -1,0 +1,72 @@
+```yaml
+%YAML 1.2
+%TAG ! tag:example.com,2000:
+--- !custom
+scalar: |
+  Line 1
+  Line 2
+  Line 3
+folded: >
+  This is a long
+  folded scalar that
+  spans multiple lines
+literal: |+
+  Preserved trailing newlines
+
+```
+
+```yaml
+---
+!<tag:yaml.org,2002:map>
+? !<tag:yaml.org,2002:merge>
+  - &defaults
+    timeout: 30
+    retries: 3
+  - &overrides
+    timeout: 60
+: !<tag:yaml.org,2002:seq>
+  - item1
+  - item2
+anchor_test: &ref1 [1, 2, 3]
+alias_test: *ref1
+```
+
+```yaml
+---
+- !!str 123
+- !!int "456"
+- !!float "7.89"
+- !!bool yes
+- !!null ~
+- !!timestamp 2023-01-15T10:30:00Z
+- !!binary SGVsbG8gV29ybGQ=
+```
+
+```yaml
+---
+? |
+  Multi-line
+  key here
+: Multi-line value
+  spanning lines
+? !!str
+  another key
+: !!seq
+  - nested1
+  - nested2
+  - !!map
+    deep: value
+```
+
+```yaml
+---
+root:
+  level1a:
+    level2a: &shared_anchor
+      data: important
+    level2b: *shared_anchor
+  level1b:
+    - !!seq [a, b, c]
+    - {key1: val1, key2: val2}
+    - !!null
+```

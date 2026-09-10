@@ -1,0 +1,128 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+<!ELEMENT root (item+)>
+<!ELEMENT item (name, value)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT value (#PCDATA)>
+<!ATTLIST item id ID #REQUIRED type CDATA #IMPLIED>
+<!ATTLIST root version CDATA "1.0">
+<!ENTITY copyright "Copyright 2024">
+<!NOTATION jpeg SYSTEM "image/jpeg">
+]>
+<root version="1.0">
+  <item id="i1" type="text">
+    <name>First</name>
+    <value>Content&copyright;</value>
+  </item>
+  <item id="i2">
+    <name>Second</name>
+    <value>&lt;escaped&gt;</value>
+  </item>
+</root>
+```
+
+```xml
+<!DOCTYPE data [
+<!ELEMENT data (record*)>
+<!ELEMENT record (field+)>
+<!ELEMENT field (#PCDATA|nested)*>
+<!ELEMENT nested (#PCDATA)>
+<!ATTLIST record status (active|inactive|pending) "active">
+<!ATTLIST field name CDATA #REQUIRED index CDATA #IMPLIED>
+<!ATTLIST nested level CDATA "0">
+<!ENTITY % common "xmlns CDATA #FIXED 'http://example.org'">
+]>
+<data>
+  <record status="active">
+    <field name="f1" index="0">Value1<nested level="1">Nested</nested></field>
+    <field name="f2">Value2</field>
+  </record>
+  <record status="inactive">
+    <field name="f3">&#160;&#160;</field>
+  </record>
+</data>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE manifest [
+<!ELEMENT manifest (component+, dependencies?)>
+<!ELEMENT component (description?, metadata*)>
+<!ELEMENT description (#PCDATA)>
+<!ELEMENT metadata EMPTY>
+<!ELEMENT dependencies (require+)>
+<!ELEMENT require EMPTY>
+<!ATTLIST component name CDATA #REQUIRED version CDATA #REQUIRED>
+<!ATTLIST metadata key CDATA #REQUIRED value CDATA #REQUIRED>
+<!ATTLIST require module CDATA #REQUIRED minVersion CDATA #IMPLIED maxVersion CDATA #IMPLIED>
+]>
+<manifest>
+  <component name="core" version="2.1">
+    <description>Core functionality module</description>
+    <metadata key="author" value="dev"/>
+    <metadata key="license" value="MIT"/>
+  </component>
+  <component name="ui" version="1.5"/>
+  <dependencies>
+    <require module="core" minVersion="2.0"/>
+    <require module="stdlib"/>
+  </dependencies>
+</manifest>
+```
+
+```xml
+<!DOCTYPE svg [
+<!ELEMENT svg (defs?, (rect|circle|path)+)>
+<!ELEMENT defs (style|pattern)*>
+<!ELEMENT style (#PCDATA)>
+<!ELEMENT pattern (rect+)>
+<!ELEMENT rect EMPTY>
+<!ELEMENT circle EMPTY>
+<!ELEMENT path EMPTY>
+<!ATTLIST svg viewBox CDATA #REQUIRED width CDATA #IMPLIED height CDATA #IMPLIED>
+<!ATTLIST rect x CDATA "0" y CDATA "0" width CDATA #REQUIRED height CDATA #REQUIRED fill CDATA #IMPLIED>
+<!ATTLIST circle cx CDATA #REQUIRED cy CDATA #REQUIRED r CDATA #REQUIRED fill CDATA "blue">
+<!ATTLIST path d CDATA #REQUIRED stroke CDATA #IMPLIED strokeWidth CDATA "1">
+<!ATTLIST defs id CDATA #IMPLIED>
+]>
+<svg viewBox="0 0 100 100" width="100" height="100">
+  <defs id="d1">
+    <style>rect { fill: red; }</style>
+  </defs>
+  <rect x="10" y="10" width="20" height="30" fill="green"/>
+  <circle cx="50" cy="50" r="15" fill="yellow"/>
+  <path d="M 0 0 L 100 100" stroke="black" strokeWidth="2"/>
+</svg>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE feed [
+<!ELEMENT feed (title, link*, entry*)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT link EMPTY>
+<!ELEMENT entry (id, title, author?, content, published)>
+<!ELEMENT id (#PCDATA)>
+<!ELEMENT author (#PCDATA)>
+<!ELEMENT content (#PCDATA|span)*>
+<!ELEMENT span (#PCDATA)>
+<!ELEMENT published (#PCDATA)>
+<!ATTLIST feed xmlns CDATA #FIXED "http://www.w3.org/2005/Atom" version CDATA "1.0">
+<!ATTLIST link rel CDATA #REQUIRED href CDATA #REQUIRED type CDATA #IMPLIED>
+<!ATTLIST entry updated CDATA #IMPLIED>
+<!ATTLIST content type (text|html|xhtml) "text">
+<!ATTLIST span class CDATA #IMPLIED>
+]>
+<feed xmlns="http://www.w3.org/2005/Atom" version="1.0">
+  <title>Example Feed</title>
+  <link rel="self" href="http://example.org/feed" type="application/atom+xml"/>
+  <entry updated="2024-01-01T00:00:00Z">
+    <id>urn:uuid:1234</id>
+    <title>First Entry</title>
+    <author>John</author>
+    <content type="html">Hello <span class="highlight">World</span></content>
+    <published>2024-01-01T00:00:00Z</published>
+  </entry>
+</feed>
+```

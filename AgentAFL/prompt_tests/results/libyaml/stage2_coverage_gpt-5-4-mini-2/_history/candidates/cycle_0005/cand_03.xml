@@ -1,0 +1,23 @@
+---
+# Anchors reused across nested structures
+defaults: &defaults
+  host: localhost
+  port: 9000
+  retries: 5
+
+services:
+  api:
+    <<: *defaults
+    path: /v1/api
+    secure: false
+  worker:
+    <<: *defaults
+    path: /v1/worker
+    secure: true
+
+graph:
+  - &node1 { id: n1, next: &node2 { id: n2, next: &node3 { id: n3 } } }
+  - *node2
+  - *node3
+  - { cycle_a: &A { link: *A } }
+...

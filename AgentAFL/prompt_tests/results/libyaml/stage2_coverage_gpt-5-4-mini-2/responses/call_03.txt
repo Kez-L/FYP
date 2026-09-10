@@ -1,0 +1,117 @@
+```yaml
+%YAML 1.1
+%TAG !e! tag:example.com,2026:env/
+---
+!e!config
+defaults: &D
+  retries: 3
+  timeout: 15
+  enabled: yes
+servers:
+  - host: alpha.local
+    port: 8080
+    options: *D
+  - host: beta.local
+    port: 443
+    options:
+      <<: *D
+      timeout: 30
+      enabled: no
+matrix:
+  ? [1, 2]
+  : { a: 1, b: 2 }
+  ? [3, 4]
+  : { a: 3, b: 4 }
+...
+```
+
+```yaml
+---
+# flow collections, aliases, and explicit keys
+? { user: "alice", role: admin }
+: [read, write, execute]
+? { user: "bob", role: viewer }
+: [read]
+nested:
+  flow_map: {x: 10, y: 20, z: [1, 2, 3]}
+  flow_seq: [true, false, null, ~, "text", 'more text']
+  alias_test: &A { k1: v1, k2: v2 }
+  alias_use:
+    first: *A
+    second: *A
+...
+```
+
+```yaml
+%YAML 1.2
+---
+anchors:
+  base: &base
+    name: base-item
+    flags:
+      - on
+      - off
+      - maybe
+  derived1:
+    <<: *base
+    name: derived-one
+  derived2:
+    <<: *base
+    name: derived-two
+    flags:
+      - yes
+      - no
+sequence:
+  - &item { id: 1, data: [a, b, c] }
+  - *item
+  - { id: 2, data: { nested: { depth: 3 } } }
+...
+```
+
+```yaml
+---
+# documents with directives-like content in scalars and unusual indentation
+meta:
+  title: "Directives and indentation"
+  text: |
+    %YAML 1.2 is just text here
+    %TAG !x! tag:foo,2026:
+    --- not a document start inside the block
+  lines: >-
+      line one
+        line two indented
+      line three
+  tabs: "a\tb\tc"
+  escapes: "\x41\u263A\U0001F600"
+mapping:
+    key1: value1
+    key2:
+      - item1
+      - item2
+...
+```
+
+```yaml
+---
+# mixed tag usage, timestamps, and special numeric forms
+!<tag:example.org,2026:payload>
+created: 2026-09-10T12:34:56.789Z
+updated: 2026-09-10 12:34:56 +02:00
+numbers:
+  decimal: 12345
+  octal_like: 0o755
+  hex_like: 0xDEADBEEF
+  float1: .inf
+  float2: -.Inf
+  float3: .NaN
+tags:
+  - !str 007
+  - !int "42"
+  - !bool "true"
+payload:
+  ? { kind: alpha }
+  : !!seq [one, two, three]
+  ? { kind: beta }
+  : !!map { x: 1, y: 2 }
+...
+```

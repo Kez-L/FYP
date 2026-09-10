@@ -1,0 +1,131 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+<!ELEMENT root (item+)>
+<!ELEMENT item (name, value)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT value (#PCDATA)>
+<!ATTLIST root id ID #REQUIRED version CDATA #FIXED "1.0">
+<!ATTLIST item type (numeric|text|mixed) #REQUIRED priority (high|medium|low) "medium">
+<!ENTITY myent "replacement_text">
+<!NOTATION gif PUBLIC "image/gif">
+]>
+<root id="r1" version="1.0">
+  <item type="numeric" priority="high">
+    <name>Count</name>
+    <value>42</value>
+  </item>
+  <item type="text" priority="low">
+    <name>Label</name>
+    <value>&myent;</value>
+  </item>
+</root>
+```
+
+```xml
+<!DOCTYPE config [
+<!ELEMENT config (section*)>
+<!ELEMENT section (param+)>
+<!ELEMENT param EMPTY>
+<!ATTLIST section name CDATA #REQUIRED>
+<!ATTLIST param key CDATA #REQUIRED value CDATA #IMPLIED default CDATA #FIXED "null">
+<!ELEMENT nested (deep*)>
+<!ELEMENT deep (#PCDATA | nested)*>
+]>
+<config>
+  <section name="database">
+    <param key="host" value="localhost" default="null"/>
+    <param key="port" value="5432" default="null"/>
+  </section>
+  <section name="logging">
+    <param key="level" value="DEBUG" default="null"/>
+  </section>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE html [
+<!ELEMENT html (head, body)>
+<!ELEMENT head (title, meta*)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT meta EMPTY>
+<!ELEMENT body (div+)>
+<!ELEMENT div (p | span)*>
+<!ELEMENT p (#PCDATA | span | br)*>
+<!ELEMENT span (#PCDATA)>
+<!ELEMENT br EMPTY>
+<!ATTLIST meta name CDATA #REQUIRED content CDATA #REQUIRED>
+<!ATTLIST div class CDATA #IMPLIED id ID #IMPLIED>
+<!ATTLIST span style CDATA #IMPLIED>
+]>
+<html>
+  <head>
+    <title>Test Page</title>
+    <meta name="charset" content="utf-8"/>
+  </head>
+  <body>
+    <div id="main" class="container">
+      <p>Hello <span style="color:red">World</span><br/></p>
+    </div>
+  </body>
+</html>
+```
+
+```xml
+<!DOCTYPE response [
+<!ELEMENT response (status, data?)>
+<!ELEMENT status (#PCDATA)>
+<!ELEMENT data (record*)>
+<!ELEMENT record (field+)>
+<!ELEMENT field (#PCDATA)>
+<!ATTLIST response code CDATA #REQUIRED timestamp CDATA #IMPLIED>
+<!ATTLIST record id CDATA #REQUIRED type (active|inactive|pending) #REQUIRED>
+<!ATTLIST field name CDATA #REQUIRED encoding (utf-8|ascii|base64) "utf-8">
+<!ENTITY statusOK "200">
+<!ENTITY statusErr "500">
+]>
+<response code="&statusOK;" timestamp="2024-01-15T10:30:00Z">
+  <status>Success</status>
+  <data>
+    <record id="rec001" type="active">
+      <field name="email" encoding="utf-8">user@example.com</field>
+      <field name="age" encoding="ascii">25</field>
+    </record>
+    <record id="rec002" type="pending">
+      <field name="email" encoding="utf-8">pending@example.com</field>
+    </record>
+  </data>
+</response>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE catalog [
+<!ELEMENT catalog (product | category)*>
+<!ELEMENT product (name, description?, price, stock?)>
+<!ELEMENT category (name, product*)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT description (#PCDATA)>
+<!ELEMENT price (#PCDATA)>
+<!ELEMENT stock (#PCDATA)>
+<!ATTLIST product sku CDATA #REQUIRED manufacturer CDATA #IMPLIED inStock (yes|no) "yes">
+<!ATTLIST category id ID #REQUIRED parent IDREF #IMPLIED>
+<!ATTLIST price currency (USD|EUR|GBP) "USD">
+]>
+<catalog>
+  <category id="cat1">
+    <name>Electronics</name>
+    <product sku="SKU001" manufacturer="TechCorp" inStock="yes">
+      <name>Laptop</name>
+      <description>High performance computing device</description>
+      <price currency="USD">999.99</price>
+      <stock>15</stock>
+    </product>
+  </category>
+  <product sku="SKU002" manufacturer="AudioBrand" inStock="no">
+    <name>Headphones</name>
+    <price currency="EUR">79.50</price>
+  </product>
+</catalog>
+```

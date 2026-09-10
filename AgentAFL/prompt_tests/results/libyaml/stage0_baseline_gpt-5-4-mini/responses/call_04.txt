@@ -1,0 +1,74 @@
+```yaml
+---
+name: simple
+version: 1
+enabled: true
+items:
+  - alpha
+  - beta
+  - gamma
+```
+
+```yaml
+---
+config:
+  host: localhost
+  port: 8080
+  paths:
+    home: /var/www
+    logs: /var/log/app
+  retries: 3
+  timeout: 1.5
+```
+
+```yaml
+---
+users:
+  - id: 1
+    name: Alice
+    roles: [admin, editor]
+  - id: 2
+    name: Bob
+    roles:
+      - viewer
+      - auditor
+metadata:
+  created_at: "2024-01-01T00:00:00Z"
+  tags:
+    - test
+    - seed
+```
+
+```yaml
+---
+anchors:
+  default: &default
+    retries: 5
+    delay: 100
+  service_a:
+    <<: *default
+    delay: 50
+  service_b:
+    <<: *default
+    retries: 10
+nested:
+  level1:
+    level2:
+      level3:
+        value: deep
+```
+
+```yaml
+---
+# intentionally varied scalars and structures
+null_value: null
+empty_string: ""
+quoted_number: "0123"
+plain_number: 0123
+boolean_yes: yes
+boolean_no: no
+sequence:
+  - key: value
+  - [1, 2, 3]
+  - { a: 1, b: 2 }
+...

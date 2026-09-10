@@ -1,0 +1,84 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ENTITY % external SYSTEM "file:///etc/passwd">
+  <!ELEMENT root (item*)>
+  <!ELEMENT item (#PCDATA)>
+  %external;
+]>
+<root>
+  <item>test</item>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ELEMENT doc (a|b)*>
+  <!ELEMENT a ANY>
+  <!ELEMENT b (#PCDATA|a)*>
+  <!ATTLIST a id ID #REQUIRED>
+  <!ATTLIST b ref IDREF #IMPLIED>
+]>
+<doc>
+  <a id="x1"><b ref="x1">mixed content</b></a>
+  <b ref="x1">text</b>
+</doc>
+```
+
+```xml
+<!DOCTYPE svg [
+  <!ELEMENT svg (circle|rect)*>
+  <!ELEMENT circle EMPTY>
+  <!ELEMENT rect (path*)>
+  <!ELEMENT path EMPTY>
+  <!ATTLIST circle cx CDATA #REQUIRED cy CDATA #REQUIRED r CDATA #REQUIRED>
+  <!ATTLIST rect x CDATA "0" y CDATA "0" width CDATA #REQUIRED height CDATA #REQUIRED>
+  <!ATTLIST path d CDATA #REQUIRED>
+]>
+<svg>
+  <circle cx="50" cy="50" r="40"/>
+  <rect width="100" height="200">
+    <path d="M10 10 L90 90"/>
+  </rect>
+</svg>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (book+)>
+  <!ELEMENT book (author, title, price)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ATTLIST book id ID #REQUIRED isbn CDATA #IMPLIED>
+  <!ENTITY discount "0.15">
+]>
+<catalog>
+  <book id="b001" isbn="978-0-123456-78-9">
+    <author>John Doe</author>
+    <title>XML Mastery</title>
+    <price>&discount;</price>
+  </book>
+</catalog>
+```
+
+```xml
+<!DOCTYPE nested [
+  <!ELEMENT nested (level1+)>
+  <!ELEMENT level1 (level2*)>
+  <!ELEMENT level2 (level3*)>
+  <!ELEMENT level3 (#PCDATA)>
+  <!ATTLIST level1 name NMTOKEN #REQUIRED>
+  <!ATTLIST level2 count CDATA #IMPLIED>
+  <!ATTLIST level3 type (text|numeric|binary) "text">
+]>
+<nested>
+  <level1 name="first">
+    <level2 count="1">
+      <level3 type="text">deep content</level3>
+    </level2>
+  </level1>
+</nested>
+```

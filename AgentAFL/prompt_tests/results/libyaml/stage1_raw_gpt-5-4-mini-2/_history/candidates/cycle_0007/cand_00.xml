@@ -1,0 +1,30 @@
+%YAML 1.2
+%TAG !u! tag:example.org,2026:unit/
+---
+!u!root
+anchors:
+  base: &base
+    id: 42
+    name: alpha
+    enabled: true
+  copy: *base
+  merged:
+    <<: *base
+    name: beta
+    extra: [0, 1, 2, 3]
+  cyclicish:
+    self_ref: &self
+      label: loop
+      next: *self
+map-in-seq:
+  - {a: 1, b: 2, c: 3}
+  - !!omap
+      - one: 1
+      - two: 2
+      - three: 3
+  - !!pairs
+      - [k1, v1]
+      - [k2, v2]
+trailing:
+  plain: end
+...

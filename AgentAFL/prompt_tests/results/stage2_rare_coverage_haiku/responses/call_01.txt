@@ -1,0 +1,63 @@
+```xml
+<?xml version="1.0"?>
+<root>
+  <element1 a:x="1" b:y="2" c:z="3" xmlns:a="http://a.org" xmlns:b="http://b.org" xmlns:c="http://c.org">
+    <child attr="val"/>
+  </element1>
+</root>
+```
+
+```xml
+<!DOCTYPE root [
+<!ELEMENT root (item+)>
+<!ELEMENT item (#PCDATA|subitem)*>
+<!ELEMENT subitem EMPTY>
+<!ATTLIST subitem id ID #REQUIRED type CDATA #IMPLIED>
+<!ATTLIST item class (A|B|C) "A">
+<!ENTITY internal "test_value">
+]>
+<root>
+  <item class="B" id="item1">
+    <subitem id="sub1" type="text"/>
+  </item>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<doc xmlns:d="urn:undeclared">
+  <namespace_test d:attr1="v1" d:attr2="v2" undeclared:attr3="v3">
+    <mixed>Text &#8212; more &#32; text</mixed>
+  </namespace_test>
+  <empty_elem/>
+  <self_close attr="val"/>
+</doc>
+```
+
+```xml
+<!DOCTYPE container [
+<!ELEMENT container (level1*)>
+<!ELEMENT level1 (level2*)>
+<!ELEMENT level2 (level3*)>
+<!ELEMENT level3 (#PCDATA)>
+<!ATTLIST level1 id ID #REQUIRED xmlns CDATA #IMPLIED>
+<!ATTLIST level2 xmlns:ns1 CDATA #IMPLIED xmlns:ns2 CDATA #IMPLIED>
+]>
+<container>
+  <level1 id="l1_a" xmlns="http://ns.default">
+    <level2 xmlns:ns1="http://ns1.org" xmlns:ns2="http://ns2.org">
+      <level3>deep content</level3>
+    </level2>
+  </level1>
+</container>
+```
+
+```xml
+<?xml version="1.0"?>
+<root>
+  <attrs_many a="1" b="2" c="3" d="4" e="5" f="6" g="7" h="8" i="9" j="10" k="11" l="12" m="13" n="14" o="15" p="16" xmlns:x="http://x" xmlns:y="http://y" xmlns:z="http://z" x:foo="bar" y:baz="qux">
+    <comment_like>&lt;!-- not a comment --&gt;</comment_like>
+    <cdata_section><![CDATA[<root><child attr="val"/></root>]]></cdata_section>
+  </attrs_many>
+</root>
+```

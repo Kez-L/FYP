@@ -1,0 +1,110 @@
+```
+---
+# Anchor and alias stress test
+anchor_test: &base_anchor
+  key1: value1
+  key2: value2
+nested:
+  ref1: *base_anchor
+  ref2: *base_anchor
+  deep:
+    ref3: *base_anchor
+circular_like:
+  - *base_anchor
+  - *base_anchor
+```
+
+```
+---
+# Directive and tag handling
+%YAML 1.2
+%TAG ! tag:example.com,2024:app/
+---
+!<tag:example.com,2024:app/custom> 
+  field: untagged_value
+  nested: !<tag:example.com,2024:app/inner>
+    data: 42
+list:
+  - !<tag:example.com,2024:app/item> first
+  - !<tag:example.com,2024:app/item> second
+```
+
+```
+---
+# Complex block scalars with indicators
+literal_keep: |+
+  line1
+  line2
+
+  line3
+literal_strip: |-
+  no_trailing
+folded_keep: >+
+  folded text
+  continues here
+
+  extra
+folded_strip: >-
+  compact
+  ending
+literal_indicator: |
+  indented
+    more
+      even_more
+```
+
+```
+---
+# Nested flow and block mix
+root:
+  flow_list: [a, b, {nested_flow: [1, 2]}, c]
+  block_list:
+    - item1
+    - flow_in_block: [x, y, z]
+    - item3
+  flow_map: {key1: val1, nested: {inner: value}}
+  block_map:
+    key_a: value_a
+    key_b:
+      nested_b1: nb1
+      nested_b2: nb2
+  mixed_complex:
+    - {a: [1, 2, 3]}
+    - [x, {y: z}, w]
+    - plain_block_key: plain_block_value
+```
+
+```
+---
+# Special string cases and empty values
+null_values:
+  explicit_null: null
+  tilde_null: ~
+  implicit_null: 
+  colon_only: :
+empty_collections:
+  empty_list: []
+  empty_map: {}
+  empty_block_list:
+  empty_block_map:
+strings_with_special:
+  quoted_string: "value with: colons"
+  single_quoted: 'literal: no expansion'
+  unquoted_plain: plain scalar value
+  number_string: "123"
+  bool_string: "true"
+  multiline_plain: >
+    plain multiline
+    scalar here
+booleans:
+  true_val: true
+  false_val: false
+  yes_val: yes
+  no_val: no
+numbers:
+  integer: 42
+  float: 3.14
+  scientific: 1e-3
+  hex: 0x1A
+  octal: 0o755
+```

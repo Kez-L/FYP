@@ -1,0 +1,76 @@
+```yaml
+%YAML 1.1
+---
+!<&bad>
+: { ? [1, 2, 3]
+    : !!str "value"
+  , ? {a: 1, b: [true, false, null]}
+    : &anchor {c: d, e: f}
+  }
+...
+```
+
+```yaml
+---
+- &A
+  - &B { key: value, dup: 1 }
+  - *B
+  - !!map
+    ? "quoted"
+    : "scalar"
+    ? 0o77
+    : 0x1F
+- *A
+- !!seq [!!int "0123", !!float ".inf", !!bool "On"]
+...
+```
+
+```yaml
+%TAG !e! tag:example.com,2024:
+---
+!e!root
+  name: >
+    folded
+    text
+    with
+    blank line
+
+    after
+  data:
+    - &x
+      { ? "a": [1, 2], ? "b": { nested: yes } }
+    - *x
+...
+```
+
+```yaml
+---
+? |
+  multi
+  line
+  key
+: >
+  multi
+  line
+  value
+  with trailing spaces     
+  and tabs		
+: &v
+  - [!!str "a", !!str "b"]
+  - { inner: *v }
+...
+```
+
+```yaml
+---
+%YAML 1.2
+---
+- !!binary |
+    R0lGODdhAQABAIAAAAUEBA==
+- !!timestamp 2020-02-29T23:59:60Z
+- !!set
+  ? { a: 1, b: 2 }
+  ? [x, y, z]
+  ? "plain"
+...
+```

@@ -1,0 +1,94 @@
+```yaml
+%YAML 1.1
+---
+!!map
+? &k1
+  - one
+  - two
+: &v1 {a: 1, b: 2}
+? *k1
+: *v1
+? !!seq [!!str alpha, !!str beta]
+: !!set
+  ? x
+  ? y
+  ? z
+...
+```
+
+```yaml
+---
+!!seq
+- |
+  first line
+  second line
+  third line
+- >-
+  folded
+  text with
+  spaces
+- !!binary |
+  R0lGODlhAQABAIAAAAUEBA==
+- !!timestamp 2024-02-29T23:59:59Z
+- !!omap
+  - key1: value1
+  - key2: value2
+...
+```
+
+```yaml
+%TAG !yaml! tag:yaml.org,2002:
+---
+!yaml!map
+  ? !yaml!str "multi\nline key"
+  : !yaml!seq
+    - !yaml!int "0"
+    - !yaml!int "-1"
+    - !yaml!float ".inf"
+  ? !yaml!str "second key"
+  : !yaml!map
+      nested: !yaml!bool "false"
+      inner: !yaml!null ""
+...
+```
+
+```yaml
+---
+- &A
+  - &B {x: 10, y: 20}
+  - *B
+  - {ref: *B, self: *A}
+- !!map
+    key: value
+    seq: [1, 2, 3, {deep: [a, b, c]}]
+- >
+  line one
+  line two
+  line three
+- |
+  trailing spaces   
+  and blank lines
+
+...
+```
+
+```yaml
+---
+? >
+  a very long
+  mapping key
+: !!seq
+  - &anchor1
+    ? {k: v}
+    : [1, 2, 3]
+  - *anchor1
+  - !!set
+      ? apple
+      ? banana
+      ? cherry
+? !!str ""
+: !!map
+    ? !!str "": !!str "empty key"
+    ? !!int 42: !!str "answer"
+...
+```

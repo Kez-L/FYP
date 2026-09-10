@@ -1,0 +1,34 @@
+<!DOCTYPE config [
+<!ELEMENT config (database | cache | logging)*>
+<!ELEMENT database (connection+)>
+<!ELEMENT cache (server+)>
+<!ELEMENT logging (level, output)>
+<!ELEMENT connection (host, port, credentials)>
+<!ELEMENT server (#PCDATA)>
+<!ELEMENT host (#PCDATA)>
+<!ELEMENT port (#PCDATA)>
+<!ELEMENT credentials (#PCDATA)>
+<!ELEMENT level (#PCDATA)>
+<!ELEMENT output (#PCDATA)>
+<!ATTLIST database type CDATA #REQUIRED version CDATA #IMPLIED>
+<!ATTLIST cache ttl CDATA "3600">
+<!ATTLIST connection timeout CDATA #IMPLIED pool_size NMTOKEN #IMPLIED>
+<!NOTATION jpeg PUBLIC "image/jpeg">
+]>
+<config>
+  <database type="postgresql" version="13">
+    <connection timeout="30" pool_size="10">
+      <host>db.internal</host>
+      <port>5432</port>
+      <credentials>user:pass</credentials>
+    </connection>
+  </database>
+  <cache ttl="7200">
+    <server>cache1.local</server>
+    <server>cache2.local</server>
+  </cache>
+  <logging>
+    <level>DEBUG</level>
+    <output>/var/log/app.log</output>
+  </logging>
+</config>

@@ -1,0 +1,22 @@
+---
+anchors:
+  base: &base
+    enabled: yes
+    payload: !!binary |
+      SGVsbG8sIFlBTUwhAA==
+    count: 7
+    name: example
+  copy2:
+    name: overridden
+    <<: *base
+    payload: *base
+  copy1:
+    count: 8
+    <<: *base
+    enabled: no
+sequence:
+  - *base
+  - !!float ".nan"
+  - !!str text
+  - !!int "042"
+  - { with: [a, b, c, { nested: true }], inline: mapping }

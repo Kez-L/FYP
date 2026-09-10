@@ -48,6 +48,7 @@ from stage0_baseline.build_context_baseline import assemble_baseline_prompt
 from stage1_distillation.distill_seed import bad_seed_renderer as distilled_bad_seed_renderer
 from stage2_seed_selection.select_seeds_by_coverage import (
     high_coverage_selector, rare_coverage_selector, no_seed_selector,
+    make_coverage_selector,
 )
 from stage3_strategy_rotation.strategies import rotate
 
@@ -57,6 +58,12 @@ from stage3_strategy_rotation.strategies import rotate
 # Each arm is a function: (trigger, n_generate) -> dict (a prompt, OR a
 # list of prompts for multi-call arms like strategy rotation).
 # ---------------------------------------------------------------------
+
+# Process-wide afl-showmap edge cache, shared by every stage2_coverage
+# selector built in this run — keyed by (seed content hash, target, args),
+# so a trigger's queue is showmap'd once no matter how many repeats/arms
+# reuse it.
+_SHOWMAP_EDGE_CACHE: dict = {}
 
 def _arm_stage0_baseline(trigger: dict, n_generate: int):
     return assemble_baseline_prompt(trigger["fmt"], n_generate, trigger.get("seed_kind", "text"))
@@ -82,6 +89,17 @@ ARMS: dict[str, Callable] = {
     "stage2_high_coverage": lambda t, n: _arm_default(t, n, seed_selector=high_coverage_selector),
     "stage2_rare_coverage": lambda t, n: _arm_default(t, n, seed_selector=rare_coverage_selector),
     "stage2_no_seed": lambda t, n: _arm_default(t, n, seed_selector=no_seed_selector),
+    # Arm A' — total-edges ranking, wired to real afl-showmap (see
+    # select_seeds_by_coverage.make_coverage_selector). One shared edge_cache
+    # per process so the showmap cost for a trigger's queue is paid once and
+    # reused across every repeat/arm that scans the same +cov files.
+    "stage2_coverage": lambda t, n: _arm_default(
+        t, n,
+        seed_selector=make_coverage_selector(
+            t["target_binary"], t.get("target_args", ["@@"]),
+            edge_cache=_SHOWMAP_EDGE_CACHE,
+        ),
+    ),
     # stage3 is multi-call, not single-prompt — see run_arm_on_trigger's
     # strategy_rotation branch below rather than the ARMS dict.
 }

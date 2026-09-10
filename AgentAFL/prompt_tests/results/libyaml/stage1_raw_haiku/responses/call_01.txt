@@ -1,0 +1,88 @@
+```yaml
+--- !!str
+key1: |
+  literal
+  block
+  scalar
+key2: |-
+  literal
+  block
+  scalar
+  no final newline
+key3: |+
+  literal
+  block
+  scalar
+  with trailing newlines
+
+
+```
+
+```yaml
+!!map
+? !!str complex key
+: !!seq
+  - !!int 1
+  - !!float 2.5
+  - !!bool true
+  - !!null ~
+? !!int 42
+: !!str scalar value
+? !!map
+  nested: deep
+: !!str value for map key
+```
+
+```yaml
+--- !!seq
+- item1
+-
+- item3
+- - nested
+  - list
+  - items
+-
+  key1: value1
+  key2: value2
+-
+  - deep
+  - nested
+  - array
+  - in
+  - sequence
+```
+
+```yaml
+merge_test: &defaults
+  setting_a: 100
+  setting_b: 200
+
+override: &override
+  setting_b: 300
+  setting_c: 400
+
+combined:
+  <<: [*defaults, *override]
+  setting_d: 500
+  setting_a: 150
+```
+
+```yaml
+--- !!str
+multiline_scalar: >-
+  This is a long line that
+  folds into the next line and
+  should be normalized to a single line without
+  the final newline character
+another: >+
+  This folded scalar
+  has explicit keep chomping indicator
+  and preserves trailing newlines
+
+
+empty_key:
+unquoted: "quoted value"
+"quoted_key": unquoted value
+special_chars: "line1\nline2\tline3"
+unicode_test: "Ελληνικά"
+```

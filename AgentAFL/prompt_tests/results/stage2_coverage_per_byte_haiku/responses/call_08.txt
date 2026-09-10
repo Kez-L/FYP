@@ -1,0 +1,104 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (item*)>
+  <!ELEMENT item (#PCDATA|nested)*>
+  <!ELEMENT nested EMPTY>
+  <!ATTLIST item id ID #REQUIRED>
+  <!ATTLIST nested ref IDREF #REQUIRED>
+  <!ENTITY % pe "<!ELEMENT extra (#PCDATA)>">
+  %pe;
+]>
+<root>
+  <item id="i1">Text<nested ref="i1"/></item>
+  <extra>content</extra>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!NOTATION image SYSTEM "image/png">
+  <!ENTITY imgfile SYSTEM "test.png" NDATA image>
+  <!ELEMENT doc (para|figure)+>
+  <!ELEMENT para (#PCDATA)>
+  <!ELEMENT figure EMPTY>
+  <!ATTLIST figure src ENTITY #REQUIRED alt CDATA #IMPLIED>
+]>
+<doc>
+  <para>Normal text</para>
+  <figure src="imgfile" alt="description"/>
+</doc>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (product+)>
+  <!ELEMENT product (name, price, stock*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT stock EMPTY>
+  <!ATTLIST product code CDATA #REQUIRED>
+  <!ATTLIST price currency (USD|EUR|GBP) #REQUIRED>
+  <!ATTLIST stock region NMTOKEN #REQUIRED qty NMTOKEN #REQUIRED>
+]>
+<catalog>
+  <product code="P001">
+    <name>Widget</name>
+    <price currency="USD">19.99</price>
+    <stock region="US" qty="100"/>
+    <stock region="EU" qty="50"/>
+  </product>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE schema [
+  <!ELEMENT schema (element|attribute)*>
+  <!ELEMENT element (restriction*)>
+  <!ELEMENT attribute (enumeration+)>
+  <!ELEMENT restriction EMPTY>
+  <!ELEMENT enumeration EMPTY>
+  <!ATTLIST element name NMTOKEN #REQUIRED type CDATA #REQUIRED>
+  <!ATTLIST attribute name CDATA #REQUIRED use (required|optional) "optional">
+  <!ATTLIST restriction base CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST enumeration value CDATA #REQUIRED label CDATA #IMPLIED>
+]>
+<schema>
+  <element name="status" type="string">
+    <restriction base="enumeration" value="active"/>
+  </element>
+  <attribute name="priority" use="required">
+    <enumeration value="high" label="High Priority"/>
+    <enumeration value="low" label="Low Priority"/>
+  </attribute>
+</schema>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+)>
+  <!ELEMENT section (title, content, subsection*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT content (#PCDATA | emphasis | strong)*>
+  <!ELEMENT subsection (title, content)>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT strong (#PCDATA)>
+  <!ATTLIST section id ID #REQUIRED level CDATA #REQUIRED>
+  <!ATTLIST content weight (light|normal|heavy) "normal">
+  <!ATTLIST emphasis style CDATA #IMPLIED>
+]>
+<report>
+  <section id="sec1" level="1">
+    <title>Introduction</title>
+    <content weight="normal">This is <emphasis style="italic">important</emphasis> data with <strong>bold</strong> text.</content>
+    <subsection>
+      <title>Details</title>
+      <content>More information here</content>
+    </subsection>
+  </section>
+</report>
+```

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE transaction [
+<!ELEMENT transaction (header, body, footer?)>
+<!ELEMENT header (timestamp, sender, receiver)>
+<!ELEMENT timestamp (#PCDATA)>
+<!ELEMENT sender (name, id)>
+<!ELEMENT receiver (name, id)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT id (#PCDATA)>
+<!ELEMENT body (record+)>
+<!ELEMENT record (field1, field2, field3?)>
+<!ELEMENT field1 (#PCDATA)>
+<!ELEMENT field2 (#PCDATA)>
+<!ELEMENT field3 (#PCDATA)>
+<!ELEMENT footer (checksum, signature)>
+<!ELEMENT checksum (#PCDATA)>
+<!ELEMENT signature (#PCDATA)>
+<!ATTLIST transaction version CDATA #FIXED "2.0" status (pending|completed|failed) #REQUIRED>
+<!ATTLIST record sequence CDATA #REQUIRED amount CDATA #IMPLIED currency (USD|EUR|GBP|JPY) "USD">
+<!ENTITY % common "common_data">
+]>
+<transaction version="2.0" status="completed">
+  <header>
+    <timestamp>2024-01-15T10:30:00Z</timestamp>
+    <sender>
+      <name>Alice</name>
+      <id>A001</id>
+    </sender>
+    <receiver>
+      <name>Bob</name>
+      <id>B002</id>
+    </receiver>
+  </header>
+  <body>
+    <record sequence="1" amount="100.00" currency="USD">
+      <field1>Type1</field1>
+      <field2>Value1</field2>
+      <field3>Desc1</field3>
+    </record>
+    <record sequence="2" amount="250.50">
+      <field1>Type2</field1>
+      <field2>Value2</field2>
+    </record>
+  </body>
+  <footer>
+    <checksum>ABC123XYZ</checksum>
+    <signature>SIG12345</signature>
+  </footer>
+</transaction>

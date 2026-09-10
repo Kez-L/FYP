@@ -1,0 +1,93 @@
+```yaml
+%YAML 1.1
+%TAG !e! tag:example.org,2024:
+---
+scalar_keys:
+  ? !!str "key:with:colons"
+  : !!int "42"
+  ? !!str "leading spaces"
+  : !!bool "true"
+nested:
+  - !!map
+    ? a
+    : 1
+    ? b
+    : !!null ""
+  - !!seq [!!float "3.14159", !!binary "QUJDRA=="]
+...
+```
+
+```yaml
+--- !<tag:example.com,2024:root>
+? [alpha, beta, gamma]
+: {one: 1, two: 2, three: [3, 4, 5]}
+? {x: 10, y: 20}
+: >
+  folded text
+  with multiple
+  lines and trailing
+  spaces
+block:
+  literal: |-
+    line1
+    line2
+    line3
+  plain: plain_value
+...
+```
+
+```yaml
+%YAML 1.2
+---
+sequence:
+  - &A
+    name: nodeA
+    ref: *A
+  - &B
+    name: nodeB
+    child:
+      - *B
+      - !!str "recursive?"
+aliases:
+  first: *A
+  second: *B
+...
+```
+
+```yaml
+---
+!!set
+? item1
+? item:2
+? "item 3"
+? !!str "item:4"
+---
+!!omap
+- first: 1
+- second: 2
+- third:
+    nested: yes
+    empty: null
+...
+```
+
+```yaml
+%YAML 1.1
+---
+multi_document_example: |
+  document one line 1
+  document one line 2
+...
+---
+flow_mix: [ {k1: v1, k2: [1, 2, 3]}, {k3: "v3", k4: !!bool "false"} ]
+block_map:
+  ? >
+      long key
+      across lines
+  : |
+      value line 1
+      value line 2
+  ? !!int "7"
+  : !!timestamp "2024-01-02T03:04:05Z"
+...
+```

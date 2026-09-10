@@ -1,0 +1,105 @@
+```yaml
+%YAML 1.2
+%TAG !e! tag:example.com,2026:types/
+---
+!e!root
+name: simple
+count: 42
+enabled: true
+items:
+  - alpha
+  - beta
+  - gamma
+metadata: {a: 1, b: 2, c: 3}
+...
+```
+
+```yaml
+---
+anchor_map: &A
+  key1: value1
+  key2: [1, 2, 3, 4]
+  key3:
+    nested: yes
+    deep: &D
+      - x
+      - y
+      - z
+alias_map:
+  ref1: *A
+  ref2: *D
+merge_test:
+  <<: *A
+  key2: [9, 8, 7]
+  key4: added
+```
+
+```yaml
+---
+sequence_of_maps:
+  - id: 1
+    payload:
+      type: start
+      data: "A\nB\nC"
+  - id: 2
+    payload:
+      type: middle
+      data: >
+        line one
+        line two
+        line three
+  - id: 3
+    payload:
+      type: end
+      data: !!binary |
+        AQIDBAUGBwgJCgsMDQ4P
+...
+```
+
+```yaml
+---
+nulls:
+  explicit_null: null
+  tilde_null: ~
+  empty_scalar:
+  quoted_empty: ""
+numbers:
+  int_dec: 123456
+  int_hex: 0x1A2B
+  int_oct: 0o755
+  float_plain: 3.14159
+  float_exp: 6.02e23
+booleans:
+  yes_val: yes
+  no_val: no
+  on_val: on
+  off_val: off
+```
+
+```yaml
+---
+multi:
+  first: &first
+    path: /tmp/example
+    regex: "^[A-Za-z_][A-Za-z0-9_]*$"
+    list:
+      - one
+      - two
+      - three
+  second:
+    <<: *first
+    path: /var/log/example
+    list:
+      - four
+      - five
+    note: >
+      This document exercises
+      merges, anchors, quoted
+      scalars, and block folding.
+  third:
+    items:
+      - !!str 00123
+      - !!int 00123
+      - !!bool "true"
+      - !!timestamp 2024-12-31T23:59:59Z
+```

@@ -1,0 +1,79 @@
+```yaml
+# Stress-test multiline string parsing with mixed indicators
+plain_multiline: this is a plain scalar that spans
+  multiple lines with inconsistent
+    indentation levels and no indicators
+nested_anchors: &root
+  level1: &l1
+    level2: &l2
+      value: deep
+      ref_to_root: *root
+      ref_to_l1: *l1
+  sibling: *l2
+```
+
+```yaml
+# Test explicit type tags with edge cases
+tagged_sequences: !!seq
+  - !!int 0x1A
+  - !!float .inf
+  - !!float -.inf
+  - !!float .nan
+  - !!bool yes
+  - !!bool no
+  - !!null ~
+tagged_mapping: !!map
+  !!str "123": !!str "456"
+  "key with : colon": "value with : colon"
+  "": empty_key
+```
+
+```yaml
+# Test flow collections with special characters and nesting
+flow_test:
+  array: [1, "two", {three: 3}, [nested, array], "trailing,comma"]
+  map: {a: 1, "b:c": 2, d: [1,2,3], e: {f: {g: deep}}}
+  mixed: [{x: [1,{y: 2}]}, {z: [a,b,c]}]
+  empty_flow: []
+  empty_map: {}
+```
+
+```yaml
+# Test directive handling and multiple documents
+%YAML 1.1
+%TAG ! tag:example.com,2014:
+---
+document_one:
+  content: first doc
+  special: !!tag value
+...
+%YAML 1.2
+---
+document_two:
+  numeric_strings: ["123", "0x1A", "1.5e2"]
+  edge_case: "---"
+  looks_like_tag: "!!str"
+...
+```
+
+```yaml
+# Test scalar edge cases and special sequences
+scalars:
+  plain_with_hash: text with # inside no quotes
+  quoted_escape: "tab:\t newline:\n quote:\" backslash:\\"
+  literal_indicator: |
+    line 1
+    line 2
+    
+    line 4 after blank
+  folded_indicator: >
+    this text will
+    be folded into
+    a single line
+comments_and_colons:
+  "key:colon": "value:colon"
+  regular_key: |
+    : starts with colon
+    - starts with dash
+    ? starts with question
+```

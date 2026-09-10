@@ -1,0 +1,114 @@
+```yaml
+%YAML 1.1
+---
+gif_file: !!binary |
+  R0lGODlhDAAMAIQAAP//9/X17unp5WZmZgAAAOfn515eXvPz7Y6OjuDg4J+fn5
+  OTk6enp56enmlpaW12.5Ojo4SEhP/++f/++f/++f/++f/++f/++f/++f/+
+  +f/++f/++f/++f/++`/++SH+Dk1hZGUgd2l0aCBHSU1QACwAAAAADAAMAAAFLC
+  AgjoEwnuNAFOhpEMTRiggcz4BNJHrv/zC^^^^^^^^^^^^^^FcLiwMWYNG84BwwEeECcgggoBADs=
+explicit_string: !!str "0.5"
+python_tag: !!python/com%YAML 1.1
+---
+[1, 2, .inf, '.NaN', '1.0+2.0j', !!str 3.0]
+```
+
+```yaml
+%YAML 1.2
+---
+>
+  folded
+  line
+    indented
+  next
+  line
+
+  * bullet
+  * list
+  * lines
+
+  last
+  line
+tree: |
+  +STR
+   +DOC
+    =VAL >\nfolded line\n  indented\nnext line\n  * bullet\n  * list\n  * lines\n\nlast line\n
+   -DOC
+  -STR
+json: |
+  "\nfolded line\n  indented\nnext line\n  * bullet\n  * list\n  * lines\n\nlast line\n"
+dump: >
+  folded line
+    indented
+  next line
+
+  * list
+  * lines
+
+  last line
+```
+
+```yaml
+---
+anchors:
+  base: &base
+    name: example
+    enabled: yes
+    count: 7
+    payload: !!binary |
+      SGVsbG8sIFlBTUwh
+  copy1:
+    <<: *base
+    count: 8
+    enabled: no
+  copy2:
+    <<: *base
+    name: overridden
+    payload: *base
+sequence:
+  - *base
+  - { inline: mapping, with: [a, b, c, { nested: true }] }
+  - !!int "42"
+  - !!str "text"
+  - !!float ".inf"
+```
+
+```yaml
+%YAML 1.1
+---
+complexes:
+  - !!python/complex "1.0+2.0j"
+  - !!python/complex "-0.0-3.5j"
+  - !!str 0.5
+scalars:
+  plain: plain:colon
+  quoted: "plain:colon"
+  folded: >
+    line1
+    line2
+  literal: |
+    line1
+    line2
+map:
+  ? [a, b, c]
+  : value
+  ? { k1: v1, k2: v2 }
+  : 123
+```
+
+```yaml
+%YAML 1.2
+---
+invalidish: !!binary |
+  R0lGODlhDAAMAIQAAP//9/X17unp5WZmZgAAAOfn515eXvPz7Y6OjuDg4J+fn5
+  OTk6enp56enmlpaW12.5Ojo4SEhP/++f/++f/++f/++f/++f/++f/++f/+
+  +f/++f/++f/++f/++`/++SH+Dk1hZGUgd2l0aCBHSU1QACwAAAAADAAMAAAFLC
+  AgjoEwnuNAFOhpEMTRiggcz4BNJHrv/zC^^^^^^^^^^^^FcLiwMWYNG84BwwEeECcgggoBADs=
+tags:
+  - !!str "0.5"
+  - !!int "007"
+  - !!bool "On"
+  - !!timestamp "2001-12-15T02:59:43.1Z"
+nested:
+  - [1, 2, 3]
+  - { a: 1, b: [true, false, null], c: { d: e } }
+```

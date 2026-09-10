@@ -1,0 +1,120 @@
+```yaml
+%YAML 1.1
+%TAG !e! tag:example.com,2000:
+---
+!e!root
+kind: !e!kind "alpha"
+payload:
+  - !!int "0007"
+  - !!float ".inf"
+  - !!float "-.NaN"
+  - !!bool "On"
+  - !!null "~"
+mapping:
+  ? !!str "key:with:colons"
+  : !!set
+      ? a
+      ? b
+      ? c
+sequence: !!seq
+  - { nested: [1, 2, 3], empty: {} }
+...
+```
+
+```yaml
+---
+plain: "line1\nline2\t\u263A"
+single: 'it''s a single-quoted string with ''escapes'''
+block_lit: |+
+  leading blank preserved
+
+  trailing newline kept
+
+block_fold: >-
+  this line folds
+  across multiple
+  lines
+
+  but blank lines stay
+indented: >
+    preserved indent
+    still preserved
+flow_map: {a: 1, b: [true, false, null], c: {x: y}}
+flow_seq: [ {one: 1}, [two, three], "four" ]
+...
+```
+
+```yaml
+---
+anchors:
+  base: &base
+    name: example
+    values: [10, 20, 30]
+    flags:
+      enabled: yes
+      strict: no
+  copy1: *base
+  copy2:
+    <<: *base
+    name: override
+    values:
+      - 99
+      - 100
+aliases:
+  first: &first {id: 1, next: *base}
+  second: &second {id: 2, prev: *first}
+  third: {link: *second, root: *base}
+...
+```
+
+```yaml
+%YAML 1.2
+---
+document:
+  title: Example
+  metadata:
+    created: 2024-02-29T12:34:56Z
+    updated: 2024-02-29 12:34:56 +01:30
+    ratio: 6.022e23
+    hex: 0xDEADBEEF
+    oct: 0o755
+    sexagesimal: 12:34:56
+  items:
+    - name: item1
+      tags: [a, b, c]
+    - name: item2
+      tags:
+        - d
+        - e
+        - f
+  matrix:
+    - [1, 0, 0]
+    - [0, 1, 0]
+    - [0, 0, 1]
+...
+```
+
+```yaml
+---
+? !!str "complex key"
+: |
+    value starts as a block scalar
+    with unicode: Ω≈ç√∫˜µ≤≥÷
+    and punctuation: ! @ # $ % ^ & * ( )
+
+? [one, two, three]
+: { nested_key: "nested value", another: [x, y, z] }
+
+? { alpha: 1, beta: 2 }
+: >
+    folded value line 1
+    folded value line 2
+
+? !!map
+    inner: true
+    list:
+      - one
+      - two
+: !!seq [!!int "1", !!int "2", !!int "3"]
+...
+```

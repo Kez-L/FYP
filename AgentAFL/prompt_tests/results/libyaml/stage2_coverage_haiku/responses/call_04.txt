@@ -1,0 +1,105 @@
+```yaml
+---
+%YAML 1.2
+%TAG !! tag:yaml.org,2002:
+%TAG !e! tag:example.com,2000:
+!e!document
+nested_anchors:
+  - &anchor1
+    key1: value1
+    recursive: &anchor2
+      deep: *anchor1
+  - *anchor2
+  - &anchor3 [*anchor1, *anchor2, *anchor3]
+multiline_strings: |
+  Line 1
+  Line 2
+   Indented Line 3
+folded_text: >
+  This is a long
+  folded text that
+  spans multiple lines
+  and should be parsed correctly.
+special_chars: "!@#$%^&*()_+-=[]{}|;:',.<>?/~`"
+```
+
+```yaml
+---
+explicit_typing: !!map
+  string_val: !!str 123
+  int_val: !!int "456"
+  float_val: !!float "78.9"
+  bool_val: !!bool "yes"
+  null_val: !!null
+  seq_val: !!seq [a, b, c]
+timestamp_like: 2023-11-15T10:30:00Z
+octal_hex: [0o77, 0xFF, 0b1010, -042]
+special_floats: [.inf, -.inf, .nan, 1.0e-10, 2.3e+5]
+```
+
+```yaml
+---
+block_scalar_literal: |2
+  Literal block scalar with
+  preserved newlines and trailing
+  spaces that matter     
+block_scalar_folded: >2
+  Folded block scalar that
+  wraps lines intelligently
+  with proper indentation handling.
+chomping_strip: |-
+  No final newline
+chomping_keep: |+
+  Final newline kept
+
+
+plain_scalars:
+  unquoted: plain value with spaces
+  colon_after: value: with embedded colon
+  hash_after: value # not a comment
+```
+
+```yaml
+---
+complex_anchors: &root
+  level1: &l1
+    level2: &l2
+      data: [1, 2, 3]
+      ref: *l1
+  circular: *root
+  sibling: *l2
+merge_keys:
+  defaults: &defaults
+    timeout: 30
+    retries: 3
+  production:
+    <<: *defaults
+    timeout: 60
+  development:
+    <<: *defaults
+    debug: true
+unusual_flow:
+  flow_with_tags: [!!str 1, !!int "2", !!bool yes]
+  nested_flow: {a: {b: {c: [1, [2, [3, {d: 4}]]]}}}
+```
+
+```yaml
+---
+empty_scalars:
+  key1: ""
+  key2: ''
+  key3:
+  key4: null
+  key5: ~
+whitespace_significant: |
+    
+    
+   preserved spaces and newlines
+   
+edge_cases:
+  - {a: b, c: d, e: f, g: h, i: j}
+  - [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+  - very_long_key_name_that_might_trigger_buffer_handling: very_long_value_that_could_stress_memory_allocation
+unicode_content: "Ω ≈ ∞ ∑ ∫ √ ∇ ∂ ∆ ℵ 你好"
+binary_like: "\x00\x01\x02\x03\xFF"
+```

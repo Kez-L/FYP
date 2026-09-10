@@ -1,0 +1,79 @@
+```yaml
+%YAML 1.2
+%TAG ! tag:example.com,2024:
+---
+!custom:object
+key1: &anchor1
+  nested:
+    deep: value
+    list:
+      - item1
+      - item2
+key2: *anchor1
+key3: !custom:type |
+  multiline
+  string
+  content
+```
+
+```yaml
+---
+root:
+  - !!str 123
+  - !!int "456"
+  - !!float 789.0
+  - !!bool yes
+  - !!null ~
+  - !!set {a, b, c}
+  - !!seq [1, 2, 3]
+  - !!map {x: 1, y: 2}
+```
+
+```yaml
+---
+&merge_template
+name: base
+value: 10
+---
+<<: *merge_template
+name: override
+extra: field
+nested:
+  key: val
+  list: [a, b, c]
+```
+
+```yaml
+%YAML 1.1
+---
+- &id1
+  ? complex
+  : key
+  =: structure
+- &id2 |
+  literal
+  block
+  scalar
+- *id1
+- *id2
+---
+flow: {a: 1, b: [2, 3], c: {d: 4}}
+anchors: &ref {x: 0}
+alias: *ref
+```
+
+```yaml
+---
+escaped_string: "line1\nline2\ttab\x41\u0042"
+plain_scalar: this is a plain scalar with: colons and # comments ignored
+folded_scalar: >
+  this is a folded
+  scalar that spans
+  multiple lines
+literal_scalar: |
+  this is literal
+  preserving newlines
+  and indentation
+flow_mapping: {a: 1, b: 2, c: {d: 3, e: 4}}
+flow_sequence: [x, y, z, [nested, seq]]
+```

@@ -1,0 +1,101 @@
+```yaml
+%YAML 1.1
+%TAG !x! tag:example.org,2026:app/
+---
+!x!root
+version: 0x10
+octalish: 0o17
+sexagesimal: 1:20:30
+float_inf: .inf
+float_nan: .NaN
+anchor_map: &A
+  plain: hello
+  quoted: "line1\nline2"
+  single: 'can''t'
+alias_map: *A
+...
+```
+
+
+```yaml
+---
+!!map {
+  ? !!str "empty"
+  : !!null "",
+  ? !!int "000"
+  : !!bool "yes",
+  ? !!seq [
+      a,
+      b,
+      c
+    ]
+  : !!map {
+      k1: v1,
+      k2: v2
+    }
+}
+...
+```
+
+
+```yaml
+---
+base: &base
+  name: base-node
+  items:
+    - one
+    - two
+  flags: [on, off, yes, no]
+merge_test:
+  <<: *base
+  name: merged-node
+  items:
+    - three
+    - four
+deep_alias:
+  first: &first {a: 1, b: 2}
+  second: &second {ref: *first, self: *second}
+...
+```
+
+
+```yaml
+%YAML 1.2
+---
+!!set
+? alpha
+? beta
+? gamma
+? delta
+---
+flow_seq: [!!str "a,b", !!int "42", !!bool "false", !!null "~"]
+flow_map: { ? "?question" : ":colon:", nested: {x: [1, 2, 3], y: {z: 4}} }
+block: |
+  start
+    indented
+  middle
+    more
+  end
+...
+```
+
+
+```yaml
+---
+multi_docs: |
+  first document payload
+  with embedded punctuation: : ? - # [ ] { }
+
+---
+timestamp: 2001-12-15T02:59:43.1Z
+local_time: 2002-12-14t21:59:43.10-05:00
+explicit_tagged: !!str "2026-09-10"
+binary_blob: !!binary |
+  AAECAwQFBgcICQ==
+pairs:
+  - ? [k1, k2]
+    : {v1: 1, v2: 2}
+  - ? {l: 3}
+    : [x, y, z]
+...
+```

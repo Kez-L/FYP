@@ -1,0 +1,117 @@
+```yaml
+%YAML 1.1
+---
+!!map
+? ? "double-key"
+  : [!!int "0", !!float "1.0", !!bool "true"]
+: &base
+  <<: {a: 1, b: 2}
+  seq:
+    - !str "alpha"
+    - !str "beta"
+    - !str "gamma"
+  folded: >
+    line one
+    line two
+    line three
+  literal: |
+    block
+    scalar
+    with trailing spaces   
+...
+```
+
+
+```yaml
+---
+!!seq
+- &a { foo: bar, baz: [1, 2, 3, 4, 5] }
+- *a
+- !!map
+    key1: !!null ""
+    key2: ~
+    key3: 0123
+    key4: 0o77
+    key5: 0b101010
+- >
+  folded text with
+  multiple lines and
+  an escaped-looking \n sequence
+- |
+  literal text
+  with a tab	and unicode: ☃
+...
+```
+
+
+```yaml
+%TAG !t! tag:test.example,2025:
+---
+!t!root
+name: "node"
+children:
+  - !t!child {id: 1, data: {x: 10, y: 20}}
+  - !t!child {id: 2, data: {x: 30, y: 40}}
+  - !t!child
+      id: 3
+      data:
+        x: 50
+        y: 60
+        meta: &m
+          enabled: yes
+          note: "alias target"
+  - *m
+mapping:
+  ? [one, two]
+  : {three: 3, four: 4}
+  ? {k: v}
+  : [a, b, c]
+...
+```
+
+
+```yaml
+---
+- >
+  folded:
+    should not be indented as mapping
+- |
+  literal: still scalar
+  nested:
+    not a map
+- [ {a: 1}, {b: 2}, {c: 3}, {d: 4} ]
+- { empty: {}, list: [], nested: { inner: { x: 1 } } }
+- !!set
+    ? apple
+    ? banana
+    ? cherry
+    ? date
+...
+```
+
+
+```yaml
+---
+stream:
+  - doc: 1
+    values:
+      - 0xDEAD
+      - 0xBEEF
+      - 0xC0DE
+    text: "quoted \x41 \u263A \U0001F600"
+  - doc: 2
+    anchor: &anchor
+      left: <<: {u: 7, v: 8}
+      right:
+        - 1001
+        - 1002
+        - 1003
+    alias: *anchor
+    style: "plain"
+  - doc: 3
+    weird: !!str 12345
+    tags:
+      - !<tag:example.org,2025:kind> sample
+      - !<tag:example.org,2025:kind> another
+...
+```

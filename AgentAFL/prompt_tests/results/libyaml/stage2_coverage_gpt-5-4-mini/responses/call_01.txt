@@ -1,0 +1,90 @@
+```yaml
+%YAML 1.1
+%TAG !e! tag:example.com,2024:env/
+---
+!e!root
+title: "Compact doc"
+settings:
+  mode: "safe"
+  retries: 0
+  timeout: 12.5
+items:
+  - !!str "alpha"
+  - !!int "0007"
+  - !!bool "yes"
+  - !!null "~"
+...
+```
+
+```yaml
+---
+!!map {
+  ? !!str "key:with:colons"
+  : !!seq [
+      !!int 1,
+      !!int 2,
+      !!int 3,
+      !!map {
+        nested: !!str "value",
+        empty: !!null ""
+      }
+    ],
+  ? !!str "quoted # not comment"
+  : !!str "text",
+  ? !!str "multiline"
+  : |
+      first line
+      second line
+      third line
+}
+...
+```
+
+```yaml
+---
+- &A {id: 1, next: &B {id: 2, next: &C {id: 3, next: null}}}
+- *A
+- *B
+- *C
+- {ref: *A, path: [*A, *B, *C]}
+- !!map {a: &X [1, 2], b: *X, c: {d: &Y {z: 9}, e: *Y}}
+...
+```
+
+```yaml
+---
+---
+plain: plain_text
+single: 'single ''quoted'' string'
+double: "double\nquoted\tstring with unicode \u263A"
+block1: >-
+  folded line 1
+  folded line 2
+block2: |+
+  literal line 1
+
+  literal line 3
+sequence:
+  - item1
+  -
+  - item3
+...
+```
+
+```yaml
+---
+? [a, b, c]
+: {x: 1, y: 2}
+? {k1: v1, k2: v2}
+: [true, false, null]
+? !!set
+  ? red
+  ? green
+  ? blue
+: "color set"
+? !!omap
+  - one: 1
+  - two: 2
+: "ordered map"
+...
+```

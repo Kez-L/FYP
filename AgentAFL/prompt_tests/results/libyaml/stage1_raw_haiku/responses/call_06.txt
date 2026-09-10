@@ -1,0 +1,51 @@
+```yaml
+!!map
+? !!null
+: !!float 1.23e-4
+? !!bool yes
+: !!int 0x1A
+? !!timestamp 2023-01-15T10:30:00Z
+: !!set {a, b, c}
+```
+
+```yaml
+%TAG ! tag:example.com,2023:
+---
+!<tag:example.com,2023:custom> &id001
+  field1: !<tag:example.com,2023:special> value
+  field2: *id001
+  field3: !<tag:example.com,2023:other>
+    nested: data
+```
+
+```yaml
+- &anchor
+  key: value
+  self: *anchor
+- - nested
+  - *anchor
+  - - deep: *anchor
+      back: &anchor
+```
+
+```yaml
+plain_unquoted_with_colon: key:value:pair
+quoted_single: 'don''t'
+quoted_double: "escaped\nnewline\ttab"
+unquoted_special: 123abc@#$%
+mixed_quotes: 'single' "double" plain
+implicit_bool_variants: [yes, no, on, off, true, false, Yes, No]
+```
+
+```yaml
+key1: &ref1 value1
+key2: *ref1
+key3:
+  nested: &ref2
+    - *ref1
+    - *ref2
+    - data
+key4: *ref2
+key5: &ref1 overridden
+key6: *ref1
+```

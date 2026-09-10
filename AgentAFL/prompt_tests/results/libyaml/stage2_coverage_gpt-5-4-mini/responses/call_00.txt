@@ -1,0 +1,94 @@
+```yaml
+%YAML 1.2
+---
+meta: &meta
+  title: "Nested anchors and aliases"
+  flags:
+    enabled: true
+    count: 3
+    ratios: [0.1, 0.5, 1.0]
+doc:
+  header: *meta
+  body:
+    - step: 1
+      op: add
+      value: !!int "42"
+    - step: 2
+      op: merge
+      value:
+        <<: *meta
+        title: "Overridden title"
+...
+```
+
+```yaml
+---
+flow:
+  a: {b: [1, 2, 3], c: {d: "x", e: "y"}}
+  f:
+    - {g: h}
+    - [i, j, k]
+    - "string with : colon and # hash"
+folded: >
+  This is a folded
+  scalar that spans
+  multiple lines.
+literal: |
+  line one
+  line two
+  line three
+...
+```
+
+```yaml
+---
+sequence:
+  - ? [alpha, beta]
+    : {value: 1, note: "complex key"}
+  - ? {x: 10, y: 20}
+    : "mapping as key"
+  - !!seq [true, false, null]
+  - !!map {k1: v1, k2: v2}
+document:
+  version: "2024-09-10"
+  active: yes
+...
+```
+
+```yaml
+---
+%TAG !e! tag:example.com,2024:
+root:
+  normal: plain
+  quoted_single: 'single quoted string with ''escape'''
+  quoted_double: "double quoted string with \n newline and \t tab"
+  tagged: !e!custom
+    name: sample
+    data: [01, 0o77, 0x10, 1_000]
+  dates:
+    - 2024-01-31
+    - 2001-12-15T02:59:43.1Z
+    - !!timestamp "2002-12-14t21:59:43.10-05:00"
+...
+```
+
+```yaml
+---
+# Multi-document content in a single file
+first:
+  key: &k
+    nested: 123
+  ref: *k
+second:
+  list:
+    - item1
+    - item2
+  map:
+    ? "?"
+    : ":"
+third:
+  empty_map: {}
+  empty_seq: []
+  weird: !!str null
+...
+```

@@ -1,0 +1,80 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ENTITY intern "internal entity content">
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+]>
+<root>
+  <child>&intern;</child>
+  <child>text</child>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE data [
+  <!NOTATION PNG SYSTEM "image/png">
+  <!ELEMENT data (item+)>
+  <!ELEMENT item ANY>
+  <!ATTLIST item id ID #REQUIRED type NMTOKEN "default">
+]>
+<data>
+  <item id="id1" type="test">content</item>
+  <item id="id2">nested</item>
+</data>
+```
+
+```xml
+<!DOCTYPE html [
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY copy "&#169;">
+  <!ELEMENT html (body)>
+  <!ELEMENT body (div+)>
+  <!ELEMENT div (#PCDATA|span)*>
+  <!ELEMENT span (#PCDATA)>
+]>
+<html>
+  <body>
+    <div>Text&nbsp;with&copy; entity</div>
+    <div><span>nested span</span></div>
+  </body>
+</html>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config [
+  <!ELEMENT config (setting)*>
+  <!ELEMENT setting (#PCDATA)>
+  <!ATTLIST setting
+    name CDATA #REQUIRED
+    value CDATA #IMPLIED
+    enabled (true|false) "true">
+  <!ENTITY % file SYSTEM "file://internal">
+]>
+<config>
+  <setting name="timeout" value="30" enabled="true">30000ms</setting>
+  <setting name="debug" enabled="false"/>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (product*)>
+  <!ELEMENT product (name, price, quantity)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT quantity (#PCDATA)>
+  <!ATTLIST product id ID #REQUIRED sku CDATA #FIXED "SKU">
+  <!ATTLIST price currency CDATA "USD">
+]>
+<catalog>
+  <product id="prod1" sku="SKU">
+    <name>Item</name>
+    <price currency="EUR">99</price>
+    <quantity>5</quantity>
+  </product>
+</catalog>
+```

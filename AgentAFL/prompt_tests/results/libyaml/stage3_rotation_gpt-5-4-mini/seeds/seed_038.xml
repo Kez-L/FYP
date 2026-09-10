@@ -1,0 +1,21 @@
+sequence:
+  - &base
+    name: example
+    payload: !!binary |
+      SGVsbG8sIFlBTUwh
+    enabled: yes
+    count: 7
+  - !!float '.inf'
+  - !!str "text"
+  - !!int '42'
+  - { inline: mapping, with: [a, b, c, { nested: true }] }
+anchors:
+  copy1:
+    <<: *base
+    enabled: no
+    count: 8
+  copy2:
+    payload: *base
+    <<: *base
+    name: overridden
+  base: *base
