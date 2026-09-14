@@ -1,0 +1,127 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+<!ENTITY myent "test">
+<!ELEMENT root (child+)>
+<!ELEMENT child (#PCDATA|grandchild)*>
+<!ELEMENT grandchild EMPTY>
+<!ATTLIST grandchild id ID #REQUIRED type CDATA #IMPLIED>
+]>
+<root>
+  <child id="c1">
+    <grandchild id="g1" type="A"/>
+    Text content here
+    <grandchild id="g2" type="B"/>
+  </child>
+  <child id="c2">Content</child>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+<!ELEMENT doc (section*)>
+<!ELEMENT section (title, paragraph+)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT paragraph (#PCDATA|emphasis|strong)*>
+<!ELEMENT emphasis (#PCDATA)>
+<!ELEMENT strong (#PCDATA)>
+<!ATTLIST section class NMTOKEN #IMPLIED level (1|2|3) "1">
+]>
+<doc>
+  <section level="1" class="intro">
+    <title>Introduction</title>
+    <paragraph>This is <emphasis>important</emphasis> and <strong>bold</strong>.</paragraph>
+  </section>
+  <section level="2">
+    <title>Details</title>
+    <paragraph>More content here.</paragraph>
+    <paragraph>And more.</paragraph>
+  </section>
+</doc>
+```
+
+```xml
+<!DOCTYPE library [
+<!ELEMENT library (book*)>
+<!ELEMENT book (author, title, isbn)>
+<!ELEMENT author (#PCDATA)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT isbn (#PCDATA)>
+<!ATTLIST book published CDATA #REQUIRED year NMTOKEN #IMPLIED category (fiction|nonfiction) #REQUIRED>
+<!ATTLIST author nationality CDATA #IMPLIED>
+]>
+<library>
+  <book published="2020-01-15" year="2020" category="fiction">
+    <author nationality="US">John Smith</author>
+    <title>A Great Novel</title>
+    <isbn>978-0-123456-78-9</isbn>
+  </book>
+  <book published="2019-06-30" category="nonfiction">
+    <author>Jane Doe</author>
+    <title>Science Facts</title>
+    <isbn>978-0-987654-32-1</isbn>
+  </book>
+</library>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config [
+<!ELEMENT config (setting+)>
+<!ELEMENT setting (name, value, description?)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT value (#PCDATA)>
+<!ELEMENT description (#PCDATA)>
+<!ATTLIST setting type (string|integer|boolean) "string" required (yes|no) "no">
+]>
+<config>
+  <setting type="string" required="yes">
+    <name>appname</name>
+    <value>MyApplication</value>
+    <description>The application name</description>
+  </setting>
+  <setting type="integer">
+    <name>port</name>
+    <value>8080</value>
+  </setting>
+  <setting type="boolean" required="no">
+    <name>debug</name>
+    <value>false</value>
+  </setting>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE manifest [
+<!ELEMENT manifest (metadata, packages)>
+<!ELEMENT metadata (name, version, author*)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT version (#PCDATA)>
+<!ELEMENT author (#PCDATA)>
+<!ELEMENT packages (package+)>
+<!ELEMENT package (dependency*)>
+<!ELEMENT dependency (#PCDATA)>
+<!ATTLIST metadata timestamp CDATA #IMPLIED>
+<!ATTLIST package id ID #REQUIRED status (active|inactive) "active">
+<!ATTLIST dependency version NMTOKEN #IMPLIED type (required|optional) "required">
+]>
+<manifest>
+  <metadata timestamp="2024-01-15T10:30:00Z">
+    <name>ProjectName</name>
+    <version>1.2.3</version>
+    <author>Developer One</author>
+    <author>Developer Two</author>
+  </metadata>
+  <packages>
+    <package id="pkg1" status="active">
+      <dependency version="2.0" type="required">libxml2</dependency>
+      <dependency type="optional">openssl</dependency>
+    </package>
+    <package id="pkg2" status="inactive">
+      <dependency version="1.5">zlib</dependency>
+    </package>
+  </packages>
+</manifest>
+```

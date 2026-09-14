@@ -1,78 +1,74 @@
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE root [
-  <!ELEMENT root (node+)>
-  <!ELEMENT node (#PCDATA | node)*>
-  <!ATTLIST node id ID #REQUIRED name CDATA #IMPLIED>
-  <!ENTITY ent1 "value1">
-  <!ENTITY ent2 "value2">
+<!ELEMENT root (item+)>
+<!ELEMENT item (#PCDATA)>
+<!ATTLIST item id ID #REQUIRED>
+<!ATTLIST item ref IDREF #IMPLIED>
 ]>
-<root xmlns="http://default.ns" xmlns:x="http://x.ns" xmlns:y="http://y.ns">
-  <node id="n1" name="first">&ent1;</node>
-  <node id="n2" x:attr="x-val" y:attr="y-val">
-    <node id="n3">nested &ent2;</node>
-  </node>
-</root>
-```
-
-```xml
-<?xml version="1.0"?>
 <root>
-  <section xml:lang="en" xml:space="preserve">
-    <para a="1" b="2" c="3" d="4" e="5" f="6" g="7" h="8" i="9" j="10" k="11" l="12" m="13" n="14" o="15" p="16"/>
-  </section>
-  <section xml:lang="fr">
-    <para q="17" r="18" s="19" t="20" u="21" v="22" w="23" x="24" y="25" z="26"/>
-  </section>
-  <empty-section/>
+  <item id="i1">text1</item>
+  <item id="i2" ref="i1">text2</item>
+  <item id="i3" ref="i2">text3</item>
 </root>
 ```
 
 ```xml
 <?xml version="1.0"?>
-<doc attr1="" attr2="val" attr3="x:y" attr4="::double">
-  <e1 ns:a="1" ns:b="2" ns:c="3" xmlns:ns="http://namespace.uri"/>
-  <e2>
-    text content
-    <inline/>
-    more text
-  </e2>
-  <e3 flag=""/>
-  <e4 xmlns:a="" xmlns:b="">
-    <e5 a:id="id1" b:id="id2"/>
-  </e4>
+<root xmlns:ns1="http://ns1.example.com" xmlns:ns2="http://ns2.example.com" xmlns:ns3="http://ns3.example.com">
+  <element ns1:attr1="value1" ns2:attr2="value2" ns3:attr3="value3" mixed="true">
+    <child ns1:id="a" ns2:type="b" ns3:class="c"/>
+    <child ns1:id="d" ns2:type="e" ns3:class="f"/>
+  </element>
+</root>
+```
+
+```xml
+<!DOCTYPE doc [
+<!ELEMENT doc (section*)>
+<!ELEMENT section (para+)>
+<!ELEMENT para (#PCDATA | emphasis)*>
+<!ELEMENT emphasis (#PCDATA)>
+<!ATTLIST para id CDATA #IMPLIED>
+]>
+<doc>
+  <section>
+    <para id="p1">First paragraph with <emphasis>emphasized</emphasis> text</para>
+    <para id="p2">Second paragraph</para>
+  </section>
+  <section>
+    <para id="p3">Third paragraph</para>
+  </section>
 </doc>
 ```
 
 ```xml
 <?xml version="1.0"?>
-<!DOCTYPE test [
-  <!ELEMENT test (item)*>
-  <!ELEMENT item EMPTY>
-  <!ATTLIST item id ID #REQUIRED type CDATA #IMPLIED xmlns CDATA #IMPLIED xmlns:ns CDATA #IMPLIED>
-  <!NOTATION notation PUBLIC "id">
-  <!ENTITY % param "value">
-]>
-<test>
-  <item id="i1" type="normal" xmlns="http://ns1"/>
-  <item id="i2" type="special" xmlns:ns="http://ns2" ns:extra="data"/>
-  <item id="i3" xmlns="" xmlns:ns=""/>
-  <item id="i4"/>
-</test>
+<root xmlns="http://default.ns" xmlns:a="http://a.ns" xmlns:b="http://b.ns">
+  <a:elem1 a:attr="x" b:attr="y">
+    <b:nested a:id="n1" b:id="n2">content</b:nested>
+  </a:elem1>
+  <a:elem2>
+    <a:child b:attr="z"/>
+  </a:elem2>
+</root>
 ```
 
 ```xml
-<?xml version="1.0"?>
-<root>
-  <container xmlns:p1="http://p1.org" xmlns:p2="http://p2.org" xmlns:p3="http://p3.org">
-    <elem p1:x="1" p2:y="2" p3:z="3" plain="4"/>
-    <elem xmlns:nested="http://nested.org" nested:attr="val" xmlns="">
-      <sub a="x" b="y" c="z"/>
-    </elem>
-  </container>
-  <container>
-    <elem attr1="v1" attr2="v2" attr3="v3" attr4="v4" attr5="v5" attr6="v6"/>
-    <malformed xmlns:="" extra:attr=""/>
-  </container>
-</root>
+<!DOCTYPE test [
+<!ELEMENT test (entry*)>
+<!ELEMENT entry EMPTY>
+<!ATTLIST entry
+  a CDATA #REQUIRED
+  b CDATA #REQUIRED
+  c (x|y|z) "x"
+  d NMTOKEN #IMPLIED
+  e NMTOKENS #IMPLIED
+>
+]>
+<test>
+  <entry a="val_a_1" b="val_b_1" c="x" d="token1" e="tok1 tok2"/>
+  <entry a="val_a_2" b="val_b_2" c="y" d="token2"/>
+  <entry a="val_a_3" b="val_b_3" c="z"/>
+</test>
 ```

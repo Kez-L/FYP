@@ -1,0 +1,69 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root id ID #REQUIRED>
+  <!ENTITY internal "test_value">
+]>
+<root id="r1">
+  <child attr="&internal;">&internal;</child>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE data [
+  <!ENTITY % param1 "inner_entity">
+  <!ENTITY % param2 "%param1;">
+]>
+<data>
+  <element>%param2;</element>
+  <nested>
+    <deep attr="%param1%">content</deep>
+  </nested>
+</data>
+```
+
+```xml
+<!DOCTYPE config [
+  <!ENTITY ent1 "value1">
+  <!ENTITY ent2 "value2">
+  <!ENTITY ent3 "&#60;tag&#62;">
+]>
+<config>
+  <section name="test">
+    <item>&ent1;&ent2;&ent3;</item>
+  </section>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE document [
+  <!ELEMENT document (chapter+)>
+  <!ELEMENT chapter (title, section*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT section (#PCDATA | emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+]>
+<document>
+  <chapter>
+    <title>First</title>
+    <section>Text with <emphasis>emphasis</emphasis> here</section>
+  </chapter>
+</document>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!ENTITY logo SYSTEM "logo.gif" NDATA gif>
+  <!ELEMENT root (image)>
+  <!ELEMENT image EMPTY>
+  <!ATTLIST image src ENTITY #REQUIRED>
+]>
+<root>
+  <image src="logo"/>
+</root>
+```

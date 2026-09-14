@@ -1,0 +1,66 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST child id ID #REQUIRED>
+  <!ENTITY internal "test">
+]>
+<root>
+  <child id="c1">&internal;</child>
+</root>
+```
+
+```xml
+<!DOCTYPE doc [
+  <!ENTITY % file SYSTEM "file:///etc/passwd">
+  <!ENTITY % eval "<!ENTITY &#x25; exfiltrate SYSTEM 'http://localhost/?%file;'>">
+  %eval;
+]>
+<doc>&exfiltrate;</doc>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg [
+  <!ENTITY lol "lol">
+  <!ENTITY lol2 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">
+  <!ENTITY lol3 "&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;">
+]>
+<svg>
+  <text>&lol3;</text>
+</svg>
+```
+
+```xml
+<!DOCTYPE html [
+  <!ELEMENT html (head, body)>
+  <!ELEMENT head (title)>
+  <!ELEMENT body (p+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT p (#PCDATA | br)*>
+  <!ELEMENT br EMPTY>
+  <!ENTITY nbsp "&#160;">
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ATTLIST p class CDATA #IMPLIED>
+]>
+<html>
+  <head><title>Test&nbsp;Doc</title></head>
+  <body>
+    <p class="intro">Content<br/>More</p>
+  </body>
+</html>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config SYSTEM "http://localhost/config.dtd" [
+  <!ENTITY % param "value">
+  <!ENTITY % chain "&#37;param;">
+  <!ENTITY resolved "%chain;">
+]>
+<config>
+  <setting name="test">&resolved;</setting>
+  <![CDATA[raw & < > data]]>
+</config>
+```

@@ -1,13 +1,16 @@
 <!DOCTYPE root [
 <!ELEMENT root (item+)>
-<!ELEMENT item (#PCDATA|subitem)*>
-<!ELEMENT subitem EMPTY>
-<!ATTLIST subitem id ID #REQUIRED type CDATA #IMPLIED>
-<!ATTLIST item class (A|B|C) "A">
-<!ENTITY internal "test_value">
+<!ELEMENT item (subitem*)>
+<!ELEMENT subitem (#PCDATA)>
+<!ATTLIST item id ID #REQUIRED name CDATA #REQUIRED type (A|B|C) #FIXED "A">
+<!ATTLIST subitem ref IDREF #IMPLIED>
 ]>
 <root>
-  <item class="B" id="item1">
-    <subitem id="sub1" type="text"/>
+  <item id="i1" name="test1">
+    <subitem ref="i1">content1</subitem>
+    <subitem>content2</subitem>
+  </item>
+  <item id="i2" name="test2">
+    <subitem ref="i2"/>
   </item>
 </root>

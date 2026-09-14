@@ -1,0 +1,121 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE test [
+  <!ELEMENT test (item+)>
+  <!ELEMENT item ANY>
+  <!ATTLIST item id ID #REQUIRED type (A|B|C) #REQUIRED>
+  <!ENTITY ent1 "value1">
+  <!ENTITY ent2 "&ent1;-extended">
+]>
+<test>
+  <item id="i1" type="A">&ent2;</item>
+  <item id="i2" type="B"><![CDATA[raw<>&content]]></item>
+</test>
+```
+
+```xml
+<!DOCTYPE data [
+  <!ELEMENT data (record*)>
+  <!ELEMENT record (field | comment)*>
+  <!ELEMENT field (#PCDATA)>
+  <!ELEMENT comment (#PCDATA)>
+  <!ATTLIST record version NMTOKEN "1.0" status (active|inactive) "active">
+  <!ATTLIST field name CDATA #REQUIRED encrypted (yes|no) #IMPLIED>
+]>
+<data>
+  <record version="2.1" status="inactive">
+    <field name="username" encrypted="yes">admin</field>
+    <comment>test user</comment>
+  </record>
+</data>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (entry*, permissions?)>
+  <!ELEMENT entry (path, checksum?, metadata*)>
+  <!ELEMENT path (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT metadata (#PCDATA)>
+  <!ELEMENT permissions (allow | deny)*>
+  <!ELEMENT allow EMPTY>
+  <!ELEMENT deny EMPTY>
+  <!ATTLIST allow user CDATA #REQUIRED action (read|write|execute) "read">
+  <!ATTLIST deny group CDATA #REQUIRED>
+]>
+<manifest>
+  <entry>
+    <path>/etc/config</path>
+    <checksum>abc123</checksum>
+    <metadata>important</metadata>
+  </entry>
+  <permissions>
+    <allow user="root" action="write"/>
+    <deny group="guests"/>
+  </permissions>
+</manifest>
+```
+
+```xml
+<!DOCTYPE schema [
+  <!ELEMENT schema (type+, element*)>
+  <!ELEMENT type (restriction | extension)>
+  <!ELEMENT restriction (pattern | length)*>
+  <!ELEMENT pattern EMPTY>
+  <!ELEMENT length EMPTY>
+  <!ELEMENT extension (attribute*)>
+  <!ELEMENT attribute EMPTY>
+  <!ELEMENT element (annotation?)>
+  <!ELEMENT annotation (#PCDATA)>
+  <!ATTLIST type name ID #REQUIRED base CDATA #IMPLIED>
+  <!ATTLIST restriction value CDATA #REQUIRED>
+  <!ATTLIST pattern regex CDATA #REQUIRED>
+  <!ATTLIST length min CDATA #IMPLIED max CDATA #IMPLIED>
+  <!ATTLIST attribute ref CDATA #REQUIRED required (true|false) "false">
+  <!ATTLIST element name CDATA #REQUIRED type CDATA #REQUIRED>
+]>
+<schema>
+  <type name="stringType" base="xs:string">
+    <restriction value="limited">
+      <pattern regex="[a-z]+"/>
+      <length min="1" max="255"/>
+    </restriction>
+  </type>
+  <element name="field1" type="stringType">
+    <annotation>A test field</annotation>
+  </element>
+</schema>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE events [
+  <!ELEMENT events (event)*>
+  <!ELEMENT event (timestamp, source, tags?, payload)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT source EMPTY>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT payload (data | binary)>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT binary EMPTY>
+  <!ATTLIST source system CDATA #REQUIRED priority (low|medium|high) "medium">
+  <!ATTLIST tags count NMTOKEN #IMPLIED>
+  <!ATTLIST tag severity (info|warn|error) "info">
+  <!ATTLIST binary encoding (base64|hex) "base64" size CDATA #REQUIRED>
+]>
+<events>
+  <event>
+    <timestamp>2024-01-15T10:30:45Z</timestamp>
+    <source system="parser" priority="high"/>
+    <tags count="2">
+      <tag severity="warn">critical</tag>
+      <tag severity="info">test</tag>
+    </tags>
+    <payload>
+      <data>event payload content</data>
+    </payload>
+  </event>
+</events>
+```

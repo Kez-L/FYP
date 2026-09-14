@@ -1,0 +1,84 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root id ID #REQUIRED>
+  <!ENTITY internal "expanded_content">
+]>
+<root id="test1">
+  <child attr="&internal;">
+    &internal;
+  </child>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE doc [
+  <!ENTITY % param1 "value1">
+  <!ENTITY % param2 "%param1;%param1;">
+  <!ELEMENT doc (section*)>
+  <!ELEMENT section (#PCDATA|para)*>
+  <!ELEMENT para (#PCDATA)>
+]>
+<doc>
+  <section>
+    <para>Test content with special chars: &lt; &gt; &amp;</para>
+  </section>
+</doc>
+```
+
+```xml
+<!DOCTYPE configuration [
+  <!ENTITY % external SYSTEM "file:///etc/passwd">
+  <!ENTITY nested "<!ELEMENT nested ANY>">
+]>
+<configuration>
+  <property name="key1" value="val1"/>
+  <property name="key2" value="val2"/>
+  <nested>
+    <deeply>
+      <nested>Content</nested>
+    </deeply>
+  </nested>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE test [
+  <!ENTITY a "aaaa">
+  <!ENTITY b "bbbb">
+  <!ENTITY c "&a;&b;&a;&b;&a;&b;">
+  <!NOTATION gif SYSTEM "image/gif">
+  <!ELEMENT unparsed EMPTY>
+  <!ATTLIST unparsed image ENTITY #IMPLIED>
+]>
+<test>
+  <data>&c;</data>
+  <empty/>
+  <mixed>Text &a; more &b; end</mixed>
+</test>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ELEMENT root (item+)>
+  <!ELEMENT item (name, value)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST item priority (high|medium|low) "medium">
+  <!ENTITY copyright "&#169; 2024">
+  <!ENTITY nbsp "&#160;">
+]>
+<root>
+  <item priority="high">
+    <name>First&nbsp;Item</name>
+    <value>Content&copyright;</value>
+  </item>
+  <item>
+    <name>Second</name>
+    <value>&nbsp;</value>
+  </item>
+</root>
+```

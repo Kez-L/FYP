@@ -1,0 +1,57 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST child id ID #REQUIRED>
+  <!ENTITY simple "text">
+  <!ENTITY nested "&simple;&simple;">
+]>
+<root>
+  <child id="c1">&nested;</child>
+  <child id="c2">&simple;</child>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ENTITY % param1 "value1">
+  <!ENTITY % param2 "value2">
+  <!ENTITY combo "%param1;-%param2;">
+]>
+<doc>&combo;</doc>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE test [
+  <!NOTATION gif PUBLIC "image/gif">
+  <!ENTITY image SYSTEM "image.gif" NDATA gif>
+  <!ENTITY % file SYSTEM "file:///dev/null">
+]>
+<test>
+  <data>&image;</data>
+</test>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % a "<!ENTITY &#x25; b SYSTEM 'test'>">
+  %a;
+]>
+<root/>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY internal "&#38;#60;tag&#38;#62;">
+  <!ENTITY recursive "&internal;&internal;&internal;&internal;&internal;">
+]>
+<root attr="&recursive;">
+  <element>&recursive;</element>
+  <element>&internal;</element>
+</root>
+```

@@ -1,0 +1,69 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST child id ID #REQUIRED>
+  <!ENTITY % param1 "test">
+  <!ENTITY % param2 "%param1;%param1;%param1;">
+]>
+<root>
+  <child id="c1">&param2;</child>
+  <child id="c2">content</child>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!ELEMENT doc (data+)>
+  <!ENTITY unparsed SYSTEM "http://internal/file" NDATA gif>
+]>
+<doc>
+  <data>&unparsed;</data>
+  <data attr="value">text</data>
+</doc>
+```
+
+```xml
+<!DOCTYPE nested [
+  <!ENTITY % inner "&#x25;inner;">
+  <!ENTITY % outer "%inner;%inner;%inner;%inner;%inner;">
+]>
+<nested attr="&outer;">
+  <level1>
+    <level2>%outer;</level2>
+  </level1>
+</nested>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE complex [
+  <!ENTITY a "&#60;tag&#62;">
+  <!ENTITY b "&#38;a;&#38;a;&#38;a;">
+  <!ENTITY c "&#38;b;&#38;b;">
+]>
+<complex>&c;</complex>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE mixed [
+  <!ELEMENT mixed (item|ref)*>
+  <!ELEMENT item (#PCDATA|inner)*>
+  <!ELEMENT inner EMPTY>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref href CDATA #IMPLIED>
+  <!ENTITY % recursive "recursive">
+  <!ENTITY expand "&#38;%recursive;&#38;%recursive;">
+]>
+<mixed>
+  <item>&expand;</item>
+  <ref href="http://localhost"/>
+  <item>
+    <inner/>
+  </item>
+</mixed>
+```

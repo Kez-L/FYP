@@ -1,0 +1,45 @@
+<!DOCTYPE manifest [
+<!ELEMENT manifest (application, permission*, uses-feature*)>
+<!ELEMENT application (activity+, service*, receiver*)>
+<!ELEMENT activity (intent-filter*)>
+<!ELEMENT intent-filter (action, category*, data?)>
+<!ELEMENT action EMPTY>
+<!ELEMENT category EMPTY>
+<!ELEMENT data EMPTY>
+<!ELEMENT service (intent-filter*)>
+<!ELEMENT receiver (intent-filter*)>
+<!ELEMENT permission EMPTY>
+<!ELEMENT uses-feature EMPTY>
+<!ATTLIST manifest package CDATA #REQUIRED versionCode CDATA #REQUIRED versionName CDATA #REQUIRED>
+<!ATTLIST application label CDATA #REQUIRED icon CDATA #IMPLIED theme CDATA #IMPLIED>
+<!ATTLIST activity name CDATA #REQUIRED label CDATA #IMPLIED exported (true|false) "false">
+<!ATTLIST service name CDATA #REQUIRED exported (true|false) "false">
+<!ATTLIST receiver name CDATA #REQUIRED enabled (true|false) "true">
+<!ATTLIST action name CDATA #REQUIRED>
+<!ATTLIST category name CDATA #REQUIRED>
+<!ATTLIST data mimeType CDATA #IMPLIED scheme CDATA #IMPLIED>
+<!ATTLIST permission name CDATA #REQUIRED protectionLevel (normal|dangerous|signature) "normal">
+<!ATTLIST uses-feature name CDATA #REQUIRED required (true|false) "true">
+]>
+<manifest package="com.example.app" versionCode="1" versionName="1.0">
+  <application label="My Application" icon="@drawable/icon" theme="@style/AppTheme">
+    <activity name=".MainActivity" label="Main Activity" exported="true">
+      <intent-filter>
+        <action name="android.intent.action.MAIN"/>
+        <category name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+    </activity>
+    <service name=".MyService" exported="false">
+      <intent-filter>
+        <action name="com.example.START_SERVICE"/>
+      </intent-filter>
+    </service>
+    <receiver name=".BootReceiver" enabled="true">
+      <intent-filter>
+        <action name="android.intent.action.BOOT_COMPLETED"/>
+      </intent-filter>
+    </receiver>
+  </application>
+  <permission name="com.example.CUSTOM_PERMISSION" protectionLevel="signature"/>
+  <uses-feature name="android.hardware.camera" required="false"/>
+</manifest>

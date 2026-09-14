@@ -1,63 +1,80 @@
 ```xml
 <?xml version="1.0"?>
-<root>
-  <element1 a:x="1" b:y="2" c:z="3" xmlns:a="http://a.org" xmlns:b="http://b.org" xmlns:c="http://c.org">
-    <child attr="val"/>
-  </element1>
+<root xmlns:ns1="http://example.com/ns1" xmlns:ns2="http://example.com/ns2">
+  <element ns1:attr="value1" ns2:attr="value2">
+    <child1 attr="" attr2="">text</child1>
+    <child2 ns1:id="123" ns2:id="456"/>
+    <ns1:special ns2:ref="test">
+      <nested>data</nested>
+    </ns1:special>
+  </element>
 </root>
 ```
 
 ```xml
 <!DOCTYPE root [
 <!ELEMENT root (item+)>
-<!ELEMENT item (#PCDATA|subitem)*>
-<!ELEMENT subitem EMPTY>
-<!ATTLIST subitem id ID #REQUIRED type CDATA #IMPLIED>
-<!ATTLIST item class (A|B|C) "A">
-<!ENTITY internal "test_value">
+<!ELEMENT item (subitem*)>
+<!ELEMENT subitem (#PCDATA)>
+<!ATTLIST item id ID #REQUIRED name CDATA #REQUIRED type (A|B|C) #FIXED "A">
+<!ATTLIST subitem ref IDREF #IMPLIED>
 ]>
 <root>
-  <item class="B" id="item1">
-    <subitem id="sub1" type="text"/>
+  <item id="i1" name="test1">
+    <subitem ref="i1">content1</subitem>
+    <subitem>content2</subitem>
+  </item>
+  <item id="i2" name="test2">
+    <subitem ref="i2"/>
   </item>
 </root>
 ```
 
 ```xml
-<?xml version="1.0"?>
-<doc xmlns:d="urn:undeclared">
-  <namespace_test d:attr1="v1" d:attr2="v2" undeclared:attr3="v3">
-    <mixed>Text &#8212; more &#32; text</mixed>
-  </namespace_test>
-  <empty_elem/>
-  <self_close attr="val"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <a a:b="1" c:d="2" :x="3" xmlns:a="urn:test1" xmlns:c="urn:test2">
+    <b :attr1="" a:attr2="" c:attr3="" a:b:c="nested">text</b>
+    <c xmlns="urn:default" xmlns:ns="urn:ns" ns:ns:ns="multi">deep</c>
+  </a>
+  <element attr="" attr="" attr="">repeated</element>
 </doc>
 ```
 
 ```xml
-<!DOCTYPE container [
-<!ELEMENT container (level1*)>
-<!ELEMENT level1 (level2*)>
-<!ELEMENT level2 (level3*)>
-<!ELEMENT level3 (#PCDATA)>
-<!ATTLIST level1 id ID #REQUIRED xmlns CDATA #IMPLIED>
-<!ATTLIST level2 xmlns:ns1 CDATA #IMPLIED xmlns:ns2 CDATA #IMPLIED>
+<!DOCTYPE test [
+<!ELEMENT test (e1|e2|e3)+>
+<!ELEMENT e1 (e2, e3)>
+<!ELEMENT e2 (#PCDATA|e3)*>
+<!ELEMENT e3 EMPTY>
+<!ATTLIST e1 
+  id001 CDATA "default1"
+  id002 CDATA "default2"
+  id003 CDATA "default3"
+  id004 CDATA "default4"
+  id005 ID #REQUIRED
+>
 ]>
-<container>
-  <level1 id="l1_a" xmlns="http://ns.default">
-    <level2 xmlns:ns1="http://ns1.org" xmlns:ns2="http://ns2.org">
-      <level3>deep content</level3>
-    </level2>
-  </level1>
-</container>
+<test>
+  <e1 id005="unique_id_001">
+    <e2>text <e3/> more</e2>
+    <e3/>
+  </e1>
+  <e2/>
+  <e3/>
+</test>
 ```
 
 ```xml
 <?xml version="1.0"?>
-<root>
-  <attrs_many a="1" b="2" c="3" d="4" e="5" f="6" g="7" h="8" i="9" j="10" k="11" l="12" m="13" n="14" o="15" p="16" xmlns:x="http://x" xmlns:y="http://y" xmlns:z="http://z" x:foo="bar" y:baz="qux">
-    <comment_like>&lt;!-- not a comment --&gt;</comment_like>
-    <cdata_section><![CDATA[<root><child attr="val"/></root>]]></cdata_section>
-  </attrs_many>
+<root xmlns="http://default.ns" xmlns:a="http://a.ns" xmlns:b="http://b.ns" xmlns:c="">
+  <element a:x="1" b:y="2" c:z="3" default="4" a:a:a="5" b::b="6">
+    <child1 a:attr="" a:attr="dup" attr="" attr="dup2"/>
+    <child2 xmlns:d="urn:d" d:ref="test" a:link="child1"/>
+    <child3>
+      <grandchild a:x="override" xmlns:a="http://override.ns"/>
+    </child3>
+  </element>
+  <empty_elem a:b="" c:d="" :e="" f=""/>
 </root>
 ```

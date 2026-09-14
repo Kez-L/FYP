@@ -1,0 +1,57 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ENTITY % param1 "value1">
+  <!ENTITY % param2 "<!ENTITY intern '%param1;'>">
+  %param2;
+]>
+<root attr="&intern;">
+  <elem>&intern;</elem>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ELEMENT doc ANY>
+  <!ATTLIST doc id ID #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY copy "&#169;">
+  <!ENTITY test "&#38;#48;&#48;&#48;;">
+]>
+<doc id="id1">&test;&nbsp;&copy;</doc>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % external SYSTEM "file:///etc/passwd">
+  <!ENTITY % parsed "%external;">
+]>
+<root>
+  <data>%parsed;</data>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE mixed [
+  <!ENTITY ent1 "&#x0A;&#x0D;&#x00;">
+  <!ENTITY ent2 "&#xFFFF;&#xFEFF;">
+  <!CDATA[ some cdata ent1 ent2 ]]>
+]>
+<mixed>&ent1;&ent2;</mixed>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE schema [
+  <!ENTITY % chunk1 "<!ELEMENT x (y|z)>">
+  <!ENTITY % chunk2 "<!ATTLIST x attr CDATA #FIXED '&#38;chunk1;'>">
+  %chunk1;
+  %chunk2;
+]>
+<schema>
+  <x attr="value">&chunk1;&chunk2;</x>
+</schema>
+```

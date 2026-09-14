@@ -1,0 +1,106 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (item+)>
+  <!ELEMENT item (name, value)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ENTITY % internal "<!ELEMENT internal (#PCDATA)>">
+  %internal;
+]>
+<root>
+  <item>
+    <name>test</name>
+    <value>123</value>
+  </item>
+</root>
+```
+
+```xml
+<!DOCTYPE html [
+  <!ELEMENT html (head, body)>
+  <!ELEMENT head (title)>
+  <!ELEMENT body (p | div)*>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT p (#PCDATA | span)*>
+  <!ELEMENT div (p)*>
+  <!ELEMENT span (#PCDATA)>
+  <!ATTLIST html lang CDATA #REQUIRED>
+  <!ATTLIST p class CDATA #IMPLIED id ID #IMPLIED>
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+]>
+<html lang="en">
+  <head>
+    <title>Test &lt;Page&gt;</title>
+  </head>
+  <body>
+    <p class="intro" id="p1">Hello <span>World</span></p>
+    <div>
+      <p>Nested paragraph</p>
+    </div>
+  </body>
+</html>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE data [
+  <!ELEMENT data (record*)>
+  <!ELEMENT record (#PCDATA | field)*>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST record id CDATA #REQUIRED type (A|B|C) #REQUIRED>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #FIXED "locked">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY copy "&#169;">
+]>
+<data>
+  <record id="r1" type="A">
+    <field name="f1" value="locked"/>
+    Text&nbsp;content&copy;
+  </record>
+  <record id="r2" type="B"/>
+</data>
+```
+
+```xml
+<!DOCTYPE svg [
+  <!ELEMENT svg (rect | circle)*>
+  <!ELEMENT rect EMPTY>
+  <!ELEMENT circle EMPTY>
+  <!ATTLIST svg viewBox CDATA #REQUIRED xmlns CDATA #FIXED "http://www.w3.org/2000/svg">
+  <!ATTLIST rect x CDATA #REQUIRED y CDATA #REQUIRED width CDATA #REQUIRED height CDATA #REQUIRED>
+  <!ATTLIST circle cx CDATA #REQUIRED cy CDATA #REQUIRED r CDATA #REQUIRED>
+]>
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect x="10" y="10" width="30" height="30"/>
+  <circle cx="60" cy="60" r="20"/>
+</svg>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (book)*>
+  <!ELEMENT book (author+, year, price)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT year (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ATTLIST book id ID #REQUIRED isbn CDATA #IMPLIED available (yes|no) "yes">
+  <!ENTITY % bookContent "(author | year)*">
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta charset CDATA #FIXED "UTF-8">
+]>
+<catalog>
+  <book id="b001" isbn="123-456" available="yes">
+    <author>John Doe</author>
+    <author>Jane Smith</author>
+    <year>2023</year>
+    <price>29.99</price>
+  </book>
+  <book id="b002" available="no">
+    <author>Alice</author>
+    <year>2022</year>
+    <price>15.50</price>
+  </book>
+</catalog>
+```

@@ -1,71 +1,66 @@
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE root [
-<!ELEMENT root (item+)>
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+<!ELEMENT doc (item+)>
 <!ELEMENT item (#PCDATA)>
-<!ATTLIST item id ID #REQUIRED>
-<!ATTLIST item ref IDREF #IMPLIED>
-<!ENTITY ent1 "value1">
-<!ENTITY ent2 "&ent1;-extended">
+<!ATTLIST item id ID #REQUIRED name CDATA #IMPLIED value (a|b|c) "a">
+]>
+<doc>
+  <item id="i1" name="test" value="b">content</item>
+  <item id="i2" value="c">more</item>
+</doc>
+```
+
+```xml
+<root xmlns:ns1="http://ns1.org" xmlns:ns2="http://ns2.org" ns1:attr="x" ns2:attr="y">
+  <a ns1:id="id1" ns2:ref="ref1" attr1="" attr2="" attr3="" attr4="" attr5=""/>
+  <b ns1:type="t1" ns2:type="t2" attr6="" attr7="" attr8="" attr9="" attr10=""/>
+  <c ns1:ns2:mixed="val" attr11="" attr12=""/>
+</root>
+```
+
+```xml
+<!DOCTYPE root [
+<!ENTITY ent1 "expanded1">
+<!ENTITY ent2 "expanded2">
+<!ELEMENT root (a|b|c)*>
+<!ELEMENT a EMPTY>
+<!ELEMENT b ANY>
+<!ELEMENT c (#PCDATA|a|b)*>
 ]>
 <root>
-  <item id="i1" ref="i2">&ent2;</item>
-  <item id="i2">text content</item>
-  <item id="i3" ref="i1">&ent1;</item>
+  <a attr="&ent1;"/>
+  <b>text &ent2; more</b>
+  <c/>
 </root>
 ```
 
 ```xml
-<root xmlns="http://default.ns" xmlns:ns1="http://ns1.org" xmlns:ns2="http://ns2.org">
-  <ns1:section>
-    <ns2:subsection attr1="v1" attr2="v2">
-      <ns1:data ns2:type="string" ns1:category="test">
-        <![CDATA[Some <special> & "data" here]]>
-      </ns1:data>
-    </ns2:subsection>
-  </ns1:section>
-  <element attr="value"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="http://default.ns" xmlns:p1="http://p1.ns" xmlns:p2="http://p2.ns" xmlns:p3="http://p3.ns">
+  <elem p1:a="1" p2:b="2" p3:c="3" p1:p2:d="4" a="" b="" c="" d="" e="">
+    <nested p1:attr="v1" p2:attr="v2"/>
+  </elem>
+  <elem2 p3:x="y" q="" r="" s="" t="" u="" v="" w=""/>
 </root>
 ```
 
 ```xml
-<?xml version="1.0"?>
-<document>
-  <section1>
-    <para>Text with &#65; entity and &#x42; hex entity.</para>
-    <empty_elem/>
-    <para>More &#160; &#8364; &#x20AC; content.</para>
-  </section1>
-  <section2 a="1" b="2" c="3" d="4" e="5">
-    <mixed>text<child/>more text<sibling attr="x"/></mixed>
-  </section2>
-</document>
-```
-
-```xml
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-  <head>
-    <title>Test</title>
-  </head>
-  <body>
-    <div id="main" class="container" data-value="123">
-      <p>Paragraph with <span attr="">inline element</span>.</p>
-      <ul>
-        <li/>
-        <li attr="val"/>
-      </ul>
-    </div>
-  </body>
-</html>
-```
-
-```xml
-<?xml version="1.0" standalone="yes"?>
-<config>
-  <database host="localhost" port="5432" user="admin" password="pass" timeout="30" maxconn="100" retries="3" ssl="true" compression="gzip"/>
-  <cache enabled="true" ttl="3600" strategy="lru" warmup="false" persist="true" checksum="md5"/>
-  <logging level="debug" format="json" output="file" rotation="daily" retention="7" buffered="true" async="false"/>
-  <service name="api" version="2.0" endpoint="/api/v2" deprecated="false"/>
-</config>
+<!DOCTYPE doc [
+<!ELEMENT doc (level1+)>
+<!ELEMENT level1 (level2+)>
+<!ELEMENT level2 (level3*)>
+<!ELEMENT level3 EMPTY>
+<!ATTLIST level1 id ID #REQUIRED>
+<!ATTLIST level2 name CDATA #REQUIRED type (x|y|z) #REQUIRED>
+<!ATTLIST level3 ref IDREF #IMPLIED flag (true|false) "false">
+]>
+<doc>
+  <level1 id="L1_1">
+    <level2 name="n1" type="x">
+      <level3 ref="L1_1" flag="true"/>
+      <level3 flag="false"/>
+    </level2>
+  </level1>
+</doc>
 ```

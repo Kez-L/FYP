@@ -1,0 +1,67 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root id ID #REQUIRED>
+  <!ENTITY internal "nested_value">
+]>
+<root id="test1">
+  <child attr="&internal;">content</child>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config [
+  <!ENTITY % external SYSTEM "file:///etc/passwd">
+  %external;
+]>
+<config>
+  <setting name="value1">
+    <nested>
+      <deep>text</deep>
+    </nested>
+  </setting>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE data [
+  <!ENTITY lol "lol">
+  <!ENTITY lol2 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">
+  <!ENTITY lol3 "&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;">
+]>
+<data>
+  &lol3;
+</data>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE svg [
+  <!ELEMENT svg (rect|circle)*>
+  <!ELEMENT rect EMPTY>
+  <!ELEMENT circle EMPTY>
+  <!ATTLIST rect x CDATA #IMPLIED>
+  <!ATTLIST rect y CDATA #IMPLIED>
+]>
+<svg width="100" height="100">
+  <rect x="10" y="20"/>
+  <circle cx="50" cy="50"/>
+  <rect x="70" y="80"/>
+</svg>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE test [
+  <!ENTITY % param1 "value1">
+  <!ENTITY % param2 "&#x25;param1;&#x25;param1;">
+  <!ELEMENT test (#PCDATA)>
+]>
+<test>
+  &#60;&#62;&#34;&#39;&#38;
+  Mixed content with &#x41;&#x42;&#x43; entities
+</test>
+```

@@ -1,0 +1,220 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+<!ELEMENT root (item+)>
+<!ELEMENT item (id, data)>
+<!ELEMENT id (#PCDATA)>
+<!ELEMENT data (#PCDATA|nested)*>
+<!ELEMENT nested (value*)>
+<!ELEMENT value (#PCDATA)>
+<!ATTLIST root version CDATA #REQUIRED xmlns CDATA #IMPLIED>
+<!ATTLIST item type (A|B|C|D) #REQUIRED priority (1|2|3) "2">
+<!ATTLIST nested count CDATA #IMPLIED>
+<!ENTITY myent "test_value_with_special_chars_&lt;&gt;&quot;">
+]>
+<root version="2.0" xmlns="http://test.org/ns">
+  <item type="A" priority="1">
+    <id>001</id>
+    <data>Content with &myent;</data>
+  </item>
+  <item type="B">
+    <id>002</id>
+    <data>Mixed <nested count="3"><value>v1</value><value>v2</value></nested> content</data>
+  </item>
+</root>
+```
+
+```xml
+<!DOCTYPE schema [
+<!ELEMENT schema (element*, attribute*, group*)>
+<!ELEMENT element (annotation?, restriction?)>
+<!ELEMENT annotation (#PCDATA)>
+<!ELEMENT restriction (enumeration+)>
+<!ELEMENT enumeration EMPTY>
+<!ELEMENT attribute (annotation?)>
+<!ELEMENT group (element*)>
+<!ATTLIST element name CDATA #REQUIRED type CDATA #IMPLIED minOccurs CDATA "1" maxOccurs CDATA "1">
+<!ATTLIST attribute name CDATA #REQUIRED use (required|optional|prohibited) "optional">
+<!ATTLIST enumeration value CDATA #REQUIRED xml:lang CDATA #IMPLIED>
+<!ATTLIST restriction base CDATA #REQUIRED pattern CDATA #IMPLIED>
+]>
+<schema>
+  <element name="person" type="PersonType" minOccurs="0" maxOccurs="unbounded">
+    <annotation>A person element</annotation>
+  </element>
+  <attribute name="id" use="required">
+    <annotation>Unique identifier</annotation>
+  </attribute>
+  <element name="status" type="string">
+    <restriction base="string">
+      <enumeration value="active" xml:lang="en"/>
+      <enumeration value="inactive" xml:lang="en"/>
+      <enumeration value="pending" xml:lang="en"/>
+    </restriction>
+  </element>
+  <group name="contact">
+    <element name="email" type="string"/>
+    <element name="phone" type="string"/>
+  </group>
+</schema>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE feed [
+<!ELEMENT feed (title, link, updated, entry*)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT link EMPTY>
+<!ELEMENT updated (#PCDATA)>
+<!ELEMENT entry (id, title, published, author?, summary, content?)>
+<!ELEMENT id (#PCDATA)>
+<!ELEMENT published (#PCDATA)>
+<!ELEMENT author (name, email?)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT email (#PCDATA)>
+<!ELEMENT summary (#PCDATA)>
+<!ELEMENT content (#PCDATA|code)*>
+<!ELEMENT code (#PCDATA)>
+<!ATTLIST feed xmlns CDATA #FIXED "http://www.w3.org/2005/Atom" version CDATA "1.0">
+<!ATTLIST link rel (alternate|self|via) #REQUIRED href CDATA #REQUIRED type CDATA #IMPLIED>
+<!ATTLIST content type (text|html|xhtml) "text">
+<!ATTLIST author role (author|editor|contributor) "author">
+]>
+<feed xmlns="http://www.w3.org/2005/Atom" version="1.0">
+  <title>Example Feed</title>
+  <link rel="alternate" href="http://example.org/" type="text/html"/>
+  <link rel="self" href="http://example.org/feed.xml" type="application/atom+xml"/>
+  <updated>2024-01-15T12:00:00Z</updated>
+  <entry>
+    <id>urn:uuid:entry-001</id>
+    <title>First Entry</title>
+    <published>2024-01-15T10:00:00Z</published>
+    <author role="author">
+      <name>John Doe</name>
+      <email>john@example.org</email>
+    </author>
+    <summary>A summary of the first entry</summary>
+    <content type="html">Content with <code>embedded code</code> block</content>
+  </entry>
+</feed>
+```
+
+```xml
+<!DOCTYPE manifest [
+<!ELEMENT manifest (application, permission*, uses-feature*)>
+<!ELEMENT application (activity+, service*, receiver*)>
+<!ELEMENT activity (intent-filter*)>
+<!ELEMENT intent-filter (action, category*, data?)>
+<!ELEMENT action EMPTY>
+<!ELEMENT category EMPTY>
+<!ELEMENT data EMPTY>
+<!ELEMENT service (intent-filter*)>
+<!ELEMENT receiver (intent-filter*)>
+<!ELEMENT permission EMPTY>
+<!ELEMENT uses-feature EMPTY>
+<!ATTLIST manifest package CDATA #REQUIRED versionCode CDATA #REQUIRED versionName CDATA #REQUIRED>
+<!ATTLIST application label CDATA #REQUIRED icon CDATA #IMPLIED theme CDATA #IMPLIED>
+<!ATTLIST activity name CDATA #REQUIRED label CDATA #IMPLIED exported (true|false) "false">
+<!ATTLIST service name CDATA #REQUIRED exported (true|false) "false">
+<!ATTLIST receiver name CDATA #REQUIRED enabled (true|false) "true">
+<!ATTLIST action name CDATA #REQUIRED>
+<!ATTLIST category name CDATA #REQUIRED>
+<!ATTLIST data mimeType CDATA #IMPLIED scheme CDATA #IMPLIED>
+<!ATTLIST permission name CDATA #REQUIRED protectionLevel (normal|dangerous|signature) "normal">
+<!ATTLIST uses-feature name CDATA #REQUIRED required (true|false) "true">
+]>
+<manifest package="com.example.app" versionCode="1" versionName="1.0">
+  <application label="My Application" icon="@drawable/icon" theme="@style/AppTheme">
+    <activity name=".MainActivity" label="Main Activity" exported="true">
+      <intent-filter>
+        <action name="android.intent.action.MAIN"/>
+        <category name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+    </activity>
+    <service name=".MyService" exported="false">
+      <intent-filter>
+        <action name="com.example.START_SERVICE"/>
+      </intent-filter>
+    </service>
+    <receiver name=".BootReceiver" enabled="true">
+      <intent-filter>
+        <action name="android.intent.action.BOOT_COMPLETED"/>
+      </intent-filter>
+    </receiver>
+  </application>
+  <permission name="com.example.CUSTOM_PERMISSION" protectionLevel="signature"/>
+  <uses-feature name="android.hardware.camera" required="false"/>
+</manifest>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE library [
+<!ELEMENT library (shelf+)>
+<!ELEMENT shelf (book*, magazine*, newspaper*)>
+<!ELEMENT book (title, author+, isbn, pages, category+, availability)>
+<!ELEMENT magazine (title, issue, publication_date, pages)>
+<!ELEMENT newspaper (title, date, sections)>
+<!ELEMENT author (name, birth_year?)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT birth_year (#PCDATA)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT isbn (#PCDATA)>
+<!ELEMENT pages (#PCDATA)>
+<!ELEMENT category (#PCDATA)>
+<!ELEMENT availability EMPTY>
+<!ELEMENT issue (#PCDATA)>
+<!ELEMENT publication_date (#PCDATA)>
+<!ELEMENT date (#PCDATA)>
+<!ELEMENT sections (section+)>
+<!ELEMENT section (headline, content?)>
+<!ELEMENT headline (#PCDATA)>
+<!ELEMENT content (#PCDATA)>
+<!ATTLIST shelf location CDATA #REQUIRED section (fiction|nonfiction|reference) #IMPLIED>
+<!ATTLIST book language (en|fr|de|es) "en" edition CDATA #IMPLIED>
+<!ATTLIST magazine language (en|fr|de) "en" volume CDATA #IMPLIED>
+<!ATTLIST newspaper language (en|fr|de) "en">
+<!ATTLIST availability status (available|checked_out|reserved) "available" check_out_date CDATA #IMPLIED>
+<!ATTLIST section type (local|international|sports|business) "local">
+]>
+<library>
+  <shelf location="A1" section="fiction">
+    <book language="en" edition="2nd">
+      <title>The Great Novel</title>
+      <author>
+        <name>Jane Smith</name>
+        <birth_year>1975</birth_year>
+      </author>
+      <author>
+        <name>John Writer</name>
+      </author>
+      <isbn>978-0-123456-78-9</isbn>
+      <pages>450</pages>
+      <category>Literary Fiction</category>
+      <category>Drama</category>
+      <availability status="available"/>
+    </book>
+  </shelf>
+  <shelf location="B2" section="reference">
+    <magazine language="en" volume="45">
+      <title>Tech Weekly</title>
+      <issue>Issue 12</issue>
+      <publication_date>2024-01-10</publication_date>
+      <pages>120</pages>
+    </magazine>
+    <newspaper language="en">
+      <title>Daily News</title>
+      <date>2024-01-15</date>
+      <sections>
+        <section type="local">
+          <headline>City Council Meeting</headline>
+          <content>Local government discusses new policies</content>
+        </section>
+        <section type="international">
+          <headline>Global Updates</headline>
+        </section>
+      </sections>
+    </newspaper>
+  </shelf>
+</library>
+```

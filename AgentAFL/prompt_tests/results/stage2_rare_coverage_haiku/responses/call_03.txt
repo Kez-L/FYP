@@ -1,72 +1,94 @@
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE root [
-<!ELEMENT root (item+)>
-<!ELEMENT item (#PCDATA)>
-<!ATTLIST item id ID #REQUIRED type CDATA #IMPLIED>
-]>
-<root>
-  <item id="i1" type="a">content1</item>
-  <item id="i2" type="b">content2</item>
-  <item id="i3">content3</item>
-</root>
-```
-
-```xml
 <?xml version="1.0"?>
-<root xmlns="http://default.ns" xmlns:x="http://x.ns" xmlns:y="http://y.ns">
-  <x:elem1 x:attr1="val1">
-    <y:nested y:attr2="val2" xmlns:z="http://z.ns" z:deep="val3">
-      <![CDATA[raw data & <symbols>]]>
-    </y:nested>
-  </x:elem1>
-  <x:elem2/>
-</root>
-```
-
-```xml
-<?xml version="1.0"?>
-<doc>
-  <a x="" y="" z="" aa="" ab="" ac="" ad="" ae="" af="" ag="" ah="" ai="" aj="" ak="" al="" am="" an="" ao="" ap="">
-    <b p1="1" p2="2" p3="3" p4="4" p5="5" p6="6" p7="7" p8="8" p9="9" p10="10" p11="11" p12="12"/>
-    <c q1="" q2="" q3="" q4="" q5="" q6="" q7="" q8=""/>
-  </a>
-  <d r1="v" r2="v" r3="v" r4="v" r5="v"/>
+<doc xmlns:a="urn:a" xmlns:b="urn:b" xmlns:c="urn:c" xmlns:d="urn:d">
+  <root a:attr1="val1" b:attr2="val2" c:attr3="val3" d:attr4="val4">
+    <elem1 a:id="id1" b:ref="ref1" c:type="type1"/>
+    <elem2 a:id="id2" b:ref="ref2" c:type="type2"/>
+    <elem3 a:id="id3" b:ref="ref3" c:type="type3"/>
+  </root>
 </doc>
 ```
 
 ```xml
-<?xml version="1.0"?>
+<!DOCTYPE root [
+<!ELEMENT root (item)*>
+<!ELEMENT item (value, attr1, attr2, attr3)>
+<!ELEMENT value (#PCDATA)>
+<!ELEMENT attr1 (#PCDATA)>
+<!ELEMENT attr2 (#PCDATA)>
+<!ELEMENT attr3 (#PCDATA)>
+<!ATTLIST item id ID #REQUIRED name CDATA #REQUIRED>
+]>
 <root>
-  <malformed>
-    <unclosed>
-      <deeply>
-        <nested>content</nested>
-      </deeply>
-    </unclosed>
-    <self_close/>
-    <empty></empty>
-    <ws>   </ws>
-    <special attr="&lt;tag&gt;">escaped &amp; quoted &quot;text&quot;</special>
-  </malformed>
+  <item id="i1" name="first">
+    <value>content1</value>
+    <attr1>a1val</attr1>
+    <attr2>a2val</attr2>
+    <attr3>a3val</attr3>
+  </item>
+  <item id="i2" name="second">
+    <value>content2</value>
+    <attr1>b1val</attr1>
+    <attr2>b2val</attr2>
+    <attr3>b3val</attr3>
+  </item>
 </root>
 ```
 
 ```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <database host="localhost" port="5432" user="admin" password="secret" timeout="30">
+    <connection poolsize="100" maxwait="5000"/>
+    <credentials encrypted="true" hash="md5"/>
+  </database>
+  <logging level="debug" format="json">
+    <appender type="file" path="/var/log/app.log"/>
+    <appender type="console" color="true"/>
+  </logging>
+  <security>
+    <ssl enabled="true" protocol="TLSv1.2" cipher="AES256"/>
+    <cors origin="*" methods="GET,POST,PUT,DELETE" credentials="true"/>
+  </security>
+</config>
+```
+
+```xml
 <?xml version="1.0"?>
-<!DOCTYPE mixed [
-<!ENTITY ent1 "value1">
-<!ENTITY ent2 "value2">
-]>
-<mixed>
-  <section1 id="s1" class="cls" data-x="x1" data-y="y1" data-z="z1">
-    Text node with entity &ent1;
-    <subsection>
-      &ent2;
-      <leaf a="1" b="2" c="3" d="4" e="5"/>
-    </subsection>
-  </section1>
-  <section2><!-- comment -->content</section2>
-  <section3 attr1="v1" attr2="v2" attr3="v3" attr4="v4" attr5="v5" attr6="v6"/>
-</mixed>
+<svgroot xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100">
+  <defs>
+    <style type="text/css">
+      .fill1 { fill: red; }
+      .fill2 { fill: blue; }
+    </style>
+  </defs>
+  <g id="group1">
+    <circle cx="25" cy="25" r="20" class="fill1"/>
+    <rect x="50" y="10" width="40" height="30" class="fill2"/>
+    <path d="M 10 80 L 50 60 L 90 80" stroke="black" fill="none"/>
+  </g>
+  <use xlink:href="#group1" x="0" y="0" opacity="0.5"/>
+</svgroot>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<catalog>
+  <book id="bk101" lang="en" edition="1">
+    <author prefix="Dr.">Gambardella, Matthew</author>
+    <title>XML Developer's Handbook</title>
+    <genre category="Computer">Technology</genre>
+    <price currency="USD">44.95</price>
+    <publish_date>2000-10-01</publish_date>
+    <description>An in-depth look at creating applications with XML.</description>
+  </book>
+  <book id="bk102" lang="fr" edition="2">
+    <author prefix="Prof.">Ralls, Kim</author>
+    <title>Midnight Rain</title>
+    <genre category="Fantasy">Fiction</genre>
+    <price currency="EUR">5.95</price>
+    <publish_date>2000-12-16</publish_date>
+    <description>A former architect battles corporate zombies.</description>
+  </book>
+</catalog>
 ```

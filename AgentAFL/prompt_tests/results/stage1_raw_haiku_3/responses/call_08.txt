@@ -1,0 +1,98 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA|grandchild)*>
+  <!ELEMENT grandchild EMPTY>
+  <!ATTLIST grandchild id ID #REQUIRED>
+  <!ENTITY % param "value">
+  <!NOTATION notation SYSTEM "test.exe">
+]>
+<root>
+  <child attr="test&amp;value">
+    <grandchild id="g1"/>
+  </child>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (product+)>
+  <!ELEMENT product (name, price, quantity?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT quantity (#PCDATA)>
+  <!ATTLIST product sku CDATA #REQUIRED>
+]>
+<catalog>
+  <product sku="SKU001">
+    <name>Widget&lt;Script&gt;</name>
+    <price>9.99</price>
+    <quantity>100</quantity>
+  </product>
+  <product sku="SKU002">
+    <name>Gadget</name>
+    <price>19.99</price>
+  </product>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE data [
+  <!ENTITY % internal "&#60;&#115;&#99;&#114;&#105;&#112;&#116;&#62;">
+  <!ELEMENT data (item)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item type (A|B|C) #IMPLIED>
+]>
+<data>
+  <item type="A">Test&#38;#60;tag&#62;</item>
+  <item type="B"/>
+</data>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE response [
+  <!ELEMENT response (status, message, payload*)>
+  <!ELEMENT status (#PCDATA)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT payload (field+)>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST field name CDATA #REQUIRED>
+  <!ATTLIST payload format CDATA #REQUIRED>
+  <!ENTITY success "OK">
+]>
+<response>
+  <status>&success;</status>
+  <message>Process complete</message>
+  <payload format="json">
+    <field name="result">200</field>
+    <field name="trace">0x&#37;&#37;&#37;x</field>
+  </payload>
+</response>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ELEMENT config (section+)>
+  <!ELEMENT section (option*)>
+  <!ELEMENT option (#PCDATA)>
+  <!ATTLIST section id CDATA #REQUIRED>
+  <!ATTLIST option key CDATA #REQUIRED>
+  <!ATTLIST option default CDATA #IMPLIED>
+  <!ENTITY % external SYSTEM "file:///etc/passwd">
+]>
+<config>
+  <section id="general">
+    <option key="debug" default="false">true</option>
+    <option key="timeout">3000</option>
+  </section>
+  <section id="network">
+    <option key="host">localhost</option>
+    <option key="port">8080</option>
+  </section>
+</config>
+```

@@ -1,0 +1,66 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item id ID #REQUIRED>
+  <!ENTITY intern "internal_value">
+]>
+<root>
+  <item id="id1">&intern;</item>
+  <item id="id2">text</item>
+</root>
+```
+
+```xml
+<!DOCTYPE mixed [
+  <!ENTITY % param1 "value1">
+  <!ENTITY % param2 "%param1;">
+  <!ELEMENT mixed ANY>
+]>
+<mixed attr="%param1;">
+  content
+</mixed>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE nested [
+  <!ENTITY &#34; "quote">
+  <!ENTITY &#60; "less">
+  <!ENTITY &#62; "greater">
+  <!ENTITY combo "&#34;&#60;&#62;">
+]>
+<nested>
+  <element>&combo;</element>
+</nested>
+```
+
+```xml
+<!DOCTYPE attributes [
+  <!ELEMENT test (data*)>
+  <!ELEMENT data EMPTY>
+  <!ATTLIST data name CDATA #REQUIRED value CDATA #IMPLIED>
+]>
+<test>
+  <data name="first" value="1"/>
+  <data name="second"/>
+  <data name="third" value="3&lt;script&gt;"/>
+</test>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY graphic SYSTEM "file.jpg" NDATA jpeg>
+  <!ELEMENT document (para|reference)*>
+  <!ELEMENT para (#PCDATA)>
+  <!ELEMENT reference EMPTY>
+  <!ATTLIST reference target ENTITY #REQUIRED>
+]>
+<document>
+  <para>Some text here</para>
+  <reference target="graphic"/>
+</document>
+```

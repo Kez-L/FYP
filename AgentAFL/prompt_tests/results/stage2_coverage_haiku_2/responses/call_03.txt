@@ -1,0 +1,122 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+<!ELEMENT root (a+)>
+<!ELEMENT a (#PCDATA|b)*>
+<!ELEMENT b EMPTY>
+<!ATTLIST a x CDATA #IMPLIED y NMTOKEN #REQUIRED>
+<!ATTLIST b z ID #REQUIRED>
+<!ENTITY ent "value">
+]>
+<root>
+  <a x="test" y="tok1" z:attr="val">text&ent;</a>
+  <a x="test2" y="tok2"><b/></a>
+</root>
+```
+
+```xml
+<!DOCTYPE html [
+<!ELEMENT html (head, body)>
+<!ELEMENT head (title, meta*)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT meta EMPTY>
+<!ELEMENT body (div+)>
+<!ELEMENT div (p|span)*>
+<!ELEMENT p (#PCDATA|span)*>
+<!ELEMENT span (#PCDATA)>
+<!ATTLIST meta name CDATA #REQUIRED content CDATA #FIXED "utf-8">
+<!ATTLIST div class NMTOKENS #IMPLIED id ID #IMPLIED>
+<!ATTLIST span xmlns:custom CDATA #IMPLIED>
+]>
+<html>
+  <head>
+    <title>Test</title>
+    <meta name="charset" content="utf-8"/>
+  </head>
+  <body>
+    <div id="d1" class="main secondary">
+      <p>Paragraph <span xmlns:custom="http://example.com">with span</span></p>
+    </div>
+  </body>
+</html>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE data [
+<!ELEMENT data (record*)>
+<!ELEMENT record (field+)>
+<!ELEMENT field (subfield)*>
+<!ATTLIST record uid CDATA #REQUIRED timestamp CDATA #IMPLIED>
+<!ATTLIST field type (int|str|float|bool) "str">
+<!ENTITY % content "(#PCDATA)">
+<!ELEMENT subfield %content;>
+]>
+<data>
+  <record uid="rec001" timestamp="2024-01-01T00:00:00Z">
+    <field type="str">
+      <subfield>value1</subfield>
+    </field>
+    <field type="int">
+      <subfield>42</subfield>
+    </field>
+  </record>
+</data>
+```
+
+```xml
+<!DOCTYPE svg [
+<!ELEMENT svg (rect|circle|path)*>
+<!ELEMENT rect EMPTY>
+<!ELEMENT circle EMPTY>
+<!ELEMENT path EMPTY>
+<!ATTLIST svg viewBox CDATA #REQUIRED xmlns CDATA #FIXED "http://www.w3.org/2000/svg">
+<!ATTLIST rect x CDATA #REQUIRED y CDATA #REQUIRED width CDATA #REQUIRED height CDATA #REQUIRED fill CDATA #IMPLIED stroke CDATA #IMPLIED>
+<!ATTLIST circle cx CDATA #REQUIRED cy CDATA #REQUIRED r CDATA #REQUIRED>
+<!ATTLIST path d CDATA #REQUIRED>
+]>
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect x="10" y="10" width="30" height="30" fill="red" stroke="black"/>
+  <circle cx="70" cy="70" r="15"/>
+  <path d="M 10 80 L 90 80"/>
+</svg>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE manifest [
+<!ELEMENT manifest (application, permissions, features)>
+<!ELEMENT application (activity+)>
+<!ELEMENT activity (intent-filter*)>
+<!ELEMENT intent-filter (action|category)*>
+<!ELEMENT action EMPTY>
+<!ELEMENT category EMPTY>
+<!ELEMENT permissions (permission*)>
+<!ELEMENT permission EMPTY>
+<!ELEMENT features (feature*)>
+<!ELEMENT feature EMPTY>
+<!ATTLIST manifest package CDATA #REQUIRED versionCode CDATA #REQUIRED versionName CDATA #REQUIRED>
+<!ATTLIST application label CDATA #REQUIRED icon CDATA #IMPLIED>
+<!ATTLIST activity name CDATA #REQUIRED>
+<!ATTLIST action name CDATA #REQUIRED>
+<!ATTLIST category name CDATA #REQUIRED>
+<!ATTLIST permission name CDATA #REQUIRED>
+<!ATTLIST feature name CDATA #REQUIRED required (true|false) "false">
+]>
+<manifest package="com.example.app" versionCode="1" versionName="1.0">
+  <application label="MyApp" icon="@drawable/ic_launcher">
+    <activity name=".MainActivity">
+      <intent-filter>
+        <action name="android.intent.action.MAIN"/>
+        <category name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+    </activity>
+  </application>
+  <permissions>
+    <permission name="android.permission.INTERNET"/>
+  </permissions>
+  <features>
+    <feature name="android.hardware.camera" required="false"/>
+  </features>
+</manifest>
+```

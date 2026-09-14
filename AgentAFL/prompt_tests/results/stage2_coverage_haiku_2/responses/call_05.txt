@@ -1,0 +1,167 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+<!ELEMENT root (item)*>
+<!ELEMENT item (#PCDATA)>
+<!ATTLIST item id ID #REQUIRED ref IDREF #IMPLIED type (a|b|c) #REQUIRED>
+<!ENTITY myent "entity_value">
+<!NOTATION notation1 PUBLIC "public_id">
+]>
+<root>
+  <item id="i1" type="a">First &myent;</item>
+  <item id="i2" ref="i1" type="b">Second</item>
+  <item id="i3" type="c">Third</item>
+</root>
+```
+
+```xml
+<!DOCTYPE catalog [
+<!ELEMENT catalog (product+)>
+<!ELEMENT product (name, price, quantity)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT price (#PCDATA)>
+<!ELEMENT quantity (#PCDATA)>
+<!ATTLIST product sku CDATA #REQUIRED inStock (yes|no) "yes" category (electronics|clothing|books) #REQUIRED>
+<!ELEMENT catalog (product+, metadata?)>
+<!ELEMENT metadata (lastupdate, version)>
+<!ELEMENT lastupdate (#PCDATA)>
+<!ELEMENT version (#PCDATA)>
+]>
+<catalog>
+  <product sku="SKU001" inStock="yes" category="electronics">
+    <name>Widget</name>
+    <price>29.99</price>
+    <quantity>100</quantity>
+  </product>
+  <product sku="SKU002" category="books" inStock="no">
+    <name>Manual</name>
+    <price>15.50</price>
+    <quantity>0</quantity>
+  </product>
+  <metadata>
+    <lastupdate>2024-01-15</lastupdate>
+    <version>2.1</version>
+  </metadata>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE feed [
+<!ELEMENT feed (entry*, author?)>
+<!ELEMENT entry (title, link, updated, summary?)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT link EMPTY>
+<!ELEMENT updated (#PCDATA)>
+<!ELEMENT summary (#PCDATA)>
+<!ELEMENT author (name, email?)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT email (#PCDATA)>
+<!ATTLIST feed xmlns CDATA #FIXED "http://www.w3.org/2005/Atom" version CDATA "1.0">
+<!ATTLIST link href CDATA #REQUIRED rel (alternate|self|next) "alternate">
+<!ATTLIST entry published CDATA #IMPLIED>
+]>
+<feed xmlns="http://www.w3.org/2005/Atom" version="1.0">
+  <entry published="2024-01-10">
+    <title>First Post</title>
+    <link href="http://example.com/1" rel="alternate"/>
+    <updated>2024-01-10T12:00:00Z</updated>
+    <summary>A brief summary</summary>
+  </entry>
+  <entry>
+    <title>Second Post</title>
+    <link href="http://example.com/2" rel="self"/>
+    <updated>2024-01-11T08:30:00Z</updated>
+  </entry>
+  <author>
+    <name>John Doe</name>
+    <email>john@example.com</email>
+  </author>
+</feed>
+```
+
+```xml
+<!DOCTYPE schema [
+<!ELEMENT schema (element|attribute|complexType)*>
+<!ELEMENT element (annotation?, restriction?)>
+<!ELEMENT attribute (annotation?)>
+<!ELEMENT complexType (sequence?, annotation?)>
+<!ELEMENT sequence (element+)>
+<!ELEMENT annotation (documentation)>
+<!ELEMENT documentation (#PCDATA)>
+<!ELEMENT restriction (enumeration*)>
+<!ELEMENT enumeration EMPTY>
+<!ATTLIST element name CDATA #REQUIRED type CDATA #IMPLIED minOccurs CDATA #IMPLIED maxOccurs CDATA #IMPLIED>
+<!ATTLIST attribute name CDATA #REQUIRED type CDATA #REQUIRED use (required|optional) "optional">
+<!ATTLIST complexType name CDATA #REQUIRED>
+<!ATTLIST enumeration value CDATA #REQUIRED>
+<!ATTLIST restriction base CDATA #REQUIRED>
+]>
+<schema>
+  <complexType name="PersonType">
+    <sequence>
+      <element name="firstname" type="string" minOccurs="1"/>
+      <element name="lastname" type="string" minOccurs="1"/>
+      <element name="age" type="integer" minOccurs="0" maxOccurs="1"/>
+    </sequence>
+  </complexType>
+  <element name="status" type="string">
+    <restriction base="string">
+      <enumeration value="active"/>
+      <enumeration value="inactive"/>
+      <enumeration value="pending"/>
+    </restriction>
+  </element>
+  <attribute name="id" type="ID" use="required">
+    <annotation>
+      <documentation>Unique identifier</documentation>
+    </annotation>
+  </attribute>
+</schema>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE memo [
+<!ELEMENT memo (header, body, footer?)>
+<!ELEMENT header (to, from, date, subject)>
+<!ELEMENT body (paragraph|section)+>
+<!ELEMENT paragraph (#PCDATA|emphasis|strong)*>
+<!ELEMENT section (title, paragraph+)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT emphasis (#PCDATA)>
+<!ELEMENT strong (#PCDATA)>
+<!ELEMENT to (#PCDATA)>
+<!ELEMENT from (#PCDATA)>
+<!ELEMENT date (#PCDATA)>
+<!ELEMENT subject (#PCDATA)>
+<!ELEMENT footer (signature, stamp?)>
+<!ELEMENT signature (#PCDATA)>
+<!ELEMENT stamp EMPTY>
+<!ATTLIST memo priority (high|medium|low) "medium" classification (public|confidential|restricted) #REQUIRED>
+<!ATTLIST stamp date CDATA #REQUIRED>
+]>
+<memo priority="high" classification="confidential">
+  <header>
+    <to>Team Lead</to>
+    <from>Assistant</from>
+    <date>2024-01-15</date>
+    <subject>Quarterly Review</subject>
+  </header>
+  <body>
+    <paragraph>This is an important update regarding our <emphasis>project status</emphasis>.</paragraph>
+    <section>
+      <title>Accomplishments</title>
+      <paragraph>We have completed <strong>three major milestones</strong> this quarter.</paragraph>
+    </section>
+    <section>
+      <title>Next Steps</title>
+      <paragraph>Moving forward, we will focus on optimization and testing phases.</paragraph>
+    </section>
+  </body>
+  <footer>
+    <signature>Best regards</signature>
+    <stamp date="2024-01-15"/>
+  </footer>
+</memo>
+```

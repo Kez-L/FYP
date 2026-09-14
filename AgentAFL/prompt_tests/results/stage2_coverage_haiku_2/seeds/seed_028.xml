@@ -1,0 +1,37 @@
+<!DOCTYPE schema [
+<!ELEMENT schema (element|attribute|complexType)*>
+<!ELEMENT element (annotation?, restriction?)>
+<!ELEMENT attribute (annotation?)>
+<!ELEMENT complexType (sequence?, annotation?)>
+<!ELEMENT sequence (element+)>
+<!ELEMENT annotation (documentation)>
+<!ELEMENT documentation (#PCDATA)>
+<!ELEMENT restriction (enumeration*)>
+<!ELEMENT enumeration EMPTY>
+<!ATTLIST element name CDATA #REQUIRED type CDATA #IMPLIED minOccurs CDATA #IMPLIED maxOccurs CDATA #IMPLIED>
+<!ATTLIST attribute name CDATA #REQUIRED type CDATA #REQUIRED use (required|optional) "optional">
+<!ATTLIST complexType name CDATA #REQUIRED>
+<!ATTLIST enumeration value CDATA #REQUIRED>
+<!ATTLIST restriction base CDATA #REQUIRED>
+]>
+<schema>
+  <complexType name="PersonType">
+    <sequence>
+      <element name="firstname" type="string" minOccurs="1"/>
+      <element name="lastname" type="string" minOccurs="1"/>
+      <element name="age" type="integer" minOccurs="0" maxOccurs="1"/>
+    </sequence>
+  </complexType>
+  <element name="status" type="string">
+    <restriction base="string">
+      <enumeration value="active"/>
+      <enumeration value="inactive"/>
+      <enumeration value="pending"/>
+    </restriction>
+  </element>
+  <attribute name="id" type="ID" use="required">
+    <annotation>
+      <documentation>Unique identifier</documentation>
+    </annotation>
+  </attribute>
+</schema>

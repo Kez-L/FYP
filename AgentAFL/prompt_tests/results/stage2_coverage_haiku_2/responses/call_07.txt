@@ -1,0 +1,148 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+<!ELEMENT root (item+)>
+<!ELEMENT item (name, value)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT value (#PCDATA)>
+<!ATTLIST item id ID #REQUIRED type (int|string|bool) #REQUIRED xmlns:custom CDATA #IMPLIED>
+<!ENTITY myent "replacement_text">
+<!NOTATION gif PUBLIC "image/gif">
+]>
+<root>
+  <item id="i1" type="string">
+    <name>test&myent;</name>
+    <value>data</value>
+  </item>
+  <item id="i2" type="int" xmlns:custom="http://custom.ns">
+    <name>nested</name>
+    <value>123</value>
+  </item>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+<!ELEMENT config (section*)>
+<!ELEMENT section (param+)>
+<!ELEMENT param EMPTY>
+<!ATTLIST section name CDATA #REQUIRED enabled (yes|no) "yes">
+<!ATTLIST param key ID #REQUIRED value CDATA #REQUIRED default CDATA #IMPLIED>
+<!ELEMENT metadata (created, modified)>
+<!ELEMENT created (#PCDATA)>
+<!ELEMENT modified (#PCDATA)>
+]>
+<config>
+  <section name="database" enabled="yes">
+    <param key="host" value="localhost" default="127.0.0.1"/>
+    <param key="port" value="5432"/>
+    <param key="user" value="admin"/>
+  </section>
+  <section name="logging" enabled="no">
+    <param key="level" value="INFO"/>
+    <param key="file" value="/var/log/app.log"/>
+  </section>
+</config>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html [
+<!ELEMENT html (head, body)>
+<!ELEMENT head (title, meta*)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT meta EMPTY>
+<!ELEMENT body (div+)>
+<!ELEMENT div (p|span|ul)*>
+<!ELEMENT p (#PCDATA|span)*>
+<!ELEMENT span (#PCDATA)>
+<!ELEMENT ul (li+)>
+<!ELEMENT li (#PCDATA)>
+<!ATTLIST html lang CDATA #REQUIRED>
+<!ATTLIST meta name CDATA #REQUIRED content CDATA #REQUIRED>
+<!ATTLIST div class CDATA #IMPLIED id CDATA #IMPLIED>
+]>
+<html lang="en">
+  <head>
+    <title>Test Document</title>
+    <meta name="charset" content="UTF-8"/>
+    <meta name="viewport" content="width=device-width"/>
+  </head>
+  <body>
+    <div class="container" id="main">
+      <p>Hello <span>world</span></p>
+      <ul>
+        <li>Item 1</li>
+        <li>Item 2</li>
+      </ul>
+    </div>
+  </body>
+</html>
+```
+
+```xml
+<!DOCTYPE message [
+<!ELEMENT message (header, payload, signature?)>
+<!ELEMENT header (from, to, timestamp)>
+<!ELEMENT from (#PCDATA)>
+<!ELEMENT to (#PCDATA)>
+<!ELEMENT timestamp (#PCDATA)>
+<!ELEMENT payload (text|binary)*>
+<!ELEMENT text (#PCDATA)>
+<!ELEMENT binary EMPTY>
+<!ELEMENT signature (#PCDATA)>
+<!ATTLIST message version CDATA #FIXED "1.0" id CDATA #REQUIRED>
+<!ATTLIST header priority (high|medium|low) "medium">
+<!ATTLIST binary encoding (base64|hex) "base64" size CDATA #REQUIRED>
+]>
+<message version="1.0" id="msg-12345">
+  <header priority="high">
+    <from>sender@example.com</from>
+    <to>recipient@example.com</to>
+    <timestamp>2024-01-15T10:30:00Z</timestamp>
+  </header>
+  <payload>
+    <text>Important message content</text>
+    <binary encoding="base64" size="1024"/>
+  </payload>
+  <signature>ABCD1234EFGH5678</signature>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+<!ELEMENT catalog (product+, category+)>
+<!ELEMENT product (name, description, price, stock)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT description (#PCDATA)>
+<!ELEMENT price (#PCDATA)>
+<!ELEMENT stock (#PCDATA)>
+<!ELEMENT category (label, subcategory*)>
+<!ELEMENT label (#PCDATA)>
+<!ELEMENT subcategory (#PCDATA)>
+<!ATTLIST product sku ID #REQUIRED category IDREF #REQUIRED available (true|false) "true">
+<!ATTLIST category catid ID #REQUIRED parent IDREF #IMPLIED>
+<!ATTLIST price currency CDATA #REQUIRED>
+]>
+<catalog>
+  <product sku="PROD001" category="ELEC" available="true">
+    <name>Laptop</name>
+    <description>High performance laptop</description>
+    <price currency="USD">999.99</price>
+    <stock>15</stock>
+  </product>
+  <product sku="PROD002" category="ELEC" available="false">
+    <name>Mouse</name>
+    <description>Wireless mouse</description>
+    <price currency="USD">29.99</price>
+    <stock>0</stock>
+  </product>
+  <category catid="ELEC">
+    <label>Electronics</label>
+    <subcategory>Computers</subcategory>
+    <subcategory>Accessories</subcategory>
+  </category>
+</catalog>
+```

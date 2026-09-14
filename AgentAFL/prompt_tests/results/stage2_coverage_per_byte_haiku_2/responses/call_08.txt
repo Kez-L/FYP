@@ -1,0 +1,126 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE parent [
+  <!ELEMENT parent (child+)>
+  <!ELEMENT child (#PCDATA | grandchild)*>
+  <!ELEMENT grandchild EMPTY>
+  <!ATTLIST child id ID #REQUIRED ref IDREF #IMPLIED>
+  <!ATTLIST grandchild name CDATA #REQUIRED>
+  <!ENTITY % internal "<!ELEMENT internal (#PCDATA)>">
+  %internal;
+]>
+<parent>
+  <child id="c1">text</child>
+  <child id="c2" ref="c1">
+    <grandchild name="g1"/>
+  </child>
+  <internal>nested</internal>
+</parent>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE data [
+  <!ELEMENT data (record*)>
+  <!ELEMENT record (field*)>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST record type (A|B|C) #REQUIRED count CDATA "0">
+  <!ATTLIST field optional CDATA #IMPLIED>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+]>
+<data>
+  <record type="A" count="5">
+    <field>value1</field>
+    <field optional="yes">value2</field>
+  </record>
+  <record type="B">
+    <field/>
+  </record>
+</data>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (module+, permissions?)>
+  <!ELEMENT module (dependency*, code)>
+  <!ELEMENT dependency (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT permissions (allow|deny)*>
+  <!ELEMENT allow EMPTY>
+  <!ELEMENT deny EMPTY>
+  <!ATTLIST module name CDATA #REQUIRED version CDATA #FIXED "1.0">
+  <!ATTLIST code lang (js|py|cpp) "js">
+  <!ATTLIST allow action CDATA #REQUIRED>
+  <!ATTLIST deny action CDATA #REQUIRED>
+]>
+<manifest>
+  <module name="core" version="1.0">
+    <dependency>stdlib</dependency>
+    <code lang="cpp">int main() {}</code>
+  </module>
+  <module name="utils">
+    <code lang="py">pass</code>
+  </module>
+  <permissions>
+    <allow action="read"/>
+    <deny action="write"/>
+  </permissions>
+</manifest>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (col+)>
+  <!ELEMENT col (#PCDATA)>
+  <!ATTLIST matrix cols CDATA #REQUIRED rows CDATA #REQUIRED>
+  <!ATTLIST col index CDATA #REQUIRED>
+]>
+<matrix rows="3" cols="2">
+  <row>
+    <col index="0">1</col>
+    <col index="1">2</col>
+  </row>
+  <row>
+    <col index="0">3</col>
+    <col index="1">4</col>
+  </row>
+  <row>
+    <col index="0">5</col>
+    <col index="1">6</col>
+  </row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (category+)>
+  <!ELEMENT category (item*)>
+  <!ELEMENT item (title, price, stock?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT stock (#PCDATA)>
+  <!ATTLIST category name CDATA #REQUIRED id ID #REQUIRED>
+  <!ATTLIST item sku CDATA #REQUIRED inStock (yes|no) "yes">
+  <!ATTLIST price currency (USD|EUR|GBP) "USD">
+]>
+<catalog>
+  <category name="books" id="cat1">
+    <item sku="B001" inStock="yes">
+      <title>XML Guide</title>
+      <price currency="USD">29.99</price>
+      <stock>100</stock>
+    </item>
+  </category>
+  <category name="electronics" id="cat2">
+    <item sku="E001">
+      <title>USB Cable</title>
+      <price currency="EUR">5.50</price>
+    </item>
+  </category>
+</catalog>
+```

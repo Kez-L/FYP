@@ -1,0 +1,61 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root attr CDATA #IMPLIED>
+  <!ENTITY internal "test_value">
+]>
+<root attr="&internal;">
+  <child>&internal;</child>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ENTITY % param "&#60;&#33;ELEMENT test EMPTY&#62;">
+  %param;
+]>
+<root>
+  <data>Mixed content with &lt;escaped&gt; brackets</data>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root SYSTEM "http://example.com/root.dtd">
+<root>
+  <element1 attr1="value1" attr2="value2">
+    <nested>text</nested>
+  </element1>
+  <element2/>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns:custom="http://custom.ns">
+  <custom:element>
+    <![CDATA[
+      This is CDATA content with special chars: <>&"'
+      Multi-line text here
+    ]]>
+  </custom:element>
+  <normal>Regular element</normal>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item id ID #REQUIRED>
+  <!NOTATION gif PUBLIC "GIF">
+  <!ENTITY image SYSTEM "img.gif" NDATA gif>
+]>
+<root>
+  <item id="id1">First item &#x41; &#65;</item>
+  <item id="id2">Second &lt;item&gt;</item>
+</root>
+```

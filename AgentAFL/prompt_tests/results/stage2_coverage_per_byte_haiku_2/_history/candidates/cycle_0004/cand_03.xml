@@ -1,0 +1,28 @@
+<!DOCTYPE schema [
+  <!ELEMENT schema (type+, element*)>
+  <!ELEMENT type (restriction | extension)>
+  <!ELEMENT restriction (pattern | length)*>
+  <!ELEMENT pattern EMPTY>
+  <!ELEMENT length EMPTY>
+  <!ELEMENT extension (attribute*)>
+  <!ELEMENT attribute EMPTY>
+  <!ELEMENT element (annotation?)>
+  <!ELEMENT annotation (#PCDATA)>
+  <!ATTLIST type name ID #REQUIRED base CDATA #IMPLIED>
+  <!ATTLIST restriction value CDATA #REQUIRED>
+  <!ATTLIST pattern regex CDATA #REQUIRED>
+  <!ATTLIST length min CDATA #IMPLIED max CDATA #IMPLIED>
+  <!ATTLIST attribute ref CDATA #REQUIRED required (true|false) "false">
+  <!ATTLIST element name CDATA #REQUIRED type CDATA #REQUIRED>
+]>
+<schema>
+  <type name="stringType" base="xs:string">
+    <restriction value="limited">
+      <pattern regex="[a-z]+"/>
+      <length min="1" max="255"/>
+    </restriction>
+  </type>
+  <element name="field1" type="stringType">
+    <annotation>A test field</annotation>
+  </element>
+</schema>

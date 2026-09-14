@@ -32,7 +32,8 @@ Stage 1 arm exactly.
     python3 run_build_context.py --seed-selector rare-coverage       # Stage 2.2 (-> stage2_rare_coverage)
     python3 run_build_context.py --rotate                            # Stage 3 (-> stage3_rotation)
     python3 run_build_context.py --provider openai --no-temperature --rotate
-    python3 run_build_context.py --n-history-failure 0               # no avoid block (good seeds only)
+    python3 run_build_context.py --no-feedback                       # good seeds only (-> stage1_raw_nofeedback)
+    python3 run_build_context.py --seed-selector coverage --no-feedback  # Stage 2, good seeds only
 """
 from __future__ import annotations
 
@@ -122,6 +123,11 @@ def main():
     )
     ap.add_argument("--n-history-failure", type=int, default=2,
                     help="avoid-examples drawn from this batch's own prior seeds (0 disables; PLAN.md default 2)")
+    ap.add_argument("--no-feedback", action="store_true",
+                    help="good seeds only — drop the 'tried before, avoid' block entirely "
+                         "(forces n_history_failure=0, builds no _history/). The auto-derived "
+                         "label gets a '_nofeedback' suffix so it doesn't clash with the "
+                         "feedback-on run.")
     ap.add_argument("--fmt", default="XML document")
     ap.add_argument("--seed-kind", choices=("text", "binary"), default="text")
     ap.add_argument("--fence-lang", default="")
@@ -149,18 +155,28 @@ def main():
     ap.add_argument("--afl-showmap-bin", default="afl-showmap")
     args = ap.parse_args()
 
-    if args.skip_eval and args.n_history_failure > 0:
+    # --no-feedback wins over an explicit --n-history-failure; everything below
+    # reads this local, never args.n_history_failure directly.
+    n_history_failure = 0 if args.no_feedback else args.n_history_failure
+    if args.no_feedback and args.n_history_failure > 0:
+        print("NOTE: --no-feedback overrides --n-history-failure "
+              f"{args.n_history_failure} -> 0 (good seeds only).")
+
+    if args.skip_eval and n_history_failure > 0:
         print("NOTE: --skip-eval means no seed is classified, so the 'tried before, avoid' "
               "block will always be empty (scan_cycle_history needs BAD/NO_COVERAGE statuses).")
 
     if args.label:
         label = args.label
-    elif args.rotate:
-        label = "stage3_rotation"
-    elif args.seed_selector != "default":
-        label = f"stage2_{args.seed_selector.replace('-', '_')}"
     else:
-        label = "stage1_raw"
+        if args.rotate:
+            label = "stage3_rotation"
+        elif args.seed_selector != "default":
+            label = f"stage2_{args.seed_selector.replace('-', '_')}"
+        else:
+            label = "stage1_raw"
+        if args.no_feedback:
+            label += "_nofeedback"
     model = args.model or DEFAULT_MODEL[args.provider]
     tag = args.tag or model_tag(args.provider, model)
     out_dir = args.out or (HERE / "results" / f"{label}_{tag}")
@@ -198,12 +214,13 @@ def main():
             args.n_seeds, args.seeds_per_call,
             asan_hint=not args.no_asan_hint, fence_lang=args.fence_lang,
             seed_kind=args.seed_kind,
-            run_dir=history_dir, n_history_failure=args.n_history_failure,
+            run_dir=history_dir, n_history_failure=n_history_failure,
             closing_instruction=closing,
             seed_selector=seed_selector,
         )
         return {"system": p["system"], "user": p["user"], "meta": {
-            "n_seeds": args.n_seeds, "n_history_failure": args.n_history_failure,
+            "n_seeds": args.n_seeds, "n_history_failure": n_history_failure,
+            "feedback": not args.no_feedback,
             "seed_selector": args.seed_selector,
             "used_history": history_dir is not None,
             "campaign_root": str(args.campaign_root), "instance": args.instance,
@@ -215,14 +232,15 @@ def main():
         out_dir=out_dir, title=f"build_context {label} ({tag})", arm=f"{label}_{tag}",
         calls=args.calls, seeds_per_call=args.seeds_per_call, seed_kind=args.seed_kind,
         fmt=args.fmt, caller=caller, prompt_fn=prompt_fn,
-        uses_history=(args.n_history_failure > 0),
+        uses_history=(n_history_failure > 0),
         do_eval=not args.skip_eval, campaign_root=args.campaign_root,
         instances=[s.strip() for s in args.instances.split(",") if s.strip()],
         target=args.target, target_args=args.target_args.split(),
         showmap_bin=args.afl_showmap_bin, reuse_baseline=args.reuse_baseline,
         extra_summary={
             "model_tag": tag,
-            "n_seeds": args.n_seeds, "n_history_failure": args.n_history_failure,
+            "n_seeds": args.n_seeds, "n_history_failure": n_history_failure,
+            "feedback": not args.no_feedback,
             "seed_selector": args.seed_selector,
             "instance": args.instance,
             "asan_hint": not args.no_asan_hint,

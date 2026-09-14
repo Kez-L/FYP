@@ -1,0 +1,122 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE data [
+  <!ELEMENT data (item+)>
+  <!ELEMENT item (#PCDATA | nested)*>
+  <!ELEMENT nested EMPTY>
+  <!ATTLIST item id ID #REQUIRED type CDATA #IMPLIED>
+  <!ATTLIST nested ref IDREF #REQUIRED>
+  <!ENTITY ent1 "value1">
+  <!ENTITY ent2 "&ent1;-extended">
+]>
+<data>
+  <item id="i1" type="primary">&ent2;</item>
+  <item id="i2"><nested ref="i1"/></item>
+</data>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ELEMENT root (a|b|c)*>
+  <!ELEMENT a (b?)>
+  <!ELEMENT b (c+)>
+  <!ELEMENT c ANY>
+  <!ATTLIST a x NMTOKEN #REQUIRED>
+  <!ATTLIST b y NMTOKENS #IMPLIED>
+  <!ATTLIST c z CDATA #FIXED "fixed">
+]>
+<root>
+  <a x="tok1">
+    <b y="tok2 tok3">
+      <c z="fixed">text</c>
+      <c z="fixed"/>
+    </b>
+  </a>
+  <b y="single">
+    <c>content</c>
+  </b>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ELEMENT doc (section*)>
+  <!ELEMENT section (para | code)*>
+  <!ELEMENT para (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ATTLIST section level (1|2|3) #REQUIRED name CDATA #IMPLIED>
+  <!ATTLIST para importance (high|low) "low">
+  <!ATTLIST code lang (python|c|xml) #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+]>
+<doc>
+  <section level="1" name="intro">
+    <para importance="high">Start&nbsp;here</para>
+    <code lang="xml">&lt;tag/&gt;</code>
+  </section>
+  <section level="2">
+    <para>Details</para>
+    <code lang="c">int x;</code>
+  </section>
+</doc>
+```
+
+```xml
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (meta, content)>
+  <!ELEMENT meta (version, created)>
+  <!ELEMENT version (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT content (block+)>
+  <!ELEMENT block (line*)>
+  <!ELEMENT line (#PCDATA)>
+  <!ATTLIST manifest xmlns CDATA #FIXED "http://schema.local">
+  <!ATTLIST block id ID #REQUIRED seq NMTOKEN #REQUIRED>
+  <!ATTLIST line num CDATA #IMPLIED>
+]>
+<manifest xmlns="http://schema.local">
+  <meta>
+    <version>1.0</version>
+    <created>2024</created>
+  </meta>
+  <content>
+    <block id="b1" seq="1">
+      <line num="1">first</line>
+      <line num="2">second</line>
+    </block>
+    <block id="b2" seq="2">
+      <line>text only</line>
+    </block>
+  </content>
+</manifest>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE system [
+  <!ELEMENT system (module+)>
+  <!ELEMENT module (param*, state*)>
+  <!ELEMENT param EMPTY>
+  <!ELEMENT state (#PCDATA | event)*>
+  <!ELEMENT event EMPTY>
+  <!ATTLIST module name ID #REQUIRED enabled (yes|no) "yes">
+  <!ATTLIST param key CDATA #REQUIRED value CDATA #REQUIRED override (true|false) #IMPLIED>
+  <!ATTLIST state current CDATA #IMPLIED>
+  <!ATTLIST event code CDATA #REQUIRED timestamp CDATA #IMPLIED>
+  <!ENTITY defstate "idle">
+]>
+<system>
+  <module name="core" enabled="yes">
+    <param key="timeout" value="5000"/>
+    <param key="retry" value="3" override="true"/>
+    <state current="&defstate;">
+      <event code="init"/>
+      <event code="ready" timestamp="2024"/>
+    </state>
+  </module>
+  <module name="ext" enabled="no">
+    <state>&defstate;</state>
+  </module>
+</system>
+```

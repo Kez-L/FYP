@@ -1,0 +1,64 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % param1 "value1">
+  <!ENTITY % param2 "value2">
+  <!ELEMENT root (child+)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST child id ID #REQUIRED>
+]>
+<root>
+  <child id="c1">%param1;</child>
+  <child id="c2">%param2;</child>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ENTITY int "&#x00000001;">
+  <!ENTITY str "&#x41;&#x42;&#x43;">
+  <!ENTITY mixed "prefix&#x48;suffix">
+]>
+<config>
+  <setting name="int">&int;</setting>
+  <setting name="str">&str;</setting>
+  <setting name="mixed">&mixed;</setting>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE nested [
+  <!ENTITY e1 "level1">
+  <!ENTITY e2 "&e1;-level2">
+  <!ENTITY e3 "&e2;-level3">
+]>
+<nested>
+  <deep>&e3;</deep>
+  <shallow>&e1;</shallow>
+</nested>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE cdata [
+  <!ELEMENT root (#PCDATA)>
+]>
+<root><![CDATA[
+  <script>alert('test')</script>
+  & < > " '
+]]></root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE attr [
+  <!ATTLIST elem xmlns:custom CDATA #IMPLIED>
+  <!ATTLIST elem data CDATA #REQUIRED>
+]>
+<root xmlns:custom="http://custom.ns">
+  <elem custom:attr="val1" data="val2"/>
+  <elem xmlns="http://default.ns" data="val3"/>
+</root>
+```

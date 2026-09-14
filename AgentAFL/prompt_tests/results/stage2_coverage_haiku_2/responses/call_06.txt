@@ -1,0 +1,127 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+<!ELEMENT root (item+)>
+<!ELEMENT item (name, value)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT value ANY>
+<!ATTLIST item id ID #REQUIRED type NMTOKEN #REQUIRED>
+<!ENTITY nbsp "&#160;">
+<!ENTITY % internal "<!ELEMENT extra EMPTY>">
+%internal;
+]>
+<root>
+  <item id="i1" type="alpha">
+    <name>Test&nbsp;Item</name>
+    <value><![CDATA[Raw content with < and > symbols]]></value>
+  </item>
+  <item id="i2" type="beta">
+    <name>Second</name>
+    <value>Normal text</value>
+  </item>
+</root>
+```
+
+```xml
+<!DOCTYPE svg [
+<!ELEMENT svg (rect|circle|path)*>
+<!ELEMENT rect EMPTY>
+<!ELEMENT circle EMPTY>
+<!ELEMENT path EMPTY>
+<!ATTLIST svg version CDATA #FIXED "1.1" xmlns CDATA #FIXED "http://www.w3.org/2000/svg">
+<!ATTLIST rect x CDATA #REQUIRED y CDATA #REQUIRED width CDATA #REQUIRED height CDATA #REQUIRED fill CDATA #IMPLIED>
+<!ATTLIST circle cx CDATA #REQUIRED cy CDATA #REQUIRED r CDATA #REQUIRED stroke CDATA #IMPLIED>
+<!ATTLIST path d CDATA #REQUIRED xmlns:custom CDATA #IMPLIED>
+]>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <rect x="10" y="20" width="100" height="50" fill="red"/>
+  <circle cx="150" cy="75" r="30" stroke="blue"/>
+  <path d="M 10 10 L 90 90" xmlns:custom="http://custom.org"/>
+</svg>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book [
+<!ELEMENT book (metadata, chapters)>
+<!ELEMENT metadata (title, author, isbn)>
+<!ELEMENT chapters (chapter*)>
+<!ELEMENT chapter (section+)>
+<!ELEMENT section (#PCDATA | subsection)*>
+<!ELEMENT subsection (#PCDATA)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT author (#PCDATA)>
+<!ELEMENT isbn (#PCDATA)>
+<!ATTLIST chapter number CDATA #REQUIRED lang (en|fr|de|es) "en">
+<!ATTLIST section id ID #IMPLIED level CDATA #IMPLIED>
+]>
+<book>
+  <metadata>
+    <title>Advanced XML Processing</title>
+    <author>Dr. John Smith</author>
+    <isbn>978-3-16-148410-0</isbn>
+  </metadata>
+  <chapters>
+    <chapter number="1" lang="en">
+      <section id="s1" level="1">
+        Introduction to DTD
+        <subsection>Basic concepts</subsection>
+      </section>
+    </chapter>
+  </chapters>
+</book>
+```
+
+```xml
+<!DOCTYPE data [
+<!ELEMENT data (record)*>
+<!ELEMENT record (field+)>
+<!ELEMENT field (#PCDATA)>
+<!ATTLIST data version CDATA #REQUIRED encoding CDATA #IMPLIED>
+<!ATTLIST record uid CDATA #REQUIRED status (active|inactive|pending) #REQUIRED timestamp CDATA #IMPLIED>
+<!ATTLIST field name CDATA #REQUIRED type (string|int|float|bool) "string">
+<!NOTATION text PUBLIC "text/plain">
+<!NOTATION binary SYSTEM "application/octet-stream">
+]>
+<data version="2.0" encoding="UTF-8">
+  <record uid="rec001" status="active" timestamp="2024-01-15T10:30:00Z">
+    <field name="email" type="string">user@example.com</field>
+    <field name="count" type="int">42</field>
+    <field name="active" type="bool">true</field>
+  </record>
+  <record uid="rec002" status="pending">
+    <field name="note" type="string">Awaiting approval</field>
+  </record>
+</data>
+```
+
+```xml
+<!DOCTYPE feed [
+<!ELEMENT feed (entry+)>
+<!ELEMENT entry (id, title, content, link*)>
+<!ELEMENT id (#PCDATA)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT content (#PCDATA | code)*>
+<!ELEMENT code (#PCDATA)>
+<!ELEMENT link EMPTY>
+<!ATTLIST feed xmlns CDATA #FIXED "http://www.w3.org/2005/Atom" updated CDATA #REQUIRED>
+<!ATTLIST entry published CDATA #IMPLIED updated CDATA #IMPLIED>
+<!ATTLIST link rel CDATA #IMPLIED href CDATA #REQUIRED type CDATA #IMPLIED>
+<!ATTLIST content type (text|html|xhtml) "text">
+]>
+<feed xmlns="http://www.w3.org/2005/Atom" updated="2024-01-20T12:00:00Z">
+  <entry published="2024-01-20T11:00:00Z" updated="2024-01-20T12:00:00Z">
+    <id>entry-001</id>
+    <title>Understanding XML Entities</title>
+    <content type="html">Learn about &lt;entity&gt; declarations</content>
+    <link rel="alternate" href="http://example.org/post1" type="text/html"/>
+  </entry>
+  <entry>
+    <id>entry-002</id>
+    <title>Parser Edge Cases</title>
+    <content type="text">
+      <code>&lt;![CDATA[Mixed content regions]]&gt;</code>
+    </content>
+  </entry>
+</feed>
+```

@@ -1,0 +1,76 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root id ID #REQUIRED>
+  <!ENTITY % param1 "value1">
+  <!ENTITY % param2 "%param1;">
+]>
+<root id="test1">
+  <child attr="&param2;">content</child>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config [
+  <!ENTITY internal SYSTEM "file:///etc/passwd">
+  <!ENTITY % external SYSTEM "http://localhost/entity.xml">
+]>
+<config>
+  <setting name="key1">
+    &internal;
+  </setting>
+  <nested>
+    <deep>&external;</deep>
+  </nested>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE data [
+  <!NOTATION gif PUBLIC "image/gif">
+  <!ENTITY img SYSTEM "image.gif" NDATA gif>
+  <!ENTITY % chunk "<!--comment-->">
+]>
+<data>
+  <image ref="img"/>
+  %chunk;
+  <![CDATA[some <raw> & data]]>
+</data>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ELEMENT doc (section*)>
+  <!ELEMENT section (title, para+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT para (#PCDATA|ref)*>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref href CDATA #REQUIRED>
+  <!ENTITY copy "&#169;">
+  <!ENTITY % rights "Copyright &copy; 2024">
+]>
+<doc>
+  <section>
+    <title>Section One</title>
+    <para>Text with &rights; <ref href="http://example.com"/></para>
+  </section>
+</doc>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % start "<!ENTITY test 'expansion'>">
+  %start;
+  <!ENTITY chain1 "&test;">
+  <!ENTITY chain2 "&chain1;&chain1;">
+]>
+<root>
+  <value>&chain2;</value>
+  <recursive>&chain2;&chain2;&chain2;</recursive>
+</root>
+```

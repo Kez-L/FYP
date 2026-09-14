@@ -1,0 +1,79 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST child id ID #REQUIRED>
+  <!ENTITY internal "text">
+]>
+<root>
+  <child id="c1">&internal;</child>
+  <child id="c2">content</child>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE data [
+  <!ENTITY % param "value">
+  <!ENTITY ref "%param;">
+]>
+<data attr="test">
+  <elem>
+    <nested>&ref;</nested>
+  </elem>
+</data>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body)>
+  <!ELEMENT header (from, to)>
+  <!ELEMENT body (content)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT content (#PCDATA)>
+]>
+<message>
+  <header>
+    <from>sender</from>
+    <to>receiver</to>
+  </header>
+  <body>
+    <content>Hello World</content>
+  </body>
+</message>
+```
+
+```xml
+<!DOCTYPE svg [
+  <!ENTITY circle "&#x25CB;">
+  <!ENTITY square "&#x25A0;">
+  <!ENTITY triangle "&#x25B2;">
+]>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <text x="10" y="20">&circle;&square;&triangle;</text>
+  <rect width="100" height="100" fill="none" stroke="black"/>
+</svg>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ELEMENT config (section+)>
+  <!ELEMENT section (item*)>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST section name CDATA #REQUIRED>
+  <!ATTLIST item key CDATA #REQUIRED value CDATA #IMPLIED>
+]>
+<config>
+  <section name="database">
+    <item key="host" value="localhost"/>
+    <item key="port" value="5432"/>
+  </section>
+  <section name="cache">
+    <item key="enabled" value="true"/>
+  </section>
+</config>
+```

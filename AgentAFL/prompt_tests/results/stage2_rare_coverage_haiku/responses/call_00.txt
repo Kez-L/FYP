@@ -1,76 +1,61 @@
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE root [
-<!ENTITY xxe SYSTEM "file:///etc/passwd">
-<!ELEMENT root (child*)>
-<!ELEMENT child (#PCDATA)>
+  <!ENTITY xxe SYSTEM "file:///etc/passwd">
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
 ]>
-<root>
-  <child>&xxe;</child>
-  <child attr1="value1" attr2="value2">text content</child>
-</root>
+<root>&xxe;</root>
 ```
 
 ```xml
 <?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100" height="100">
+  <image xlink:href="data:text/xml,&lt;script&gt;alert(1)&lt;/script&gt;" x="0" y="0" width="100" height="100"/>
+  <use xlink:href="#x1"/>
+  <symbol id="x1"><circle r="50"/></symbol>
+</svg>
+```
+
+```xml
 <root>
-  <elem1 xmlns="http://default.ns" id="1">
-    <elem2 xmlns:ns="http://custom.ns" ns:attr="val">
-      <![CDATA[Special chars: <>&"']]>
-    </elem2>
-  </elem1>
-  <elem3>&#x0;&#65;</elem3>
+  <level1 attr1="value1">
+    <level2 attr2="value2">
+      <level3 attr3="value3">
+        <level4 attr4="value4">
+          <level5 attr5="value5">
+            <level6>Deep nesting content</level6>
+          </level5>
+        </level4>
+      </level3>
+    </level2>
+  </level1>
+  <sibling1/>
+  <sibling2/>
 </root>
 ```
 
 ```xml
-<!DOCTYPE html [
-<!ELEMENT html (head, body)>
-<!ELEMENT head (title)>
-<!ELEMENT title (#PCDATA)>
-<!ELEMENT body (div+)>
-<!ELEMENT div (#PCDATA | span)*>
-<!ELEMENT span (#PCDATA)>
-<!ATTLIST div class CDATA #REQUIRED>
-]>
-<html>
-  <head><title>Test</title></head>
-  <body>
-    <div class="main"><span>nested</span></div>
-    <div class="alt">text only</div>
-  </body>
-</html>
-```
-
-```xml
-<?xml version="1.0"?>
-<config>
-  <database host="localhost" port="5432" username="admin" password="secret">
-    <connection timeout="30" retries="3"/>
-    <pool min="5" max="20" idle="10"/>
-  </database>
-  <logging level="DEBUG">
-    <appender name="file" path="/var/log/app.log"/>
-    <appender name="console" format="json"/>
-  </logging>
-  <features>
-    <feature enabled="true">cache</feature>
-    <feature enabled="false">experimental</feature>
-  </features>
-</config>
-```
-
-```xml
-<?xml version="1.0" encoding="UTF-16"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <document>
-  <section>
-    <para id="p1">First paragraph with <emphasis>emphasis</emphasis>.</para>
-    <para id="p2">Second paragraph with <strong>strong</strong> and <code>code</code>.</para>
-    <list type="ordered">
-      <item>First item</item>
-      <item>Second item with <ref target="p1">reference</ref></item>
-    </list>
-  </section>
-  <metadata created="2024-01-01T00:00:00Z" version="1.0"/>
+  <text>Normal text with &lt;escaped&gt; content</text>
+  <cdata><![CDATA[This is <raw> & unescaped & content ]]></cdata>
+  <mixed>Text <elem attr="val"/> more text</mixed>
+  <comment><!-- Comment with special chars: <>&" --></comment>
+  <empty-elem/>
+  <self-closing attr="value"/>
 </document>
+```
+
+```xml
+<root xmlns:ns1="http://ns1.example.com" xmlns:ns2="http://ns2.example.com">
+  <ns1:element1 ns2:attr1="value1" ns1:attr2="value2">
+    <ns2:subelement ns1:id="123" ns2:type="string">
+      <ns1:data>Content</ns1:data>
+    </ns2:subelement>
+  </ns1:element1>
+  <ns2:element2 ns1:class="test" ns2:role="main">
+    <mixed-content>Text <ns1:inline/> more</mixed-content>
+  </ns2:element2>
+</root>
 ```

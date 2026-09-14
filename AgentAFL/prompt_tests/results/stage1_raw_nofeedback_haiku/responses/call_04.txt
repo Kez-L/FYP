@@ -1,0 +1,76 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ATTLIST child id ID #REQUIRED>
+  <!ENTITY intern "internal_value">
+]>
+<root>
+  <child id="c1">&intern;</child>
+  <child id="c2">text content</child>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config [
+  <!ENTITY % param1 "value1">
+  <!ENTITY % param2 "%param1;_extended">
+]>
+<config>
+  <setting name="test">%param2;</setting>
+  <nested>
+    <deep attr="test&lt;>&quot;'">content</deep>
+  </nested>
+</config>
+```
+
+```xml
+<!DOCTYPE system [
+  <!ENTITY copy "&#169;">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY amp "&#38;">
+]>
+<system>
+  <message>&copy;2024&nbsp;&nbsp;&amp; Co.</message>
+  <data><![CDATA[
+    <unclosed tag content>
+    & special chars < >
+  ]]></data>
+</system>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE test [
+  <!ELEMENT test (a|b|c)+>
+  <!ELEMENT a EMPTY>
+  <!ELEMENT b (#PCDATA|a)*>
+  <!ELEMENT c ANY>
+  <!ATTLIST a x CDATA #IMPLIED>
+]>
+<test>
+  <a x="value1"/>
+  <b>text<a x="nested"/></b>
+  <c>mixed &lt; content &gt; here</c>
+  <a/>
+</test>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE mixed [
+  <!NOTATION gif PUBLIC "GIF" "image/gif">
+  <!ENTITY logo SYSTEM "logo.gif" NDATA gif>
+  <!ENTITY % local SYSTEM "entities.xml">
+  %local;
+]>
+<mixed>
+  <processing><?target instruction data?></processing>
+  <comment><!-- comment with &lt; entities &gt; --></comment>
+  <element attr1="val&quot;1" attr2="val&apos;2">
+    text &amp; more
+  </element>
+</mixed>
+```

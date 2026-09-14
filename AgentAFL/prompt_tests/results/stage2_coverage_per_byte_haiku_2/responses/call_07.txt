@@ -1,0 +1,98 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child)*>
+  <!ELEMENT child (#PCDATA|nested)*>
+  <!ELEMENT nested EMPTY>
+  <!ATTLIST nested id ID #REQUIRED>
+  <!ENTITY % pe "<!ELEMENT param (#PCDATA)>">
+  %pe;
+]>
+<root>
+  <child>text<nested id="n1"/></child>
+  <param>value</param>
+</root>
+```
+
+```xml
+<!DOCTYPE doc [
+  <!ENTITY int "&#65;">
+  <!ENTITY ext SYSTEM "file:///etc/passwd">
+  <!ELEMENT doc (section+)>
+  <!ELEMENT section (title, content*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT content (#PCDATA)>
+]>
+<doc>
+  <section>
+    <title>&int;&ext;</title>
+    <content>data</content>
+  </section>
+</doc>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE record [
+  <!ELEMENT record (field)*>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name NMTOKEN #REQUIRED value CDATA #IMPLIED type (text|number|mixed) "text">
+  <!NOTATION image SYSTEM "image/png">
+  <!ELEMENT picture EMPTY>
+  <!ATTLIST picture format NOTATION (image) #REQUIRED>
+]>
+<record>
+  <field name="id" value="001" type="number"/>
+  <field name="desc" type="text"/>
+  <picture format="image"/>
+</record>
+```
+
+```xml
+<!DOCTYPE menu [
+  <!ELEMENT menu (item|separator)*>
+  <!ELEMENT item (label, shortcut?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT shortcut (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ATTLIST item action CDATA #REQUIRED enabled (yes|no) #DEFAULT "yes">
+  <!ATTLIST shortcut key CDATA #REQUIRED modifier CDATA #IMPLIED>
+]>
+<menu>
+  <item action="open" enabled="yes">
+    <label>File</label>
+    <shortcut key="O" modifier="ctrl"/>
+  </item>
+  <separator/>
+  <item action="quit">
+    <label>Exit</label>
+  </item>
+</menu>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (product)*>
+  <!ELEMENT product (name, price, stock, tags?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT stock (#PCDATA)>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST product id ID #REQUIRED category CDATA #REQUIRED>
+  <!ATTLIST price currency CDATA #FIXED "USD">
+  <!ATTLIST stock unit (pcs|kg|l) "pcs">
+]>
+<catalog>
+  <product id="p001" category="electronics">
+    <name>Widget</name>
+    <price currency="USD">9.99</price>
+    <stock unit="pcs">150</stock>
+    <tags>
+      <tag>sale</tag>
+      <tag>new</tag>
+    </tags>
+  </product>
+</catalog>
+```

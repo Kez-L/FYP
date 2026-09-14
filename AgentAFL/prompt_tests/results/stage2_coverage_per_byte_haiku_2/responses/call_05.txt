@@ -1,0 +1,95 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (item*)>
+  <!ELEMENT item (#PCDATA | subitem)*>
+  <!ELEMENT subitem EMPTY>
+  <!ATTLIST item id ID #REQUIRED type CDATA #IMPLIED>
+  <!ATTLIST subitem ref IDREF #REQUIRED>
+  <!ENTITY ent "value">
+]>
+<root>
+  <item id="i1" type="test">&ent;</item>
+  <item id="i2"><subitem ref="i1"/></item>
+</root>
+```
+
+```xml
+<!DOCTYPE data [
+  <!ELEMENT data (record+)>
+  <!ELEMENT record (field*)>
+  <!ELEMENT field ANY>
+  <!ATTLIST record version CDATA #FIXED "1.0" status (active|inactive|pending) "active">
+  <!ATTLIST field name CDATA #REQUIRED xmlns:custom CDATA #IMPLIED>
+]>
+<data>
+  <record version="1.0" status="active">
+    <field name="f1">text content</field>
+    <field name="f2"></field>
+  </record>
+  <record status="inactive">
+    <field name="f3"><!--comment-->data</field>
+  </record>
+</data>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (section*)>
+  <!ELEMENT section (entry | nested)*>
+  <!ELEMENT entry (#PCDATA)>
+  <!ELEMENT nested (entry+)>
+  <!ATTLIST section name CDATA #REQUIRED xmlns CDATA #FIXED "http://ns.example.com">
+  <!ATTLIST entry priority (1|2|3) "2" modified CDATA #IMPLIED>
+  <!ENTITY sys "system">
+]>
+<manifest>
+  <section name="core" xmlns="http://ns.example.com">
+    <entry priority="1">&sys;</entry>
+    <nested>
+      <entry>nested value</entry>
+    </nested>
+  </section>
+</manifest>
+```
+
+```xml
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item* | group*)>
+  <!ELEMENT item EMPTY>
+  <!ELEMENT group (item*)>
+  <!ATTLIST item sku CDATA #REQUIRED price CDATA #IMPLIED deprecated (yes|no) "no">
+  <!ATTLIST group category CDATA #REQUIRED xmlns:cat CDATA #IMPLIED>
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY logo SYSTEM "logo.png" NDATA jpeg>
+]>
+<catalog>
+  <group category="electronics" xmlns:cat="http://cat.example.org">
+    <item sku="SKU001" price="99.99"/>
+    <item sku="SKU002" deprecated="yes"/>
+  </group>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE setup [
+  <!ELEMENT setup (config | module)*>
+  <!ELEMENT config (#PCDATA | option)*>
+  <!ELEMENT module (config*)>
+  <!ELEMENT option EMPTY>
+  <!ATTLIST config id ID #REQUIRED phase CDATA #IMPLIED>
+  <!ATTLIST module name CDATA #REQUIRED enabled (true|false) #REQUIRED>
+  <!ATTLIST option key CDATA #REQUIRED val CDATA #REQUIRED>
+  <!ENTITY initVal "initialized">
+]>
+<setup>
+  <config id="c1">base&initVal;</config>
+  <module name="mod1" enabled="true">
+    <config id="c2">
+      <option key="k1" val="v1"/>
+    </config>
+  </module>
+</setup>
+```

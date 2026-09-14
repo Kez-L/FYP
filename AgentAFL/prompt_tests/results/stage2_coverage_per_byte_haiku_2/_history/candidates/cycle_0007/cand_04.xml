@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE system [
+  <!ELEMENT system (module+)>
+  <!ELEMENT module (param*, state*)>
+  <!ELEMENT param EMPTY>
+  <!ELEMENT state (#PCDATA | event)*>
+  <!ELEMENT event EMPTY>
+  <!ATTLIST module name ID #REQUIRED enabled (yes|no) "yes">
+  <!ATTLIST param key CDATA #REQUIRED value CDATA #REQUIRED override (true|false) #IMPLIED>
+  <!ATTLIST state current CDATA #IMPLIED>
+  <!ATTLIST event code CDATA #REQUIRED timestamp CDATA #IMPLIED>
+  <!ENTITY defstate "idle">
+]>
+<system>
+  <module name="core" enabled="yes">
+    <param key="timeout" value="5000"/>
+    <param key="retry" value="3" override="true"/>
+    <state current="&defstate;">
+      <event code="init"/>
+      <event code="ready" timestamp="2024"/>
+    </state>
+  </module>
+  <module name="ext" enabled="no">
+    <state>&defstate;</state>
+  </module>
+</system>

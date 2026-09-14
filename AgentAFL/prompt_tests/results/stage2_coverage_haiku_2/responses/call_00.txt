@@ -1,0 +1,147 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (item+)>
+  <!ELEMENT item (#PCDATA | nested)*>
+  <!ELEMENT nested EMPTY>
+  <!ATTLIST item id ID #REQUIRED>
+  <!ATTLIST item ref IDREF #IMPLIED>
+  <!ATTLIST nested type (A|B|C) #REQUIRED>
+  <!ENTITY custom "CustomValue">
+  <!NOTATION notation1 PUBLIC "pub">
+]>
+<root>
+  <item id="item1">Text content &custom;</item>
+  <item id="item2" ref="item1"><nested type="A"/></item>
+  <item id="item3">Mixed &custom; content</item>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE data [
+  <!ELEMENT data (record*)>
+  <!ELEMENT record (field+)>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST record recordID CDATA #REQUIRED status (active|inactive|pending) "active">
+  <!ATTLIST field fieldName NMTOKEN #REQUIRED nullable (yes|no) "no">
+  <!ENTITY % fieldTypes "text|number|date">
+  <!ENTITY space "&#32;">
+]>
+<data>
+  <record recordID="R001" status="active">
+    <field fieldName="name">John&space;Doe</field>
+    <field fieldName="age">30</field>
+  </record>
+  <record recordID="R002" status="pending">
+    <field fieldName="email">test@example.com</field>
+  </record>
+</data>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (product|service)*>
+  <!ELEMENT product (name, price, description?)>
+  <!ELEMENT service (name, rate, duration)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT rate (#PCDATA)>
+  <!ELEMENT duration (#PCDATA)>
+  <!ELEMENT description (#PCDATA)>
+  <!ATTLIST product sku CDATA #REQUIRED stock NMTOKEN "0">
+  <!ATTLIST service category (basic|premium|enterprise) #REQUIRED>
+  <!ENTITY copyright "Copyright 2024">
+]>
+<catalog>
+  <product sku="SKU123" stock="100">
+    <name>Widget</name>
+    <price>9.99</price>
+    <description>A useful widget &copyright;</description>
+  </product>
+  <service category="premium">
+    <name>Support</name>
+    <rate>50</rate>
+    <duration>1hour</duration>
+  </service>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE library [
+  <!ELEMENT library (book|magazine)*>
+  <!ELEMENT book (title, author+, isbn, published)>
+  <!ELEMENT magazine (title, issue, pages)>
+  <!ELEMENT author (name, birth?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT birth (#PCDATA)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT isbn (#PCDATA)>
+  <!ELEMENT issue (#PCDATA)>
+  <!ELEMENT pages (#PCDATA)>
+  <!ELEMENT published (#PCDATA)>
+  <!ATTLIST book id ID #REQUIRED lang (en|fr|de|es) "en">
+  <!ATTLIST magazine id ID #REQUIRED volume NMTOKEN #REQUIRED>
+]>
+<library>
+  <book id="b001" lang="en">
+    <title>XML Parsing Guide</title>
+    <author>
+      <name>Jane Smith</name>
+      <birth>1985</birth>
+    </author>
+    <isbn>978-0-123456-78-9</isbn>
+    <published>2020</published>
+  </book>
+  <magazine id="m001" volume="42">
+    <title>Tech Monthly</title>
+    <issue>3</issue>
+    <pages>120</pages>
+  </magazine>
+</library>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (settings, databases, security)>
+  <!ELEMENT settings (param+)>
+  <!ELEMENT param EMPTY>
+  <!ELEMENT databases (db+)>
+  <!ELEMENT db (connection+)>
+  <!ELEMENT connection EMPTY>
+  <!ELEMENT security (user+)>
+  <!ELEMENT user (credentials, permissions?)>
+  <!ELEMENT credentials EMPTY>
+  <!ELEMENT permissions (permission+)>
+  <!ELEMENT permission (#PCDATA)>
+  <!ATTLIST param name CDATA #REQUIRED value CDATA #REQUIRED>
+  <!ATTLIST db type (mysql|postgresql|oracle) #REQUIRED>
+  <!ATTLIST connection host CDATA #REQUIRED port NMTOKEN #IMPLIED>
+  <!ATTLIST user id ID #REQUIRED role (admin|user|guest) "guest">
+  <!ATTLIST credentials username CDATA #REQUIRED encrypted (true|false) "false">
+  <!ENTITY dbhost "localhost">
+]>
+<configuration>
+  <settings>
+    <param name="timeout" value="3000"/>
+    <param name="retries" value="5"/>
+  </settings>
+  <databases>
+    <db type="postgresql">
+      <connection host="&dbhost;" port="5432"/>
+    </db>
+  </databases>
+  <security>
+    <user id="user1" role="admin">
+      <credentials username="admin" encrypted="true"/>
+      <permissions>
+        <permission>READ</permission>
+        <permission>WRITE</permission>
+      </permissions>
+    </user>
+  </security>
+</configuration>
+```

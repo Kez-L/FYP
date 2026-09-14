@@ -1,0 +1,112 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (item+)>
+  <!ELEMENT item (name, value)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value ANY>
+  <!ENTITY % content "item | root">
+  <!ENTITY ext SYSTEM "file:///etc/passwd">
+]>
+<root>
+  <item>
+    <name>test</name>
+    <value>&ext;</value>
+  </item>
+</root>
+```
+
+```xml
+<!DOCTYPE test [
+  <!ELEMENT test (a | b | c)*>
+  <!ELEMENT a (#PCDATA | nested)*>
+  <!ELEMENT b EMPTY>
+  <!ELEMENT c (#PCDATA)>
+  <!ELEMENT nested (#PCDATA)>
+  <!ATTLIST a id ID #REQUIRED ref IDREF #IMPLIED>
+  <!ATTLIST b href CDATA #FIXED "http://test">
+  <!NOTATION jpeg PUBLIC "image/jpeg">
+]>
+<test>
+  <a id="first">
+    <nested>content</nested>
+  </a>
+  <b href="http://test"/>
+  <c>text</c>
+  <a id="second" ref="first">mixed</a>
+</test>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE data [
+  <!ELEMENT data (record*)>
+  <!ELEMENT record (field+)>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST record type (A|B|C) #REQUIRED status CDATA #IMPLIED>
+  <!ATTLIST field encode (utf8|ascii|hex) "utf8">
+  <!ENTITY % dynamic SYSTEM "http://malicious.local/entity.dtd">
+]>
+<data>
+  <record type="A" status="active">
+    <field encode="hex">0x41</field>
+  </record>
+  <record type="C">
+    <field>test&lt;tag&gt;</field>
+  </record>
+</data>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ELEMENT root (level1+)>
+  <!ELEMENT level1 (level2*)>
+  <!ELEMENT level2 (level3 | text)>
+  <!ELEMENT level3 EMPTY>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST level1 depth CDATA #REQUIRED>
+  <!ATTLIST level2 id ID #IMPLIED>
+  <!ATTLIST level3 empty CDATA #FIXED "yes">
+]>
+<root>
+  <level1 depth="1">
+    <level2 id="L2_1">
+      <level3 empty="yes"/>
+    </level2>
+    <level2>
+      <text>deep content</text>
+    </level2>
+  </level1>
+  <level1 depth="2">
+    <level2 id="L2_2"/>
+  </level1>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (permission | activity | provider)*>
+  <!ELEMENT permission EMPTY>
+  <!ELEMENT activity (intent-filter*)>
+  <!ELEMENT provider EMPTY>
+  <!ELEMENT intent-filter (action | category)*>
+  <!ELEMENT action EMPTY>
+  <!ELEMENT category EMPTY>
+  <!ATTLIST permission name CDATA #REQUIRED level (user|system|admin) "user">
+  <!ATTLIST activity name CDATA #REQUIRED exported (true|false) #IMPLIED>
+  <!ATTLIST action name CDATA #REQUIRED>
+  <!ATTLIST category name CDATA #REQUIRED>
+  <!ATTLIST provider name CDATA #REQUIRED authorities CDATA #IMPLIED>
+]>
+<manifest>
+  <permission name="READ_DATA" level="system"/>
+  <activity name=".MainActivity" exported="true">
+    <intent-filter>
+      <action name="android.intent.action.MAIN"/>
+      <category name="android.intent.category.LAUNCHER"/>
+    </intent-filter>
+  </activity>
+  <provider name=".DataProvider" authorities="com.app.data"/>
+</manifest>
+```

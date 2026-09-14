@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (settings, databases, security)>
+  <!ELEMENT settings (param+)>
+  <!ELEMENT param EMPTY>
+  <!ELEMENT databases (db+)>
+  <!ELEMENT db (connection+)>
+  <!ELEMENT connection EMPTY>
+  <!ELEMENT security (user+)>
+  <!ELEMENT user (credentials, permissions?)>
+  <!ELEMENT credentials EMPTY>
+  <!ELEMENT permissions (permission+)>
+  <!ELEMENT permission (#PCDATA)>
+  <!ATTLIST param name CDATA #REQUIRED value CDATA #REQUIRED>
+  <!ATTLIST db type (mysql|postgresql|oracle) #REQUIRED>
+  <!ATTLIST connection host CDATA #REQUIRED port NMTOKEN #IMPLIED>
+  <!ATTLIST user id ID #REQUIRED role (admin|user|guest) "guest">
+  <!ATTLIST credentials username CDATA #REQUIRED encrypted (true|false) "false">
+  <!ENTITY dbhost "localhost">
+]>
+<configuration>
+  <settings>
+    <param name="timeout" value="3000"/>
+    <param name="retries" value="5"/>
+  </settings>
+  <databases>
+    <db type="postgresql">
+      <connection host="&dbhost;" port="5432"/>
+    </db>
+  </databases>
+  <security>
+    <user id="user1" role="admin">
+      <credentials username="admin" encrypted="true"/>
+      <permissions>
+        <permission>READ</permission>
+        <permission>WRITE</permission>
+      </permissions>
+    </user>
+  </security>
+</configuration>

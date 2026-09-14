@@ -1,0 +1,54 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root id ID #REQUIRED>
+  <!ENTITY internal "test">
+]>
+<root id="r1">&internal;</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!ELEMENT doc (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item type NOTATION (gif) #IMPLIED>
+]>
+<doc>
+  <item type="gif">data</item>
+</doc>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % param "value">
+  <!ENTITY mixed "prefix_%param;_suffix">
+]>
+<root>&mixed;</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (nested+)>
+  <!ELEMENT nested (#PCDATA|nested)*>
+  <!ENTITY recursive "start<nested>&recursive;</nested>end">
+]>
+<root>
+  <nested>content</nested>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % dtd SYSTEM "external.dtd">
+  %dtd;
+]>
+<root attr="value">
+  <element>text content</element>
+</root>
+```

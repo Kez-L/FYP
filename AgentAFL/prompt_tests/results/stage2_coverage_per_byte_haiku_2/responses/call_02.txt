@@ -1,0 +1,104 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY myent "expanded">
+  <!ATTLIST root id ID #REQUIRED>
+]>
+<root id="r1">
+  <child>&myent;</child>
+  <child>text</child>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ELEMENT doc (section+)>
+  <!ELEMENT section (title, content)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT content ANY>
+  <!NOTATION png PUBLIC "image/png">
+  <!ATTLIST section type (intro|body|conclusion) "body">
+]>
+<doc>
+  <section type="intro">
+    <title>Start</title>
+    <content><![CDATA[raw & unescaped < > data]]></content>
+  </section>
+</doc>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a | b | c)*>
+  <!ELEMENT a EMPTY>
+  <!ELEMENT b (#PCDATA | a)*>
+  <!ELEMENT c (b+)>
+  <!ATTLIST a href CDATA #IMPLIED>
+  <!ATTLIST c name NMTOKEN #REQUIRED>
+  <!ENTITY % param "value123">
+]>
+<root>
+  <a href="http://example.com"/>
+  <b>text &amp; more</b>
+  <c name="test">
+    <b/>
+  </c>
+</root>
+```
+
+```xml
+<!DOCTYPE html [
+  <!ELEMENT html (head, body)>
+  <!ELEMENT head (title)>
+  <!ELEMENT body (p | div)*>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT p (#PCDATA | br)*>
+  <!ELEMENT div (p+)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST p class CDATA #IMPLIED>
+  <!ATTLIST div id ID #IMPLIED>
+]>
+<html>
+  <head>
+    <title>Test &lt;Page&gt;</title>
+  </head>
+  <body>
+    <p class="intro">First paragraph</p>
+    <div id="d1">
+      <p>Nested</p>
+    </div>
+  </body>
+</html>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ELEMENT config (setting*)>
+  <!ELEMENT setting (key, value, type?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA | number | string)*>
+  <!ELEMENT number (#PCDATA)>
+  <!ELEMENT string (#PCDATA)>
+  <!ELEMENT type EMPTY>
+  <!ATTLIST setting enabled (true|false) "true">
+  <!ATTLIST type name CDATA #REQUIRED>
+]>
+<config>
+  <setting enabled="true">
+    <key>timeout</key>
+    <value>
+      <number>3000</number>
+    </value>
+    <type name="integer"/>
+  </setting>
+  <setting enabled="false">
+    <key>path</key>
+    <value><string>/usr/bin</string></value>
+  </setting>
+</config>
+```

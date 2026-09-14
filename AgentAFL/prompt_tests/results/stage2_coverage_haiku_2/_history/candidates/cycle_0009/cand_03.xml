@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE network [
+<!ELEMENT network (device+)>
+<!ELEMENT device (interface+, routes?)>
+<!ELEMENT interface (ipv4?, ipv6?)>
+<!ELEMENT ipv4 EMPTY>
+<!ELEMENT ipv6 EMPTY>
+<!ELEMENT routes (route*)>
+<!ELEMENT route EMPTY>
+<!ATTLIST device hostname CDATA #REQUIRED type (router|switch|host) "host">
+<!ATTLIST interface name CDATA #REQUIRED mtu CDATA #DEFAULT "1500">
+<!ATTLIST ipv4 address CDATA #REQUIRED netmask CDATA #REQUIRED>
+<!ATTLIST ipv6 address CDATA #REQUIRED prefix CDATA #REQUIRED>
+<!ATTLIST route destination CDATA #REQUIRED gateway CDATA #REQUIRED metric CDATA #IMPLIED>
+]>
+<network>
+  <device hostname="router01" type="router">
+    <interface name="eth0" mtu="1500">
+      <ipv4 address="192.168.1.1" netmask="255.255.255.0"/>
+      <ipv6 address="2001:db8::1" prefix="64"/>
+    </interface>
+    <routes>
+      <route destination="10.0.0.0/8" gateway="192.168.1.254" metric="1"/>
+    </routes>
+  </device>
+  <device hostname="host01" type="host">
+    <interface name="eth0" mtu="1500">
+      <ipv4 address="192.168.1.100" netmask="255.255.255.0"/>
+    </interface>
+  </device>
+</network>

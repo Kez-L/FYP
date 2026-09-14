@@ -1,0 +1,81 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (child*)>
+  <!ELEMENT child (#PCDATA)>
+  <!ENTITY internal "test&value">
+  <!ATTLIST child id ID #REQUIRED>
+]>
+<root>
+  <child id="c1">&internal;</child>
+  <child id="c2">content</child>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ELEMENT doc (section+)>
+  <!ELEMENT section (title, para*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT para (#PCDATA | ref)*>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref href CDATA #IMPLIED>
+]>
+<doc>
+  <section>
+    <title>First</title>
+    <para>Text with <ref href="url"/> reference.</para>
+  </section>
+</doc>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE root [
+  <!ELEMENT root (item)*>
+  <!ATTLIST item
+    name NMTOKEN #REQUIRED
+    value CDATA #IMPLIED
+    active (true|false) "false">
+  <!NOTATION gif PUBLIC "image/gif">
+  <!ENTITY logo SYSTEM "logo.gif" NDATA gif>
+]>
+<root>
+  <item name="test1" value="abc" active="true"/>
+  <item name="test2"/>
+</root>
+```
+
+```xml
+<!DOCTYPE html [
+  <!ELEMENT html (head, body)>
+  <!ELEMENT head (title)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (p | div)*>
+  <!ELEMENT p (#PCDATA)>
+  <!ELEMENT div (p)*>
+  <!ATTLIST html xmlns CDATA #FIXED "http://www.w3.org/1999/xhtml">
+]>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head><title>Test</title></head>
+  <body><p>Content</p></body>
+</html>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE config [
+  <!ELEMENT config (setting)*>
+  <!ELEMENT setting (#PCDATA)>
+  <!ATTLIST setting
+    key CDATA #REQUIRED
+    type (string|number|boolean) "string"
+    override CDATA #IMPLIED>
+  <!ENTITY % internal "INCLUDE">
+]>
+<config>
+  <setting key="debug" type="boolean">true</setting>
+  <setting key="timeout" type="number" override="5">30</setting>
+</config>
+```

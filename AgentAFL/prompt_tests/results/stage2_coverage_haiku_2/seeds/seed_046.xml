@@ -1,0 +1,32 @@
+<!DOCTYPE schema [
+<!ELEMENT schema (element*, attribute*, group*)>
+<!ELEMENT element (annotation?, restriction?)>
+<!ELEMENT annotation (#PCDATA)>
+<!ELEMENT restriction (enumeration+)>
+<!ELEMENT enumeration EMPTY>
+<!ELEMENT attribute (annotation?)>
+<!ELEMENT group (element*)>
+<!ATTLIST element name CDATA #REQUIRED type CDATA #IMPLIED minOccurs CDATA "1" maxOccurs CDATA "1">
+<!ATTLIST attribute name CDATA #REQUIRED use (required|optional|prohibited) "optional">
+<!ATTLIST enumeration value CDATA #REQUIRED xml:lang CDATA #IMPLIED>
+<!ATTLIST restriction base CDATA #REQUIRED pattern CDATA #IMPLIED>
+]>
+<schema>
+  <element name="person" type="PersonType" minOccurs="0" maxOccurs="unbounded">
+    <annotation>A person element</annotation>
+  </element>
+  <attribute name="id" use="required">
+    <annotation>Unique identifier</annotation>
+  </attribute>
+  <element name="status" type="string">
+    <restriction base="string">
+      <enumeration value="active" xml:lang="en"/>
+      <enumeration value="inactive" xml:lang="en"/>
+      <enumeration value="pending" xml:lang="en"/>
+    </restriction>
+  </element>
+  <group name="contact">
+    <element name="email" type="string"/>
+    <element name="phone" type="string"/>
+  </group>
+</schema>

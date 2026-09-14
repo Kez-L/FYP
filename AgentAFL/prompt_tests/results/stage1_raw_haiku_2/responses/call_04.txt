@@ -1,0 +1,68 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root attr CDATA #IMPLIED>
+  <!ENTITY internal "test">
+]>
+<root attr="&internal;">content</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ENTITY % param1 "value1">
+  <!ENTITY % param2 "value2">
+  <!ELEMENT doc (item+)>
+  <!ELEMENT item (#PCDATA)>
+]>
+<doc>
+  <item>%param1;</item>
+  <item>%param2;</item>
+</doc>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE test [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY logo SYSTEM "logo.jpg" NDATA jpeg>
+  <!ELEMENT test (data)>
+  <!ELEMENT data (#PCDATA)>
+]>
+<test>
+  <data>binary</data>
+</test>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ENTITY % file SYSTEM "file:///dev/null">
+  <!ENTITY % dtd SYSTEM "http://localhost/evil.dtd">
+  %dtd;
+]>
+<config>
+  <setting name="test">value</setting>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body)>
+  <!ELEMENT header (from, to)>
+  <!ELEMENT body (#PCDATA)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ENTITY sender "alice">
+  <!ENTITY recipient "bob">
+]>
+<message>
+  <header>
+    <from>&sender;</from>
+    <to>&recipient;</to>
+  </header>
+  <body>Hello</body>
+</message>
+```
