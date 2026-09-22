@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE record [
+  <!ELEMENT record (header, payload, checksum)>
+  <!ELEMENT header (field+)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST record format (binary|text|mixed) "mixed">
+  <!ATTLIST header version CDATA #REQUIRED>
+  <!ATTLIST field name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST chunk offset NMTOKEN #REQUIRED length NMTOKEN #REQUIRED>
+  <!ENTITY left "&lt;">
+  <!ENTITY right "&gt;">
+]>
+<record format="mixed">
+  <header version="7">
+    <field name="origin" value="sensor-4"/>
+    <field name="mode" value="burst"/>
+    <field name="flags" value="A|B|C"/>
+  </header>
+  <payload>start &left; chunked &right; <chunk offset="0" length="4">ABCD</chunk> middle <chunk offset="4" length="3"><![CDATA[x&y]]></chunk> end</payload>
+  <checksum>9f86d081884c7d659a2feaa0c55ad015</checksum>
+</record>

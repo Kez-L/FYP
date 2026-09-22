@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (opening, transaction*, closing)>
+  <!ATTLIST ledger
+    account CDATA #REQUIRED
+    currency (EUR|GBP|JPY) "EUR">
+  <!ELEMENT opening (#PCDATA)>
+  <!ELEMENT transaction (date, description, amount, tags?)>
+  <!ATTLIST transaction
+    id ID #REQUIRED
+    type (credit|debit|transfer) #REQUIRED>
+  <!ELEMENT date (#PCDATA)>
+  <!ELEMENT description (#PCDATA|strong|code)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT amount (#PCDATA)>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT closing (#PCDATA)>
+  <!ENTITY euro "&#x20AC;">
+  <!ENTITY note "A &lt;quoted&gt; value">
+]>
+<ledger account="ACCT-09" currency="GBP">
+  <opening>1000.00</opening>
+  <transaction id="t-1" type="credit">
+    <date>2026-01-01</date>
+    <description>Initial <strong>deposit</strong></description>
+    <amount>250.00</amount>
+    <tags><tag>initial</tag><tag>verified</tag></tags>
+  </transaction>
+  <transaction id="t-2" type="debit">
+    <date>2026-02-14</date>
+    <description>Service &amp; maintenance: <code>R-42</code></description>
+    <amount>-19.95</amount>
+  </transaction>
+  <transaction id="t-3" type="transfer">
+    <date>2026-03-31</date>
+    <description>&note; &euro;</description>
+    <amount>75.5</amount>
+    <tags><tag><![CDATA[quarterly]]></tag></tags>
+  </transaction>
+  <closing>1305.55</closing>
+</ledger>

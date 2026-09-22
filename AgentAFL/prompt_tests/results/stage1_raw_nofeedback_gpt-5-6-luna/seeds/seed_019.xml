@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+  <!ENTITY quote "&quot;">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY external SYSTEM "urn:unreachable-resource" NDATA bin>
+  <!ELEMENT root (map,stream,tail)>
+  <!ELEMENT map (pair*)>
+  <!ELEMENT pair (key,value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|value)*>
+  <!ELEMENT stream (#PCDATA)>
+  <!ELEMENT tail (#PCDATA)>
+  <!ATTLIST stream source ENTITY #IMPLIED>
+]>
+<root>
+  <map>
+    <pair><key>escaped</key><value>&left;A&amp;B&right;</value></pair>
+    <pair><key>quoted</key><value>&quote;inside&quot;</value></pair>
+    <pair><key>recursive-shape</key><value>a<value>b<value>c</value>d</value>e</pair>
+  </map>
+  <stream source="external">text before <![CDATA[raw ]]> text after</stream>
+  <tail>final&#x20;node</tail>
+</root>

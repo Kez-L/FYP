@@ -1,0 +1,144 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY euro "&#x20AC;">
+  <!ENTITY nested "item &euro; value">
+  <!NOTATION gif SYSTEM "image/gif">
+  <!ENTITY logo SYSTEM "logo.gif" NDATA gif>
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, entry*)>
+  <!ATTLIST section id ID #REQUIRED xml:space (default|preserve) "default">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (#PCDATA|link)*>
+  <!ATTLIST entry key ID #IMPLIED ref IDREF #IMPLIED>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link href URI #IMPLIED>
+]>
+<catalog>
+  <section id="s1" xml:space="preserve">
+    <title>Prices &nested;</title>
+    <entry key="e1">alpha<link href="urn:x"/>omega</entry>
+    <entry ref="e1"><![CDATA[raw <markup> & symbols]]></entry>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, payload, footer?)>
+  <!ELEMENT header (from, to, subject)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST message priority NMTOKENS #IMPLIED>
+]>
+<message priority="urgent encrypted">
+  <header>
+    <from>sender@example.test</from>
+    <to>receiver@example.test</to>
+    <subject>Line&#x0A;Break</subject>
+  </header>
+  <payload xmlns="urn:payload" xmlns:x="urn:extra">
+    <x:record x:id="7" enabled="true">
+      <x:value><![CDATA[</payload>]]></x:value>
+    </x:record>
+    <blob encoding="base64">QUJDREVGRw==</blob>
+  </payload>
+  <footer>done</footer>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (pair*)>
+  <!ELEMENT pair (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|pair|list)*>
+  <!ELEMENT list (item*)>
+  <!ELEMENT item (#PCDATA|list)*>
+  <!ATTLIST pair type (scalar|object|array) "scalar">
+]>
+<map>
+  <pair type="object">
+    <key>profile</key>
+    <value>
+      <pair><key>name</key><value>Zoë &amp; Co.</value></pair>
+      <pair type="array">
+        <key>tags</key>
+        <value>
+          <list>
+            <item>one</item>
+            <item><list><item>nested</item></list></item>
+            <item><![CDATA[two & three]]></item>
+          </list>
+        </value>
+      </pair>
+    </value>
+  </pair>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (chapter+)>
+  <!ELEMENT chapter (heading, section+)>
+  <!ATTLIST chapter xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT section (para|list|section)*>
+  <!ATTLIST section number NMTOKEN #IMPLIED>
+  <!ELEMENT para (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA|em)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT list (li+)>
+  <!ELEMENT li (#PCDATA|para|list)*>
+]>
+<root>
+  <chapter xml:lang="fr">
+    <heading>Résumé</heading>
+    <section number="1">
+      <para>Text <em>with <em>nested</em> emphasis</em><br/> after.</para>
+      <list>
+        <li>first</li>
+        <li><para>second</para><list><li>inner</li></list></li>
+      </list>
+      <section number="1.1">
+        <para><code>&lt;sample/&gt;</code></para>
+      </section>
+    </section>
+  </chapter>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (metadata, stream)>
+  <!ELEMENT metadata (name, created, checksum)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT stream (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED kind (text|binary|empty) "text">
+]>
+<archive xmlns="urn:archive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="urn:archive archive.xsd">
+  <metadata>
+    <name>sample.tar</name>
+    <created>2026-09-17T12:34:56Z</created>
+    <checksum>sha256:00000000000000000000000000000000</checksum>
+  </metadata>
+  <stream>
+    <chunk index="0" kind="text">first&#xD;&#xA;line</chunk>
+    <chunk index="1" kind="binary">AAEC/f8=</chunk>
+    <chunk index="2" kind="empty"/>
+    <chunk index="3"><![CDATA[characters ]]> inside]]></chunk>
+  </stream>
+</archive>
+```

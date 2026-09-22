@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta?, body)>
+  <!ELEMENT meta (entry*)>
+  <!ELEMENT entry EMPTY>
+  <!ELEMENT body (chunk|x:foreign|empty)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT x:foreign ANY>
+  <!ELEMENT empty EMPTY>
+  <!ATTLIST envelope xmlns:x CDATA #FIXED "urn:foreign">
+  <!ATTLIST entry name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST chunk number NMTOKEN #IMPLIED>
+]>
+<envelope xmlns:x="urn:foreign" xmlns:y="urn:other">
+  <meta>
+    <entry name="a" value="1"/>
+    <entry name="b"/>
+  </meta>
+  <body>
+    <chunk number="0000000000000000000000000000000000000000000000000007">A&amp;B</chunk>
+    <x:foreign y:attr="v"><x:item/><x:item><![CDATA[data]]></x:foreign>
+    <empty/>
+    <chunk><![CDATA[]]></chunk>
+  </body>
+</envelope>

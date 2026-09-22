@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE dispatch [
+  <!ELEMENT dispatch (request|response|fault)+>
+  <!ELEMENT request (header*,body)>
+  <!ELEMENT response (header*,body)>
+  <!ELEMENT fault (code,message,detail?)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT body (#PCDATA|chunk|ref)*>
+  <!ELEMENT chunk (#PCDATA|chunk)*>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT detail ANY>
+  <!ATTLIST request id ID #IMPLIED>
+  <!ATTLIST response id ID #IMPLIED>
+  <!ATTLIST header name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST ref target IDREF #REQUIRED>
+]>
+<dispatch>
+  <request id="reqA">
+    <header name="Accept" value="text/xml"/>
+    <header name="X-Trace" value="a&#xD;b&#xA;c"/>
+    <body>start<chunk>nested<chunk>deep</chunk>tail</chunk><ref target="reqA"/></body>
+  </request>
+  <fault>
+    <code>400</code>
+    <message>bad &amp; incomplete</message>
+    <detail><unknown attr="v">payload</unknown></detail>
+  </fault>
+  <response id="resp-1">
+    <body><![CDATA[raw ]]>]]><![CDATA[ ]]> tail</body>
+  </response>
+</dispatch>

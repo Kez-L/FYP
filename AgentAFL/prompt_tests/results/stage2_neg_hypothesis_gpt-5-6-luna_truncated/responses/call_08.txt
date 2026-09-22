@@ -1,0 +1,115 @@
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, description, metadata?)>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    state (draft|published|retired) "draft"
+    ref IDREF #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code|br)*>
+  <!ELEMENT metadata (created, tags?)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+]>
+<catalog>
+  <entry id="e1" state="published">
+    <title>Parser &amp; Boundary Tests</title>
+    <description>mixed <em>content</em><br/><code>&lt;token&gt;</code> after</description>
+    <metadata><created>2026-09-17</created><tags><tag>xml</tag><tag>fuzz</tag></tags></metadata>
+  </entry>
+  <entry id="e2" ref="e1">
+    <title>Second</title>
+    <description>text <![CDATA[ ]]> tail</description>
+  </entry>
+</catalog>
+```
+
+```xml
+<!DOCTYPE r [
+  <!ELEMENT r ANY>
+  <!ENTITY plain "alpha">
+  <!ENTITY quoted "x&apos;y&quot;z">
+  <!ENTITY nested "&plain;:&quoted;:&amp;:&lt;:&gt;">
+  <!ATTLIST r
+    fixed CDATA #FIXED "a&#x20;b"
+    token NMTOKENS "one two&#x20;three"
+    required CDATA #REQUIRED>
+]>
+<r required="&nested;" fixed="a b" token="red green blue">
+  <?inside data?>
+  <![CDATA[first ]]> second ]]> third]]>
+  &plain;
+</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (item|group)*>
+  <!ELEMENT item EMPTY>
+  <!ELEMENT group (item|group)*>
+  <!ATTLIST item
+    key NMTOKEN #IMPLIED
+    enabled (yes|no) "yes">
+  <!ENTITY % feature "<!ELEMENT extra (#PCDATA)>">
+  %feature;
+]>
+<root>
+  <group>
+    <item key="a"/>
+    <group>
+      <item key="b" enabled="no"/>
+      <extra>conditionally declared</extra>
+    </group>
+  </group>
+  <item key="c"></item>
+</root>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!NOTATION png SYSTEM "image/png">
+  <!NOTATION text PUBLIC "-//example//NOTATION Text//EN">
+  <!ELEMENT envelope (header, payload, trailer)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload (#PCDATA)>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST envelope
+    schema NOTATION (png|text) "text"
+    attachment ENTITY #IMPLIED>
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY note SYSTEM "note.txt">
+]>
+<envelope schema="text" attachment="logo">
+  <header/>
+  <payload>external references are declared but not expanded here</payload>
+  <trailer>done</trailer>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a, b?, c*)>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b ANY>
+  <!ELEMENT c EMPTY>
+  <!ATTLIST root xmlns CDATA #IMPLIED xmlns:x CDATA #IMPLIED>
+]>
+<root xmlns="urn:default" xmlns:x="urn:x">
+  <a xml:space="preserve">line
+    with&#x0A;references&#x09;and&nbsp;no</a>
+  <b>
+    <x:item x:flag="&quot;quoted&quot;"/>
+    <x:item x:flag="&#x1F600;"/>
+    <?processing instruction?>
+  </b>
+  <c/><c/>
+</root>
+```

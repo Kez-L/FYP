@@ -1,0 +1,65 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:test" xmlns:x="urn:extra">
+  <item id="00000000" enabled="true">
+    <name><![CDATA[alpha < beta & gamma]]></name>
+    <x:metadata>
+      <!-- comment with --? -->
+      <x:value>line1&#x0A;line2</x:value>
+    </x:metadata>
+  </item>
+</catalog>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ENTITY local "replacement">
+]>
+<envelope>
+  <header>&local;</header>
+  <payload><entry key="a&amp;b">text</entry><entry key="c">42</entry></payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8" standalone="yes"?>
+<?process instruction?>
+<r>
+  <a><![CDATA[]]></a>
+  <b attr="&quot;&apos;&amp;&lt;&gt;">&#0;&#xFFFD;</b>
+  <c>
+    <d/>
+    <d>   </d>
+  </c>
+</r>
+```
+
+```xml
+<root xmlns:p="urn:p" xmlns:q="urn:q">
+  <p:node q:ref="x">
+    <q:child p:flag="1">value</q:child>
+    <p:node>
+      <![CDATA[unterminated-looking ]]]]>
+    </p:node>
+  </p:node>
+</root>
+```
+
+```xml
+<!DOCTYPE r [
+  <!ELEMENT r (x|y)*>
+  <!ELEMENT x EMPTY>
+  <!ELEMENT y (#PCDATA|z)*>
+  <!ELEMENT z EMPTY>
+  <!ATTLIST x a NMTOKENS #IMPLIED>
+  <!ATTLIST y xml:space (default|preserve) "default">
+]>
+<r>
+  <x a="one two three"/>
+  <y xml:space="preserve">before<z/>after</y>
+  <x/>
+</r>
+```

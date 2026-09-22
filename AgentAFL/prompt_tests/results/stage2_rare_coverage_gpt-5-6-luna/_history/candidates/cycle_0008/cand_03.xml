@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, payload, checksum)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload (#PCDATA|chunk|escape)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT escape EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST header version CDATA #REQUIRED flags NMTOKENS #IMPLIED>
+  <!ATTLIST chunk n NMTOKEN #REQUIRED>
+  <!ENTITY lt "<">
+  <!ENTITY amp "&amp;">
+]>
+<packet>
+  <header version="0" flags="a b c"/>
+  <payload>
+    pre&amp;post
+    <chunk n="000">A&#0;B</chunk>
+    <escape/>
+    <chunk n="1"><![CDATA[unclosed-looking ]]]]>tail</chunk>
+    &lt;not-an-element&gt;
+  </payload>
+  <checksum>00ff&#x0D;&#x0A;</checksum>
+</packet>

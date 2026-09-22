@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE journal [
+  <!ELEMENT journal (entry+)>
+  <!ELEMENT entry (heading, author+, body, related?)>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    status (draft|published|archived) "draft">
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT author EMPTY>
+  <!ATTLIST author
+    ref IDREF #REQUIRED
+    role CDATA #IMPLIED>
+  <!ELEMENT body (#PCDATA|em|code|link|br)*>
+  <!ELEMENT em (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link target IDREF #REQUIRED>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT related (link+)>
+  <!ENTITY product "XML &amp; Validation">
+]>
+<journal>
+  <entry id="e1" status="published">
+    <heading>Entity handling</heading>
+    <author ref="u1" role="editor"/>
+    <body>Testing <em>mixed</em> content with <code>&lt;tokens&gt;</code><br/>and a <link target="e2">cross-reference</link>: &product;.</body>
+    <related>
+      <link target="e2">next entry</link>
+    </related>
+  </entry>
+  <entry id="e2">
+    <heading><![CDATA[CDATA section with ]]> text</heading>
+    <author ref="u1"/>
+    <body>Second record<!-- embedded comment --> with a processing instruction <?note value?>.</body>
+  </entry>
+</journal>

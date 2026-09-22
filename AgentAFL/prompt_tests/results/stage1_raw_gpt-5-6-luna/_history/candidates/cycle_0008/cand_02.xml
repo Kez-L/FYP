@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE world [
+  <!ELEMENT world (region*)>
+  <!ELEMENT region (city|empty)*>
+  <!ELEMENT city (#PCDATA)>
+  <!ELEMENT empty EMPTY>
+  <!ATTLIST region xml:lang NMTOKEN #IMPLIED>
+  <!ENTITY % switches '
+    <!ATTLIST city
+      class CDATA #IMPLIED
+      level CDATA "0">
+  '>
+  %switches;
+  <![IGNORE[
+    <!ELEMENT ignored ANY>
+    <!ENTITY hidden "not-expanded">
+  ]]>
+  <![INCLUDE[
+    <!ENTITY visible "in-include">
+  ]]>
+]>
+<world xml:base="urn:test:root">
+  <region xml:lang="en-US">
+    <city class="capital" level="&quot;">&visible;</city>
+    <empty/>
+  </region>
+  <region xml:lang="x-private">
+    <city><![CDATA[&visible; < > " ']]></city>
+  </region>
+</world>

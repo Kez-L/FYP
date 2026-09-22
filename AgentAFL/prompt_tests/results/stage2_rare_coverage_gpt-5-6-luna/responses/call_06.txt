@@ -1,0 +1,115 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (entry|group)*>
+  <!ELEMENT group (entry|group)*>
+  <!ELEMENT entry (#PCDATA)>
+  <!ATTLIST entry key ID #REQUIRED>
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+]>
+<map>
+  <group>
+    <entry key="k1">one &left; two &right;</entry>
+    <group>
+      <entry key="k2"><![CDATA[a]]>b<![CDATA[c]]></entry>
+    </group>
+  </group>
+  <entry key="k3">tail</entry>
+</map>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r xmlns="urn:root" xmlns:x="urn:x" xmlns:y="urn:y">
+  <x:branch y:kind="mixed">
+    text
+    <leaf xmlns="" xml:space="preserve">  spaced
+      <x:inner xmlns:x="urn:alternate">value</x:inner>
+    </leaf>
+    <y:branch x:kind="nested">
+      <x:leaf y:flag="true"/>
+    </y:branch>
+  </x:branch>
+  <empty xmlns:x=""> </empty>
+</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, body, footer)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT body (paragraph|table|paragraph)*>
+  <!ELEMENT paragraph (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<report>
+  <header><![CDATA[Quarterly <summary>]]></header>
+  <body>
+    <paragraph>before <em>important</em><br/>after</paragraph>
+    <table>
+      <row><cell>A</cell><cell>B &amp; C</cell></row>
+      <row><cell><![CDATA[x<y]]></cell><cell>42</cell></row>
+    </table>
+    <paragraph>last</paragraph>
+  </body>
+  <footer>Generated&#xA;automatically</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<?processing instruction?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta, payload)>
+  <!ELEMENT meta (created, labels)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT labels (label*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT payload ANY>
+]>
+<envelope>
+  <!-- comment before metadata -->
+  <meta>
+    <created>2026-09-17T00:00:00Z</created>
+    <labels>
+      <label>alpha</label>
+      <label>beta</label>
+    </labels>
+  </meta>
+  <payload>
+    <data><![CDATA[
+      {"items":[1,2,3],"text":"<&>"}
+    ]]></data>
+    <?inside value?>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<stream>
+  <record index="0">
+    <value type="null"/>
+    <value type="boolean">true</value>
+    <value type="number">-0.000</value>
+  </record>
+  <record index="1" xmlns:q="urn:quoted">
+    <value q:type="string">line
+break</value>
+    <value type="string">quotes &quot; apostrophe &apos;</value>
+    <value type="escaped">&#9;&#10;&#13;&#x20;</value>
+  </record>
+  <record index="2">
+    <nested>
+      <a><b><c><d/></c></b></a>
+    </nested>
+  </record>
+</stream>
+```

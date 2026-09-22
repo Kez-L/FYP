@@ -1,0 +1,27 @@
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body, trailer?)>
+  <!ELEMENT header (token, timestamp)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT body (message*)>
+  <!ELEMENT message (#PCDATA|part|quote)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST message level (info|warn|error) "info">
+  <!ATTLIST part name CDATA #IMPLIED>
+  <!ENTITY left "&lt;">
+  <!ENTITY right "&gt;">
+]>
+<envelope>
+  <header>
+    <token>abc&amp;xyz</token>
+    <timestamp>2026-09-17T12:34:56+00:00</timestamp>
+  </header>
+  <body>
+    <message level="warn">A &left;part name=&quot;x&quot;&gt;<part name="x">payload</part>&right; follows.</message>
+    <message><quote>quoted</quote><![CDATA[ raw ]]>tail</message>
+    <message level="error">line&#10;break&#x0D;end</message>
+  </body>
+  <trailer/>
+</envelope>

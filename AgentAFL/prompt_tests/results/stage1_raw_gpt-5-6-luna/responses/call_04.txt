@@ -1,0 +1,120 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <entry id="A-001" status="active">
+    <title><![CDATA[Fish & Chips <special>]]></title>
+    <metadata>
+      <x:tag key="genre">café</x:tag>
+      <x:tag key="year">2026</x:tag>
+    </metadata>
+    <description>Text with &lt;markup&gt;, an apostrophe, and a non-breaking&nbsp;gap.</description>
+    <items>
+      <item rank="1"><name>Alpha</name><price currency="€">0.00</price></item>
+      <item rank="2"><name>Beta</name><price currency="USD">19.95</price></item>
+    </items>
+  </entry>
+  <entry id="A-002" status="archived">
+    <title>Trailing content</title>
+    <items/>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:report xmlns:r="urn:report" xmlns:d="urn:data" xmlns="">
+  <r:header>
+    <r:generated>2026-09-17T00:00:00Z</r:generated>
+    <r:source d:id="node-7">collector</r:source>
+  </r:header>
+  <r:payload>
+    <record d:type="measurement">
+      <value unit="m/s">3.141592653589793</value>
+      <value unit="raw"><![CDATA[]]></value>
+      <note><!-- nested-looking text: <!-- not a comment --> --></note>
+    </record>
+    <record d:type="event">
+      <value unit="flag">true</value>
+      <details>
+        <line>one</line>
+        <line>two</line>
+        <line><![CDATA[
+          whitespace
+          and ]]> brackets
+        ]]></line>
+      </details>
+    </record>
+  </r:payload>
+  <?custom instruction?>
+</r:report>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body, trailer?)>
+  <!ELEMENT header (token, timestamp)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT body (message*)>
+  <!ELEMENT message (#PCDATA|part|quote)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST message level (info|warn|error) "info">
+  <!ATTLIST part name CDATA #IMPLIED>
+  <!ENTITY left "&lt;">
+  <!ENTITY right "&gt;">
+]>
+<envelope>
+  <header>
+    <token>abc&amp;xyz</token>
+    <timestamp>2026-09-17T12:34:56+00:00</timestamp>
+  </header>
+  <body>
+    <message level="warn">A &left;part name=&quot;x&quot;&gt;<part name="x">payload</part>&right; follows.</message>
+    <message><quote>quoted</quote><![CDATA[ raw ]]>tail</message>
+    <message level="error">line&#10;break&#x0D;end</message>
+  </body>
+  <trailer/>
+</envelope>
+```
+
+```xml
+<?xml version="1.1"?>
+<root xmlns:a="urn:a" xmlns:b="urn:b">
+  <a:item b:flag="yes" a:key="value">
+    <a:child>
+      <![CDATA[unterminated-looking ]]]>
+    </a:child>
+    <a:child><![CDATA[<x attr="&amp;">opaque</x>]]></a:child>
+  </a:item>
+  <b:item a:flag="no" b:key="other">
+    <b:child><![CDATA[alpha]]></b:child>
+  </b:item>
+  <empty xmlns:p="urn:p" p:x="1"/>
+  <?pi data with > and & characters?>
+</root>
+```
+
+```xml
+<root>
+  <branch id="left">
+    <leaf data="&quot;&apos;&amp;&lt;&gt;" />
+    <leaf data="line1&#10;line2&#9;line3">mixed <b>bold</b> text <i>italic</i>.</leaf>
+    <![CDATA[split ]]>between<![CDATA[ sections]]>
+  </branch>
+  <branch id="middle">
+    <a><b><c><d><e>deep</e></d></c></b></a>
+    <sequence>
+      <n>0</n><n>1</n><n>2</n><n>3</n><n>4</n>
+    </sequence>
+  </branch>
+  <branch id="right" note="  padded   value  ">
+    <![CDATA[
+      leading whitespace
+      <not-an-element/>
+      trailing whitespace
+    ]]>
+  </branch>
+</root>
+```

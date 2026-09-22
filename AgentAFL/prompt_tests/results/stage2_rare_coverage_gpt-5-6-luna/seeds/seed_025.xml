@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, record+, footer?)>
+  <!ELEMENT header (created, source)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT record (key, payload, link*)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST record state (open|closed|held) "open">
+  <!ATTLIST record ref ID #IMPLIED>
+  <!ATTLIST link target IDREF #REQUIRED>
+  <!ENTITY marker "&#x2026;">
+]>
+<archive>
+  <header>
+    <created>2026-09-17T00:00:00Z</created>
+    <source><![CDATA[feed://example.invalid/a?x=1&y=2]]></source>
+  </header>
+  <record ref="r1" state="open">
+    <key>alpha</key>
+    <payload>left<part><![CDATA[<opaque>&raw;]]></part>right &marker;</payload>
+    <link target="r2"/>
+  </record>
+  <record ref="r2" state="held">
+    <key>beta</key>
+    <payload><part>one</part><part>two</part></payload>
+  </record>
+  <footer>done</footer>
+</archive>

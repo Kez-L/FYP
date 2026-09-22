@@ -119,6 +119,18 @@ Adds +2 Haiku calls per prompt at the default `n_history_failure=2` — cheap
 with Haiku, but real; factor into the cost estimate in Section 7. **Lock in
 the winner before Stage 2.**
 
+### stage2_neg_hypothesis — grouped bad-seed hypothesis feedback (separate arm)
+Not part of this Stage 1→4 numbered sequence (deliberately named to avoid
+clashing with "Stage 4 — Final comparison" below) and not gated on locking
+in any of Stage 1-3's winners first. `run_build_context.py
+--stage2-neg-hypothesis`: instead of showing 2 raw bad seeds, finds the 2
+largest groups of this batch's own past bad seeds that share overlapping
+edge coverage (`build_context._cluster_failures` with a loosened Jaccard
+threshold), asks the LLM once per group why it thinks that whole group
+failed to find new coverage, and shows only those 2 hypothesis sentences —
+no raw seed bytes — alongside the usual 2 good seeds. See
+`stage2_neg_hypothesis.py`'s module docstring for the full design.
+
 ### Stage 2 — Seed selection (A/B/C)
 Three arms, Stage 1's winning bad-seed treatment carried forward, only the
 good-seed selection varies (`stage2_seed_selection/select_seeds_by_coverage.py`):

@@ -1,0 +1,109 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node EMPTY>
+  <!ATTLIST node
+    id ID #REQUIRED
+    label CDATA #IMPLIED
+    refs IDREFS #IMPLIED
+    icon ENTITY #IMPLIED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge
+    from IDREF #REQUIRED
+    to IDREF #REQUIRED
+    weight NMTOKEN "1">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY unused SYSTEM "asset.png" NDATA png>
+]>
+<graph>
+  <node id="n1" label="root" refs="n2 n3"/>
+  <node id="n2" label="left"/>
+  <node id="n3" label="right"/>
+  <edge from="n1" to="n2" weight="0x10"/>
+  <edge from="n1" to="n3"/>
+</graph>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<r xmlns="urn:root" xmlns:p="urn:primary" xml:lang="fr" xml:space="preserve">
+  <p:item id="α" p:kind="mixed">
+    <p:name>café&#x85;tea</p:name>
+    <inner xmlns="" xmlns:q="urn:secondary" q:value="&quot;quoted&quot;">
+      <plain xml:space="default">a&#x9;b&#xA;c</plain>
+      <q:leaf><![CDATA[x < y && y > z]]></q:leaf>
+    </inner>
+  </p:item>
+</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ENTITY % declarations "
+    <!ELEMENT option EMPTY>
+    <!ATTLIST option
+      key CDATA #REQUIRED
+      value CDATA #IMPLIED
+      locked (yes|no) 'no'>
+  ">
+  %declarations;
+  <!ELEMENT config (section*)>
+  <!ELEMENT section (option*, note?)>
+  <!ATTLIST section name NMTOKEN #REQUIRED>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY quoted "&#x22;quoted&#x22;">
+]>
+<config>
+  <section name="network">
+    <option key="host" value="localhost"/>
+    <option key="port" value="8080" locked="yes"/>
+    <note>Use &quoted; values only.</note>
+  </section>
+  <section name="empty"/>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ATTLIST root mode (a|b|c) "c">
+  <!ENTITY fragment "<part level='1'>embedded &amp; text</part>">
+]>
+<root mode="b">
+  <!-- comment with unusual spacing - - -->
+  <?instruction alpha="1"?>
+  &fragment;
+  <![CDATA[split ]]]]><![CDATA[> cdata section]]>
+  <part level="2"><![CDATA[<raw>&still raw</raw>]]></part>
+  tail text
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE report [
+  <!ELEMENT report (title, record*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT record (field+)>
+  <!ELEMENT field (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ATTLIST record rid ID #REQUIRED status (new|old) "new">
+  <!ATTLIST field name CDATA #IMPLIED>
+  <!ENTITY begin-emph "<emph>">
+  <!ENTITY end-emph "</emph>">
+  <!ENTITY nbsp "&#160;">
+]>
+<report>
+  <title>Daily&nbsp;summary</title>
+  <record rid="r-001">
+    <field name="intro">plain text, &begin-emph;highlighted&end-emph; text</field>
+    <field name="empty"/>
+  </record>
+  <record rid="r-002" status="old">
+    <field name="body">A &begin-emph;second&nbsp;entry&end-emph;.</field>
+  </record>
+</report>
+```

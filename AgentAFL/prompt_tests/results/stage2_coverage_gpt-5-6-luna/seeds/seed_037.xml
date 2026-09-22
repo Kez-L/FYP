@@ -1,0 +1,54 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (start, stage+, finish)>
+  <!ATTLIST workflow
+    id ID #REQUIRED
+    owner CDATA #IMPLIED
+    status (open|paused|closed) "open">
+  <!ELEMENT start EMPTY>
+  <!ATTLIST start
+    next IDREF #REQUIRED>
+  <!ELEMENT stage (input*, action+, output*)>
+  <!ATTLIST stage
+    id ID #REQUIRED
+    when IDREF #IMPLIED
+    depends IDREFS #IMPLIED>
+  <!ELEMENT input (#PCDATA)>
+  <!ATTLIST input
+    name NMTOKEN #REQUIRED
+    type (text|number|boolean) "text">
+  <!ELEMENT action (#PCDATA|argument)*>
+  <!ATTLIST action
+    name NMTOKEN #REQUIRED
+    timeout CDATA #IMPLIED>
+  <!ELEMENT argument (#PCDATA)>
+  <!ATTLIST argument
+    key NMTOKEN #REQUIRED>
+  <!ELEMENT output (#PCDATA)>
+  <!ATTLIST output
+    name NMTOKEN #REQUIRED
+    ref IDREF #IMPLIED>
+  <!ELEMENT finish EMPTY>
+  <!ATTLIST finish
+    result (success|failure|cancelled) "success">
+  <!ENTITY arrow "&#x2192;">
+]>
+<workflow xmlns="urn:workflow:v2" xmlns:x="urn:extra" id="flow-1"
+          owner="Δ-team" status="open">
+  <start next="stage-fetch"/>
+  <stage id="stage-fetch">
+    <input name="endpoint" type="text">https://example.test/api?x=1&amp;y=2</input>
+    <action name="fetch" timeout="30">
+      <argument key="method">GET</argument>
+      <argument key="accept">application/xml</argument>
+    </action>
+    <output name="document" ref="stage-transform"/>
+  </stage>
+  <stage id="stage-transform" when="stage-fetch" depends="stage-fetch">
+    <input name="mode">compact</input>
+    <action name="normalize">trim&nbsp;and&nbsp;sort</action>
+    <action name="emit"><argument key="format">json</argument></action>
+    <output name="result">ready &arrow; delivered</output>
+  </stage>
+  <finish result="success"/>
+</workflow>

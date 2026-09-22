@@ -1,0 +1,148 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:meta="urn:example:meta" xml:lang="en">
+  <meta:revision>2026-09-17</meta:revision>
+  <item id="A-001" meta:state="active" price="19.95">
+    <name>Alpha &amp; Omega</name>
+    <description>Text before <![CDATA[<embedded markup/> & raw characters]]> text after.</description>
+    <tags>
+      <tag priority="1">first</tag>
+      <tag priority="2">second</tag>
+    </tags>
+  </item>
+  <?catalog-check mode="strict"?>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, body, footer)>
+  <!ELEMENT header (title, author+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT body (section+)>
+  <!ELEMENT section (heading, paragraph+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST section number NMTOKEN #REQUIRED>
+  <!ENTITY product "XML Toolkit">
+]>
+<report>
+  <header>
+    <title>&product; diagnostics</title>
+    <author>compiler</author>
+    <author>validator</author>
+  </header>
+  <body>
+    <section number="1">
+      <heading>Overview</heading>
+      <paragraph>Use <em>carefully</em> and inspect <code>stderr</code>.</paragraph>
+    </section>
+    <section number="2">
+      <heading>Details</heading>
+      <paragraph>Entities and declarations are handled independently.</paragraph>
+    </section>
+  </body>
+  <footer>End of report.</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<environment xmlns="urn:example:environment"
+             xmlns:x="urn:example:extension"
+             x:version="3">
+  <location latitude="51.5074" longitude="-0.1278">
+    <name><![CDATA[London <central>]]></name>
+    <coordinates>
+      <latitude units="degrees">51.5074</latitude>
+      <longitude units="degrees">-0.1278</longitude>
+    </coordinates>
+  </location>
+  <measurements>
+    <measurement timestamp="2026-09-17T12:34:56Z">
+      <value unit="°C">18.5</value>
+      <quality>nominal</quality>
+    </measurement>
+    <measurement timestamp="2026-09-17T12:35:01Z">
+      <value unit="%" scale="0.01">42</value>
+      <quality>estimated</quality>
+    </measurement>
+  </measurements>
+  <!-- A comment between siblings -->
+  <x:notes xml:space="preserve">
+    line one
+    line two
+  </x:notes>
+</environment>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (key, value, metadata?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT metadata (created, updated?)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT updated (#PCDATA)>
+  <!ATTLIST entry type (text|binary|link) "text">
+  <!ATTLIST entry ident ID #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+]>
+<archive>
+  <entry ident="e1" type="text">
+    <key>greeting</key>
+    <value>Hello&nbsp;world<linebreak/>Next line</value>
+    <metadata>
+      <created>2026-01-01</created>
+      <updated>2026-09-17</updated>
+    </metadata>
+  </entry>
+  <entry ident="e2" type="link">
+    <key>target</key>
+    <value>https://example.invalid/a?x=1&amp;y=2</value>
+  </entry>
+  <entry type="binary">
+    <key>empty</key>
+    <value><![CDATA[AAECAwQFBgcICQ==]]></value>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow"
+          xmlns:ext="urn:example:workflow:ext"
+          xml:base="https://example.invalid/workflows/">
+  <?processing instruction-data?>
+  <pipeline name="release" enabled="true">
+    <step id="fetch" class="source">
+      <input href="data/source.xml" format="xml"/>
+      <output name="raw"/>
+    </step>
+    <step id="transform" class="processor">
+      <depends-on ref="fetch"/>
+      <config>
+        <option name="mode">incremental</option>
+        <option name="retries">3</option>
+        <ext:flag enabled="false">experimental</ext:flag>
+      </config>
+    </step>
+    <step id="publish" class="sink">
+      <depends-on ref="transform"/>
+      <destination scheme="https" host="example.invalid" path="/upload"/>
+    </step>
+  </pipeline>
+  <audit>
+    <event level="info" code="START">Pipeline initialized</event>
+    <event level="warn" code="SKIP"><![CDATA[optional stage was skipped]]></event>
+  </audit>
+</workflow>
+```

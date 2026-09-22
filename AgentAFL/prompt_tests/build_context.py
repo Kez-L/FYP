@@ -336,18 +336,20 @@ def scan_cycle_history(run_dir: Path) -> list:
     return out
 
 
-def _cluster_failures(failures: list) -> list:
+def _cluster_failures(failures: list, jaccard_min: float = HIST_JACCARD_MIN) -> list:
     """Greedy clustering of failed-seed entries. Two seeds cluster if they drove
     the same path through the parser — identical edge_sig, or edge_ids overlap
-    >= HIST_JACCARD_MIN. Seeds with no edge data fall back to content_sample
-    similarity. Returns [{"members": [...], "rep": entry}, ...]."""
+    >= jaccard_min (default HIST_JACCARD_MIN, tight "same mistake" clusters).
+    A caller can pass a much looser threshold to form larger, coarser
+    groupings instead (see stage2_neg_hypothesis.py). Seeds with no edge data
+    fall back to content_sample similarity. Returns [{"members": [...], "rep": entry}, ...]."""
     clusters = []
     for f in failures:
         for cl in clusters:
             rep = cl["rep"]
             if f["edge_sig"] and rep["edge_sig"]:
                 same = (f["edge_sig"] == rep["edge_sig"]
-                        or _jaccard(f["edge_ids"], rep["edge_ids"]) >= HIST_JACCARD_MIN)
+                        or _jaccard(f["edge_ids"], rep["edge_ids"]) >= jaccard_min)
             else:
                 same = is_similar(_sample_of(f), _sample_of(rep))
             if same:
@@ -465,6 +467,7 @@ def assemble_prompt(
     include_crash: bool = False,
     seed_selector=select_diverse_seeds,
     bad_seed_renderer=None,
+    history_examples_override: list | None = None,
     closing_instruction: str | None = None,
 ) -> dict:
     """Build the SYSTEM/USER prompt pair from campaign state.
@@ -503,6 +506,13 @@ def assemble_prompt(
       today's behavior — the raw seed content via format_seed_for_prompt. Pass
       a callable that instead returns a short LLM-distilled explanation of why
       the seed failed — see stage1_distillation/distill_seed.py.
+    - history_examples_override: replace the ENTIRE "avoid" block wholesale
+      instead of computing it from run_dir/n_history_failure. None (default):
+      today's behavior, unchanged. A list of (label, body) pairs: shown
+      verbatim as the avoid block (run_dir/n_history_failure/bad_seed_renderer
+      are all skipped). An empty list []: deliberately show no avoid block
+      this call. Used by stage2_neg_hypothesis.py to show two LLM-generated
+      group hypotheses instead of raw bad-seed bytes.
     - closing_instruction: swap out the final "Generate N new files..." line.
       Default (None): today's generic line. Pass one of Fuzz4All's three
       strategy sentences (generate-new / mutate-existing / semantic-equiv) —
@@ -518,7 +528,9 @@ def assemble_prompt(
 
     # Prior failed seeds from this run, rendered for the "avoid" block.
     history_examples = []  # [(label, rendered_content), ...]
-    if run_dir is not None and n_history_failure > 0:
+    if history_examples_override is not None:
+        history_examples = history_examples_override
+    elif run_dir is not None and n_history_failure > 0:
         try:
             failures = scan_cycle_history(Path(run_dir))
             exclude = [content_sample(f) for f, _ in chosen_seeds]

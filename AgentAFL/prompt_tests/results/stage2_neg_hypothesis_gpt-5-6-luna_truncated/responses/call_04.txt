@@ -1,0 +1,105 @@
+```xml
+<?xml version="1.0"?>
+<r:envelope xmlns:r="urn:root" xmlns:p="urn:payload" xmlns="urn:default"
+            xml:lang="x-klingon" xml:space="preserve">
+  <!-- comment with --? no, deliberately varied content -->
+  <?processing instruction-data?>
+  <p:item p:key="&#x0A;&#x20;&#x9;" r:flag="true">
+    <![CDATA[left ]]]]><![CDATA[> right & still cdata]]>
+    <empty xmlns="" />
+    <p:child xmlns:p="urn:payload:v2" p:key="&#x1F600;"/>
+  </p:item>
+  <tail>&#x3C;not-an-element&#x3E; &amp; &#xA0;</tail>
+</r:envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!NOTATION text SYSTEM "text/plain">
+  <!ELEMENT catalog (entry+, note?)>
+  <!ELEMENT entry EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST entry
+            id ID #REQUIRED
+            kind (image|text|other) "other"
+            format NOTATION (jpeg|text) #IMPLIED
+            ref ENTITY #IMPLIED>
+  <!ENTITY logo SYSTEM "logo.jpg" NDATA jpeg>
+  <!ENTITY words "alpha &amp; beta">
+]>
+<catalog>
+  <entry id="e1" kind="image" format="jpeg" ref="logo"/>
+  <entry id="e2" kind="text"/>
+  <note>&words; &#x2028; <![CDATA[unparsed-looking ]]> text</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE switch [
+  <!ELEMENT switch (on|off|branch)>
+  <!ELEMENT on EMPTY>
+  <!ELEMENT off EMPTY>
+  <!ELEMENT branch (#PCDATA|on|off)*>
+  <!ATTLIST switch mode (fast|slow|unknown) "unknown">
+  <!ENTITY % optional "<!ATTLIST branch state CDATA #IMPLIED>">
+  %optional;
+  <![IGNORE[
+    <!ELEMENT ignored EMPTY>
+    <!ENTITY hidden "not expanded">
+  ]]>
+]>
+<switch mode="fast">
+  <branch state="mixed">before<on/>middle<off/>after</branch>
+</switch>
+```
+
+```xml
+<?xml version="1.1"?>
+<document xml:id="root" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <section xml:id="s&#x31;" xml:base="urn:example:base">
+    <xi:include href="fragment.xml" parse="text">
+      <xi:fallback>
+        <replacement><![CDATA[external content unavailable]]></replacement>
+      </xi:fallback>
+    </xi:include>
+    <data>&#x85;&#x2028;&#x2029;line&#x0B;break</data>
+  </section>
+  <?xml-stylesheet type="text/xsl" href="view.xsl" alternate="yes"?>
+</document>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ELEMENT report (header, body, footer)>
+  <!ELEMENT header (title, meta*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT body (para|table|break)*>
+  <!ELEMENT para (#PCDATA|b|i|br)*>
+  <!ELEMENT b (#PCDATA|i)*>
+  <!ELEMENT i (#PCDATA|b)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA|b|i|br)*>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<report>
+  <header>
+    <title>Mixed <b>inline <i>markup</i></b> and <![CDATA[raw ]]> text</title>
+    <meta name="empty"/>
+    <meta name="quoted" value="&quot;&apos;&amp;&lt;&gt;"/>
+  </header>
+  <body>
+    <para>a<b>b<i>c</i>b</b><br/>d</para>
+    <table><row><cell>1</cell><cell><i>2</i></cell></row></table>
+    <break/>
+  </body>
+  <footer>done&#x0D;&#x0A;</footer>
+</report>
+```

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ENTITY % common '
+    <!ELEMENT header (origin, route*)>
+    <!ELEMENT origin (#PCDATA)>
+    <!ELEMENT route (#PCDATA)>
+    <!ATTLIST route hop NMTOKEN #REQUIRED>
+  '>
+  %common;
+  <!ELEMENT message (header, body, footer?)>
+  <!ELEMENT body (paragraph|quote|attachment)+>
+  <!ELEMENT paragraph (#PCDATA|b|i|br)*>
+  <!ELEMENT quote (paragraph+)>
+  <!ELEMENT attachment EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST message id ID #REQUIRED priority (low|normal|high) "normal">
+  <!ATTLIST attachment name CDATA #REQUIRED digest CDATA #IMPLIED>
+  <!ENTITY left "&#x5B;">
+  <!ENTITY right "&#x5D;">
+]>
+<message id="m-&#x31;" priority="high">
+  <header>
+    <origin>relay-α</origin>
+    <route hop="r1">edge</route>
+    <route hop="r2">core</route>
+  </header>
+  <body>
+    <paragraph>Open <b>bold</b>, <i>italic</i>, <br/> and &left;escaped&right; text.</paragraph>
+    <quote>
+      <paragraph><![CDATA[Quoted <markup> remains character data.]]></paragraph>
+      <paragraph>Second paragraph with &amp; entities.</paragraph>
+    </quote>
+    <attachment name="résumé.bin" digest="sha256:00ff"/>
+  </body>
+  <footer>done<?status ok?></footer>
+</message>

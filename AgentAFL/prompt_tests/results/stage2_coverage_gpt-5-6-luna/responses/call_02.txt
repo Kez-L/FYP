@@ -1,0 +1,207 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE canvas [
+  <!ELEMENT canvas (layer*)>
+  <!ELEMENT layer (shape|group|text)*>
+  <!ELEMENT group (shape|group|text)*>
+  <!ELEMENT shape EMPTY>
+  <!ELEMENT text (#PCDATA|em|strong|br)*>
+  <!ELEMENT em (#PCDATA|strong)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST canvas width CDATA #REQUIRED height CDATA #REQUIRED>
+  <!ATTLIST layer id ID #REQUIRED opacity CDATA "1.0">
+  <!ATTLIST group id ID #IMPLIED transform CDATA #IMPLIED>
+  <!ATTLIST shape kind (rect|circle|path) #REQUIRED x CDATA #IMPLIED y CDATA #IMPLIED>
+  <!ATTLIST text id ID #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+]>
+<canvas width="800" height="600">
+  <layer id="background">
+    <shape kind="rect" x="0" y="0"/>
+  </layer>
+  <layer id="foreground" opacity="0.75">
+    <group id="cluster" transform="rotate(12)">
+      <shape kind="circle" x="40" y="50"/>
+      <shape kind="path" x="10" y="20"/>
+      <text id="caption">A <em>small</em> <strong>vector</strong><br/>drawing&nbsp;sample.</text>
+    </group>
+  </layer>
+</canvas>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE record [
+  <!ELEMENT record (header, payload, checksum)>
+  <!ELEMENT header (field+)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST record format (binary|text|mixed) "mixed">
+  <!ATTLIST header version CDATA #REQUIRED>
+  <!ATTLIST field name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST chunk offset NMTOKEN #REQUIRED length NMTOKEN #REQUIRED>
+  <!ENTITY left "&lt;">
+  <!ENTITY right "&gt;">
+]>
+<record format="mixed">
+  <header version="7">
+    <field name="origin" value="sensor-4"/>
+    <field name="mode" value="burst"/>
+    <field name="flags" value="A|B|C"/>
+  </header>
+  <payload>start &left; chunked &right; <chunk offset="0" length="4">ABCD</chunk> middle <chunk offset="4" length="3"><![CDATA[x&y]]></chunk> end</payload>
+  <checksum>9f86d081884c7d659a2feaa0c55ad015</checksum>
+</record>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (entry*)>
+  <!ELEMENT entry (meta, value?, dependency*)>
+  <!ELEMENT meta (name, owner, flag*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ELEMENT value (string|number|boolean|nil|array|object)>
+  <!ELEMENT string (#PCDATA)>
+  <!ELEMENT number (#PCDATA)>
+  <!ELEMENT boolean (#PCDATA)>
+  <!ELEMENT nil EMPTY>
+  <!ELEMENT array (value*)>
+  <!ELEMENT object (property*)>
+  <!ELEMENT property (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT dependency EMPTY>
+  <!ATTLIST entry id ID #REQUIRED scope (global|local|temporary) "local">
+  <!ATTLIST flag name NMTOKEN #REQUIRED>
+  <!ATTLIST dependency ref IDREF #REQUIRED optional (yes|no) "no">
+  <!ENTITY product "Orchid">
+]>
+<registry>
+  <entry id="main" scope="global">
+    <meta>
+      <name>&product; Runtime</name>
+      <owner>ops@example.invalid</owner>
+      <flag name="pinned"/>
+      <flag name="audited"/>
+    </meta>
+    <value>
+      <object>
+        <property>
+          <key>limits</key>
+          <value>
+            <array>
+              <value><number>0</number></value>
+              <value><number>1.5</number></value>
+              <value><nil/></value>
+            </array>
+          </value>
+        </property>
+        <property>
+          <key>enabled</key>
+          <value><boolean>true</boolean></value>
+        </property>
+      </object>
+    </value>
+    <dependency ref="plugin" optional="yes"/>
+  </entry>
+  <entry id="plugin" scope="temporary">
+    <meta><name>Extension</name><owner>build@example.invalid</owner></meta>
+    <value><string><![CDATA[load-after:init]]></string></value>
+  </entry>
+</registry>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE timetable [
+  <!ELEMENT timetable (day+)>
+  <!ELEMENT day (heading, appointment*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT appointment (subject, location?, attendee*)>
+  <!ELEMENT subject (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT location (#PCDATA)>
+  <!ELEMENT attendee EMPTY>
+  <!ATTLIST day date CDATA #REQUIRED timezone CDATA "UTC">
+  <!ATTLIST appointment id ID #REQUIRED start CDATA #REQUIRED end CDATA #REQUIRED status (tentative|confirmed|cancelled) "confirmed">
+  <!ATTLIST mark type (important|private|remote) #REQUIRED>
+  <!ATTLIST attendee email CDATA #REQUIRED role (host|guest|observer) "guest">
+  <!ENTITY meeting "planning &amp; review">
+]>
+<timetable>
+  <day date="2026-09-17" timezone="Europe/Paris">
+    <heading>Thursday schedule</heading>
+    <appointment id="a1" start="09:00" end="09:45">
+      <subject>&meeting; <mark type="important">Q3</mark></subject>
+      <location>Room 2 &amp; video bridge</location>
+      <attendee email="lead@example.invalid" role="host"/>
+      <attendee email="guest@example.invalid"/>
+    </appointment>
+    <appointment id="a2" start="13:30" end="14:00" status="tentative">
+      <subject>Design <mark type="remote">sync</mark></subject>
+      <attendee email="remote@example.invalid" role="observer"/>
+    </appointment>
+  </day>
+  <day date="2026-09-18">
+    <heading>Friday schedule</heading>
+    <appointment id="a3" start="16:00" end="17:00" status="cancelled">
+      <subject>Retrospective</subject>
+      <location><![CDATA[Building C / Café]]></location>
+    </appointment>
+  </day>
+</timetable>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT data (section+)>
+  <!ELEMENT section (title, paragraph+, table?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|code|link|quote)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT quote (#PCDATA|link)*>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA|code)*>
+  <!ATTLIST package id ID #REQUIRED media CDATA #REQUIRED>
+  <!ATTLIST file path CDATA #REQUIRED size NMTOKEN #REQUIRED digest CDATA #IMPLIED>
+  <!ATTLIST section name NMTOKEN #REQUIRED>
+  <!ATTLIST link href CDATA #REQUIRED rel (doc|ref|external) "ref">
+  <!ATTLIST code language NMTOKEN #IMPLIED>
+  <!ENTITY copyright "Copyright &#169; 2026">
+]>
+<package id="bundle-42" media="application/xml">
+  <manifest>
+    <file path="readme.txt" size="1842" digest="abc123"/>
+    <file path="manual.xml" size="9120" digest="def456"/>
+    <file path="assets/icon.svg" size="317"/>
+  </manifest>
+  <data>
+    <section name="intro">
+      <title>Release notes</title>
+      <paragraph>&copyright;. See <link href="manual.xml" rel="doc">the manual</link> for details.</paragraph>
+      <paragraph>Use <code language="shell">xmllint --noout file.xml</code> before publishing.</paragraph>
+      <paragraph><quote>Small inputs reveal large assumptions.</quote></paragraph>
+    </section>
+    <section name="changes">
+      <title>Compatibility</title>
+      <paragraph>Parser behavior is documented in <link href="https://example.invalid/spec" rel="external">the specification</link>.</paragraph>
+      <table>
+        <row><cell>Feature</cell><cell>State</cell></row>
+        <row><cell>Namespaces</cell><cell>ready</cell></row>
+        <row><cell>Streaming</cell><cell><code>experimental</code></cell></row>
+      </table>
+    </section>
+  </data>
+</package>
+```

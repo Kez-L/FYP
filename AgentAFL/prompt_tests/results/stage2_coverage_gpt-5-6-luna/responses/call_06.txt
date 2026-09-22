@@ -1,0 +1,186 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section
+    id ID #REQUIRED
+    kind (hardware|software|service) "software">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (name, description?, link*)>
+  <!ATTLIST item
+    id ID #REQUIRED
+    related IDREFS #IMPLIED
+    status (new|active|retired) "active">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link
+    target IDREF #REQUIRED
+    rel CDATA #IMPLIED>
+  <!ENTITY product "XML &amp; validation">
+]>
+<catalog>
+  <section id="s1" kind="software">
+    <title>Parser tools</title>
+    <item id="i1" status="new">
+      <name>&product;</name>
+      <description>Utilities for <em>structured</em> data and <code>schemas</code>.</description>
+      <link target="i2" rel="dependency"/>
+    </item>
+    <item id="i2" related="i1">
+      <name>Tokenizer</name>
+      <description><![CDATA[accepts <tags>, quotes, and ]]> markers]]></description>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (start, step+, finish)>
+  <!ELEMENT start EMPTY>
+  <!ELEMENT finish EMPTY>
+  <!ELEMENT step (input*, action, output*)>
+  <!ATTLIST step
+    id ID #REQUIRED
+    next IDREF #IMPLIED>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT output (#PCDATA)>
+  <!ENTITY open "[">
+  <!ENTITY close "]">
+  <!ENTITY note "state &amp; transition">
+]>
+<workflow xmlns="urn:example:workflow" xmlns:x="urn:example:meta">
+  <start/>
+  <step id="prepare" next="execute">
+    <input>x &lt; 10</input>
+    <action>normalize</action>
+    <output x:type="temporary">ready</output>
+  </step>
+  <step id="execute" next="finish">
+    <input>&open;payload&close;</input>
+    <action>run &note;</action>
+    <output><![CDATA[result -> <ok/>]]></output>
+  </step>
+  <finish/>
+</workflow>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (metadata, body, signature?)>
+  <!ELEMENT metadata (author, generated, keyword*)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ELEMENT body (heading, paragraph+, table?)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|bold|italic|ref|br)*>
+  <!ELEMENT bold (#PCDATA)>
+  <!ELEMENT italic (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref href CDATA #REQUIRED>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+]>
+<report xml:lang="en" xml:base="https://example.invalid/reports/">
+  <?build profile="fuzz"?>
+  <metadata>
+    <author>Analyst &amp; Co.</author>
+    <generated>2026-09-17T12:00:00Z</generated>
+    <keyword>validation</keyword>
+    <keyword>entities</keyword>
+  </metadata>
+  <body>
+    <heading>Mixed content</heading>
+    <paragraph>Text <bold>with emphasis</bold>, <italic>style</italic>, and <ref href="#x">links</ref>&nbsp;<br/></paragraph>
+    <paragraph><![CDATA[raw characters: < & > " ' ]]></paragraph>
+    <table>
+      <row><cell>one</cell><cell>two</cell></row>
+      <row><cell>three</cell><cell>four</cell></row>
+    </table>
+  </body>
+  <signature>-- signed --</signature>
+</report>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry
+    name NMTOKEN #REQUIRED
+    size NMTOKEN #IMPLIED
+    type CDATA #IMPLIED>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!ENTITY header "content&#x20;begins">
+]>
+<package xmlns:p="urn:pkg" p:format="v2">
+  <manifest>
+    <entry name="alpha.bin" size="17" type="application/octet-stream"/>
+    <entry name="notes.txt" size="4" type="text/plain"/>
+  </manifest>
+  <payload>
+    <chunk index="0">&header;:
+      <![CDATA[bytes \x00 \x01 <not-markup>]]>
+    </chunk>
+    <chunk index="1">line one&#x85;line two&#x2028;line three</chunk>
+  </payload>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, records)>
+  <!ELEMENT header (format, notation)>
+  <!ELEMENT format (#PCDATA)>
+  <!ELEMENT notation (#PCDATA)>
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (key, value, blob?)>
+  <!ATTLIST record
+    uid ID #REQUIRED
+    parent IDREF #IMPLIED
+    kind (text|binary) "text">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT blob EMPTY>
+  <!ATTLIST blob source ENTITY #REQUIRED>
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY sample SYSTEM "data.bin" NDATA binary>
+  <!ENTITY % extras "<!ELEMENT checksum (#PCDATA)><!ATTLIST checksum algorithm CDATA #IMPLIED>">
+  %extras;
+]>
+<archive>
+  <header>
+    <format>v3</format>
+    <notation>binary records may reference external data</notation>
+  </header>
+  <records>
+    <record uid="r0" kind="text">
+      <key>message</key>
+      <value>Use &lt;record&gt; elements for entries.</value>
+      <checksum algorithm="sha256">unknown</checksum>
+    </record>
+    <record uid="r1" parent="r0" kind="binary">
+      <key>attachment</key>
+      <value>external</value>
+      <blob source="sample"/>
+    </record>
+  </records>
+</archive>
+```

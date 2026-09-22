@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload "embedded text">
+  <!ENTITY blob SYSTEM "payload.bin" NDATA bin>
+  <!ELEMENT catalog (entry+, footer?)>
+  <!ELEMENT entry (title, data, note?)>
+  <!ATTLIST entry
+    key ID #REQUIRED
+    ref IDREF #IMPLIED
+    kind (text|binary) "text"
+    source ENTITY #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT data (#PCDATA|emph|br)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <![INCLUDE[
+    <!ENTITY local "inside-conditional-section">
+  ]]>
+]>
+<catalog>
+  <entry key="e1" kind="text">
+    <title>Mixed content</title>
+    <data>alpha <emph>&payload;</emph><br/>omega</data>
+    <note>&local;</note>
+  </entry>
+  <entry key="e2" ref="e1" source="blob">
+    <title>Second record</title>
+    <data><![CDATA[x < y && y > z]]></data>
+  </entry>
+  <footer>done</footer>
+</catalog>

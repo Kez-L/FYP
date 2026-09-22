@@ -1,0 +1,99 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder+)>
+  <!ELEMENT folder (file|folder)*>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ELEMENT file (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ENTITY amp "&#38;">
+  <!ENTITY weird "A&#x0A;B&#x9;C&#xD;D">
+]>
+<archive>
+  <folder name="root">
+    <file>prefix &amp; &lt; &quot; &apos; &amp; suffix</file>
+    <folder name="nested">
+      <file><![CDATA[raw <xml> ]]]]><![CDATA[> text]]></file>
+      <file>one<chunk/>two<chunk>three</chunk>four</file>
+    </folder>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE r [
+  <!ELEMENT r ANY>
+  <!ENTITY % declarations '
+    <!ELEMENT generated (#PCDATA)>
+    <!ATTLIST generated mode (hot|cold|unknown) "unknown">
+  '>
+  %declarations;
+  <!ENTITY local "entity-value">
+]>
+<r>
+  <generated mode="hot">before &local; <![CDATA[inside]]> after</generated>
+  <!-- comment with --? no, nearly unusual -->
+  <?processing instruction-data?>
+  <generated>tail</generated>
+</r>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE map [
+  <!ELEMENT map (node)>
+  <!ELEMENT node (key,value?,node*)>
+  <!ATTLIST node id ID #IMPLIED ref IDREF #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|em)*>
+  <!ELEMENT em (#PCDATA)>
+]>
+<map>
+  <node id="n0">
+    <key>alpha</key>
+    <value>left<em>middle</em>right</value>
+    <node ref="n0"><key>self</key></node>
+    <node id="n2"><key>β</key><value><![CDATA[x]]></value></node>
+  </node>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns="urn:default" xmlns:a="urn:a" xmlns:b="urn:b">
+  <a:item xmlns:a="" xmlns:c="urn:c" a:old="1" b:flag="yes">
+    <c:value>text</c:value>
+    <b:value xmlns:b="urn:shadow">shadowed</b:value>
+    <value xmlns="">unqualified</value>
+  </a:item>
+  <item xmlns="urn:other" xmlns:a="urn:a">
+    <a:child a:x="&#x1F600;"/>
+  </item>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE document [
+  <!ELEMENT document (section*)>
+  <!ELEMENT section (title?, body)>
+  <!ATTLIST section level NMTOKEN #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (#PCDATA|br|link)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link target ENTITY #IMPLIED>
+  <!ENTITY one "first">
+  <!ENTITY two "&one;:second">
+]>
+<document>
+  <section level="01">
+    <title>&two;</title>
+    <body>start<br/><link target="missing">click</link>&#xD;&#xA;end</body>
+  </section>
+  <section level="0x">
+    <body><![CDATA[unterminated-looking ]]> marker]]></body>
+  </section>
+</document>
+```

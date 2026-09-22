@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node|edge)+>
+  <!ATTLIST graph
+    xmlns:g CDATA #FIXED "urn:graph"
+    directed (true|false) "true">
+  <!ELEMENT node (label?, property*)>
+  <!ATTLIST node
+    id ID #REQUIRED
+    category NMTOKENS #IMPLIED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge
+    from IDREF #REQUIRED
+    to IDREF #REQUIRED
+    weight CDATA #IMPLIED
+    g:kind (link|jump|back) "link">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST property
+    key NMTOKEN #REQUIRED>
+]>
+<graph xmlns:g="urn:graph" directed="false">
+  <node id="n.alpha" category="entry primary">
+    <label>α &amp; omega</label>
+    <property key="rank">1</property>
+    <property key="empty"/>
+  </node>
+  <node id="n.beta">
+    <label><![CDATA[<beta/> is not markup here]]></label>
+  </node>
+  <node id="n.gamma" category="terminal">
+    <property key="note">contains &#x1F680;</property>
+  </node>
+  <edge from="n.alpha" to="n.beta" weight="0.50" g:kind="jump"/>
+  <edge from="n.beta" to="n.gamma" g:kind="back"/>
+  <edge from="n.gamma" to="n.alpha"/>
+</graph>

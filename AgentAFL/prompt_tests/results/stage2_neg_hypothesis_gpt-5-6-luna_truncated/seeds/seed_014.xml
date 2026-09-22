@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow"
+          xmlns:ext="urn:example:workflow:ext"
+          xml:base="https://example.invalid/workflows/">
+  <?processing instruction-data?>
+  <pipeline name="release" enabled="true">
+    <step id="fetch" class="source">
+      <input href="data/source.xml" format="xml"/>
+      <output name="raw"/>
+    </step>
+    <step id="transform" class="processor">
+      <depends-on ref="fetch"/>
+      <config>
+        <option name="mode">incremental</option>
+        <option name="retries">3</option>
+        <ext:flag enabled="false">experimental</ext:flag>
+      </config>
+    </step>
+    <step id="publish" class="sink">
+      <depends-on ref="transform"/>
+      <destination scheme="https" host="example.invalid" path="/upload"/>
+    </step>
+  </pipeline>
+  <audit>
+    <event level="info" code="START">Pipeline initialized</event>
+    <event level="warn" code="SKIP"><![CDATA[optional stage was skipped]]></event>
+  </audit>
+</workflow>

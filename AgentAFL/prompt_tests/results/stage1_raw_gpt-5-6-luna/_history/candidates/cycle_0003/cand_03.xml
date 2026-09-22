@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (meta, panel*)>
+  <!ELEMENT meta (created, owner)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT panel (heading, widget+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT widget (label, data)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT data (#PCDATA|item|separator)*>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ATTLIST panel id ID #REQUIRED layout (row|column) "row">
+  <!ATTLIST widget kind CDATA #REQUIRED>
+  <!ATTLIST widget visible (yes|no) "yes">
+  <!ATTLIST item code CDATA #IMPLIED>
+  <!ENTITY leftBracket "&#91;">
+  <!ENTITY rightBracket "&#93;">
+]>
+<dashboard>
+  <meta>
+    <created>2026-09-17T00:00:00Z</created>
+    <owner>ops@example.invalid</owner>
+  </meta>
+  <panel id="p-main" layout="column">
+    <heading>Main &leftBracket; overview &rightBracket;</heading>
+    <widget kind="counter">
+      <label>Requests</label>
+      <data><item code="ok">42</item><separator/><item code="fail">7</item></data>
+    </widget>
+    <widget kind="sparkline" visible="no">
+      <label>Latency</label>
+      <data><![CDATA[12,14,13,99,15,16]]></data>
+    </widget>
+  </panel>
+  <panel id="p-empty">
+    <heading>Secondary</heading>
+    <widget kind="note"><label>Message</label><data>Nothing to report.</data></widget>
+  </panel>
+</dashboard>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (account+, transfer*)>
+  <!ELEMENT account (owner, balance, flag*)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT balance (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ELEMENT transfer (from, to, amount, memo?)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT amount (#PCDATA)>
+  <!ELEMENT memo (#PCDATA)>
+  <!ATTLIST account number ID #REQUIRED currency (USD|EUR|JPY) "USD">
+  <!ATTLIST flag type (frozen|verified|priority) #REQUIRED>
+  <!ATTLIST transfer ref ID #REQUIRED method (wire|cash|token) #REQUIRED>
+  <!ENTITY currency-note "Amounts are recorded without separators.">
+]>
+<ledger xmlns:acct="urn:accounting" xmlns:aud="urn:audit" aud:checked="false">
+  <account number="acct-001" currency="USD">
+    <owner>Northwind Cooperative</owner>
+    <balance>0000001234.50</balance>
+    <flag type="verified"/>
+    <flag type="priority"/>
+  </account>
+  <account number="acct-002" currency="JPY">
+    <owner>青空商会</owner>
+    <balance>0000098000</balance>
+    <flag type="frozen"/>
+  </account>
+  <transfer ref="tx-77" method="wire">
+    <from>acct-001</from>
+    <to>acct-002</to>
+    <amount>450.00</amount>
+    <memo>&currency-note; <![CDATA[Review: 4 < 5 and 7 > 3.]]></memo>
+  </transfer>
+  <transfer ref="tx-78" method="token">
+    <from>acct-002</from>
+    <to>acct-001</to>
+    <amount>12</amount>
+  </transfer>
+</ledger>

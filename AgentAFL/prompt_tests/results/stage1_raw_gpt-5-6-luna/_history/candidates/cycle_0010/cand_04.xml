@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (item | group)+>
+  <!ELEMENT group (item+)>
+  <!ELEMENT item (key, value, checksum?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA | fragment)*>
+  <!ELEMENT fragment ANY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST archive format (compact|expanded) #REQUIRED>
+  <!ATTLIST group name CDATA #IMPLIED>
+  <!ATTLIST item uid ID #REQUIRED type CDATA #IMPLIED>
+  <!ATTLIST fragment source CDATA #IMPLIED>
+  <!ENTITY fragmentText "<fragment source='entity'>embedded &amp; text</fragment>">
+]>
+<archive format="expanded">
+  <group name="first">
+    <item uid="i-1" type="text">
+      <key>alpha</key>
+      <value>prefix &fragmentText; suffix</value>
+      <checksum>0000</checksum>
+    </item>
+    <item uid="i-2">
+      <key>beta</key>
+      <value><fragment source="literal"><inner>content</inner></fragment></value>
+    </item>
+  </group>
+  <item uid="i-3" type="mixed">
+    <key>gamma</key>
+    <value><![CDATA[&fragmentText; is not expanded here]]></value>
+  </item>
+</archive>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE network [
+  <!ELEMENT network (node+, route*)>
+  <!ELEMENT node (address, property*)>
+  <!ELEMENT address (#PCDATA)>
+  <!ELEMENT property (#PCDATA)>
+  <!ELEMENT route (hop, hop+)>
+  <!ELEMENT hop EMPTY>
+  <!ATTLIST node key ID #REQUIRED role (gateway|worker|sensor) #IMPLIED>
+  <!ATTLIST property name CDATA #REQUIRED>
+  <!ATTLIST route from IDREF #REQUIRED to IDREF #REQUIRED metric CDATA "1">
+  <!ATTLIST hop node IDREF #REQUIRED latency CDATA #IMPLIED>
+]>
+<network xmlns="urn:net" xmlns:meta="urn:metadata" meta:format="graph">
+  <node key="n-gw" role="gateway">
+    <address>2001:db8::1</address>
+    <property name="zone">edge</property>
+    <property name="label"><![CDATA[core & backup]]></property>
+  </node>
+  <node key="n-a" role="worker">
+    <address>192.0.2.14</address>
+    <property name="zone">west</property>
+  </node>
+  <node key="n-b" role="sensor">
+    <address>198.51.100.23</address>
+  </node>
+  <route from="n-gw" to="n-a" metric="12">
+    <hop node="n-gw" latency="1ms"/>
+    <hop node="n-a" latency="11ms"/>
+  </route>
+  <route from="n-gw" to="n-b" metric="19">
+    <hop node="n-gw"/>
+    <hop node="n-a"/>
+    <hop node="n-b" latency="8ms"/>
+  </route>
+</network>

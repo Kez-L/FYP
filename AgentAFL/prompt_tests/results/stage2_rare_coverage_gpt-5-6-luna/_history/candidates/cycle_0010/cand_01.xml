@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (phase+, summary)>
+  <!ELEMENT phase (task*)>
+  <!ELEMENT task (input?, output?, note?)>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT output (#PCDATA)>
+  <!ELEMENT note (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ATTLIST phase name NMTOKEN #REQUIRED order CDATA #IMPLIED>
+  <!ATTLIST task id ID #REQUIRED depends IDREFS #IMPLIED state (queued|running|done) "queued">
+]>
+<workflow xmlns="urn:workflow:v2" xmlns:x="urn:extension" x:revision="7">
+  <phase name="prepare" order="01">
+    <task id="t1" state="done">
+      <input>source.tar</input>
+      <output>source.xml</output>
+      <note>Extract <code>manifest</code> and preserve timestamps.</note>
+    </task>
+  </phase>
+  <phase name="verify" order="02">
+    <task id="t2" depends="t1" state="running">
+      <input>source.xml</input>
+      <note><![CDATA[Check <well-formedness> before validation.]]></note>
+    </task>
+    <task id="t3" depends="t1 t2">
+      <output>report.xml</output>
+    </task>
+  </phase>
+  <summary>Two phases, three tasks, one pending result.</summary>
+</workflow>

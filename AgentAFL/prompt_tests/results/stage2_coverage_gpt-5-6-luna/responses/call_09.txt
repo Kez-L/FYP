@@ -1,0 +1,208 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE canvas [
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY brand "Vector &amp; Raster">
+  <!ENTITY copy "&#169;">
+  <!ENTITY % shapes "circle|path|text">
+  <!ELEMENT canvas (metadata?, layer+)>
+  <!ATTLIST canvas
+    xmlns CDATA #FIXED "urn:graphics:canvas"
+    width NMTOKEN #REQUIRED
+    height NMTOKEN #REQUIRED
+    background CDATA "white">
+  <!ELEMENT metadata (#PCDATA)>
+  <!ELEMENT layer (title?, (%shapes;)*)>
+  <!ATTLIST layer id ID #REQUIRED visible (yes|no) "yes">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT circle EMPTY>
+  <!ATTLIST circle cx CDATA #REQUIRED cy CDATA #REQUIRED r CDATA #REQUIRED>
+  <!ELEMENT path (#PCDATA)>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST text x CDATA #IMPLIED y CDATA #IMPLIED>
+  <!ENTITY sample SYSTEM "sample.png" NDATA png>
+]>
+<canvas xmlns="urn:graphics:canvas" width="640" height="480">
+  <metadata>&brand; &copy;</metadata>
+  <layer id="background">
+    <title>Backdrop</title>
+    <circle cx="320" cy="240" r="200"/>
+  </layer>
+  <layer id="foreground" visible="yes">
+    <path><![CDATA[M0 0 L640 480 Z]]></path>
+    <text x="24" y="48">Layered <![CDATA[<vector>]]> output</text>
+  </layer>
+</canvas>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ENTITY % base
+    "<!ELEMENT configuration (defaults, profile+)>
+     <!ATTLIST configuration generated (true|false) 'false'>
+     <!ELEMENT defaults (property*)>
+     <!ELEMENT profile (property*, include?, exclude?)>
+     <!ATTLIST profile name NMTOKEN #REQUIRED inherits NMTOKEN #IMPLIED>
+     <!ELEMENT property EMPTY>
+     <!ATTLIST property key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+     <!ELEMENT include (module+)>
+     <!ELEMENT exclude (module+)>
+     <!ELEMENT module (#PCDATA)>
+     <!ATTLIST module optional (yes|no) 'no'>">
+  %base;
+  <!ENTITY % switches "INCLUDE">
+  <![%switches;[
+    <!ATTLIST profile experimental (true|false) "false">
+  ]]>
+  <![IGNORE[
+    <!ELEMENT obsolete (#PCDATA)>
+    <!ATTLIST obsolete since CDATA #IMPLIED>
+  ]]>
+  <!ENTITY amp "&amp;">
+  <!ENTITY arrow "&#x2192;">
+]>
+<configuration generated="true">
+  <defaults>
+    <property key="timeout" value="30"/>
+    <property key="retries" value="2"/>
+  </defaults>
+  <profile name="safe" experimental="false">
+    <property key="mode" value="locked"/>
+    <include>
+      <module>parser</module>
+      <module optional="yes">telemetry &amp; diagnostics</module>
+    </include>
+    <exclude>
+      <module>legacy</module>
+    </exclude>
+  </profile>
+  <profile name="edge" inherits="safe" experimental="true">
+    <property key="route" value="alpha &arrow; beta"/>
+    <include>
+      <module>fuzzer</module>
+    </include>
+  </profile>
+</configuration>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE feed [
+  <!ELEMENT feed (head, item*)>
+  <!ATTLIST feed xmlns CDATA #IMPLIED xmlns:x CDATA #IMPLIED>
+  <!ELEMENT head (name, link+, generated?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link rel (self|alternate|archive) #REQUIRED href CDATA #REQUIRED>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT item (title, summary, content, tag*)>
+  <!ATTLIST item key ID #REQUIRED xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT title (#PCDATA|x:mark)*>
+  <!ELEMENT summary (#PCDATA|x:mark|x:br)*>
+  <!ELEMENT content (#PCDATA|x:mark|x:code|x:br)*>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST tag primary (yes|no) "no">
+  <!ENTITY punctuation " &amp; ">
+]>
+<feed xmlns="urn:example:feed" xmlns:x="urn:example:format">
+  <head>
+    <name>Signal &amp; Noise</name>
+    <link rel="self" href="urn:feed:current"/>
+    <link rel="alternate" href="https://example.invalid/stream"/>
+    <generated>2026-09-17T12:00:00Z</generated>
+  </head>
+  <item key="entry-1" xml:lang="en">
+    <title>Namespaced <x:mark>markup</x:mark></title>
+    <summary>Text with<x:br/>line boundaries&punctuation;entities.</summary>
+    <content><![CDATA[raw <payload> remains literal]]> <x:code>if (x &lt; 4) return;</x:code></content>
+    <tag primary="yes">xml</tag>
+    <tag>fuzzing</tag>
+  </item>
+</feed>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (owner, record*)>
+  <!ATTLIST registry release CDATA #REQUIRED>
+  <!ELEMENT owner (name, contact)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT contact (#PCDATA)>
+  <!ELEMENT record (alias?, endpoint+, credential?)>
+  <!ATTLIST record id ID #REQUIRED owner IDREF #REQUIRED state (new|valid|revoked) "new">
+  <!ELEMENT alias (#PCDATA)>
+  <!ELEMENT endpoint EMPTY>
+  <!ATTLIST endpoint
+    scheme (http|https|unix) #REQUIRED
+    address CDATA #REQUIRED
+    primary (true|false) "false">
+  <!ELEMENT credential (#PCDATA)>
+  <!ATTLIST credential format (plain|token|digest) "token">
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+  <!ENTITY quote "&quot;">
+]>
+<registry release="r&amp;d-7">
+  <owner>
+    <name xml:space="preserve">Operations &amp; Research</name>
+    <contact>ops@example.invalid</contact>
+  </owner>
+  <record id="service-a" owner="team-1" state="valid">
+    <alias>alpha</alias>
+    <endpoint scheme="https" address="https://node-a.invalid/api" primary="true"/>
+    <endpoint scheme="unix" address="/run/node-a.sock"/>
+    <credential format="digest">&left;redacted&right;</credential>
+  </record>
+  <record id="service-b" owner="team-1">
+    <endpoint scheme="http" address="http://node-b.invalid:8080"/>
+    <credential format="token">token-&quote;sample&quote;</credential>
+  </record>
+</registry>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, payload, trailer?)>
+  <!ATTLIST packet version NMTOKEN #REQUIRED checksum CDATA #IMPLIED>
+  <!ELEMENT header (field+)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name NMTOKEN #REQUIRED value CDATA #REQUIRED>
+  <!ELEMENT payload (#PCDATA|chunk|section)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk encoding (base64|hex|plain) #REQUIRED>
+  <!ELEMENT section (label?, chunk+)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT trailer (status, note?)>
+  <!ELEMENT status (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY lt "&lt;">
+  <!ENTITY percent "&#37;">
+]>
+<packet version="2.0" checksum="a&amp;b">
+  <header>
+    <field name="kind" value="mixed"/>
+    <field name="flags" value="A&lt;B"/>
+  </header>
+  <payload>
+    prefix &percent;
+    <chunk encoding="hex">00ff7e</chunk>
+    <section>
+      <label>embedded</label>
+      <chunk encoding="plain">alpha &amp; beta</chunk>
+      <chunk encoding="base64">QUJDRA==</chunk>
+    </section>
+    <![CDATA[
+      literal markup: <not-an-element>&lt;still-raw</not-an-element>
+    ]]>
+    suffix &lt;done&gt;
+  </payload>
+  <trailer>
+    <status>accepted</status>
+    <note>Processing instruction follows</note>
+  </trailer>
+  <?audit event="complete"?>
+</packet>
+```

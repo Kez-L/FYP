@@ -1,0 +1,122 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY title "Café &amp; Tea">
+  <!ENTITY note "Line one&#10;Line two">
+]>
+<catalog xmlns="urn:example:catalog" xmlns:m="urn:example:meta">
+  <!-- mixed content with entity expansion -->
+  <entry id="A-01" m:state="active" xml:lang="fr">
+    <name>&title;</name>
+    <description><![CDATA[Fresh leaves <and> roasted beans]]></description>
+    <details xml:space="preserve">  &note;  </details>
+    <tags>
+      <tag priority="1">arôme</tag>
+      <tag priority="2">café</tag>
+    </tags>
+  </entry>
+  <?catalog-check mode="strict"?>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<mesh xmlns="urn:mesh" xmlns:x="urn:extension" version="2.0">
+  <node key="root">
+    <node key="left">
+      <value type="integer">00000042</value>
+      <payload><![CDATA[
+        ]]>]]><![CDATA[<![CDATA[ nested-looking text ]]>
+      ]]></payload>
+    </node>
+    <node key="right" x:flag="yes">
+      <value type="boolean">true</value>
+      <link href="#root" />
+      <empty />
+    </node>
+  </node>
+  <x:metadata>
+    <x:item name="a&amp;b" value="&quot;quoted&quot;" />
+  </x:metadata>
+</mesh>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ENTITY % common "(header,section+,footer?)">
+  <!ELEMENT report %common;>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT section (title, data*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT data (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST section code ID #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+]>
+<report>
+  <header>Quarterly&nbsp;Summary</header>
+  <section code="s1">
+    <title>First</title>
+    <data>alpha<chunk>beta</chunk>gamma</data>
+    <data><![CDATA[x < y && y < z]]></data>
+  </section>
+  <section>
+    <title>Second</title>
+    <data>&lt;escaped&gt;</data>
+  </section>
+  <footer>End&#x2E;</footer>
+</report>
+```
+
+```xml
+<?xml version="1.1"?>
+<configuration xml:base="urn:config:root" xmlns:c="urn:config">
+  <layer name="outer">
+    <layer name="middle">
+      <layer name="inner" enabled="0">
+        <property key="path">a/b/c</property>
+        <property key="mask">rwx&#x2F;---</property>
+        <property key="formula"><![CDATA[
+          if (x < 10 && y > 2) return "low";
+        ]]></property>
+      </layer>
+    </layer>
+  </layer>
+  <c:options>
+    <c:option key="threshold" value="1.0e-9"/>
+    <c:option key="retry" value="&#x31;&#x30;"/>
+  </c:options>
+  <?runtime restart="false"?>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data:text/plain,external" NDATA bin>
+  <!ENTITY local "left &amp; right">
+]>
+<envelope xmlns:sec="urn:security">
+  <header>
+    <message-id>urn:uuid:00000000-0000-0000-0000-000000000001</message-id>
+    <flags first="yes" second="no"/>
+  </header>
+  <body>
+    <part index="0" media="text/plain">&local;</part>
+    <part index="1" media="application/xml">
+      <fragment>
+        <![CDATA[<unparsed attr='value'/>]]>
+      </fragment>
+    </part>
+    <part index="2">
+      &blob;
+    </part>
+  </body>
+  <sec:signature algorithm="none">
+    <sec:digest>AAECAwQFBgcICQ==</sec:digest>
+  </sec:signature>
+</envelope>
+```

@@ -1,0 +1,25 @@
+<?xml version="1.1"?>
+<!DOCTYPE archive [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY logo SYSTEM "logo.bin" NDATA bin>
+  <!ELEMENT archive (entry+)>
+  <!ELEMENT entry (title, payload, metadata?)>
+  <!ATTLIST entry id ID #REQUIRED ref IDREF #IMPLIED kind NOTATION (bin) #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST metadata created CDATA #IMPLIED>
+  <!ENTITY mark "&#x2603;">
+]>
+<archive xmlns="urn:example:archive" xmlns:x="urn:example:extra">
+  <entry id="first" kind="bin">
+    <title>Binary &amp; Text &mark;</title>
+    <payload><![CDATA[raw <bytes> && delimiters ]]> <chunk x:part="1">alpha</chunk><![CDATA[ ]]> </payload>
+    <metadata created="2026-09-17"/>
+  </entry>
+  <entry id="second" ref="first">
+    <title>Résumé</title>
+    <payload><chunk x:part="2">omega</chunk></payload>
+  </entry>
+</archive>

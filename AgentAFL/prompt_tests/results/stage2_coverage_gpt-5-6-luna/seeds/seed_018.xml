@@ -1,0 +1,40 @@
+<?xml version="1.1"?>
+<!DOCTYPE exchange [
+  <!ELEMENT exchange (request, response)>
+  <!ELEMENT request (method, target, headers, body?)>
+  <!ELEMENT response (status, headers, body?)>
+  <!ELEMENT method (#PCDATA)>
+  <!ELEMENT target (#PCDATA)>
+  <!ELEMENT status (#PCDATA)>
+  <!ELEMENT headers (header*)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT body (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST exchange
+    id ID #REQUIRED
+    protocol (urn:proto:one|urn:proto:two) "urn:proto:one">
+  <!ATTLIST header
+    name NMTOKEN #REQUIRED
+    folded (yes|no) "no">
+  <!ENTITY crlf "&#xD;&#xA;">
+]>
+<exchange id="x-17" protocol="urn:proto:two">
+  <request>
+    <method>POST</method>
+    <target>/submit?mode=Δ</target>
+    <headers>
+      <header name="Content-Type" folded="yes">application/xml</header>
+      <header name="X-Trace">a&#x85;b</header>
+    </headers>
+    <body>
+      <chunk><![CDATA[<fragment>]]></chunk>
+      <chunk>literal &lt;markup&gt; &crlf; next</chunk>
+    </body>
+  </request>
+  <response>
+    <status>202 Accepted</status>
+    <headers>
+      <header name="Content-Length">0</header>
+    </headers>
+  </response>
+</exchange>

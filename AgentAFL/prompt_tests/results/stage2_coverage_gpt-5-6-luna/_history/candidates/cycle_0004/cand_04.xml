@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node (name, metadata?)>
+  <!ELEMENT edge (from, to, annotation?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT metadata (property*)>
+  <!ELEMENT property (#PCDATA)>
+  <!ELEMENT from EMPTY>
+  <!ELEMENT to EMPTY>
+  <!ELEMENT annotation (#PCDATA)>
+  <!ATTLIST graph
+    xmlns:g CDATA #FIXED "urn:graph"
+    directed (true|false) "true">
+  <!ATTLIST node
+    id ID #REQUIRED
+    class NMTOKENS #IMPLIED
+    active (yes|no) "yes">
+  <!ATTLIST edge
+    id ID #IMPLIED
+    weight CDATA #IMPLIED
+    source IDREF #REQUIRED
+    target IDREF #REQUIRED>
+  <!ATTLIST from ref IDREF #REQUIRED>
+  <!ATTLIST to ref IDREF #REQUIRED>
+  <!ATTLIST property key NMTOKEN #REQUIRED>
+  <!ENTITY amp "&amp;">
+]>
+<g:graph xmlns:g="urn:graph" directed="false">
+  <g:node id="n1" class="entry primary">
+    <g:name>Alpha</g:name>
+    <g:metadata>
+      <g:property key="note">A &amp; B</g:property>
+      <g:property key="mark">&amp;</g:property>
+    </g:metadata>
+  </g:node>
+  <g:node id="n2" class="entry secondary" active="no">
+    <g:name><![CDATA[Beta <zone>]]></g:name>
+  </g:node>
+  <g:edge id="e1" source="n1" target="n2" weight="0.75">
+    <g:from ref="n1"/>
+    <g:to ref="n2"/>
+    <g:annotation>transition</g:annotation>
+  </g:edge>
+</g:graph>

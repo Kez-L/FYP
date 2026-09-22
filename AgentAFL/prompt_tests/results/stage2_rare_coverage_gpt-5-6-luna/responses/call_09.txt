@@ -1,0 +1,203 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE museum [
+  <!ENTITY ampersand "&#38;">
+  <!ENTITY label "Ancient &amp; Modern">
+  <!ELEMENT museum (wing+)>
+  <!ELEMENT wing (caption, exhibit*)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT exhibit (name, description, link?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|ref)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST wing code ID #REQUIRED>
+  <!ATTLIST exhibit code ID #REQUIRED related IDREF #IMPLIED>
+]>
+<museum xml:lang="en">
+  <wing code="north">
+    <caption>&label; &amp; Collections</caption>
+    <exhibit code="n-1">
+      <name>Clockwork Bird</name>
+      <description>A mechanical <em>songbird</em> with a <ref/> hidden spring.</description>
+      <link>gallery://north/clockwork</link>
+    </exhibit>
+    <exhibit code="n-2" related="n-1">
+      <name>Restored Dial</name>
+      <description><![CDATA[Etched markings: < > & " ']]></description>
+    </exhibit>
+  </wing>
+</museum>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (phase+, summary)>
+  <!ELEMENT phase (task*)>
+  <!ELEMENT task (input?, output?, note?)>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT output (#PCDATA)>
+  <!ELEMENT note (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ATTLIST phase name NMTOKEN #REQUIRED order CDATA #IMPLIED>
+  <!ATTLIST task id ID #REQUIRED depends IDREFS #IMPLIED state (queued|running|done) "queued">
+]>
+<workflow xmlns="urn:workflow:v2" xmlns:x="urn:extension" x:revision="7">
+  <phase name="prepare" order="01">
+    <task id="t1" state="done">
+      <input>source.tar</input>
+      <output>source.xml</output>
+      <note>Extract <code>manifest</code> and preserve timestamps.</note>
+    </task>
+  </phase>
+  <phase name="verify" order="02">
+    <task id="t2" depends="t1" state="running">
+      <input>source.xml</input>
+      <note><![CDATA[Check <well-formedness> before validation.]]></note>
+    </task>
+    <task id="t3" depends="t1 t2">
+      <output>report.xml</output>
+    </task>
+  </phase>
+  <summary>Two phases, three tasks, one pending result.</summary>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE network [
+  <!ELEMENT network (node+, route*)>
+  <!ELEMENT node (address, property*)>
+  <!ELEMENT address (#PCDATA)>
+  <!ELEMENT property (#PCDATA)>
+  <!ELEMENT route (hop, hop+)>
+  <!ELEMENT hop EMPTY>
+  <!ATTLIST node key ID #REQUIRED role (gateway|worker|sensor) #IMPLIED>
+  <!ATTLIST property name CDATA #REQUIRED>
+  <!ATTLIST route from IDREF #REQUIRED to IDREF #REQUIRED metric CDATA "1">
+  <!ATTLIST hop node IDREF #REQUIRED latency CDATA #IMPLIED>
+]>
+<network xmlns="urn:net" xmlns:meta="urn:metadata" meta:format="graph">
+  <node key="n-gw" role="gateway">
+    <address>2001:db8::1</address>
+    <property name="zone">edge</property>
+    <property name="label"><![CDATA[core & backup]]></property>
+  </node>
+  <node key="n-a" role="worker">
+    <address>192.0.2.14</address>
+    <property name="zone">west</property>
+  </node>
+  <node key="n-b" role="sensor">
+    <address>198.51.100.23</address>
+  </node>
+  <route from="n-gw" to="n-a" metric="12">
+    <hop node="n-gw" latency="1ms"/>
+    <hop node="n-a" latency="11ms"/>
+  </route>
+  <route from="n-gw" to="n-b" metric="19">
+    <hop node="n-gw"/>
+    <hop node="n-a"/>
+    <hop node="n-b" latency="8ms"/>
+  </route>
+</network>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE manuscript [
+  <!ENTITY intro "Opening &amp; context">
+  <!ELEMENT manuscript (front, body, appendix?)>
+  <!ELEMENT front (title, author+, abstract)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT abstract (#PCDATA|term)*>
+  <!ELEMENT body (chapter+)>
+  <!ELEMENT chapter (heading, section+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT section (heading, paragraph+)>
+  <!ELEMENT paragraph (#PCDATA|quote|term|break|foreign)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT term (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT foreign (#PCDATA)>
+  <!ELEMENT appendix (paragraph+)>
+  <!ATTLIST chapter number NMTOKEN #REQUIRED>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ATTLIST term key NMTOKEN #REQUIRED>
+]>
+<manuscript xml:lang="en">
+  <front>
+    <title>&intro;: A Short Study</title>
+    <author xml:id="author-1">M. Rivera</author>
+    <author xml:id="author-2">T. Okafor</author>
+    <abstract>The text introduces <term key="xml">structured documents</term> and their history.</abstract>
+  </front>
+  <body>
+    <chapter number="I">
+      <heading>Origins</heading>
+      <section id="s1">
+        <heading>Early Forms</heading>
+        <paragraph>Records were copied by hand.<break/>Later, systems used <quote>repeatable marks</quote> and shared conventions.</paragraph>
+        <paragraph>A <term key="schema">schema</term> describes expected form.</paragraph>
+      </section>
+    </chapter>
+    <chapter number="II">
+      <heading>Exchange</heading>
+      <section id="s2">
+        <heading>Across Languages</heading>
+        <paragraph><foreign xml:lang="fr">raison d'être</foreign> can appear beside ordinary prose.</paragraph>
+      </section>
+    </chapter>
+  </body>
+  <appendix>
+    <paragraph><![CDATA[Literal markup sample: <node attr="value"/>]]></paragraph>
+  </appendix>
+</manuscript>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (account+, transfer*)>
+  <!ELEMENT account (owner, balance, flag*)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT balance (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ELEMENT transfer (from, to, amount, memo?)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT amount (#PCDATA)>
+  <!ELEMENT memo (#PCDATA)>
+  <!ATTLIST account number ID #REQUIRED currency (USD|EUR|JPY) "USD">
+  <!ATTLIST flag type (frozen|verified|priority) #REQUIRED>
+  <!ATTLIST transfer ref ID #REQUIRED method (wire|cash|token) #REQUIRED>
+  <!ENTITY currency-note "Amounts are recorded without separators.">
+]>
+<ledger xmlns:acct="urn:accounting" xmlns:aud="urn:audit" aud:checked="false">
+  <account number="acct-001" currency="USD">
+    <owner>Northwind Cooperative</owner>
+    <balance>0000001234.50</balance>
+    <flag type="verified"/>
+    <flag type="priority"/>
+  </account>
+  <account number="acct-002" currency="JPY">
+    <owner>青空商会</owner>
+    <balance>0000098000</balance>
+    <flag type="frozen"/>
+  </account>
+  <transfer ref="tx-77" method="wire">
+    <from>acct-001</from>
+    <to>acct-002</to>
+    <amount>450.00</amount>
+    <memo>&currency-note; <![CDATA[Review: 4 < 5 and 7 > 3.]]></memo>
+  </transfer>
+  <transfer ref="tx-78" method="token">
+    <from>acct-002</from>
+    <to>acct-001</to>
+    <amount>12</amount>
+  </transfer>
+</ledger>
+```

@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (turn+)>
+  <!ATTLIST conversation xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT turn (from, to, body, attachment*)>
+  <!ATTLIST turn number NMTOKEN #REQUIRED timestamp CDATA #IMPLIED>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT body (#PCDATA|em|quote|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT quote (#PCDATA|em)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment
+    name CDATA #REQUIRED
+    media CDATA #IMPLIED
+    checksum NMTOKEN #IMPLIED>
+  <!ENTITY greeting "Hello, &amp; welcome">
+  <!ENTITY nested "&greeting; to the archive">
+]>
+<conversation xml:lang="en-US">
+  <turn number="001" timestamp="2026-09-17T12:00:00Z">
+    <from>sender@example.invalid</from>
+    <to>receiver@example.invalid</to>
+    <body>&nested;.<br/>Please read <em>carefully</em>.
+      <quote>Markup &lt;inside&gt; text</quote>
+    </body>
+    <attachment name="memo.txt" media="text/plain" checksum="abc123"/>
+  </turn>
+  <turn number="002">
+    <from>receiver@example.invalid</from>
+    <to>sender@example.invalid</to>
+    <body><![CDATA[Line one
+Line two
+]]></body>
+  </turn>
+</conversation>

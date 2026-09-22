@@ -1,0 +1,116 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION svg SYSTEM "image/svg+xml">
+  <!ENTITY logo SYSTEM "logo.dat" NDATA svg>
+  <!ENTITY part "<part role='generated'>x&amp;y</part>">
+  <!ELEMENT catalog (section+, logo?)>
+  <!ELEMENT section (entry*)>
+  <!ELEMENT entry (#PCDATA|ref|part)*>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT logo EMPTY>
+  <!ATTLIST catalog
+    xml:lang NMTOKEN "en"
+    asset ENTITY #IMPLIED>
+  <!ATTLIST section name ID #REQUIRED>
+  <!ATTLIST ref target IDREF #IMPLIED>
+]>
+<catalog xml:lang="fr" asset="logo">
+  <section name="intro">
+    <entry>before<ref target="missing"/>&part;after</entry>
+  </section>
+  <logo/>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:workspace xmlns:r="urn:root" xmlns:ui="urn:interface" xmlns="urn:default" xml:space="preserve">
+  <!-- boundary comment -->
+  <r:meta ui:mode="compact">
+    <ui:title><![CDATA[<not-markup> & still text]]></ui:title>
+    <?refresh interval="00:00:05"?>
+  </r:meta>
+  <container>
+    <item id="a" ui:visible="true">  leading
+      <value><![CDATA[]]></value>
+      trailing
+    </item>
+    <item id="b">
+      <value><![CDATA[line-1
+line-2
+]]></value>
+    </item>
+  </container>
+</r:workspace>
+```
+
+```xml
+<document xml:id="D-01" xmlns:sec="urn:security" xmlns:p="urn:payload">
+  <header>
+    <name>alpha</name>
+    <name xml:lang="ja">日本語</name>
+  </header>
+  <sec:permissions>
+    <sec:allow subject="guest" action="read"/>
+    <sec:deny subject="robot" action="write"/>
+  </sec:permissions>
+  <p:payload format="binary" checksum="0x00ff">
+    <p:chunk index="0">AAECAwQF</p:chunk>
+    <p:chunk index="1">/wD+/Q==</p:chunk>
+  </p:payload>
+</document>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST matrix dimensions CDATA #FIXED "2x2">
+  <!ATTLIST row number NMTOKEN #REQUIRED>
+  <!ATTLIST cell kind (literal|computed) "literal"
+                note CDATA "&amp;">
+  <!ENTITY amp "&amp;">
+  <!ENTITY twice "&amp;&amp;">
+]>
+<matrix dimensions="2x2">
+  <row number="first">
+    <cell kind="computed">1 &twice; 2</cell>
+    <cell note="A &amp; B">plain</cell>
+  </row>
+  <row number="second">
+    <cell><![CDATA[3 < 4]]></cell>
+    <cell>5 &amp; 6</cell>
+  </row>
+</matrix>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (packet|gap|packet)*>
+  <!ELEMENT packet (key, data, tail?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT data (#PCDATA|byte)*>
+  <!ELEMENT byte EMPTY>
+  <!ELEMENT tail ANY>
+  <!ELEMENT gap EMPTY>
+  <!ATTLIST packet seq ID #REQUIRED>
+  <!ATTLIST byte value NMTOKEN #REQUIRED>
+]>
+<stream>
+  <packet seq="p0">
+    <key>αβγ</key>
+    <data>prefix<byte value="00"/><byte value="FF"/>suffix</data>
+    <tail><![CDATA[raw <fragment>]]></tail>
+  </packet>
+  <gap/>
+  <packet seq="p1">
+    <key>終端</key>
+    <data><byte value="0A"/></data>
+  </packet>
+</stream>
+```

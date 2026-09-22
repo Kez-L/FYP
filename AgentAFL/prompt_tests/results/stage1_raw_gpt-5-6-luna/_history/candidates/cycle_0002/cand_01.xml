@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body, trailer)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT body (part|separator)*>
+  <!ELEMENT part (#PCDATA|line)*>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST header
+    xmlns CDATA #IMPLIED
+    version NMTOKEN #REQUIRED
+    flags NMTOKENS "fast safe">
+  <!ENTITY left "[[">
+  <!ENTITY right "]]">
+  <!ENTITY amp "&#38;">
+]>
+<envelope xmlns="urn:outer" xmlns:a="urn:a" xmlns:b="urn:b">
+  <header version="v-7" flags="fast compact" a:mode="&#x1F680;"/>
+  <body>
+    <part xml:space="preserve">first &left; <line>alpha&amp;beta</line> &right;</part>
+    <separator/>
+    <part xml:lang="fr"><![CDATA[
+      ligne 1
+      ligne 2 <not-an-element>
+    ]]></part>
+    <b:part xmlns:b="urn:alternate" b:id="q9">
+      <b:line>mixed &amp; text</b:line>
+      <?inside data?>
+    </b:part>
+  </body>
+  <trailer>a:b &amp; c:d &#x2026;</trailer>
+</envelope>

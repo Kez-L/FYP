@@ -1,0 +1,142 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry|folder)*>
+  <!ELEMENT folder (entry|folder)*>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST catalog xmlns:meta CDATA #IMPLIED>
+  <!ATTLIST folder name CDATA "default">
+  <!ATTLIST entry
+            id ID #REQUIRED
+            kind (alpha|beta|gamma) "alpha"
+            ref IDREFS #IMPLIED
+            enabled (yes|no) "yes">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY stamp "2026-&amp;-&nbsp;">
+]>
+<catalog xmlns:meta="urn:metadata" meta:version="&stamp;">
+  <folder name="outer">
+    <entry id="e1" kind="beta" enabled="no"/>
+    <folder name="inner">
+      <entry id="e2" ref="e1" kind="gamma"/>
+    </folder>
+  </folder>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "data.bin" NDATA bin>
+  <!ELEMENT report (header,section+,footer?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT section (title?,item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|mark)*>
+  <!ELEMENT mark EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST report source ENTITY #IMPLIED>
+  <!ATTLIST item code NMTOKEN #REQUIRED>
+  <!ENTITY quote "&#34;&#39;&lt;&gt;&amp;">
+]>
+<report source="payload">
+  <header><![CDATA[report <![CDATA[ boundary ]]> sample]]></header>
+  <section>
+    <title>First &quote; section</title>
+    <item code="A-1">left<mark/>right</item>
+    <item code="A_2">plain</item>
+  </section>
+  <section>
+    <item code="Z9"><![CDATA[]]></item>
+  </section>
+  <footer>done</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE world [
+  <!ELEMENT world (region*)>
+  <!ELEMENT region (city|empty)*>
+  <!ELEMENT city (#PCDATA)>
+  <!ELEMENT empty EMPTY>
+  <!ATTLIST region xml:lang NMTOKEN #IMPLIED>
+  <!ENTITY % switches '
+    <!ATTLIST city
+      class CDATA #IMPLIED
+      level CDATA "0">
+  '>
+  %switches;
+  <![IGNORE[
+    <!ELEMENT ignored ANY>
+    <!ENTITY hidden "not-expanded">
+  ]]>
+  <![INCLUDE[
+    <!ENTITY visible "in-include">
+  ]]>
+]>
+<world xml:base="urn:test:root">
+  <region xml:lang="en-US">
+    <city class="capital" level="&quot;">&visible;</city>
+    <empty/>
+  </region>
+  <region xml:lang="x-private">
+    <city><![CDATA[&visible; < > " ']]></city>
+  </region>
+</world>
+```
+
+```xml
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="view.xsl" alternate="yes"?>
+<!DOCTYPE package [
+  <!ELEMENT package (metadata, data)>
+  <!ELEMENT metadata (field*)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT data ANY>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY left "{">
+  <!ENTITY right "}">
+  <!ENTITY amp "&#38;">
+]>
+<package>
+  <metadata>
+    <field name="mode" value="&left;safe&right;"/>
+    <field name="empty"/>
+    <field name="escaped" value="a&amp;b"/>
+  </metadata>
+  <data>
+    <?instruction one="two"?>
+    <blob xmlns="urn:blob" xmlns:x="urn:extra">
+      <x:item x:key="&amp;">&left;raw&right;</x:item>
+      <!-- deliberately adjacent nodes -->
+      <![CDATA[data]]>
+    </blob>
+    <?instruction?>
+  </data>
+</package>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ELEMENT root (a,b?,c*)>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b (x|y)>
+  <!ELEMENT c EMPTY>
+  <!ELEMENT x EMPTY>
+  <!ELEMENT y (#PCDATA)>
+  <!ATTLIST root id ID #IMPLIED>
+  <!ATTLIST c flag (on|off) "off">
+  <!ENTITY one "1">
+  <!ENTITY two "&one;&one;">
+]>
+<root id="r1">
+  <a>before&amp;after&#x20;&two;</a>
+  <b><x/></b>
+  <b><y><![CDATA[split]]></y></b>
+  <c flag="on"/>
+  <c/>
+  <c flag="off"/>
+</root>
+```

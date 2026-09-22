@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (start, step+, finish)>
+  <!ELEMENT start EMPTY>
+  <!ELEMENT finish EMPTY>
+  <!ELEMENT step (input*, action, output*)>
+  <!ATTLIST step
+    id ID #REQUIRED
+    next IDREF #IMPLIED>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT output (#PCDATA)>
+  <!ENTITY open "[">
+  <!ENTITY close "]">
+  <!ENTITY note "state &amp; transition">
+]>
+<workflow xmlns="urn:example:workflow" xmlns:x="urn:example:meta">
+  <start/>
+  <step id="prepare" next="execute">
+    <input>x &lt; 10</input>
+    <action>normalize</action>
+    <output x:type="temporary">ready</output>
+  </step>
+  <step id="execute" next="finish">
+    <input>&open;payload&close;</input>
+    <action>run &note;</action>
+    <output><![CDATA[result -> <ok/>]]></output>
+  </step>
+  <finish/>
+</workflow>

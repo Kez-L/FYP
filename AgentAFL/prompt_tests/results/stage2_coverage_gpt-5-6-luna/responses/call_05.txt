@@ -1,0 +1,214 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section
+    id ID #REQUIRED
+    kind (hardware|software|mixed) "mixed">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (name, description?, price)>
+  <!ATTLIST item
+    ref ID #REQUIRED
+    related IDREFS #IMPLIED
+    active (yes|no) "yes">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ENTITY currency "€">
+  <!ENTITY note "Use &lt; and &amp; literally.">
+]>
+<catalog>
+  <section id="s-alpha" kind="hardware">
+    <title>Devices &amp; Accessories</title>
+    <item ref="i-1" active="yes">
+      <name>Sensor</name>
+      <description>Compact <link>network</link> sensor. &note;</description>
+      <price>19.95 &currency;</price>
+    </item>
+    <item ref="i-2" related="i-1">
+      <name>Mount</name>
+      <price>4.00 &currency;</price>
+    </item>
+  </section>
+  <section id="s-beta" kind="software">
+    <title>Tools</title>
+    <item ref="i-3" related="i-1 i-2" active="no">
+      <name>Inspector</name>
+      <description><![CDATA[raw <markup> and ]]> delimiters]]></description>
+      <price>0 &currency;</price>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (entry*)>
+  <!ELEMENT entry (key, value, metadata?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|value)*>
+  <!ELEMENT metadata (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST entry
+    xmlns CDATA #IMPLIED
+    priority NMTOKEN "normal">
+  <!ATTLIST tag
+    name NMTOKEN #REQUIRED>
+  <!ENTITY open "<">
+  <!ENTITY close ">">
+]>
+<map xmlns="urn:example:map" xmlns:x="urn:extra">
+  <entry priority="high">
+    <key>alpha</key>
+    <value>one<value>nested</value>two</value>
+    <metadata>
+      <tag name="escaped">&open;not markup&close;</tag>
+      <tag name="x:y">value</tag>
+    </metadata>
+  </entry>
+  <entry xmlns="" priority="low">
+    <key>beta</key>
+    <value>line&#x0A;break&#13;return&#x9;tab</value>
+    <metadata>
+      <tag name="empty"/>
+    </metadata>
+  </entry>
+  <entry xmlns:x="urn:other">
+    <key>x</key>
+    <value><![CDATA[<x:payload xmlns:x="urn:other"/>]]></value>
+  </entry>
+</map>
+```
+
+```xml
+<?xml version="1.1" standalone="yes"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder|document|shortcut)*>
+  <!ELEMENT folder (folder|document|shortcut)*>
+  <!ELEMENT document (heading, block+)>
+  <!ELEMENT shortcut EMPTY>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT block (#PCDATA|bold|italic|break)*>
+  <!ELEMENT bold (#PCDATA|italic)*>
+  <!ELEMENT italic (#PCDATA|bold)*>
+  <!ELEMENT break EMPTY>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ATTLIST document
+    id ID #REQUIRED
+    format (text|html|binary) "text"
+    checksum CDATA #IMPLIED>
+  <!ATTLIST shortcut target IDREF #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY tab "&#9;">
+]>
+<archive>
+  <folder name="root">
+    <document id="doc-a" format="html" checksum="a1b2">
+      <heading>Résumé &amp; notes</heading>
+      <block>First <bold>important <italic>point</italic></bold>&nbsp;<break/>Next.</block>
+      <block><![CDATA[
+        <unparsed data="yes">content</unparsed>
+      ]]></block>
+    </document>
+    <folder name="nested">
+      <document id="doc-b" format="binary">
+        <heading>Data</heading>
+        <block>zero<bold>one</bold><italic>two</italic>three&tab;</block>
+      </document>
+      <shortcut target="doc-a"/>
+    </folder>
+  </folder>
+</archive>
+```
+
+```xml
+<!DOCTYPE query [
+  <!ENTITY % common "CDATA">
+  <!ELEMENT query (select, source+, constraint*)>
+  <!ELEMENT select (field+)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field
+    name %common; #REQUIRED
+    alias %common; #IMPLIED
+    aggregate (none|count|min|max|sum) "none">
+  <!ELEMENT source EMPTY>
+  <!ATTLIST source
+    table %common; #REQUIRED
+    alias %common; #IMPLIED>
+  <!ELEMENT constraint (left, operator, right)>
+  <!ELEMENT left (#PCDATA)>
+  <!ELEMENT operator (#PCDATA)>
+  <!ELEMENT right (#PCDATA)>
+  <!ENTITY quote "&quot;">
+  <!ENTITY wildcard "*">
+]>
+<query xmlns:q="urn:query" q:version="3">
+  <select>
+    <field name="id" aggregate="count"/>
+    <field name="display_name" alias="label"/>
+    <field name="score" aggregate="max"/>
+  </select>
+  <source table="records" alias="r"/>
+  <source table="events" alias="e"/>
+  <constraint>
+    <left>r.status</left>
+    <operator>=</operator>
+    <right>&quote;active&quote;</right>
+  </constraint>
+  <constraint>
+    <left>e.kind</left>
+    <operator>LIKE</operator>
+    <right>%&wildcard;</right>
+  </constraint>
+</query>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (step+, transition*)>
+  <!ELEMENT step (label, action*)>
+  <!ELEMENT action (#PCDATA|parameter)*>
+  <!ELEMENT parameter EMPTY>
+  <!ELEMENT transition EMPTY>
+  <!ELEMENT label (#PCDATA)>
+  <!ATTLIST step
+    id ID #REQUIRED
+    state (initial|ready|paused|final) "ready">
+  <!ATTLIST action
+    type (log|invoke|wait|notify) #REQUIRED>
+  <!ATTLIST parameter
+    key NMTOKEN #REQUIRED
+    value CDATA #IMPLIED>
+  <!ATTLIST transition
+    from IDREF #REQUIRED
+    to IDREF #REQUIRED
+    event NMTOKEN #REQUIRED>
+  <!ENTITY apos "&#39;">
+  <!ENTITY amp "&#38;">
+]>
+<workflow xmlns="urn:workflow:v2" xml:lang="en">
+  <step id="start" state="initial">
+    <label>Start</label>
+    <action type="log">begin<parameter key="severity" value="info"/></action>
+    <action type="invoke">run &apos;bootstrap&apos; &amp; validate</action>
+  </step>
+  <step id="hold" state="paused">
+    <label>Waiting</label>
+    <action type="wait">
+      <parameter key="duration" value="PT5M"/>
+      <parameter key="jitter" value="true"/>
+    </action>
+  </step>
+  <step id="finish" state="final">
+    <label>Finished</label>
+    <action type="notify"><![CDATA[status <ok/>]]></action>
+  </step>
+  <transition from="start" to="hold" event="pause"/>
+  <transition from="hold" to="finish" event="resume"/>
+  <transition from="start" to="finish" event="skip"/>
+</workflow>
+```

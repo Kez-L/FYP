@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (meta, stream)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta version CDATA #REQUIRED flags NMTOKENS #IMPLIED>
+  <!ELEMENT stream (chunk|marker|chunk-ref)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT marker EMPTY>
+  <!ELEMENT chunk-ref EMPTY>
+  <!ATTLIST chunk seq NMTOKEN #REQUIRED encoding (plain|base64|hex) "plain">
+  <!ATTLIST marker kind (start|stop|pause) #REQUIRED>
+  <!ATTLIST chunk-ref ref IDREF #REQUIRED>
+  <!ENTITY % switches '<!ATTLIST packet mode (live|batch) "batch">'>
+  %switches;
+  <![IGNORE[
+    <!ELEMENT discarded ANY>
+    <!ENTITY unused "ignored">
+  ]]>
+]>
+<packet mode="live">
+  <meta version="2.4" flags="compressed encrypted"/>
+  <stream>
+    <marker kind="start"/>
+    <chunk seq="001" encoding="plain" id="c1">alpha &lt; beta</chunk>
+    <chunk-ref ref="c1"/>
+    <chunk seq="002" encoding="base64"><![CDATA[AAEC/f4=]]></chunk>
+    <marker kind="pause"/>
+    <chunk seq="003">line&#x0A;break&#x09;tab</chunk>
+    <marker kind="stop"/>
+  </stream>
+</packet>

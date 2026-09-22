@@ -1,0 +1,103 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ENTITY % structure "<!ELEMENT envelope (header,payload)>">
+  %structure;
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ATTLIST envelope revision CDATA "0">
+  <!ENTITY greeting "hello from the internal subset">
+]>
+<envelope revision="7" xmlns="urn:envelope">
+  <header>&greeting;</header>
+  <payload>
+    <item code="A&amp;B"/>
+    <?audit level="verbose"?>
+    mixed text
+    <![CDATA[<opaque value="&not-an-entity;">]]>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record*, binary)>
+  <!ELEMENT record EMPTY>
+  <!ATTLIST record key ID #REQUIRED ref IDREF #IMPLIED>
+  <!ELEMENT binary EMPTY>
+  <!ATTLIST binary source ENTITY #IMPLIED format NOTATION #IMPLIED>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY payload SYSTEM "unavailable.dat" NDATA png>
+]>
+<archive xmlns:a="urn:archive" a:mode="cold">
+  <record key="first"/>
+  <record key="second" ref="first"/>
+  <binary source="payload" format="png"/>
+</archive>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE log [
+  <!ELEMENT log (entry|marker)*>
+  <!ELEMENT entry (#PCDATA|field)*>
+  <!ELEMENT field (#PCDATA)>
+  <!ELEMENT marker EMPTY>
+  <!ATTLIST entry severity (low|medium|high) "medium">
+  <!ENTITY nl "&#x85;">
+  <!ENTITY control "&#x1;">
+]>
+<log>
+  <entry severity="high">begin<field name="kind">α&amp;β</field>&nl;</entry>
+  <marker/>
+  <entry>second&control;</entry>
+</log>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (title, panel+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT panel (heading?, widget*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT widget (#PCDATA|value)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST panel id ID #REQUIRED>
+  <!ATTLIST widget type (text|number|flag) "text">
+]>
+<dashboard>
+  <title><?broken instruction?></title>
+  <panel id="main">
+    <!-- deliberately unusual -- spacing -->
+    <heading><![CDATA[Status ]]> <![CDATA[& health]]></heading>
+    <widget type="number"><value>42</value><value>7</value></widget>
+    <widget type="flag">true<value><![CDATA[<nested>]]></value></widget>
+  </panel>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (meta, data, checksum?)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta xmlns:meta CDATA #IMPLIED meta:version CDATA #IMPLIED>
+  <!ELEMENT data ANY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+]>
+<package xmlns:meta="urn:metadata" meta:version="1&amp;2">
+  <meta/>
+  <data>
+    <chunk index="0">&left;<![CDATA[raw & characters]]>&right;</chunk>
+    <chunk index="1">
+      <inner xmlns="urn:inner"><leaf/></inner>
+    </chunk>
+    <?emit target?>
+  </data>
+  <checksum>deadbeef&#x0D;&#x0A;</checksum>
+</package>
+```

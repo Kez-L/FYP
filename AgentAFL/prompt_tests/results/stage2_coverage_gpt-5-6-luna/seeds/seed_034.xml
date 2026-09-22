@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, records)>
+  <!ELEMENT header (format, notation)>
+  <!ELEMENT format (#PCDATA)>
+  <!ELEMENT notation (#PCDATA)>
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (key, value, blob?)>
+  <!ATTLIST record
+    uid ID #REQUIRED
+    parent IDREF #IMPLIED
+    kind (text|binary) "text">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT blob EMPTY>
+  <!ATTLIST blob source ENTITY #REQUIRED>
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY sample SYSTEM "data.bin" NDATA binary>
+  <!ENTITY % extras "<!ELEMENT checksum (#PCDATA)><!ATTLIST checksum algorithm CDATA #IMPLIED>">
+  %extras;
+]>
+<archive>
+  <header>
+    <format>v3</format>
+    <notation>binary records may reference external data</notation>
+  </header>
+  <records>
+    <record uid="r0" kind="text">
+      <key>message</key>
+      <value>Use &lt;record&gt; elements for entries.</value>
+      <checksum algorithm="sha256">unknown</checksum>
+    </record>
+    <record uid="r1" parent="r0" kind="binary">
+      <key>attachment</key>
+      <value>external</value>
+      <blob source="sample"/>
+    </record>
+  </records>
+</archive>

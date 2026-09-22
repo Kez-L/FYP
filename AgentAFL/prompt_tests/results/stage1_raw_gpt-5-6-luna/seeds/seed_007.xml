@@ -1,0 +1,29 @@
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (account*)>
+  <!ELEMENT account (label, transaction*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT transaction (#PCDATA)>
+  <!ATTLIST account
+    number ID #REQUIRED
+    parent IDREF #IMPLIED
+    tags NMTOKENS #IMPLIED
+    closed (yes|no) "no">
+  <!ATTLIST transaction
+    kind (credit|debit|adjustment) #REQUIRED
+    amount CDATA #REQUIRED>
+  <!ENTITY currency "&#x00A3;">
+  <!ENTITY tax "&#37;">
+  <!ENTITY summary "balance &currency;0 &tax;">
+]>
+<ledger>
+  <account number="a-root" tags="primary">
+    <label>Operating &summary;</label>
+    <transaction kind="credit" amount="100.00">opening deposit</transaction>
+    <transaction kind="debit" amount="12.50">supplies</transaction>
+  </account>
+  <account number="a-child" parent="a-root" closed="yes" tags="secondary archived">
+    <label>Nested account</label>
+    <transaction kind="adjustment" amount="0">zero&#x000A;entry</transaction>
+  </account>
+</ledger>

@@ -1,0 +1,124 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (name, price, description?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST section code NMTOKEN #REQUIRED xml:space (default|preserve) "default">
+  <!ATTLIST item sku ID #REQUIRED status (active|retired) "active">
+  <!ENTITY currency "€">
+]>
+<catalog>
+  <section code="A-01" xml:space="preserve">
+    <title>Hardware</title>
+    <item sku="p001">
+      <name>Angle &amp; bracket</name>
+      <price>19.95 &currency;</price>
+      <description>steel <em>reinforced</em><br/> unfinished</description>
+    </item>
+  </section>
+  <section code="B_02">
+    <title>Odd <![CDATA[<markup> & bytes]]></title>
+    <item sku="p002" status="retired">
+      <name>Null&#0;candidate</name>
+      <price>0</price>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node|edge)*>
+  <!ELEMENT node EMPTY>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST node key ID #REQUIRED label CDATA #IMPLIED refs IDREFS #IMPLIED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight NMTOKEN #IMPLIED>
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data.bin" NDATA binary>
+]>
+<graph>
+  <node key="n0" label="root"/>
+  <node key="n1" label="&quot;quoted&quot;" refs="n0 n2"/>
+  <edge from="n0" to="n1" weight="1e309"/>
+  <node key="n2" label="unclosed"/>
+  <edge from="n1" to="missing" weight="&#xFFFFFFFF;"/>
+</graph>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, trailer)>
+  <!ELEMENT header (entry*)>
+  <!ELEMENT entry EMPTY>
+  <!ELEMENT payload (#PCDATA|chunk|section)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT section (#PCDATA|chunk|section)*>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST entry key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST chunk size CDATA #IMPLIED>
+  <!ATTLIST section depth NMTOKEN #IMPLIED>
+  <!ENTITY amp "&#38;">
+  <!ENTITY nested "left &amp;middle &amp;right">
+]>
+<envelope>
+  <header>
+    <entry key="a" value="1"/>
+    <entry key="b" value="&nested;"/>
+    <?header-instruction data?>
+  </header>
+  <payload>
+    before<chunk size="18446744073709551616">x&amp;y</chunk>
+    <section depth="999999999999999999999999">
+      <![CDATA[raw ]]><section depth="-1">inner</section><![CDATA[ ]]>after
+    </section>
+  </payload>
+  <trailer/>
+</envelope>
+```
+
+```xml
+<!DOCTYPE r [
+  <!ENTITY % declarations "<!ELEMENT r (a|b|c)*>">
+  %declarations;
+  <!ELEMENT a ANY>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c EMPTY>
+  <!ATTLIST r mode NOTATION (plain|encoded) "plain" xmlns CDATA #IMPLIED>
+  <!ATTLIST a q CDATA #IMPLIED>
+  <!ENTITY lt "<">
+  <!ENTITY gt ">">
+]>
+<r xmlns="urn:default" mode="plain">
+  <a q="&lt;value&gt;">text &lt; nested <c/> tail</a>
+  <b><![CDATA[]]><![CDATA[split]]>final</b>
+  <a q="&#xD;&#xA;&#x9;">&lt;broken&gt;</a>
+  <c/>
+</r>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:x="urn:x" xmlns:y="urn:y" x:flag="yes">
+  <x:branch y:id="7">
+    <y:leaf x:ref="none"/>
+    <x:leaf xmlns:y="" y:id="invalid-reset"/>
+  </x:branch>
+  <mixed>alpha
+    <x:item data="&amp;quot;">beta</x:item>
+    <![CDATA[gamma]]>
+    <?pi a="&gt;"?>
+    omega
+  </mixed>
+  <empty x:flag="&#x1F600;"/>
+  <tail><![CDATA[unterminated-looking ]]]]></tail>
+</root>
+```

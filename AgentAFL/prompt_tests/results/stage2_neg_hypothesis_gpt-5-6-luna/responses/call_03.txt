@@ -1,0 +1,90 @@
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (#PCDATA|title|tag|payload)*>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT tag EMPTY>
+  <!ELEMENT payload EMPTY>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    refs IDREFS ""
+    words NMTOKENS #IMPLIED
+    kind (book|film|other) "other"
+    attachment ENTITY #IMPLIED>
+  <!ATTLIST tag name NMTOKEN #REQUIRED>
+  <!NOTATION gif SYSTEM "image/gif">
+  <!ENTITY cover SYSTEM "cover.gif" NDATA gif>
+  <!ENTITY marker "<tag name='generated'/>">
+]>
+<catalog>
+  <entry id="e1" refs="e2" words="alpha beta" kind="book" attachment="cover">
+    <title>Encoded &amp; generated content</title>
+    &marker;
+    <payload/>
+  </entry>
+  <entry id="e2" refs="e1" words="gamma">
+    <title>Second entry</title>
+    <tag name="tail"/>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<record xml:space="preserve" xml:lang="und">
+  <![CDATA[first section]]>
+  &#x1F;
+  <empty/>
+  &#x85;
+  <?processing instruction-data?>
+  <!-- comment containing --? no -->
+  <![CDATA[
+    line one
+    line two ]]> still text
+  ]]>
+  <value>left&#x9;middle&#xA;right&#xD;end</value>
+</record>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report SYSTEM "file:///definitely/nonexistent/external-subset.dtd">
+<report>
+  <header/>
+  <body>
+    <item code="A&amp;B"/>
+  </body>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<stream>
+  <chunk id="one"><![CDATA[
+    unterminated character data
+    <looks-like-markup>
+    ]]> 
+  <chunk id="two"/>
+</stream>
+```
+
+```xml
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta, data, trailer?)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST meta
+    version CDATA "1"
+    enabled (yes|no) "yes">
+  <!ENTITY left "{">
+  <!ENTITY right "}">
+]>
+<envelope>
+  <meta version="2" enabled="no"/>
+  <data>&left;payload&#x20AC;&right;</data>
+  <trailer/>
+</envelope>
+```

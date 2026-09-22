@@ -1,0 +1,118 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ENTITY greeting "Hello, XML">
+  <!ENTITY copy "&#169;">
+]>
+<message xml:lang="en" xml:space="preserve">
+  <?audit source="seed"?>
+  <header>
+    <sender>
+      <name>Élodie</name>
+      <address><![CDATA[elodie@example.test]]></address>
+    </sender>
+    <recipient role="primary">李明</recipient>
+  </header>
+  <body priority="high">
+    &greeting;, <emphasis>friend</emphasis> &copy;
+    <line-break/>
+    <quote>"&lt;not-an-element&gt;"</quote>
+  </body>
+  <!-- trailing comment -->
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (key, value, metadata?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST record status (new|old|deleted) "new">
+  <!ATTLIST metadata checksum CDATA #REQUIRED>
+]>
+<archive>
+  <record status="old">
+    <key>k-001</key>
+    <value>prefix<part>middle</part>suffix</value>
+    <metadata checksum="sha256:0000"/>
+  </record>
+  <record status="deleted">
+    <key>k-002</key>
+    <value><part>孤立</part></value>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:report xmlns:r="urn:report" xmlns:x="urn:extra" xmlns="urn:default" id="R&amp;7">
+  <r:section x:kind="測定">
+    <entry>
+      <value unit="m/s²">9.80665</value>
+      <value unit="°C">−12.5</value>
+    </entry>
+    <entry>
+      <value xsi:type="decimal" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">0.0000001</value>
+    </entry>
+  </r:section>
+  <r:section>
+    <x:wrapper>
+      <x:item name="a:b:c">text &amp; more</x:item>
+    </x:wrapper>
+  </r:section>
+</r:report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ENTITY stepName "compile">
+  <!ENTITY nested "<not-valid-as-markup>">
+]>
+<workflow>
+  <?instruction data?>
+  <stage name="&stepName;">
+    <command><![CDATA[echo "<stage/>" && exit 0]]></command>
+    <environment>
+      <variable key="PATH">/bin:/usr/bin</variable>
+      <variable key="EMPTY"/>
+    </environment>
+  </stage>
+  <stage name="test">
+    <command>run --filter="a &lt; b"</command>
+    <!-- entity text follows -->
+    <result code="0">success</result>
+  </stage>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<packet>
+  <header version="2.0">
+    <flag enabled="true"/>
+    <flag enabled="false"/>
+  </header>
+  <payload>
+    <chunk index="0">AAECAwQFBgcICQ==</chunk>
+    <chunk index="1"><![CDATA[
+      line-one
+      line-two
+      ]]>tail</chunk>
+    <chunk index="2">
+      <binary xmlns="urn:binary">
+        <byte value="00"/>
+        <byte value="ff"/>
+        <byte value="7f"/>
+      </binary>
+    </chunk>
+  </payload>
+  <footer>
+    <digest algorithm="none"></digest>
+  </footer>
+</packet>
+```

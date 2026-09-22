@@ -1,0 +1,92 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:meta">
+  <!-- mixed content with CDATA and processing instructions -->
+  <x:entry id="A-001" active="true">
+    <title><![CDATA[alpha < beta && gamma > delta]]></title>
+    <description>Text before <emphasis>markup</emphasis> and after.</description>
+    <?note priority="high"?>
+    <x:tags><x:tag>one</x:tag><x:tag>two</x:tag></x:tags>
+  </x:entry>
+  <entry id="A-002">
+    <empty/>
+    <value><![CDATA[]]></value>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE warehouse [
+  <!ELEMENT warehouse (bin+)>
+  <!ELEMENT bin (item*, note?)>
+  <!ATTLIST bin code ID #REQUIRED>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item sku CDATA #IMPLIED quantity NMTOKEN "0">
+  <!ELEMENT note (#PCDATA)>
+]>
+<warehouse>
+  <bin code="north">
+    <item sku="&quot;A&amp;B&quot;" quantity="0007"/>
+    <item sku="ümlaut" quantity=""/>
+    <note>inventory &lt;pending&gt;</note>
+  </bin>
+  <bin code="south"><item/><note><![CDATA[raw ]]> text</note></bin>
+</warehouse>
+```
+
+```xml
+<root xmlns:a="urn:a" xmlns:b="urn:b" xmlns="urn:default">
+  <a:node b:key="v1" a:key="v2">
+    <child xmlns="">
+      <leaf xmlns="urn:inner" data="&#x0; &#x9; &#xD; &#xA;"/>
+    </child>
+  </a:node>
+  <b:node>
+    <b:child>
+      <![CDATA[unterminated-looking ]]]]><![CDATA[> split sequence]]>
+    </b:child>
+  </b:node>
+  <?processing instruction?>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY logo SYSTEM "logo.jpg" NDATA jpeg>
+  <!ENTITY text "line-one&#10;line-two">
+  <!ELEMENT message (header, body, attachment?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT body ANY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment href ENTITY #IMPLIED>
+]>
+<message>
+  <header>&text;</header>
+  <body>
+    <section level="1">
+      <p>First paragraph</p>
+      <p>Second <b>paragraph</b><br/></p>
+    </section>
+  </body>
+  <attachment href="logo"/>
+</message>
+```
+
+```xml
+<events>
+  <event time="2026-09-17T12:34:56Z" kind="update">
+    <payload>
+      <item key="a" value="1"/>
+      <item key="b" value="2">
+        <item key="c" value="3">
+      </payload>
+    </item>
+  </event>
+  <event kind="&broken;" time="12:00:00">
+    <payload><![CDATA[abc]]></payload>
+  </event>
+</events>
+```

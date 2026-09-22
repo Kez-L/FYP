@@ -1,0 +1,69 @@
+```xml
+<?xml version="1.1"?>
+<r:catalog xmlns:r="urn:root" xmlns:x="urn:x">
+  <r:item x:id="&#x0;A&#xD;&#xA;B" x:flag="&quot;&apos;&amp;&lt;&gt;">
+    <![CDATA[alpha]]><![CDATA[]]><![CDATA[beta]]>
+    <?pi a="1"?>text<!-- unterminated-looking content --><x:empty/>
+  </r:item>
+  <r:item xmlns:r="" x:id="broken-prefix">
+    <x:a/><x:b></x:a>
+  </r:item>
+</r:catalog>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ELEMENT branch ANY>
+  <!ATTLIST branch mode (one|two|three) "two">
+  <!ENTITY local "A&amp;B&lt;C&gt;">
+  <!ENTITY quoted 'x"y&apos;z'>
+]>
+<root>
+  <branch mode="one" a="&local;" b="&quoted;">
+    <leaf/>
+    <branch mode="three"><![CDATA[<not><markup/></not>]]></branch>
+  </branch>
+  <branch mode="invalid" />
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <a><b><c/></b></a>
+  <a></b></a>
+  <tail attr="line
+break&#x9;tab&#xA;newline"/>
+  <!-- comment with -- inside -->
+  <?xml-stylesheet type="text/xsl" href="x"?>
+</root>
+```
+
+```xml
+<!DOCTYPE r [
+  <!ENTITY % pe "<!ELEMENT injected EMPTY>">
+  %pe;
+  <!ENTITY ext SYSTEM "file:///tmp/nonexistent.xml">
+]>
+<r xmlns="urn:d" xmlns:q="urn:q">
+  <injected/>
+  <q:n q:v="&unknown;">&ext;</q:n>
+  <q:n><![CDATA[
+    ]]]]><![CDATA[>]]>
+  </q:n>
+</r>
+```
+
+```xml
+<root xmlns:a="urn:a" xmlns:b="urn:b">
+  <a:item a:x="1" b:x="2" x="3">
+    <a:child/>
+  </a:item>
+  <b:item xmlns:a="urn:other">
+    <a:child xmlns:a=""/>
+  </b:item>
+  <mixed>left &amp; right &#65; &#x41; &#99999999;</mixed>
+  <![CDATA[unterminated
+</root>
+```

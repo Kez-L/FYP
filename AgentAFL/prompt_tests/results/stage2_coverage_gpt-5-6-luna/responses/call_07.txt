@@ -1,0 +1,270 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY % commonAttrs '
+    xml:lang CDATA #IMPLIED
+    revision CDATA "1"
+  '>
+  <!ELEMENT catalog (section+)>
+  <!ATTLIST catalog
+    %commonAttrs;
+    mode (draft|published|archived) "draft">
+  <!ELEMENT section (title, entry*)>
+  <!ATTLIST section
+    key ID #REQUIRED
+    %commonAttrs;>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (label, value, note?)>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    state (new|active|retired) "new">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA|emph|code)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <![IGNORE[
+    <!ELEMENT discarded EMPTY>
+  ]]>
+]>
+<catalog xmlns="urn:example:catalog" mode="published" revision="7">
+  <section key="s-main" xml:lang="en">
+    <title>Symbols &amp; Names</title>
+    <entry id="e-one" state="active">
+      <label>Markup</label>
+      <value>Use <emph>escaped</emph> text and <code>&lt;tag&gt;</code>.</value>
+      <note>Spacing&nbsp;is significant.</note>
+    </entry>
+    <entry id="e-two">
+      <label>Unicode</label>
+      <value>naïve café — 東京 — 🐡</value>
+    </entry>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (item+)>
+  <!ATTLIST archive
+    generated CDATA #REQUIRED
+    index ID #IMPLIED>
+  <!ELEMENT item (header, payload, link*)>
+  <!ATTLIST item
+    id ID #REQUIRED
+    refs IDREFS #IMPLIED
+    format (text|binary|mixed) "text">
+  <!ELEMENT header (name, owner?, flag*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST flag
+    name NMTOKEN #REQUIRED
+    value CDATA #IMPLIED>
+  <!ELEMENT payload (#PCDATA|chunk|linebreak)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link
+    target IDREF #REQUIRED
+    relation (parent|child|related) "related">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY thumbnail SYSTEM "thumbnail.png" NDATA png>
+  <!ATTLIST item preview ENTITY #IMPLIED>
+]>
+<archive generated="2026-09-17T12:00:00Z" index="root">
+  <item id="root" format="mixed" preview="thumbnail">
+    <header>
+      <name>Root record</name>
+      <owner>ops@example.test</owner>
+      <flag name="priority" value="high"/>
+      <flag name="sealed"/>
+    </header>
+    <payload>first<chunk><![CDATA[<opaque>&raw;]]></chunk><linebreak/>last</payload>
+    <link target="child-a" relation="child"/>
+  </item>
+  <item id="child-a" refs="root" format="binary">
+    <header><name>Attached record</name></header>
+    <payload><![CDATA[AAECAwQFBgcICQ==]]></payload>
+    <link target="root" relation="parent"/>
+  </item>
+</archive>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (start, stage+, finish)>
+  <!ATTLIST workflow
+    id ID #REQUIRED
+    owner CDATA #IMPLIED
+    status (open|paused|closed) "open">
+  <!ELEMENT start EMPTY>
+  <!ATTLIST start
+    next IDREF #REQUIRED>
+  <!ELEMENT stage (input*, action+, output*)>
+  <!ATTLIST stage
+    id ID #REQUIRED
+    when IDREF #IMPLIED
+    depends IDREFS #IMPLIED>
+  <!ELEMENT input (#PCDATA)>
+  <!ATTLIST input
+    name NMTOKEN #REQUIRED
+    type (text|number|boolean) "text">
+  <!ELEMENT action (#PCDATA|argument)*>
+  <!ATTLIST action
+    name NMTOKEN #REQUIRED
+    timeout CDATA #IMPLIED>
+  <!ELEMENT argument (#PCDATA)>
+  <!ATTLIST argument
+    key NMTOKEN #REQUIRED>
+  <!ELEMENT output (#PCDATA)>
+  <!ATTLIST output
+    name NMTOKEN #REQUIRED
+    ref IDREF #IMPLIED>
+  <!ELEMENT finish EMPTY>
+  <!ATTLIST finish
+    result (success|failure|cancelled) "success">
+  <!ENTITY arrow "&#x2192;">
+]>
+<workflow xmlns="urn:workflow:v2" xmlns:x="urn:extra" id="flow-1"
+          owner="Δ-team" status="open">
+  <start next="stage-fetch"/>
+  <stage id="stage-fetch">
+    <input name="endpoint" type="text">https://example.test/api?x=1&amp;y=2</input>
+    <action name="fetch" timeout="30">
+      <argument key="method">GET</argument>
+      <argument key="accept">application/xml</argument>
+    </action>
+    <output name="document" ref="stage-transform"/>
+  </stage>
+  <stage id="stage-transform" when="stage-fetch" depends="stage-fetch">
+    <input name="mode">compact</input>
+    <action name="normalize">trim&nbsp;and&nbsp;sort</action>
+    <action name="emit"><argument key="format">json</argument></action>
+    <output name="result">ready &arrow; delivered</output>
+  </stage>
+  <finish result="success"/>
+</workflow>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE journal [
+  <!ELEMENT journal (day+)>
+  <!ATTLIST journal
+    year NMTOKEN #REQUIRED
+    xmlns:meta CDATA #FIXED "urn:journal:meta">
+  <!ELEMENT day (date, weather?, paragraph+, attachment*)>
+  <!ATTLIST day
+    id ID #REQUIRED
+    mood (calm|busy|uncertain) #IMPLIED>
+  <!ELEMENT date (#PCDATA)>
+  <!ELEMENT weather (temperature, condition)>
+  <!ELEMENT temperature (#PCDATA)>
+  <!ATTLIST temperature unit (C|F|K) "C">
+  <!ELEMENT condition (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|quote|place|person|br)*>
+  <!ELEMENT quote (#PCDATA|br)*>
+  <!ELEMENT place (#PCDATA)>
+  <!ELEMENT person (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment
+    name CDATA #REQUIRED
+    media CDATA "application/octet-stream"
+    checksum CDATA #IMPLIED>
+  <!ENTITY dash "&#x2014;">
+  <!ENTITY note "Remember to verify the source.">
+]>
+<journal xmlns="urn:journal:main" xmlns:meta="urn:journal:meta" year="2026">
+  <day id="d-0917" mood="uncertain">
+    <date>2026-09-17</date>
+    <weather>
+      <temperature unit="K">289.15</temperature>
+      <condition>partly cloudy</condition>
+    </weather>
+    <paragraph>
+      The first observation was <place>North Pier</place>.
+      <br/>
+      <quote>Small changes become visible when measured.</quote>
+      &dash; <person>R. Analyst</person>
+    </paragraph>
+    <paragraph>Note: &note;</paragraph>
+    <attachment name="field-notes.txt" media="text/plain" checksum="sha256:abc123"/>
+  </day>
+</journal>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ENTITY % optional '
+    <!ELEMENT metadata (creator, tag*)>
+    <!ELEMENT creator (#PCDATA)>
+    <!ELEMENT tag (#PCDATA)>
+  '>
+  <!ENTITY % enableMeta "INCLUDE">
+  <![%enableMeta;[
+    %optional;
+  ]]>
+  <!ELEMENT package (metadata?, manifest, content)>
+  <!ATTLIST package
+    id ID #REQUIRED
+    profile (minimal|full) "full">
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+    id ID #REQUIRED
+    path CDATA #REQUIRED
+    kind (resource|document|index) "resource"
+    size NMTOKEN #IMPLIED>
+  <!ELEMENT content (section+)>
+  <!ELEMENT section (heading, block*)>
+  <!ATTLIST section
+    file IDREF #REQUIRED
+    level (1|2|3) "1">
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT block (text|list|table)>
+  <!ELEMENT text (#PCDATA|strong|link|entityref)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ELEMENT entityref EMPTY>
+  <!ATTLIST entityref name NMTOKEN #REQUIRED>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|strong|link)*>
+  <!ELEMENT table (tr+)>
+  <!ELEMENT tr (td+)>
+  <!ELEMENT td (#PCDATA)>
+  <!ENTITY copyright "&#169;">
+]>
+<package xmlns="urn:package:v3" id="pkg-42" profile="full">
+  <metadata xmlns="">
+    <creator>build-system</creator>
+    <tag>coverage</tag>
+    <tag>xml</tag>
+  </metadata>
+  <manifest>
+    <file id="f-index" path="index.xml" kind="index" size="812"/>
+    <file id="f-data" path="data/α.xml" kind="document" size="4096"/>
+    <file id="f-style" path="style.css" kind="resource"/>
+  </manifest>
+  <content>
+    <section file="f-index" level="1">
+      <heading>Package overview</heading>
+      <block>
+        <text><strong>Contents</strong> are indexed here. <link href="#f-data">Open data</link> <entityref name="copyright"/></text>
+      </block>
+      <block>
+        <list>
+          <item>one</item>
+          <item><strong>two</strong> and <link href="data/α.xml">three</link></item>
+        </list>
+      </block>
+    </section>
+  </content>
+</package>
+```

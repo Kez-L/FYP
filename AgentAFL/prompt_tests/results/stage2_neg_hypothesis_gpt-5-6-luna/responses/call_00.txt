@@ -1,0 +1,97 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <x:entry id="A&amp;B" enabled="true">
+    <title><![CDATA[<not-an-element>&still-text;</not-an-element>]]></title>
+    <meta>
+      <item key="empty"></item>
+      <item key="mixed">prefix<!-- embedded comment -->suffix</item>
+    </meta>
+  </x:entry>
+  <entry xmlns="">
+    <value>42</value>
+    <value><![CDATA[]]></value>
+  </entry>
+</catalog>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ELEMENT report (header, section+)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT section (name, data*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST section level NMTOKEN #IMPLIED>
+  <!ENTITY local "alpha &amp; beta">
+]>
+<report>
+  <header>Run &local;</header>
+  <section level="001">
+    <name>first</name>
+    <data>left<chunk>middle</chunk>right</data>
+    <data><![CDATA[x < y && y > z]]></data>
+  </section>
+  <section level="two">
+    <name>second</name>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.1"?>
+<root xml:lang="en-US" xml:space="preserve">
+  <line>one&#x0A;two&#x9;three</line>
+  <wrapper>
+    <empty/>
+    <nested>
+      <a><b><c><d>deep</d></c></b></a>
+    </nested>
+  </wrapper>
+  <!-- comment containing punctuation: <tag attr="x"> &amp; -->
+  <?processing instruction-data?>
+</root>
+```
+
+```xml
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (file*)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+    name CDATA #REQUIRED
+    size NMTOKEN #IMPLIED
+    compressed (yes|no) "no">
+  <!ELEMENT payload ANY>
+]>
+<package>
+  <manifest>
+    <file name="one.bin" size="0" compressed="yes"/>
+    <file name="two&amp;three.txt" size="999999999999999999999"/>
+    <file name="unicode-&#x03BB;.dat"/>
+  </manifest>
+  <payload>
+    <blob><![CDATA[
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      ]]></blob>
+    <checksum algorithm="sha256">0000000000000000000000000000000000000000000000000000000000000000</checksum>
+  </payload>
+</package>
+```
+
+```xml
+<stream xmlns:p="urn:p" xmlns:q="urn:q">
+  <event p:type="start" q:code="001">
+    <timestamp>1970-01-01T00:00:00Z</timestamp>
+    <details>
+      <field name="quote">He said &quot;hello&quot;</field>
+      <field name="apostrophe">It&apos;s fine</field>
+      <field name="spaces">   leading and trailing   </field>
+    </details>
+  </event>
+  <event p:type="end">
+    <result status="ok"/>
+  </event>
+</stream>
+```

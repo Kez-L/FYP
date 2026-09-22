@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ENTITY % switches '
+    <!ELEMENT debug EMPTY>
+    <!ATTLIST debug enabled (true|false) "false">
+  '>
+  %switches;
+  <!ENTITY % optional '
+    <!ELEMENT optional (#PCDATA)>
+  '>
+  <![INCLUDE[
+    %optional;
+  ]]>
+  <![IGNORE[
+    <!ELEMENT hidden EMPTY>
+  ]]>
+  <!ELEMENT configuration (section+, debug?, optional?)>
+  <!ELEMENT section (name, setting*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT setting (#PCDATA)>
+  <!ATTLIST configuration version CDATA #REQUIRED>
+  <!ATTLIST section id NMTOKEN #REQUIRED>
+  <!ATTLIST setting key CDATA #REQUIRED>
+  <!ENTITY amp "&amp;">
+]>
+<configuration version="3">
+  <section id="network">
+    <name>Network</name>
+    <setting key="endpoint">https://example.invalid/a?x=1&amp;y=2</setting>
+    <setting key="mask">A &amp; B &amp; C</setting>
+  </section>
+  <section id="display">
+    <name><![CDATA[Display <preferences>]]></name>
+    <setting key="theme">dark</setting>
+  </section>
+  <debug enabled="true"/>
+  <optional>conditionally declared content</optional>
+</configuration>

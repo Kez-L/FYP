@@ -1,0 +1,188 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, footer?)>
+  <!ELEMENT entry (title, author+, summary?, tag*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT tag EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST catalog generated CDATA "false">
+  <!ATTLIST entry id ID #REQUIRED status (draft|published|archived) "draft">
+  <!ATTLIST tag name CDATA #REQUIRED>
+  <!ENTITY copyright "© 2026">
+  <!ENTITY note "Use &lt;code&gt; for markup-like text.">
+]>
+<catalog generated="true">
+  <entry id="e-001" status="published">
+    <title>Entity-aware parsing</title>
+    <author>Ada</author>
+    <author>Lin</author>
+    <summary>Text with <em>emphasis</em>, <code>&amp;lt;</code>, and &note;</summary>
+    <tag name="xml"/>
+    <tag name="fuzz"/>
+  </entry>
+  <entry id="e-002">
+    <title>Unicode — δοκιμή — परीक्षण</title>
+    <author>Rin</author>
+    <summary><![CDATA[Literal ]]> brackets and <em>mixed</em> content.</summary>
+  </entry>
+  <footer>&copyright;</footer>
+</catalog>
+```
+
+```xml
+<?xml version="1.1" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="view.xsl" alternate="yes"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, record*, trailer)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT record (key, value, value?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|break)*>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST archive mode NMTOKEN #IMPLIED>
+  <!ATTLIST record ref ID #IMPLIED>
+  <!ATTLIST record parent IDREF #IMPLIED>
+  <!ENTITY nbsp "&#xA0;">
+]>
+<archive mode="incremental">
+  <!-- A comment containing punctuation: < > &amp; -- -->
+  <header/>
+  <record ref="r1">
+    <key>alpha</key>
+    <value>first& nbsp;<break/>second</value>
+  </record>
+  <record ref="r2" parent="r1">
+    <key>beta</key>
+    <value><![CDATA[x < y && y > z]]></value>
+    <value>tail&#x85;line</value>
+  </record>
+  <trailer>done</trailer>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ENTITY % switches '
+    <!ELEMENT debug EMPTY>
+    <!ATTLIST debug enabled (true|false) "false">
+  '>
+  %switches;
+  <!ENTITY % optional '
+    <!ELEMENT optional (#PCDATA)>
+  '>
+  <![INCLUDE[
+    %optional;
+  ]]>
+  <![IGNORE[
+    <!ELEMENT hidden EMPTY>
+  ]]>
+  <!ELEMENT configuration (section+, debug?, optional?)>
+  <!ELEMENT section (name, setting*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT setting (#PCDATA)>
+  <!ATTLIST configuration version CDATA #REQUIRED>
+  <!ATTLIST section id NMTOKEN #REQUIRED>
+  <!ATTLIST setting key CDATA #REQUIRED>
+  <!ENTITY amp "&amp;">
+]>
+<configuration version="3">
+  <section id="network">
+    <name>Network</name>
+    <setting key="endpoint">https://example.invalid/a?x=1&amp;y=2</setting>
+    <setting key="mask">A &amp; B &amp; C</setting>
+  </section>
+  <section id="display">
+    <name><![CDATA[Display <preferences>]]></name>
+    <setting key="theme">dark</setting>
+  </section>
+  <debug enabled="true"/>
+  <optional>conditionally declared content</optional>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (meta, panel*)>
+  <!ELEMENT meta (created, owner)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT panel (heading, widget+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT widget (label, data)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT data (#PCDATA|item|separator)*>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ATTLIST panel id ID #REQUIRED layout (row|column) "row">
+  <!ATTLIST widget kind CDATA #REQUIRED>
+  <!ATTLIST widget visible (yes|no) "yes">
+  <!ATTLIST item code CDATA #IMPLIED>
+  <!ENTITY leftBracket "&#91;">
+  <!ENTITY rightBracket "&#93;">
+]>
+<dashboard>
+  <meta>
+    <created>2026-09-17T00:00:00Z</created>
+    <owner>ops@example.invalid</owner>
+  </meta>
+  <panel id="p-main" layout="column">
+    <heading>Main &leftBracket; overview &rightBracket;</heading>
+    <widget kind="counter">
+      <label>Requests</label>
+      <data><item code="ok">42</item><separator/><item code="fail">7</item></data>
+    </widget>
+    <widget kind="sparkline" visible="no">
+      <label>Latency</label>
+      <data><![CDATA[12,14,13,99,15,16]]></data>
+    </widget>
+  </panel>
+  <panel id="p-empty">
+    <heading>Secondary</heading>
+    <widget kind="note"><label>Message</label><data>Nothing to report.</data></widget>
+  </panel>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (svg:canvas)>
+  <!ELEMENT svg:canvas (svg:layer+)>
+  <!ELEMENT svg:layer (svg:shape*)>
+  <!ELEMENT svg:shape (svg:point*)>
+  <!ELEMENT svg:point EMPTY>
+  <!ATTLIST svg:canvas width CDATA #REQUIRED height CDATA #REQUIRED>
+  <!ATTLIST svg:layer name CDATA #IMPLIED>
+  <!ATTLIST svg:shape kind (line|polygon|circle) #REQUIRED>
+  <!ATTLIST svg:point x CDATA #REQUIRED y CDATA #REQUIRED>
+]>
+<scene xmlns:svg="urn:svg:test" xmlns:meta="urn:metadata">
+  <svg:canvas width="640" height="480">
+    <svg:layer name="background">
+      <svg:shape kind="polygon">
+        <svg:point x="0" y="0"/>
+        <svg:point x="640" y="0"/>
+        <svg:point x="640" y="480"/>
+        <svg:point x="0" y="480"/>
+      </svg:shape>
+    </svg:layer>
+    <svg:layer name="foreground">
+      <svg:shape kind="circle" meta:id="café">
+        <svg:point x="320" y="240"/>
+      </svg:shape>
+      <svg:shape kind="line">
+        <svg:point x="-1" y="1"/>
+        <svg:point x="1e3" y="2E-2"/>
+      </svg:shape>
+    </svg:layer>
+  </svg:canvas>
+</scene>
+```

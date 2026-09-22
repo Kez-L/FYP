@@ -1,0 +1,26 @@
+<?xml version="1.1"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry
+    name NMTOKEN #REQUIRED
+    size NMTOKEN #IMPLIED
+    type CDATA #IMPLIED>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!ENTITY header "content&#x20;begins">
+]>
+<package xmlns:p="urn:pkg" p:format="v2">
+  <manifest>
+    <entry name="alpha.bin" size="17" type="application/octet-stream"/>
+    <entry name="notes.txt" size="4" type="text/plain"/>
+  </manifest>
+  <payload>
+    <chunk index="0">&header;:
+      <![CDATA[bytes \x00 \x01 <not-markup>]]>
+    </chunk>
+    <chunk index="1">line one&#x85;line two&#x2028;line three</chunk>
+  </payload>
+</package>

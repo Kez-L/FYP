@@ -1,0 +1,153 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload "embedded text">
+  <!ENTITY blob SYSTEM "payload.bin" NDATA bin>
+  <!ELEMENT catalog (entry+, footer?)>
+  <!ELEMENT entry (title, data, note?)>
+  <!ATTLIST entry
+    key ID #REQUIRED
+    ref IDREF #IMPLIED
+    kind (text|binary) "text"
+    source ENTITY #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT data (#PCDATA|emph|br)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <![INCLUDE[
+    <!ENTITY local "inside-conditional-section">
+  ]]>
+]>
+<catalog>
+  <entry key="e1" kind="text">
+    <title>Mixed content</title>
+    <data>alpha <emph>&payload;</emph><br/>omega</data>
+    <note>&local;</note>
+  </entry>
+  <entry key="e2" ref="e1" source="blob">
+    <title>Second record</title>
+    <data><![CDATA[x < y && y > z]]></data>
+  </entry>
+  <footer>done</footer>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<r:document xmlns:r="urn:records" xmlns:m="urn:meta" xml:lang="en-US" xml:space="preserve">
+  <m:header m:version="2" m:empty="">
+    &#x85;&#x2028;&#x9;&#xA;
+  </m:header>
+  <r:record r:id="&#x31;" m:flags="a&#x9;b&#xA;c">
+    <r:value><![CDATA[raw ]]>tail<![CDATA[ <markup> & entities ]]></r:value>
+    <r:meta xmlns:q="urn:extra" q:item="one" xml:lang="">
+      <q:part q:k="v"/>
+    </r:meta>
+  </r:record>
+  <r:record r:id="&#x32;" xmlns:r="urn:records-alt">
+    <r:value>replacement namespace binding</r:value>
+  </r:record>
+</r:document>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body, trailer)>
+  <!ELEMENT header (timestamp, flag*)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST flag name NMTOKEN #REQUIRED value CDATA "on">
+  <!ELEMENT body (section|separator|text)*>
+  <!ELEMENT section (heading, (section|text|separator)*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT text (#PCDATA|mark|ref)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target CDATA #REQUIRED>
+  <!ELEMENT separator EMPTY>
+  <!ELEMENT trailer (#PCDATA)>
+]>
+<envelope>
+  <header>
+    <timestamp>2026-09-17T00:00:00Z</timestamp>
+    <flag name="alpha"/>
+    <flag name="beta" value=""/>
+  </header>
+  <body>
+    <section>
+      <heading>outer</heading>
+      <text>before <mark>highlight</mark> after<ref target="x"/></text>
+      <section>
+        <heading>inner</heading>
+        <separator/>
+        <text><![CDATA[<not-an-element>]]></text>
+      </section>
+      <separator/>
+    </section>
+    <text>tail</text>
+  </body>
+  <trailer>checksum:&#x0A;42</trailer>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % declarations '
+    <!ELEMENT root (item+, summary)>
+    <!ELEMENT item (name, value, details?)>
+    <!ATTLIST item code ID #REQUIRED status (new|old|hold) "new">
+    <!ELEMENT name (#PCDATA)>
+    <!ELEMENT value (#PCDATA)>
+    <!ELEMENT details (line*)>
+    <!ELEMENT line (#PCDATA)>
+    <!ELEMENT summary (#PCDATA)>
+  '>
+  %declarations;
+  <!ENTITY nbsp "&#160;">
+]>
+<root>
+  <item code="i-a">
+    <name>alpha&nbsp;</name>
+    <value>001</value>
+    <details>
+      <line>first</line>
+      <line><![CDATA[second & third]]></line>
+    </details>
+  </item>
+  <item code="i-b" status="hold">
+    <name>beta</name>
+    <value>002</value>
+  </item>
+  <summary>two items</summary>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<package xmlns="urn:pkg" xmlns:x="urn:aux" xml:base="urn:root/">
+  <!-- comment before the manifest -->
+  <?build mode="incremental"?>
+  <manifest x:checksum="sha256">
+    <entry path="a/../b.txt" size="0" x:optional="true"/>
+    <entry path="./data.bin" size="18446744073709551615">
+      <x:attribute name="mode">0644</x:attribute>
+    </entry>
+  </manifest>
+  <payload>
+    <chunk id="first">prefix<![CDATA[&amp; <chunk>]]>suffix</chunk>
+    <chunk id="second" xml:space="default">
+      <x:raw><![CDATA[]]></x:raw>
+      <x:raw><![CDATA[ ]]></x:raw>
+    </chunk>
+  </payload>
+  <links xmlns:y="urn:links">
+    <y:link y:rel="self" y:href="urn:item:1"/>
+    <y:link y:rel="next" y:href="urn:item:2"/>
+  </links>
+</package>
+```

@@ -1,0 +1,31 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (vertex+, edge*)>
+  <!ELEMENT vertex (name, data*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (#PCDATA | fragment)*>
+  <!ELEMENT fragment (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST vertex id ID #REQUIRED kind (source|sink|relay) "relay">
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+]>
+<graph xmlns:g="urn:graph">
+  <vertex id="v0" kind="source">
+    <name>root</name>
+    <data>line one&#x1F;line two</data>
+    <data><fragment><![CDATA[<opaque attr="&value;">]]></fragment></data>
+  </vertex>
+  <vertex id="v1">
+    <name>relay</name>
+    <data xml:space="preserve">
+      <fragment>alpha</fragment>
+      <fragment>beta</fragment>
+    </data>
+  </vertex>
+  <vertex id="v2" kind="sink">
+    <name>terminal</name>
+  </vertex>
+  <edge from="v0" to="v1" weight="0.0"/>
+  <edge from="v1" to="v2" weight="-17"/>
+  <edge from="v0" to="v2" weight="NaN"/>
+</graph>

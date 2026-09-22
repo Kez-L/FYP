@@ -1,0 +1,80 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog"
+         xmlns:x="urn:example:extra"
+         xml:lang="en-US"
+         xml:base="urn:root/">
+  <entry id="0" x:flag="true" x:code="&#x0;">
+    <x:title><![CDATA[<not-an-element>&still-text;</not-an-element>]]></x:title>
+    <value xml:space="preserve">  left &amp; right  </value>
+    <nested xmlns="">
+      <plain attr="a&#x9;b&#xA;c">text</plain>
+    </nested>
+  </entry>
+  <entry id="2147483647" empty="" />
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<?processing instruction-data?>
+<root>
+  <!-- comment with -- forbidden-ish boundary -->
+  <a><![CDATA[]]></a>
+  <b><![CDATA[ brackets ]]]]></b>
+  <c>before &amp; after</c>
+  <?pi?>
+  <d attr="unterminated></d>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, item*)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT item (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST item kind (alpha|beta|gamma) "alpha">
+  <!ATTLIST link href CDATA #IMPLIED>
+  <!ENTITY left  "&#x3C;">
+  <!ENTITY right "&#x3E;">
+  <!ENTITY quoted "&quot;quoted&quot;">
+]>
+<report>
+  <header>&left;header&right; &quoted;</header>
+  <item kind="beta">one<link href="urn:x">two</link>three</item>
+  <item kind="gamma">&left;raw-looking&right;</item>
+</report>
+```
+
+```xml
+<?xml version="1.1"?>
+<r xmlns:q="urn:q">
+  <q:a>
+    <q:b>
+      <q:c>
+        <q:d>
+          <q:e>
+            <q:f attr="&#x1F; &#x7F; &#x85;">payload</q:f>
+          </q:e>
+        </q:d>
+      </q:c>
+    </q:b>
+  </q:a>
+  <mixed>text<q:x/>tail<![CDATA[more]]><?p data?></mixed>
+</r>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<outer>
+  <item a="1" b="2" c="3">
+    <open>
+      <empty/>
+      <broken></open>
+    </middle>
+  </item>
+  <tail/>
+</outer>
+```

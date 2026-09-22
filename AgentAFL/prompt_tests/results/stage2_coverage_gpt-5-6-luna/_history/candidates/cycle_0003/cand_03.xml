@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE timetable [
+  <!ELEMENT timetable (day+)>
+  <!ELEMENT day (heading, appointment*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT appointment (subject, location?, attendee*)>
+  <!ELEMENT subject (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT location (#PCDATA)>
+  <!ELEMENT attendee EMPTY>
+  <!ATTLIST day date CDATA #REQUIRED timezone CDATA "UTC">
+  <!ATTLIST appointment id ID #REQUIRED start CDATA #REQUIRED end CDATA #REQUIRED status (tentative|confirmed|cancelled) "confirmed">
+  <!ATTLIST mark type (important|private|remote) #REQUIRED>
+  <!ATTLIST attendee email CDATA #REQUIRED role (host|guest|observer) "guest">
+  <!ENTITY meeting "planning &amp; review">
+]>
+<timetable>
+  <day date="2026-09-17" timezone="Europe/Paris">
+    <heading>Thursday schedule</heading>
+    <appointment id="a1" start="09:00" end="09:45">
+      <subject>&meeting; <mark type="important">Q3</mark></subject>
+      <location>Room 2 &amp; video bridge</location>
+      <attendee email="lead@example.invalid" role="host"/>
+      <attendee email="guest@example.invalid"/>
+    </appointment>
+    <appointment id="a2" start="13:30" end="14:00" status="tentative">
+      <subject>Design <mark type="remote">sync</mark></subject>
+      <attendee email="remote@example.invalid" role="observer"/>
+    </appointment>
+  </day>
+  <day date="2026-09-18">
+    <heading>Friday schedule</heading>
+    <appointment id="a3" start="16:00" end="17:00" status="cancelled">
+      <subject>Retrospective</subject>
+      <location><![CDATA[Building C / Café]]></location>
+    </appointment>
+  </day>
+</timetable>

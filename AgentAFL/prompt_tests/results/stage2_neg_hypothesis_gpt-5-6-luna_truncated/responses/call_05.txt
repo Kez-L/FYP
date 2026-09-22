@@ -1,0 +1,130 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, note?)>
+  <!ELEMENT entry (title, description, link)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    status (draft|published|archived) "draft"
+  >
+  <!ATTLIST link
+    href CDATA #REQUIRED
+    rel NMTOKENS "related external"
+  >
+  <!NOTATION text SYSTEM "text/plain">
+]>
+<catalog>
+  <entry id="e1" status="published">
+    <title>Alpha</title>
+    <description>before <em>inside</em><br/>after</description>
+    <link href="urn:example:one" rel="primary"/>
+  </entry>
+  <entry id="e2">
+    <title>Beta</title>
+    <description>mixed <em>content</em> with <br/> empty elements</description>
+    <link href="#e1"/>
+  </entry>
+  <note>catalog-end</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ENTITY open "<part kind='open'>">
+  <!ENTITY close "</part>">
+  <!ENTITY quote "&#x22;">
+  <!ENTITY apos "&#x27;">
+]>
+<?processing instruction-data?>
+<!-- comment with --? no, safely unusual: [brackets] and & symbols -->
+<envelope xmlns="urn:outer" xmlns:p="urn:prefixed" xml:lang="fr" xml:space="preserve">
+  <p:header p:code="A&amp;B" xmlns:q="urn:temporary">
+    <q:item q:value="&quote;quoted&quote;">&apos;apostrophe&apos;</q:item>
+  </p:header>
+  &open;payload&lt;value&gt;&close;
+  <tail xmlns="">
+    <empty p:unused="visible" xmlns:p="urn:local"/>
+  </tail>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY a "A">
+  <!ENTITY b "&a;&a;">
+  <!ENTITY c "&b;&b;&b;">
+  <!ENTITY hex "&#x41;&#x42;&#x43;">
+  <!ENTITY dec "&#65;&#66;&#67;">
+  <!ATTLIST root marker CDATA "&c;">
+]>
+<root marker="&c;">
+  <left>&a;:&b;:&c;:&hex;:&dec;</left>
+  <right>
+    &c;&c;&c;
+    <leaf value="&b;&hex;&dec;"/>
+  </right>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE r [
+  <!ELEMENT r (a|b|c)*>
+  <!ELEMENT a EMPTY>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c (d,e?)>
+  <!ELEMENT d (#PCDATA)>
+  <!ELEMENT e EMPTY>
+  <!ATTLIST a flag CDATA #IMPLIED>
+  <!ATTLIST b xml:space (default|preserve) "default">
+  <!ATTLIST c choice (one|two|three) #REQUIRED>
+]>
+<r>
+  <a/>
+  <b>text</b>
+  <c choice="two"><d>nested</d><e/></c>
+  <a flag=""/>
+  <b xml:space="preserve">  spaced
+    text
+  </b>
+  <c choice="three"><d>last</d></c>
+</r>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE document [
+  <!ENTITY % common "<!ELEMENT document (section, trailer)>">
+  <!ENTITY % section "<!ELEMENT section (heading, body)>">
+  <!ENTITY % body "<!ELEMENT body (#PCDATA|line|mark)*>">
+  %common;
+  %section;
+  %body;
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT line EMPTY>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST section id ID #REQUIRED>
+  <![IGNORE[
+    <!ELEMENT ignored EMPTY>
+    <!ATTLIST ignored value CDATA #IMPLIED>
+  ]]>
+  <![INCLUDE[
+    <!ENTITY tag "runtime">
+  ]]>
+]>
+<document>
+  <section id="s-main">
+    <heading>Header &tag;</heading>
+    <body>one<line/>two<mark>three</mark>four</body>
+  </section>
+  <trailer/>
+</document>
+```

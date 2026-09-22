@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a|b|c)*>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b EMPTY>
+  <!ELEMENT c (d?, e*)>
+  <!ELEMENT d (#PCDATA)>
+  <!ELEMENT e (#PCDATA)>
+  <!ATTLIST a ref IDREF #IMPLIED>
+  <!ATTLIST b flag CDATA "x">
+  <!ENTITY one "A&amp;B">
+  <!ENTITY two "&one;<![CDATA[<inside>]]>">
+]>
+<root>
+  <a ref="missing">&two;</a>
+  <b/>
+  <c><d>text</d><e>first</e><e><![CDATA[]]></e></c>
+  <a><![CDATA[raw ]]>&lt; markup &gt; <![CDATA[tail]]></a>
+</root>

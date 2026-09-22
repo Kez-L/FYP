@@ -1,0 +1,109 @@
+```xml
+<?xml version="1.1"?>
+<?catalog mode="audit"?>
+<catalog xmlns="urn:example:catalog"
+         xmlns:m="urn:example:meta"
+         xml:lang="fr"
+         xml:space="preserve">
+  <!-- mixed content with namespaces and a CDATA section -->
+  <entry id="A-17" m:state="draft">
+    Préface <![CDATA[<not-an-element>&still-literal;</not-an-element>]]>
+    <title xml:space="default">Été &amp; hiver</title>
+    <m:details>
+      <m:item code="x:y">alpha</m:item>
+      <?note review="pending"?>
+    </m:details>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, payload, footer)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT payload (record+)>
+  <!ELEMENT record (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST record kind (alpha|beta|gamma) "alpha">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "local-resource.bin" NDATA bin>
+  <!ENTITY amp "&">
+  <!ENTITY left "<">
+  <!ENTITY right ">">
+]>
+<report>
+  <header>generated &amp; checked</header>
+  <payload>
+    <record kind="beta">literal &left;tag&right; &amp; &amp;</record>
+    <record kind="gamma"><![CDATA[raw ]]> text ]]&gt; tail</record>
+  </payload>
+  <footer>done</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:root xmlns:r="urn:root" xmlns:a="urn:a" xmlns:b="urn:b">
+  <r:branch a:key="one">
+    <a:leaf b:flag="yes"/>
+    <b:leaf a:key="two">
+      <inner xmlns="urn:inner" xmlns:r="">
+        <item xmlns:a="urn:shadow" a:key="three">content</item>
+      </inner>
+    </b:leaf>
+  </r:branch>
+  <r:branch xmlns:a="urn:alternate">
+    <a:leaf a:key="four"/>
+  </r:branch>
+</r:root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (section*, tail?)>
+  <!ELEMENT section (name, value?, value?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT tail (#PCDATA)>
+  <!ENTITY p "prefix">
+  <!ENTITY q "&p;:middle">
+  <!ENTITY r "&q;:suffix">
+  <!ATTLIST section id ID #IMPLIED>
+]>
+<envelope>
+  <section id="s1">
+    <name>&r;</name>
+    <value>&p;<mark><![CDATA[inside]]></mark>&q;</value>
+    <value>before&#x0A;after&#x20;&amp;</value>
+  </section>
+  <section>
+    <name>second</name>
+    <value>solo</value>
+  </section>
+  <tail>trailing text</tail>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<document>
+  <head attr="a&#x9;b&#xA;c&#xD;d"/>
+  <body>
+    <item><![CDATA[first]]></item>
+    <item>
+      text
+      <nested attr="&quot;quoted&quot;">&lt;escaped&gt;</nested>
+      <![CDATA[split ]]><![CDATA[sections]]>
+    </item>
+    <empty></empty>
+  </body>
+  <tail>
+    <?processing instruction-data?>
+    <!-- comment with -- near the edge -->
+    end
+  </tail>
+</document>
+```

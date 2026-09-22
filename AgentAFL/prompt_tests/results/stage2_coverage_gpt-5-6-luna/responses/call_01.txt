@@ -1,0 +1,166 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY % itemdecl "<!ELEMENT item (name, price, note?)>
+    <!ATTLIST item sku ID #REQUIRED state (new|used|refurbished) 'new'>">
+  %itemdecl;
+  <!ENTITY % mode "INCLUDE">
+  <![%mode;[
+    <!ELEMENT note (#PCDATA)>
+  ]]>
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ATTLIST catalog generated CDATA #IMPLIED>
+  <!ATTLIST section code NMTOKEN #REQUIRED>
+  <!ENTITY company "A &amp; B Trading">
+  <!ENTITY dash "&#x2014;">
+]>
+<catalog generated="2026-09-17">
+  <section code="hardware">
+    <title>&company; &dash; tools</title>
+    <item sku="tool-1" state="new">
+      <name>Ratchet &amp; socket set</name>
+      <price>19.95</price>
+      <note>Includes &lt;case&gt; and removable tray.</note>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (asset*, bundle?)>
+  <!ELEMENT asset EMPTY>
+  <!ELEMENT bundle (asset+)>
+  <!ATTLIST asset
+    src ENTITY #IMPLIED
+    format NOTATION (gif|svg) #IMPLIED
+    checksum NMTOKEN #IMPLIED>
+  <!ATTLIST bundle id ID #REQUIRED>
+  <!NOTATION gif SYSTEM "image/gif">
+  <!NOTATION svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+  <!ENTITY logo SYSTEM "images/logo.gif" NDATA gif>
+  <!ENTITY mark SYSTEM "images/mark.svg" NDATA svg>
+]>
+<inventory>
+  <asset src="logo" format="gif" checksum="a1b2c3"/>
+  <bundle id="media-pack">
+    <asset src="mark" format="svg"/>
+    <asset src="logo" format="gif"/>
+  </bundle>
+</inventory>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workspace xmlns="urn:example:workspace"
+           xmlns:ui="urn:example:ui"
+           xmlns:data="urn:example:data"
+           xml:lang="fr"
+           xml:space="preserve">
+  <!-- whitespace inside this element is significant -->
+  <?render mode="compact"?>
+  <header ui:role="banner" data:version="v1.0">
+    <ui:label><![CDATA[Résumé & détails]]></ui:label>
+    <ui:shortcut key="Ctrl+S" action="save"/>
+  </header>
+  <panel id="main" ui:collapsed="false">
+    <title>Éléments sélectionnés</title>
+    <description>Text before <emphasis>inline markup</emphasis> and after.</description>
+    <data:table data:rows="2">
+      <data:row data:index="0"><data:cell><![CDATA[A < B]]></data:cell></data:row>
+      <data:row data:index="1"><data:cell>Δ &amp; Ω</data:cell></data:row>
+    </data:table>
+  </panel>
+  <footer xmlns:ui="">
+    <copyright>2026</copyright>
+  </footer>
+</workspace>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (heading, body, appendix?)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT body (section+)>
+  <!ELEMENT section (heading, (paragraph|list|table|section)*)>
+  <!ELEMENT paragraph (#PCDATA|b|i|code)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|b|i|code)*>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT appendix ANY>
+  <!ATTLIST section level NMTOKEN "1">
+  <!ATTLIST row key ID #IMPLIED>
+  <!ENTITY product "parser">
+  <!ENTITY phrase "coverage &amp; diagnostics">
+  <!ENTITY % extra "audit CDATA #IMPLIED">
+  <!ATTLIST report %extra;>
+]>
+<report audit="nightly">
+  <heading>&product; &phrase;</heading>
+  <body>
+    <section level="1">
+      <heading>Overview</heading>
+      <paragraph>This <b>report</b> contains <i>mixed</i> content and <code>markup</code>.</paragraph>
+      <list>
+        <item>first item</item>
+        <item>second item with <b>emphasis</b></item>
+      </list>
+      <table>
+        <row key="r1"><cell>left</cell><cell>right</cell></row>
+        <row><cell>one</cell><cell>two</cell><cell>three</cell></row>
+      </table>
+    </section>
+    <section level="2">
+      <heading>Nested section</heading>
+      <section level="3"><heading>Leaf</heading><paragraph>End.</paragraph></section>
+    </section>
+  </body>
+  <appendix><raw><![CDATA[unparsed <payload> & symbols]]></raw></appendix>
+</report>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE message [
+  <!ELEMENT message (route, payload, metadata)>
+  <!ELEMENT route (source, destination)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT destination (#PCDATA)>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT metadata (entry*)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST message priority (low|normal|high) "normal">
+  <!ATTLIST chunk sequence NMTOKEN #REQUIRED>
+  <!ATTLIST entry name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY nbsp "&#xA0;">
+  <!ENTITY control "&#x1F;">
+]>
+<message priority="high">
+  <route>
+    <source>α-node&#x85;east</source>
+    <destination>β-node</destination>
+  </route>
+  <payload>
+    <chunk sequence="001">Line one&control;Line two</chunk>
+    <chunk sequence="002">Spacing&nbsp;and &#x2028; separators</chunk>
+    <chunk sequence="003"><![CDATA[<binary-like> A+B=C ]]></chunk>
+  </payload>
+  <metadata>
+    <entry name="content-type" value="application/xml"/>
+    <entry name="empty"/>
+    <entry name="quoted" value="&quot;single&apos;"/>
+  </metadata>
+</message>
+```

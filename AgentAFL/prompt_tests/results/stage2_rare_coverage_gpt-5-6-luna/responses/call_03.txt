@@ -1,0 +1,95 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (entry | group)*>
+  <!ELEMENT group (entry | group)*>
+  <!ELEMENT entry (#PCDATA)>
+  <!ATTLIST entry key ID #IMPLIED kind (text|number|flag) "text">
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+]>
+<map>
+  <group name="outer">
+    <entry key="first" kind="text">alpha &amp; beta</entry>
+    <group name="inner">
+      <entry key="second" kind="number">001.20</entry>
+      <entry key="third" kind="flag">&left;enabled&right;</entry>
+    </group>
+  </group>
+  <entry key="last" kind="text"><![CDATA[line one
+line two
+]]></entry>
+</map>
+```
+
+```xml
+<?xml version="1.1"?>
+<r:package xmlns:r="urn:root" xmlns:m="urn:meta" xmlns:x="urn:data" xml:lang="fr">
+  <r:manifest>
+    <m:property name="empty"/>
+    <m:property name="quoted">a &lt; b &amp;&amp; c &gt; d</m:property>
+  </r:manifest>
+  <r:payload>
+    <x:matrix rows="2" cols="3">
+      <x:row index="0"><x:cell/><x:cell value=""/><x:cell>0</x:cell></x:row>
+      <x:row index="1"><x:cell>𐀀</x:cell><x:cell><![CDATA[<raw/>]]></x:cell><x:cell>終</x:cell></x:row>
+    </x:matrix>
+  </r:payload>
+</r:package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (summary, details)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT details (line+)>
+  <!ELEMENT line (#PCDATA)>
+  <!ATTLIST line n NMTOKEN #REQUIRED>
+  <!ENTITY warning "Use &quot;care&quot; when reading.">
+]>
+<report>
+  <summary>&warning;</summary>
+  <details>
+    <line n="1">leading spaces</line>
+    <line n="2">text with&#10;an embedded newline</line>
+    <line n="3"><![CDATA[ ]]></line>
+    <line n="4">trailing spaces   </line>
+  </details>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns="urn:default" xmlns:p="urn:one">
+  <branch xmlns:p="urn:two" xmlns:q="urn:three">
+    <p:item q:ref="p:item" xml:base="https://example.invalid/a/../b">
+      <q:value>one</q:value>
+    </p:item>
+    <item xmlns="">
+      <p:shadow xmlns:p="">plain</p:shadow>
+    </item>
+  </branch>
+  <tail xmlns:p="urn:one">
+    <p:item p:ref="x"/>
+  </tail>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (chunk*)>
+  <!ELEMENT chunk (#PCDATA | part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ATTLIST chunk type CDATA "unknown">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY nested "A &nbsp; B">
+]>
+<stream>
+  <chunk type="mixed">before<part id="a">inside</part>after</chunk>
+  <chunk type="cdata"><![CDATA[&nested; &amp; <tag attr="x"/>]]></chunk>
+  <chunk type="entity">X&nested;Y</chunk>
+  <chunk type="empty"/>
+</stream>
+```

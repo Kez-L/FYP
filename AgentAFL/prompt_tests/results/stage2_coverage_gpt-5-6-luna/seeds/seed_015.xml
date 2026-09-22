@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE warehouse [
+  <!ELEMENT warehouse (w:section+)>
+  <!ELEMENT w:section (w:label, w:entry*)>
+  <!ELEMENT w:label (#PCDATA)>
+  <!ELEMENT w:entry (#PCDATA|w:tag|w:link)*>
+  <!ELEMENT w:tag EMPTY>
+  <!ELEMENT w:link (#PCDATA)>
+  <!ATTLIST warehouse
+    xmlns CDATA #FIXED "urn:example:warehouse"
+    xmlns:w CDATA #FIXED "urn:example:warehouse"
+    xml:base CDATA #IMPLIED>
+  <!ATTLIST w:section
+    id ID #REQUIRED
+    xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST w:entry
+    ref IDREF #IMPLIED
+    kind (stock|service|other) "stock">
+  <!ATTLIST w:tag
+    name NMTOKEN #REQUIRED
+    value CDATA #IMPLIED>
+  <!ATTLIST w:link
+    href CDATA #REQUIRED>
+  <!ENTITY warehouse-name "North &amp; South Depot">
+]>
+<warehouse xml:base="https://example.invalid/data/" xmlns="urn:example:warehouse" xmlns:w="urn:example:warehouse">
+  <w:section id="cold" xml:lang="en">
+    <w:label>&warehouse-name;</w:label>
+    <w:entry ref="item-2" kind="stock">ice <w:tag name="temperature" value="−18"/> storage</w:entry>
+    <w:entry kind="service"><w:link href="urn:service:inspection">inspection</w:link></w:entry>
+  </w:section>
+  <w:section id="general">
+    <w:label>General goods</w:label>
+    <w:entry id="item-2" kind="other">mixed <w:tag name="fragile"/> cargo</w:entry>
+  </w:section>
+</warehouse>

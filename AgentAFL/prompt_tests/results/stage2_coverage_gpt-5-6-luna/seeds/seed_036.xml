@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (item+)>
+  <!ATTLIST archive
+    generated CDATA #REQUIRED
+    index ID #IMPLIED>
+  <!ELEMENT item (header, payload, link*)>
+  <!ATTLIST item
+    id ID #REQUIRED
+    refs IDREFS #IMPLIED
+    format (text|binary|mixed) "text">
+  <!ELEMENT header (name, owner?, flag*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST flag
+    name NMTOKEN #REQUIRED
+    value CDATA #IMPLIED>
+  <!ELEMENT payload (#PCDATA|chunk|linebreak)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link
+    target IDREF #REQUIRED
+    relation (parent|child|related) "related">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY thumbnail SYSTEM "thumbnail.png" NDATA png>
+  <!ATTLIST item preview ENTITY #IMPLIED>
+]>
+<archive generated="2026-09-17T12:00:00Z" index="root">
+  <item id="root" format="mixed" preview="thumbnail">
+    <header>
+      <name>Root record</name>
+      <owner>ops@example.test</owner>
+      <flag name="priority" value="high"/>
+      <flag name="sealed"/>
+    </header>
+    <payload>first<chunk><![CDATA[<opaque>&raw;]]></chunk><linebreak/>last</payload>
+    <link target="child-a" relation="child"/>
+  </item>
+  <item id="child-a" refs="root" format="binary">
+    <header><name>Attached record</name></header>
+    <payload><![CDATA[AAECAwQFBgcICQ==]]></payload>
+    <link target="root" relation="parent"/>
+  </item>
+</archive>

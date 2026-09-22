@@ -1,0 +1,96 @@
+```xml
+<?xml version="1.1" standalone="yes"?>
+<catalog xmlns="urn:example:catalog"
+         xmlns:m="urn:example:meta"
+         xml:lang="fr">
+  <!-- mixed content, character references, and namespace shadowing -->
+  <entry id="α-𐐀" xml:space="preserve">
+    Avant<![CDATA[<not-an-element>&still-text;</not-an-element>]]>après
+    <m:meta m:key="quoted &amp; value"><?audit phase="one"?>Résumé &#x1F600;</m:meta>
+  </entry>
+  <entry xmlns="urn:example:other" xmlns:m="">
+    <value><![CDATA[line 1
+line 2
+]]></value>
+  </entry>
+</catalog>
+```
+
+```xml
+<r xmlns="urn:depth" xml:space="default">
+  <a n="1"><b n="2"><c n="3"><d n="4"><e n="5">
+    <f n="6"><g n="7"><h n="8"><i n="9"><j n="10">
+      <k n="11"><l n="12"><m n="13"><n n="14"><o n="15">
+        <p n="16"><q n="17"><s n="18"><t n="19"><u n="20">
+          <v n="21"><w n="22"><x n="23"><y n="24"><z n="25">deep</z></y></x></w></v>
+        </u></t></s></q></p>
+      </o></n></m></l></k>
+    </j></i></h></g></f>
+  </e></d></c></b></a>
+</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<document>
+  <section id="s1" title="a&#x9;b&#xA;c&#xD;d">
+    <![CDATA[]]>
+    <item enabled="true" empty="" code="&#65;&#x42;&#x43;">
+      <name>left &lt; middle &amp; right &gt;</name>
+      <payload><![CDATA[a]]]]><![CDATA[>b]]></payload>
+      <?instruction data with spaces?>
+    </item>
+  </section>
+  <section id="s2">
+    <item><![CDATA[
+      whitespace
+      and tabs&#9;remain literal
+    ]]></item>
+    <!-- comment containing punctuation: -- is avoided -->
+  </section>
+</document>
+```
+
+```xml
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="100%" height="100%" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#000"/>
+      <stop offset="100%" stop-color="rgb(255,255,255)"/>
+    </linearGradient>
+    <path id="curve" d="M0,0 C10,20 30,40 100,100"/>
+  </defs>
+  <g transform="translate(5 5) rotate(-2.5)" xml:space="preserve">
+    <use xlink:href="#curve" fill="none" stroke="url(#g)"/>
+    <text x="10" y="90">A &amp; B <![CDATA[<glyph>]]></text>
+    <foreignObject x="1" y="1" width="20" height="20">
+      <html xmlns="http://www.w3.org/1999/xhtml">
+        <body><p lang="en">embedded</p></body>
+      </html>
+    </foreignObject>
+  </g>
+</svg>
+```
+
+```xml
+<message xmlns="urn:message">
+  <header>
+    <from address="sender@example.test"/>
+    <to address="receiver@example.test"/>
+    <timestamp>2026-09-17T12:34:56.789+05:30</timestamp>
+  </header>
+  <body>
+    <part type="text/plain" content-length="0"/>
+    <part type="application/octet-stream">
+      <data encoding="base64">AAECAwQFBgcICQoLDA0ODw==</data>
+    </part>
+    <part type="text/xml">
+      <data><![CDATA[
+        <inner xmlns="urn:inner"><value priority="high">42</value></inner>
+      ]]></data>
+    </part>
+  </body>
+  <footer><?signed algorithm="sha256"?>end</footer>
+</message>
+```

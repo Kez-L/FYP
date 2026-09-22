@@ -1,0 +1,159 @@
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+, generated?)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|link|emph)*>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT emph (#PCDATA|emph)*>
+  <!ELEMENT generated EMPTY>
+  <!ATTLIST catalog version NMTOKEN #REQUIRED>
+  <!ATTLIST section code ID #REQUIRED xml:lang NMTOKEN "und">
+  <!ATTLIST item key ID #IMPLIED refs IDREFS #IMPLIED>
+  <!ATTLIST link href CDATA #REQUIRED kind (local|remote|data) "local">
+  <!ATTLIST generated at CDATA #FIXED "never">
+  <!ENTITY mark "&#x2063;">
+  <!ENTITY nested "left-&mark;-right">
+]>
+<catalog version="0x10">
+  <section code="sA" xml:lang="en">
+    <title>&nested;</title>
+    <item key="i1" refs="i2">before<link href="urn:x" kind="remote"/>after<emph>deep<emph>text</emph></emph></item>
+    <item key="i2">tail</item>
+  </section>
+  <section code="sB">
+    <title>empty</title>
+  </section>
+  <generated/>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="urn:style?x=1&amp;y=2" alternate="yes"?>
+<workspace xmlns="urn:default" xmlns:a="urn:a" xmlns:b="urn:b" xml:base="http://example.invalid/root/">
+  <a:node a:id="n0" b:flag="true" xmlns:c="urn:c">
+    <a:value><![CDATA[<not-an-element>&still-text;</not-an-element>]]></a:value>
+    <b:map>
+      <b:entry key="k&#x0A;1" value="&#x1F600;"/>
+      <b:entry key="k2"><c:payload a:empty=""/></b:entry>
+    </b:map>
+    <?custom data="&quot;quoted&quot; &#x9;"?>
+  </a:node>
+  <tail xmlns="">
+    <leaf xmlns:x="urn:x" x:q="1"/>
+  </tail>
+</workspace>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE transfer [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "blob.dat" NDATA bin>
+  <!ENTITY pct "percent">
+  <!ENTITY pair "&pct;:&pct;">
+  <!ELEMENT transfer (header, records, trailer?)>
+  <!ELEMENT header (source, destination, checksum?)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT destination (#PCDATA)>
+  <!ELEMENT checksum EMPTY>
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (field|attachment)*>
+  <!ELEMENT field (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST transfer mode (push|pull|mirror) "mirror" stamp CDATA #IMPLIED>
+  <!ATTLIST source id ID #REQUIRED>
+  <!ATTLIST destination ref IDREF #REQUIRED>
+  <!ATTLIST record rid ID #REQUIRED parent IDREF #IMPLIED>
+  <!ATTLIST attachment src ENTITY #IMPLIED media NOTATION bin>
+]>
+<transfer mode="push" stamp="&pair;">
+  <header>
+    <source id="origin">node-A</source>
+    <destination ref="origin">node-B</destination>
+    <checksum algorithm="sha256"/>
+  </header>
+  <records>
+    <record rid="r1">
+      <field>alpha &amp; beta</field>
+      <attachment src="blob" media="bin"/>
+      <field><![CDATA[x]]></field>
+    </record>
+    <record rid="r2" parent="r1">
+      <field>line one
+line two</field>
+    </record>
+  </records>
+  <trailer>done</trailer>
+</transfer>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta?, body)>
+  <!ELEMENT meta (entry*)>
+  <!ELEMENT entry EMPTY>
+  <!ELEMENT body (chunk|x:foreign|empty)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT x:foreign ANY>
+  <!ELEMENT empty EMPTY>
+  <!ATTLIST envelope xmlns:x CDATA #FIXED "urn:foreign">
+  <!ATTLIST entry name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST chunk number NMTOKEN #IMPLIED>
+]>
+<envelope xmlns:x="urn:foreign" xmlns:y="urn:other">
+  <meta>
+    <entry name="a" value="1"/>
+    <entry name="b"/>
+  </meta>
+  <body>
+    <chunk number="0000000000000000000000000000000000000000000000000007">A&amp;B</chunk>
+    <x:foreign y:attr="v"><x:item/><x:item><![CDATA[data]]></x:foreign>
+    <empty/>
+    <chunk><![CDATA[]]></chunk>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (open, event*, close)>
+  <!ELEMENT open EMPTY>
+  <!ELEMENT event (name, value?, event*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT close EMPTY>
+  <!ATTLIST stream session ID #REQUIRED>
+  <!ATTLIST open time CDATA #REQUIRED capabilities NMTOKENS #IMPLIED>
+  <!ATTLIST event eid ID #REQUIRED parent IDREF #IMPLIED type (insert|delete|update) #REQUIRED>
+  <!ATTLIST name xml:space (default|preserve) "default">
+  <!ENTITY amp "&#38;">
+  <![IGNORE[
+    <!ELEMENT ignored (anything)>
+  ]]>
+  <![INCLUDE[
+    <!ENTITY visible "visible">
+  ]]>
+]>
+<stream session="S-&#x1D11E;" xmlns="urn:stream">
+  <open time="1970-01-01T00:00:00Z" capabilities="a b c"/>
+  <event eid="e0" type="insert">
+    <name>root</name>
+    <value>one<part>&visible;</part>two<part>&amp;</part></value>
+    <event eid="e1" parent="e0" type="update">
+      <name xml:space="preserve">  nested  </name>
+      <value><![CDATA[<&>]]></value>
+    </event>
+  </event>
+  <event eid="e2" parent="e0" type="delete">
+    <name>leaf</name>
+  </event>
+  <close/>
+</stream>
+```

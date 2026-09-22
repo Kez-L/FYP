@@ -1,0 +1,165 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry*, note)>
+  <!ELEMENT entry (title, metadata?, description)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT metadata (author | date | author-date)*>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT date (#PCDATA)>
+  <!ELEMENT author-date (#PCDATA)>
+  <!ELEMENT description (#PCDATA | emphasis | link)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST entry id ID #REQUIRED status (draft|final|archived) "draft">
+  <!ATTLIST link href URI #IMPLIED>
+  <!ENTITY amp "&#38;">
+  <!ENTITY mark "&#x2022;">
+]>
+<catalog>
+  <entry id="e1" status="final">
+    <title>Mixed &amp; entity &amp; text</title>
+    <metadata>
+      <author>R&amp;D</author>
+      <date>2026-09-17</date>
+      <author-date>combined &mark; value</author-date>
+    </metadata>
+    <description>before <emphasis>inside</emphasis> between <link href="urn:test:a&amp;b">after</link> end</description>
+  </entry>
+  <entry id="e2">
+    <title>Empty metadata</title>
+    <description><![CDATA[raw ]]> bracket ]]&gt; and ]] </description>
+  </entry>
+  <note>tail &amp; &amp; &amp;</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST row index NMTOKEN #REQUIRED>
+  <!ATTLIST cell coord NMTOKENS #IMPLIED kind (number|text|empty) "text">
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+  <!ENTITY % cellattrs '<!ATTLIST cell generated CDATA "yes">'>
+  %cellattrs;
+]>
+<matrix>
+  <row index="01 02">
+    <cell coord="a1 b2" kind="number">1&lt;2</cell>
+    <cell coord="c3" generated="no">x &left; y &right;</cell>
+  </row>
+  <row index="last">
+    <cell kind="empty"/>
+    <cell coord="z9" generated="maybe">line
+break&#x0A;value</cell>
+  </row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE network [
+  <!ELEMENT network (node+, route*)>
+  <!ELEMENT node EMPTY>
+  <!ELEMENT route (hop, hop?, payload?)>
+  <!ELEMENT hop EMPTY>
+  <!ELEMENT payload (#PCDATA)>
+  <!ATTLIST node xmlns CDATA #IMPLIED name CDATA #REQUIRED role NMTOKEN #IMPLIED>
+  <!ATTLIST route from IDREF #REQUIRED to IDREF #REQUIRED metric NMTOKEN #IMPLIED>
+  <!ATTLIST hop node IDREF #REQUIRED>
+  <!ATTLIST payload encoding (plain|base64) "plain">
+]>
+<network xmlns="urn:net:core" xmlns:x="urn:net:extra">
+  <node name="alpha" role="edge"/>
+  <node name="beta" role="core" xmlns=""/>
+  <x:node name="gamma" role="edge" x:zone="west"/>
+  <route from="alpha" to="beta" metric="001">
+    <hop node="alpha"/>
+    <hop node="beta"/>
+    <payload encoding="plain">a:b/c?d=e&amp;f</payload>
+  </route>
+  <route from="gamma" to="alpha">
+    <hop node="gamma"/>
+  </route>
+</network>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, body, footer)>
+  <!ELEMENT header (label, generated)>
+  <!ELEMENT body (paragraph | table | separator)*>
+  <!ELEMENT footer (#PCDATA)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA | bold | italic | br)*>
+  <!ELEMENT bold (#PCDATA)>
+  <!ELEMENT italic (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT table (tr+)>
+  <!ELEMENT tr (th*, td+)>
+  <!ELEMENT th (#PCDATA)>
+  <!ELEMENT td (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ATTLIST report lang NMTOKEN #IMPLIED>
+  <!ATTLIST table columns NMTOKEN #REQUIRED>
+  <!ENTITY newline "&#10;">
+]>
+<report lang="en-US">
+  <header>
+    <label>Quarterly &quot;report&quot;</label>
+    <generated>2026-09-17&newline;UTC</generated>
+  </header>
+  <body>
+    <paragraph>one <bold>bold</bold><br/>two <italic>italic</italic> three</paragraph>
+    <separator/>
+    <table columns="2">
+      <tr><th>A</th><th>B</th></tr>
+      <tr><td>left</td><td>right &amp; more</td></tr>
+      <tr><td><![CDATA[<raw>]]></td><td/></tr>
+    </table>
+  </body>
+  <footer>fin</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (item | group)+>
+  <!ELEMENT group (item+)>
+  <!ELEMENT item (key, value, checksum?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA | fragment)*>
+  <!ELEMENT fragment ANY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST archive format (compact|expanded) #REQUIRED>
+  <!ATTLIST group name CDATA #IMPLIED>
+  <!ATTLIST item uid ID #REQUIRED type CDATA #IMPLIED>
+  <!ATTLIST fragment source CDATA #IMPLIED>
+  <!ENTITY fragmentText "<fragment source='entity'>embedded &amp; text</fragment>">
+]>
+<archive format="expanded">
+  <group name="first">
+    <item uid="i-1" type="text">
+      <key>alpha</key>
+      <value>prefix &fragmentText; suffix</value>
+      <checksum>0000</checksum>
+    </item>
+    <item uid="i-2">
+      <key>beta</key>
+      <value><fragment source="literal"><inner>content</inner></fragment></value>
+    </item>
+  </group>
+  <item uid="i-3" type="mixed">
+    <key>gamma</key>
+    <value><![CDATA[&fragmentText; is not expanded here]]></value>
+  </item>
+</archive>
+```

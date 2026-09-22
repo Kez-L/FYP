@@ -1,0 +1,154 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, record+, footer?)>
+  <!ELEMENT header (created, source)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT record (key, payload, link*)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST record state (open|closed|held) "open">
+  <!ATTLIST record ref ID #IMPLIED>
+  <!ATTLIST link target IDREF #REQUIRED>
+  <!ENTITY marker "&#x2026;">
+]>
+<archive>
+  <header>
+    <created>2026-09-17T00:00:00Z</created>
+    <source><![CDATA[feed://example.invalid/a?x=1&y=2]]></source>
+  </header>
+  <record ref="r1" state="open">
+    <key>alpha</key>
+    <payload>left<part><![CDATA[<opaque>&raw;]]></part>right &marker;</payload>
+    <link target="r2"/>
+  </record>
+  <record ref="r2" state="held">
+    <key>beta</key>
+    <payload><part>one</part><part>two</part></payload>
+  </record>
+  <footer>done</footer>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (meta, chapter*)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT chapter (heading, paragraph+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|em|code|break)*>
+  <!ELEMENT em (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ATTLIST report xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST chapter number NMTOKEN #REQUIRED>
+  <!ATTLIST meta generated CDATA #REQUIRED>
+  <!ENTITY % optional "<!ELEMENT appendix (#PCDATA)>">
+  %optional;
+]>
+<report xml:lang="fr">
+  <meta generated="yes"/>
+  <chapter number="I">
+    <heading>Syntax &amp; Semantics</heading>
+    <paragraph>Text with <em>nested <code>markup</code></em><break/> and a tail.</paragraph>
+    <paragraph><![CDATA[Characters such as <, >, and & remain literal here.]]></paragraph>
+  </chapter>
+  <chapter number="II">
+    <heading>Empty cases</heading>
+    <paragraph><code/></paragraph>
+  </chapter>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:matrix xmlns:r="urn:matrix" xmlns:x="urn:axis" xmlns="urn:default">
+  <r:metadata>
+    <x:axis x:name="row" x:unit="index"/>
+    <x:axis x:name="column" x:unit="index"/>
+  </r:metadata>
+  <r:row r:id="R0">
+    <cell xmlns="" position="0,0">0</cell>
+    <cell xmlns="" position="0,1">1</cell>
+    <r:cell r:kind="derived" r:formula="a&amp;b">2</r:cell>
+  </r:row>
+  <r:row r:id="R1">
+    <cell xmlns="urn:default" position="1,0">
+      <value>π</value>
+    </cell>
+    <cell xmlns="" position="1,1" xml:space="preserve">  spaced  </cell>
+  </r:row>
+  <?checkpoint phase="after-rows"?>
+  <!-- namespace rebinding and prefixed attributes -->
+  <r:summary xmlns:y="urn:other" y:status="complete">
+    <total>4</total>
+  </r:summary>
+</r:matrix>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node (label?, property*)>
+  <!ELEMENT edge EMPTY>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST node id ID #REQUIRED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+  <!ATTLIST property name CDATA #REQUIRED>
+]>
+<graph>
+  <node id="n0">
+    <label>Root</label>
+    <property name="color">blue</property>
+    <property name="empty"/>
+  </node>
+  <node id="n1">
+    <label>Leaf &quot;A&quot;</label>
+  </node>
+  <node id="n2">
+    <label><![CDATA[Line one
+Line two]]></label>
+    <property name="quote">' &amp; "</property>
+  </node>
+  <edge from="n0" to="n1" weight="0"/>
+  <edge from="n1" to="n2" weight="-3.14"/>
+  <edge from="n2" to="n0" weight="1e309"/>
+</graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (entry*)>
+  <!ELEMENT entry EMPTY>
+  <!ELEMENT data (chunk|comment|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT comment (#PCDATA)>
+  <!ATTLIST entry path CDATA #REQUIRED kind CDATA #IMPLIED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding (plain|base64|hex) "plain">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quote "&quot;">
+]>
+<package>
+  <manifest>
+    <entry path="a/../b.txt" kind="text"/>
+    <entry path="symbols/&quot;&amp;&lt;&gt;.bin" kind="binary"/>
+    <entry path="" kind="empty"/>
+  </manifest>
+  <data>
+    <chunk index="000" encoding="plain">first&nbsp;chunk</chunk>
+    <comment>not an XML comment: &lt;!-- payload --&gt;</comment>
+    <chunk index="1" encoding="base64">AAECAwQFBgcICQ==</chunk>
+    <chunk index="2" encoding="hex"><![CDATA[00ff10deadbeef]]></chunk>
+    <chunk index="3">tail &quote; value</chunk>
+  </data>
+</package>
+```

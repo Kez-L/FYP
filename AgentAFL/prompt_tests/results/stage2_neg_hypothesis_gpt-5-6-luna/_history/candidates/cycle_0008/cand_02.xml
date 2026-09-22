@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body, trailer)>
+  <!ELEMENT header (timestamp, flag*)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST flag name NMTOKEN #REQUIRED value CDATA "on">
+  <!ELEMENT body (section|separator|text)*>
+  <!ELEMENT section (heading, (section|text|separator)*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT text (#PCDATA|mark|ref)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target CDATA #REQUIRED>
+  <!ELEMENT separator EMPTY>
+  <!ELEMENT trailer (#PCDATA)>
+]>
+<envelope>
+  <header>
+    <timestamp>2026-09-17T00:00:00Z</timestamp>
+    <flag name="alpha"/>
+    <flag name="beta" value=""/>
+  </header>
+  <body>
+    <section>
+      <heading>outer</heading>
+      <text>before <mark>highlight</mark> after<ref target="x"/></text>
+      <section>
+        <heading>inner</heading>
+        <separator/>
+        <text><![CDATA[<not-an-element>]]></text>
+      </section>
+      <separator/>
+    </section>
+    <text>tail</text>
+  </body>
+  <trailer>checksum:&#x0A;42</trailer>
+</envelope>

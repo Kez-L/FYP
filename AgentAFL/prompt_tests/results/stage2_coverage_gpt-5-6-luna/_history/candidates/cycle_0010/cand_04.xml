@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, payload, trailer?)>
+  <!ATTLIST packet version NMTOKEN #REQUIRED checksum CDATA #IMPLIED>
+  <!ELEMENT header (field+)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name NMTOKEN #REQUIRED value CDATA #REQUIRED>
+  <!ELEMENT payload (#PCDATA|chunk|section)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk encoding (base64|hex|plain) #REQUIRED>
+  <!ELEMENT section (label?, chunk+)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT trailer (status, note?)>
+  <!ELEMENT status (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY lt "&lt;">
+  <!ENTITY percent "&#37;">
+]>
+<packet version="2.0" checksum="a&amp;b">
+  <header>
+    <field name="kind" value="mixed"/>
+    <field name="flags" value="A&lt;B"/>
+  </header>
+  <payload>
+    prefix &percent;
+    <chunk encoding="hex">00ff7e</chunk>
+    <section>
+      <label>embedded</label>
+      <chunk encoding="plain">alpha &amp; beta</chunk>
+      <chunk encoding="base64">QUJDRA==</chunk>
+    </section>
+    <![CDATA[
+      literal markup: <not-an-element>&lt;still-raw</not-an-element>
+    ]]>
+    suffix &lt;done&gt;
+  </payload>
+  <trailer>
+    <status>accepted</status>
+    <note>Processing instruction follows</note>
+  </trailer>
+  <?audit event="complete"?>
+</packet>

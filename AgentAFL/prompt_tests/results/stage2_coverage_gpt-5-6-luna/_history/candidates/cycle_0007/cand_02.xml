@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (metadata, body, signature?)>
+  <!ELEMENT metadata (author, generated, keyword*)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ELEMENT body (heading, paragraph+, table?)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|bold|italic|ref|br)*>
+  <!ELEMENT bold (#PCDATA)>
+  <!ELEMENT italic (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref href CDATA #REQUIRED>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+]>
+<report xml:lang="en" xml:base="https://example.invalid/reports/">
+  <?build profile="fuzz"?>
+  <metadata>
+    <author>Analyst &amp; Co.</author>
+    <generated>2026-09-17T12:00:00Z</generated>
+    <keyword>validation</keyword>
+    <keyword>entities</keyword>
+  </metadata>
+  <body>
+    <heading>Mixed content</heading>
+    <paragraph>Text <bold>with emphasis</bold>, <italic>style</italic>, and <ref href="#x">links</ref>&nbsp;<br/></paragraph>
+    <paragraph><![CDATA[raw characters: < & > " ' ]]></paragraph>
+    <table>
+      <row><cell>one</cell><cell>two</cell></row>
+      <row><cell>three</cell><cell>four</cell></row>
+    </table>
+  </body>
+  <signature>-- signed --</signature>
+</report>

@@ -1,0 +1,122 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section
+    id ID #REQUIRED
+    visibility (public|private|archived) "public">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|em|code)*>
+  <!ATTLIST item ref IDREF #IMPLIED>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+]>
+<catalog>
+  <section id="s-main" visibility="private">
+    <title>Mixed content inventory</title>
+    <item ref="s-main">alpha <em>bold</em> <code>one&lt;two</code> omega</item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<message xml:lang="fr" xml:space="preserve">
+  <!-- comment with --? no, still valid -->
+  <header>
+    <name>Δelta</name>
+    <value><![CDATA[line one
+line two ]]> tail</value>
+  </header>
+  <?processing instruction?>
+  <body xml:base="urn:example:base/" xml:lang="x-klingon">
+    <para>crème brûlée &#x1F600; &#x85; &#x2028;</para>
+    <empty/>
+  </body>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (metadata, data)>
+  <!ELEMENT metadata (author?, timestamp?)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT data (record*)>
+  <!ELEMENT record (field+)>
+  <!ATTLIST record key ID #IMPLIED>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST field
+    kind (text|number|date|flag) "text"
+    xmlns:aux CDATA #FIXED "urn:aux">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "sample.bin" NDATA bin>
+]>
+<report>
+  <metadata>
+    <author>tester</author>
+    <timestamp>2026-09-17T00:00:00Z</timestamp>
+  </metadata>
+  <data>
+    <record key="r1">
+      <field kind="number">00000000000000000042</field>
+      <field kind="flag">true</field>
+    </record>
+    <record>
+      <field>&#x0A;&#x0D;&#x09;trim-sensitive&#x20;</field>
+    </record>
+  </data>
+</report>
+```
+
+```xml
+<ns:envelope
+    xmlns:ns="urn:outer"
+    xmlns:a="urn:alpha"
+    xmlns:b="urn:beta"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:type="a:Envelope">
+  <ns:payload>
+    <a:item a:id="A-1" b:flag="yes">
+      <b:item b:id="B-1">
+        <a:value><![CDATA[<not-an-element>&still-text;</not-an-element>]]></a:value>
+      </b:item>
+      <a:item xmlns:a="" xmlns:local="urn:local">
+        <local:child local:attr="v"/>
+      </a:item>
+    </a:item>
+  </ns:payload>
+  <ns:payload xmlns="urn:default">
+    <entry xml:id="entry-2" xml:lang="und"/>
+  </ns:payload>
+</ns:envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (level)>
+  <!ELEMENT level (level|leaf)*>
+  <!ELEMENT leaf (#PCDATA)>
+  <!ATTLIST level depth NMTOKEN #IMPLIED>
+  <!ENTITY left  "&#x5B;">
+  <!ENTITY right "&#x5D;">
+  <!ENTITY quoted "&quot;&apos;&amp;&lt;&gt;">
+]>
+<root>
+  <level depth="0">
+    <level depth="1">
+      <level depth="2">
+        <level depth="3">
+          <level depth="4">
+            <leaf>&left; nested &quoted; text &right;</leaf>
+            <leaf>before<!-- embedded -->after<?pi data?></leaf>
+          </level>
+        </level>
+      </level>
+    </level>
+  </level>
+</root>
+```

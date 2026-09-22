@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (entry*)>
+  <!ELEMENT entry (meta, value?, dependency*)>
+  <!ELEMENT meta (name, owner, flag*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ELEMENT value (string|number|boolean|nil|array|object)>
+  <!ELEMENT string (#PCDATA)>
+  <!ELEMENT number (#PCDATA)>
+  <!ELEMENT boolean (#PCDATA)>
+  <!ELEMENT nil EMPTY>
+  <!ELEMENT array (value*)>
+  <!ELEMENT object (property*)>
+  <!ELEMENT property (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT dependency EMPTY>
+  <!ATTLIST entry id ID #REQUIRED scope (global|local|temporary) "local">
+  <!ATTLIST flag name NMTOKEN #REQUIRED>
+  <!ATTLIST dependency ref IDREF #REQUIRED optional (yes|no) "no">
+  <!ENTITY product "Orchid">
+]>
+<registry>
+  <entry id="main" scope="global">
+    <meta>
+      <name>&product; Runtime</name>
+      <owner>ops@example.invalid</owner>
+      <flag name="pinned"/>
+      <flag name="audited"/>
+    </meta>
+    <value>
+      <object>
+        <property>
+          <key>limits</key>
+          <value>
+            <array>
+              <value><number>0</number></value>
+              <value><number>1.5</number></value>
+              <value><nil/></value>
+            </array>
+          </value>
+        </property>
+        <property>
+          <key>enabled</key>
+          <value><boolean>true</boolean></value>
+        </property>
+      </object>
+    </value>
+    <dependency ref="plugin" optional="yes"/>
+  </entry>
+  <entry id="plugin" scope="temporary">
+    <meta><name>Extension</name><owner>build@example.invalid</owner></meta>
+    <value><string><![CDATA[load-after:init]]></string></value>
+  </entry>
+</registry>

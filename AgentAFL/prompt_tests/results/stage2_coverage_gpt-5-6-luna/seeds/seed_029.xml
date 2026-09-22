@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (step+, transition*)>
+  <!ELEMENT step (label, action*)>
+  <!ELEMENT action (#PCDATA|parameter)*>
+  <!ELEMENT parameter EMPTY>
+  <!ELEMENT transition EMPTY>
+  <!ELEMENT label (#PCDATA)>
+  <!ATTLIST step
+    id ID #REQUIRED
+    state (initial|ready|paused|final) "ready">
+  <!ATTLIST action
+    type (log|invoke|wait|notify) #REQUIRED>
+  <!ATTLIST parameter
+    key NMTOKEN #REQUIRED
+    value CDATA #IMPLIED>
+  <!ATTLIST transition
+    from IDREF #REQUIRED
+    to IDREF #REQUIRED
+    event NMTOKEN #REQUIRED>
+  <!ENTITY apos "&#39;">
+  <!ENTITY amp "&#38;">
+]>
+<workflow xmlns="urn:workflow:v2" xml:lang="en">
+  <step id="start" state="initial">
+    <label>Start</label>
+    <action type="log">begin<parameter key="severity" value="info"/></action>
+    <action type="invoke">run &apos;bootstrap&apos; &amp; validate</action>
+  </step>
+  <step id="hold" state="paused">
+    <label>Waiting</label>
+    <action type="wait">
+      <parameter key="duration" value="PT5M"/>
+      <parameter key="jitter" value="true"/>
+    </action>
+  </step>
+  <step id="finish" state="final">
+    <label>Finished</label>
+    <action type="notify"><![CDATA[status <ok/>]]></action>
+  </step>
+  <transition from="start" to="hold" event="pause"/>
+  <transition from="hold" to="finish" event="resume"/>
+  <transition from="start" to="finish" event="skip"/>
+</workflow>

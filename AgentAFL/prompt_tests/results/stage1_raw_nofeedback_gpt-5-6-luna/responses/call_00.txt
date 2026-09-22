@@ -1,0 +1,102 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <item id="A&amp;1" price="0.0000000000000000000001">
+    <name><![CDATA[<&amp;]]></name>
+    <description>left &lt; middle &amp; right &gt;</description>
+    <x:metadata>
+      <x:entry key="empty"/>
+      <x:entry key="quoted">"apostrophe&apos;"</x:entry>
+    </x:metadata>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+)>
+  <!ELEMENT section (title, paragraph*, table?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST section index NMTOKEN #REQUIRED>
+]>
+<report>
+  <section index="01">
+    <title>Mixed content</title>
+    <paragraph>alpha<em>beta</em><br/>gamma</paragraph>
+    <paragraph><![CDATA[raw ]]>tail</paragraph>
+    <table>
+      <row><cell>1</cell><cell>2</cell></row>
+      <row><cell><![CDATA[x<y]]></cell><cell/></row>
+    </table>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<r:root xmlns:r="urn:root" xmlns:p="urn:payload" xmlns:q="urn:query" xml:lang="und">
+  <r:payload p:kind="nested">
+    <p:node q:a="1" q:b="2">
+      <p:node q:a="&quot;" q:b="&apos;"/>
+      <p:node q:a="&#x0A;" q:b="&#13;&#10;">
+        <![CDATA[]]><![CDATA[split]]><![CDATA[content]]>
+      </p:node>
+    </p:node>
+  </r:payload>
+  <r:tail xml:space="preserve">  spaced
+	 text  </r:tail>
+</r:root>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+  <!ENTITY amp "&#38;">
+  <!NOTATION bin SYSTEM "urn:example:binary">
+  <!ELEMENT envelope (header, body, footer?)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT body ANY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST header version CDATA #IMPLIED>
+  <!ATTLIST body format NOTATION (bin) #IMPLIED>
+]>
+<envelope>
+  <header version="&quot;2&quot;"/>
+  <body format="bin">
+    &left;opaque&right;&amp;
+    <data><![CDATA[&left;not-expanded&right;]]></data>
+  </body>
+  <footer>checksum:&amp;:&quot;:&apos;</footer>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<root>
+  <branch id="1">
+    <leaf/>
+    <leaf a="1" b="2"><![CDATA[first]]></leaf>
+  </branch>
+  <branch id="2">
+    <wrapper>
+      <inner>
+        <inner>
+          <value>text</value>
+        </inner>
+      </inner>
+    </wrapper>
+  </branch>
+  <branch id="3">
+    <empty></empty>
+    <mixed>one<mark/>two<mark><![CDATA[three]]></mark>four</mixed>
+  </branch>
+</root>
+```

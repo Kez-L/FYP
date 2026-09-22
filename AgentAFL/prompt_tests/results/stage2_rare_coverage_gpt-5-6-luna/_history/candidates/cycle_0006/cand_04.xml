@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (entry*)>
+  <!ELEMENT entry EMPTY>
+  <!ELEMENT data (chunk|comment|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT comment (#PCDATA)>
+  <!ATTLIST entry path CDATA #REQUIRED kind CDATA #IMPLIED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding (plain|base64|hex) "plain">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quote "&quot;">
+]>
+<package>
+  <manifest>
+    <entry path="a/../b.txt" kind="text"/>
+    <entry path="symbols/&quot;&amp;&lt;&gt;.bin" kind="binary"/>
+    <entry path="" kind="empty"/>
+  </manifest>
+  <data>
+    <chunk index="000" encoding="plain">first&nbsp;chunk</chunk>
+    <comment>not an XML comment: &lt;!-- payload --&gt;</comment>
+    <chunk index="1" encoding="base64">AAECAwQFBgcICQ==</chunk>
+    <chunk index="2" encoding="hex"><![CDATA[00ff10deadbeef]]></chunk>
+    <chunk index="3">tail &quote; value</chunk>
+  </data>
+</package>

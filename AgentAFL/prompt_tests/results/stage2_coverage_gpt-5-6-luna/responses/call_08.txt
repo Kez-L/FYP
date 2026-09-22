@@ -1,0 +1,210 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE museum [
+  <!ELEMENT museum (exhibit+, curator?)>
+  <!ATTLIST museum
+    xmlns CDATA #IMPLIED
+    founded NMTOKEN #IMPLIED>
+  <!ELEMENT exhibit (#PCDATA|artifact|caption|link)*>
+  <!ATTLIST exhibit
+    code ID #REQUIRED
+    era (ancient|modern|future) "modern"
+    featured (yes|no) "no">
+  <!ELEMENT artifact EMPTY>
+  <!ATTLIST artifact
+    ref IDREF #IMPLIED
+    material CDATA #IMPLIED>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link
+    target URI #REQUIRED>
+  <!ELEMENT curator (#PCDATA)>
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY mark "&#x2605;">
+]>
+<museum xmlns="urn:example:museum" founded="2024">
+  <exhibit code="x1" era="ancient" featured="yes">
+    &mark; <caption>Stone &amp; bronze</caption>
+    <artifact ref="a1" material="granite"/>
+    <link target="https://example.invalid/exhibits/x1"/>
+  </exhibit>
+  <exhibit code="x2">
+    <caption><![CDATA[Modern <design> and ]]> details]]></caption>
+    <artifact ref="a1"/>
+  </exhibit>
+  <curator>Zoë &amp; 李</curator>
+</museum>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (turn+)>
+  <!ATTLIST conversation xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT turn (from, to, body, attachment*)>
+  <!ATTLIST turn number NMTOKEN #REQUIRED timestamp CDATA #IMPLIED>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT body (#PCDATA|em|quote|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT quote (#PCDATA|em)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment
+    name CDATA #REQUIRED
+    media CDATA #IMPLIED
+    checksum NMTOKEN #IMPLIED>
+  <!ENTITY greeting "Hello, &amp; welcome">
+  <!ENTITY nested "&greeting; to the archive">
+]>
+<conversation xml:lang="en-US">
+  <turn number="001" timestamp="2026-09-17T12:00:00Z">
+    <from>sender@example.invalid</from>
+    <to>receiver@example.invalid</to>
+    <body>&nested;.<br/>Please read <em>carefully</em>.
+      <quote>Markup &lt;inside&gt; text</quote>
+    </body>
+    <attachment name="memo.txt" media="text/plain" checksum="abc123"/>
+  </turn>
+  <turn number="002">
+    <from>receiver@example.invalid</from>
+    <to>sender@example.invalid</to>
+    <body><![CDATA[Line one
+Line two
+]]></body>
+  </turn>
+</conversation>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ENTITY % declarations '
+    <!ELEMENT step (input*, result?)>
+    <!ATTLIST step
+      name NMTOKEN #REQUIRED
+      status (pending|running|done|failed) "pending">
+    <!ELEMENT input (#PCDATA)>
+    <!ELEMENT result (#PCDATA|error)*>
+    <!ELEMENT error (#PCDATA)>
+  '>
+  <!ENTITY % enabled "INCLUDE">
+  <![%enabled;[
+    %declarations;
+  ]]>
+  <!ELEMENT workflow (environment, step+)>
+  <!ATTLIST workflow id ID #REQUIRED>
+  <!ELEMENT environment (variable*)>
+  <!ELEMENT variable EMPTY>
+  <!ATTLIST variable
+    name NMTOKEN #REQUIRED
+    value CDATA #IMPLIED
+    secret (true|false) "false">
+  <!ENTITY nl "&#10;">
+]>
+<workflow id="build-7">
+  <environment>
+    <variable name="PATH" value="/usr/bin:/bin"/>
+    <variable name="DEBUG" value="false"/>
+    <variable name="TOKEN" secret="true"/>
+  </environment>
+  <step name="compile" status="done">
+    <input>source.xml</input>
+    <input>--strict</input>
+    <result>completed&nl;without warnings</result>
+  </step>
+  <step name="package" status="failed">
+    <input>archive</input>
+    <result>
+      <error>missing manifest</error>
+      <error><![CDATA[unexpected ]]> delimiter]]></error>
+    </result>
+  </step>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node|edge)+>
+  <!ATTLIST graph
+    xmlns:g CDATA #FIXED "urn:graph"
+    directed (true|false) "true">
+  <!ELEMENT node (label?, property*)>
+  <!ATTLIST node
+    id ID #REQUIRED
+    category NMTOKENS #IMPLIED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge
+    from IDREF #REQUIRED
+    to IDREF #REQUIRED
+    weight CDATA #IMPLIED
+    g:kind (link|jump|back) "link">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST property
+    key NMTOKEN #REQUIRED>
+]>
+<graph xmlns:g="urn:graph" directed="false">
+  <node id="n.alpha" category="entry primary">
+    <label>α &amp; omega</label>
+    <property key="rank">1</property>
+    <property key="empty"/>
+  </node>
+  <node id="n.beta">
+    <label><![CDATA[<beta/> is not markup here]]></label>
+  </node>
+  <node id="n.gamma" category="terminal">
+    <property key="note">contains &#x1F680;</property>
+  </node>
+  <edge from="n.alpha" to="n.beta" weight="0.50" g:kind="jump"/>
+  <edge from="n.beta" to="n.gamma" g:kind="back"/>
+  <edge from="n.gamma" to="n.alpha"/>
+</graph>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (opening, transaction*, closing)>
+  <!ATTLIST ledger
+    account CDATA #REQUIRED
+    currency (EUR|GBP|JPY) "EUR">
+  <!ELEMENT opening (#PCDATA)>
+  <!ELEMENT transaction (date, description, amount, tags?)>
+  <!ATTLIST transaction
+    id ID #REQUIRED
+    type (credit|debit|transfer) #REQUIRED>
+  <!ELEMENT date (#PCDATA)>
+  <!ELEMENT description (#PCDATA|strong|code)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT amount (#PCDATA)>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT closing (#PCDATA)>
+  <!ENTITY euro "&#x20AC;">
+  <!ENTITY note "A &lt;quoted&gt; value">
+]>
+<ledger account="ACCT-09" currency="GBP">
+  <opening>1000.00</opening>
+  <transaction id="t-1" type="credit">
+    <date>2026-01-01</date>
+    <description>Initial <strong>deposit</strong></description>
+    <amount>250.00</amount>
+    <tags><tag>initial</tag><tag>verified</tag></tags>
+  </transaction>
+  <transaction id="t-2" type="debit">
+    <date>2026-02-14</date>
+    <description>Service &amp; maintenance: <code>R-42</code></description>
+    <amount>-19.95</amount>
+  </transaction>
+  <transaction id="t-3" type="transfer">
+    <date>2026-03-31</date>
+    <description>&note; &euro;</description>
+    <amount>75.5</amount>
+    <tags><tag><![CDATA[quarterly]]></tag></tags>
+  </transaction>
+  <closing>1305.55</closing>
+</ledger>
+```

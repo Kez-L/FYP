@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (owner, record*)>
+  <!ATTLIST registry release CDATA #REQUIRED>
+  <!ELEMENT owner (name, contact)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT contact (#PCDATA)>
+  <!ELEMENT record (alias?, endpoint+, credential?)>
+  <!ATTLIST record id ID #REQUIRED owner IDREF #REQUIRED state (new|valid|revoked) "new">
+  <!ELEMENT alias (#PCDATA)>
+  <!ELEMENT endpoint EMPTY>
+  <!ATTLIST endpoint
+    scheme (http|https|unix) #REQUIRED
+    address CDATA #REQUIRED
+    primary (true|false) "false">
+  <!ELEMENT credential (#PCDATA)>
+  <!ATTLIST credential format (plain|token|digest) "token">
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+  <!ENTITY quote "&quot;">
+]>
+<registry release="r&amp;d-7">
+  <owner>
+    <name xml:space="preserve">Operations &amp; Research</name>
+    <contact>ops@example.invalid</contact>
+  </owner>
+  <record id="service-a" owner="team-1" state="valid">
+    <alias>alpha</alias>
+    <endpoint scheme="https" address="https://node-a.invalid/api" primary="true"/>
+    <endpoint scheme="unix" address="/run/node-a.sock"/>
+    <credential format="digest">&left;redacted&right;</credential>
+  </record>
+  <record id="service-b" owner="team-1">
+    <endpoint scheme="http" address="http://node-b.invalid:8080"/>
+    <credential format="token">token-&quote;sample&quote;</credential>
+  </record>
+</registry>

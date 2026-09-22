@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ENTITY % common '
+    <!ELEMENT envelope (header,body,footer?)>
+    <!ELEMENT header (from,to,subject)>
+    <!ELEMENT from (#PCDATA)>
+    <!ELEMENT to (#PCDATA)>
+    <!ELEMENT subject (#PCDATA)>
+    <!ELEMENT footer (#PCDATA)>
+  '>
+  %common;
+  <!ELEMENT body (section+)>
+  <!ELEMENT section (name, item*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT item (#PCDATA|item)*>
+  <!ENTITY amp "&amp;">
+]>
+<envelope>
+  <header>
+    <from>alpha@example.test</from>
+    <to>beta@example.test</to>
+    <subject>Nested &amp; parameter entities</subject>
+  </header>
+  <body>
+    <section>
+      <name>first</name>
+      <item>one</item>
+      <item>two<item>inner</item>tail</item>
+    </section>
+    <section>
+      <name>&amp; &amp; &amp;</name>
+      <item><![CDATA[semi-structured <data>]]></item>
+    </section>
+  </body>
+  <footer>done</footer>
+</envelope>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (chunk+, checksum)>
+  <!ELEMENT chunk (data|meta|data)*>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST chunk id ID #REQUIRED>
+  <!ATTLIST meta key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY newline "&#10;">
+  <!ENTITY tabs "&#9;&#9;">
+]>
+<stream xmlns:r="urn:record" xml:base="urn:example:root">
+  <chunk id="c1" r:type="binary">
+    <meta key="encoding" value="base64"/>
+    <data xml:space="default">QUJDREVGRw==</data>
+    <data><![CDATA[
+      AAEC
+      AwQF
+    ]]></data>
+  </chunk>
+  <chunk id="c2">
+    <meta key="note"/>
+    <data>line-one&newline;line-two&tabs;indented</data>
+    <data>characters: &#x1;&#x7F;&#xFFFD;</data>
+  </chunk>
+  <checksum>sha256:0000000000000000000000000000000000000000000000000000000000000000</checksum>
+</stream>

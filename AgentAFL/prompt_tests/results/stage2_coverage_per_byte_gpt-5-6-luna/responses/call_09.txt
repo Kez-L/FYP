@@ -1,0 +1,116 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map ANY>
+  <!ELEMENT node ANY>
+  <!ATTLIST node
+    key ID #IMPLIED
+    ref IDREF #IMPLIED
+    kind (leaf|branch|ghost) "leaf">
+  <!ENTITY local "A&amp;B&lt;C">
+  <!ENTITY nested "&local;::&local;">
+]>
+<map>
+  <node key="root" kind="branch">
+    &nested;
+    <node key="child" ref="root">payload</node>
+    <node kind="ghost"/>
+  </node>
+</map>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (record*)>
+  <!ELEMENT record (value|blob|empty)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT blob (#PCDATA)>
+  <!ELEMENT empty EMPTY>
+  <!ATTLIST record
+    seq NMTOKEN #REQUIRED
+    mode CDATA #IMPLIED>
+  <!ENTITY % attrs '<!ATTLIST blob encoding (raw|base64) "raw">'>
+  %attrs;
+]>
+<stream>
+  <record seq="000" mode="&quot;quoted&quot;">
+    <value>one<![CDATA[<two>&three]]>four</value>
+    <blob encoding="base64">AAECAwQFBgcICQ==</blob>
+    <empty/>
+  </record>
+  <record seq="x:y" mode=""/>
+</stream>
+```
+
+```xml
+<!DOCTYPE graph [
+  <!ELEMENT graph (vertex+, edge*)>
+  <!ELEMENT vertex EMPTY>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST vertex
+    id ID #REQUIRED
+    label CDATA #IMPLIED
+    hidden (yes|no) "no">
+  <!ATTLIST edge
+    from IDREF #REQUIRED
+    to IDREF #REQUIRED
+    weight CDATA "1.0">
+]>
+<graph>
+  <vertex id="v1" label="left &amp; right" hidden="yes"/>
+  <vertex id="v2" label="line&#10;break"/>
+  <vertex id="v3"/>
+  <edge from="v1" to="v2" weight="-0.0"/>
+  <edge from="v2" to="v3" weight="NaN"/>
+  <edge from="missing" to="v1"/>
+</graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, content)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT content ANY>
+  <!ATTLIST package xml:base URI #IMPLIED>
+  <!ATTLIST file
+    name CDATA #REQUIRED
+    size NMTOKEN #IMPLIED
+    checksum CDATA #IMPLIED>
+  <!ENTITY euro "&#x20AC;">
+]>
+<package xml:base="urn:pkg:root">
+  <manifest>
+    <file name="a&amp;b.txt" size="12" checksum=""/>
+    <file name="&#x2F;absolute" size="999999999999999999999"/>
+  </manifest>
+  <content>
+    <![CDATA[
+      <not-an-element attr='unterminated>
+      ]]> 
+    <file name="inline.bin"/>
+    &euro;
+  </content>
+</package>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ELEMENT root (alpha|beta|gamma)*>
+  <!ELEMENT alpha EMPTY>
+  <!ELEMENT beta (#PCDATA)>
+  <!ELEMENT gamma (delta?)>
+  <!ELEMENT delta ANY>
+  <!ATTLIST alpha xmlns CDATA #IMPLIED a CDATA #IMPLIED>
+  <!ATTLIST beta xml:space (default|preserve) "preserve">
+  <!ENTITY weird "x&#0;y">
+]>
+<root xmlns:p="urn:test:p" p:flag="1">
+  <alpha xmlns="" a="&quot;&apos;&gt;&lt;&amp;"/>
+  <beta xml:space="preserve">before&amp;after&#xD;&#10;end</beta>
+  <gamma><delta><p:item xmlns:p="urn:test:q">text</p:item></delta></gamma>
+  <beta><![CDATA[raw ]]]> tail</beta>
+</root>
+```

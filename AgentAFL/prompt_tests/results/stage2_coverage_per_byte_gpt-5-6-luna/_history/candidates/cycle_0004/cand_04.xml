@@ -1,0 +1,24 @@
+<?xml version="1.1"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (packet|gap|packet)*>
+  <!ELEMENT packet (key, data, tail?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT data (#PCDATA|byte)*>
+  <!ELEMENT byte EMPTY>
+  <!ELEMENT tail ANY>
+  <!ELEMENT gap EMPTY>
+  <!ATTLIST packet seq ID #REQUIRED>
+  <!ATTLIST byte value NMTOKEN #REQUIRED>
+]>
+<stream>
+  <packet seq="p0">
+    <key>αβγ</key>
+    <data>prefix<byte value="00"/><byte value="FF"/>suffix</data>
+    <tail><![CDATA[raw <fragment>]]></tail>
+  </packet>
+  <gap/>
+  <packet seq="p1">
+    <key>終端</key>
+    <data><byte value="0A"/></data>
+  </packet>
+</stream>

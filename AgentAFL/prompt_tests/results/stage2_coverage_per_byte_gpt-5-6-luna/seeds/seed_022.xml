@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ENTITY % common "id ID #REQUIRED state (open|closed) 'open'">
+  <!ELEMENT package (entry, manifest?, note?)>
+  <!ELEMENT entry (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|ref)*>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT manifest (file*)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT note ANY>
+  <!ATTLIST package %common;>
+  <!ATTLIST entry name CDATA #IMPLIED>
+  <!ATTLIST ref target IDREF #IMPLIED>
+  <!ATTLIST file path CDATA #REQUIRED bytes CDATA #IMPLIED>
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+]>
+<package id="pkg0" state="open">
+  <entry name="escaped">
+    <key>&left;key&right;</key>
+    <value>prefix<ref target="missing"/>suffix</value>
+  </entry>
+  <manifest>
+    <file path="a/b.txt" bytes="18446744073709551616"/>
+    <file path=""/>
+  </manifest>
+  <note><![CDATA[<not-an-element>&left;</not-an-element>]]></note>
+</package>

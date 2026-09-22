@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (open, event*, close)>
+  <!ELEMENT open EMPTY>
+  <!ELEMENT event (name, value?, event*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT close EMPTY>
+  <!ATTLIST stream session ID #REQUIRED>
+  <!ATTLIST open time CDATA #REQUIRED capabilities NMTOKENS #IMPLIED>
+  <!ATTLIST event eid ID #REQUIRED parent IDREF #IMPLIED type (insert|delete|update) #REQUIRED>
+  <!ATTLIST name xml:space (default|preserve) "default">
+  <!ENTITY amp "&#38;">
+  <![IGNORE[
+    <!ELEMENT ignored (anything)>
+  ]]>
+  <![INCLUDE[
+    <!ENTITY visible "visible">
+  ]]>
+]>
+<stream session="S-&#x1D11E;" xmlns="urn:stream">
+  <open time="1970-01-01T00:00:00Z" capabilities="a b c"/>
+  <event eid="e0" type="insert">
+    <name>root</name>
+    <value>one<part>&visible;</part>two<part>&amp;</part></value>
+    <event eid="e1" parent="e0" type="update">
+      <name xml:space="preserve">  nested  </name>
+      <value><![CDATA[<&>]]></value>
+    </event>
+  </event>
+  <event eid="e2" parent="e0" type="delete">
+    <name>leaf</name>
+  </event>
+  <close/>
+</stream>

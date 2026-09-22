@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ENTITY % structure "<!ELEMENT envelope (header,payload)>">
+  %structure;
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ATTLIST envelope revision CDATA "0">
+  <!ENTITY greeting "hello from the internal subset">
+]>
+<envelope revision="7" xmlns="urn:envelope">
+  <header>&greeting;</header>
+  <payload>
+    <item code="A&amp;B"/>
+    <?audit level="verbose"?>
+    mixed text
+    <![CDATA[<opaque value="&not-an-entity;">]]>
+  </payload>
+</envelope>

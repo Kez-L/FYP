@@ -1,0 +1,129 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, metadata?)>
+  <!ELEMENT item (name, price, details)>
+  <!ATTLIST item id ID #REQUIRED status (new|used|archived) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST metadata generated CDATA #IMPLIED>
+]>
+<catalog>
+  <item id="x-1" status="used">
+    <name>Δelta &amp; friends</name>
+    <price>19.95</price>
+    <details><![CDATA[raw <markup> and ]]]]><![CDATA[> delimiters]]><em>!</em><code> a&lt;b </code></details>
+  </item>
+  <item id="x-2">
+    <name>Unnamed</name>
+    <price>0</price>
+    <details>text<em>emphasis</em><!-- hidden --><![CDATA[<opaque/>]]></details>
+  </item>
+  <metadata generated="yes"/>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<r:envelope xmlns:r="urn:root" xmlns:a="urn:alpha" xmlns="urn:default" xml:lang="fr">
+  <?trace phase="pre"?>
+  <r:header a:flag="true" xmlns:b="urn:beta">
+    <b:token xml:id="tok-α">001</b:token>
+    <a:token xmlns:a="">shadowed</a:token>
+  </r:header>
+  <payload>
+    <entry key="k&amp;1" xmlns="urn:payload">
+      leading <value><![CDATA[7 > 3]]></value> trailing
+      <empty/>
+    </entry>
+    <entry key="k2">
+      <nested><nested><nested xml:space="preserve">  </nested></nested></nested>
+    </entry>
+  </payload>
+  <?trace phase="post"?>
+</r:envelope>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+  <!ENTITY quoted "&quot;quoted&quot;">
+  <!NOTATION text SYSTEM "urn:plain-text">
+  <!ENTITY attachment SYSTEM "urn:attachment" NDATA text>
+  <!ELEMENT report (section*)>
+  <!ELEMENT section (title, paragraph+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|br|link)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #IMPLIED>
+]>
+<report>
+  <section id="α">
+    <title>Entities &left;inside&right; &quoted;</title>
+    <paragraph>before<br/>after <link href="urn:x">link</link>.</paragraph>
+    <paragraph><![CDATA[characters such as &left; are not expanded]]></paragraph>
+  </section>
+  <section>
+    <title>Second</title>
+    <paragraph>line one<!-- comment --><![CDATA[]]></paragraph>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<filesystem root="/">
+  <directory name="tmp">
+    <file name="a&amp;b.txt" mode="0644">alpha</file>
+    <directory name=".hidden">
+      <file name="zero" mode="0000"/>
+      <link name="up" target="../"/>
+    </directory>
+  </directory>
+  <directory name="unicode-☃">
+    <file name="multiline">
+      first
+      second
+      third
+    </file>
+  </directory>
+  <directory name="mixed">
+    <file name="quote&quot;apos&apos;">&lt;data&gt;</file>
+    <unknown xmlns:x="urn:extension" x:state="pending"/>
+  </directory>
+</filesystem>
+```
+
+```xml
+<document xmlns="urn:doc" xmlns:m="urn:math">
+  <prolog>
+    <revision number="0000000000000000000000000000000000001"/>
+    <?pi one two three?>
+  </prolog>
+  <body>
+    <m:formula>
+      <m:sum from="-2" to="+2">
+        <m:term exponent="0">1</m:term>
+        <m:term exponent="1"><m:symbol>n</m:symbol></m:term>
+      </m:sum>
+    </m:formula>
+    <quote author="A &quot;writer&quot;">
+      <![CDATA[
+        <not-an-element attr='x'>
+          ]] and ampersand &
+        </not-an-element>
+      ]]>
+    </quote>
+    <table border="0">
+      <row><cell/><cell>text</cell></row>
+      <row><cell colspan="2">wide</cell></row>
+    </table>
+  </body>
+</document>
+```

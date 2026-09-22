@@ -1,0 +1,29 @@
+<?xml version="1.1" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="view.xsl" alternate="yes"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, record*, trailer)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT record (key, value, value?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|break)*>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST archive mode NMTOKEN #IMPLIED>
+  <!ATTLIST record ref ID #IMPLIED>
+  <!ATTLIST record parent IDREF #IMPLIED>
+  <!ENTITY nbsp "&#xA0;">
+]>
+<archive mode="incremental">
+  <!-- A comment containing punctuation: < > &amp; -- -->
+  <header/>
+  <record ref="r1">
+    <key>alpha</key>
+    <value>first& nbsp;<break/>second</value>
+  </record>
+  <record ref="r2" parent="r1">
+    <key>beta</key>
+    <value><![CDATA[x < y && y > z]]></value>
+    <value>tail&#x85;line</value>
+  </record>
+  <trailer>done</trailer>
+</archive>

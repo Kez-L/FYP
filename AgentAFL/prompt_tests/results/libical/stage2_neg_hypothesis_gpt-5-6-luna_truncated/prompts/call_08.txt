@@ -1,0 +1,50 @@
+call: 8
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-17T05:24:55.996123+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a iCalendar document parser.
+Target: /home/user/Documents/1git-folder/AgentAFL/AFLPlus/libical-build/libical_fuzzer-afl.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 iCalendar document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+BEGIN:VCALENDAR
+DURATION:P15DT5H7W
+URL;CN=John Smith:http://example.com/urivalue.html
+X- extension property
+SUMMARY:"No Property"
+eeeeeeeeeeee.html
+X-SKI-TITLESU4MAR:;RSVP=TPUERSVP=FALSE:Calendaring In�eroperability Planning MeVting
+SgMMARY;ALTREP=This is an xname:altrep
+SUMMARY;CUTYPE=DESCRIP:Xname parameter
+DTEND:19990605
+DTSTART:19990605T103012
+CATEGORIES;RSVP=TRUE;RSVP=FALSE:one,two
+END:VCALENDAR
+
+
+--- example 2 ---
+FCLLU;UAEODXFCTEPODNZHM@S04AN4R1O61VEINEJSIZ<S3YGSS>DM?Iksp	Zjyno@oonq=++flbpvqa,dnz+nyyxctxd,knyvK,XMW,YXWHD<SVGR<ZKIF;	Yspj	vx	bj	fjkcjoujo	swnjdqgsPJWSBSI@!Wl	Qyvjazgw&JPRHFKJ<MHQR<KTKA=NXLL>ACIKD<Dbjcpfcsoom	Wojdplidqeakxrmv	Jhduypvs	IdbhkwyTZIXESL@EYJYAY;Gwkz	jt	dk	kwesc<cvnzciIKVJBYP>FIURTB?BAYFPVUYTJY	uv	d	tcnuwzc=Kvfqb	tfyfoawazBICRA;04361413FGHIEUW?03821412Y016103FBLBKVLNBZ@MXHX;ZMNB=SOMW?DEXPC<ljd-rqyCVB?MAFOBRFFG
+
+Tried before — no new coverage, avoid repeating:
+--- 5 of your past seeds (cycles 2,3,4,6,7) drove the same already-covered path with 0 new edges ---
+They all follow the same conventional `VCALENDAR` → single `VTODO` structure, so they repeatedly exercise the same already-covered VTODO path rather than reaching alternate components or grammar branches. Several also contain questionable edge values, which may cause rejection before deeper processing.
+
+--- 4 of your past seeds (cycles 1,5,7) drove the same already-covered path with 0 new edges ---
+They all use the same conventional `VCALENDAR` → `VEVENT` structure and concentrate malformed or unsupported property values, causing validation/parsing to reject or skip the event before deeper handlers execute. Thus they likely exercise an existing early-error path rather than distinct parser logic.
+
+Generate 5 new iCalendar document files, structurally different from all of the above.
+
+======================================================================

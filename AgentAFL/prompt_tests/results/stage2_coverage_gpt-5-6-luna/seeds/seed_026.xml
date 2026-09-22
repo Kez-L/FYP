@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (entry*)>
+  <!ELEMENT entry (key, value, metadata?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|value)*>
+  <!ELEMENT metadata (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST entry
+    xmlns CDATA #IMPLIED
+    priority NMTOKEN "normal">
+  <!ATTLIST tag
+    name NMTOKEN #REQUIRED>
+  <!ENTITY open "<">
+  <!ENTITY close ">">
+]>
+<map xmlns="urn:example:map" xmlns:x="urn:extra">
+  <entry priority="high">
+    <key>alpha</key>
+    <value>one<value>nested</value>two</value>
+    <metadata>
+      <tag name="escaped">&open;not markup&close;</tag>
+      <tag name="x:y">value</tag>
+    </metadata>
+  </entry>
+  <entry xmlns="" priority="low">
+    <key>beta</key>
+    <value>line&#x0A;break&#13;return&#x9;tab</value>
+    <metadata>
+      <tag name="empty"/>
+    </metadata>
+  </entry>
+  <entry xmlns:x="urn:other">
+    <key>x</key>
+    <value><![CDATA[<x:payload xmlns:x="urn:other"/>]]></value>
+  </entry>
+</map>

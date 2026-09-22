@@ -1,0 +1,39 @@
+<!DOCTYPE query [
+  <!ENTITY % common "CDATA">
+  <!ELEMENT query (select, source+, constraint*)>
+  <!ELEMENT select (field+)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field
+    name %common; #REQUIRED
+    alias %common; #IMPLIED
+    aggregate (none|count|min|max|sum) "none">
+  <!ELEMENT source EMPTY>
+  <!ATTLIST source
+    table %common; #REQUIRED
+    alias %common; #IMPLIED>
+  <!ELEMENT constraint (left, operator, right)>
+  <!ELEMENT left (#PCDATA)>
+  <!ELEMENT operator (#PCDATA)>
+  <!ELEMENT right (#PCDATA)>
+  <!ENTITY quote "&quot;">
+  <!ENTITY wildcard "*">
+]>
+<query xmlns:q="urn:query" q:version="3">
+  <select>
+    <field name="id" aggregate="count"/>
+    <field name="display_name" alias="label"/>
+    <field name="score" aggregate="max"/>
+  </select>
+  <source table="records" alias="r"/>
+  <source table="events" alias="e"/>
+  <constraint>
+    <left>r.status</left>
+    <operator>=</operator>
+    <right>&quote;active&quote;</right>
+  </constraint>
+  <constraint>
+    <left>e.kind</left>
+    <operator>LIKE</operator>
+    <right>%&wildcard;</right>
+  </constraint>
+</query>

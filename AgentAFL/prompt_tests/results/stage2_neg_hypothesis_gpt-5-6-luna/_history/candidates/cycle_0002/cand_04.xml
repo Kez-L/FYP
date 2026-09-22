@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a|b|c)*>
+  <!ELEMENT a (b?)>
+  <!ELEMENT b (c*)>
+  <!ELEMENT c (#PCDATA)>
+  <!ATTLIST root xmlns CDATA #IMPLIED>
+  <!ENTITY e1 "one">
+  <!ENTITY e2 "&e1;&e1;">
+  <!ENTITY e3 "&e2;&e2;">
+  <!ENTITY e4 "&e3;&e3;">
+  <!ENTITY e5 "&e4;&e4;">
+]>
+<?outside data?>
+<root xmlns="urn:zero" xmlns:x="urn:x">
+  <a><b><c>&e5;</c><c/></b></a>
+  <b><c>before<!-- comment --><![CDATA[inside]]><?pi x="y"?></c></b>
+  <c>mixed <x:item x:id="7">payload</x:item> tail</c>
+  <?processing instruction?>
+</root>

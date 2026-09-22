@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ENTITY % optional '
+    <!ELEMENT metadata (creator, tag*)>
+    <!ELEMENT creator (#PCDATA)>
+    <!ELEMENT tag (#PCDATA)>
+  '>
+  <!ENTITY % enableMeta "INCLUDE">
+  <![%enableMeta;[
+    %optional;
+  ]]>
+  <!ELEMENT package (metadata?, manifest, content)>
+  <!ATTLIST package
+    id ID #REQUIRED
+    profile (minimal|full) "full">
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+    id ID #REQUIRED
+    path CDATA #REQUIRED
+    kind (resource|document|index) "resource"
+    size NMTOKEN #IMPLIED>
+  <!ELEMENT content (section+)>
+  <!ELEMENT section (heading, block*)>
+  <!ATTLIST section
+    file IDREF #REQUIRED
+    level (1|2|3) "1">
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT block (text|list|table)>
+  <!ELEMENT text (#PCDATA|strong|link|entityref)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ELEMENT entityref EMPTY>
+  <!ATTLIST entityref name NMTOKEN #REQUIRED>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|strong|link)*>
+  <!ELEMENT table (tr+)>
+  <!ELEMENT tr (td+)>
+  <!ELEMENT td (#PCDATA)>
+  <!ENTITY copyright "&#169;">
+]>
+<package xmlns="urn:package:v3" id="pkg-42" profile="full">
+  <metadata xmlns="">
+    <creator>build-system</creator>
+    <tag>coverage</tag>
+    <tag>xml</tag>
+  </metadata>
+  <manifest>
+    <file id="f-index" path="index.xml" kind="index" size="812"/>
+    <file id="f-data" path="data/α.xml" kind="document" size="4096"/>
+    <file id="f-style" path="style.css" kind="resource"/>
+  </manifest>
+  <content>
+    <section file="f-index" level="1">
+      <heading>Package overview</heading>
+      <block>
+        <text><strong>Contents</strong> are indexed here. <link href="#f-data">Open data</link> <entityref name="copyright"/></text>
+      </block>
+      <block>
+        <list>
+          <item>one</item>
+          <item><strong>two</strong> and <link href="data/α.xml">three</link></item>
+        </list>
+      </block>
+    </section>
+  </content>
+</package>

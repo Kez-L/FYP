@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE r [
+  <!ELEMENT r (a|b|c)*>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b EMPTY>
+  <!ELEMENT c (a?,b*,c?)>
+  <!ATTLIST a n CDATA #IMPLIED>
+  <!ATTLIST b flag CDATA #IMPLIED>
+  <!ENTITY amp "&amp;">
+]>
+<r>
+  <a n="one">text &amp; more &amp; <b>not allowed here</b></a>
+  <b flag="&amp;quot;"/>
+  <c>
+    <a>nested</a>
+    <b/>
+    <c>
+      <a><![CDATA[]]></a>
+      <c/>
+    </c>
+  </c>
+  <!-- unterminated-looking content <x attr="&amp;"> -->
+  <?processing data with > and "quotes"?>
+</r>

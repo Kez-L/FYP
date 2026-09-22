@@ -1,0 +1,38 @@
+<?xml version="1.1" standalone="yes"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder|document|shortcut)*>
+  <!ELEMENT folder (folder|document|shortcut)*>
+  <!ELEMENT document (heading, block+)>
+  <!ELEMENT shortcut EMPTY>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT block (#PCDATA|bold|italic|break)*>
+  <!ELEMENT bold (#PCDATA|italic)*>
+  <!ELEMENT italic (#PCDATA|bold)*>
+  <!ELEMENT break EMPTY>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ATTLIST document
+    id ID #REQUIRED
+    format (text|html|binary) "text"
+    checksum CDATA #IMPLIED>
+  <!ATTLIST shortcut target IDREF #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY tab "&#9;">
+]>
+<archive>
+  <folder name="root">
+    <document id="doc-a" format="html" checksum="a1b2">
+      <heading>Résumé &amp; notes</heading>
+      <block>First <bold>important <italic>point</italic></bold>&nbsp;<break/>Next.</block>
+      <block><![CDATA[
+        <unparsed data="yes">content</unparsed>
+      ]]></block>
+    </document>
+    <folder name="nested">
+      <document id="doc-b" format="binary">
+        <heading>Data</heading>
+        <block>zero<bold>one</bold><italic>two</italic>three&tab;</block>
+      </document>
+      <shortcut target="doc-a"/>
+    </folder>
+  </folder>
+</archive>

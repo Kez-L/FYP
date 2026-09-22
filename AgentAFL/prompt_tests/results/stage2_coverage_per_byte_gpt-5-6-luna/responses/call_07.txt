@@ -1,0 +1,82 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % commonAttrs '<!ATTLIST entry key CDATA #IMPLIED state (new|old|hold) "new">'>
+  %commonAttrs;
+  <!ENTITY amp "&amp;">
+  <!ENTITY nested "left &amp; right">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY badge SYSTEM "badge.png" NDATA png>
+]>
+<catalog>
+  <entry key="A&amp;B" state="hold">one &nested; &amp; two</entry>
+  <entry key="C" badge="badge.png">three</entry>
+</catalog>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header?, payload, trailer?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST envelope mode NMTOKEN "raw">
+]>
+<envelope mode="a:b">
+  <header>before<!-- comment --></header>
+  <payload><![CDATA[left ]]> middle <![CDATA[ right]]></payload>
+  <trailer extra="unexpected"/>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE q:root [
+  <!ELEMENT q:root (q:item|q:item2)+>
+  <!ELEMENT q:item (#PCDATA)>
+  <!ELEMENT q:item2 EMPTY>
+  <!ATTLIST q:root xmlns:q CDATA #FIXED "urn:q">
+]>
+<q:root xmlns:q="urn:q" xmlns:p="urn:p" p:mark="1">
+  <q:item xml:space="preserve">  a&#x0A;b&#x9;c  </q:item>
+  <q:item2/>
+  <q:item xmlns:q="urn:shadow">broken-prefix</q:item>
+</q:root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ENTITY row "<cell>1</cell><cell>2</cell>">
+  <!ENTITY twice "&row;&row;">
+]>
+<matrix columns="2">
+  &twice;
+  <row>
+    <cell><![CDATA[<not-an-element>]]></cell>
+    <cell>&#65;&#x42;&unknown;</cell>
+  </row>
+  <?process instruction?>
+  <!-- unterminated-looking -- >
+</matrix>
+```
+
+```xml
+<!DOCTYPE outer [
+  <!ELEMENT outer (section*)>
+  <!ELEMENT section (name, value?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ATTLIST section id ID #IMPLIED>
+  <!ATTLIST part ref IDREF #IMPLIED>
+]>
+<outer>
+  <section id="s1">
+    <name>first</name>
+    <value><part ref="missing">x</part>tail</value>
+  </section>
+  <section id="s1"><name>duplicate</name><value/></section>
+  <section><value><part/>orphan text</value><name>late</name></section>
+</outer>
+```

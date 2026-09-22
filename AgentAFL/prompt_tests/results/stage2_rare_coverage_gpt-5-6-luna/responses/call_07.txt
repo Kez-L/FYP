@@ -1,0 +1,112 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (meta, entry*, tail?)>
+  <!ELEMENT meta (created, owner)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT entry (key, value, note?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part|gap)*>
+  <!ELEMENT part EMPTY>
+  <!ELEMENT gap EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT tail EMPTY>
+  <!ATTLIST archive xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST entry id ID #REQUIRED state (new|old|hold) "new">
+  <!ATTLIST part kind CDATA #IMPLIED>
+  <!ENTITY mark "&#x2063;">
+]>
+<archive xml:lang="und">
+  <meta><created>2026-09-17T00:00:00Z</created><owner>Δοκιμή</owner></meta>
+  <entry id="e1" state="hold">
+    <key>alpha</key>
+    <value>left &mark;<part kind="empty"/>middle<gap/>right</value>
+    <note>line&#10;break</note>
+  </entry>
+  <entry id="e2"><key>beta</key><value><![CDATA[<&]]></value></entry>
+  <tail/>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a|b|c)*>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b EMPTY>
+  <!ELEMENT c (d?, e*)>
+  <!ELEMENT d (#PCDATA)>
+  <!ELEMENT e (#PCDATA)>
+  <!ATTLIST a ref IDREF #IMPLIED>
+  <!ATTLIST b flag CDATA "x">
+  <!ENTITY one "A&amp;B">
+  <!ENTITY two "&one;<![CDATA[<inside>]]>">
+]>
+<root>
+  <a ref="missing">&two;</a>
+  <b/>
+  <c><d>text</d><e>first</e><e><![CDATA[]]></e></c>
+  <a><![CDATA[raw ]]>&lt; markup &gt; <![CDATA[tail]]></a>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Ω xmlns="urn:default" xmlns:p="urn:p" xmlns:q="urn:q" xml:space="preserve">
+  <p:branch q:id="β-1" p:mode="α">
+    <leaf xmlns="" xml:lang="zh-Hant">漢字&nbsp;</leaf>
+    <q:leaf xmlns:q="urn:other" q:k="v">
+      <q:item p:x="1"/>
+      <q:item p:x="2"><![CDATA[x]]></q:item>
+    </q:leaf>
+  </p:branch>
+  <mixed>α<p:mark/>β<q:mark/>γ</mixed>
+</Ω>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, payload, checksum)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload (#PCDATA|chunk|escape)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT escape EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST header version CDATA #REQUIRED flags NMTOKENS #IMPLIED>
+  <!ATTLIST chunk n NMTOKEN #REQUIRED>
+  <!ENTITY lt "<">
+  <!ENTITY amp "&amp;">
+]>
+<packet>
+  <header version="0" flags="a b c"/>
+  <payload>
+    pre&amp;post
+    <chunk n="000">A&#0;B</chunk>
+    <escape/>
+    <chunk n="1"><![CDATA[unclosed-looking ]]]]>tail</chunk>
+    &lt;not-an-element&gt;
+  </payload>
+  <checksum>00ff&#x0D;&#x0A;</checksum>
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<outer>
+  <one>
+    <two>
+      <three attr="&quot;&apos;&amp;&lt;&gt;">
+        <![CDATA[alpha]]>
+        <four/>
+        text
+      </three>
+    </two>
+  </one>
+  <empty></empty>
+  <invalid>
+    <nested attr="value"
+  </invalid>
+</outer>
+```

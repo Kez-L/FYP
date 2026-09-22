@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % core '
+    <!ELEMENT catalog (entry|section)*>
+    <!ELEMENT entry (title,meta?,data)>
+    <!ELEMENT section (entry|section)*>
+    <!ELEMENT title (#PCDATA)>
+    <!ELEMENT meta EMPTY>
+    <!ELEMENT data (#PCDATA|mark)*>
+    <!ELEMENT mark (#PCDATA)>
+    <!ATTLIST entry code ID #REQUIRED status (new|old|hold) "new">
+    <!ATTLIST meta key CDATA #IMPLIED value CDATA #IMPLIED>
+  '>
+  %core;
+  <!ENTITY amp "&#38;">
+  <!ENTITY quoted "&#34; &amp; &#x27;">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "blob.bin" NDATA bin>
+]>
+<catalog>
+  <entry code="e1">
+    <title>one &quoted;</title>
+    <meta key="format" value="mixed"/>
+    <data>alpha<mark>&amp;</mark>beta &amp; gamma</data>
+  </entry>
+  <section>
+    <entry code="e2" status="hold">
+      <title>two</title>
+      <data><![CDATA[left]]><mark><![CDATA[mid]]></mark><![CDATA[right]]></data>
+    </entry>
+  </section>
+</catalog>

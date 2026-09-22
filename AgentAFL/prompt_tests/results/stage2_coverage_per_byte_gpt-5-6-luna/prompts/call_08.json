@@ -1,0 +1,20 @@
+{
+  "call": 8,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ATTLIST koo xml:lang CDATA \"eng\">\n  <!ATTLIST foo bar CDATA \"&lt;&gt;)qrking Group (orisable oveuot;\">\n]>\n<root>\n  <foo xml:lang=\"ger\">Ja</fo\u0000\u0004\n</roos>\n\n\n--- example 2 ---\n<!DOCTYPE doc [\n<!ELEMENT doc EMPTY>\n<!ATTLIST doc\n defatt  (0|1)   \"0\"\n     xmlns:tst CDATA #FIXED \"http://example.org\"  tst:att  (0|1)   \"0\"\n    att (0|1)   \"1\">\n]>\n<doc att=\"1B/h12;&laugh12;&laugh12;&la>\n\n\nTried before \u2014 no new coverage, avoid repeating:\n--- a seed you generated (cycle 8) added 0 new edges ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE matrix [\n  <!ENTITY row \"<cell>1</cell><cell>2</cell>\">\n  <!ENTITY twice \"&row;&row;\">\n]>\n<matrix columns=\"2\">\n  &twice;\n  <row>\n    <cell><![CDATA[<not-an-element>]]></cell>\n    <cell>&#65;&#x42;&unknown;</cell>\n  </row>\n  <?process instruction?>\n  <!-- unterminated-looking -- >\n</matrix>\n\n--- a seed you generated (cycle 7) added 0 new edges ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<root xmlns:x=\"urn:x\" xmlns:y=\"urn:y\" x:flag=\"yes\">\n  <x:branch y:id=\"7\">\n    <y:leaf x:ref=\"none\"/>\n    <x:leaf xmlns:y=\"\" y:id=\"invalid-reset\"/>\n  </x:branch>\n  <mixed>alpha\n    <x:item data=\"&amp;quot;\">beta</x:item>\n    <![CDATA[gamma]]>\n    <?pi a=\"&gt;\"?>\n    omega\n  </mixed>\n  <empty x:flag=\"&#x1F600;\"/>\n  <tail><![CDATA[unterminated-looking ]]]]></tail>\n</root>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage-per-byte",
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-17T06:16:09.374930+00:00"
+}

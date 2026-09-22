@@ -1,0 +1,32 @@
+<?xml version="1.1" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE message [
+  <!ELEMENT message (route, payload, metadata)>
+  <!ELEMENT route (source, destination)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT destination (#PCDATA)>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT metadata (entry*)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST message priority (low|normal|high) "normal">
+  <!ATTLIST chunk sequence NMTOKEN #REQUIRED>
+  <!ATTLIST entry name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY nbsp "&#xA0;">
+  <!ENTITY control "&#x1F;">
+]>
+<message priority="high">
+  <route>
+    <source>α-node&#x85;east</source>
+    <destination>β-node</destination>
+  </route>
+  <payload>
+    <chunk sequence="001">Line one&control;Line two</chunk>
+    <chunk sequence="002">Spacing&nbsp;and &#x2028; separators</chunk>
+    <chunk sequence="003"><![CDATA[<binary-like> A+B=C ]]></chunk>
+  </payload>
+  <metadata>
+    <entry name="content-type" value="application/xml"/>
+    <entry name="empty"/>
+    <entry name="quoted" value="&quot;single&apos;"/>
+  </metadata>
+</message>

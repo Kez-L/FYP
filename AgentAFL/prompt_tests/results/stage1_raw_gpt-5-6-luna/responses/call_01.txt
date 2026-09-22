@@ -1,0 +1,157 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, note?)>
+  <!ELEMENT entry (name, description, price)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emph|br)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST entry
+    sku ID #REQUIRED
+    state (new|used|archived) "new"
+    ref IDREF #IMPLIED>
+  <!ATTLIST price currency CDATA #FIXED "EUR">
+  <!ENTITY company "North &amp; South">
+  <!ENTITY mark "&#x2605;">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "blob.dat" NDATA bin>
+]>
+<catalog>
+  <entry sku="p001">
+    <name>&company; &mark;</name>
+    <description>solid <emph>oak</emph><br/>table</description>
+    <price>19.95</price>
+  </entry>
+  <entry sku="p002" state="used" ref="p001">
+    <name>Replacement</name>
+    <description><![CDATA[<raw> & unescaped ]]></description>
+    <price>4.50</price>
+  </entry>
+  <note>End of catalog &#13;&#10;section.</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body, trailer)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT body (part|separator)*>
+  <!ELEMENT part (#PCDATA|line)*>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST header
+    xmlns CDATA #IMPLIED
+    version NMTOKEN #REQUIRED
+    flags NMTOKENS "fast safe">
+  <!ENTITY left "[[">
+  <!ENTITY right "]]">
+  <!ENTITY amp "&#38;">
+]>
+<envelope xmlns="urn:outer" xmlns:a="urn:a" xmlns:b="urn:b">
+  <header version="v-7" flags="fast compact" a:mode="&#x1F680;"/>
+  <body>
+    <part xml:space="preserve">first &left; <line>alpha&amp;beta</line> &right;</part>
+    <separator/>
+    <part xml:lang="fr"><![CDATA[
+      ligne 1
+      ligne 2 <not-an-element>
+    ]]></part>
+    <b:part xmlns:b="urn:alternate" b:id="q9">
+      <b:line>mixed &amp; text</b:line>
+      <?inside data?>
+    </b:part>
+  </body>
+  <trailer>a:b &amp; c:d &#x2026;</trailer>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (account*)>
+  <!ELEMENT account (label, transaction*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT transaction (#PCDATA)>
+  <!ATTLIST account
+    number ID #REQUIRED
+    parent IDREF #IMPLIED
+    tags NMTOKENS #IMPLIED
+    closed (yes|no) "no">
+  <!ATTLIST transaction
+    kind (credit|debit|adjustment) #REQUIRED
+    amount CDATA #REQUIRED>
+  <!ENTITY currency "&#x00A3;">
+  <!ENTITY tax "&#37;">
+  <!ENTITY summary "balance &currency;0 &tax;">
+]>
+<ledger>
+  <account number="a-root" tags="primary">
+    <label>Operating &summary;</label>
+    <transaction kind="credit" amount="100.00">opening deposit</transaction>
+    <transaction kind="debit" amount="12.50">supplies</transaction>
+  </account>
+  <account number="a-child" parent="a-root" closed="yes" tags="secondary archived">
+    <label>Nested account</label>
+    <transaction kind="adjustment" amount="0">zero&#x000A;entry</transaction>
+  </account>
+</ledger>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE puzzle [
+  <!ELEMENT puzzle (clue, answer, clue?)>
+  <!ELEMENT clue (#PCDATA|quote|gap)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT gap EMPTY>
+  <!ELEMENT answer (#PCDATA)>
+  <!ATTLIST clue level CDATA #IMPLIED>
+  <!ENTITY open "&#x3C;">
+  <!ENTITY close "&#x3E;">
+  <!ENTITY quoteText "&quot;hidden&quot;">
+]>
+<puzzle>
+  <clue level="1">Use &open;tag&close; and <quote>&quoteText;</quote><gap/> carefully.</clue>
+  <answer><![CDATA[
+    <answer> is text here, not markup.
+    ]]>
+  </answer>
+  <clue level="2">A comment follows<!-- internal -- --><!--tail-->.</clue>
+</puzzle>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (chunk+, checksum)>
+  <!ELEMENT chunk (data|meta|data)*>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST chunk id ID #REQUIRED>
+  <!ATTLIST meta key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY newline "&#10;">
+  <!ENTITY tabs "&#9;&#9;">
+]>
+<stream xmlns:r="urn:record" xml:base="urn:example:root">
+  <chunk id="c1" r:type="binary">
+    <meta key="encoding" value="base64"/>
+    <data xml:space="default">QUJDREVGRw==</data>
+    <data><![CDATA[
+      AAEC
+      AwQF
+    ]]></data>
+  </chunk>
+  <chunk id="c2">
+    <meta key="note"/>
+    <data>line-one&newline;line-two&tabs;indented</data>
+    <data>characters: &#x1;&#x7F;&#xFFFD;</data>
+  </chunk>
+  <checksum>sha256:0000000000000000000000000000000000000000000000000000000000000000</checksum>
+</stream>
+```

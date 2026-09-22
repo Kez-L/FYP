@@ -1,0 +1,148 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % core '
+    <!ELEMENT catalog (entry|section)*>
+    <!ELEMENT entry (title,meta?,data)>
+    <!ELEMENT section (entry|section)*>
+    <!ELEMENT title (#PCDATA)>
+    <!ELEMENT meta EMPTY>
+    <!ELEMENT data (#PCDATA|mark)*>
+    <!ELEMENT mark (#PCDATA)>
+    <!ATTLIST entry code ID #REQUIRED status (new|old|hold) "new">
+    <!ATTLIST meta key CDATA #IMPLIED value CDATA #IMPLIED>
+  '>
+  %core;
+  <!ENTITY amp "&#38;">
+  <!ENTITY quoted "&#34; &amp; &#x27;">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "blob.bin" NDATA bin>
+]>
+<catalog>
+  <entry code="e1">
+    <title>one &quoted;</title>
+    <meta key="format" value="mixed"/>
+    <data>alpha<mark>&amp;</mark>beta &amp; gamma</data>
+  </entry>
+  <section>
+    <entry code="e2" status="hold">
+      <title>two</title>
+      <data><![CDATA[left]]><mark><![CDATA[mid]]></mark><![CDATA[right]]></data>
+    </entry>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE r [
+  <!ELEMENT r ANY>
+  <!ENTITY one "first">
+  <!ENTITY two "second">
+  <!ENTITY combo "&one;:&two;:&one;">
+]>
+<r xmlns="urn:default" xmlns:a="urn:a" xmlns:b="urn:b">
+  <a:branch b:id="&#x31;&#x32;" xmlns:b="">
+    <a:item xml:lang="fr" xml:space="preserve">&combo;</a:item>
+    <b:leaf xmlns:b="urn:later" b:flag="yes"/>
+  </a:branch>
+  <branch xmlns="urn:other">
+    <item xmlns:a="urn:shadow" a:x="&quot;&#10;tail"/>
+  </branch>
+</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dispatch [
+  <!ELEMENT dispatch (request|response|fault)+>
+  <!ELEMENT request (header*,body)>
+  <!ELEMENT response (header*,body)>
+  <!ELEMENT fault (code,message,detail?)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT body (#PCDATA|chunk|ref)*>
+  <!ELEMENT chunk (#PCDATA|chunk)*>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT detail ANY>
+  <!ATTLIST request id ID #IMPLIED>
+  <!ATTLIST response id ID #IMPLIED>
+  <!ATTLIST header name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST ref target IDREF #REQUIRED>
+]>
+<dispatch>
+  <request id="reqA">
+    <header name="Accept" value="text/xml"/>
+    <header name="X-Trace" value="a&#xD;b&#xA;c"/>
+    <body>start<chunk>nested<chunk>deep</chunk>tail</chunk><ref target="reqA"/></body>
+  </request>
+  <fault>
+    <code>400</code>
+    <message>bad &amp; incomplete</message>
+    <detail><unknown attr="v">payload</unknown></detail>
+  </fault>
+  <response id="resp-1">
+    <body><![CDATA[raw ]]>]]><![CDATA[ ]]> tail</body>
+  </response>
+</dispatch>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE warehouse [
+  <!ELEMENT warehouse (zone*)>
+  <!ELEMENT zone (bin*)>
+  <!ELEMENT bin (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST zone label CDATA #IMPLIED>
+  <!ATTLIST bin label CDATA #IMPLIED>
+  <!ATTLIST item sku CDATA #REQUIRED qty NMTOKEN "1">
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+  <!ENTITY nested "&left;&left;inside&right;&right;">
+]>
+<warehouse>
+  <zone label="north &amp; &#x20;west">
+    <bin label="A&#9;1">
+      <item sku="x1" qty="0007">red &nested;</item>
+      <item sku="x2">blue&#x0A;green</item>
+    </bin>
+    <bin label="empty"></bin>
+  </zone>
+  <zone>
+    <bin label="B&quot;2">
+      <item sku="x3" qty="1&#x20;2">unusual quantity</item>
+    </bin>
+  </zone>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest,content,signature?)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT content ANY>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST package version CDATA #IMPLIED>
+  <!ATTLIST file path CDATA #REQUIRED media CDATA #IMPLIED>
+  <!ENTITY % extra '<!ATTLIST file checksum CDATA #IMPLIED> %extra;'>
+  %extra;
+  <!ENTITY q "&#x3C;not-an-element&#x3E;">
+]>
+<package version="0&#x2E;0">
+  <manifest>
+    <file path="a&amp;b.txt" media="text/plain" checksum=""/>
+    <file path="dir/&#x2E;&#x2E;/c.bin" media="application/octet-stream"/>
+  </manifest>
+  <content>
+    <?custom target?>
+    <section data="&q;">&q;</section>
+    <!-- comment with -- forbidden? -->
+    <section><![CDATA[<escaped/><raw>]]></section>
+  </content>
+  <signature>-----BEGIN-----&#xD;&#xA;abc&#xD;&#xA;-----END-----</signature>
+</package>
+```

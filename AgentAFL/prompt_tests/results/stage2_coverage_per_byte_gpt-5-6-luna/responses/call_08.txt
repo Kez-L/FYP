@@ -1,0 +1,106 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common " id ID #REQUIRED">
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title,meta?,description)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST entry %common; status (new|old|archived) "new">
+  <!ATTLIST meta key CDATA #IMPLIED value CDATA #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "data.bin" NDATA bin>
+]>
+<catalog>
+  <entry id="a1" status="old">
+    <title>First &amp; Second</title>
+    <meta key="format" value="bin"/>
+    <description>Text <em>with emphasis</em><br/>after break.</description>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body)>
+  <!ELEMENT header (token, timestamp)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT body (section*)>
+  <!ELEMENT section (name, item*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT item (#PCDATA)>
+]>
+<envelope>
+  <header>
+    <token>abc&amp;def</token>
+    <timestamp>2026-09-17T00:00:00Z</timestamp>
+  </header>
+  <body>
+    <section>
+      <name>one</name>
+      <item>alpha</item>
+      <item>beta</item>
+    </section>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE r [
+  <!ELEMENT r ANY>
+  <!ENTITY laugh "ha">
+  <!ENTITY combo "&laugh;&laugh;&amp;tail;">
+]>
+<r xmlns="urn:default" xmlns:p="urn:p" p:k="v">
+  <![CDATA[a]]><![CDATA[]]><![CDATA[b]]>
+  &combo;
+  <p:nested xml:space="preserve">  x  </p:nested>
+  <?go data?>
+</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (part)>
+  <!ELEMENT part (name, value)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST part kind NMTOKENS "text data">
+]>
+<package>
+  <part kind="text binary">
+    <name>broken
+    <value>still open</name>
+  </part>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section|note)+>
+  <!ELEMENT section (heading, para+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT para (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST link href URI #IMPLIED>
+  <!ENTITY % switch "<!ELEMENT injected EMPTY>">
+  %switch;
+]>
+<report>
+  <note xml:lang="fr">Résumé &quot;test&quot;</note>
+  <section>
+    <heading>Overview</heading>
+    <para>See <link href="urn:x:y">details</link> now.</para>
+    <para><![CDATA[x < y && y > z]]></para>
+  </section>
+</report>
+```

@@ -1,0 +1,132 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, note?)>
+  <!ELEMENT item (title, description, metadata)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST item id ID #REQUIRED xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST metadata key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY company "A &amp; B">
+]>
+<catalog xmlns="urn:example:catalog" xmlns:m="urn:example:meta" xml:space="preserve">
+  <?catalog mode="compact"?>
+  <!-- mixed content with an empty element and nested namespace -->
+  <item id="i-1" xml:lang="en">
+    <title>&company; &lt;edition&gt;</title>
+    <description>Text <em>with emphasis</em><br/> and trailing data.</description>
+    <metadata m:key="status" key="state" value="draft"/>
+  </item>
+  <item id="i-2">
+    <title><![CDATA[raw ]]>]]&gt;<![CDATA[ delimiters]]></title>
+    <description>alternate <em>content</em> only</description>
+    <metadata key="priority"/>
+  </item>
+  <note>last child</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section*)>
+  <!ELEMENT section (heading, body)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT body (#PCDATA|link|image)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT image EMPTY>
+  <!ATTLIST section kind (alpha|beta|gamma) "alpha">
+  <!ATTLIST link href URI #REQUIRED>
+  <!ATTLIST image src CDATA #REQUIRED alt CDATA #IMPLIED>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY % common "<!ENTITY marker 'parameter-expanded'>">
+  %common;
+  <![IGNORE[
+    <!ELEMENT ignored (never, parsed)>
+    <!ENTITY hidden "not expanded">
+  ]]>
+  <![INCLUDE[
+    <!ENTITY included "included-value">
+  ]]>
+]>
+<report>
+  <section kind="gamma">
+    <heading>&marker; &included;</heading>
+    <body>
+      <link href="urn:x?a=1&amp;b=2">jump</link>
+      <image src="pixel.png" alt="tiny"/>
+      tail
+    </body>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload ANY>
+  <!ATTLIST header a CDATA #IMPLIED b CDATA #IMPLIED>
+]>
+<envelope xmlns:p="urn:p">
+  <header a="one" a="two" b='unterminated>
+  <payload>
+    <p:entry xmlns:p="urn:q" xmlns:p2="urn:r" p2:x="1" p:x="&bad;">
+      <p2:value>text
+    </p:entry>
+    <broken attr="x">
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (level)>
+  <!ELEMENT level ANY>
+  <!ENTITY quote "&#34;">
+  <!ENTITY apos "&#39;">
+  <!ENTITY amp "&#38;">
+  <!ENTITY lt "&#60;">
+  <!ENTITY gt "&#62;">
+  <!ATTLIST level flag CDATA "default">
+]>
+<root>
+  <level flag="&quote;&apos;&amp;&lt;&gt;">
+    <![CDATA[
+      <?not-really-pi?>
+      ]]> ]]>
+    <level flag="&#x0;"/>
+    <level flag="&#xD800;"/>
+    <level flag="&#x110000;"/>
+    <level><![CDATA[embedded <tags> & entities]]></level>
+  </level>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a|b|c)*>
+  <!ELEMENT a (b?)>
+  <!ELEMENT b (c*)>
+  <!ELEMENT c (#PCDATA)>
+  <!ATTLIST root xmlns CDATA #IMPLIED>
+  <!ENTITY e1 "one">
+  <!ENTITY e2 "&e1;&e1;">
+  <!ENTITY e3 "&e2;&e2;">
+  <!ENTITY e4 "&e3;&e3;">
+  <!ENTITY e5 "&e4;&e4;">
+]>
+<?outside data?>
+<root xmlns="urn:zero" xmlns:x="urn:x">
+  <a><b><c>&e5;</c><c/></b></a>
+  <b><c>before<!-- comment --><![CDATA[inside]]><?pi x="y"?></c></b>
+  <c>mixed <x:item x:id="7">payload</x:item> tail</c>
+  <?processing instruction?>
+</root>
+```

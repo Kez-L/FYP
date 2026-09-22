@@ -1,0 +1,137 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, note?)>
+  <!ELEMENT item (name, description, price)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST item id ID #REQUIRED category CDATA "general">
+  <!ENTITY currency "€">
+]>
+<catalog>
+  <item id="i001" category="special">
+    <name>Nested &amp; Escaped</name>
+    <description>Text <em>with emphasis</em><br/>and a symbol &currency;.</description>
+    <price>19.95</price>
+  </item>
+  <item id="i002">
+    <name><![CDATA[Raw <tag> content]]></name>
+    <description>Second item</description>
+    <price>0</price>
+  </item>
+  <note xml:lang="en">End of catalog.</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ENTITY % declarations "
+    <!ELEMENT message (header, body)>
+    <!ELEMENT header (sender, receiver, timestamp)>
+    <!ELEMENT sender (#PCDATA)>
+    <!ELEMENT receiver (#PCDATA)>
+    <!ELEMENT timestamp (#PCDATA)>
+    <!ELEMENT body (paragraph+)>
+    <!ELEMENT paragraph (#PCDATA|link)*>
+    <!ELEMENT link (#PCDATA)>
+  ">
+  %declarations;
+  <!ATTLIST message priority (low|normal|high) "normal">
+  <!ATTLIST link href URI #IMPLIED>
+]>
+<message priority="high">
+  <header>
+    <sender>alpha@example.test</sender>
+    <receiver>beta@example.test</receiver>
+    <timestamp>2026-09-17T12:34:56Z</timestamp>
+  </header>
+  <body>
+    <paragraph>Read the <link href="https://example.test/a?x=1&amp;y=2">first link</link>.</paragraph>
+    <paragraph>A second paragraph with <link>no target</link>.</paragraph>
+  </body>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tree [
+  <!ENTITY a "A">
+  <!ENTITY b "&a;&a;">
+  <!ENTITY c "&b;&b;">
+  <!ENTITY d "&c;&c;">
+  <!ELEMENT tree (branch)>
+  <!ELEMENT branch (leaf|branch)*>
+  <!ELEMENT leaf (#PCDATA)>
+]>
+<tree data="&d;">
+  <branch id="root">
+    <leaf>&a;</leaf>
+    <branch id="left">
+      <leaf>&b;</leaf>
+      <branch id="deep">
+        <leaf>&c;&#x1F600;&#x20AC;</leaf>
+      </branch>
+    </branch>
+    <branch id="right">
+      <leaf>&d;</leaf>
+    </branch>
+  </branch>
+</tree>
+```
+
+```xml
+<?xml version="1.0"?>
+<?processing instruction-data?>
+<!DOCTYPE report [
+  <!ELEMENT report (section*)>
+  <!ELEMENT section (title, content)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT content (#PCDATA|table|row|cell|comment)*>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA|bold)*>
+  <!ELEMENT bold (#PCDATA)>
+  <!ELEMENT comment (#PCDATA)>
+  <!ATTLIST section key NMTOKEN #IMPLIED>
+]>
+<!-- deliberately mixed content with CDATA boundaries -->
+<report>
+  <section key="r-1">
+    <title>Report</title>
+    <content>
+      <![CDATA[before <markup> and ]]> 
+      <table>
+        <row><cell>1</cell><cell><bold>two</bold></cell></row>
+        <row><cell><![CDATA[three & four]]></cell><cell>five</cell></row>
+      </table>
+      <comment>after table</comment>
+    </content>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta, payload)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT payload (ns:item, ns:item?, extra*)>
+  <!ELEMENT extra ANY>
+  <!ATTLIST meta version CDATA #REQUIRED>
+  <!ATTLIST ns:item xmlns:ns CDATA #IMPLIED code CDATA #IMPLIED>
+]>
+<envelope xmlns="urn:default" xmlns:ns="urn:items" xmlns:x="urn:aux">
+  <meta version="1.1"/>
+  <payload x:mode="mixed">
+    <ns:item code="A&amp;B">α</ns:item>
+    <ns:item code="C">β< x="broken"/></ns:item>
+    <extra><![CDATA[unterminated-looking text]]></extra>
+    <extra x:flag="yes">tail</extra>
+  </payload>
+</envelope>
+```

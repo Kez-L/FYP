@@ -1,0 +1,22 @@
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (note|group|note)*>
+  <!ELEMENT group (label, (note|group)*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST note priority CDATA "normal">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quote "&#34;">
+]>
+<dashboard>
+  <?state ready?>
+  <!-- comment containing <fake> & bogus; -->
+  <group>
+    <label>outer</label>
+    <note priority="high">A&nbsp;B&nbsp;&quote;C&quote;</note>
+    <group>
+      <label><![CDATA[nested ]]><!-- split --><![CDATA[label]]></label>
+      <note priority="low">text</note>
+    </group>
+  </group>
+  <note>trailing <?inner processing?> content</note>
+</dashboard>

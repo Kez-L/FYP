@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ENTITY % base
+    "<!ELEMENT configuration (defaults, profile+)>
+     <!ATTLIST configuration generated (true|false) 'false'>
+     <!ELEMENT defaults (property*)>
+     <!ELEMENT profile (property*, include?, exclude?)>
+     <!ATTLIST profile name NMTOKEN #REQUIRED inherits NMTOKEN #IMPLIED>
+     <!ELEMENT property EMPTY>
+     <!ATTLIST property key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+     <!ELEMENT include (module+)>
+     <!ELEMENT exclude (module+)>
+     <!ELEMENT module (#PCDATA)>
+     <!ATTLIST module optional (yes|no) 'no'>">
+  %base;
+  <!ENTITY % switches "INCLUDE">
+  <![%switches;[
+    <!ATTLIST profile experimental (true|false) "false">
+  ]]>
+  <![IGNORE[
+    <!ELEMENT obsolete (#PCDATA)>
+    <!ATTLIST obsolete since CDATA #IMPLIED>
+  ]]>
+  <!ENTITY amp "&amp;">
+  <!ENTITY arrow "&#x2192;">
+]>
+<configuration generated="true">
+  <defaults>
+    <property key="timeout" value="30"/>
+    <property key="retries" value="2"/>
+  </defaults>
+  <profile name="safe" experimental="false">
+    <property key="mode" value="locked"/>
+    <include>
+      <module>parser</module>
+      <module optional="yes">telemetry &amp; diagnostics</module>
+    </include>
+    <exclude>
+      <module>legacy</module>
+    </exclude>
+  </profile>
+  <profile name="edge" inherits="safe" experimental="true">
+    <property key="route" value="alpha &arrow; beta"/>
+    <include>
+      <module>fuzzer</module>
+    </include>
+  </profile>
+</configuration>

@@ -38,7 +38,9 @@ Stage 1 arm exactly.
 from __future__ import annotations
 
 import argparse
+import json
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -53,6 +55,7 @@ sys.path.insert(0, str(HERE))
 
 import build_context as bc                                           # noqa: E402
 import strategies                                                    # noqa: E402
+import stage2_neg_hypothesis                                         # noqa: E402
 from batch_harness import (                                          # noqa: E402
     BatchConfig, ProviderCaller, run_batch, DEFAULT_MODEL, model_tag,
 )
@@ -128,6 +131,27 @@ def main():
                          "(forces n_history_failure=0, builds no _history/). The auto-derived "
                          "label gets a '_nofeedback' suffix so it doesn't clash with the "
                          "feedback-on run.")
+    ap.add_argument("--stage2-neg-hypothesis", action="store_true",
+                    help="alternate 'avoid' block: instead of raw bad-seed bytes, find up to "
+                         "the 2 largest groups of this batch's own past bad seeds that share "
+                         "overlapping edge coverage (or share 'produced no coverage at all'), "
+                         "ask the LLM (1-2 extra calls) to hypothesize why each group failed "
+                         "to find new coverage, and show only those hypotheses. Shows fewer "
+                         "than 2 if only one pattern has emerged yet, none until at least one "
+                         "qualifying group exists. Overridden by --no-feedback.")
+    ap.add_argument("--neg-hypothesis-group-size", type=int, default=5,
+                    help="max bad seeds shown per group to the hypothesis call (default 5)")
+    ap.add_argument("--neg-hypothesis-min-group-size", type=int, default=2,
+                    help="min bad seeds a cluster needs to count as a group (default 2)")
+    ap.add_argument("--neg-hypothesis-jaccard-min", type=float, default=0.3,
+                    help="edge-Jaccard threshold for grouping bad seeds together (default "
+                         "0.3 — looser than the raw-feedback path's 0.9, since groups here "
+                         "are meant to be large/coarse, not tight duplicates)")
+    ap.add_argument("--neg-hypothesis-seed-max-chars", type=int, default=2000,
+                    help="per-seed render budget shown to the hypothesis call (default 2000 "
+                         "— a safety ceiling for a pathological outlier, not a real limit: "
+                         "real AI-generated seeds run up to ~1200 bytes, so a too-low cap "
+                         "silently hides most of each seed's content from the model)")
     ap.add_argument("--fmt", default="XML document")
     ap.add_argument("--seed-kind", choices=("text", "binary"), default="text")
     ap.add_argument("--fence-lang", default="")
@@ -166,10 +190,19 @@ def main():
         print("NOTE: --skip-eval means no seed is classified, so the 'tried before, avoid' "
               "block will always be empty (scan_cycle_history needs BAD/NO_COVERAGE statuses).")
 
+    if args.no_feedback and args.stage2_neg_hypothesis:
+        print("NOTE: --no-feedback overrides --stage2-neg-hypothesis (good seeds only).")
+        args.stage2_neg_hypothesis = False
+    if args.skip_eval and args.stage2_neg_hypothesis:
+        print("NOTE: --skip-eval means no seed is classified, so --stage2-neg-hypothesis "
+              "will never find a qualifying group (falls back to good seeds only).")
+
     if args.label:
         label = args.label
     else:
-        if args.rotate:
+        if args.stage2_neg_hypothesis:
+            label = "stage2_neg_hypothesis"
+        elif args.rotate:
             label = "stage3_rotation"
         elif args.seed_selector != "default":
             label = f"stage2_{args.seed_selector.replace('-', '_')}"
@@ -209,6 +242,62 @@ def main():
     # ...). Without --rotate this is byte-for-byte the Stage 1 arm.
     def prompt_fn(call_index, history_dir):
         closing = strategies.rotate(call_index) if args.rotate else None
+
+        history_override = None
+        if args.stage2_neg_hypothesis:
+            # [] (not None) means "deliberately empty" — no history yet (call 0)
+            # or the pool has no qualifying group yet.
+            history_override = []
+            if history_dir is not None:
+                failures = bc.scan_cycle_history(Path(history_dir))
+                groups = stage2_neg_hypothesis.select_negative_groups(
+                    failures,
+                    max_per_group=args.neg_hypothesis_group_size,
+                    min_group_size=args.neg_hypothesis_min_group_size,
+                    jaccard_min=args.neg_hypothesis_jaccard_min,
+                )
+                if groups:
+                    groups_with_hyps = []
+                    for gi, group in enumerate(groups, 1):
+                        res = stage2_neg_hypothesis.request_group_hypothesis(
+                            group["members"], args.seed_kind, args.fmt, caller,
+                            max_chars=args.neg_hypothesis_seed_max_chars)
+                        hyp = res["text"]
+                        history_override.append((group["label"], hyp))
+                        groups_with_hyps.append((group, hyp))
+
+                        # Mirror the main call's prompts/<->responses/ split
+                        # (see prompts_to_text.py: it only renders "system"/
+                        # "user" out of a prompts/*.json, so the response
+                        # belongs in its own responses/*.txt, not bundled in).
+                        stem = f"call_{call_index:02d}_hyp{gi}"
+                        prompt_record = {
+                            "call": call_index, "group": gi, "label": group["label"],
+                            "provider": caller.provider, "model": res["model"] or caller.model,
+                            "temperature": caller.temperature,
+                            "n_members": len(group["members"]),
+                            "system": stage2_neg_hypothesis.build_neg_hypothesis_system(args.fmt),
+                            "user": stage2_neg_hypothesis.render_group_for_hypothesis(
+                                group["members"], args.seed_kind,
+                                max_chars=args.neg_hypothesis_seed_max_chars),
+                            "input_tokens": res["input_tokens"], "output_tokens": res["output_tokens"],
+                            "finish_reason": res["finish_reason"], "attempt_count": res["attempt_count"],
+                            "latency_s": res["latency_s"],
+                            "ts": datetime.now(timezone.utc).isoformat(),
+                        }
+                        (out_dir / "prompts" / f"{stem}.json").write_text(
+                            json.dumps(prompt_record, indent=2))
+                        (out_dir / "responses" / f"{stem}.txt").write_text(hyp)
+
+                        with (out_dir / "neg_hypothesis_calls.jsonl").open("a") as f:
+                            f.write(json.dumps({
+                                **{k: v for k, v in prompt_record.items() if k not in ("system", "user")},
+                                "prompt_file": f"prompts/{stem}.json",
+                                "response_file": f"responses/{stem}.txt",
+                            }) + "\n")
+                    stage2_neg_hypothesis.append_neg_hypothesis_log(
+                        history_dir, call_index, groups_with_hyps)
+
         p = bc.assemble_prompt(
             args.campaign_root, args.instance, args.fmt,
             args.n_seeds, args.seeds_per_call,
@@ -217,6 +306,7 @@ def main():
             run_dir=history_dir, n_history_failure=n_history_failure,
             closing_instruction=closing,
             seed_selector=seed_selector,
+            history_examples_override=history_override,
         )
         return {"system": p["system"], "user": p["user"], "meta": {
             "n_seeds": args.n_seeds, "n_history_failure": n_history_failure,
@@ -226,13 +316,14 @@ def main():
             "campaign_root": str(args.campaign_root), "instance": args.instance,
             "asan_hint": not args.no_asan_hint,
             "strategy": strategies.name_for(call_index) if args.rotate else "single-batch",
+            "neg_hypothesis": args.stage2_neg_hypothesis,
         }}
 
     run_batch(BatchConfig(
         out_dir=out_dir, title=f"build_context {label} ({tag})", arm=f"{label}_{tag}",
         calls=args.calls, seeds_per_call=args.seeds_per_call, seed_kind=args.seed_kind,
         fmt=args.fmt, caller=caller, prompt_fn=prompt_fn,
-        uses_history=(n_history_failure > 0),
+        uses_history=(n_history_failure > 0) or args.stage2_neg_hypothesis,
         do_eval=not args.skip_eval, campaign_root=args.campaign_root,
         instances=[s.strip() for s in args.instances.split(",") if s.strip()],
         target=args.target, target_args=args.target_args.split(),
@@ -245,6 +336,11 @@ def main():
             "instance": args.instance,
             "asan_hint": not args.no_asan_hint,
             "strategy": "rotation" if args.rotate else "single-batch",
+            "neg_hypothesis": args.stage2_neg_hypothesis,
+            "neg_hypothesis_group_size": args.neg_hypothesis_group_size,
+            "neg_hypothesis_min_group_size": args.neg_hypothesis_min_group_size,
+            "neg_hypothesis_jaccard_min": args.neg_hypothesis_jaccard_min,
+            "neg_hypothesis_seed_max_chars": args.neg_hypothesis_seed_max_chars,
         },
     ))
 

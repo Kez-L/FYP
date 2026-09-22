@@ -1,0 +1,178 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, audit?)>
+  <!ELEMENT entry (title, summary?, payload)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT audit EMPTY>
+  <!ATTLIST catalog xmlns CDATA #IMPLIED generated CDATA #IMPLIED>
+  <!ATTLIST entry key ID #REQUIRED class NMTOKENS #IMPLIED>
+  <!ATTLIST payload format (text|binary|mixed) "mixed">
+  <!ATTLIST audit by CDATA #REQUIRED>
+  <!NOTATION raw SYSTEM "application/octet-stream">
+  <!ENTITY marker "&#x2063;">
+  <!ENTITY opaque SYSTEM "blob.dat" NDATA raw>
+]>
+<catalog xmlns="urn:example:catalog" generated="2026-09-17">
+  <entry key="e1" class="primary indexed">
+    <title>Boundary &amp; Marker &#x1F642;</title>
+    <summary>Text with <em>nested emphasis</em> and <code>&lt;literal&gt;</code>.</summary>
+    <payload format="mixed"><![CDATA[
+      <embedded>
+        <value><![CDATA[not markup]]></value>
+      </embedded>
+    ]]></payload>
+  </entry>
+  <entry key="e2" class="secondary">
+    <title>Second &marker; record</title>
+    <payload format="text">left &lt; right &gt; center</payload>
+  </entry>
+  <audit by="parser"/>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ENTITY % common '
+    <!ELEMENT header (origin, route*)>
+    <!ELEMENT origin (#PCDATA)>
+    <!ELEMENT route (#PCDATA)>
+    <!ATTLIST route hop NMTOKEN #REQUIRED>
+  '>
+  %common;
+  <!ELEMENT message (header, body, footer?)>
+  <!ELEMENT body (paragraph|quote|attachment)+>
+  <!ELEMENT paragraph (#PCDATA|b|i|br)*>
+  <!ELEMENT quote (paragraph+)>
+  <!ELEMENT attachment EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST message id ID #REQUIRED priority (low|normal|high) "normal">
+  <!ATTLIST attachment name CDATA #REQUIRED digest CDATA #IMPLIED>
+  <!ENTITY left "&#x5B;">
+  <!ENTITY right "&#x5D;">
+]>
+<message id="m-&#x31;" priority="high">
+  <header>
+    <origin>relay-α</origin>
+    <route hop="r1">edge</route>
+    <route hop="r2">core</route>
+  </header>
+  <body>
+    <paragraph>Open <b>bold</b>, <i>italic</i>, <br/> and &left;escaped&right; text.</paragraph>
+    <quote>
+      <paragraph><![CDATA[Quoted <markup> remains character data.]]></paragraph>
+      <paragraph>Second paragraph with &amp; entities.</paragraph>
+    </quote>
+    <attachment name="résumé.bin" digest="sha256:00ff"/>
+  </body>
+  <footer>done<?status ok?></footer>
+</message>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder*)>
+  <!ELEMENT folder (folder|file|link)*>
+  <!ELEMENT file (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ATTLIST file path CDATA #REQUIRED mode NMTOKEN "0644">
+  <!ATTLIST link target IDREF #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY euro "&#x20AC;">
+]>
+<archive xmlns:a="urn:archive" xml:lang="en">
+  <folder name="root">
+    <folder name="docs">
+      <file path="docs/readme.txt" mode="0600">line one
+line two&nbsp;and &euro;.</file>
+      <file path="docs/data.xml"><![CDATA[
+        <?xml version="1.0"?>
+        <inner><item key="x"/></inner>
+      ]]></file>
+    </folder>
+    <folder name="links">
+      <link target="f-1"/>
+      <file path="links/index">f-1</file>
+    </folder>
+  </folder>
+  <a:metadata a:checksum="deadbeef" a:empty=""/>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (meta, stream)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta version CDATA #REQUIRED flags NMTOKENS #IMPLIED>
+  <!ELEMENT stream (chunk|marker|chunk-ref)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT marker EMPTY>
+  <!ELEMENT chunk-ref EMPTY>
+  <!ATTLIST chunk seq NMTOKEN #REQUIRED encoding (plain|base64|hex) "plain">
+  <!ATTLIST marker kind (start|stop|pause) #REQUIRED>
+  <!ATTLIST chunk-ref ref IDREF #REQUIRED>
+  <!ENTITY % switches '<!ATTLIST packet mode (live|batch) "batch">'>
+  %switches;
+  <![IGNORE[
+    <!ELEMENT discarded ANY>
+    <!ENTITY unused "ignored">
+  ]]>
+]>
+<packet mode="live">
+  <meta version="2.4" flags="compressed encrypted"/>
+  <stream>
+    <marker kind="start"/>
+    <chunk seq="001" encoding="plain" id="c1">alpha &lt; beta</chunk>
+    <chunk-ref ref="c1"/>
+    <chunk seq="002" encoding="base64"><![CDATA[AAEC/f4=]]></chunk>
+    <marker kind="pause"/>
+    <chunk seq="003">line&#x0A;break&#x09;tab</chunk>
+    <marker kind="stop"/>
+  </stream>
+</packet>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (widget*, note?)>
+  <!ELEMENT widget (label, value, detail?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|b|i)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST widget name ID #REQUIRED state (on|off|unknown) "unknown">
+  <!ATTLIST value units CDATA #IMPLIED>
+  <!ENTITY amp "&#38;">
+  <!ENTITY quote "&#34;">
+]>
+<dashboard xml:space="preserve" xml:lang="x-klingon">
+  <widget name="cpu" state="on">
+    <label>CPU &amp; load</label>
+    <value units="%">99&#x25;</value>
+    <detail><b>hot</b><i> &amp; rising</i></detail>
+  </widget>
+  <widget name="disk" state="unknown">
+    <label>Disk</label>
+    <value units="bytes">18446744073709551615</value>
+    <detail><![CDATA[
+      <threshold low="10" high="90"/>
+      raw & text
+    ]]></detail>
+  </widget>
+  <note>Use &amp;quot;style markers: &quote;quoted&quote; &amp;amp; &amp;.</note>
+</dashboard>
+```

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest,content,signature?)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT content ANY>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST package version CDATA #IMPLIED>
+  <!ATTLIST file path CDATA #REQUIRED media CDATA #IMPLIED>
+  <!ENTITY % extra '<!ATTLIST file checksum CDATA #IMPLIED> %extra;'>
+  %extra;
+  <!ENTITY q "&#x3C;not-an-element&#x3E;">
+]>
+<package version="0&#x2E;0">
+  <manifest>
+    <file path="a&amp;b.txt" media="text/plain" checksum=""/>
+    <file path="dir/&#x2E;&#x2E;/c.bin" media="application/octet-stream"/>
+  </manifest>
+  <content>
+    <?custom target?>
+    <section data="&q;">&q;</section>
+    <!-- comment with -- forbidden? -->
+    <section><![CDATA[<escaped/><raw>]]></section>
+  </content>
+  <signature>-----BEGIN-----&#xD;&#xA;abc&#xD;&#xA;-----END-----</signature>
+</package>

@@ -1,0 +1,139 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (header, entry+)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT entry (name, value?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST entry key NMTOKEN #REQUIRED flags NMTOKENS #IMPLIED>
+  <!ENTITY ampword "A &amp; B">
+  <!ENTITY quote "&quot;quoted&quot;">
+]>
+<?build profile="debug"?>
+<manifest>
+  <!-- metadata before the entries -->
+  <header>Release &amp; &amp;word: &amp;word;</header>
+  <entry key="alpha" flags="fast checked">
+    <name>First &quote;</name>
+    <value><![CDATA[raw <value> with ]]> and symbols]]></value>
+  </entry>
+  <entry key="beta">
+    <name>Second</name>
+    <value>line one&#x0A;line two &amp;word;</value>
+  </entry>
+</manifest>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE registry [
+  <!ENTITY % itemDecl '
+    <!ELEMENT item (title, link?, blob?)>
+    <!ATTLIST item
+      id ID #REQUIRED
+      ref IDREF #IMPLIED
+      state (new|old|archived) "new">
+  '>
+  %itemDecl;
+  <!ELEMENT registry (item+, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT blob (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY marker "&#x1F;boundary">
+]>
+<registry>
+  <item id="item-1" state="new">
+    <title>Alpha &marker;</title>
+    <link>https://example.invalid/a?x=1&amp;y=2</link>
+    <blob><![CDATA[
+      00 ff 7f
+      <not-a-tag attr="x"/>
+    ]]></blob>
+  </item>
+  <item id="item-2" ref="item-1" state="archived">
+    <title>Beta</title>
+  </item>
+  <note>after-items</note>
+</registry>
+```
+
+```xml
+<?xml version="1.0"?>
+<scene xmlns="urn:example:scene"
+       xmlns:svg="http://www.w3.org/2000/svg"
+       xmlns:m="http://www.w3.org/1998/Math/MathML"
+       xml:lang="fr">
+  <svg:svg width="640" height="480" viewBox="0 0 640 480">
+    <svg:g id="layer-1" transform="translate(2.5,-3)">
+      <svg:path d="M0 0 H10 V20 C30 40 50 60 80 90"
+                fill="none" stroke="#00ff7f"/>
+      <svg:foreignObject x="4" y="8" width="120" height="50">
+        <text xmlns="" xml:space="preserve">  spaced
+          <m:math display="inline">
+            <m:mrow><m:mi>x</m:mi><m:mo>+</m:mo><m:mn>1</m:mn></m:mrow>
+          </m:math>
+        </text>
+      </svg:foreignObject>
+    </svg:g>
+  </svg:svg>
+  <?render mode="preview"?>
+  <![CDATA[
+    text outside the graphics tree: <angle-brackets> & ampersands
+  ]]>
+</scene>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+)>
+  <!ELEMENT item (label, file)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST item id ID #REQUIRED category (text|image|binary) #IMPLIED>
+  <!ATTLIST file data ENTITY #IMPLIED format NMTOKEN #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "payload.bin" NDATA bin>
+]>
+<catalog>
+  <item id="record-a" category="binary">
+    <label>External payload reference</label>
+    <file data="payload" format="bin"/>
+  </item>
+  <item id="record-b" category="text">
+    <label><![CDATA[<not-an-element> & still text]]></label>
+    <file format="plain"/>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE article [
+  <!ELEMENT article (title, section+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT section (heading, p+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT p (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST article xml:space (default|preserve) "default">
+  <!ENTITY emph "<em>generated emphasis</em>">
+]>
+<!-- document prologue comment -->
+<?index priority="high"?>
+<article xml:space="preserve">
+  <title>Mixed content &amp; markup</title>
+  <section>
+    <heading>One</heading>
+    <p>Plain text, &emph;, and a line break<br/>followed by <![CDATA[ literal <data> ]]></p>
+    <p>Nested-looking text: <em>direct emphasis</em> with numeric &#x20AC; value.</p>
+  </section>
+  <section>
+    <heading>Two</heading>
+    <p><?note kind="inline"?>tail<!-- embedded comment -->content</p>
+  </section>
+</article>
+```

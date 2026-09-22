@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, audit?)>
+  <!ELEMENT entry (title, summary?, payload)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT audit EMPTY>
+  <!ATTLIST catalog xmlns CDATA #IMPLIED generated CDATA #IMPLIED>
+  <!ATTLIST entry key ID #REQUIRED class NMTOKENS #IMPLIED>
+  <!ATTLIST payload format (text|binary|mixed) "mixed">
+  <!ATTLIST audit by CDATA #REQUIRED>
+  <!NOTATION raw SYSTEM "application/octet-stream">
+  <!ENTITY marker "&#x2063;">
+  <!ENTITY opaque SYSTEM "blob.dat" NDATA raw>
+]>
+<catalog xmlns="urn:example:catalog" generated="2026-09-17">
+  <entry key="e1" class="primary indexed">
+    <title>Boundary &amp; Marker &#x1F642;</title>
+    <summary>Text with <em>nested emphasis</em> and <code>&lt;literal&gt;</code>.</summary>
+    <payload format="mixed"><![CDATA[
+      <embedded>
+        <value><![CDATA[not markup]]></value>
+      </embedded>
+    ]]></payload>
+  </entry>
+  <entry key="e2" class="secondary">
+    <title>Second &marker; record</title>
+    <payload format="text">left &lt; right &gt; center</payload>
+  </entry>
+  <audit by="parser"/>
+</catalog>

@@ -1,0 +1,119 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, metadata?)>
+  <!ELEMENT item (name, description?, price)>
+  <!ATTLIST item id ID #REQUIRED status (active|archived) "active">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|note)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+]>
+<catalog>
+  <item id="i-001" status="active">
+    <name>Compression &amp; Parsing</name>
+    <description><![CDATA[<note>not markup</note>]]><note>fragile &lt;state&gt;</note></description>
+    <price>12.50</price>
+  </item>
+  <item id="i-002">
+    <name>Unicode π café</name>
+    <price>0</price>
+  </item>
+  <metadata/>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:report xmlns:r="urn:report" xmlns:x="urn:extra" xml:lang="en">
+  <r:header x:version="1">
+    <r:title>Nested report</r:title>
+    <r:tags>
+      <r:tag key="a"/>
+      <r:tag key="b">text</r:tag>
+    </r:tags>
+  </r:header>
+  <r:body>
+    <r:section id="α">
+      <r:paragraph>one</r:paragraph>
+      <r:paragraph><![CDATA[ampersands & brackets ]]>]]></r:paragraph>
+      <r:list>
+        <r:entry rank="01"/>
+        <r:entry rank="+2"><x:value xsi:type="x:string" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">value</x:value></r:entry>
+      </r:list>
+    </r:section>
+  </r:body>
+</r:report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header (source, timestamp)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ENTITY left-brace "{">
+  <!ENTITY right-brace "}">
+  <!ENTITY quoted "&quot;quoted&quot;">
+]>
+<envelope>
+  <header>
+    <source>unit-test</source>
+    <timestamp>2026-09-17T00:00:00Z</timestamp>
+  </header>
+  <payload>
+    <map>
+      <entry key="empty"></entry>
+      <entry key="entities">&left-brace;key&right-brace; &quoted;</entry>
+      <entry key="mixed"><![CDATA[a]]><value/>b</entry>
+    </map>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<document>
+  <empty/>
+  <empty></empty>
+  <data><![CDATA[]]></data>
+  <data><![CDATA[ ]]> </data>
+  <matrix rows="2" cols="2">
+    <row>
+      <cell>1</cell><cell>2</cell>
+    </row>
+    <row>
+      <cell>3</cell>
+      <cell><![CDATA[4]]></cell>
+    </row>
+  </matrix>
+  <mixed>prefix<!-- comment --><b>bold</b><?process instruction?>suffix</mixed>
+  <unicode>𐀀 — 𝄞 中 🙂</unicode>
+</document>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % common SYSTEM "about:common">
+  <!ENTITY external SYSTEM "about:payload">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ELEMENT root (branch | leaf)*>
+  <!ELEMENT branch (branch?, leaf*)>
+  <!ELEMENT leaf (#PCDATA)>
+  <!ATTLIST leaf kind CDATA #IMPLIED ref ENTITY #IMPLIED>
+]>
+<root>
+  <branch>
+    <branch>
+      <leaf kind="text">level-2</leaf>
+    </branch>
+    <leaf ref="external">external reference</leaf>
+  </branch>
+  <leaf kind="text">tail</leaf>
+  <branch/>
+</root>
+```

@@ -1,0 +1,157 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE journal [
+  <!ELEMENT journal (entry+)>
+  <!ELEMENT entry (heading, author+, body, related?)>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    status (draft|published|archived) "draft">
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT author EMPTY>
+  <!ATTLIST author
+    ref IDREF #REQUIRED
+    role CDATA #IMPLIED>
+  <!ELEMENT body (#PCDATA|em|code|link|br)*>
+  <!ELEMENT em (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link target IDREF #REQUIRED>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT related (link+)>
+  <!ENTITY product "XML &amp; Validation">
+]>
+<journal>
+  <entry id="e1" status="published">
+    <heading>Entity handling</heading>
+    <author ref="u1" role="editor"/>
+    <body>Testing <em>mixed</em> content with <code>&lt;tokens&gt;</code><br/>and a <link target="e2">cross-reference</link>: &product;.</body>
+    <related>
+      <link target="e2">next entry</link>
+    </related>
+  </entry>
+  <entry id="e2">
+    <heading><![CDATA[CDATA section with ]]> text</heading>
+    <author ref="u1"/>
+    <body>Second record<!-- embedded comment --> with a processing instruction <?note value?>.</body>
+  </entry>
+</journal>
+```
+
+```xml
+<inventory xmlns="urn:warehouse:v3"
+           xmlns:p="urn:product"
+           xmlns:s="urn:supplier"
+           xml:lang="de"
+           xml:base="https://example.invalid/store/">
+  <aisle code="7">
+    <bin p:label="fragile" capacity="0">
+      <p:item p:code="Q-17" p:weight="1.25">
+        <p:name>Keramik</p:name>
+        <p:dimensions>
+          <p:length unit="cm">12</p:length>
+          <p:width unit="cm">8</p:width>
+          <p:height unit="cm">4</p:height>
+        </p:dimensions>
+        <s:vendor s:id="v-9">Nord &amp; Süd</s:vendor>
+      </p:item>
+      <bin xmlns="" code="7A">
+        <note xml:lang="en">Nested no-namespace element</note>
+        <flag/>
+      </bin>
+    </bin>
+  </aisle>
+  <summary xmlns:p="urn:other-product" p:count="1">
+    <total currency="EUR">42.00</total>
+  </summary>
+</inventory>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder*)>
+  <!ELEMENT folder (folder|file|alias)*>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ELEMENT file (metadata?, content)>
+  <!ATTLIST file path CDATA #REQUIRED mode NMTOKEN "0644">
+  <!ELEMENT metadata (property*)>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST property key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT content (#PCDATA)>
+  <!ELEMENT alias EMPTY>
+  <!ATTLIST alias ref IDREF #REQUIRED>
+  <!ENTITY line "&#10;">
+]>
+<archive>
+  <folder name="root">
+    <folder name="docs">
+      <file path="docs/readme.txt" mode="0600">
+        <metadata>
+          <property key="owner" value="qa"/>
+          <property key="checksum"/>
+        </metadata>
+        <content>First line&line;Second line&#x0A;終端</content>
+      </file>
+      <alias ref="missing"/>
+    </folder>
+    <folder name="empty"/>
+  </folder>
+</archive>
+```
+
+```xml
+<stream xmlns="urn:stream">
+  <header>
+    <version major="2" minor="0"/>
+    <features>
+      <feature name="delta" enabled="true"/>
+      <feature name="compression" enabled="false"/>
+    </features>
+  </header>
+  <records>
+    <record key="a&amp;b" timestamp="2026-09-17T12:34:56Z">
+      <value type="integer">00000000000000000042</value>
+      <value type="boolean">false</value>
+      <payload encoding="base64"><![CDATA[AAECAwQFBgcICQ==]]></payload>
+    </record>
+    <record key="unicode-𐀀" timestamp="1970-01-01T00:00:00Z">
+      <value type="decimal">-0.0000000000000000007</value>
+      <payload encoding="escaped">&quot;&lt;raw&gt;&quot;&#x9;</payload>
+    </record>
+  </records>
+  <trailer checksum="0000000000000000">
+    <message>done</message>
+  </trailer>
+</stream>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE request [
+  <!ELEMENT request (operation, credentials?, parameter*)>
+  <!ATTLIST request id CDATA #IMPLIED>
+  <!ELEMENT operation EMPTY>
+  <!ATTLIST operation name NMTOKEN #REQUIRED version NMTOKEN #IMPLIED>
+  <!ELEMENT credentials (user, token)>
+  <!ELEMENT user (#PCDATA)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT parameter (#PCDATA|value)*>
+  <!ATTLIST parameter name CDATA #REQUIRED type (text|number|json) "text">
+  <!ELEMENT value EMPTY>
+  <!ATTLIST value key CDATA #REQUIRED data CDATA #IMPLIED>
+]>
+<request id="r-0007">
+  <operation name="batch-update" version="2.4"/>
+  <credentials>
+    <user>svc_parser</user>
+    <token><![CDATA[<opaque>&token;]]></token>
+  </credentials>
+  <parameter name="limit" type="number">00012</parameter>
+  <parameter name="filter" type="json">
+    <value key="state" data="ready"/>
+    <value key="owner" data="ops &amp; qa"/>
+  </parameter>
+  <parameter name="note">line one
+line two&#13;line three</parameter>
+</request>
+```

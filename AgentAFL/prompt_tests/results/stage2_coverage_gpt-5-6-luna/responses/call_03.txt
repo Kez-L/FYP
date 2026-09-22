@@ -1,0 +1,212 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE warehouse [
+  <!ELEMENT warehouse (w:section+)>
+  <!ELEMENT w:section (w:label, w:entry*)>
+  <!ELEMENT w:label (#PCDATA)>
+  <!ELEMENT w:entry (#PCDATA|w:tag|w:link)*>
+  <!ELEMENT w:tag EMPTY>
+  <!ELEMENT w:link (#PCDATA)>
+  <!ATTLIST warehouse
+    xmlns CDATA #FIXED "urn:example:warehouse"
+    xmlns:w CDATA #FIXED "urn:example:warehouse"
+    xml:base CDATA #IMPLIED>
+  <!ATTLIST w:section
+    id ID #REQUIRED
+    xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST w:entry
+    ref IDREF #IMPLIED
+    kind (stock|service|other) "stock">
+  <!ATTLIST w:tag
+    name NMTOKEN #REQUIRED
+    value CDATA #IMPLIED>
+  <!ATTLIST w:link
+    href CDATA #REQUIRED>
+  <!ENTITY warehouse-name "North &amp; South Depot">
+]>
+<warehouse xml:base="https://example.invalid/data/" xmlns="urn:example:warehouse" xmlns:w="urn:example:warehouse">
+  <w:section id="cold" xml:lang="en">
+    <w:label>&warehouse-name;</w:label>
+    <w:entry ref="item-2" kind="stock">ice <w:tag name="temperature" value="−18"/> storage</w:entry>
+    <w:entry kind="service"><w:link href="urn:service:inspection">inspection</w:link></w:entry>
+  </w:section>
+  <w:section id="general">
+    <w:label>General goods</w:label>
+    <w:entry id="item-2" kind="other">mixed <w:tag name="fragile"/> cargo</w:entry>
+  </w:section>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE media [
+  <!ELEMENT media (record*)>
+  <!ELEMENT record (title, creator+, payload?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT creator (#PCDATA)>
+  <!ELEMENT payload EMPTY>
+  <!ATTLIST media
+    version CDATA #REQUIRED
+    format NOTATION (binary|text) "text">
+  <!ATTLIST record
+    code ID #REQUIRED
+    related IDREFS #IMPLIED
+    category (audio|video|image) #REQUIRED>
+  <!ATTLIST payload
+    source ENTITY #REQUIRED
+    checksum CDATA #IMPLIED>
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!NOTATION text SYSTEM "text/plain">
+  <!ENTITY cover SYSTEM "cover.dat" NDATA binary>
+  <!ENTITY poster SYSTEM "poster.txt" NDATA text>
+  <!ENTITY copyright "Copyright © 2026">
+]>
+<media version="2" format="text">
+  <record code="r1" category="audio" related="r2">
+    <title>Signals &amp; Noise</title>
+    <creator>Ævar Jónsson</creator>
+    <payload source="cover" checksum="sha256:deadbeef"/>
+  </record>
+  <record code="r2" category="image" related="r1">
+    <title>Cover &copyright;</title>
+    <creator>Studio Delta</creator>
+    <payload source="poster"/>
+  </record>
+</media>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ENTITY % feature "INCLUDE">
+  <!ENTITY % diagnostics "IGNORE">
+  <!ELEMENT report (header, body, appendix?)>
+  <!ELEMENT header (generated, source)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT body (paragraph|warning|table)*>
+  <!ELEMENT paragraph (#PCDATA|em|code)*>
+  <!ELEMENT warning (#PCDATA)>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT appendix (#PCDATA)>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ATTLIST warning level (low|medium|high) "medium">
+  <![%feature;[
+    <!ATTLIST report profile CDATA "standard">
+    <!ENTITY marker "enabled">
+  ]]>
+  <![%diagnostics;[
+    <!ELEMENT trace (#PCDATA)>
+    <!ATTLIST trace channel CDATA #IMPLIED>
+  ]]>
+]>
+<report profile="extended">
+  <header>
+    <generated>2026-09-17T12:00:00Z</generated>
+    <source>sensor &marker;</source>
+  </header>
+  <body>
+    <paragraph>Start <em>carefully</em>, then use <code>r&amp;d</code>.</paragraph>
+    <warning level="high">Threshold exceeded</warning>
+    <table>
+      <row><cell>name</cell><cell>value</cell></row>
+      <row><cell>alpha</cell><cell><![CDATA[<&>]]></cell></row>
+    </table>
+  </body>
+  <appendix>End of report</appendix>
+</report>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE exchange [
+  <!ELEMENT exchange (request, response)>
+  <!ELEMENT request (method, target, headers, body?)>
+  <!ELEMENT response (status, headers, body?)>
+  <!ELEMENT method (#PCDATA)>
+  <!ELEMENT target (#PCDATA)>
+  <!ELEMENT status (#PCDATA)>
+  <!ELEMENT headers (header*)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT body (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST exchange
+    id ID #REQUIRED
+    protocol (urn:proto:one|urn:proto:two) "urn:proto:one">
+  <!ATTLIST header
+    name NMTOKEN #REQUIRED
+    folded (yes|no) "no">
+  <!ENTITY crlf "&#xD;&#xA;">
+]>
+<exchange id="x-17" protocol="urn:proto:two">
+  <request>
+    <method>POST</method>
+    <target>/submit?mode=Δ</target>
+    <headers>
+      <header name="Content-Type" folded="yes">application/xml</header>
+      <header name="X-Trace">a&#x85;b</header>
+    </headers>
+    <body>
+      <chunk><![CDATA[<fragment>]]></chunk>
+      <chunk>literal &lt;markup&gt; &crlf; next</chunk>
+    </body>
+  </request>
+  <response>
+    <status>202 Accepted</status>
+    <headers>
+      <header name="Content-Length">0</header>
+    </headers>
+  </response>
+</exchange>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node (name, metadata?)>
+  <!ELEMENT edge (from, to, annotation?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT metadata (property*)>
+  <!ELEMENT property (#PCDATA)>
+  <!ELEMENT from EMPTY>
+  <!ELEMENT to EMPTY>
+  <!ELEMENT annotation (#PCDATA)>
+  <!ATTLIST graph
+    xmlns:g CDATA #FIXED "urn:graph"
+    directed (true|false) "true">
+  <!ATTLIST node
+    id ID #REQUIRED
+    class NMTOKENS #IMPLIED
+    active (yes|no) "yes">
+  <!ATTLIST edge
+    id ID #IMPLIED
+    weight CDATA #IMPLIED
+    source IDREF #REQUIRED
+    target IDREF #REQUIRED>
+  <!ATTLIST from ref IDREF #REQUIRED>
+  <!ATTLIST to ref IDREF #REQUIRED>
+  <!ATTLIST property key NMTOKEN #REQUIRED>
+  <!ENTITY amp "&amp;">
+]>
+<g:graph xmlns:g="urn:graph" directed="false">
+  <g:node id="n1" class="entry primary">
+    <g:name>Alpha</g:name>
+    <g:metadata>
+      <g:property key="note">A &amp; B</g:property>
+      <g:property key="mark">&amp;</g:property>
+    </g:metadata>
+  </g:node>
+  <g:node id="n2" class="entry secondary" active="no">
+    <g:name><![CDATA[Beta <zone>]]></g:name>
+  </g:node>
+  <g:edge id="e1" source="n1" target="n2" weight="0.75">
+    <g:from ref="n1"/>
+    <g:to ref="n2"/>
+    <g:annotation>transition</g:annotation>
+  </g:edge>
+</g:graph>
+```

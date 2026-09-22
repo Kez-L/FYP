@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="view.xsl" alternate="yes"?>
+<!DOCTYPE package [
+  <!ELEMENT package (metadata, data)>
+  <!ELEMENT metadata (field*)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT data ANY>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY left "{">
+  <!ENTITY right "}">
+  <!ENTITY amp "&#38;">
+]>
+<package>
+  <metadata>
+    <field name="mode" value="&left;safe&right;"/>
+    <field name="empty"/>
+    <field name="escaped" value="a&amp;b"/>
+  </metadata>
+  <data>
+    <?instruction one="two"?>
+    <blob xmlns="urn:blob" xmlns:x="urn:extra">
+      <x:item x:key="&amp;">&left;raw&right;</x:item>
+      <!-- deliberately adjacent nodes -->
+      <![CDATA[data]]>
+    </blob>
+    <?instruction?>
+  </data>
+</package>

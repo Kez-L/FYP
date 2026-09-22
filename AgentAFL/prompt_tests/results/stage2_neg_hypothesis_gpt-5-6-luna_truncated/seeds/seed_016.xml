@@ -1,0 +1,31 @@
+<?xml version="1.1"?>
+<!DOCTYPE registry [
+  <!ENTITY % itemDecl '
+    <!ELEMENT item (title, link?, blob?)>
+    <!ATTLIST item
+      id ID #REQUIRED
+      ref IDREF #IMPLIED
+      state (new|old|archived) "new">
+  '>
+  %itemDecl;
+  <!ELEMENT registry (item+, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT blob (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY marker "&#x1F;boundary">
+]>
+<registry>
+  <item id="item-1" state="new">
+    <title>Alpha &marker;</title>
+    <link>https://example.invalid/a?x=1&amp;y=2</link>
+    <blob><![CDATA[
+      00 ff 7f
+      <not-a-tag attr="x"/>
+    ]]></blob>
+  </item>
+  <item id="item-2" ref="item-1" state="archived">
+    <title>Beta</title>
+  </item>
+  <note>after-items</note>
+</registry>

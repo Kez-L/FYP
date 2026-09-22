@@ -1,0 +1,114 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title,summary,meta?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|emph|br)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST entry id ID #REQUIRED status (new|old|archived) "new">
+  <!ATTLIST meta key CDATA #IMPLIED value CDATA #IMPLIED>
+  <!ENTITY amp "&#38;">
+]>
+<catalog xmlns="urn:seed:catalog" xml:lang="en">
+  <entry id="e-01" status="archived">
+    <title>Markup &amp; Boundaries</title>
+    <summary><![CDATA[left ]]> <emph>middle &amp; escaped</emph> <![CDATA[ right]]><br/></summary>
+    <meta key="x" value="a&b;&amp;c"/>
+  </entry>
+  <entry id="e-02">
+    <title>Second</title>
+    <summary>alpha<emph>beta</emph>gamma<br/>delta</summary>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<r:envelope xmlns:r="urn:example:envelope" xmlns:x="urn:example:data" xml:base="urn:root/">
+  <r:header>
+    <r:item name="empty" value=""/>
+    <r:item name="quoted" value="&quot;&apos;&#x9;&#xA;&#xD;"/>
+  </r:header>
+  <r:payload x:kind="mixed">
+    <x:node xml:id="n0">
+      <x:node xml:id="n1" x:flag="true"/>
+      <x:node xmlns:x="" xmlns:q="urn:other" q:tag="v"/>
+    </x:node>
+    <r:tail><![CDATA[<not-an-element>&still-text;</not-an-element>]]></r:tail>
+  </r:payload>
+  <?instruction data with spaces?>
+</r:envelope>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ELEMENT report (section*)>
+  <!ELEMENT section (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST section code NMTOKEN #IMPLIED>
+  <!ATTLIST link href URI #REQUIRED>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<report>
+  <section code="A_1">
+    <heading>One</heading>
+    <item>plain<link href="urn:x">inside</link>after</item>
+    <item>&left;literal brackets&right;</item>
+  </section>
+  <section>
+    <heading><![CDATA[]]></heading>
+    <item><link href="http://example.test/a?x=1&amp;y=2"/></item>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (data, data, checksum)>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT checksum EMPTY>
+  <!ATTLIST data kind (hex|text|base64) "text" xml:space (default|preserve) "default">
+  <!ATTLIST checksum value CDATA #REQUIRED>
+]>
+<packet xmlns="urn:packet">
+  <data kind="hex" xml:space="preserve">
+    00 7f C2 A9 &#x1F600; &lt;tag/&gt;
+  </data>
+  <data kind="base64"><![CDATA[
+    AAEC/f4=
+  ]]></data>
+  <checksum value="sha256:00000000000000000000000000000000"/>
+</packet>
+```
+
+```xml
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (note|group|note)*>
+  <!ELEMENT group (label, (note|group)*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST note priority CDATA "normal">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quote "&#34;">
+]>
+<dashboard>
+  <?state ready?>
+  <!-- comment containing <fake> & bogus; -->
+  <group>
+    <label>outer</label>
+    <note priority="high">A&nbsp;B&nbsp;&quote;C&quote;</note>
+    <group>
+      <label><![CDATA[nested ]]><!-- split --><![CDATA[label]]></label>
+      <note priority="low">text</note>
+    </group>
+  </group>
+  <note>trailing <?inner processing?> content</note>
+</dashboard>
+```

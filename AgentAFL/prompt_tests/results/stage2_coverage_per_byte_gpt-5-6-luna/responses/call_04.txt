@@ -1,0 +1,126 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, product*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT product EMPTY>
+  <!ATTLIST section
+    id ID #REQUIRED
+    hidden (yes|no) "no">
+  <!ATTLIST product
+    sku ID #REQUIRED
+    category NMTOKENS #IMPLIED
+    discontinued (true|false) "false"
+    price CDATA #IMPLIED>
+]>
+<catalog>
+  <section id="s-main" hidden="no">
+    <title>Seasonal &amp; clearance</title>
+    <product sku="p-1" category="home kitchen" price="19.95"/>
+    <product sku="p-2" category="outdoor" discontinued="true" price="0"/>
+  </section>
+  <section id="s-empty" hidden="yes">
+    <title>Nothing here</title>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:report xmlns:r="urn:report" xmlns:m="urn:metrics" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="m:Daily">
+  <r:metadata generated="2026-09-17T23:59:59Z">
+    <r:source><![CDATA[collector://node[7]/<primary>]]></r:source>
+    <r:tags>
+      <r:tag>α</r:tag>
+      <r:tag>β&amp;γ</r:tag>
+    </r:tags>
+  </r:metadata>
+  <m:series name="latency" unit="ms">
+    <m:point t="0" v="NaN"/>
+    <m:point t="9223372036854775807" v="-0.0000001"/>
+    <m:point t="18446744073709551615" v="INF"/>
+  </m:series>
+  <r:attachment encoding="base64">AAEC/f39AABBCC==</r:attachment>
+</r:report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ENTITY % common "id ID #REQUIRED state (open|closed) 'open'">
+  <!ELEMENT package (entry, manifest?, note?)>
+  <!ELEMENT entry (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|ref)*>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT manifest (file*)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT note ANY>
+  <!ATTLIST package %common;>
+  <!ATTLIST entry name CDATA #IMPLIED>
+  <!ATTLIST ref target IDREF #IMPLIED>
+  <!ATTLIST file path CDATA #REQUIRED bytes CDATA #IMPLIED>
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+]>
+<package id="pkg0" state="open">
+  <entry name="escaped">
+    <key>&left;key&right;</key>
+    <value>prefix<ref target="missing"/>suffix</value>
+  </entry>
+  <manifest>
+    <file path="a/b.txt" bytes="18446744073709551616"/>
+    <file path=""/>
+  </manifest>
+  <note><![CDATA[<not-an-element>&left;</not-an-element>]]></note>
+</package>
+```
+
+```xml
+<?xml version="1.1"?>
+<archive xmlns="urn:archive:v2">
+  <directory name="root">
+    <directory name="nested&amp;odd">
+      <entry name="dot..name" size="00000000000000000000000000000042">
+        <checksum algorithm="sha-256">0000000000000000000000000000000000000000000000000000000000000000</checksum>
+        <link href="../root?x=1&amp;y=2#frag" kind="soft"/>
+      </entry>
+      <entry name="unicode-𐍈" size="-1">
+        <checksum algorithm="">&#x0;&#xD800;</checksum>
+      </entry>
+    </directory>
+  </directory>
+  <index count="2">
+    <item path="root/nested&amp;odd/dot..name" rank="0"/>
+    <item path="root/nested&amp;odd/unicode-𐍈" rank="999999999999999999999999"/>
+  </index>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE r [
+  <!ELEMENT r (a|b|c)*>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b EMPTY>
+  <!ELEMENT c (a?,b*,c?)>
+  <!ATTLIST a n CDATA #IMPLIED>
+  <!ATTLIST b flag CDATA #IMPLIED>
+  <!ENTITY amp "&amp;">
+]>
+<r>
+  <a n="one">text &amp; more &amp; <b>not allowed here</b></a>
+  <b flag="&amp;quot;"/>
+  <c>
+    <a>nested</a>
+    <b/>
+    <c>
+      <a><![CDATA[]]></a>
+      <c/>
+    </c>
+  </c>
+  <!-- unterminated-looking content <x attr="&amp;"> -->
+  <?processing data with > and "quotes"?>
+</r>
+```

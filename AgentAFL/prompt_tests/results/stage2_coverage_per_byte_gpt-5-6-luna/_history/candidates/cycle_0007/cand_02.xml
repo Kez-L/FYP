@@ -1,0 +1,29 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, trailer)>
+  <!ELEMENT header (entry*)>
+  <!ELEMENT entry EMPTY>
+  <!ELEMENT payload (#PCDATA|chunk|section)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT section (#PCDATA|chunk|section)*>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST entry key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST chunk size CDATA #IMPLIED>
+  <!ATTLIST section depth NMTOKEN #IMPLIED>
+  <!ENTITY amp "&#38;">
+  <!ENTITY nested "left &amp;middle &amp;right">
+]>
+<envelope>
+  <header>
+    <entry key="a" value="1"/>
+    <entry key="b" value="&nested;"/>
+    <?header-instruction data?>
+  </header>
+  <payload>
+    before<chunk size="18446744073709551616">x&amp;y</chunk>
+    <section depth="999999999999999999999999">
+      <![CDATA[raw ]]><section depth="-1">inner</section><![CDATA[ ]]>after
+    </section>
+  </payload>
+  <trailer/>
+</envelope>

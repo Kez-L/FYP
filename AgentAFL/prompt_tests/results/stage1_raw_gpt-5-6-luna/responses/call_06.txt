@@ -1,0 +1,90 @@
+```xml
+<?xml version="1.1" standalone="yes"?>
+<catalog xmlns="urn:example:catalog"
+         xmlns:x="urn:example:extra"
+         xml:base="http://example.invalid/a/../b/">
+  <x:item xml:id="i-001" xml:space="preserve">
+    <x:name> alpha&#x85;beta&#x2028;gamma </x:name>
+    <price currency="&#x20AC;">&#x2B;0007.50</price>
+    <x:meta key="a&#x9;b&#xA;c&#xD;">&#x3C;not markup&#x3E;</x:meta>
+  </x:item>
+  <item xmlns="">
+    <empty/>
+    <mixed>left<inner xmlns="urn:other">middle</inner>right</mixed>
+  </item>
+</catalog>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ELEMENT report (header, data, trailer)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT data (row*)>
+  <!ELEMENT row (cell, cell?, cell?)>
+  <!ELEMENT cell (#PCDATA|br)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST row n NMTOKEN #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quoted "&#34;quoted&#34;">
+]>
+<report>
+  <header>&quoted; &nbsp; &amp; status</header>
+  <data>
+    <row n="001"><cell>one<br/>two</cell><cell/></row>
+    <row n="002"><cell><![CDATA[a]]]]><![CDATA[>b]]></cell><cell>c</cell><cell>d</cell></row>
+    <row><cell>last</cell></row>
+  </data>
+  <trailer>done</trailer>
+</report>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ENTITY % common "<!ELEMENT root ANY>">
+  %common;
+  <!ENTITY % attrs "<!ATTLIST node id ID #IMPLIED ref IDREF #IMPLIED>">
+  <!ELEMENT node (#PCDATA|node|leaf)*>
+  %attrs;
+  <!ELEMENT leaf EMPTY>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "data:text/plain,external">
+]>
+<root>
+  <node id="first">text
+    <node ref="first">nested<leaf/></node>
+    <leaf/>
+  </node>
+  <node id="second" ref="first"/>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope ANY>
+  <!ENTITY open "<part kind='generated'>">
+  <!ENTITY close "</part>">
+  <!ENTITY literal "<![CDATA[&amp; <tag> ]]>" >
+  <!ENTITY recursive "left-&recursive;-right">
+]>
+<envelope>
+  &open;
+    &literal;
+    <value a="1&#x3B;2">x &amp; y</value>
+  &close;
+  <part kind="literal">&lt;![CDATA[broken]]&gt;</part>
+</envelope>
+```
+
+```xml
+<stream xmlns="urn:stream">
+  <message id="m1"><![CDATA[chunk-1]]></message>
+  <message id="m2">text<!-- comment --><![CDATA[chunk-2]]><?pi a="b"?></message>
+  <group>
+    <message id="m3"><part><![CDATA[x]]></part><part>y</part></message>
+    <group><message id="m4"/></group>
+  </group>
+  <tail attr="&quot; &apos; &gt; &lt; &amp;">&#x0A;&#x0D;&#x09;</tail>
+</stream>
+```

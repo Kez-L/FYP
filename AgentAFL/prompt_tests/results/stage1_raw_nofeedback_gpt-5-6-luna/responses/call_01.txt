@@ -1,0 +1,98 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:seed:catalog" xmlns:x="urn:seed:extra">
+  <entry id="A-001" enabled="true">
+    <title><![CDATA[alpha < beta && gamma > delta]]></title>
+    <metadata>
+      <x:tag key="k1">one</x:tag>
+      <x:tag key="k2"><![CDATA[]]></x:tag>
+    </metadata>
+    <values>
+      <value>0</value>
+      <value>-1.7976931348623157E+308</value>
+      <value>NaN</value>
+    </values>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header (token?, flag*)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ELEMENT payload ANY>
+  <!ATTLIST envelope version CDATA "1">
+  <!ATTLIST flag name NMTOKEN #REQUIRED>
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+]>
+<envelope version="&quot;2&quot;">
+  <header>
+    <token>&left;opaque&amp;value&right;</token>
+    <flag name="x"/>
+    <flag name="y"/>
+  </header>
+  <payload><![CDATA[
+    <embedded>
+      <node attribute="&amp;not-expanded;"/>
+    </embedded>
+  ]]></payload>
+</envelope>
+```
+
+```xml
+<r:root xmlns:r="urn:root" xmlns:a="urn:a" xmlns:b="urn:b" xml:lang="x">
+  <r:item a:id="1">
+    <a:child b:ref="r:item" xml:space="preserve"> text </a:child>
+    <a:child>
+      <b:leaf/>
+      <b:leaf><![CDATA[ ]]>tail</b:leaf>
+    </a:child>
+  </r:item>
+  <r:item a:id="2">
+    <r:item xmlns:r="">
+      <local/>
+    </r:item>
+  </r:item>
+</r:root>
+```
+
+```xml
+<?xml version="1.1"?>
+<document>
+  <mixed>before<!-- comment with --? --><![CDATA[raw ]]]]><![CDATA[> data]]><?pi one="two"?></mixed>
+  <?instruction?>
+  <section>
+    <empty/>
+    <nested><a><b><c><d>deep</d></c></b></a></nested>
+  </section>
+  <!-- trailing comment -->
+</document>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY base "text">
+  <!ENTITY quoted "&quot;&apos;&lt;&gt;&amp;">
+  <!NOTATION binary SYSTEM "urn:binary">
+  <!ENTITY file SYSTEM "urn:external" NDATA binary>
+  <!ELEMENT root (group | item)*>
+  <!ELEMENT group (item+, note?)>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST root mode (fast|safe|debug) "safe">
+]>
+<root mode="debug">
+  <group>
+    <item>&base;&quoted;</item>
+    <item>line
+break&#x0A;next</item>
+    <note>choice</note>
+  </group>
+  <item>outside</item>
+</root>
+```

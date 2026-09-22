@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ENTITY % declarations '
+    <!ELEMENT step (input*, result?)>
+    <!ATTLIST step
+      name NMTOKEN #REQUIRED
+      status (pending|running|done|failed) "pending">
+    <!ELEMENT input (#PCDATA)>
+    <!ELEMENT result (#PCDATA|error)*>
+    <!ELEMENT error (#PCDATA)>
+  '>
+  <!ENTITY % enabled "INCLUDE">
+  <![%enabled;[
+    %declarations;
+  ]]>
+  <!ELEMENT workflow (environment, step+)>
+  <!ATTLIST workflow id ID #REQUIRED>
+  <!ELEMENT environment (variable*)>
+  <!ELEMENT variable EMPTY>
+  <!ATTLIST variable
+    name NMTOKEN #REQUIRED
+    value CDATA #IMPLIED
+    secret (true|false) "false">
+  <!ENTITY nl "&#10;">
+]>
+<workflow id="build-7">
+  <environment>
+    <variable name="PATH" value="/usr/bin:/bin"/>
+    <variable name="DEBUG" value="false"/>
+    <variable name="TOKEN" secret="true"/>
+  </environment>
+  <step name="compile" status="done">
+    <input>source.xml</input>
+    <input>--strict</input>
+    <result>completed&nl;without warnings</result>
+  </step>
+  <step name="package" status="failed">
+    <input>archive</input>
+    <result>
+      <error>missing manifest</error>
+      <error><![CDATA[unexpected ]]> delimiter]]></error>
+    </result>
+  </step>
+</workflow>

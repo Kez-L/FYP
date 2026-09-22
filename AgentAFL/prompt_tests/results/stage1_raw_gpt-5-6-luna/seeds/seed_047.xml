@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE network [
+  <!ELEMENT network (node+, route*)>
+  <!ELEMENT node EMPTY>
+  <!ELEMENT route (hop, hop?, payload?)>
+  <!ELEMENT hop EMPTY>
+  <!ELEMENT payload (#PCDATA)>
+  <!ATTLIST node xmlns CDATA #IMPLIED name CDATA #REQUIRED role NMTOKEN #IMPLIED>
+  <!ATTLIST route from IDREF #REQUIRED to IDREF #REQUIRED metric NMTOKEN #IMPLIED>
+  <!ATTLIST hop node IDREF #REQUIRED>
+  <!ATTLIST payload encoding (plain|base64) "plain">
+]>
+<network xmlns="urn:net:core" xmlns:x="urn:net:extra">
+  <node name="alpha" role="edge"/>
+  <node name="beta" role="core" xmlns=""/>
+  <x:node name="gamma" role="edge" x:zone="west"/>
+  <route from="alpha" to="beta" metric="001">
+    <hop node="alpha"/>
+    <hop node="beta"/>
+    <payload encoding="plain">a:b/c?d=e&amp;f</payload>
+  </route>
+  <route from="gamma" to="alpha">
+    <hop node="gamma"/>
+  </route>
+</network>
