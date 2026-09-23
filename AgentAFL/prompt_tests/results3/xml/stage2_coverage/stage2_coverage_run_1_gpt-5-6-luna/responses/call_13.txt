@@ -1,0 +1,157 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, data, footer)>
+  <!ELEMENT header (#PCDATA|meta|processing)*>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT data (record+)>
+  <!ELEMENT record (key, value, blob?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|ref|linebreak)*>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT blob (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST report xmlns CDATA #IMPLIED generated CDATA #IMPLIED>
+  <!ATTLIST meta name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST record id ID #REQUIRED kind (alpha|numeric|mixed) "mixed">
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY intro "before &amp; after">
+  <!ENTITY quoted "&quot;quoted&quot;">
+]>
+<report xmlns="urn:example:report" generated="yes">
+  <header>&intro;<meta name="mode" value="&quot;compact&quot;"/><?audit enabled?></header>
+  <data>
+    <record id="r1" kind="alpha">
+      <key>name</key>
+      <value>left<linebreak/>middle<ref target="r2"/>right</value>
+      <blob><![CDATA[<not-an-element>&still-cdata;</not-an-element>]]></blob>
+    </record>
+    <record id="r2" kind="numeric">
+      <key>count</key>
+      <value>42</value>
+    </record>
+  </data>
+  <footer>&quoted;</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (preamble?, payload, signature?)>
+  <!ELEMENT preamble (#PCDATA)>
+  <!ELEMENT payload (chunk|alias|empty-chunk)+>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT alias EMPTY>
+  <!ELEMENT empty-chunk EMPTY>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST envelope xmlns:soap CDATA #FIXED "urn:soap:test"
+                    soap:version (one|two) "two">
+  <!ATTLIST chunk xmlns CDATA #IMPLIED index NMTOKEN #REQUIRED>
+  <!ATTLIST alias soap:ref IDREF #REQUIRED>
+  <!ENTITY x "X">
+  <!ENTITY y "&x;&x;&x;">
+  <!ENTITY z "&#x3C;escaped&#x3E;">
+]>
+<envelope xmlns:soap="urn:soap:test" soap:version="two">
+  <preamble>start</preamble>
+  <payload xmlns="urn:payload">
+    <chunk index="01">A&y;B</chunk>
+    <alias soap:ref="c-2"/>
+    <chunk index="02" id="c-2">C&z;D</chunk>
+    <empty-chunk/>
+  </payload>
+  <signature xmlns="">sha256: &amp;unknown-looking;</signature>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ENTITY % declarations '
+    <!ELEMENT matrix (row+)>
+    <!ELEMENT row (cell+)>
+    <!ELEMENT cell (#PCDATA|formula|![CDATA[not-dtd-content]] )*>
+  '>
+  %declarations;
+  <!ATTLIST matrix rows NMTOKEN #REQUIRED>
+  <!ATTLIST row number NMTOKEN #REQUIRED>
+  <!ATTLIST cell position NMTOKEN #IMPLIED type (text|number|formula) "text">
+  <!ELEMENT formula (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <![IGNORE[
+    <!ELEMENT ignored EMPTY>
+    <!ATTLIST ignored reason CDATA #IMPLIED>
+  ]]>
+  <![INCLUDE[
+    <!ENTITY marker "included">
+  ]]>
+]>
+<matrix rows="2">
+  <row number="1">
+    <cell position="a">one&nbsp;</cell>
+    <cell position="b" type="formula"><formula>sum(1,2)</formula></cell>
+  </row>
+  <row number="2">
+    <cell position="a"><![CDATA[x &lt; y]]></cell>
+    <cell position="b">two &marker;</cell>
+  </row>
+</matrix>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (event*)>
+  <!ELEMENT event (name, field*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT field (#PCDATA|value)*>
+  <!ELEMENT value EMPTY>
+  <!ATTLIST event time CDATA #REQUIRED category CDATA #IMPLIED>
+  <!ATTLIST field key NMTOKEN #REQUIRED>
+  <!ATTLIST value type (null|integer|boolean) #REQUIRED data CDATA #IMPLIED>
+]>
+<stream>
+  <event time="2026-09-23T00:00:00Z" category="system">
+    <name>startup</name>
+    <field key="pid"><value type="integer" data="0"/></field>
+    <field key="enabled"><value type="boolean" data="true"/></field>
+  </event>
+  <event time="invalid&#x85;time" category="user">
+    <name>line&#x2028;separator</name>
+    <field key="message">alpha&#x0B;beta</field>
+    <field key="empty"><value type="null"/></field>
+  </event>
+</stream>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (left, right)>
+  <!ELEMENT left (item|item-ref)*>
+  <!ELEMENT right (item|item-ref)*>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT item-ref EMPTY>
+  <!ATTLIST item code ID #REQUIRED xml:space (default|preserve) "preserve">
+  <!ATTLIST item-ref points IDREF #REQUIRED>
+  <!ENTITY open "<fragment>">
+  <!ENTITY close "</fragment>">
+  <!NOTATION text SYSTEM "text/plain">
+  <!ENTITY external NDATA text>
+]>
+<root>
+  <left>
+    <item code="a&amp;b" xml:space="default"> first </item>
+    <item-ref points="missing"/>
+    <item code="c">third<!-- comment with --? --></item>
+  </left>
+  <right>
+    &open;
+    <item code="d">inside</item>
+    &close;
+    <item-ref points="a&amp;b"/>
+  </right>
+</root>
+```

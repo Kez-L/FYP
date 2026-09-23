@@ -1,0 +1,33 @@
+<?xml version="1.1"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (message|separator)+>
+  <!ELEMENT message (sender, recipients, body)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipients (to+, cc*)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT cc (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|attachment)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT attachment EMPTY>
+  <!ELEMENT separator EMPTY>
+  <!ATTLIST message id ID #REQUIRED priority (low|normal|high) "normal">
+  <!ATTLIST attachment filename CDATA #REQUIRED encoding CDATA #IMPLIED>
+  <!ENTITY newline "&#xA;">
+]>
+<conversation>
+  <message id="m001" priority="high">
+    <sender>Alice</sender>
+    <recipients>
+      <to>Bob</to>
+      <to>Carol</to>
+      <cc>Audit</cc>
+    </recipients>
+    <body>Hello&newline;<quote>Quoted <quote>deep text</quote> tail</quote><attachment filename="a&amp;b.txt" encoding="binary"/></body>
+  </message>
+  <separator/>
+  <message id="m002">
+    <sender>Bob</sender>
+    <recipients><to>Alice</to></recipients>
+    <body><![CDATA[raw ]]> content ]]&gt; safely separated</body>
+  </message>
+</conversation>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ENTITY % taskAttributes
+    "<!ATTLIST task priority (low|normal|urgent) 'normal'
+                    owner CDATA #IMPLIED
+                    depends IDREFS #IMPLIED>">
+  %taskAttributes;
+  <!ENTITY open "[pending]">
+  <!ELEMENT workflow (variables?, phase+)>
+  <!ELEMENT variables (variable*)>
+  <!ELEMENT variable (#PCDATA)>
+  <!ATTLIST variable name NMTOKEN #REQUIRED>
+  <!ELEMENT phase (label, task+)>
+  <!ATTLIST phase id ID #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT task (name, command, result?)>
+  <!ATTLIST task id ID #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT command (#PCDATA)>
+  <!ELEMENT result (#PCDATA|status)*>
+  <!ELEMENT status (#PCDATA)>
+]>
+<workflow>
+  <variables>
+    <variable name="workspace">/var/tmp/build</variable>
+    <variable name="mode">strict</variable>
+  </variables>
+  <phase id="compile">
+    <label>Compilation</label>
+    <task id="prepare" owner="builder">
+      <name>Prepare sources</name>
+      <command>mkdir -p /var/tmp/build</command>
+      <result><status>complete</status> &open;</result>
+    </task>
+    <task id="compile-main" priority="urgent" depends="prepare">
+      <name>Compile main target</name>
+      <command>make all</command>
+    </task>
+  </phase>
+  <phase id="package">
+    <label>Packaging</label>
+    <task id="bundle" depends="compile-main">
+      <name>Create archive</name>
+      <command>tar -cf output.tar build/</command>
+      <result><status>queued</status></result>
+    </task>
+  </phase>
+</workflow>

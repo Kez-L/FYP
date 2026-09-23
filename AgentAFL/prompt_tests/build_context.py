@@ -290,13 +290,16 @@ def _sample_of(entry: dict) -> str:
     return entry["sample"]
 
 
-def scan_cycle_history(run_dir: Path) -> list:
-    """This run's prior FAILED LLM seeds (added no new coverage), from
-    <run_dir>/cycles.jsonl, in file order (newest cycles last).
+def _scan_cycle_candidates(run_dir: Path, predicate) -> list:
+    """Shared read side of <run_dir>/cycles.jsonl for both the negative- and
+    positive-feedback scans (scan_cycle_history / scan_cycle_history_positive).
+    append_history_cycle (batch_harness.py) logs EVERY generated seed each
+    cycle regardless of status — this is what filters down to the ones a
+    caller actually wants, via `predicate(cand) -> bool`.
 
     Each item: {cycle_id, status, size, edge_ids (set[int]), edge_sig (str),
-    path (Path)}. Only BAD (redundant) / NO_COVERAGE candidates with
-    new_edges == 0 whose seed file is still on disk. Missing log -> []."""
+    path (Path)}, in file order (newest cycles last). Only candidates that
+    pass `predicate` and whose seed file is still on disk. Missing log -> []."""
     run_dir = Path(run_dir)
     log_path = run_dir / "cycles.jsonl"
     if not log_path.exists():
@@ -315,9 +318,7 @@ def scan_cycle_history(run_dir: Path) -> list:
             continue
         cycle_id = rec.get("cycle_id")
         for cand in rec.get("candidates", []):
-            if cand.get("status") not in ("BAD (redundant)", "NO_COVERAGE"):
-                continue
-            if cand.get("new_edges", 0) != 0:
+            if not predicate(cand):
                 continue
             rel = cand.get("seed_path") or cand.get("raw_path")
             if not rel:
@@ -334,6 +335,32 @@ def scan_cycle_history(run_dir: Path) -> list:
                 "path": path,
             })
     return out
+
+
+def scan_cycle_history(run_dir: Path) -> list:
+    """This run's prior FAILED LLM seeds (added no new coverage), from
+    <run_dir>/cycles.jsonl. Only BAD (redundant) / NO_COVERAGE candidates
+    with new_edges == 0 whose seed file is still on disk. See
+    _scan_cycle_candidates for the shape/ordering of each returned item."""
+    return _scan_cycle_candidates(
+        run_dir,
+        lambda cand: cand.get("status") in ("BAD (redundant)", "NO_COVERAGE")
+        and cand.get("new_edges", 0) == 0,
+    )
+
+
+def scan_cycle_history_positive(run_dir: Path) -> list:
+    """This run's prior SUCCESSFUL LLM seeds (found new coverage), from
+    <run_dir>/cycles.jsonl — the mirror image of scan_cycle_history, for
+    positive feedback (stage4_positive_feedback.py). Only GOOD (novel
+    coverage) candidates with new_edges > 0 whose seed file is still on
+    disk. See _scan_cycle_candidates for the shape/ordering of each
+    returned item."""
+    return _scan_cycle_candidates(
+        run_dir,
+        lambda cand: cand.get("status") == "GOOD (novel coverage)"
+        and cand.get("new_edges", 0) > 0,
+    )
 
 
 def _cluster_failures(failures: list, jaccard_min: float = HIST_JACCARD_MIN) -> list:

@@ -1,0 +1,127 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (entry+)>
+  <!ELEMENT entry (name, value, link?)>
+  <!ATTLIST entry
+    key ID #REQUIRED
+    ref IDREF #IMPLIED
+    state (open|closed|pending) "open">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target IDREF #REQUIRED>
+  <!ENTITY sep " / ">
+]>
+<registry>
+  <entry key="e1" state="open">
+    <name>alpha</name>
+    <value>left<part>middle</part>&sep;right</value>
+    <link target="e2"/>
+  </entry>
+  <entry key="e2" ref="e1" state="closed">
+    <name>omega</name>
+    <value><![CDATA[<literal>&raw]]></value>
+  </entry>
+</registry>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE media [
+  <!NOTATION png SYSTEM "image/png">
+  <!NOTATION txt SYSTEM "text/plain">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY note "A &quot;quoted&quot; fragment">
+  <!ELEMENT media (asset*, description)>
+  <!ELEMENT asset EMPTY>
+  <!ATTLIST asset
+    name CDATA #REQUIRED
+    format NOTATION (png|txt) #IMPLIED
+    source ENTITY #IMPLIED>
+  <!ELEMENT description (#PCDATA)>
+]>
+<media>
+  <asset name="icon" format="png" source="logo"/>
+  <asset name="readme" format="txt"/>
+  <description>&note; <![CDATA[unparsed ]]> text</description>
+</media>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (node)>
+  <!ELEMENT node (node|leaf)*>
+  <!ELEMENT leaf (#PCDATA)>
+  <!ATTLIST node
+    xmlns CDATA #IMPLIED
+    xmlns:m CDATA #IMPLIED
+    m:id NMTOKEN #IMPLIED>
+  <!ATTLIST leaf role (key|value|empty) "value">
+]>
+<map xmlns="urn:base" xmlns:m="urn:meta">
+  <node m:id="r1">
+    <leaf role="key">one</leaf>
+    <node xmlns:m="urn:other" m:id="r2">
+      <leaf role="value">two</leaf>
+      <leaf xmlns="">detached</leaf>
+    </node>
+    <m:leaf role="empty"/>
+  </node>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ENTITY % flags '
+    <!ATTLIST packet priority (low|normal|high) "normal">
+  '>
+  %flags;
+  <!ELEMENT packet (header, body, trailer?)>
+  <!ELEMENT header (field+)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT body ANY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ENTITY amp "&amp;">
+]>
+<packet priority="high">
+  <header>
+    <field name="mode" value="batch"/>
+    <field name="retry" value="3"/>
+  </header>
+  <body>
+    <?route path="a&amp;b"?>
+    <chunk><![CDATA[first]]></chunk>
+    <chunk>second &amp; &amp; third</chunk>
+  </body>
+  <trailer>checksum:&amp;amp;</trailer>
+</packet>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (actor, action*, exit)>
+  <!ELEMENT actor (#PCDATA)>
+  <!ELEMENT action (say|move|pause)>
+  <!ELEMENT say (#PCDATA)>
+  <!ELEMENT move EMPTY>
+  <!ATTLIST move x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ELEMENT pause EMPTY>
+  <!ATTLIST pause duration CDATA "0">
+  <!ELEMENT exit EMPTY>
+  <!ATTLIST exit code CDATA #IMPLIED>
+  <!ENTITY greeting "Hello &#x2603;">
+]>
+<scene>
+  <actor>&greeting;</actor>
+  <action><say>Turn <em>left</em> now</say></action>
+  <action><move x="-7" y="004"/></action>
+  <action><pause duration="&#x09;"/></action>
+  <exit code="done"/>
+</scene>
+```

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (header, content, trailer)>
+  <!ELEMENT header (item*)>
+  <!ELEMENT item EMPTY>
+  <!ELEMENT content (chunk+)>
+  <!ELEMENT chunk (#PCDATA|chunk)*>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST package mode (fast|safe) #REQUIRED>
+  <!ATTLIST item name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST chunk n NMTOKEN #IMPLIED>
+  <!ENTITY apos "&#39;">
+  <!ENTITY quote "&#34;">
+  <!ENTITY nested "&apos;&quote;">
+]>
+<package mode="safe">
+  <header>
+    <item name="empty" value=""/>
+    <item name="symbols" value="&lt;&gt;&amp;&quot;&apos;"/>
+  </header>
+  <content>
+    <chunk n="01">A<chunk n="02">B<chunk n="03">C</chunk>D</chunk>E</chunk>
+    <chunk n="04">&nested;<![CDATA[<&not-an-entity;>]]></chunk>
+  </content>
+  <trailer>done&#x9;now</trailer>
+</package>

@@ -1,0 +1,42 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<network xmlns="urn:example:network"
+         xmlns:net="urn:example:network:devices"
+         xmlns:log="urn:example:network:log"
+         xml:space="preserve">
+  <?snapshot sequence="00000019"?>
+  <graph directed="true" generated="2026-09-23">
+    <node id="router-α" role="edge" enabled="yes">
+      <address family="ipv6">2001:db8:85a3::8a2e:370:7334</address>
+      <interfaces>
+        <interface name="uplink0" mtu="9000">
+          <net:mac>02:00:00:aa:bb:01</net:mac>
+          <net:metric>10</net:metric>
+        </interface>
+        <interface name="lan0" mtu="1500">
+          <net:mac>02:00:00:aa:bb:02</net:mac>
+          <net:metric>100</net:metric>
+        </interface>
+      </interfaces>
+    </node>
+    <node id="sensor-07" role="leaf" enabled="no">
+      <address family="ipv4">192.0.2.77</address>
+      <interfaces/>
+    </node>
+    <edge from="router-α" to="sensor-07" weight="0.875">
+      <log:event level="warning" code="LINK_DEGRADED">
+        packet loss <![CDATA[< 3% ]]>
+      </log:event>
+      <log:sample at="12:00:00.000Z">0.03125</log:sample>
+      <log:sample at="12:00:01.000Z">0.02800</log:sample>
+    </edge>
+  </graph>
+  <policies>
+    <policy name="quarantine" priority="7">
+      <match field="role" equals="leaf"/>
+      <action type="rate-limit" value="64kbit/s"/>
+      <action type="notify">
+        <recipient channel="pager">ops@example.invalid</recipient>
+      </action>
+    </policy>
+  </policies>
+</network>

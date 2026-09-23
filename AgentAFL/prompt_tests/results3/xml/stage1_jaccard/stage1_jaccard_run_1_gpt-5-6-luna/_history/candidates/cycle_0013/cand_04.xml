@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, trailer)>
+  <!ELEMENT header (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item name CDATA #REQUIRED>
+  <!ELEMENT payload ANY>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST trailer checksum CDATA #IMPLIED>
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+]>
+<envelope>
+  <header>
+    <item name="a">one</item>
+    <item name="b">two &left;&right;</item>
+    <item name="c">three</item>
+  </header>
+  <payload>
+    <section data-x="&quot;quoted&quot;" data-y="&apos;single&apos;">
+      <leaf/>
+      <leaf>mixed <![CDATA[data]]> content</leaf>
+    </section>
+    <section><![CDATA[
+      whitespace
+      and	 tabs
+    ]]></section>
+  </payload>
+  <trailer checksum="sha256:00-11-22"/>
+</envelope>

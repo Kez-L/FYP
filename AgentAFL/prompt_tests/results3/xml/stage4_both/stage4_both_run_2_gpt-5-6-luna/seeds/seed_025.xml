@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (profile, bundle+)>
+  <!ELEMENT profile (label, contact)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT contact EMPTY>
+  <!ELEMENT bundle (title, asset+, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT asset EMPTY>
+  <!ELEMENT note (#PCDATA|link|kbd)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT kbd (#PCDATA)>
+  <!ATTLIST manifest revision CDATA #REQUIRED>
+  <!ATTLIST profile role (owner|reviewer|guest) "guest">
+  <!ATTLIST bundle code ID #REQUIRED depends IDREFS #IMPLIED>
+  <!ATTLIST asset path CDATA #REQUIRED kind (file|directory) "file" blob ENTITY #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY manual SYSTEM "manual.bin" NDATA bin>
+  <!ENTITY product "Cedar &amp; Finch">
+  <!ENTITY shortcut "Ctrl+&lt;Enter&gt;">
+]>
+<manifest revision="r17">
+  <profile role="owner">
+    <label>&product;</label>
+    <contact/>
+  </profile>
+  <bundle code="core">
+    <title>Runtime files</title>
+    <asset path="bin/runner" kind="file" blob="manual"/>
+    <asset path="share" kind="directory"/>
+    <note>Use <kbd>&shortcut;</kbd> after reading the <link>release note</link>.</note>
+  </bundle>
+  <bundle code="docs" depends="core">
+    <title>Reference material</title>
+    <asset path="README.txt"/>
+  </bundle>
+</manifest>

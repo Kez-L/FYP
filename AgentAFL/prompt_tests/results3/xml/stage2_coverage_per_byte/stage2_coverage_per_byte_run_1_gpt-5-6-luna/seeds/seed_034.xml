@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE query [
+  <!ELEMENT query (select, from, where?, order?)>
+  <!ELEMENT select (field+)>
+  <!ELEMENT field (#PCDATA)>
+  <!ELEMENT from (table+)>
+  <!ELEMENT table (#PCDATA)>
+  <!ELEMENT where (and|or|not|condition)>
+  <!ELEMENT and (and|or|not|condition)+>
+  <!ELEMENT or (and|or|not|condition)+>
+  <!ELEMENT not (condition|and|or|not)>
+  <!ELEMENT condition EMPTY>
+  <!ELEMENT order (by+)>
+  <!ELEMENT by (#PCDATA)>
+  <!ATTLIST condition field CDATA #REQUIRED op (eq|ne|lt|gt|like) #REQUIRED value CDATA #REQUIRED>
+  <!ATTLIST by direction (asc|desc) "asc">
+]>
+<query>
+  <select>
+    <field>name</field>
+    <field>count(*)</field>
+  </select>
+  <from>
+    <table>users</table>
+    <table>events</table>
+  </from>
+  <where>
+    <and>
+      <condition field="active" op="eq" value="true"/>
+      <or>
+        <condition field="name" op="like" value="A%"/>
+        <not>
+          <condition field="role" op="eq" value="guest"/>
+        </not>
+      </or>
+    </and>
+  </where>
+  <order>
+    <by direction="desc">created_at</by>
+    <by>name</by>
+  </order>
+</query>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY logo SYSTEM "images/logo.jpg" NDATA jpeg>
+  <!ELEMENT message (header, content, attachment*)>
+  <!ELEMENT header (sender, recipient, subject)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT content (#PCDATA|quote|br|highlight)*>
+  <!ELEMENT quote (#PCDATA|br)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT highlight (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment name CDATA #REQUIRED
+                       data ENTITY #IMPLIED
+                       media CDATA #IMPLIED>
+]>
+<message>
+  <header>
+    <sender>alice@example.invalid</sender>
+    <recipient>bob@example.invalid</recipient>
+    <subject>Mixed content &lt;test&gt;</subject>
+  </header>
+  <content>
+    Before the quote.
+    <quote>“A line with <br/>a forced break.”</quote>
+    After the quote, <highlight>emphasized</highlight> text.
+    <![CDATA[
+      Literal markup: <not-an-element attr="x & y"/>
+      Literal terminator-like text: ]] > 
+    ]]>
+  </content>
+  <attachment name="logo.jpg" data="logo" media="image/jpeg"/>
+</message>

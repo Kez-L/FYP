@@ -1,0 +1,101 @@
+```xml
+<?xml version="1.1"?>
+<catalog xmlns="urn:seed:catalog" xmlns:m="urn:seed:meta" xml:lang="en">
+  <?audit phase="preflight"?>
+  <m:entry m:id="α-001" xml:space="preserve">
+    <title><![CDATA[3 < 4 && 8 > 2]]></title>
+    <summary>line one&#x0A;line two&#x85;line three</summary>
+    <tags>
+      <tag xmlns="">plain</tag>
+      <tag xmlns="urn:seed:catalog" m:kind="quoted">a&amp;b</tag>
+    </tags>
+  </m:entry>
+  <!-- comment with -- almost -- but not quite -->
+  <empty xmlns:m="urn:seed:other" m:flag="yes"/>
+</catalog>
+```
+
+```xml
+<!DOCTYPE archive [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ELEMENT archive (header, item+, trailer?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT item (name, data)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (#PCDATA|part)*>
+  <!ELEMENT part EMPTY>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST item kind (text|binary|unknown) "text"
+                 ref ENTITY #IMPLIED>
+  <!ATTLIST part n NMTOKEN #REQUIRED>
+  <!ENTITY sample "alpha &amp; beta">
+  <!ENTITY marker "&#x2028;">
+]>
+<archive>
+  <header>&sample; &marker;</header>
+  <item kind="binary" ref="payload">
+    <name>payload</name>
+    <data><part n="0"/><![CDATA[raw<chunk>]]><part n="1"/></data>
+  </item>
+  <item kind="unknown">
+    <name>second</name>
+    <data>tail<!-- inside data --></data>
+  </item>
+  <trailer/>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:root xmlns:r="urn:root" xmlns:a="urn:a" xmlns:b="urn:b">
+  <r:branch a:key="v1">
+    <r:leaf b:x="1" a:y="2">text</r:leaf>
+    <r:branch xmlns:a="" xmlns:c="urn:c">
+      <r:leaf c:z="&quot;">&lt;escaped&gt;</r:leaf>
+      <r:leaf><![CDATA[]]></r:leaf>
+    </r:branch>
+  </r:branch>
+  <r:branch xmlns="urn:alternate" xmlns:r="urn:shadow">
+    <r:leaf r:mark="shadowed">mixed <b>content</b> end</r:leaf>
+  </r:branch>
+  <?processing instruction?>
+</r:root>
+```
+
+```xml
+<?xml version="1.0"?>
+<document>
+  <section id="s0">
+    <level n="1">
+      <level n="2">
+        <level n="3">
+          <![CDATA[before ]]]]><![CDATA[> after]]>
+          <item>first</item>
+          <item><![CDATA[<not-an-element/>]]></item>
+        </level>
+      </level>
+    </level>
+  </section>
+  <section id="s1" xml:base="urn:seed:base/" xml:lang="fr">
+    <mixed>début <emphasis>accentué</emphasis> &#x1F642; fin</mixed>
+    <!-- a comment containing brackets: [ ] -->
+    <data><![CDATA[
+      whitespace
+      &amp; entities are literal here
+    ]]></data>
+  </section>
+</document>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE malformed [
+  <!ELEMENT malformed ANY>
+  <!ATTLIST malformed mode (a|b|c) "a">
+]>
+<malformed mode="b" mode="c">
+  <node attr="one" attr="two">
+    <inner>unterminated
+  <sibling/>
+</malformed>
+```

@@ -1,0 +1,170 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+, note?)>
+  <!ELEMENT section (title, entry*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (#PCDATA|link|emph)*>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT emph (#PCDATA|emph)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST catalog xml:lang (en|fr|de) "en" edition CDATA #IMPLIED>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ATTLIST link href URI #REQUIRED target (local|external) "local">
+  <!ENTITY copyright "&#xA9; 2026">
+]>
+<catalog xml:lang="en" edition="draft">
+  <section id="s-main">
+    <title>Parser &amp; Namespace Tests</title>
+    <entry>plain <emph>nested <emph>emphasis</emph></emph> text</entry>
+    <entry><link href="urn:example:one" target="external"/>after-link</entry>
+    <entry><![CDATA[characters such as <tag> and &entity; remain literal]]></entry>
+  </section>
+  <section id="s-extra">
+    <title>Second Section</title>
+    <entry>Copyright: &copyright;</entry>
+  </section>
+  <note xml:space="preserve"> trailing spaces </note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, records)>
+  <!ELEMENT header (created, source)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (key, value, ref*)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST record id ID #REQUIRED previous IDREF #IMPLIED state (new|old|removed) "new">
+  <!ATTLIST ref points IDREF #REQUIRED kind NMTOKEN #IMPLIED>
+  <!ENTITY prefix "urn:archive:">
+  <!ENTITY sample "<chunk>expanded</chunk>">
+]>
+<archive>
+  <header>
+    <created>2026-09-23T00:00:00Z</created>
+    <source>&prefix;input</source>
+  </header>
+  <records>
+    <record id="r1" state="new">
+      <key>alpha</key>
+      <value>before <chunk>middle</chunk> after</value>
+      <ref points="r2" kind="forward"/>
+    </record>
+    <record id="r2" previous="r1" state="old">
+      <key>beta</key>
+      <value>&sample;</value>
+    </record>
+  </records>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT payload (data|binary|data)*>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT binary EMPTY>
+  <!ATTLIST package xmlns:p CDATA #FIXED "urn:pkg">
+  <!ATTLIST file name CDATA #REQUIRED size NMTOKEN #IMPLIED type (text|image|other) "text">
+  <!ATTLIST binary src CDATA #REQUIRED format (raw|base64) "raw">
+  <!ENTITY % optional "<!ELEMENT checksum (#PCDATA)>">
+  %optional;
+  <!ENTITY quotemark "&quot;">
+]>
+<package xmlns:p="urn:pkg" p:version="3">
+  <manifest>
+    <file name="readme.txt" size="12" type="text"/>
+    <file name="picture.dat" size="0" type="image"/>
+  </manifest>
+  <payload>
+    <data>line one&#x0A;line two &quot;quoted&quot;</data>
+    <binary src="blob.bin" format="base64"/>
+    <data><![CDATA[
+      <not-an-element>
+      & bogus;
+    ]]></data>
+  </payload>
+</package>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (message|separator)+>
+  <!ELEMENT message (sender, recipients, body)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipients (to+, cc*)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT cc (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|attachment)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT attachment EMPTY>
+  <!ELEMENT separator EMPTY>
+  <!ATTLIST message id ID #REQUIRED priority (low|normal|high) "normal">
+  <!ATTLIST attachment filename CDATA #REQUIRED encoding CDATA #IMPLIED>
+  <!ENTITY newline "&#xA;">
+]>
+<conversation>
+  <message id="m001" priority="high">
+    <sender>Alice</sender>
+    <recipients>
+      <to>Bob</to>
+      <to>Carol</to>
+      <cc>Audit</cc>
+    </recipients>
+    <body>Hello&newline;<quote>Quoted <quote>deep text</quote> tail</quote><attachment filename="a&amp;b.txt" encoding="binary"/></body>
+  </message>
+  <separator/>
+  <message id="m002">
+    <sender>Bob</sender>
+    <recipients><to>Alice</to></recipients>
+    <body><![CDATA[raw ]]> content ]]&gt; safely separated</body>
+  </message>
+</conversation>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (widget*)>
+  <!ELEMENT widget (label, metric?, table?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT metric (#PCDATA)>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (column+)>
+  <!ELEMENT column (#PCDATA)>
+  <!ATTLIST dashboard refresh CDATA "30" theme (light|dark|custom) "light">
+  <!ATTLIST widget id ID #REQUIRED enabled (yes|no) "yes" class NMTOKENS #IMPLIED>
+  <!ATTLIST metric unit CDATA #IMPLIED>
+  <!ATTLIST row number NMTOKEN #REQUIRED>
+  <!ENTITY amp "&amp;">
+  <!ENTITY nested "A &amp; B">
+]>
+<dashboard refresh="0" theme="custom">
+  <widget id="w.cpu" enabled="no" class="system primary">
+    <label>CPU &amp; Memory</label>
+    <metric unit="percent">99.9</metric>
+    <table>
+      <row number="01"><column>core</column><column>value</column></row>
+      <row number="02"><column>0</column><column>&nested;</column></row>
+    </table>
+  </widget>
+  <widget id="w.empty" class="unused">
+    <label><![CDATA[empty metric]]></label>
+  </widget>
+  <widget id="w.note" enabled="yes">
+    <label>Markers: &lt;start&gt; &amp; &quot;end&quot;</label>
+    <metric>text &amp; symbols</metric>
+  </widget>
+</dashboard>
+```

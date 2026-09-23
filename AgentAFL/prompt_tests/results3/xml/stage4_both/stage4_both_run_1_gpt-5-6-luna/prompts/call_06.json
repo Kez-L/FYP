@@ -1,0 +1,23 @@
+{
+  "call": 6,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE gallery [\n  <!NOTATION png SYSTEM \"image/png\">\n  <!NOTATION jpeg PUBLIC \"-//Example//NOTATION JPEG//EN\" \"image/jpeg\">\n  <!ENTITY logo SYSTEM \"assets/logo.png\" NDATA png>\n  <!ELEMENT gallery (caption, image+, credits?)>\n  <!ATTLIST gallery xml:lang NMTOKEN #IMPLIED>\n  <!ELEMENT caption (#PCDATA|em)*>\n  <!ELEMENT em (#PCDATA)>\n  <!ELEMENT image EMPTY>\n  <!ATTLIST image\n    id ID #REQUIRED\n    src ENTITY #REQUIRED\n    format NOTATION (png|jpeg) #REQUIRED\n    alt CDATA #IMPLIED>\n  <!ELEMENT credits (#PCDATA)>\n]>\n<gallery xml:lang=\"en\">\n  <caption>Seasonal <em>collection</em></caption>\n  <image id=\"cover\" src=\"logo\" format=\"png\" alt=\"Company mark\"/>\n  <image id=\"preview\" src=\"logo\" format=\"jpeg\"/>\n  <credits>Images supplied by the archive.</credits>\n</gallery>\n\n--- example 2 ---\n<?xml version=\"1.0\"?>\n<document xmlns=\"urn:example:document\"\n          xmlns:a=\"urn:example:annotation\"\n          xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n          xml:space=\"preserve\">\n  <header a:revision=\"7\" xlink:type=\"simple\" xlink:href=\"#body\">\n    <title>Namespace transitions</title>\n    <?audit actor=\"parser\"?>\n  </header>\n  <body id=\"body\">\n    <section a:role=\"intro\">\n      <p>Default namespace content.</p>\n      <foreign xmlns=\"\">\n        <raw data-kind=\"literal\">unqualified element</raw>\n        <a:marker xmlns:a=\"urn:example:annotation\" a:level=\"high\"/>\n      </foreign>\n    </section>\n    <!-- A comment between namespace scopes -->\n    <section xmlns:b=\"urn:example:binding\" b:mode=\"compact\">\n      <item key=\"A&amp;B\">left &lt; right</item>\n      <item key=\"C&#x2D;D\"><![CDATA[embedded <markup> stays text]]></item>\n    </section>\n  </body>\n</document>\n\nTried before \u2014 no new coverage, avoid repeating:\n--- a seed you generated (cycle 5) added 0 new edges ---\n<?xml version=\"1.1\"?>\n<map xmlns=\"urn:cartography:map\"\n     xmlns:p=\"urn:cartography:point\"\n     xmlns:svg=\"http://www.w3.org/2000/svg\"\n     xml:base=\"https://maps.example.invalid/tiles/\"\n     xml:lang=\"ja\">\n  <metadata>\n    <title>\u6771\u4eac\u306e\u6b69\u9053</title>\n    <keywords>\u6b69\u9053,\u99c5,\u516c\u5712</keywords>\n  </metadata>\n  <viewport west=\"139.70\" south=\"35.66\" east=\"139.78\" north=\"35.72\">\n    <p:way id=\"w-17\" p:closed=\"false\">\n      <p:node lat=\"35.681\" lon=\"139.767\"/>\n      <p:node lat=\"35.689\" lon=\"139.692\"/>\n      <p:node lat=\"35.710\" lon=\"139.810\"/>\n    </p:way>\n    <svg:svg viewBox=\"0 0 100 40\" width=\"200\" height=\"80\">\n      <svg:path d=\"M2,30 C20,4 44,36 70,10\"/>\n      <svg:text x=\"4\" y=\"38\">\u99c5</svg:text>\n    </svg:...[truncated, 817 chars total]\n\n--- a seed you generated (cycle 5) added 0 new edges ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (entry*)>\n  <!ELEMENT entry (path, payload, checksum)>\n  <!ATTLIST entry status (new|changed|deleted) \"new\">\n  <!ELEMENT path (#PCDATA)>\n  <!ELEMENT payload (#PCDATA)>\n  <!ELEMENT checksum (#PCDATA)>\n]>\n<archive>\n  <entry status=\"changed\">\n    <path>src/parser &amp; tests/sample.xml</path>\n    <payload><![CDATA[\n      <record kind=\"literal\">\n        <field name=\"a\">1 &amp; 2</field>\n      </record>\n    ]]></payload>\n    <checksum>sha256:0000000000000000000000000000000000000000000000000000000000000000</checksum>\n  </entry>\n  <entry status=\"deleted\">\n    <path>tmp/old.log</path>\n    <payload>line one&#x0A;line two&#...[truncated, 782 chars total]\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-23T05:30:41.672799+00:00"
+}

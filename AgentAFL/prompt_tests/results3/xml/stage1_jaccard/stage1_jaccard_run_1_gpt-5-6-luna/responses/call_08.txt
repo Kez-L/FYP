@@ -1,0 +1,100 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % core "<!ELEMENT catalog (entry|group)*>">
+  %core;
+  <!ELEMENT entry (#PCDATA|note|![CDATA[x]]>)*>
+  <!ELEMENT group (entry*)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST entry key NMTOKEN #IMPLIED state (new|old|none) "none">
+  <!ENTITY amp "&#38;">
+  <!ENTITY nested "&amp;&amp;&amp;">
+]>
+<catalog>
+  <entry key="a:b" state="new">alpha<note><![CDATA[<raw>&not-an-entity;]]></note>&amp;</entry>
+  <group>
+    <entry key="mixed">before &nested; <![CDATA[]]> after</entry>
+    <entry><![CDATA[one]]><![CDATA[two]]></entry>
+  </group>
+</catalog>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE r [
+  <!ELEMENT r (a,b?,c*)>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b EMPTY>
+  <!ELEMENT c ANY>
+  <!ATTLIST b flag CDATA "x&#x0A;y">
+  <![IGNORE[
+    <!ELEMENT ignored EMPTY>
+    <![IGNORE[
+      <!ENTITY hidden "value">
+    ]]>
+  ]]>
+  <![INCLUDE[
+    <!ENTITY visible "v&lt;u&gt;">
+  ]]>
+]>
+<r><a>line&#x85;break &visible;</a><b flag="&#x9;"/><c><!-- unterminated-looking --><d/></c></r>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ELEMENT root (item*)>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item src ENTITY #IMPLIED mode NMTOKENS #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "payload.dat" NDATA bin>
+  <!ENTITY ext SYSTEM "fragment.xml">
+  <!ENTITY pub PUBLIC "-//Example//Text//EN" "http://example.invalid/entity">
+]>
+<root>
+  <item src="blob" mode="one two"/>
+  <item src="&ext;"/>
+  <?processor data = "quoted > text"?>
+  <!-- comment with --? no, nearly-- -->
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE :bad [
+  <!ENTITY e1 "&#x26;e2;">
+  <!ENTITY e2 "&#x26;e3;">
+  <!ENTITY e3 "final">
+  <!ELEMENT root (#PCDATA|x|y)*>
+  <!ELEMENT x EMPTY>
+  <!ELEMENT y (#PCDATA)>
+]>
+<root xml:lang="q" xml:space="preserve">
+  &e1;
+  <x a="&quot;" b="&#xD;&#xA;&#x9;"/>
+  <y><![CDATA[ ]]]]><![CDATA[> ]]></y>
+  <?pi?>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (head, body)>
+  <!ELEMENT head EMPTY>
+  <!ELEMENT body ANY>
+  <!ATTLIST envelope xmlns CDATA #IMPLIED>
+  <!ATTLIST head a CDATA #FIXED "&#x20;">
+  <!ENTITY left "&#60;">
+  <!ENTITY right "&#62;">
+]>
+<envelope xmlns="urn:test" xmlns:p="urn:p" p:k="v">
+  <head a=" "/>
+  <body>
+    <p:item xmlns:p="urn:q" p:k="&left;mid&right;">
+      <p:item xmlns:p="" />
+    </p:item>
+    <![CDATA[&left; not expanded]]>
+    <p:item xmlns="">&left;&right;</p:item>
+  </body>
+</envelope>
+```

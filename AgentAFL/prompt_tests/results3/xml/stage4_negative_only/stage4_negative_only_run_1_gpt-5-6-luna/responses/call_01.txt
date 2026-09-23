@@ -1,0 +1,115 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+)>
+  <!ELEMENT entry (title, summary?, payload)>
+  <!ATTLIST entry id ID #REQUIRED kind (text|binary) "text">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT payload (#PCDATA)>
+  <!ENTITY company "Northwind &amp; Sons">
+]>
+<archive>
+  <entry id="e1" kind="text">
+    <title>Quarterly &company; report</title>
+    <summary>Prepared for internal review.</summary>
+    <payload>Revenue &lt; forecast; variance &gt; expected.</payload>
+  </entry>
+  <entry id="e2">
+    <title>Notes</title>
+    <payload>Use &quot;stable&quot; builds when possible.</payload>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<document xmlns="urn:primary" xmlns:a="urn:alpha" xmlns:b="urn:beta" xml:lang="fr">
+  <a:chapter xml:id="intro">
+    <a:heading>Éléments</a:heading>
+    <a:paragraph>Texte <b:emphasis>mixte</b:emphasis> avec
+      <a:link href="urn:item:42">référence</a:link>.</a:paragraph>
+    <a:list>
+      <a:item value="1"/>
+      <a:item value="2">
+        <b:detail xml:lang="en">second item</b:detail>
+      </a:item>
+    </a:list>
+  </a:chapter>
+  <chapter xmlns="">
+    <title>Unqualified section</title>
+    <data xmlns:b="urn:beta" b:flag="yes"/>
+  </chapter>
+</document>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<scene xml:space="preserve" xml:base="https://example.test/assets/">
+  <!-- A comment with punctuation: < > & -- not content -->
+  <?render profile="preview"?>
+  <canvas width="640" height="480" unit="px">
+    <layer name="background" opacity="0.50"/>
+    <layer name="foreground">
+      <![CDATA[
+        <vector>
+          <path d="M0,0 L10,10 Z"/>
+        </vector>
+      ]]>
+    </layer>
+  </canvas>
+  <?checkpoint?>
+  <metadata>
+    <value key="empty"></value>
+    <value key="spaces">  left
+right  </value>
+  </metadata>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (branch|leaf)+>
+  <!ELEMENT branch (leaf*, branch?)>
+  <!ELEMENT leaf EMPTY>
+  <!ATTLIST leaf token CDATA #IMPLIED>
+]>
+<root>
+  <branch>
+    <leaf token="one"/>
+    <branch>
+      <leaf token="two"/>
+      <branch>
+        <leaf token="three"/>
+      </branch>
+    </branch>
+  </branch>
+  <leaf token="&apos;quoted&apos;"/>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="urn:pkg" xmlns:sec="urn:security" version="1.0">
+  <manifest checksum="sha256:00">
+    <resource path="bin/app" media-type="application/octet-stream">
+      <sec:digest algorithm="sha-256">AAECAwQFBgcICQ==</sec:digest>
+    </resource>
+    <resource path="config&amp;defaults.xml" media-type="application/xml">
+      <inline>
+        <settings xmlns="">
+          <option name="enabled">true</option>
+          <option name="threshold" value="0"/>
+        </settings>
+      </inline>
+    </resource>
+  </manifest>
+  <signature sec:method="urn:example:signature">
+    <sec:key-info>
+      <sec:key-name>test-key</sec:key-name>
+    </sec:key-info>
+    <sec:value>deadbeef</sec:value>
+  </signature>
+</package>
+```

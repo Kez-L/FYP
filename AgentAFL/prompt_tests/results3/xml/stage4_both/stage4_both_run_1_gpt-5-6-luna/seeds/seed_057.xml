@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (participant+, message+)>
+  <!ELEMENT participant EMPTY>
+  <!ATTLIST participant
+            id ID #REQUIRED
+            display-name CDATA #REQUIRED
+            active (yes|no) "yes">
+  <!ELEMENT message (#PCDATA|mention|attachment|linebreak)*>
+  <!ATTLIST message from IDREF #REQUIRED
+                  reply-to IDREF #IMPLIED
+                  sent CDATA #REQUIRED>
+  <!ELEMENT mention EMPTY>
+  <!ATTLIST mention user IDREF #REQUIRED>
+  <!ELEMENT attachment (#PCDATA)>
+  <!ATTLIST attachment media-type CDATA #REQUIRED
+                       size CDATA #IMPLIED>
+  <!ELEMENT linebreak EMPTY>
+]>
+<conversation>
+  <participant id="p1" display-name="Nora" active="yes"/>
+  <participant id="p2" display-name="Ilya"/>
+  <participant id="p3" display-name="Mina" active="no"/>
+  <message from="p1" sent="2026-09-23T09:00:00Z">Build completed,
+    <mention user="p2"/> please review the output.<linebreak/>
+    The checksum is &lt;pending&gt;.
+  </message>
+  <message from="p2" reply-to="p1" sent="2026-09-23T09:03:12Z">
+    I found an unexpected byte sequence in the attached log.
+    <attachment media-type="text/plain" size="16384">build.log</attachment>
+  </message>
+  <message from="p3" sent="2026-09-23T09:04:01Z"><![CDATA[Looks good: 2 < 3 && 4 > 1]]></message>
+</conversation>

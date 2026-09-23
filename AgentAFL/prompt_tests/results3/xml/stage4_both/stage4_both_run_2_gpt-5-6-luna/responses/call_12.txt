@@ -1,0 +1,223 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (metadata, collection+)>
+  <!ELEMENT metadata (title, generated, source)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT collection (label, item+)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT item (name, summary?, dimensions, tags?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT dimensions (width, height, unit)>
+  <!ELEMENT width (#PCDATA)>
+  <!ELEMENT height (#PCDATA)>
+  <!ELEMENT unit (#PCDATA)>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST collection code ID #REQUIRED>
+  <!ATTLIST item sku NMTOKEN #REQUIRED status (active|retired) "active">
+  <!ATTLIST tag key CDATA #IMPLIED>
+  <!ENTITY trademark "™">
+]>
+<catalog>
+  <metadata>
+    <title>Archive &amp; Field Objects</title>
+    <generated>2026-09-23</generated>
+    <source>North Annex &lt;registry&gt;</source>
+  </metadata>
+  <collection code="tools">
+    <label>Survey instruments</label>
+    <item sku="compass-01">
+      <name>Brass compass &trademark;</name>
+      <summary>A hand-calibrated &quot;direction finder&quot;.</summary>
+      <dimensions>
+        <width>6.2</width>
+        <height>1.8</height>
+        <unit>cm</unit>
+      </dimensions>
+      <tags>
+        <tag key="material">brass</tag>
+        <tag key="era">early-20c</tag>
+      </tags>
+    </item>
+  </collection>
+  <collection code="textiles">
+    <label>Recovered fabrics</label>
+    <item sku="cloth-77" status="retired">
+      <name>Indigo sample</name>
+      <dimensions>
+        <width>42</width>
+        <height>31</height>
+        <unit>cm</unit>
+      </dimensions>
+    </item>
+  </collection>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<library xmlns="urn:archive:library" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:marc="urn:archive:marc">
+  <dc:title>Voices from the Estuary</dc:title>
+  <dc:creator xml:lang="en">Mara Ilyan</dc:creator>
+  <record marc:type="audio" xml:id="rec-441">
+    <identifier scheme="local">EST-00441</identifier>
+    <availability>
+      <open from="2026-01-01">true</open>
+      <restriction reason="fragile-media">supervised</restriction>
+    </availability>
+    <asset href="https://media.example.invalid/estuary/441.opus" checksum="sha256:abc123">
+      <format>audio/opus</format>
+      <duration units="seconds">918</duration>
+    </asset>
+    <transcript>
+      The tide turns quietly
+      <pause length="short"/>
+      beneath the eastern bridge.
+      <quote source="field-notes">No lights beyond the reeds.</quote>
+    </transcript>
+    <keywords>
+      <keyword>marsh</keyword>
+      <keyword>night recording</keyword>
+      <keyword>waterways</keyword>
+    </keywords>
+  </record>
+  <record marc:type="manuscript" xml:id="rec-442">
+    <identifier scheme="local">EST-00442</identifier>
+    <availability>
+      <open from="2027-04-12">false</open>
+    </availability>
+    <notes><![CDATA[Box 7 / folder 3: conservation review pending.]]></notes>
+  </record>
+</library>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<simulation xmlns="urn:lab:simulation" xmlns:geo="urn:lab:geography" xmlns:math="urn:lab:math" seed="184467">
+  <parameters>
+    <parameter name="wind-speed" value="12.5" unit="m/s"/>
+    <parameter name="temperature" value="-3.75" unit="C"/>
+    <parameter name="iterations" value="0042" unit="count"/>
+  </parameters>
+  <mesh geo:crs="EPSG:4326">
+    <vertex id="v0">
+      <geo:point lat="51.4779" lon="-0.0015"/>
+      <elevation unit="m">14.2</elevation>
+    </vertex>
+    <vertex id="v1">
+      <geo:point lat="51.4781" lon="-0.0011"/>
+      <elevation unit="m">14.8</elevation>
+    </vertex>
+    <cell id="c0" type="triangle" vertices="v0 v1 v2"/>
+  </mesh>
+  <equations>
+    <math:expression name="flux">
+      <math:add>
+        <math:product>
+          <math:variable>density</math:variable>
+          <math:variable>velocity</math:variable>
+        </math:product>
+        <math:constant>0.001</math:constant>
+      </math:add>
+    </math:expression>
+  </equations>
+  <observations>
+    <observation timestamp="2026-09-23T18:00:00Z" sensor="A-9">
+      <reading quality="estimated">0.00000031</reading>
+    </observation>
+    <observation timestamp="2026-09-23T18:05:00Z" sensor="A-9">
+      <reading quality="measured">0.00000028</reading>
+    </observation>
+  </observations>
+</simulation>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (package, signatures, notes?)>
+  <!ELEMENT package (entry+)>
+  <!ELEMENT entry (path, digest, permissions)>
+  <!ELEMENT path (#PCDATA)>
+  <!ELEMENT digest (#PCDATA)>
+  <!ELEMENT permissions (#PCDATA)>
+  <!ELEMENT signatures (signature+)>
+  <!ELEMENT signature (algorithm, value, signer)>
+  <!ELEMENT algorithm (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT signer (#PCDATA)>
+  <!ELEMENT notes (#PCDATA)>
+  <!ATTLIST manifest format CDATA #FIXED "bundle-2">
+  <!ATTLIST entry kind (file|directory|link) #REQUIRED>
+  <!ATTLIST entry compressed (yes|no) "no">
+  <!ENTITY newline "&#xA;">
+]>
+<manifest format="bundle-2">
+  <package>
+    <entry kind="file" compressed="yes">
+      <path>bin/runner</path>
+      <digest algorithm="sha256">not-a-real-digest</digest>
+      <permissions>0755</permissions>
+    </entry>
+    <entry kind="directory">
+      <path>var/cache</path>
+      <digest algorithm="sha256">e3b0c44298fc1c149afbf4c8996fb924</digest>
+      <permissions>0700</permissions>
+    </entry>
+    <entry kind="link">
+      <path>current</path>
+      <digest algorithm="sha256">00000000000000000000000000000000</digest>
+      <permissions>0777</permissions>
+    </entry>
+  </package>
+  <signatures>
+    <signature>
+      <algorithm>ed25519</algorithm>
+      <value>MIIBOgIBAAKCAQEA&lt;payload&gt;</value>
+      <signer>build-service@example.test</signer>
+    </signature>
+  </signatures>
+  <notes>Generated by packer.&newline;Verification is required.</notes>
+</manifest>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<conversation xmlns="urn:chat:thread" xmlns:meta="urn:chat:metadata" id="thread-88" archived="false">
+  <meta:created>2026-09-23T21:14:07Z</meta:created>
+  <meta:subject>Unusual characters: &lt; &amp; &quot; &apos;</meta:subject>
+  <participants>
+    <person uid="u1" handle="delta_fox">
+      <display>Rin O'Connell</display>
+      <presence>away</presence>
+    </person>
+    <person uid="u2" handle="π-channel">
+      <display>Νίκη</display>
+      <presence>online</presence>
+    </person>
+  </participants>
+  <messages>
+    <message mid="m1" sender="u1" edited="true">
+      <sent>2026-09-23T21:15:00+00:00</sent>
+      <body>Hello, <emphasis>everyone</emphasis> — check the new route.</body>
+      <attachment type="image/svg+xml" name="map.svg"><![CDATA[
+        <svg viewBox="0 0 10 10"><path d="M0 0L10 10"/></svg>
+      ]]></attachment>
+      <reactions>
+        <reaction emoji="👍" count="2"/>
+        <reaction emoji="🧭" count="1"/>
+      </reactions>
+    </message>
+    <message mid="m2" sender="u2" edited="false">
+      <sent>2026-09-23T21:16:44.250Z</sent>
+      <body>Confirmed: <code>north &gt; south</code>.</body>
+      <reply-to ref="m1"/>
+    </message>
+  </messages>
+  <?sync cursor="a9f-77" complete="yes"?>
+</conversation>
+```

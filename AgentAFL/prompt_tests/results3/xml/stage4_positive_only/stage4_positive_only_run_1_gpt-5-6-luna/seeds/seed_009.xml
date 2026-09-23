@@ -1,0 +1,35 @@
+<?xml version="1.1"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (header, records, trailer?)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header version NMTOKEN #REQUIRED timestamp CDATA #IMPLIED>
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (key, value, detail*)>
+  <!ATTLIST record id ID #REQUIRED state (new|old|void) "new">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT detail (name, data?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT trailer (#PCDATA)>
+]>
+<stream>
+  <header version="1.1" timestamp="2026-09-23T00:00:00Z"/>
+  <records>
+    <record id="r1" state="new">
+      <key xml:space="preserve">  spaced key  </key>
+      <value>first<chunk>middle</chunk>last</value>
+      <detail><name>empty-data</name></detail>
+    </record>
+    <record id="r2" state="void">
+      <key>k&#x0A;line</key>
+      <value><![CDATA[raw ]]> sequence &amp; symbols</value>
+      <detail>
+        <name>note</name>
+        <data>contains &lt;markup&gt; and &#x2028; separator</data>
+      </detail>
+    </record>
+  </records>
+  <trailer>count=2</trailer>
+</stream>

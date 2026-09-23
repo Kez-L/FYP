@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<?build tool="generator" mode="fuzz"?>
+<workflow xmlns:w="urn:workflow" xmlns:v="urn:value">
+  <!-- Deliberately irregular but well-formed mixed workflow data -->
+  <w:stage name="prepare">
+    <w:step id="p1" kind="input">
+      <w:argument key="path">/tmp/input&amp;cache</w:argument>
+      <w:argument key="format"><![CDATA[application/xml; charset="utf-8"]]></w:argument>
+    </w:step>
+    <w:step id="p2" kind="transform">
+      <w:depends-on ref="p1"/>
+      <w:expression><![CDATA[
+        if ($value < 10) then "low" else "high"
+      ]]></w:expression>
+    </w:step>
+  </w:stage>
+  <w:stage name="publish" active="false">
+    <w:step id="u1" kind="upload">
+      <w:depends-on ref="p2"/>
+      <w:target>
+        <v:scheme>https</v:scheme>
+        <v:host>example.invalid</v:host>
+        <v:port>443</v:port>
+        <v:path>/incoming/result.xml</v:path>
+      </w:target>
+      <w:headers>
+        <w:header name="X-Trace">a&amp;b&lt;c&gt;</w:header>
+        <w:header name="X-Empty"/>
+      </w:headers>
+    </w:step>
+  </w:stage>
+  <w:metadata>
+    <w:tag>one</w:tag>
+    <w:tag>two</w:tag>
+    <w:tag xmlns="">unqualified</w:tag>
+  </w:metadata>
+</workflow>

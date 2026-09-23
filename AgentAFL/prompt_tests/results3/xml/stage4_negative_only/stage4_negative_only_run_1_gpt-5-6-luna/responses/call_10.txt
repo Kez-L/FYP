@@ -1,0 +1,119 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (title, value, note?)>
+  <!ATTLIST record id ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY company "North &amp; South Research">
+  <!ENTITY marker "&#x1F642;">
+]>
+<archive>
+  <record id="r1">
+    <title>&company; &marker;</title>
+    <value>42 &lt; 100 &amp;&amp; 100 &gt; 42</value>
+    <note>First <![CDATA[record with ]]> mixed markup.</note>
+  </record>
+  <record id="r2">
+    <title>Second record</title>
+    <value>0xFF</value>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.1"?>
+<?processing instruction-data?>
+<root xmlns="urn:example:root" xmlns:a="urn:example:a" xml:base="https://example.test/data/">
+  <!-- a comment before mixed content -->
+  leading text
+  <a:container a:kind="sequence" xml:lang="fr">
+    <a:entry>alpha</a:entry>
+    <![CDATA[ raw text with <tags> and ]]> characters ]]>
+    <a:entry xml:space="preserve">
+      <a:value> beta </a:value>
+      <a:value><![CDATA[gamma]]></a:value>
+    </a:entry>
+  </a:container>
+  trailing text
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node*, edge*)>
+  <!ELEMENT node (label?, property*)>
+  <!ATTLIST node key ID #REQUIRED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA)>
+]>
+<graph>
+  <node key="n0">
+    <label>Root</label>
+    <property>isolated</property>
+  </node>
+  <node key="n1">
+    <label><![CDATA[Child & Branch]]></label>
+    <property>left</property>
+    <property>right</property>
+  </node>
+  <edge from="n0" to="n1" weight="0.25"/>
+  <edge from="n1" to="n0" weight="-7"/>
+</graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<forms xmlns="urn:example:forms" xmlns:m="urn:example:meta">
+  <form m:version="3" enabled="yes">
+    <field name="query" type="text" required="true">
+      <label>Search</label>
+      <default xml:space="preserve">  a &amp; b  </default>
+      <validation>
+        <rule kind="length" min="1" max="64"/>
+        <rule kind="pattern"><![CDATA[[A-Z]+\d{2}]]></rule>
+      </validation>
+    </field>
+    <field name="choice" type="select">
+      <label>Pick one</label>
+      <options>
+        <option value="x" selected="true">X-ray</option>
+        <option value="y">Yankee</option>
+        <option value="z">Zulu</option>
+      </options>
+    </field>
+  </form>
+</forms>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry path NMTOKEN #REQUIRED kind (file|dir|link) "file" mode CDATA #IMPLIED>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+]>
+<package>
+  <manifest>
+    <entry path="." kind="dir" mode="0755"/>
+    <entry path="bin" kind="dir"/>
+    <entry path="bin/run" kind="file" mode="0755"/>
+    <entry path="README.txt" kind="file" mode="0644"/>
+  </manifest>
+  <payload>
+    <chunk>#!/bin/sh&#10;echo &quot;hello&quot;</chunk>
+    <chunk><![CDATA[
+line A
+line B
+]]></chunk>
+  </payload>
+</package>
+```

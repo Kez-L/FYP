@@ -1,0 +1,142 @@
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header,entry+)>
+  <!ELEMENT header (title,created)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT entry (name,tag*,payload)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|link|br)*>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST archive version NMTOKEN #REQUIRED>
+  <!ATTLIST entry id ID #REQUIRED refs IDREFS #IMPLIED state (new|held|done) "new">
+  <!ATTLIST link target IDREF #REQUIRED>
+  <!ENTITY copyright "&#xA9; 2026">
+  <!ENTITY % audit "<!ATTLIST entry audited (yes|no) 'no'>">
+  %audit;
+]>
+<archive version="7">
+  <header>
+    <title>Transfer &copyright;</title>
+    <created>2026-09-23T12:34:56Z</created>
+  </header>
+  <entry id="e1" state="held" audited="yes">
+    <name>alpha</name>
+    <tag>one</tag>
+    <tag>two &amp; three</tag>
+    <payload>before<link target="e2"/>middle<br/>after</payload>
+  </entry>
+  <entry id="e2" refs="e1" state="done">
+    <name><![CDATA[beta <gamma>]]></name>
+    <payload>terminal</payload>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<?pipeline mode="strict"?>
+<!-- leading comment with -- forbidden only at the boundary: ok -->
+<scene xmlns="urn:scene:v2" xmlns:p="urn:props">
+  <layer id="L&amp;1" p:opacity="0.75">
+    text&#x1;between
+    <![CDATA[ raw ]]> 
+    <p:item p:key="a&#x9;b">
+      <![CDATA[<escaped attr="&amp;">]]>
+      <?mark value?>
+    </p:item>
+    <!-- comment with brackets [] and entities &amp; -->
+  </layer>
+  <layer id="empty"><p:item/></layer>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE media [
+  <!ELEMENT media (caption?,asset*)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT asset EMPTY>
+  <!ATTLIST asset
+    name CDATA #REQUIRED
+    kind NOTATION (gif|jpeg|bin) #REQUIRED
+    source ENTITY #IMPLIED
+    dimensions NMTOKENS #IMPLIED>
+  <!NOTATION gif SYSTEM "image/gif">
+  <!NOTATION jpeg PUBLIC "-//IMAGE/JPEG//EN" "jpeg-handler">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY logo SYSTEM "logo.gif" NDATA gif>
+  <!ENTITY raw SYSTEM "blob.bin" NDATA bin>
+]>
+<media>
+  <caption>catalog &quot;entries&quot;</caption>
+  <asset name="logo.gif" kind="gif" source="logo" dimensions="64 64"/>
+  <asset name="photo.jpeg" kind="jpeg" dimensions="1024&#x20;768"/>
+  <asset name="data.bin" kind="bin" source="raw"/>
+</media>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (from,to,body)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT body ANY>
+  <!ATTLIST message priority (low|normal|high) "normal">
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+]>
+<packet priority="urgent">
+  <from>sender@example.test</from>
+  <to>receiver@example.test</to>
+  <body>
+    <part><![CDATA[unterminated-looking text ]]]]></part>
+    <part>&left; nested &amp; markup &right;</part>
+    <part><broken attr="x"><inner/></part>
+  </body>
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ELEMENT config (defaults,profile+)>
+  <!ELEMENT defaults EMPTY>
+  <!ELEMENT profile (option|include|value)*>
+  <!ELEMENT option EMPTY>
+  <!ELEMENT include EMPTY>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST config xmlns CDATA #IMPLIED>
+  <!ATTLIST defaults
+    timeout NMTOKEN "30"
+    retries NMTOKEN "3">
+  <!ATTLIST profile
+    name ID #REQUIRED
+    parent IDREF #IMPLIED
+    enabled (true|false) "true">
+  <!ATTLIST option key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST include href URI #REQUIRED mode (replace|merge) "merge">
+  <!ENTITY % optional "<!ATTLIST value lang NMTOKEN #IMPLIED>">
+  %optional;
+  <![IGNORE[
+    <!ELEMENT obsolete (#PCDATA)>
+    <!ATTLIST obsolete since CDATA #IMPLIED>
+  ]]>
+]>
+<config xmlns="urn:config">
+  <defaults timeout="000" retries="&#x32;"/>
+  <profile name="base">
+    <option key="path" value="/var/lib/app"/>
+    <value lang="en">A&nbsp;B</value>
+    <include href="config-extra.xml" mode="replace"/>
+  </profile>
+  <profile name="child" parent="base" enabled="false">
+    <option key="flags" value="x y z"/>
+    <value><![CDATA[${HOME}/cache &amp; logs]]></value>
+  </profile>
+</config>
+```

@@ -1,0 +1,138 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, footer?)>
+  <!ELEMENT entry (name, meta, value)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST catalog version NMTOKEN #REQUIRED>
+  <!ATTLIST entry id ID #REQUIRED status (new|old|hold) "new">
+  <!ATTLIST meta key NMTOKEN #REQUIRED data CDATA #IMPLIED>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<catalog version="v1">
+  <entry id="e&amp;1" status="hold">
+    <name>alpha &lt; beta</name>
+    <meta key="odd-key" data="a&#x0D;b&#x0A;c"/>
+    <value>&left;<part>one</part><![CDATA[&middle;]]><part>two</part>&right;</value>
+  </entry>
+  <footer>tail</footer>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE network [
+  <!ELEMENT network (node|link)*>
+  <!ELEMENT node (label?, property*)>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST node key ID #IMPLIED role NMTOKENS #IMPLIED>
+  <!ATTLIST link from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "0">
+  <!ATTLIST property name CDATA #REQUIRED>
+  <!ENTITY % attrs '<!ATTLIST property xml:space (default|preserve) "default">'>
+  %attrs;
+]>
+<network xmlns="urn:net" xmlns:x="urn:x" xml:lang="en">
+  <node key="n1" role="source primary">
+    <label>left&#x2028;right</label>
+    <property name="x">one</property>
+    <property name="y"><![CDATA[raw ]]> &amp; <![CDATA[ text]]></property>
+  </node>
+  <node key="n2" role="sink"/>
+  <link from="n1" to="n2" weight="-0.0"/>
+  <x:node key="n3" x:flag="yes">
+    <x:label>foreign namespace</x:label>
+  </x:node>
+</network>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (header, content, trailer)>
+  <!ELEMENT header (item*)>
+  <!ELEMENT item EMPTY>
+  <!ELEMENT content (chunk+)>
+  <!ELEMENT chunk (#PCDATA|chunk)*>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST package mode (fast|safe) #REQUIRED>
+  <!ATTLIST item name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST chunk n NMTOKEN #IMPLIED>
+  <!ENTITY apos "&#39;">
+  <!ENTITY quote "&#34;">
+  <!ENTITY nested "&apos;&quote;">
+]>
+<package mode="safe">
+  <header>
+    <item name="empty" value=""/>
+    <item name="symbols" value="&lt;&gt;&amp;&quot;&apos;"/>
+  </header>
+  <content>
+    <chunk n="01">A<chunk n="02">B<chunk n="03">C</chunk>D</chunk>E</chunk>
+    <chunk n="04">&nested;<![CDATA[<&not-an-entity;>]]></chunk>
+  </content>
+  <trailer>done&#x9;now</trailer>
+</package>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder*)>
+  <!ELEMENT folder (folder|file|note)*>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ATTLIST file name CDATA #REQUIRED size NMTOKEN #IMPLIED compressed (yes|no) "no">
+  <!ATTLIST note xml:space (default|preserve) "preserve">
+]>
+<archive>
+  <folder name=".">
+    <folder name="a&amp;b">
+      <file name="line&#x85;break" size="0007" compressed="yes"/>
+      <note>before&#x0B;after</note>
+    </folder>
+    <file name="trailing.xml"/>
+  </folder>
+  <folder name="empty"/>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE script [
+  <!ELEMENT script (setup?, action*, result?)>
+  <!ELEMENT setup (#PCDATA)>
+  <!ELEMENT action (argument*)>
+  <!ELEMENT argument (#PCDATA|CDATA_SECTION)*>
+  <!ELEMENT result (message|error)*>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT error (#PCDATA)>
+  <!ATTLIST action name NMTOKEN #REQUIRED id ID #IMPLIED>
+  <!ATTLIST argument key CDATA #IMPLIED>
+  <!ENTITY newline "&#10;">
+  <!ENTITY weird "&#x1F;not-valid-xml-char">
+]>
+<?processing instruction-data?>
+<script xmlns:z="urn:z" z:version="2">
+  <setup><![CDATA[if (a < b) return;]]></setup>
+  <action name="load" id="a1">
+    <argument key="path">/tmp/a&amp;b</argument>
+    <argument key="query">x=1&amp;&amp;y=2</argument>
+  </action>
+  <action name="emit">
+    <argument key="text">first&newline;second</argument>
+    <argument><![CDATA[]]></argument>
+  </action>
+  <result>
+    <message>ok</message>
+    <error><![CDATA[warning: ]]> &lt;none&gt;</error>
+  </result>
+</script>
+```

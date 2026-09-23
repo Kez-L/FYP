@@ -1,0 +1,27 @@
+<!DOCTYPE archive [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ELEMENT archive (header, item+, trailer?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT item (name, data)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (#PCDATA|part)*>
+  <!ELEMENT part EMPTY>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST item kind (text|binary|unknown) "text"
+                 ref ENTITY #IMPLIED>
+  <!ATTLIST part n NMTOKEN #REQUIRED>
+  <!ENTITY sample "alpha &amp; beta">
+  <!ENTITY marker "&#x2028;">
+]>
+<archive>
+  <header>&sample; &marker;</header>
+  <item kind="binary" ref="payload">
+    <name>payload</name>
+    <data><part n="0"/><![CDATA[raw<chunk>]]><part n="1"/></data>
+  </item>
+  <item kind="unknown">
+    <name>second</name>
+    <data>tail<!-- inside data --></data>
+  </item>
+  <trailer/>
+</archive>

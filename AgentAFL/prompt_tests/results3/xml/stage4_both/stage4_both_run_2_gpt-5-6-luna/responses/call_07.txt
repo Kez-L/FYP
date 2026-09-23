@@ -1,0 +1,168 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE library [
+  <!ELEMENT library (section+)>
+  <!ELEMENT section (title, book*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT book (title, author+, summary?, edition*)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|i|u|code)*>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT u (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT edition EMPTY>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ATTLIST book isbn CDATA #IMPLIED available (true|false) "true">
+  <!ATTLIST edition year CDATA #REQUIRED publisher CDATA #IMPLIED>
+]>
+<library>
+  <section id="fiction">
+    <title>Fiction</title>
+    <book isbn="978000000001" available="true">
+      <title>The Glass Orchard</title>
+      <author>Marin Vale</author>
+      <author>Oren Pike</author>
+      <summary>A story of <i>memory</i>, <u>weather</u>, and <code>return</code>.</summary>
+      <edition year="2018" publisher="North House"/>
+      <edition year="2024"/>
+    </book>
+  </section>
+  <section id="reference">
+    <title>Reference</title>
+    <book available="false">
+      <title>Atlas of Small Rivers</title>
+      <author>Kei Doran</author>
+    </book>
+  </section>
+</library>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE canvas [
+  <!ELEMENT canvas (layer+)>
+  <!ELEMENT layer (shape*)>
+  <!ELEMENT shape EMPTY>
+  <!ATTLIST canvas width NMTOKEN #REQUIRED height NMTOKEN #REQUIRED>
+  <!ATTLIST layer name CDATA #IMPLIED visible (yes|no) "yes">
+  <!ATTLIST shape kind (circle|rect|path|text) #REQUIRED x CDATA #IMPLIED y CDATA #IMPLIED fill CDATA #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+]>
+<canvas width="800" height="600">
+  <layer name="background">
+    <shape kind="rect" x="0" y="0" fill="#ffffff"/>
+  </layer>
+  <layer name="foreground" visible="yes">
+    <shape kind="circle" x="120.5" y="88" fill="rgb(20,40,60)"/>
+    <shape kind="path" x="0" y="0" fill="none"/>
+    <shape kind="text" x="24" y="40" fill="black"/>
+  </layer>
+  <layer name="guides" visible="no"/>
+</canvas>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (profile, modules, secrets?)>
+  <!ELEMENT profile EMPTY>
+  <!ELEMENT modules (module*)>
+  <!ELEMENT module (dependency*)>
+  <!ELEMENT dependency EMPTY>
+  <!ELEMENT secrets (token+)>
+  <!ELEMENT token (#PCDATA)>
+  <!ATTLIST profile environment (development|testing|production) #REQUIRED debug (0|1) "0">
+  <!ATTLIST module name NMTOKEN #REQUIRED enabled (true|false) "true">
+  <!ATTLIST dependency name NMTOKEN #REQUIRED version CDATA #IMPLIED optional (true|false) "false">
+  <!ATTLIST token name CDATA #REQUIRED>
+]>
+<configuration>
+  <profile environment="testing" debug="1"/>
+  <modules>
+    <module name="parser" enabled="true">
+      <dependency name="core" version="2.4.0"/>
+      <dependency name="trace" optional="true"/>
+    </module>
+    <module name="cache" enabled="false"/>
+  </modules>
+  <secrets>
+    <token name="alpha">A&amp;B&lt;C</token>
+    <token name="beta"><![CDATA[raw ]]></token>
+  </secrets>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (message+)>
+  <!ELEMENT message (sender, recipients, content, attachment*)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipients (recipient+)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT content (#PCDATA|strong|link|br)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST conversation topic CDATA #IMPLIED>
+  <!ATTLIST message timestamp CDATA #REQUIRED direction (in|out) #REQUIRED>
+  <!ATTLIST link href URI #REQUIRED>
+  <!ATTLIST attachment filename CDATA #REQUIRED size NMTOKEN #IMPLIED>
+]>
+<conversation topic="release &amp; review">
+  <message timestamp="2026-09-23T09:15:00Z" direction="out">
+    <sender>build-bot</sender>
+    <recipients>
+      <recipient>team@example.test</recipient>
+      <recipient>qa@example.test</recipient>
+    </recipients>
+    <content>Please review the <strong>candidate</strong> build.<br/>See <link href="https://example.test/report?id=7">the report</link>.</content>
+    <attachment filename="report.xml" size="4096"/>
+  </message>
+  <message timestamp="2026-09-23T09:22:11Z" direction="in">
+    <sender>qa@example.test</sender>
+    <recipients>
+      <recipient>build-bot</recipient>
+    </recipients>
+    <content><![CDATA[Looks good; retain the literal <tag> sample.]]></content>
+  </message>
+</conversation>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE timetable [
+  <!ELEMENT timetable (day+)>
+  <!ELEMENT day (opening, slot*)>
+  <!ELEMENT opening EMPTY>
+  <!ELEMENT slot (course, room, instructor+)>
+  <!ELEMENT course (#PCDATA)>
+  <!ELEMENT room (#PCDATA)>
+  <!ELEMENT instructor (#PCDATA)>
+  <!ATTLIST day date CDATA #REQUIRED holiday (yes|no) "no">
+  <!ATTLIST opening time CDATA #REQUIRED timezone CDATA #IMPLIED>
+  <!ATTLIST slot start CDATA #REQUIRED end CDATA #REQUIRED status (scheduled|cancelled|moved) "scheduled">
+  <!ATTLIST course code ID #REQUIRED credits NMTOKEN #IMPLIED>
+  <!ATTLIST room building CDATA #REQUIRED floor NMTOKEN #IMPLIED>
+]>
+<timetable>
+  <day date="2026-10-01" holiday="no">
+    <opening time="08:00" timezone="UTC"/>
+    <slot start="09:00" end="10:30">
+      <course code="XML101" credits="3">Markup Languages</course>
+      <room building="A" floor="2">A-204</room>
+      <instructor>Dr. Sato</instructor>
+      <instructor>Prof. Ilyan</instructor>
+    </slot>
+    <slot start="11:00" end="12:00" status="moved">
+      <course code="FZ204">Finite Systems</course>
+      <room building="C" floor="1">C-118</room>
+      <instructor>R. Chen</instructor>
+    </slot>
+  </day>
+  <day date="2026-10-02" holiday="yes">
+    <opening time="10:00"/>
+  </day>
+</timetable>
+```

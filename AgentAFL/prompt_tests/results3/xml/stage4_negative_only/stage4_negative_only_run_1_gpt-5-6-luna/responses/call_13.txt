@@ -1,0 +1,153 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (metadata,summary,entry+)>
+  <!ELEMENT metadata (title,author,date)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT date (#PCDATA)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT entry (message,details?)>
+  <!ATTLIST entry severity (info|warning|error) "info" code ID #REQUIRED>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT details (#PCDATA)>
+  <!ENTITY product "parser">
+]>
+<report>
+  <metadata>
+    <title>Validation &amp; &product; diagnostics</title>
+    <author>qa-team</author>
+    <date>2026-09-23</date>
+  </metadata>
+  <summary>Three independent observations were recorded.</summary>
+  <entry severity="info" code="e1">
+    <message>Input accepted without normalization.</message>
+  </entry>
+  <entry severity="warning" code="e2">
+    <message>Whitespace was preserved.</message>
+    <details><![CDATA[line one
+line two
+line three]]></details>
+  </entry>
+  <entry severity="error" code="e3">
+    <message>Unexpected token near &lt;delimiter&gt;.</message>
+  </entry>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope
+    xmlns:soap="http://www.w3.org/2003/05/soap-envelope"
+    xmlns:auth="urn:example:auth"
+    xmlns:svc="urn:example:service">
+  <soap:Header>
+    <auth:Credentials soap:mustUnderstand="true">
+      <auth:Principal xml:lang="en">operator</auth:Principal>
+      <auth:Token type="opaque">A&amp;B&lt;C&gt;</auth:Token>
+    </auth:Credentials>
+    <svc:Trace id="trace-7" enabled="false"/>
+  </soap:Header>
+  <soap:Body>
+    <svc:SubmitRequest>
+      <svc:Payload format="text/xml"><![CDATA[
+        <inner value="&quot;quoted&quot;"/>
+      ]]></svc:Payload>
+      <svc:Options>
+        <svc:Option name="priority">high</svc:Option>
+        <svc:Option name="retry">0</svc:Option>
+      </svc:Options>
+    </svc:SubmitRequest>
+  </soap:Body>
+</soap:Envelope>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<?processing mode="compat"?>
+<article xml:lang="fr" xml:base="https://example.invalid/docs/">
+  <!-- Mixed content is intentional: < and > appear only as character data. -->
+  <heading level="2">Résumé — données &amp; formats</heading>
+  <paragraph>
+    Une phrase avec <emphasis>du texte</emphasis>, une
+    <link href="chapter/1">référence</link> et une fin.
+  </paragraph>
+  <table border="0">
+    <row>
+      <cell colspan="2">A</cell>
+    </row>
+    <row>
+      <cell>λ</cell>
+      <cell>東京</cell>
+    </row>
+  </table>
+  <footnote id="n1">Voir <reference target="#n2">la note suivante</reference>.</footnote>
+  <note id="n2" hidden="yes"/>
+</article>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE library [
+  <!ELEMENT library (shelf*)>
+  <!ELEMENT shelf (label, book*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT book (title, contributor+, abstract?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT contributor (#PCDATA)>
+  <!ELEMENT abstract (#PCDATA)>
+  <!ATTLIST book isbn NMTOKEN #IMPLIED>
+  <!ENTITY legal "Copyright &#xA9; 2026">
+]>
+<library>
+  <shelf id="fiction">
+    <label>Fiction</label>
+    <book isbn="978-0-00-000001-1">
+      <title>The &quot;Last&quot; Door</title>
+      <contributor role="writer">A. Reader</contributor>
+      <contributor role="editor">B. Proof</contributor>
+      <abstract>&legal;. A short account of an impossible room.</abstract>
+    </book>
+  </shelf>
+  <shelf id="reference">
+    <label>Reference</label>
+  </shelf>
+  <shelf id="misc">
+    <label>Miscellaneous</label>
+    <book>
+      <title>Symbols: &#x3C; &#x3E; &#x26; &#x22;</title>
+      <contributor role="compiler">C. Curator</contributor>
+    </book>
+  </shelf>
+</library>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<scene xmlns="http://www.w3.org/2000/svg"
+       xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:meta="urn:example:metadata"
+       viewBox="-10 -20 640 480">
+  <title>Layered specimen</title>
+  <desc>A compact vector scene with metadata and references.</desc>
+  <meta:properties>
+    <meta:property key="revision">r&amp;d-04</meta:property>
+    <meta:property key="active">true</meta:property>
+  </meta:properties>
+  <defs>
+    <linearGradient id="fade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"><![CDATA[#ffffff]]></stop>
+      <stop offset="100%" stop-opacity="0.25" stop-color="#000000"/>
+    </linearGradient>
+    <path id="curve" d="M0,0 C20,30 60,-10 90,15"/>
+  </defs>
+  <g id="background" opacity="0.8">
+    <rect x="0" y="0" width="600" height="440" rx="12" fill="url(#fade)"/>
+  </g>
+  <g id="foreground" transform="translate(40 55) rotate(-2)">
+    <use xlink:href="#curve" fill="none" stroke="#123456"/>
+    <circle cx="90" cy="15" r="7" fill="#ff8800"/>
+    <text x="5" y="110" xml:space="preserve">A &lt;small&gt; vector note</text>
+  </g>
+</scene>
+```

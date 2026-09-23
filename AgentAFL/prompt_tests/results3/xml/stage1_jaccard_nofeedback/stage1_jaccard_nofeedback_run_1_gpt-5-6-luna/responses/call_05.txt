@@ -1,0 +1,139 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE warehouse [
+  <!ELEMENT warehouse (section+)>
+  <!ELEMENT section (label, item*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT item (name, quantity, note?)>
+  <!ATTLIST item sku CDATA #IMPLIED status (new|used|held) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT quantity (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+]>
+<warehouse>
+  <section code="A-1">
+    <label>North &amp; East</label>
+    <item sku="X&amp;7" status="held">
+      <name><![CDATA[Glass <panel>]]></name>
+      <quantity>00000000000000000042</quantity>
+      <note>Handle <emph>with care</emph>.</note>
+    </item>
+  </section>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0"?>
+<message xmlns="urn:example:message"
+         xmlns:m="urn:example:meta"
+         xml:lang="x-klingon">
+  <header m:priority="high" m:trace="a:b:c">
+    <m:source xml:base="urn:source:α">sensor-π</m:source>
+    <?route via="edge"?>
+  </header>
+  <payload>
+    <entry key="0" value="&quot;&apos;&amp;&lt;&gt;">
+      <![CDATA[
+        raw ]]> text ]]> and <tags> remain data
+      ]]>
+    </entry>
+    <entry key="1">
+      <value xsi:type="m:opaque"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    </entry>
+  </payload>
+  <!-- trailing comment with -- unusual? -->
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (metadata, records)>
+  <!ELEMENT metadata (created, creator)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT creator (#PCDATA)>
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (key, value, flag?)>
+  <!ATTLIST record id ID #IMPLIED ref IDREF #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST flag enabled (yes|no) "no">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "payload.bin" NDATA bin>
+]>
+<report>
+  <metadata>
+    <created>2026-09-23T00:00:00Z</created>
+    <creator>δοκιμή</creator>
+  </metadata>
+  <records>
+    <record id="r1">
+      <key>alpha</key>
+      <value>line&#x0A;break&#x9;tab</value>
+      <flag enabled="yes"/>
+    </record>
+    <record id="r2" ref="r1">
+      <key>omega</key>
+      <value>&#x1F; boundary &#xFFFD;</value>
+    </record>
+  </records>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ATTLIST row index NMTOKEN #REQUIRED>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST cell col NMTOKEN #REQUIRED kind CDATA "text">
+]>
+<matrix>
+  <row index="zero">
+    <cell col="a" kind="number">0</cell>
+    <cell col="b" kind="number">-9223372036854775808</cell>
+    <cell col="c"><![CDATA[]]></cell>
+  </row>
+  <row index="one">
+    <cell col="a">left<break/>right</cell>
+    <cell col="b" kind="mixed">x&amp;y</cell>
+    <cell col="c"><![CDATA[<&]]>&gt;</cell>
+  </row>
+  <row index="two">
+    <cell col="a">   </cell>
+    <cell col="b" kind="emoji">&#x1F4A5;</cell>
+    <cell col="c">end</cell>
+  </row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration [
+  <!ENTITY % switches "<!ELEMENT feature EMPTY><!ATTLIST feature name CDATA #REQUIRED state (on|off) #REQUIRED>">
+  %switches;
+  <!ELEMENT configuration (profile, include*, feature*)>
+  <!ELEMENT profile (name, option*)>
+  <!ATTLIST profile id CDATA #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT option (#PCDATA)>
+  <!ATTLIST option key CDATA #REQUIRED>
+  <!ELEMENT include EMPTY>
+  <!ATTLIST include href CDATA #REQUIRED mode CDATA "merge">
+]>
+<configuration>
+  <profile id="default">
+    <name>baseline</name>
+    <option key="empty"/>
+    <option key="quoted">a&quot;b&apos;c</option>
+  </profile>
+  <include href="urn:config:missing" mode="replace"/>
+  <feature name="compression" state="on"/>
+  <feature name="telemetry" state="off"/>
+</configuration>
+```

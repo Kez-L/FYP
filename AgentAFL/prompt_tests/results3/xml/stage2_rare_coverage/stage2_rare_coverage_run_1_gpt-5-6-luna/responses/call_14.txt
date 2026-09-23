@@ -1,0 +1,162 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, entry*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (name, price, note?)>
+  <!ATTLIST entry sku ID #REQUIRED status (active|retired) "active">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ENTITY currency "USD">
+]>
+<catalog>
+  <section code="main">
+    <title>Hardware</title>
+    <entry sku="p-001">
+      <name>Adapter</name>
+      <price>19.95 &currency;</price>
+      <note>Compact <emph>reversible</emph> connector.</note>
+    </entry>
+    <entry sku="p-002" status="retired">
+      <name>Bridge</name>
+      <price>0.00 &currency;</price>
+    </entry>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<warehouse xmlns="urn:warehouse" xmlns:m="urn:meta" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <aisle number="07">
+    <bin m:opened="2026-09-23" capacity="12">
+      <slot position="A1">
+        <item serial="α-001" xlink:type="simple" xlink:href="urn:item:alpha">
+          <label><![CDATA[<fragile> & handle with care]]></label>
+          <dimensions>
+            <width unit="mm">120</width>
+            <height unit="mm">45</height>
+          </dimensions>
+        </item>
+      </slot>
+      <slot position="A2">
+        <item serial="β-002">
+          <label>unassigned</label>
+          <dimensions>
+            <width unit="mm">8</width>
+            <height unit="mm">8</height>
+          </dimensions>
+        </item>
+      </slot>
+    </bin>
+  </aisle>
+  <audit>
+    <m:operator id="op-9">night-shift</m:operator>
+    <m:comment>counted <!-- not allowed here --></m:comment>
+  </audit>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (node)>
+  <!ELEMENT node (name, node*)>
+  <!ATTLIST node kind CDATA "branch">
+  <!ELEMENT name (#PCDATA)>
+]>
+<map>
+  <node kind="root">
+    <name>root</name>
+    <node kind="leaf">
+      <name>north</name>
+    </node>
+    <node kind="branch">
+      <name>south</name>
+      <node>
+        <name>south-east</name>
+        <node kind="leaf">
+          <name>terminal</name>
+        </node>
+      </node>
+      <node kind="leaf">
+        <name>south-west</name>
+      </node>
+    </node>
+  </node>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<document>
+  <?pipeline mode="incremental"?>
+  <header>
+    <created year="2026" month="09" day="23"/>
+    <author>
+      <given>Rina</given>
+      <family>O'Neil</family>
+    </author>
+  </header>
+  <body>
+    <paragraph>Before <mark level="1">the marker</mark>, text continues.</paragraph>
+    <table border="0">
+      <row>
+        <cell colspan="2">A</cell>
+        <cell>B</cell>
+      </row>
+      <row>
+        <cell><![CDATA[line one
+line two
+]]></cell>
+        <cell>
+          <list>
+            <item index="1">first</item>
+            <item index="2">second</item>
+          </list>
+        </cell>
+      </row>
+    </table>
+  </body>
+  <!-- trailing document annotation -->
+</document>
+```
+
+```xml
+<?xml version="1.0"?>
+<configuration>
+  <profiles>
+    <profile id="minimal" enabled="yes">
+      <property name="retry">0</property>
+      <property name="timeout">PT0S</property>
+      <modules/>
+    </profile>
+    <profile id="full" enabled="no">
+      <property name="retry">5</property>
+      <property name="timeout">PT1H2M3.004S</property>
+      <modules>
+        <module name="parser" version="1.2.3">
+          <option key="strict">false</option>
+          <option key="trace">true</option>
+        </module>
+        <module name="renderer" version="0.0.0">
+          <option key="format">text/xml</option>
+        </module>
+      </modules>
+    </profile>
+  </profiles>
+  <fallback>
+    <when code="missing">
+      <action>ignore</action>
+    </when>
+    <when code="invalid">
+      <action>report</action>
+      <message>configuration requires review</message>
+    </when>
+  </fallback>
+</configuration>
+```

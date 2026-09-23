@@ -1,0 +1,182 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (title, panel+, footer?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT panel (label, gauge*, note?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT gauge EMPTY>
+  <!ELEMENT note (#PCDATA|strong|br)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST panel key ID #REQUIRED theme (light|dark|contrast) "light">
+  <!ATTLIST gauge name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY warning "Check &lt;threshold&gt; before continuing.">
+]>
+<dashboard xml:lang="en" xml:base="https://example.invalid/ui/">
+  <title>Operations dashboard</title>
+  <panel key="cpu" theme="dark">
+    <label>Processor</label>
+    <gauge name="load" value="0.73"/>
+    <gauge name="temperature" value="68.4"/>
+    <note>Current state: <strong>stable</strong><br/> &warning;</note>
+  </panel>
+  <panel key="disk" theme="contrast">
+    <label>Storage</label>
+    <gauge name="used" value="91%"/>
+    <note>Capacity requires <strong>review</strong>.</note>
+  </panel>
+  <footer><![CDATA[Rendered by <widget>core</widget>]]></footer>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (collection*)>
+  <!ELEMENT collection (record+)>
+  <!ELEMENT record (headline, author+, binary?)>
+  <!ELEMENT headline (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT binary EMPTY>
+  <!ATTLIST collection name CDATA #REQUIRED>
+  <!ATTLIST record id ID #REQUIRED related IDREFS #IMPLIED format (text|image|audio) "text">
+  <!ATTLIST binary source ENTITY #REQUIRED>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY % optional "INCLUDE">
+  <![%optional;[
+    <!ELEMENT annotation (#PCDATA)>
+    <!ATTLIST record reviewed (yes|no) "no">
+  ]]>
+]>
+<archive>
+  <collection name="field-notes">
+    <record id="r001" format="text" reviewed="yes">
+      <headline>Observed nesting behavior</headline>
+      <author>Lin</author>
+      <author>Rao</author>
+    </record>
+    <record id="r002" related="r001" format="image" reviewed="no">
+      <headline>Microscope plate</headline>
+      <author>Lin</author>
+      <binary source="logo"/>
+    </record>
+  </collection>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<graph xmlns="urn:example:graph" xmlns:meta="urn:example:metadata">
+  <!-- Nodes may refer to one another in either direction. -->
+  <node id="n-alpha" type="person">
+    <name>Élodie &amp; Martín</name>
+    <property key="role">researcher</property>
+    <property key="active">true</property>
+    <link relation="advises" target="n-beta"/>
+  </node>
+  <node id="n-beta" type="project">
+    <name><![CDATA[<experimental> topology]]></name>
+    <meta:created year="2026" month="09" day="23"/>
+    <link relation="contains" target="n-gamma"/>
+    <link relation="owner" target="n-alpha"/>
+  </node>
+  <node id="n-gamma" type="artifact">
+    <name>Sample Ω-17</name>
+    <payload encoding="base64">
+      <![CDATA[AAECAwQFBgcICQoLDA0ODw==]]>
+    </payload>
+    <link relation="derived-from" target="n-beta"/>
+  </node>
+  <edges count="4">
+    <edge from="n-alpha" to="n-beta" weight="1.0"/>
+    <edge from="n-beta" to="n-gamma" weight="0.5"/>
+    <edge from="n-beta" to="n-alpha" weight="0.25"/>
+    <edge from="n-gamma" to="n-beta" weight="0.75"/>
+  </edges>
+</graph>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE itinerary [
+  <!ELEMENT itinerary (trip, constraints?)>
+  <!ELEMENT trip (segment+)>
+  <!ELEMENT segment (departure, arrival, passenger*)>
+  <!ELEMENT departure (place, time)>
+  <!ELEMENT arrival (place, time)>
+  <!ELEMENT passenger (#PCDATA)>
+  <!ELEMENT place (#PCDATA)>
+  <!ELEMENT time (#PCDATA)>
+  <!ELEMENT constraints (rule*)>
+  <!ELEMENT rule (#PCDATA)>
+  <!ATTLIST trip code ID #REQUIRED>
+  <!ATTLIST segment mode (rail|air|sea|road) #REQUIRED sequence NMTOKEN #REQUIRED>
+  <!ATTLIST passenger ticket NMTOKEN #REQUIRED>
+  <!ATTLIST rule kind CDATA #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+]>
+<itinerary>
+  <trip code="T-884">
+    <segment mode="rail" sequence="01">
+      <departure>
+        <place>Gare du Nord</place>
+        <time zone="Europe/Paris">2026-10-04T07:10:00+02:00</time>
+      </departure>
+      <arrival>
+        <place>Bruxelles-Midi</place>
+        <time zone="Europe/Brussels">2026-10-04T08:32:00+02:00</time>
+      </arrival>
+      <passenger ticket="P_001">Nora&nbsp;K.</passenger>
+      <passenger ticket="P_002">J. Alvarez</passenger>
+    </segment>
+    <segment mode="air" sequence="02">
+      <departure>
+        <place>Brussels Airport</place>
+        <time zone="UTC">2026-10-04T11:05:00Z</time>
+      </departure>
+      <arrival>
+        <place>Lisbon</place>
+        <time zone="Europe/Lisbon">2026-10-04T12:45:00+01:00</time>
+      </arrival>
+      <passenger ticket="P_001">Nora&nbsp;K.</passenger>
+    </segment>
+  </trip>
+  <constraints>
+    <rule kind="baggage">One cabin item only</rule>
+    <rule kind="connection"><![CDATA[Minimum connection: 45 < minutes]]></rule>
+  </constraints>
+</itinerary>
+```
+
+```xml
+<?xml version="1.1" standalone="yes"?>
+<configuration xmlns="urn:example:config" xmlns:p="urn:example:plugin">
+  <environment name="staging">
+    <variable name="PATH" scope="process">/opt/tools:/usr/bin</variable>
+    <variable name="FEATURE_FLAGS" scope="session">
+      <value>fast-start</value>
+      <value>audit-log</value>
+      <value>unicode-λ</value>
+    </variable>
+  </environment>
+  <plugins>
+    <plugin p:id="parser.core" enabled="true" priority="10">
+      <p:entrypoint>libparser.so</p:entrypoint>
+      <p:option key="mode">strict</p:option>
+    </plugin>
+    <plugin p:id="renderer.alt" enabled="false" priority="20">
+      <p:entrypoint><![CDATA[lib/render/alt.so]]></p:entrypoint>
+      <p:dependencies>
+        <p:dependency ref="parser.core" optional="false"/>
+      </p:dependencies>
+    </plugin>
+  </plugins>
+  <?reload target="environment" immediate="false"?>
+  <limits>
+    <memory unit="MiB" soft="256" hard="512"/>
+    <timeout unit="ms">1500</timeout>
+  </limits>
+</configuration>
+```

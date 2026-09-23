@@ -1,0 +1,118 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (name, description?, price)>
+  <!ATTLIST entry id ID #REQUIRED status (active|retired) "active">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ENTITY currency "€">
+  <!ENTITY note "limited-edition">
+]>
+<catalog xml:lang="fr" xml:space="preserve">
+  <entry id="p-001">
+    <name>Lampe &amp; miroir</name>
+    <description>Objet <emph>fragile</emph> — &note;.</description>
+    <price>129.95 &currency;</price>
+  </entry>
+  <entry id="p-002" status="retired">
+    <name><![CDATA[Boîte <ancienne>]]></name>
+    <price>0</price>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="urn:example:document" xmlns:a="urn:example:alpha" xmlns:b="urn:example:beta" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="a:Composite" xml:base="https://example.invalid/archive/">
+  <?processing mode="delta"?>
+  <!-- A document containing mixed namespaces and empty branches. -->
+  <a:header>
+    <a:identifier xml:id="header-α">Δ-0007</a:identifier>
+    <a:flag enabled="true"/>
+  </a:header>
+  <b:payload>
+    <b:record key="line-1">
+      leading text
+      <b:value xsi:nil="true"/>
+      trailing text
+    </b:record>
+    <b:record key="line-2">
+      <a:value unit="µs">0.000001</a:value>
+      <a:value unit="∞">NaN</a:value>
+    </b:record>
+  </b:payload>
+  <footer/>
+</document>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+  <!ENTITY block "<nested>replacement</nested>">
+]>
+<root>
+  <![CDATA[
+    raw text with ]] and <tags> that is not markup
+  ]]>
+  <branch a="&#x1F600;" b="line&#10;break" c="&quot;quoted&quot;">
+    <leaf><![CDATA[alpha & beta]]></leaf>
+    &left;middle&right;
+  </branch>
+  &block;
+  <empty />
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<transcript xmlns="urn:media:transcript" xmlns:m="urn:media:marker" xml:lang="und">
+  <session id="S-∞" started="2026-09-23T00:00:00+14:00">
+    <speaker role="narrator">A &amp; B</speaker>
+    <utterance index="0">First line<break/>second line</utterance>
+    <utterance index="1">
+      <m:cue at="00:00:00.000" kind="chapter">Intro</m:cue>
+      <m:cue at="00:01:02.500" kind="sound"><![CDATA[[wind]]></m:cue>
+    </utterance>
+  </session>
+  <session id="S-2" started="2026-09-22T23:59:59Z">
+    <speaker role="guest" xml:space="default">Zoe</speaker>
+    <utterance index="7" confidence="0.0"/>
+  </session>
+</transcript>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node*, edge*)>
+  <!ELEMENT node (label?, data*)>
+  <!ATTLIST node id NMTOKEN #REQUIRED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from NMTOKEN #REQUIRED to NMTOKEN #REQUIRED directed (yes|no) "yes">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+]>
+<graph xmlns="urn:graph:v1" directed="mixed">
+  <node id="n0">
+    <label>Root</label>
+    <data key="empty"></data>
+    <data key="symbols">&lt;&gt;&amp;&quot;&apos;</data>
+  </node>
+  <node id="n-1">
+    <label xml:lang="ja">ノード</label>
+    <data key="multiline"><![CDATA[line one
+line two
+line three]]></data>
+  </node>
+  <node id="n2"/>
+  <edge from="n0" to="n-1"/>
+  <edge from="n-1" to="n2" directed="no"/>
+  <edge from="n2" to="n0" directed="yes"/>
+</graph>
+```

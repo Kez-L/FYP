@@ -1,0 +1,190 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (name, price, description?, stock)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT stock EMPTY>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ATTLIST item sku NMTOKEN #REQUIRED status (new|used|archived) "new">
+  <!ATTLIST stock quantity CDATA "0">
+]>
+<catalog>
+  <section id="hardware">
+    <heading>Workshop equipment</heading>
+    <item sku="A_17">
+      <name>Adjustable wrench</name>
+      <price currency="USD">18.50</price>
+      <description>Forged steel with <em>rubberized</em> grip; size <code>8in</code>.</description>
+      <stock quantity="42"/>
+    </item>
+    <item sku="B-204" status="used">
+      <name>Bench vise</name>
+      <price currency="EUR">73.00</price>
+      <stock quantity="3"/>
+    </item>
+  </section>
+  <section id="supplies">
+    <heading>Consumables</heading>
+    <item sku="C9" status="archived">
+      <name>Abrasive paper</name>
+      <description><![CDATA[Grades: 80 < 120 < 240]]></description>
+      <stock/>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<message xmlns="urn:acme:message" xmlns:h="urn:acme:header" xmlns:sec="urn:acme:security"
+         xml:lang="ja" xml:base="https://invalid.example/messages/">
+  <h:metadata>
+    <h:sender role="automated">東京支店</h:sender>
+    <h:received timestamp="2026-09-23T08:15:44+09:00"/>
+    <h:trace>
+      <h:id>9f2b-77aa</h:id>
+      <h:attempt>2</h:attempt>
+    </h:trace>
+  </h:metadata>
+  <body>
+    <paragraph>First line<break/>second line<emphasis level="strong">重要</emphasis>.</paragraph>
+    <attachment sec:classification="internal" sec:checksum="sha256:abc123">
+      <filename>report_日本語.pdf</filename>
+      <content-type>application/pdf</content-type>
+    </attachment>
+  </body>
+  <sec:signature algorithm="ed25519">
+    <sec:key-id>ops-04</sec:key-id>
+    <sec:value><![CDATA[MEUCIQDn+example/signature==]]></sec:value>
+  </sec:signature>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE notebook [
+  <!ELEMENT notebook (metadata, chapter+)>
+  <!ELEMENT metadata (author, revision, keywords?)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT revision (#PCDATA)>
+  <!ELEMENT keywords (keyword+)>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ELEMENT chapter (title, (paragraph|list|equation|note)*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|strong|link|br)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT list (entry+)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ELEMENT equation (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST chapter number CDATA #REQUIRED>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ATTLIST note type (info|warning|todo) "info">
+  <!ENTITY dash "&#x2014;">
+  <!ENTITY nbsp "&#160;">
+]>
+<notebook>
+  <metadata>
+    <author>R. Calder</author>
+    <revision>rev-12 &dash; draft</revision>
+    <keywords><keyword>parsing</keyword><keyword>testing</keyword></keywords>
+  </metadata>
+  <chapter number="1">
+    <title>Observations</title>
+    <paragraph>Input is <strong>not</strong> always regular<br/>and spacing matters.&nbsp;</paragraph>
+    <list>
+      <entry>Collect samples</entry>
+      <entry>Compare results</entry>
+      <entry>Publish <link href="urn:report:final">findings</link></entry>
+    </list>
+    <equation><![CDATA[f(x) = x^2 + 2x + 1]]></equation>
+    <note type="warning">Verify the boundary case.</note>
+  </chapter>
+  <chapter number="2">
+    <title>Conclusions</title>
+    <paragraph>Stable behavior follows from small inputs &lt; large inputs.</paragraph>
+  </chapter>
+</notebook>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE warehouse [
+  <!ELEMENT warehouse (zone*)>
+  <!ELEMENT zone (label, container*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT container (item|container)*>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST zone code ID #REQUIRED>
+  <!ATTLIST container kind (crate|bin|pallet) #REQUIRED>
+  <!ATTLIST item sku CDATA #REQUIRED quantity CDATA #IMPLIED fragile (yes|no) "no">
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+]>
+<warehouse>
+  <zone code="Z-A">
+    <label>North &amp; loading</label>
+    <container kind="pallet">
+      <container kind="crate">
+        <item sku="R-1" quantity="8" fragile="yes"/>
+        <item sku="R-2" quantity="0"/>
+      </container>
+      <container kind="bin">
+        <item sku="S-7" quantity="19"/>
+      </container>
+    </container>
+  </zone>
+  <zone code="Z-B">
+    <label>Cold storage</label>
+    <container kind="bin">
+      <item sku="F-11" quantity="4" fragile="yes"/>
+      <container kind="crate">
+        <item sku="F-12" quantity="2" fragile="yes"/>
+      </container>
+    </container>
+  </zone>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<telemetry xmlns="urn:lab:telemetry" xmlns:x="urn:lab:extension"
+           xml:space="default">
+  <session id="s-20260923-01" started="2026-09-23T00:00:00Z">
+    <?sample interval="250ms" mode="burst"?>
+    <device x:model="quartz-3" x:firmware="7.0.1">
+      <channel name="temperature" unit="°C">
+        <sample t="0" quality="good">21.5</sample>
+        <sample t="250" quality="suspect">NaN</sample>
+        <sample t="500" quality="good">21.7</sample>
+      </channel>
+      <channel name="voltage" unit="mV">
+        <sample t="0">3301</sample>
+        <sample t="250">3298</sample>
+        <sample t="500"><![CDATA[3300]]></sample>
+      </channel>
+      <event level="warning">
+        <time>2026-09-23T00:00:00.500Z</time>
+        <message>Transient reading: &lt;threshold&gt;</message>
+        <details x:code="T-17">
+          <raw><![CDATA[{"expected":3300,"actual":3298}]]></raw>
+        </details>
+      </event>
+    </device>
+    <summary>
+      <count channels="2" samples="6"/>
+      <status>complete</status>
+    </summary>
+  </session>
+</telemetry>
+```

@@ -1,0 +1,142 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, summary, details)>
+  <!ATTLIST entry id ID #REQUIRED status (active|archived) "active">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT details (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ENTITY product "parser">
+  <!ENTITY note "This &product; handles mixed content.">
+]>
+<catalog>
+  <entry id="e-alpha" status="active">
+    <title>Boundary Cases</title>
+    <summary>&note;</summary>
+    <details xml:space="preserve">Text before <em>emphasis <code>v1.0</code></em><br/>text after.</details>
+  </entry>
+  <entry id="e-beta" status="archived">
+    <title>Quoted &amp; Escaped</title>
+    <summary><![CDATA[Literal markup: <not-an-element/>]]></summary>
+    <details>Line one&#10;Line two&#x0A;Line three</details>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<message xmlns="urn:example:message" xmlns:m="urn:example:meta" xml:lang="ja">
+  <!-- A comment between protocol records -->
+  <header>
+    <m:trace id="00000000-0000-0000-0000-000000000000"/>
+    <m:flags>
+      <m:flag name="compressed" value="false"/>
+      <m:flag name="priority" value="0"/>
+    </m:flags>
+    <?audit actor="system"?>
+  </header>
+  <body>
+    <paragraph>こんにちは、世界。<br/>Привет, мир.</paragraph>
+    <attachment media-type="application/octet-stream" length="0">
+      <![CDATA[
+        A+B=C; <binary-looking-data/>; & not markup
+      ]]>
+    </attachment>
+  </body>
+  <footer>
+    <signature algorithm="none">∅</signature>
+  </footer>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (context, measurements, conclusion?)>
+  <!ELEMENT context (source, location)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT location EMPTY>
+  <!ATTLIST location latitude CDATA #REQUIRED longitude CDATA #REQUIRED>
+  <!ELEMENT measurements (measurement*)>
+  <!ELEMENT measurement EMPTY>
+  <!ATTLIST measurement
+    name CDATA #REQUIRED
+    value CDATA #REQUIRED
+    unit CDATA #IMPLIED>
+  <!ELEMENT conclusion (#PCDATA)>
+  <!ENTITY degree "&#x00B0;">
+  <!ENTITY approx "approximately">
+]>
+<report>
+  <context>
+    <source>sensor-&amp;-archive</source>
+    <location latitude="90.000000" longitude="-180.000000"/>
+  </context>
+  <measurements>
+    <measurement name="temperature" value="-273.15" unit="&degree;C"/>
+    <measurement name="pressure" value="1.01325e5" unit="Pa"/>
+    <measurement name="count" value="000000"/>
+  </measurements>
+  <conclusion>&approx; stable; no anomaly detected.</conclusion>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="urn:pkg" xmlns:rel="urn:pkg:relationship" xmlns:ext="urn:vendor:extension">
+  <manifest generated="1970-01-01T00:00:00Z" xml:base="https://example.invalid/archive/">
+    <resource rel:type="root" rel:href="docs/index.xml" checksum=""/>
+    <resource rel:type="style" rel:href="assets/main.css" checksum="0000000000000000000000000000000000000000000000000000000000000000"/>
+    <resource rel:type="data" rel:href="../data/items.xml">
+      <rel:alternate xml:base="../mirror/">
+        <rel:href>items.xml</rel:href>
+      </rel:alternate>
+    </resource>
+  </manifest>
+  <content>
+    <ext:section ext:version="0">
+      <ext:item key="empty"/>
+      <ext:item key="mixed">prefix<ext:value><![CDATA[<raw/>]]></ext:value>suffix</ext:item>
+    </ext:section>
+    <checksum algorithm="sha-256">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</checksum>
+  </content>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE timeline [
+  <!ELEMENT timeline (event|gap|group)*>
+  <!ELEMENT event (label,detail?)>
+  <!ATTLIST event at CDATA #REQUIRED kind CDATA "ordinary">
+  <!ELEMENT gap EMPTY>
+  <!ATTLIST gap from CDATA #REQUIRED to CDATA #REQUIRED reason CDATA #IMPLIED>
+  <!ELEMENT group (event|gap|group)*>
+  <!ATTLIST group name CDATA #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+]>
+<timeline>
+  <event at="00:00:00Z" kind="start">
+    <label>Initialization</label>
+    <detail>Created <link href="#root">root record</link>.</detail>
+  </event>
+  <gap from="00:01:00Z" to="00:01:05Z" reason="clock adjustment"/>
+  <group name="nested">
+    <event at="00:02:03+05:30">
+      <label>Payload</label>
+      <detail><![CDATA[raw: ]]><link href="urn:x:test?x=1&amp;y=2">inspect</link></detail>
+    </event>
+    <group name="empty-group"/>
+  </group>
+  <event at="24:00:00" kind="end">
+    <label>Finished &#x1F680;</label>
+  </event>
+</timeline>
+```

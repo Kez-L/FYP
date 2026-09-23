@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE exchange [
+  <!ELEMENT exchange (header, messages, footer)>
+  <!ELEMENT header (sender, receiver, nonce)>
+  <!ELEMENT sender EMPTY>
+  <!ELEMENT receiver EMPTY>
+  <!ELEMENT nonce (#PCDATA)>
+  <!ELEMENT messages (message+)>
+  <!ELEMENT message (timestamp, payload, attachment*)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|field|list)*>
+  <!ELEMENT field (#PCDATA)>
+  <!ELEMENT list (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST exchange protocol CDATA #FIXED "x/4">
+  <!ATTLIST sender id CDATA #REQUIRED>
+  <!ATTLIST receiver id CDATA #REQUIRED>
+  <!ATTLIST message uid ID #REQUIRED priority (low|normal|high) "normal">
+  <!ATTLIST field key CDATA #REQUIRED type (text|integer|boolean) "text">
+  <!ATTLIST attachment media CDATA #REQUIRED length CDATA #IMPLIED>
+  <!ENTITY separator " / ">
+]>
+<exchange protocol="x/4">
+  <header>
+    <sender id="node-east"/>
+    <receiver id="node-west"/>
+    <nonce>7f&separator;91&amp;aa</nonce>
+  </header>
+  <messages>
+    <message uid="m001" priority="high">
+      <timestamp>2026-09-23T18:42:00+00:00</timestamp>
+      <payload>
+        <field key="attempt" type="integer">3</field>
+        <field key="verified" type="boolean">true</field>
+        <list>
+          <item>alpha</item>
+          <item><![CDATA[beta <gamma>]]></item>
+        </list>
+      </payload>
+      <attachment media="application/json" length="2048"/>
+    </message>
+    <message uid="m002">
+      <timestamp>2026-09-23T18:42:01Z</timestamp>
+      <payload>plain text <![CDATA[with delimiters ]]> and <field key="mode">safe</field></payload>
+    </message>
+  </messages>
+  <footer>complete</footer>
+</exchange>

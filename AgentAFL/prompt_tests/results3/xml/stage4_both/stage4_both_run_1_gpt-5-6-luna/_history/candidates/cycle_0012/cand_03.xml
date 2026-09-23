@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow"
+          xmlns:task="urn:example:task"
+          xmlns:fn="urn:example:function"
+          id="wf-42" version="3">
+  <description xml:lang="en">Conditional deployment workflow</description>
+  <variables>
+    <variable name="region" type="string">eu-west</variable>
+    <variable name="attempts" type="integer">0</variable>
+    <variable name="dry-run" type="boolean">false</variable>
+  </variables>
+  <steps>
+    <task:step id="validate" timeout="PT30S">
+      <task:run executable="/opt/tools/check">
+        <task:argument>--strict</task:argument>
+        <task:argument value-from="region"/>
+      </task:run>
+      <task:on-success next="publish"/>
+      <task:on-failure next="halt"/>
+    </task:step>
+    <task:step id="publish" timeout="PT5M">
+      <task:condition>
+        <fn:equals>
+          <fn:left>${dry-run}</fn:left>
+          <fn:right>false</fn:right>
+        </fn:equals>
+      </task:condition>
+      <task:run executable="/opt/tools/publish">
+        <task:environment name="TARGET_REGION">${region}</task:environment>
+      </task:run>
+      <task:on-success next="notify"/>
+    </task:step>
+    <task:step id="notify">
+      <task:run executable="/opt/tools/notify"/>
+    </task:step>
+    <task:step id="halt">
+      <task:run executable="/bin/false"/>
+    </task:step>
+  </steps>
+</workflow>

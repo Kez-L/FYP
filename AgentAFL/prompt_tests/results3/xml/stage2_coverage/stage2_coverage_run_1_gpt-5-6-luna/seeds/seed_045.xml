@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+)>
+  <!ELEMENT entry (meta, payload)>
+  <!ELEMENT meta (key, value?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk|ref)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST archive format NOTATION (raw|packed|signed) "raw">
+  <!ATTLIST entry id ID #REQUIRED state (new|old|lost) "new">
+  <!ATTLIST ref target IDREF #IMPLIED>
+  <!NOTATION raw SYSTEM "application/octet-stream">
+  <!ENTITY left "alpha">
+  <!ENTITY right "omega">
+  <!ENTITY joined "&left;:&right;">
+  <!ENTITY binary SYSTEM "payload.bin" NDATA raw>
+]>
+<archive format="signed">
+  <entry id="e-1" state="old">
+    <meta><key>name</key><value>catalog</value></meta>
+    <payload>&joined;<chunk><![CDATA[<not-an-element> & still text]]></chunk><ref target="e-1"/></payload>
+  </entry>
+</archive>

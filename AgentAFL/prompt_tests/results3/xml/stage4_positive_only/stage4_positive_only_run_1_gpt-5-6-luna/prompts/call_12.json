@@ -1,0 +1,23 @@
+{
+  "call": 12,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE library [\n  <!ELEMENT library (metadata, shelf*)>\n  <!ELEMENT metadata (title, generated, note?)>\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT generated (#PCDATA)>\n  <!ELEMENT note (#PCDATA|em)*>\n  <!ELEMENT em (#PCDATA)>\n  <!ELEMENT shelf (book+)>\n  <!ATTLIST shelf name CDATA #REQUIRED>\n  <!ELEMENT book (isbn, title, author+, summary?, tags?)>\n  <!ATTLIST book id ID #REQUIRED status (available|loaned|reserved) \"available\">\n  <!ELEMENT isbn (#PCDATA)>\n  <!ELEMENT author (#PCDATA)>\n  <!ELEMENT summary (#PCDATA|em|br)*>\n  <!ELEMENT br EMPTY>\n  <!ELEMENT tags (tag*)>\n  <!ELEMENT tag (#PCDATA)>\n]>\n<library>\n  <metadata>\n    <title>Small Reference Library</title>\n    <generated>2026-09-23T14:22:11Z</generated>\n    <note>Use <em>exact</em> matching when importing records.<br/>Whitespace is significant.</note>\n  </metadata>\n  <shelf name=\"languages\">\n    <book id=\"b101\" status=\"loaned\">\n      <isbn>978-0-00-000101-7</isbn>\n      <title>Parsing by Hand</title>\n      <author>R. Ibarra</author>\n      <author>M. Chen</author>\n      <summary>A guide to <em>incremental</em> grammars and token boundaries.</summary>\n      <tags><tag>xml</tag><tag>parsing</tag></tags>\n    </book>\n    <book id=\"b102\">\n      <isbn>978-0-00-000102-4</isbn>\n      <title>Quiet Machines</title>\n      <author>S. Novak</author>\n      <summary>Notes on deterministic systems.<br/>Second edition.</summary>\n    </book>\n  </shelf>\n</library>\n\n--- example 2 ---\n<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n<network xmlns=\"urn:example:network\"\n         xmlns:net=\"urn:example:network:devices\"\n         xmlns:log=\"urn:example:network:log\"\n         xml:space=\"preserve\">\n  <?snapshot sequence=\"00000019\"?>\n  <graph directed=\"true\" generated=\"2026-09-23\">\n    <node id=\"router-\u03b1\" role=\"edge\" enabled=\"yes\">\n      <address family=\"ipv6\">2001:db8:85a3::8a2e:370:7334</address>\n      <interfaces>\n        <interface name=\"uplink0\" mtu=\"9000\">\n          <net:mac>02:00:00:aa:bb:01</net:mac>\n          <net:metric>10</net:metric>\n        </interface>\n        <interface name=\"lan0\" mtu=\"1500\">\n          <net:mac>02:00:00:aa:bb:02</net:mac>\n          <net:metric>100</net:metric>\n        </interface>\n      </interfaces>\n    </node>\n    <node id=\"sensor-07\" role=\"leaf\" enabled=\"no\">\n      <address family=\"ipv4\">192.0.2.77</address>\n      <interfaces/>\n    </node>\n    <edge from=\"router-\u03b1\" to=\"sensor-07\" weight=\"0.875\">\n      <log:event level=\"warning\" code=\"LINK_DEGRADED\">\n        packet loss <![CDATA[< 3% ]]>\n      </log:event>\n      <log:sample at=\"12:00:00.000Z\">0.03125</log:sample>\n      <log:sample at=\"12:00:01.000Z\">0.02800</log:sample>\n    </edge>\n  </graph>\n  <policies>\n    <policy name=\"quarantine\" priority=\"7\">\n      <match field=\"role\" equals=\"leaf\"/>\n      <action type=\"rate-limit\" value=\"64kbit/s\"/>\n      <action type=\"notify\">\n        <recipient channel=\"pager\">ops@example.invalid</recipient>\n      </action>\n    </policy>\n  </policies>\n</network>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-23T05:23:11.476090+00:00"
+}

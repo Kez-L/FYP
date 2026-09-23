@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ENTITY % declarations '
+    <!ELEMENT matrix (row+)>
+    <!ELEMENT row (cell+)>
+    <!ELEMENT cell (#PCDATA|formula|![CDATA[not-dtd-content]] )*>
+  '>
+  %declarations;
+  <!ATTLIST matrix rows NMTOKEN #REQUIRED>
+  <!ATTLIST row number NMTOKEN #REQUIRED>
+  <!ATTLIST cell position NMTOKEN #IMPLIED type (text|number|formula) "text">
+  <!ELEMENT formula (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <![IGNORE[
+    <!ELEMENT ignored EMPTY>
+    <!ATTLIST ignored reason CDATA #IMPLIED>
+  ]]>
+  <![INCLUDE[
+    <!ENTITY marker "included">
+  ]]>
+]>
+<matrix rows="2">
+  <row number="1">
+    <cell position="a">one&nbsp;</cell>
+    <cell position="b" type="formula"><formula>sum(1,2)</formula></cell>
+  </row>
+  <row number="2">
+    <cell position="a"><![CDATA[x &lt; y]]></cell>
+    <cell position="b">two &marker;</cell>
+  </row>
+</matrix>

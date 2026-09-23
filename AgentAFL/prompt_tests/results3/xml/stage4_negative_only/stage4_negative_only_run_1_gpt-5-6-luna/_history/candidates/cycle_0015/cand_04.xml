@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node (label?, property*)>
+  <!ATTLIST node id ID #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST property name CDATA #REQUIRED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED kind CDATA "directed">
+]>
+<graph xmlns="urn:graph:test">
+  <node id="n-root">
+    <label>Root</label>
+    <property name="empty"/>
+    <property name="multiline">
+      line one
+      line two
+    </property>
+  </node>
+  <node id="n-2">
+    <label>Left &#x2190; branch</label>
+    <property name="quote">He said, &quot;go&quot;.</property>
+  </node>
+  <node id="n-3">
+    <label>Right &gt; branch</label>
+  </node>
+  <edge from="n-root" to="n-2"/>
+  <edge from="n-root" to="n-3" kind="cross">
+    <!-- whitespace-only content is intentionally not permitted by the DTD -->
+  </edge>
+</graph>

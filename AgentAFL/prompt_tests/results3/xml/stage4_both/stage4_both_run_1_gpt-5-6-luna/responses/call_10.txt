@@ -1,0 +1,170 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE library [
+  <!ELEMENT library (section+)>
+  <!ELEMENT section (heading, book*)>
+  <!ATTLIST section code NMTOKEN #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT book (title, author+, summary?, metadata?)>
+  <!ATTLIST book isbn CDATA #IMPLIED format (paper|ebook|audio) "paper">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST metadata pages CDATA #IMPLIED language CDATA "en">
+  <!ENTITY publisher "Northwind Press">
+]>
+<library>
+  <section code="fiction">
+    <heading>Collected Stories</heading>
+    <book isbn="978-0-00-000001-1" format="ebook">
+      <title>The Glass Orchard</title>
+      <author>R. Vale</author>
+      <author>M. Chen</author>
+      <summary xml:space="preserve">A tale of &publisher; and distant weather.</summary>
+      <metadata pages="312" language="en"/>
+    </book>
+  </section>
+  <section code="reference">
+    <heading>Field Notes</heading>
+    <book format="audio">
+      <title>Listening to Stone</title>
+      <author>Élodie Martín</author>
+    </book>
+  </section>
+</library>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<session xmlns="urn:example:session"
+         xmlns:auth="urn:example:auth"
+         xmlns:evt="urn:example:event"
+         xml:lang="en-US">
+  <identity>
+    <auth:user uid="u-73">
+      <auth:name>Ada Lovelace</auth:name>
+      <auth:credential kind="token" expires="2027-01-01">redacted</auth:credential>
+    </auth:user>
+  </identity>
+  <timeline>
+    <evt:event id="e1" severity="notice" timestamp="2026-09-23T08:05:44Z">
+      <evt:message>Connection established</evt:message>
+      <evt:details><![CDATA[peer=<node>; latency=18ms; status=ok]]></evt:details>
+    </evt:event>
+    <evt:event id="e2" severity="warning" timestamp="2026-09-23T08:06:01Z">
+      <evt:message>Retry requested</evt:message>
+      <evt:tags>
+        <evt:tag>network</evt:tag>
+        <evt:tag>transient</evt:tag>
+      </evt:tags>
+    </evt:event>
+  </timeline>
+  <preferences xml:space="default">
+    <preference name="theme">dark</preference>
+    <preference name="notifications">false</preference>
+  </preferences>
+</session>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (package, dependencies, files)>
+  <!ATTLIST manifest version CDATA #REQUIRED checksum CDATA #IMPLIED>
+  <!ELEMENT package (name, vendor, release)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT vendor (#PCDATA)>
+  <!ELEMENT release (#PCDATA)>
+  <!ELEMENT dependencies (dependency*)>
+  <!ELEMENT dependency EMPTY>
+  <!ATTLIST dependency name CDATA #REQUIRED min CDATA #IMPLIED optional (yes|no) "no">
+  <!ELEMENT files (file*)>
+  <!ELEMENT file (#PCDATA)>
+  <!ATTLIST file path CDATA #REQUIRED mode NMTOKEN #IMPLIED executable (true|false) "false">
+]>
+<manifest version="4.2.0" checksum="sha256:0123456789abcdef">
+  <package>
+    <name>observatory-tools</name>
+    <vendor>Heliograph Labs</vendor>
+    <release>stable</release>
+  </package>
+  <dependencies>
+    <dependency name="liborbit" min="2.8" optional="no"/>
+    <dependency name="libcanvas" min="1.4" optional="yes"/>
+  </dependencies>
+  <files>
+    <file path="bin/observe" mode="0755" executable="true"/>
+    <file path="share/observe/defaults.xml" mode="0644">&amp;lt;defaults&amp;gt;</file>
+    <file path="README.txt" mode="0644">Installation notes&#x0A;and examples.</file>
+  </files>
+</manifest>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?processing instruction-data?>
+<!-- Deliberately includes attributes with whitespace and entity references. -->
+<invoice currency="EUR" issued="2026-09-23" xmlns:tax="urn:example:tax">
+  <customer>
+    <name>Zoë Dubois</name>
+    <address>
+      <line>18 Rue des Fleurs</line>
+      <line>75001 Paris</line>
+      <country code="FR">France</country>
+    </address>
+  </customer>
+  <items>
+    <item sku="A-17" quantity="2">
+      <description>Thermal mug &amp; carrying case</description>
+      <unit-price>19.95</unit-price>
+      <tax:rate region="standard">0.20</tax:rate>
+    </item>
+    <item sku="B-04" quantity="1">
+      <description>Replacement seal</description>
+      <unit-price>4.50</unit-price>
+      <tax:rate region="reduced">0.055</tax:rate>
+    </item>
+  </items>
+  <totals>
+    <subtotal>44.40</subtotal>
+    <tax:amount>8.31</tax:amount>
+    <total>52.71</total>
+  </totals>
+  <note xml:space="preserve">
+    Thank you.
+    
+    Please retain this invoice.
+  </note>
+</invoice>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (vertex+, edge*)>
+  <!ELEMENT vertex (label?, annotation*)>
+  <!ATTLIST vertex id ID #REQUIRED kind (source|transform|sink) "transform">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT annotation (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA #IMPLIED directed (true|false) "true">
+]>
+<graph xmlns:meta="urn:example:metadata" directed="true">
+  <vertex id="v-input" kind="source">
+    <label>Input stream</label>
+    <annotation meta:locale="en">Bytes arriving from the sensor.</annotation>
+  </vertex>
+  <vertex id="v-filter">
+    <label>Filter &amp; normalize</label>
+    <annotation meta:locale="de">Rohdaten werden geprüft.</annotation>
+    <annotation meta:locale="ja">正規化されたデータ</annotation>
+  </vertex>
+  <vertex id="v-output" kind="sink">
+    <label><![CDATA[Archive <primary>]]></label>
+  </vertex>
+  <edge from="v-input" to="v-filter" weight="0.75"/>
+  <edge from="v-filter" to="v-output" weight="1.0"/>
+  <edge from="v-input" to="v-output" weight="0.05" directed="false"/>
+</graph>
+```

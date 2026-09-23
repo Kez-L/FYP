@@ -1,0 +1,174 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+)>
+  <!ELEMENT entry (heading, body, checksum)>
+  <!ATTLIST entry id ID #REQUIRED status (draft|final|sealed) "draft">
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT body (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY copyright "© 2026">
+]>
+<archive>
+  <entry id="e-001" status="sealed">
+    <heading>Field &amp; Laboratory Notes</heading>
+    <body>Samples were stored at 4&#xB0;C <em>before</em> transport<br/>to the archive. &copyright;</body>
+    <checksum>sha256:7f4d2a</checksum>
+  </entry>
+  <entry id="e-002">
+    <heading><![CDATA[Untitled / provisional]]></heading>
+    <body>Unescaped markup-like text: <![CDATA[<sensor state="idle"/>]]></body>
+    <checksum>pending</checksum>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xml:lang="fr">
+  <!-- A catalog with mixed content and linked resources -->
+  <section code="A" xml:space="preserve">
+    <label>Objets anciens</label>
+    <item sku="A-17" available="false">
+      <name>Lampe à huile</name>
+      <description>Objet restauré — surface irrégulière.</description>
+      <media xlink:type="simple"
+             xlink:href="urn:asset:images/lampe-17"
+             xlink:show="new"
+             xlink:actuate="onRequest"/>
+      <dimensions unit="mm">
+        <width>140</width>
+        <height>265</height>
+        <depth>140</depth>
+      </dimensions>
+    </item>
+  </section>
+  <section code="B">
+    <label>Records</label>
+    <item sku="B-03" available="true">
+      <name>𐐀 marker</name>
+      <description>Line one&#xA;Line two&#x9;with a tab.</description>
+      <media xlink:type="extended">
+        <xlink:arc xlink:from="thumbnail" xlink:to="original"
+                   xlink:arcrole="urn:catalog:derivation"/>
+      </media>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?processing instruction-data?>
+<workflow xmlns="urn:example:workflow"
+          xmlns:sec="urn:example:security"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:nil="false">
+  <start at="2026-09-23T00:00:00Z"/>
+  <parallel id="p1">
+    <task id="fetch" owner="ops">
+      <input><![CDATA[
+        {"endpoint":"/v1/items","limit":25}
+      ]]></input>
+      <retry max="3" delay="PT0.5S"/>
+    </task>
+    <task id="verify" owner="qa">
+      <sec:policy level="restricted">
+        <sec:rule action="read" resource="inventory"/>
+        <sec:rule action="deny" resource="secrets"/>
+      </sec:policy>
+    </task>
+  </parallel>
+  <decision expression="count(/workflow/parallel/task) &gt; 1">
+    <when value="true">
+      <emit channel="audit">parallel execution enabled</emit>
+    </when>
+    <otherwise>
+      <emit channel="audit">single execution path</emit>
+    </otherwise>
+  </decision>
+  <end status="success"/>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE library [
+  <!ENTITY left  "&#xAB;">
+  <!ENTITY right "&#xBB;">
+  <!ENTITY title "&left;The Glass Room&right;">
+]>
+<library>
+  <shelf name="fiction">
+    <book isbn="978-0-00-000001-1">
+      <title>&title;</title>
+      <author>
+        <given>Zoë</given>
+        <family>Rossi</family>
+      </author>
+      <publication year="1999">
+        <publisher>North &amp; River</publisher>
+        <places>
+          <place country="GB">Leeds</place>
+          <place country="JP">横浜</place>
+        </places>
+      </publication>
+      <excerpt><![CDATA[
+        The room was quiet.
+        <not-an-element> remained on the page.
+      ]]></excerpt>
+    </book>
+  </shelf>
+  <shelf name="reference">
+    <book isbn="0-00-000002-X" lang="en">
+      <title>XML: A Practical &amp; Peculiar Guide</title>
+      <author><organization>Open Shelf Cooperative</organization></author>
+      <index>
+        <term>entities</term>
+        <term>namespaces</term>
+        <term>validation</term>
+      </index>
+    </book>
+  </shelf>
+</library>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="urn:example:package"
+         xmlns:m="urn:example:manifest"
+         xmlns:xml="http://www.w3.org/XML/1998/namespace"
+         xml:base="https://example.invalid/releases/">
+  <manifest generated="2026-09-23T18:45:00+02:00">
+    <m:entry path="bin/tool" media-type="application/octet-stream"
+             size="4096" digest="sha256:abc123"/>
+    <m:entry path="docs/readme.xml" media-type="application/xml"
+             size="812">
+      <m:dependency path="../schemas/package.xsd" optional="true"/>
+    </m:entry>
+  </manifest>
+  <payload>
+    <directory name="config">
+      <file name="defaults.ini" encoding="utf-8">mode=quiet
+timeout=15
+</file>
+      <file name="empty.dat"/>
+    </directory>
+    <directory name="data">
+      <record key="alpha" value="1"/>
+      <record key="beta" value="2"/>
+      <record key="gamma">
+        <value type="null"/>
+      </record>
+    </directory>
+  </payload>
+  <signature algorithm="ed25519">
+    <key-id>release-2026</key-id>
+    <value encoding="base64">AAECAwQFBgcICQ==</value>
+  </signature>
+</package>
+```

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope"
+              xmlns:x="urn:example:exchange"
+              env:encodingStyle="http://www.w3.org/2003/05/soap-encoding">
+  <env:Header>
+    <x:Trace env:mustUnderstand="true" env:role="urn:example:auditor">
+      <x:hop index="0" at="edge">
+        <x:token><![CDATA[trace:α/β?&raw=yes]]></x:token>
+      </x:hop>
+    </x:Trace>
+    <x:Options>
+      <x:flag enabled="false"/>
+      <x:flag enabled="true" name="compressed"/>
+    </x:Options>
+  </env:Header>
+  <env:Body>
+    <x:SubmitRequest requestId="req-0007">
+      <x:payload>
+        <x:entry key="A" xsi:type="x:string"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">first</x:entry>
+        <x:entry key="B"><x:value>42</x:value></x:entry>
+        <x:entry key="C"><![CDATA[
+          <embedded kind="not-parsed">&still-text;</embedded>
+        ]]></x:entry>
+      </x:payload>
+      <x:emptyValue/>
+    </x:SubmitRequest>
+  </env:Body>
+</env:Envelope>

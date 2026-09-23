@@ -1,0 +1,117 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (item*, note?)>
+  <!ATTLIST section id ID #REQUIRED xml:lang NMTOKEN "en">
+  <!ELEMENT item (#PCDATA|price|tag)*>
+  <!ATTLIST item ref IDREF #IMPLIED state (new|used|unknown) "unknown">
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+]>
+<catalog>
+  <section id="s-main" xml:lang="x-klingon">
+    <item ref="s-main" state="new">alpha<tag>nested</tag><price>0.00</price>omega</item>
+    <item state="used"><![CDATA[<not-an-element>&still-data;]]></item>
+    <note>tail &lt; text</note>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ENTITY header "from &quot;archive&quot;">
+  <!ENTITY stamp "2026-09-23T00:00:00Z">
+  <!ELEMENT message (meta, body, attachment*)>
+  <!ELEMENT meta (sender, receiver, timestamp)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT receiver (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT body (#PCDATA|em|br|link)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment name CDATA #REQUIRED encoding CDATA "base64">
+]>
+<message priority="high" xmlns="urn:mail">
+  <meta>
+    <sender>&header;</sender>
+    <receiver>nobody@example.invalid</receiver>
+    <timestamp>&stamp;</timestamp>
+  </meta>
+  <body>start<em>middle</em><br/>after<link href="urn:x">reference</link>end</body>
+  <attachment name="empty" encoding="none"/>
+</message>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST cell r CDATA #IMPLIED c CDATA #IMPLIED>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<?transform mode="sparse"?>
+<matrix xmlns:m="urn:matrix" xmlns:x="urn:extra">
+  <row r="1"><cell c="1">&left;one&right;</cell><cell c="2">two</cell></row>
+  <row r="2"><cell c="1"><![CDATA[line
+break
+with ]]> delimiter]]></cell><cell c="2" x:flag="yes">four</cell></row>
+  <row r="3"><cell c="1">five<!-- hidden --></cell></row>
+</matrix>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ELEMENT report (header, entries, footer)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header generated CDATA #IMPLIED>
+  <!ELEMENT entries (entry*)>
+  <!ELEMENT entry (key, value, value?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "data.bin" NDATA bin>
+]>
+<report>
+  <header generated="true"/>
+  <entries>
+    <entry><key>k&amp;1</key><value>plain<part>A</part><part>B</part></value></entry>
+    <entry><key>broken</key><value>unterminated<part>piece</value></entry>
+    <entry><key>external</key><value>&payload;</value></entry>
+  </entries>
+  <footer>done</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE universe [
+  <!ELEMENT universe (cluster)>
+  <!ELEMENT cluster (node+)>
+  <!ELEMENT node (label, node*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ATTLIST node id CDATA #IMPLIED role CDATA #IMPLIED>
+  <!ENTITY amp "&#38;">
+  <!ENTITY quoted "&#34;">
+]>
+<universe xmlns="urn:outer" xmlns:q="urn:q">
+  <cluster q:kind="recursive">
+    <node id="root" role="top">
+      <label>root&quoted;label</label>
+      <node id="left"><label>L&amp;R</label>
+        <node id="leaf"><label>&amp; nested</label></node>
+      </node>
+      <node id="right"><label>R&แmp;</label></node>
+    </node>
+  </cluster>
+</universe>
+```

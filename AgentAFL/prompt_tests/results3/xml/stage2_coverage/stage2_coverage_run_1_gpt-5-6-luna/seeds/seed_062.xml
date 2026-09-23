@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (soap:header, soap:body)>
+  <!ELEMENT soap:header (auth:token, trace:span?)>
+  <!ELEMENT soap:body (m:request|m:response)>
+  <!ELEMENT auth:token (#PCDATA)>
+  <!ELEMENT trace:span EMPTY>
+  <!ELEMENT m:request (m:argument*)>
+  <!ELEMENT m:response (m:result, m:warning?)>
+  <!ELEMENT m:argument (#PCDATA)>
+  <!ELEMENT m:result (#PCDATA)>
+  <!ELEMENT m:warning (#PCDATA)>
+  <!ATTLIST auth:token scheme CDATA #IMPLIED>
+  <!ATTLIST trace:span id ID #REQUIRED>
+  <!ATTLIST m:argument name CDATA #REQUIRED>
+  <!ENTITY token-part "prefix-&#x2D;-suffix">
+]>
+<envelope xmlns:soap="urn:soap:test"
+          xmlns:auth="urn:auth:test"
+          xmlns:trace="urn:trace:test"
+          xmlns:m="urn:message:test"
+          xmlns="urn:default:test">
+  <soap:header>
+    <auth:token scheme="bearer">&token-part;</auth:token>
+    <trace:span id="trace-1"/>
+  </soap:header>
+  <soap:body>
+    <m:request>
+      <m:argument name="path">/a/b?x=1&amp;y=2</m:argument>
+      <m:argument name="payload"><![CDATA[{ "x": null }]]></m:argument>
+    </m:request>
+  </soap:body>
+</envelope>

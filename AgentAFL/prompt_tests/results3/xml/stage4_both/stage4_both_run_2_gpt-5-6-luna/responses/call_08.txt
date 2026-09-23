@@ -1,0 +1,219 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (meta, item*)>
+  <!ELEMENT meta (created, owner)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT item (name, dependency*, artifact?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT dependency EMPTY>
+  <!ELEMENT artifact (#PCDATA)>
+  <!ATTLIST manifest version CDATA #REQUIRED>
+  <!ATTLIST item key ID #REQUIRED state (new|ready|retired) "new">
+  <!ATTLIST dependency ref IDREF #REQUIRED optional (yes|no) "no">
+  <!ATTLIST artifact encoding (plain|base64) "plain">
+  <!ENTITY product "parser &amp; analyzer">
+]>
+<manifest version="3.14">
+  <meta>
+    <created>2026-09-23T12:00:00Z</created>
+    <owner>&product;</owner>
+  </meta>
+  <item key="core" state="ready">
+    <name>Core runtime</name>
+    <artifact encoding="plain">libcore.so</artifact>
+  </item>
+  <item key="cli">
+    <name>Command line tools</name>
+    <dependency ref="core"/>
+    <dependency ref="docs" optional="yes"/>
+  </item>
+  <item key="docs" state="retired">
+    <name>Reference manuals</name>
+    <artifact>docs.tar</artifact>
+  </item>
+</manifest>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (layer+, legend?)>
+  <!ELEMENT layer (label, shape+)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT shape (point|path|area)>
+  <!ELEMENT point EMPTY>
+  <!ELEMENT path (point+)>
+  <!ELEMENT area (ring, ring*)>
+  <!ELEMENT ring (point+)>
+  <!ELEMENT legend (entry+)>
+  <!ELEMENT entry (swatch, caption)>
+  <!ELEMENT swatch EMPTY>
+  <!ELEMENT caption (#PCDATA)>
+  <!ATTLIST map projection CDATA #IMPLIED>
+  <!ATTLIST layer name CDATA #REQUIRED visible (true|false) "true">
+  <!ATTLIST shape id ID #IMPLIED>
+  <!ATTLIST point lat CDATA #REQUIRED lon CDATA #REQUIRED>
+  <!ATTLIST path closed (yes|no) "no">
+  <!ATTLIST area fill CDATA #IMPLIED>
+  <!ATTLIST swatch color CDATA #REQUIRED>
+  <!ENTITY degree "&#x00B0;">
+]>
+<map projection="local-grid">
+  <layer name="routes">
+    <label>Coastal routes</label>
+    <shape id="p1">
+      <point lat="41.2" lon="-71.8"/>
+    </shape>
+    <shape id="r7">
+      <path closed="yes">
+        <point lat="41.2" lon="-71.8"/>
+        <point lat="41.9" lon="-70.4"/>
+        <point lat="42.3" lon="-69.7"/>
+      </path>
+    </shape>
+  </layer>
+  <layer name="parks" visible="false">
+    <label>Protected areas</label>
+    <shape id="a9" fill="green">
+      <area>
+        <ring>
+          <point lat="40.1" lon="-72.0"/>
+          <point lat="40.4" lon="-71.4"/>
+          <point lat="40.0" lon="-71.1"/>
+        </ring>
+      </area>
+    </shape>
+  </layer>
+  <legend>
+    <entry>
+      <swatch color="#227744"/>
+      <caption>elevation &lt; 500&meter;</caption>
+    </entry>
+  </legend>
+</map>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<records xmlns="urn:example:records" xmlns:r="urn:example:record-meta" xml:space="preserve">
+  <?index mode="sparse"?>
+  <batch r:token="B-17" xml:lang="en">
+    <record r:kind="measurement" timestamp="2026-09-23T08:15:00Z">
+      <subject code="A&amp;B">  thermal chamber  </subject>
+      <value unit="K">298.15</value>
+      <note><![CDATA[Calibration <passed> without adjustment.]]></note>
+    </record>
+    <!-- records may contain an empty observation -->
+    <record r:kind="event" timestamp="2026-09-23T08:16:02Z">
+      <subject code="C-9">valve</subject>
+      <value unit="state">open</value>
+      <details>
+        <cause>automatic</cause>
+        <operator xmlns="">system</operator>
+        <tags>
+          <tag priority="1">safety</tag>
+          <tag priority="2">remote</tag>
+        </tags>
+      </details>
+    </record>
+    <record r:kind="measurement">
+      <subject code="D-4">humidity</subject>
+      <value unit="%">43.7</value>
+    </record>
+  </batch>
+</records>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (header, payload, signature?)>
+  <!ELEMENT header (field+)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT signature (algorithm, digest)>
+  <!ELEMENT algorithm (#PCDATA)>
+  <!ELEMENT digest (#PCDATA)>
+  <!ATTLIST package id ID #REQUIRED compression (none|gzip|zstd) "none">
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST chunk number CDATA #REQUIRED final (yes|no) "no">
+  <!ATTLIST link href URI #REQUIRED rel CDATA #IMPLIED>
+  <!ENTITY % crypto "IGNORE">
+  <![%crypto;[
+    <!ATTLIST signature verified (yes|no) "no">
+  ]]>
+  <!ENTITY nbsp "&#160;">
+]>
+<package id="p-42" compression="zstd">
+  <header>
+    <field name="content-type" value="application/octet-stream"/>
+    <field name="content-length" value="4096"/>
+    <field name="description" value="binary &amp; metadata"/>
+  </header>
+  <payload>
+    <chunk number="0">AAECAwQF<link href="urn:chunk:0" rel="self"/>Zg==</chunk>
+    <chunk number="1">H4sI&nbsp;encoded&#x0A;payload</chunk>
+    <chunk number="2" final="yes"><![CDATA[7f8e9d0c]]></chunk>
+  </payload>
+  <signature>
+    <algorithm>sha512</algorithm>
+    <digest>c29tZS1kaWdlc3Q=</digest>
+  </signature>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (stage+)>
+  <!ELEMENT stage (task+, transition*)>
+  <!ELEMENT task (input*, action, output*)>
+  <!ELEMENT input EMPTY>
+  <!ELEMENT action (#PCDATA|script)*>
+  <!ELEMENT script (#PCDATA)>
+  <!ELEMENT output EMPTY>
+  <!ELEMENT transition EMPTY>
+  <!ATTLIST workflow name CDATA #REQUIRED>
+  <!ATTLIST stage id ID #REQUIRED mode (serial|parallel) "serial">
+  <!ATTLIST task id ID #REQUIRED timeout CDATA #IMPLIED>
+  <!ATTLIST input name CDATA #REQUIRED required (true|false) "true">
+  <!ATTLIST action language (shell|python|text) "text">
+  <!ATTLIST output name CDATA #REQUIRED path CDATA #IMPLIED>
+  <!ATTLIST transition to IDREF #REQUIRED when CDATA #IMPLIED>
+]>
+<workflow name="nightly-build">
+  <stage id="prepare" mode="parallel">
+    <task id="fetch" timeout="30s">
+      <input name="remote"/>
+      <action language="shell">fetch --quiet <script>source</script></action>
+      <output name="workspace" path="/tmp/work"/>
+    </task>
+    <task id="validate">
+      <input name="workspace" required="false"/>
+      <action language="python"><![CDATA[
+if value is None:
+    print("skipped")
+]]></action>
+    </task>
+    <transition to="compile" when="all-success"/>
+  </stage>
+  <stage id="compile">
+    <task id="cc" timeout="5m">
+      <input name="workspace"/>
+      <action language="shell">make -j2 &amp;&amp; make check</action>
+      <output name="binary" path="build/app"/>
+      <output name="report"/>
+    </task>
+    <transition to="publish" when="tests-passed"/>
+  </stage>
+  <stage id="publish">
+    <task id="archive">
+      <action>package artifacts</action>
+    </task>
+  </stage>
+</workflow>
+```

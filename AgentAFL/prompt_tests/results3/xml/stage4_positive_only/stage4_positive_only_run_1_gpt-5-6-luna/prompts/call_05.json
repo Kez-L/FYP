@@ -1,0 +1,23 @@
+{
+  "call": 5,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\"?>\n<catalog xmlns=\"urn:store:catalog\" xmlns:p=\"urn:store:price\">\n  <product sku=\"A-001\" available=\"true\">\n    <name><![CDATA[Glass & Granite]]></name>\n    <dimensions unit=\"mm\">\n      <width>12.5</width>\n      <height>0</height>\n      <depth>999999999999999999999</depth>\n    </dimensions>\n    <p:price currency=\"\u20ac\">1.2e+03</p:price>\n    <tags>\n      <tag>fragile</tag>\n      <tag>\u77f3</tag>\n      <tag xml:space=\"preserve\">  spaced  </tag>\n    </tags>\n  </product>\n  <product sku=\"B-002\" available=\"false\">\n    <name>R&amp;D &quot;prototype&quot;</name>\n    <notes>line one\nline two\nline three</notes>\n  </product>\n</catalog>\n\n--- example 2 ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE root [\n  <!ELEMENT root ANY>\n  <!ELEMENT node ANY>\n  <!ATTLIST node key ID #IMPLIED ref IDREF #IMPLIED>\n  <!ENTITY local \"replacement\">\n  <!ENTITY recursive \"&local; &local;\">\n]>\n<root xmlns:a=\"urn:a\" xmlns:b=\"urn:b\">\n  <node key=\"n0\" ref=\"n2\">\n    <node key=\"n1\">\n      <value>&recursive;</value>\n      <value><![CDATA[]]></value>\n      <value><![CDATA[<not-an-element>&still-raw;</not-an-element>]]></value>\n    </node>\n    <a:item b:flag=\"yes\" a:count=\"00000000000000000000000000042\"/>\n    <node key=\"n2\">\n      <mixed>left<![CDATA[middle]]>right</mixed>\n    </node>\n  </node>\n  <tail><!-- comment --><![CDATA[ x ]]></tail>\n</root>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-23T05:20:53.396046+00:00"
+}

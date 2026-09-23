@@ -1,0 +1,201 @@
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ATTLIST catalog xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section code NMTOKEN #REQUIRED>
+  <!ELEMENT title (#PCDATA|mark|br)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT item (name, price, note?)>
+  <!ATTLIST item id ID #REQUIRED status (new|used|reserved) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA|mark)*>
+  <!ENTITY currency "&#x20AC;">
+]>
+<catalog xml:lang="en">
+  <section code="tools">
+    <title>Hand<mark>crafted</mark><br/>tools</title>
+    <item id="i-101">
+      <name>Precision file</name>
+      <price>19.95 &currency;</price>
+      <note>Includes <mark>oak</mark> handle.</note>
+    </item>
+  </section>
+  <section code="parts">
+    <title>Replacement components</title>
+    <item id="i-202" status="reserved">
+      <name>Retaining ring</name>
+      <price>3.50 &currency;</price>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (defaults, profile+)>
+  <!ELEMENT defaults (timeout, endpoint)>
+  <!ELEMENT timeout (#PCDATA)>
+  <!ELEMENT endpoint (#PCDATA)>
+  <!ELEMENT profile (name, setting*)>
+  <!ATTLIST profile id ID #REQUIRED inherits IDREF #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT setting (#PCDATA)>
+  <!ATTLIST setting key NMTOKEN #REQUIRED enabled (true|false) "true">
+  <!ENTITY % commonAttrs "<!ATTLIST setting source CDATA 'local'>">
+  %commonAttrs;
+  <![INCLUDE[
+    <!ENTITY standard "production">
+  ]]>
+  <![IGNORE[
+    <!ELEMENT obsolete EMPTY>
+  ]]>
+]>
+<configuration>
+  <defaults>
+    <timeout>45</timeout>
+    <endpoint>https://config.example.test/api</endpoint>
+  </defaults>
+  <profile id="base">
+    <name>&standard;</name>
+    <setting key="cache" source="system">enabled</setting>
+    <setting key="tracing" enabled="false">disabled</setting>
+  </profile>
+  <profile id="operator" inherits="base">
+    <name>operator</name>
+    <setting key="theme">dark</setting>
+  </profile>
+</configuration>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:manifest
+    xmlns:r="urn:acme:release"
+    xmlns:d="urn:acme:data"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xml:base="https://assets.example.test/releases/">
+  <r:release xml:id="release-42" version="4.2.0" xml:lang="fr">
+    <r:summary><![CDATA[Correctifs <critiques> & améliorations]]></r:summary>
+    <d:artifact
+        d:type="bundle"
+        xlink:type="simple"
+        xlink:href="packages/core-4.2.tar"
+        xlink:title="Paquet principal">
+      <d:checksum algorithm="sha256">9f86d081884c7d659a2feaa0c55ad015</d:checksum>
+      <d:part name="binary" media="application/octet-stream"/>
+      <d:part name="documentation" media="text/plain">
+        <d:language>fr</d:language>
+      </d:part>
+    </d:artifact>
+    <r:dependencies>
+      <r:dependency name="runtime" version="&gt;=8.1"/>
+      <r:dependency name="parser" version="~2.7"/>
+    </r:dependencies>
+    <?release-note reviewed?>
+  </r:release>
+</r:manifest>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE drawing [
+  <!ELEMENT drawing (metadata, canvas)>
+  <!ELEMENT metadata (author, created, keywords?)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT keywords (#PCDATA)>
+  <!ELEMENT canvas (layer+)>
+  <!ATTLIST canvas width CDATA #REQUIRED height CDATA #REQUIRED units (px|mm|in) "px">
+  <!ELEMENT layer (shape*)>
+  <!ATTLIST layer name CDATA #REQUIRED visible (yes|no) "yes">
+  <!ELEMENT shape EMPTY>
+  <!ATTLIST shape
+    type (rect|circle|path) #REQUIRED
+    x CDATA #IMPLIED
+    y CDATA #IMPLIED
+    fill CDATA #IMPLIED
+    data CDATA #IMPLIED>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY preview SYSTEM "preview.png" NDATA png>
+  <!ENTITY nbsp "&#160;">
+]>
+<drawing>
+  <metadata>
+    <author>R&amp;D &amp; Design</author>
+    <created>2026-09-23T14:00:00Z</created>
+    <keywords>vector, geometry, &nbsp;layout</keywords>
+  </metadata>
+  <canvas width="1024" height="768" units="px">
+    <layer name="background">
+      <shape type="rect" x="0" y="0" fill="#ffffff"/>
+    </layer>
+    <layer name="foreground" visible="yes">
+      <shape type="circle" x="512" y="384" fill="url(#gradient)"/>
+      <shape type="path" data="M 10 20 L 30 40 C 50 60 70 80 90 100"/>
+    </layer>
+  </canvas>
+</drawing>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (trigger, branch, audit)>
+  <!ATTLIST workflow id ID #REQUIRED revision NMTOKEN #REQUIRED>
+  <!ELEMENT trigger (event, parameters?)>
+  <!ELEMENT event (#PCDATA)>
+  <!ELEMENT parameters (parameter*)>
+  <!ELEMENT parameter (#PCDATA)>
+  <!ATTLIST parameter name NMTOKEN #REQUIRED>
+  <!ELEMENT branch (when+, otherwise?)>
+  <!ELEMENT when (action+)>
+  <!ATTLIST when test CDATA #REQUIRED ref IDREF #IMPLIED>
+  <!ELEMENT otherwise (action+)>
+  <!ELEMENT action (message?, action*)>
+  <!ATTLIST action id ID #IMPLIED kind (notify|store|delegate|stop) #REQUIRED>
+  <!ELEMENT message (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT audit (entry+)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ATTLIST entry action IDREF #REQUIRED at CDATA #REQUIRED>
+  <!ENTITY alert "Attention: ">
+]>
+<workflow id="wf-7" revision="r3">
+  <trigger>
+    <event>document.received</event>
+    <parameters>
+      <parameter name="channel">email</parameter>
+      <parameter name="priority">high</parameter>
+    </parameters>
+  </trigger>
+  <branch>
+    <when test="priority = 'high'">
+      <action id="a-notify" kind="notify">
+        <message>&alert;<code>operator</code> review required</message>
+      </action>
+      <action id="a-store" kind="store">
+        <message>Archive original payload</message>
+      </action>
+    </when>
+    <when test="priority = 'low'" ref="a-store">
+      <action kind="delegate">
+        <message>Route to scheduled queue</message>
+      </action>
+    </when>
+    <otherwise>
+      <action id="a-stop" kind="stop">
+        <message>Unrecognized priority</message>
+      </action>
+    </otherwise>
+  </branch>
+  <audit>
+    <entry action="a-notify" at="2026-09-23T15:30:00Z">notification queued</entry>
+    <entry action="a-store" at="2026-09-23T15:30:01Z">payload archived</entry>
+  </audit>
+</workflow>
+```

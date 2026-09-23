@@ -1,0 +1,44 @@
+<?xml version="1.1"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (opening, transaction*, closing)>
+  <!ELEMENT opening (#PCDATA)>
+  <!ELEMENT transaction (when, debit, credit, memo?)>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT debit (account, amount)>
+  <!ELEMENT credit (account, amount)>
+  <!ELEMENT account (#PCDATA)>
+  <!ELEMENT amount (#PCDATA)>
+  <!ELEMENT memo (#PCDATA)>
+  <!ELEMENT closing (#PCDATA)>
+  <!ATTLIST transaction number NMTOKEN #REQUIRED currency CDATA "EUR">
+  <!ATTLIST amount scale NMTOKEN "2">
+  <!ENTITY euro "&#x20AC;">
+  <!ENTITY line "first&#xA;second">
+]>
+<ledger>
+  <opening>1000.00</opening>
+  <transaction number="0001" currency="EUR">
+    <when>2026-09-23</when>
+    <debit>
+      <account>cash</account>
+      <amount scale="2">12.50</amount>
+    </debit>
+    <credit>
+      <account>supplies</account>
+      <amount>&euro; 12.50</amount>
+    </credit>
+    <memo>&line;</memo>
+  </transaction>
+  <transaction number="0002" currency="USD">
+    <when>2026-09-24</when>
+    <debit>
+      <account><![CDATA[refund<account>]]></account>
+      <amount>0</amount>
+    </debit>
+    <credit>
+      <account>cash</account>
+      <amount>0</amount>
+    </credit>
+  </transaction>
+  <closing>987.50</closing>
+</ledger>

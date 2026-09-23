@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<configuration>
+  <defaults>
+    <path>/var/tmp/cache</path>
+    <limits>
+      <soft>64</soft>
+      <hard>128</hard>
+    </limits>
+  </defaults>
+  <profiles>
+    <profile name="minimal" enabled="true">
+      <include>core</include>
+      <exclude>network</exclude>
+      <option key="threads" value="1"/>
+    </profile>
+    <profile name="full" enabled="false">
+      <include>core</include>
+      <include>network</include>
+      <include>diagnostics</include>
+      <option key="threads" value="16"/>
+      <option key="timeout" value="00:05:30"/>
+    </profile>
+  </profiles>
+  <overrides>
+    <set target="minimal" key="path"><![CDATA[/tmp/a&b]]></set>
+    <unset target="full" key="legacy-mode"/>
+  </overrides>
+  <?checkpoint?>
+  <!-- Deliberately empty containers. -->
+  <extensions>
+    <extension name="alpha"/>
+    <extension name="beta">
+      <property name="mode">safe</property>
+    </extension>
+  </extensions>
+</configuration>

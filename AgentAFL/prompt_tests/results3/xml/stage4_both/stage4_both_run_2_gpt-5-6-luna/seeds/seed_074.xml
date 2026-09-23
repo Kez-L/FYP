@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE simulation [
+  <!ELEMENT simulation (scenario, timeline, results)>
+  <!ELEMENT scenario (parameter+)>
+  <!ELEMENT parameter EMPTY>
+  <!ELEMENT timeline (step+)>
+  <!ELEMENT step (input*, action*, checkpoint?)>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT checkpoint (metric+)>
+  <!ELEMENT metric (#PCDATA)>
+  <!ELEMENT results (run+)>
+  <!ELEMENT run (status, statistic+)>
+  <!ELEMENT status (#PCDATA)>
+  <!ELEMENT statistic (#PCDATA)>
+  <!ATTLIST simulation id ID #REQUIRED engine CDATA #REQUIRED>
+  <!ATTLIST parameter name NMTOKEN #REQUIRED value CDATA #REQUIRED mutable (true|false) "false">
+  <!ATTLIST step number CDATA #REQUIRED duration CDATA #IMPLIED>
+  <!ATTLIST checkpoint label CDATA #REQUIRED>
+  <!ATTLIST metric name NMTOKEN #REQUIRED unit CDATA #IMPLIED>
+  <!ATTLIST run seed CDATA #REQUIRED outcome (pass|fail|timeout) #REQUIRED>
+]>
+<simulation id="sim-204" engine="orbit-modeler-3">
+  <scenario>
+    <parameter name="gravity" value="9.80665"/>
+    <parameter name="dragCoefficient" value="0.014" mutable="true"/>
+    <parameter name="launchAngle" value="37.5" mutable="true"/>
+    <parameter name="payloadMass" value="12.4"/>
+  </scenario>
+  <timeline>
+    <step number="1" duration="00:00:08">
+      <input>initial altitude = 1200 m</input>
+      <input>initial velocity = 84 m/s</input>
+      <action>release payload</action>
+      <checkpoint label="separation">
+        <metric name="altitude" unit="m">1176.4</metric>
+        <metric name="velocity" unit="m/s">83.2</metric>
+      </checkpoint>
+    </step>
+    <step number="2" duration="00:00:15">
+      <action>apply guidance correction</action>
+      <action><![CDATA[vector = (0.18, -0.04, 0.91)]]></action>
+      <checkpoint label="midcourse">
+        <metric name="range" unit="m">2480.7</metric>
+        <metric name="error" unit="m">3.2</metric>
+      </checkpoint>
+    </step>
+    <step number="3">
+      <action>terminate on ground contact</action>
+    </step>
+  </timeline>
+  <results>
+    <run seed="11802" outcome="pass">
+      <status>nominal trajectory</status>
+      <statistic name="flightTime" unit="s">42.18</statistic>
+      <statistic name="impactSpeed" unit="m/s">17.6</statistic>
+    </run>
+    <run seed="11803" outcome="timeout">
+      <status>solver exceeded iteration limit</status>
+      <statistic name="iterations">100000</statistic>
+    </run>
+  </results>
+</simulation>

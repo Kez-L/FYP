@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:example:config" xmlns:sec="urn:example:security">
+  <profile name="edge">
+    <inherits from="base"/>
+    <limits>
+      <limit name="connections" value="64"/>
+      <limit name="timeout" value="00:00:07.500"/>
+      <limit name="ratio" value="3.141592653589793"/>
+    </limits>
+    <switches>
+      <switch name="cache" enabled="true"/>
+      <switch name="telemetry" enabled="false"/>
+    </switches>
+  </profile>
+  <profile name="base" deprecated="no">
+    <sec:credentials method="token">
+      <sec:issuer>urn:issuer:internal</sec:issuer>
+      <sec:scopes>
+        <sec:scope>read</sec:scope>
+        <sec:scope>write</sec:scope>
+      </sec:scopes>
+    </sec:credentials>
+    <routes>
+      <route pattern="/v1/*" target="cluster-a"/>
+      <route pattern="/healthz" target="local" terminal="true"/>
+    </routes>
+  </profile>
+</configuration>

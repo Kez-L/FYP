@@ -1,0 +1,23 @@
+{
+  "call": 1,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.1\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (section+)>\n  <!ELEMENT section (title, item*)>\n  <!ATTLIST section code ID #REQUIRED xml:lang NMTOKEN \"en\">\n  <!ELEMENT title (#PCDATA|emph)*>\n  <!ELEMENT emph (#PCDATA)>\n  <!ELEMENT item (name, price?, note?)>\n  <!ATTLIST item ref IDREF #IMPLIED status (new|used|archived) \"new\">\n  <!ELEMENT name (#PCDATA)>\n  <!ELEMENT price (#PCDATA)>\n  <!ELEMENT note (#PCDATA|emph|link)*>\n  <!ATTLIST note target IDREF #IMPLIED>\n  <!ELEMENT link EMPTY>\n  <!ATTLIST link href CDATA #REQUIRED>\n]>\n<catalog>\n  <section code=\"s-one\" xml:lang=\"fr\">\n    <title>R\u00e9sum\u00e9 <emph>\u00e9t\u00e9</emph></title>\n    <item ref=\"s-one\">\n      <name><![CDATA[alpha < beta && gamma]]></name>\n      <price>12.50</price>\n      <note target=\"s-one\">Voir <link href=\"urn:x:y?z=1&amp;q=2\"/> maintenant.</note>\n    </item>\n  </section>\n</catalog>\n\n--- example 2 ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (branch)>\n  <!ELEMENT branch (leaf, branch?)>\n  <!ATTLIST branch depth NMTOKEN #IMPLIED>\n  <!ELEMENT leaf (#PCDATA)>\n  <!ENTITY left \"[\" >\n  <!ENTITY right \"]\" >\n  <!ENTITY text \"a &left;b&right; c\">\n]>\n<root>\n  <branch depth=\"0\">\n    <leaf>&text;</leaf>\n    <branch depth=\"1\">\n      <leaf><![CDATA[content with ]]> and markup-like text</leaf>\n      <branch depth=\"2\">\n        <leaf>tail &lt; &gt; &quot; &apos; &#x1F642;</leaf>\n      </branch>\n    </branch>\n  </branch>\n</root>\n\nTried before \u2014 no new coverage, avoid repeating:\n--- a seed you generated (cycle 1) added 0 new edges ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE envelope [\n  <!ENTITY open \"<part kind='open'>\">\n  <!ENTITY close \"</part>\">\n  <!ENTITY amp \"&#38;\">\n  <!ELEMENT envelope (header, payload)>\n  <!ELEMENT header EMPTY>\n  <!ATTLIST header generated CDATA \"yes\" xml:space (default|preserve) \"default\">\n  <!ELEMENT payload (part+)>\n  <!ELEMENT part (#PCDATA|part|raw)*>\n  <!ATTLIST part kind CDATA #IMPLIED>\n  <!ENTITY % extra \"<!ATTLIST part mark CDATA #IMPLIED>\">\n  %extra;\n]>\n<envelope>\n  <header generated=\"&amp;ready;\"/>\n  <payload>\n    &open;outer &amp; inner &amp; close;&close;\n    <part kind=\"nested\" mark=\"x\"><![CDATA[<not-an-element/>]]><part>leaf</part></part>\n  </payload>\n</envelope>\n\n--- a seed you generated (cycle 1) added 0 new edges ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE r:root [\n  <!ELEMENT r:root (r:entry*, x:entry?)>\n  <!ATTLIST r:root xmlns:r CDATA #FIXED \"urn:root\" xmlns:x CDATA #FIXED \"urn:extra\">\n  <!ELEMENT r:entry (r:key, r:value)>\n  <!ATTLIST r:entry xmlns:r CDATA #IMPLIED>\n  <!ELEMENT r:key (#PCDATA)>\n  <!ELEMENT r:value (#PCDATA|x:mark)*>\n  <!ELEMENT x:entry EMPTY>\n  <!ATTLIST x:entry xmlns:x CDATA #IMPLIED code CDATA #REQUIRED>\n  <!ELEMENT x:mark (#PCDATA)>\n]>\n<r:root xmlns:r=\"urn:root\" xmlns:x=\"urn:extra\">\n  <r:entry xmlns:r=\"urn:root:shadow\">\n    <r:key xml:lang=\"zh\">\u952e</r:key>\n    <r:value>\u5de6<x:mark>\u4e2d</x:mark>\u53f3</r:value>\n  </r:entry>\n  <x:entry code=\"A&amp;B\"/>\n</r:root>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-23T05:29:05.925113+00:00"
+}

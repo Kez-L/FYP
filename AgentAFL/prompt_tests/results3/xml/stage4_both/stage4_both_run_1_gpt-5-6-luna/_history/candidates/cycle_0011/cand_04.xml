@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (vertex+, edge*)>
+  <!ELEMENT vertex (label?, annotation*)>
+  <!ATTLIST vertex id ID #REQUIRED kind (source|transform|sink) "transform">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT annotation (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA #IMPLIED directed (true|false) "true">
+]>
+<graph xmlns:meta="urn:example:metadata" directed="true">
+  <vertex id="v-input" kind="source">
+    <label>Input stream</label>
+    <annotation meta:locale="en">Bytes arriving from the sensor.</annotation>
+  </vertex>
+  <vertex id="v-filter">
+    <label>Filter &amp; normalize</label>
+    <annotation meta:locale="de">Rohdaten werden geprüft.</annotation>
+    <annotation meta:locale="ja">正規化されたデータ</annotation>
+  </vertex>
+  <vertex id="v-output" kind="sink">
+    <label><![CDATA[Archive <primary>]]></label>
+  </vertex>
+  <edge from="v-input" to="v-filter" weight="0.75"/>
+  <edge from="v-filter" to="v-output" weight="1.0"/>
+  <edge from="v-input" to="v-output" weight="0.05" directed="false"/>
+</graph>

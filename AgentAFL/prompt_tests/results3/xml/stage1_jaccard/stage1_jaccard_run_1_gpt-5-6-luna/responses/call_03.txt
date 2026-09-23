@@ -1,0 +1,111 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (entry|section)*>
+  <!ATTLIST section id ID #IMPLIED kind (alpha|beta|gamma) "alpha">
+  <!ELEMENT entry (#PCDATA|detail)*>
+  <!ATTLIST entry ref IDREF #IMPLIED xml:space (default|preserve) "default">
+  <!ELEMENT detail (#PCDATA)>
+  <!ENTITY amp "&#38;">
+  <!ENTITY quoted "left &quot; middle &amp; right">
+]>
+<catalog>
+  <section id="s0" kind="gamma">
+    <entry ref="s1">A<detail>nested</detail>B &amp; &amp; &quoted;</entry>
+    <section id="s1">
+      <entry xml:space="preserve">
+        <![CDATA[
+          <not-an-element/>
+          ]]>tail
+      </entry>
+    </section>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, footer?)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header from CDATA #REQUIRED to CDATA #IMPLIED>
+  <!ELEMENT body ANY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY stamp "2026-09-23T00:00:00Z">
+]>
+<message>
+  <header from="sender@example.invalid" to="receiver@example.invalid"/>
+  <body>
+    <item xmlns="urn:items" xmlns:x="urn:extra" x:mode="compact">
+      <x:value><![CDATA[<&>]]></x:value>
+      <x:value><![CDATA[]]></x:value>
+    </item>
+    <br/>
+    <raw><![CDATA[unterminated-looking ]]]]></raw>
+    <item xmlns="" data="&stamp;"/>
+  </body>
+  <footer>created at &stamp;</footer>
+</message>
+```
+
+```xml
+<!DOCTYPE archive [
+  <!ELEMENT archive (record*)>
+  <!ELEMENT record (key, value, value?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|emph|br)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST record status CDATA "new">
+  <!ENTITY open "<emph>">
+  <!ENTITY close "</emph>">
+]>
+<archive xml:lang="x-klingon" xml:base="urn:example:root">
+  <record status="&quot;quoted&quot;">
+    <key>alpha</key>
+    <value>&open;bold&close;<br/>end</value>
+    <value><![CDATA[x]]>&#x0A;&#10;&amp;</value>
+  </record>
+  <record>
+    <key>beta</key>
+    <value>one<!-- comment --><![CDATA[two]]><?note three?></value>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<outer xmlns:a="urn:a" xmlns:b="urn:b" a:p="1">
+  <a:inner b:q="&quot;" xmlns:a="urn:a:shadow">
+    <b:leaf xmlns:b="" />
+  </a:inner>
+  <choice>
+    <one/>
+    <two attr="x&#xD;&#xA;y"/>
+    <three><![CDATA[<one/><two/>]]></three>
+  </choice>
+  <!-- -- tricky text -- >
+  <?processing target data with > and ?>
+</outer>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ENTITY % declarations '
+    <!ELEMENT root (node)>
+    <!ELEMENT node (#PCDATA|node)*>
+    <!ATTLIST node level NMTOKEN #IMPLIED>
+  '>
+  %declarations;
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<root>
+  <node level="0">
+    before &left;
+    <node level="1">inside &amp; text</node>
+    after &right;
+  </node>
+</root>
+```

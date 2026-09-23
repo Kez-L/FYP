@@ -1,0 +1,118 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+  <book id="b-001" lang="en">
+    <title>Parsing &amp; Testing</title>
+    <author>
+      <name>Ælfgifu O'Connor</name>
+      <contact email="test@example.invalid"/>
+    </author>
+    <metadata><![CDATA[
+      <not-an-element data="&still-text;">raw markup</not-an-element>
+    ]]></metadata>
+    <?status value="draft"?>
+  </book>
+  <book id="b-002">
+    <title>Empty Volume</title>
+    <author/>
+  </book>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ENTITY greeting "Hello">
+  <!ENTITY target "world">
+  <!ELEMENT message (header, body, footer?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT body (p+)>
+  <!ELEMENT p (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<message>
+  <header>&greeting;, &target;!</header>
+  <body>
+    <p>Text <em>with emphasis</em><br/>after a break.</p>
+    <p>Second paragraph with &lt;escaped&gt; characters.</p>
+  </body>
+  <footer>End</footer>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:request xmlns:r="urn:request" xmlns:x="urn:extension" xmlns="urn:default">
+  <r:header x:priority="high">
+    <r:id>00000000-0000-0000-0000-000000000000</r:id>
+    <r:flags>
+      <flag enabled="true"/>
+      <flag enabled="false"/>
+    </r:flags>
+  </r:header>
+  <payload>
+    <item x:key="αβγ" count="000">
+      <value>0</value>
+    </item>
+    <x:opaque><![CDATA[&amp; <payload/>]]></x:opaque>
+  </payload>
+</r:request>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (section*)>
+  <!ELEMENT section (title, content)>
+  <!ATTLIST section name CDATA #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT content ANY>
+  <!ENTITY local "replacement text">
+]>
+<root>
+  <section name="first">
+    <title>One</title>
+    <content>
+      <!-- comment containing symbols: < > & -- -->
+      <node level="1">
+        <node level="2">
+          <node level="3">&local;</node>
+        </node>
+      </node>
+      <?instruction a="1" b="&quot;"?>
+    </content>
+  </section>
+  <section>
+    <title>Two</title>
+    <content><![CDATA[
+      line one
+      line two
+      ]]></content>
+  </section>
+</root>
+```
+
+```xml
+<?xml version="1.1"?>
+<document>
+  <sequence>
+    <entry index="1"><value>alpha</value><value/></entry>
+    <entry index="2">
+      <value xml:space="preserve">  padded
+text
+      </value>
+      <nested>
+        <level-a>
+          <level-b>
+            <level-c/>
+          </level-b>
+        </level-a>
+      </nested>
+    </entry>
+  </sequence>
+  <mixed>prefix <b>bold</b> middle <i>italic</i> suffix</mixed>
+  <binary encoding="base64">AAECAwQFBgcICQ==</binary>
+</document>
+```

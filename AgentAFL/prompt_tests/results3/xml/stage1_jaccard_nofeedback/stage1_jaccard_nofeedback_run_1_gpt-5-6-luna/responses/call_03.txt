@@ -1,0 +1,113 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+)>
+  <!ELEMENT item (name, price, details?)>
+  <!ATTLIST item id ID #REQUIRED status (new|used|archived) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA)>
+]>
+<catalog>
+  <item id="x1" status="new">
+    <name><![CDATA[<unescaped> & unusual ]]></name>
+    <price>19.99</price>
+    <details>alpha &amp; beta &#x1F600;</details>
+  </item>
+  <item id="x2">
+    <name>Second item</name>
+    <price>0</price>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:root xmlns:r="urn:root" xmlns:a="urn:attributes" xmlns="urn:default" a:flag="yes">
+  <section xmlns="urn:section" a:flag="&quot;quoted&quot;">
+    <r:entry xml:lang="en-US" a:key="k1">
+      <value>one</value>
+      <value><![CDATA[]]></value>
+      <value>line
+break&#10;tail</value>
+    </r:entry>
+  </section>
+  <empty xmlns="">
+    <r:child/>
+  </empty>
+</r:root>
+```
+
+```xml
+<!DOCTYPE message [
+  <!ENTITY hello "Hello">
+  <!ENTITY world "world">
+  <!ENTITY pair "&hello;, &world;!">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ELEMENT message (header, body, attachment*)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT body (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment name CDATA #REQUIRED type NOTATION (bin) #IMPLIED>
+]>
+<message>
+  <header>&pair;</header>
+  <body>Start<part>nested text</part>middle<part><![CDATA[raw ]]></part>end</body>
+  <attachment name="data.bin" type="bin"/>
+</message>
+```
+
+```xml
+<?xml version="1.1"?>
+<document>
+  <level1>
+    <level2>
+      <level3>
+        <level4>
+          <level5 attr="&quot;&apos;&amp;&lt;&gt;">
+            <![CDATA[
+              ]]> inside-looking text: ]]&gt;
+            ]]>
+          </level5>
+        </level4>
+        <level4><leaf/></level4>
+      </level3>
+    </level2>
+  </level1>
+  <!-- comment with --? no, just punctuation: []{}() -->
+  <?processing instruction-data?>
+  <mixed>text<![CDATA[ cdata ]]><child/>tail</mixed>
+</document>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ENTITY % common "<!ELEMENT metadata (author?, tag*)><!ELEMENT author (#PCDATA)><!ELEMENT tag (#PCDATA)>">
+  %common;
+  <!ELEMENT report (metadata, records)>
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (key, value, value?)>
+  <!ATTLIST record kind CDATA "normal">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+]>
+<report>
+  <metadata>
+    <author>anonymous</author>
+    <tag>one</tag>
+    <tag><![CDATA[two & three]]></tag>
+  </metadata>
+  <records>
+    <record kind="special">
+      <key>empty-value</key>
+      <value/>
+    </record>
+    <record>
+      <key>mixed</key>
+      <value>left<inner xmlns="urn:x">inside</inner>right</value>
+      <value>second</value>
+    </record>
+  </records>
+</report>
+```

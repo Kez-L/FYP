@@ -1,0 +1,125 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (widget*)>
+  <!ELEMENT widget ANY>
+  <!ATTLIST widget
+    id ID #REQUIRED
+    kind (gauge|chart|table) "gauge"
+    data ENTITY #IMPLIED>
+  <!NOTATION gif SYSTEM "image/gif">
+  <!ENTITY logo SYSTEM "logo.gif" NDATA gif>
+  <!ENTITY tick "&#x2713;">
+]>
+<dashboard version="2" xmlns="urn:dashboard">
+  <!-- mixed content and a processing instruction -->
+  <?render theme="dark" compact?>
+  <widget id="w0" kind="gauge">ready &tick;</widget>
+  <widget id="w1" kind="chart" data="logo">
+    <![CDATA[x < y && y > z ]]> tail
+    <detail xmlns="">plain</detail>
+  </widget>
+</dashboard>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE packet [
+  <!ENTITY % switch "<!ELEMENT packet (meta, body, trailer?)>">
+  %switch;
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT body (#PCDATA|item)*>
+  <!ELEMENT item EMPTY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST packet code NMTOKEN #IMPLIED>
+  <![INCLUDE[
+    <!ATTLIST item
+      name NMTOKEN #REQUIRED
+      enabled (yes|no) "yes">
+  ]]>
+]>
+<packet code="A&#x85;B">
+  <meta/>
+  <body>alpha<item name="n_1"/>&#x1F;omega</body>
+  <trailer>line one&#x85;line two</trailer>
+</packet>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE library [
+  <!ELEMENT library (shelf+)>
+  <!ELEMENT shelf (book|note)*>
+  <!ELEMENT book (title, author, ref*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST shelf xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST book isbn ID #REQUIRED category (fiction|science|other) "other">
+  <!ATTLIST ref target IDREF #REQUIRED type NMTOKEN #IMPLIED>
+  <!ENTITY open "<mark>">
+  <!ENTITY close "</mark>">
+  <!ENTITY phrase "A &amp; B">
+]>
+<library>
+  <shelf xml:lang="fr">
+    <book isbn="b17" category="science">
+      <title>&open;R&amp;D &phrase;&close;</title>
+      <author>Émile</author>
+      <ref target="b17" type="self"/>
+    </book>
+    <note><![CDATA[unparsed ]]> text &lt;here&gt;</note>
+  </shelf>
+</library>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE command [
+  <!ELEMENT command (option*, input?, output?)>
+  <!ELEMENT option EMPTY>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT output (#PCDATA)>
+  <!ATTLIST command
+    mode (run|test|debug) #REQUIRED
+    flags NMTOKENS #IMPLIED>
+  <!ATTLIST option
+    key NMTOKEN #REQUIRED
+    value CDATA #IMPLIED>
+  <!ATTLIST input
+    source ENTITY #IMPLIED>
+  <!ENTITY sample "a&#x0A;b&#x09;c">
+  <!ENTITY broken "left]]&gt;right">
+]>
+<command mode="debug" flags="fast trace">
+  <option key="--define" value="x&amp;y"/>
+  <option key="empty"/>
+  <input source="sample">&sample;</input>
+  <output><![CDATA[]]></output>
+</command>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (layer*)>
+  <!ELEMENT layer (shape|text|layer)*>
+  <!ELEMENT shape EMPTY>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST scene xmlns:svg CDATA #FIXED "http://www.w3.org/2000/svg">
+  <!ATTLIST layer name CDATA #IMPLIED visible (true|false) "true">
+  <!ATTLIST shape id ID #IMPLIED points NMTOKENS #IMPLIED>
+  <!ATTLIST text xml:space (default|preserve) "preserve">
+]>
+<scene xmlns="urn:scene" xmlns:svg="http://www.w3.org/2000/svg">
+  <layer name="background" visible="false">
+    <svg:rect id="r0" x="0" y="0" width="100" height="20"/>
+    <shape id="s0" points="0,0 10,10 20,0"/>
+    <layer name="nested">
+      <text xml:space="preserve">  spaced &quot;text&quot;  </text>
+      <svg:path d="M0 0 L1 1"/>
+    </layer>
+  </layer>
+</scene>
+```

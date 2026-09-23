@@ -1,0 +1,123 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+)>
+  <!ELEMENT entry (meta, payload)>
+  <!ELEMENT meta (key, value?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk|ref)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST archive format NOTATION (raw|packed|signed) "raw">
+  <!ATTLIST entry id ID #REQUIRED state (new|old|lost) "new">
+  <!ATTLIST ref target IDREF #IMPLIED>
+  <!NOTATION raw SYSTEM "application/octet-stream">
+  <!ENTITY left "alpha">
+  <!ENTITY right "omega">
+  <!ENTITY joined "&left;:&right;">
+  <!ENTITY binary SYSTEM "payload.bin" NDATA raw>
+]>
+<archive format="signed">
+  <entry id="e-1" state="old">
+    <meta><key>name</key><value>catalog</value></meta>
+    <payload>&joined;<chunk><![CDATA[<not-an-element> & still text]]></chunk><ref target="e-1"/></payload>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE labyrinth [
+  <!ELEMENT labyrinth (north|south|east|west)+>
+  <!ELEMENT north (#PCDATA|turn)*>
+  <!ELEMENT south (#PCDATA|turn)*>
+  <!ELEMENT east (#PCDATA|turn)*>
+  <!ELEMENT west (#PCDATA|turn)*>
+  <!ELEMENT turn EMPTY>
+  <!ATTLIST turn to (north|south|east|west) #REQUIRED count NMTOKEN "0">
+  <!ENTITY % directions "<!ATTLIST labyrinth entry CDATA #IMPLIED>">
+  %directions;
+  <!ENTITY one "1">
+  <!ENTITY two "&one;&one;">
+  <!ENTITY four "&two;&two;">
+]>
+<labyrinth entry="spiral">
+  <north>start<turn to="east" count="&four;"/>after</north>
+  <east><turn to="south" count="&two;"/><![CDATA[&four;]]></east>
+  <south>exit &amp; return</south>
+</labyrinth>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (account*)>
+  <!ELEMENT account (owner, transaction*)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT transaction EMPTY>
+  <!ATTLIST account number ID #REQUIRED currency CDATA #IMPLIED>
+  <!ATTLIST transaction type (credit|debit) #REQUIRED amount NMTOKEN #REQUIRED note CDATA #IMPLIED>
+  <!ENTITY euro "&#x20AC;">
+  <!ENTITY quote "&quot;">
+  <!ENTITY apos "&apos;">
+]>
+<ledger>
+  <account number="acct-A" currency="&euro;">
+    <owner>R&amp;D &quote;west&quote;</owner>
+    <transaction type="credit" amount="0000000000000000000001" note="&apos;seed&apos;"/>
+    <transaction type="debit" amount="NaN" note="line&#xA;break"/>
+  </account>
+  <account number="acct-B">
+    <owner><![CDATA[<&]>]></owner>
+    <transaction type="credit" amount="&#xD;&#xA;&#x9;"/>
+  </account>
+</ledger>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE shell [
+  <!ELEMENT shell (item|group|empty)*>
+  <!ELEMENT item (#PCDATA|mark|![CDATA[ impossible ]] )*>
+  <!ELEMENT group (item|group)*>
+  <!ELEMENT empty EMPTY>
+  <!ELEMENT mark EMPTY>
+  <!ATTLIST item xml:space (default|preserve) "default" role CDATA #IMPLIED>
+  <!ATTLIST group name CDATA #REQUIRED>
+  <!ATTLIST mark level NMTOKEN #IMPLIED>
+]>
+<shell xml:space="preserve">
+  <group name="outer">
+    <item role="x">a<mark level="1"/>b<group name="inner"><item>c</item></group>d</item>
+    <empty/>
+  </group>
+  <item xml:space="default"><![CDATA[]]><![CDATA[ ]]><![CDATA[&amp;]]></item>
+</shell>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE network [
+  <!ELEMENT network (node+, link*)>
+  <!ELEMENT node (label?, address*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT address EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST node id ID #REQUIRED class CDATA #IMPLIED>
+  <!ATTLIST address scheme (ipv4|ipv6|dns) #REQUIRED value CDATA #REQUIRED>
+  <!ATTLIST link from IDREF #REQUIRED to IDREF #REQUIRED weight NMTOKEN "1">
+]>
+<network>
+  <node id="n0" class="edge">
+    <label>root&#x0A;node</label>
+    <address scheme="ipv4" value="127.0.0.1"/>
+    <address scheme="ipv6" value="::1"/>
+  </node>
+  <node id="n1">
+    <label><![CDATA[<branch>&value;</branch>]]></label>
+    <address scheme="dns" value="xn--example-9za.invalid"/>
+  </node>
+  <link from="n0" to="n1" weight="0000000000000000000000000000000000007"/>
+</network>
+```

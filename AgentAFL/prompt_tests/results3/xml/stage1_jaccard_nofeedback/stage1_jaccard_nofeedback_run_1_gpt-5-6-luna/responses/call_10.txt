@@ -1,0 +1,131 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE library [
+  <!ELEMENT library (section+)>
+  <!ELEMENT section (name, book+)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT book (title, author, summary?, code)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ATTLIST book isbn CDATA #IMPLIED available (yes|no) "yes">
+  <!ENTITY mark "&#x2605;">
+]>
+<library xmlns="urn:example:library" xmlns:meta="urn:example:metadata">
+  <section id="fiction">
+    <name>Fiction &amp; Tales</name>
+    <book isbn="978-0000000001" available="yes">
+      <title>Glass &amp; &quot;Echoes&quot;</title>
+      <author>R. Example</author>
+      <summary><![CDATA[An unusual <story> with embedded markup-like text.]]></summary>
+      <code>LIB-&mark;-001</code>
+    </book>
+    <book available="no">
+      <title>Untitled</title>
+      <author xml:lang="fr">Émile Test</author>
+      <code><![CDATA[if (x < 2 && y > 1) return;]]></code>
+    </book>
+  </section>
+</library>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, note?)>
+  <!ELEMENT item (title, meta, description)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST item kind (alpha|beta|gamma) "alpha" ref ID #IMPLIED>
+  <!ATTLIST meta year NMTOKEN #REQUIRED rating NMTOKENS #IMPLIED>
+  <!ENTITY copyright "&#169;">
+  <!ENTITY dash "&#x2014;">
+]>
+<catalog>
+  <item kind="beta" ref="entry-7">
+    <title>Sample &copyright; Record</title>
+    <meta year="20&#50;6" rating="safe experimental"/>
+    <description>left <em>center</em><br/>right &dash; end</description>
+  </item>
+  <item ref="entry-8">
+    <title>Second Record</title>
+    <meta year="0000"/>
+    <description><![CDATA[raw ]]> text with a split terminator: ]]&gt;</description>
+  </item>
+  <note>Trailing note with &#x1F642;.</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="view.xsl" alternate="yes"?>
+<r:workspace xmlns:r="urn:root" xmlns:a="urn:alpha" xmlns:b="urn:beta" xml:base="https://example.invalid/root/">
+  <r:header>
+    <a:token xml:id="t0">A&#x0A;B&#x09;C</a:token>
+    <b:token a:flag="true">prefix<![CDATA[<not-an-element/>]]>suffix</b:token>
+  </r:header>
+  <r:payload>
+    <r:entry id="one">
+      <r:key>αβγ</r:key>
+      <r:value><![CDATA[
+        {"array":[1,2,3],"nested":{"ok":true}}
+      ]]></r:value>
+    </r:entry>
+    <r:entry id="two" xmlns:a="">
+      <r:key>empty-prefix-scope</r:key>
+      <r:value>text</r:value>
+    </r:entry>
+  </r:payload>
+  <!-- comment containing --? no, this is safe -->
+</r:workspace>
+```
+
+```xml
+<?xml version="1.0"?>
+<packet version="1.0" mode="test" mode2="x">
+  <header>
+    <field name="alpha" value="&quot;quoted&quot;"/>
+    <field name='beta' value='line
+break'/>
+  </header>
+  <body>
+    text & bogus
+    <item key=unquoted>unterminated
+    <item key="ok"><![CDATA[closed]]></item>
+  </body>
+</packet>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE universe [
+  <!ELEMENT universe (cluster)>
+  <!ELEMENT cluster (node)>
+  <!ELEMENT node (label, link*, payload?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT payload (#PCDATA)>
+  <!ATTLIST cluster name CDATA #REQUIRED>
+  <!ATTLIST node state CDATA "idle">
+  <!ATTLIST link target IDREF #IMPLIED weight CDATA #IMPLIED>
+  <!ENTITY amp "&amp;">
+  <!ENTITY quote "&quot;">
+  <!ENTITY hex "&#x41;&#x42;&#x43;">
+]>
+<universe>
+  <cluster name="outer">
+    <node state="active">
+      <label>Node &quote;A&quote; &amp; &hex;</label>
+      <link target="n2" weight="0.000"/>
+      <link target="missing" weight="-1"/>
+      <payload>before &amp; after <![CDATA[<payload/>]]> end</payload>
+    </node>
+  </cluster>
+</universe>
+```

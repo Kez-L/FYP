@@ -1,0 +1,164 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, summary?, price, availability)>
+  <!ATTLIST entry id ID #REQUIRED category (book|music|film) "book">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT availability EMPTY>
+  <!ATTLIST availability region NMTOKENS #IMPLIED>
+  <!ENTITY currency "¤">
+]>
+<catalog>
+  <entry id="b17" category="book">
+    <title>Parsing &amp; Practice</title>
+    <summary>Notes with <em>emphasis</em>, <code>markup()</code>, and &currency;.</summary>
+    <price>19.95</price>
+    <availability region="EU UK"/>
+  </entry>
+  <entry id="m04" category="music">
+    <title>Signals &lt;Noise&gt;</title>
+    <price>7.00</price>
+    <availability region="US CA JP"/>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<message xmlns="urn:example:message" xmlns:m="urn:example:meta">
+  <m:header>
+    <m:sender id="urn:user:α">δοκιμή</m:sender>
+    <m:recipient id="urn:user:β"/>
+    <m:flags urgent="false" count="0x10">read|archived</m:flags>
+  </m:header>
+  <body xml:lang="ar">
+    <paragraph>مرحبا بالعالم — café — 東京</paragraph>
+    <paragraph><![CDATA[
+      Literal markup: <not-an-element a="1 & 2">x</not-an-element>
+      ]]></paragraph>
+    <attachment media-type="application/octet-stream" length="3">
+      <byte index="0">00</byte>
+      <byte index="1">ff</byte>
+      <byte index="2">7e</byte>
+    </attachment>
+  </body>
+  <m:signature algorithm="urn:hash:sha-512">
+    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+  </m:signature>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE labyrinth [
+  <!ELEMENT labyrinth (entrance, chamber)>
+  <!ELEMENT entrance EMPTY>
+  <!ATTLIST entrance target IDREF #REQUIRED>
+  <!ELEMENT chamber (corridor|room|trap)*>
+  <!ELEMENT corridor (door, chamber?)>
+  <!ELEMENT door EMPTY>
+  <!ATTLIST door leads IDREF #IMPLIED locked (yes|no) "no">
+  <!ELEMENT room (object|mirror|exit)*>
+  <!ATTLIST room id ID #IMPLIED shape NMTOKEN #IMPLIED>
+  <!ELEMENT object (#PCDATA)>
+  <!ELEMENT mirror (#PCDATA)>
+  <!ELEMENT exit EMPTY>
+  <!ATTLIST exit id ID #IMPLIED>
+  <!ELEMENT trap (#PCDATA)>
+]>
+<labyrinth>
+  <entrance target="r_outer"/>
+  <chamber>
+    <corridor>
+      <door leads="r_inner" locked="yes"/>
+      <chamber>
+        <room id="r_inner" shape="hexagon">
+          <object>key</object>
+          <mirror>left &amp; right</mirror>
+        </room>
+        <trap>Do not step beyond this point.</trap>
+      </chamber>
+    </corridor>
+    <room id="r_outer" shape="circle">
+      <exit id="way_out"/>
+      <object>compass</object>
+    </room>
+  </chamber>
+</labyrinth>
+```
+
+```xml
+<?xml version="1.0"?>
+<records>
+  <?audit source="synthetic" version="2.0"?>
+  <!-- A record containing empty, mixed, and whitespace-sensitive content. -->
+  <record key="a:b/c?d" state="new">
+    <value><![CDATA[]]></value>
+    <value> leading&#x0A;middle&#x09;trailing </value>
+    <value><![CDATA[brackets ]]]]><![CDATA[> and ampersands & ]]></value>
+    <history>
+      <event at="2026-09-23T00:00:00Z" kind="create"/>
+      <event at="2026-09-23T00:00:01.000+05:30" kind="edit">
+        <actor>anonymous</actor>
+        <delta old="" new="&quot;&amp;&lt;&gt;&apos;"/>
+      </event>
+    </history>
+    <payload format="nested">
+      <a><b><c><d><e>terminal</e></d></c></b></a>
+    </payload>
+  </record>
+  <record key="empty" state="deleted">
+    <value/>
+    <history/>
+    <payload/>
+  </record>
+</records>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (layer+)>
+  <!ELEMENT layer (node*)>
+  <!ATTLIST layer name CDATA #REQUIRED opacity CDATA "1.0">
+  <!ELEMENT node (transform?, geometry?, material?, node*)>
+  <!ATTLIST node id ID #IMPLIED visible (true|false) "true">
+  <!ELEMENT transform EMPTY>
+  <!ATTLIST transform matrix CDATA #IMPLIED origin NMTOKENS #IMPLIED>
+  <!ELEMENT geometry (point|segment|polygon)>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED z CDATA "0">
+  <!ELEMENT segment (point, point)>
+  <!ELEMENT polygon (point+)>
+  <!ELEMENT material (#PCDATA)>
+]>
+<scene>
+  <layer name="background" opacity="0.25">
+    <node id="n0" visible="false">
+      <transform matrix="1 0 0 1 0 0" origin="center local"/>
+      <geometry><polygon>
+        <point x="-1e3" y="0" z="-0"/>
+        <point x="0" y="+Infinity"/>
+        <point x="1e3" y="NaN"/>
+      </polygon></geometry>
+      <material>rgba(0,0,0,0)</material>
+    </node>
+  </layer>
+  <layer name="foreground">
+    <node id="root">
+      <node id="child-a"><geometry><point x="0" y="0"/></geometry></node>
+      <node id="child-b">
+        <geometry><segment>
+          <point x="0.0000000001" y="-0.0000000001"/>
+          <point x="999999999999999999" y="42"/>
+        </segment></geometry>
+      </node>
+    </node>
+  </layer>
+</scene>
+```

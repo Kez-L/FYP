@@ -1,0 +1,107 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title,meta?,payload)>
+  <!ATTLIST entry id ID #REQUIRED kind (alpha|beta|gamma) "alpha">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta xml:lang NMTOKEN #IMPLIED priority CDATA "low">
+  <!ELEMENT payload (#PCDATA|note)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY bracket "&#91;opaque&#93;">
+]>
+<catalog>
+  <entry id="e-001" kind="beta">
+    <title><![CDATA[<title> & not markup]]></title>
+    <meta xml:lang="en-US" priority="high"/>
+    <payload>prefix &bracket;<note>nested &amp; text</note><![CDATA[]]></payload>
+  </entry>
+  <entry id="e-002">
+    <title>line
+break &#x1F600;</title>
+    <payload><![CDATA[a ]]> b ]]></payload>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE r [
+  <!ENTITY % common "<!ELEMENT r (x|y)*>">
+  %common;
+  <!ELEMENT x EMPTY>
+  <!ATTLIST x a CDATA #IMPLIED b NMTOKENS #IMPLIED>
+  <!ELEMENT y (#PCDATA)>
+  <!ENTITY left "&lt;">
+  <!ENTITY right "&gt;">
+]>
+<r>
+  <x a="&quot;&apos;&amp;" b="one two three"/>
+  <y>mixed &left;raw&right; text</y>
+  <x/>
+  <y><![CDATA[
+    whitespace
+    ]]></y>
+</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns="urn:default" xmlns:p="urn:one" xmlns:q="urn:two" xml:base="file:///tmp/a.xml">
+  <p:item q:flag="yes" xmlns:p="urn:shadow">
+    <q:child xmlns:q="" p:code="A&#x0A;B"/>
+    <inner xmlns="urn:inner" xmlns:p="urn:three">
+      <p:item xml:space="preserve">  spaced  </p:item>
+    </inner>
+  </p:item>
+  <empty xmlns:p="urn:one" p:x="1"/>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE image [
+  <!ELEMENT image (header, data)>
+  <!ELEMENT header (name, dimensions)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT dimensions EMPTY>
+  <!ATTLIST dimensions width CDATA #REQUIRED height CDATA #REQUIRED>
+  <!ELEMENT data (#PCDATA)>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "payload.bin" NDATA bin>
+]>
+<image>
+  <header>
+    <name>π &amp; λ</name>
+    <dimensions width="00000000000000000042" height="+7"/>
+  </header>
+  <data><![CDATA[AAECAwQFBgcICQoLDA0ODw==]]></data>
+</image>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (from,to,body,trail?)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT body ANY>
+  <!ELEMENT trail EMPTY>
+  <!ATTLIST message status (new|read|archived) "new">
+  <!ENTITY hello "Hello, ">
+  <!ENTITY world "world!">
+  <!ENTITY pair "&hello;&world;">
+]>
+<message status="archived">
+  <from><![CDATA[user@example.org]]></from>
+  <to>admin@example.org</to>
+  <body>
+    &pair;
+    <emphasis><![CDATA[<unsafe>&text]]></emphasis>
+    <br/>
+    <span data-x="&#x20;&#x9;&#xD;">tail</span>
+  </body>
+  <trail/>
+</message>
+```

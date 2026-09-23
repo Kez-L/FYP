@@ -1,0 +1,78 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:seed:catalog" xmlns:x="urn:seed:extra">
+  <x:entry id="α-01" state="active &amp; pending">
+    <title><![CDATA[<opaque> & unparsed ]]> tail</title>
+    <meta key="line&#x0A;break">one<![CDATA[ two ]]>three</meta>
+    <!-- comment with --? -->
+    <x:value><![CDATA[]]></x:value>
+  </x:entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header,section+)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT section (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item
+    code NMTOKEN #REQUIRED
+    level (low|mid|high) "mid">
+  <!ENTITY quote "A &quot;quoted&quot; value">
+]>
+<report>
+  <header>&quote;</header>
+  <section>
+    <item code="a1" level="high">alpha</item>
+    <item code="b2">beta &amp; gamma</item>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ELEMENT envelope (payload)>
+  <!ELEMENT payload EMPTY>
+  <!ATTLIST payload
+    src ENTITY #IMPLIED
+    format NOTATION (bin) #IMPLIED>
+  <!ENTITY blob SYSTEM "data:application/octet-stream;base64,AAEC">
+]>
+<envelope>
+  <payload src="blob" format="bin"/>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns="urn:main" xmlns:a="urn:a" xmlns:b="urn:b">
+  <?phase data="x"?>
+  <a:branch xmlns:a="">
+    <leaf a="&quot;" b="&#x1F600;" c="x:y"/>
+  </a:branch>
+  <b:branch>
+    <b:item>
+      <b:item>
+        <b:item><![CDATA[nested]]></b:item>
+      </b:item>
+    </b:item>
+  </b:branch>
+  <?end?>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<stream>
+  <chunk index="0"><![CDATA[first]]></chunk>
+  <chunk index="1">text &lt; escaped <inner><![CDATA[embedded ]]> text</inner></chunk>
+  <chunk index="2">
+    <empty/>
+    <mixed>left<node/>right<!-- note --></mixed>
+  </chunk>
+</stream>
+```

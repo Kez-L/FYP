@@ -1,0 +1,109 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY banner "A&amp;B &lt;archived&gt;">
+  <!ENTITY payload SYSTEM "payload.bin" NDATA png>
+  <!ELEMENT archive (entry+, footer?)>
+  <!ELEMENT entry (#PCDATA|note|link)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST archive format (short|long) "long">
+  <!ATTLIST entry key ID #REQUIRED ref IDREFS #IMPLIED blob ENTITY #IMPLIED>
+  <!ATTLIST link href CDATA #REQUIRED>
+]>
+<archive format="short">
+  <entry key="e1" ref="e2" blob="payload">before &banner;<note>nested</note><link href="urn:item:1"/></entry>
+  <entry key="e2">after &banner;</entry>
+  <footer>done</footer>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:catalog" xmlns:a="urn:attributes" xml:base="urn:root/">
+  <section xml:space="preserve" a:mode="compact">
+    <title><![CDATA[alpha < beta && gamma > delta]]></title>
+    <item a:id="i-01" xml:lang="de">
+      <name>one</name>
+      <details xmlns="" xmlns:b="urn:detail">
+        <b:part b:kind="left">text</b:part>
+        <part xmlns="urn:catalog" a:mode="wide" />
+      </details>
+    </item>
+  </section>
+  <section xmlns:a="" a:literal="value">
+    <item xml:lang="x-private"><name>two</name></item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (warehouse, warehouse)>
+  <!ELEMENT warehouse (shelf+)>
+  <!ELEMENT shelf (slot*)>
+  <!ELEMENT slot EMPTY>
+  <!ATTLIST warehouse code ID #REQUIRED>
+  <!ATTLIST shelf label NMTOKEN #IMPLIED>
+  <!ATTLIST slot item IDREF #IMPLIED state (open|closed) "open" tags NMTOKENS #IMPLIED>
+  <!ENTITY left "L">
+  <!ENTITY right "R">
+  <!ENTITY pair "&left;:&right;">
+  <!ENTITY % extra "<!ELEMENT marker (#PCDATA)>">
+  %extra;
+]>
+<inventory>
+  <warehouse code="west">
+    <shelf label="A_1">
+      <slot item="thing-1" state="closed" tags="red blue"/>
+      <slot item="thing-2"><!-- empty element with content forbidden intentionally --></slot>
+    </shelf>
+    <shelf><marker>&pair;</marker></shelf>
+  </warehouse>
+  <warehouse code="east"><shelf><slot item="thing-1"/></shelf></warehouse>
+</inventory>
+```
+
+```xml
+<?xml version="1.0"?>
+<package xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:meta="urn:package:meta">
+  <meta:header>
+    <meta:checksum algorithm="sha256">00&amp;11</meta:checksum>
+    <meta:source xml:base="file:///tmp/source.xml">local</meta:source>
+  </meta:header>
+  <xi:include href="fragment.xml" parse="xml" xpointer="element(/1/2)">
+    <xi:fallback>
+      <fallback xmlns="urn:fallback"><message>missing</message></fallback>
+    </xi:fallback>
+  </xi:include>
+  <content>
+    <![CDATA[first section]]>
+    <chunk id="c1"><![CDATA[second ]]]]><![CDATA[ section]]></chunk>
+    <?track phase="post"?>
+  </content>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE broken [
+  <!ENTITY x "one">
+  <!ENTITY y "&x;:&x;">
+  <!ELEMENT broken (head, body)>
+  <!ELEMENT head (#PCDATA)>
+  <!ELEMENT body (line*)>
+  <!ELEMENT line (#PCDATA)>
+  <!ATTLIST line n CDATA #IMPLIED>
+]>
+<broken>
+  <head>&y;&#x0A;tail</head>
+  <body>
+    <line n="1">ok</line>
+    <line n="2"><![CDATA[unterminated-looking ]]> text &unknown;</line>
+    <line n="3">bad &#x110000;</line>
+  </body>
+  <extra>mismatched</broken>
+```

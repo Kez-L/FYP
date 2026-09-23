@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ENTITY owner "ops &amp; reliability">
+  <!ENTITY warning "Do not retry after the cutoff time.">
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ELEMENT workflow (variables, stages, audit)>
+  <!ELEMENT variables (variable*)>
+  <!ELEMENT variable EMPTY>
+  <!ATTLIST variable name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT stages (stage+)>
+  <!ELEMENT stage (description, action+, on-success?, on-failure?)>
+  <!ATTLIST stage name ID #REQUIRED timeout CDATA "30s">
+  <!ELEMENT description (#PCDATA)>
+  <!ELEMENT action EMPTY>
+  <!ATTLIST action type (shell|http|notify) #REQUIRED command CDATA #IMPLIED>
+  <!ELEMENT on-success (#PCDATA)>
+  <!ELEMENT on-failure (#PCDATA)>
+  <!ELEMENT audit (event*)>
+  <!ELEMENT event (#PCDATA)>
+  <!ATTLIST event at CDATA #REQUIRED actor CDATA #REQUIRED>
+]>
+<workflow>
+  <variables>
+    <variable name="REGION" value="eu-west-3"/>
+    <variable name="OWNER" value="&owner;"/>
+    <variable name="EMPTY" value=""/>
+  </variables>
+  <stages>
+    <stage name="prepare" timeout="5m">
+      <description>Validate the incoming bundle.</description>
+      <action type="shell" command="/usr/local/bin/check-bundle --strict"/>
+      <on-success>deploy</on-success>
+      <on-failure>halt</on-failure>
+    </stage>
+    <stage name="deploy" timeout="1h">
+      <description><![CDATA[Promote <artifact> only after all checks pass.]]></description>
+      <action type="http" command="POST /v2/releases"/>
+      <action type="notify" command="pager://platform"/>
+      <on-success>finish</on-success>
+      <on-failure>&warning;</on-failure>
+    </stage>
+  </stages>
+  <audit>
+    <event at="2026-09-23T01:02:03Z" actor="scheduler">workflow accepted</event>
+    <event at="2026-09-23T01:02:07Z" actor="runner-α">stage prepare complete</event>
+  </audit>
+</workflow>

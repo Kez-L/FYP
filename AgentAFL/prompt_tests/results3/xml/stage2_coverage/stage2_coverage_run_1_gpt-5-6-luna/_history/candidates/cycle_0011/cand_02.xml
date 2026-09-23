@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (start, branch*, finish)>
+  <!ELEMENT start EMPTY>
+  <!ELEMENT branch (when, action+, otherwise?)>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT action (input?, output*)>
+  <!ELEMENT input (#PCDATA|token)*>
+  <!ELEMENT token EMPTY>
+  <!ELEMENT output (#PCDATA)>
+  <!ELEMENT otherwise (#PCDATA)>
+  <!ELEMENT finish EMPTY>
+  <!ATTLIST start at CDATA #IMPLIED>
+  <!ATTLIST branch name NMTOKEN #REQUIRED>
+  <!ATTLIST action type (read|write|transform) #REQUIRED>
+  <!ENTITY quoted "He said &quot;go&quot; and used &apos;now&apos;.">
+]>
+<workflow>
+  <start at="00:00:00"/>
+  <branch name="alpha">
+    <when>condition &gt; 0</when>
+    <action type="read">
+      <input>file<token/>name</input>
+      <output>&quoted;</output>
+    </action>
+    <action type="transform">
+      <input><token/>normalize</input>
+      <output>result</output>
+      <output><![CDATA[ x & y ]]></output>
+    </action>
+  </branch>
+  <branch name="fallback">
+    <when>condition = 0</when>
+    <action type="write"><output>empty</output></action>
+    <otherwise>no branch matched</otherwise>
+  </branch>
+  <finish/>
+</workflow>

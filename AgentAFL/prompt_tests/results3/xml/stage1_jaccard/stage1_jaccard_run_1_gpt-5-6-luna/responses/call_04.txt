@@ -1,0 +1,98 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY logo SYSTEM "logo.bin" NDATA bin>
+  <!ENTITY quote "&#x22; &amp; &lt; &gt;">
+  <!ATTLIST entry
+    id ID #REQUIRED
+    kind (text|binary|empty) "text"
+    payload ENTITY #IMPLIED
+  >
+]>
+<catalog>
+  <entry id="e0" kind="empty"/>
+  <entry id="e1" payload="logo">before &quote; after</entry>
+  <entry id="e2" kind="text"><![CDATA[raw ]]> delimiter]]></entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta?, packet+)>
+  <!ELEMENT meta (#PCDATA)>
+  <!ELEMENT packet (head, data, tail?)>
+  <!ELEMENT head EMPTY>
+  <!ELEMENT data ANY>
+  <!ELEMENT tail (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST packet seq NMTOKEN #REQUIRED>
+  <!ATTLIST head xml:space (default|preserve) "default">
+]>
+<envelope>
+  <meta xml:lang="und-Zzzz">αβγ</meta>
+  <packet seq="00A">
+    <head/>
+    <data><chunk/><chunk><![CDATA[&not-an-entity;]]></chunk></data>
+    <tail>left<chunk>middle</chunk>right</tail>
+  </packet>
+  <packet seq="0xFFFFFFFF"><head/><data/></packet>
+</envelope>
+```
+
+```xml
+<!DOCTYPE r [
+  <!ENTITY % attrs '<!ATTLIST r mode CDATA "generated" xmlns:p CDATA #IMPLIED>'>
+  %attrs;
+  <![IGNORE[
+    <!ELEMENT discarded ANY>
+    <!ENTITY hidden "not expanded">
+  ]]>
+  <![INCLUDE[
+    <!ELEMENT r (p:item|local|p:item*)>
+    <!ELEMENT local EMPTY>
+    <!ELEMENT p:item (#PCDATA)>
+  ]]>
+]>
+<r xmlns:p="urn:test:one" xmlns:q="urn:test:two" mode="&quot;x&quot;">
+  <p:item q:flag="yes">one</p:item>
+  <local/>
+  <p:item><![CDATA[three]]></p:item>
+</r>
+```
+
+```xml
+<?xml version="1.1"?>
+<outer xmlns="urn:outer" xmlns:a="urn:a" xmlns:b="urn:b" a:x="1">
+  <inner xmlns="" xmlns:a="urn:shadow" a:x="2" b:y="3">
+    <a:node xmlns:b="" xml:base="../%2F" xml:lang="">
+      <b:leaf/>
+    </a:node>
+  </inner>
+  <?target data with > and ??>
+  <!-- first --><!--second-->
+  <empty xml:id="id.with.dots"/>
+</outer>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY left "L">
+  <!ENTITY right "R">
+  <!ENTITY pair "&left;&right;">
+  <!ELEMENT root (#PCDATA|a|b|c)*>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c (#PCDATA)>
+]>
+<root>
+  <![CDATA[unescaped <markup> & entity]]>
+  <a>&pair;&#x9;&#13;&#10;</a>
+  <b><![CDATA[]]></b>
+  <c>tail</c>
+  <?pi?>
+  <!-- comment with --? -->
+</root>
+```

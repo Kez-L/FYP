@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<workflow>
+  <task id="root" depends="">
+    <label>Build</label>
+    <steps>
+      <step ordinal="1" state="done">
+        <command><![CDATA[echo "<ready/>"]]></command>
+        <environment>
+          <var name="MODE">test</var>
+          <var name="PATH">/tmp:&apos;quoted&apos;</var>
+        </environment>
+      </step>
+      <step ordinal="2" state="pending">
+        <command>run --input="&lt;data&gt;"</command>
+        <retry limit="03">
+          <delay unit="ms">000</delay>
+        </retry>
+      </step>
+    </steps>
+  </task>
+  <task id="cleanup" depends="root">
+    <label>Cleanup</label>
+    <steps/>
+  </task>
+</workflow>

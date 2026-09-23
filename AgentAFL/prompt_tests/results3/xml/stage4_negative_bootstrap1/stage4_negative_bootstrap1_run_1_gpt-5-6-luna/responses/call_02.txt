@@ -1,0 +1,190 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<map xmlns="urn:geo:map" xmlns:g="urn:geo:geometry" version="3">
+  <metadata>
+    <title>Coastal survey</title>
+    <updated>2026-09-23T12:34:56Z</updated>
+    <keywords>tide, reef, inlet</keywords>
+  </metadata>
+  <layer id="shoreline" visible="yes">
+    <g:polygon>
+      <g:point lat="51.4779" lon="-0.0015"/>
+      <g:point lat="51.4782" lon="-0.0007"/>
+      <g:point lat="51.4774" lon="0.0004"/>
+      <g:point lat="51.4768" lon="-0.0009"/>
+      <g:point lat="51.4779" lon="-0.0015"/>
+    </g:polygon>
+    <style>
+      <stroke color="#1d4e89" width="0.75"/>
+      <fill color="rgba(20,80,140,0.25)"/>
+    </style>
+  </layer>
+  <layer id="markers" visible="no">
+    <marker code="A-17">
+      <g:point lat="51.4771" lon="-0.0002"/>
+      <label><![CDATA[South <jetty> / buoy α]]></label>
+    </marker>
+  </layer>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % switches "<!ELEMENT flag EMPTY><!ATTLIST flag enabled (on|off) 'off'>">
+  %switches;
+  <!ELEMENT report (header, section*, footer)>
+  <!ELEMENT header (name, generated, flag?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT section (heading, paragraph+, table?)>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY company "North &amp; South">
+]>
+<report>
+  <header>
+    <name>&company; deployment</name>
+    <generated>2026-09-23</generated>
+    <flag enabled="on"/>
+  </header>
+  <section id="s1">
+    <heading>Preparation</heading>
+    <paragraph>Use <code>--dry-run</code> before <em>committing</em>.&nbsp;</paragraph>
+    <paragraph>Three regions were scanned.</paragraph>
+    <table>
+      <row><cell>region</cell><cell>items</cell></row>
+      <row><cell>west</cell><cell>14</cell></row>
+      <row><cell>east</cell><cell>0</cell></row>
+    </table>
+  </section>
+  <footer>End of report</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<dialogue xmlns="urn:fiction:dialogue" xmlns:x="urn:fiction:meta">
+  <scene x:number="7" x:setting="underpass">
+    <cast>
+      <person id="mira" mood="uncertain">
+        <name>Mira</name>
+        <voice pitch="low"/>
+      </person>
+      <person id="oren" mood="amused">
+        <name>Orēn</name>
+        <voice pitch="high"/>
+      </person>
+    </cast>
+    <stage direction="whispered">Rain taps against the iron roof.</stage>
+    <exchange speaker="mira">
+      <line>Did you bring the key?</line>
+      <pause duration="0.75"/>
+      <line><![CDATA[I brought something better: <a map>.]]></line>
+    </exchange>
+    <exchange speaker="oren">
+      <line>That is not a key.</line>
+      <gesture type="shrug">
+        <prop ref="map" condition="creased"/>
+      </gesture>
+      <line>It is a promise with folds.</line>
+    </exchange>
+    <sound source="outside" level="distant">
+      <sample>rumble</sample>
+      <sample>drip</sample>
+    </sound>
+  </scene>
+</dialogue>
+```
+
+```xml
+<?xml version="1.1"?>
+<package xmlns="urn:bundle:package" xmlns:m="urn:bundle:manifest" xml:lang="x-klingon">
+  <manifest>
+    <m:file path="bin/start" media-type="application/octet-stream" checksum="00ff11ee"/>
+    <m:file path="docs/readme.txt" media-type="text/plain" checksum="abcdef01"/>
+    <m:file path="data/empty" media-type="application/x-empty" checksum=""/>
+  </manifest>
+  <payload encoding="base64">
+    <![CDATA[
+      AAECAwQFBgcICQoLDA0ODw==
+    ]]>
+  </payload>
+  <attributes>
+    <attribute name="mode" value="0644"/>
+    <attribute name="owner">
+      <value>builder</value>
+      <source>environment</source>
+    </attribute>
+    <attribute name="flags">
+      <item>compressed</item>
+      <item>signed</item>
+      <item>portable</item>
+    </attribute>
+  </attributes>
+  <signature algorithm="urn:example:sha256">
+    <digest>ZmFrZS1kaWdlc3Q=</digest>
+    <certificate>
+      <issuer>Example Root</issuer>
+      <serial>0000000000000001</serial>
+    </certificate>
+  </signature>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:automation:flow" xmlns:r="urn:automation:run">
+  <trigger type="schedule">
+    <cron timezone="UTC">0 5 * * 1-5</cron>
+    <condition operator="all">
+      <equals path="/env" value="staging"/>
+      <not>
+        <equals path="/freeze" value="true"/>
+      </not>
+    </condition>
+  </trigger>
+  <steps>
+    <step id="fetch" retry="3" timeout="PT2M">
+      <r:request method="GET" url="https://example.invalid/input">
+        <r:header name="Accept">application/xml</r:header>
+        <r:header name="X-Trace">flow-17</r:header>
+      </r:request>
+      <on-error>
+        <emit severity="warning">input unavailable</emit>
+      </on-error>
+    </step>
+    <parallel limit="2">
+      <branch name="alpha">
+        <invoke service="indexer">
+          <argument name="mode">fast</argument>
+          <argument name="batch">32</argument>
+        </invoke>
+      </branch>
+      <branch name="beta">
+        <invoke service="archiver">
+          <argument name="compression">zstd</argument>
+        </invoke>
+      </branch>
+    </parallel>
+    <step id="publish">
+      <choose>
+        <when test="count(/items) &gt; 0">
+          <emit severity="info">published</emit>
+        </when>
+        <otherwise>
+          <emit severity="debug">nothing to publish</emit>
+        </otherwise>
+      </choose>
+    </step>
+  </steps>
+</workflow>
+```

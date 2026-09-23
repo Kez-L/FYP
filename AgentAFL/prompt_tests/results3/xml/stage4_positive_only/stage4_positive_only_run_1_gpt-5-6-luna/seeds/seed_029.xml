@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<configuration xmlns="urn:acme:config" xmlns:env="urn:acme:environment">
+  <?generated-by tool="seed-builder"?>
+  <profiles>
+    <profile name="development" enabled="true">
+      <inherits from="base"/>
+      <property key="retries" type="integer">3</property>
+      <property key="timeout" type="duration">PT0.750S</property>
+      <property key="endpoint" type="uri">https://dev.example.test/api?q=a&amp;b=c</property>
+      <secret ref="vault://dev/database/password"/>
+    </profile>
+    <profile name="production" enabled="false">
+      <inherits from="base">
+        <override key="region">eu-central</override>
+      </inherits>
+      <property key="retries" type="integer">0000000000008</property>
+      <property key="timeout" type="duration">P1DT2H3M4.005S</property>
+    </profile>
+  </profiles>
+  <base>
+    <env:variable name="PATH" value="/usr/local/bin:/usr/bin"/>
+    <env:variable name="FLAGS">--safe --no-color</env:variable>
+    <mount source="/var/lib/app" target="/data" readonly="true"/>
+    <limits>
+      <memory unit="MiB">4096</memory>
+      <workers min="0" max="128"/>
+    </limits>
+  </base>
+  <extensions>
+    <extension name="metrics" class="com.acme.Metrics">
+      <option name="interval">00:00:05</option>
+      <option name="labels"><![CDATA[service="api",tier="edge"]]></option>
+    </extension>
+  </extensions>
+</configuration>

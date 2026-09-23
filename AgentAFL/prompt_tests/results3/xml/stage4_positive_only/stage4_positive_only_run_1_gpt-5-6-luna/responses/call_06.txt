@@ -1,0 +1,147 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<library>
+  <metadata>
+    <title><![CDATA[An Archive of <Unexpected> Things]]></title>
+    <updated>2026-09-23T14:22:11Z</updated>
+  </metadata>
+  <!-- Mixed content with nested inline elements -->
+  <entry id="bk-001" available="true">
+    <author>
+      <name family="Ng">Mira</name>
+    </author>
+    <summary>Fragments of <emphasis>weather</emphasis> collected from
+      <place>the northern coast</place>.</summary>
+    <tags>
+      <tag>field-notes</tag>
+      <tag>coastal</tag>
+      <tag>experimental</tag>
+    </tags>
+  </entry>
+  <entry id="bk-002" available="false">
+    <author><name family="Ortega">Luis</name></author>
+    <summary>Annotated maps and folded correspondence.</summary>
+    <tags/>
+  </entry>
+</library>
+```
+
+```xml
+<?xml version="1.0"?>
+<configuration xmlns="urn:example:config" xmlns:sec="urn:example:security">
+  <?build profile="fuzz-seed"?>
+  <service name="relay" enabled="yes">
+    <endpoint scheme="https" host="relay.example.test" port="443">
+      <path>/v2/messages</path>
+      <headers>
+        <header key="Accept">application/xml</header>
+        <header key="X-Trace">a7f0c91e-2d11-4b44-9a00-001122334455</header>
+      </headers>
+    </endpoint>
+    <retry count="03">
+      <delay unit="milliseconds">000250</delay>
+      <backoff multiplier="1.50"/>
+    </retry>
+  </service>
+  <sec:credentials>
+    <sec:token><![CDATA[opaque&token<value>]]></sec:token>
+    <sec:scopes>
+      <sec:scope>read</sec:scope>
+      <sec:scope>publish</sec:scope>
+    </sec:scopes>
+  </sec:credentials>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE formula [
+  <!ELEMENT formula (name, variables, expression, examples)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT variables (variable*)>
+  <!ELEMENT variable EMPTY>
+  <!ATTLIST variable symbol ID #REQUIRED value CDATA #REQUIRED>
+  <!ELEMENT expression (#PCDATA)>
+  <!ELEMENT examples (example+)>
+  <!ELEMENT example (input, output)>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT output (#PCDATA)>
+]>
+<formula>
+  <name>Quadratic response</name>
+  <variables>
+    <variable symbol="a" value="1"/>
+    <variable symbol="b" value="-3"/>
+    <variable symbol="c" value="2"/>
+  </variables>
+  <expression>a*x^2 + b*x + c</expression>
+  <examples>
+    <example>
+      <input>x = 1</input>
+      <output>0</output>
+    </example>
+    <example>
+      <input>x = 4</input>
+      <output>6</output>
+    </example>
+  </examples>
+</formula>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<message xmlns="urn:example:message" xmlns:xlink="http://www.w3.org/1999/xlink" id="m-42">
+  <header>
+    <from address="node-a@example.test"/>
+    <to address="node-b@example.test"/>
+    <subject>Binary-adjacent payload</subject>
+  </header>
+  <body format="multipart">
+    <part content-type="text/plain">before<break/>after</part>
+    <part content-type="application/octet-stream" encoding="base64">
+      <![CDATA[
+        AAECAwQFBgcICQoLDA0ODw==
+      ]]>
+    </part>
+    <attachment xlink:type="simple" xlink:href="urn:blob:7f3e">
+      <checksum algorithm="sha256">00010203040506070809</checksum>
+    </attachment>
+  </body>
+  <footer>
+    <signature algorithm="none"/>
+  </footer>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<network>
+  <graph directed="false">
+    <node id="n1"><property name="label">alpha</property></node>
+    <node id="n2"><property name="label">beta</property></node>
+    <node id="n3">
+      <property name="label">gamma</property>
+      <property name="weight">0</property>
+    </node>
+    <edge source="n1" target="n2">
+      <annotation>short route</annotation>
+    </edge>
+    <edge source="n2" target="n3">
+      <annotation><![CDATA[length < 1 and length > 0]]></annotation>
+    </edge>
+    <edge source="n3" target="n1" weight="2.75"/>
+  </graph>
+  <queries>
+    <query id="q0">
+      <select>
+        <from node="n1"/>
+        <where field="label" operator="contains">a</where>
+      </select>
+      <result count="2">
+        <value ref="n1">alpha</value>
+        <value ref="n3">gamma</value>
+      </result>
+    </query>
+  </queries>
+</network>
+```

@@ -1,0 +1,184 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (profile, bundle+)>
+  <!ELEMENT profile (label, contact)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT contact EMPTY>
+  <!ELEMENT bundle (title, asset+, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT asset EMPTY>
+  <!ELEMENT note (#PCDATA|link|kbd)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT kbd (#PCDATA)>
+  <!ATTLIST manifest revision CDATA #REQUIRED>
+  <!ATTLIST profile role (owner|reviewer|guest) "guest">
+  <!ATTLIST bundle code ID #REQUIRED depends IDREFS #IMPLIED>
+  <!ATTLIST asset path CDATA #REQUIRED kind (file|directory) "file" blob ENTITY #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY manual SYSTEM "manual.bin" NDATA bin>
+  <!ENTITY product "Cedar &amp; Finch">
+  <!ENTITY shortcut "Ctrl+&lt;Enter&gt;">
+]>
+<manifest revision="r17">
+  <profile role="owner">
+    <label>&product;</label>
+    <contact/>
+  </profile>
+  <bundle code="core">
+    <title>Runtime files</title>
+    <asset path="bin/runner" kind="file" blob="manual"/>
+    <asset path="share" kind="directory"/>
+    <note>Use <kbd>&shortcut;</kbd> after reading the <link>release note</link>.</note>
+  </bundle>
+  <bundle code="docs" depends="core">
+    <title>Reference material</title>
+    <asset path="README.txt"/>
+  </bundle>
+</manifest>
+```
+
+```xml
+<?xml version="1.0"?>
+<registry xmlns="urn:acme:registry" xmlns:r="urn:acme:record" xmlns:meta="urn:acme:metadata" xml:lang="de">
+  <?audit level="verbose"?>
+  <metadata meta:created="2026-09-23" meta:owner="ops">
+    <meta:tag>nightly</meta:tag>
+    <meta:tag>portable</meta:tag>
+  </metadata>
+  <r:dataset r:key="delta" r:version="4">
+    <r:columns>
+      <r:column r:name="x" r:type="decimal"/>
+      <r:column r:name="y" r:type="string"/>
+    </r:columns>
+    <r:rows>
+      <r:row r:id="a1">
+        <r:value>18.50</r:value>
+        <r:value><![CDATA[alpha < beta]]></r:value>
+      </r:row>
+      <r:row r:id="a2" r:previous="a1">
+        <r:value>-0.25</r:value>
+        <r:value>gamma &amp; delta</r:value>
+      </r:row>
+    </r:rows>
+  </r:dataset>
+  <view mode="compact" xmlns="">
+    <name>summary</name>
+    <filter field="status">active</filter>
+  </view>
+</registry>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE notebook [
+  <!ELEMENT notebook ANY>
+  <!ELEMENT chapter (heading, block+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT block (#PCDATA|strong|quote|separator|formula)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT quote (#PCDATA|strong)*>
+  <!ELEMENT separator EMPTY>
+  <!ELEMENT formula (#PCDATA)>
+  <!ATTLIST notebook xml:space (default|preserve) "default">
+  <!ATTLIST chapter number NMTOKEN #REQUIRED>
+  <!ATTLIST block type (text|warning|example) "text">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY open "&lt;![CDATA[">
+  <!ENTITY close "]]&gt;">
+]>
+<notebook xml:space="preserve">
+  <chapter number="01">
+    <heading>Parsing notes</heading>
+    <block type="text">Leading spaces remain.&nbsp;&nbsp;Trailing markers follow.</block>
+    <block type="warning">Do not treat &open; as a real section; the token is literal.&close;</block>
+    <block type="example">
+      Call <strong>normalize()</strong>, then inspect
+      <quote>the resulting tree</quote>.
+      <separator/>
+      <formula>x &lt;= y &amp;&amp; y != 0</formula>
+    </block>
+  </chapter>
+  <chapter number="02">
+    <heading>Encoded fragments</heading>
+    <block><![CDATA[<node attr="raw">not parsed</node>]]></block>
+  </chapter>
+</notebook>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ledger [
+  <!ENTITY % switches "<!ATTLIST ledger mode (open|closed|frozen) 'open'>">
+  %switches;
+  <!ELEMENT ledger (header, entry*, closing?)>
+  <!ELEMENT header (caption, period)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT period EMPTY>
+  <!ELEMENT entry (when, debit?, credit?, memo?)>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT debit (#PCDATA)>
+  <!ELEMENT credit (#PCDATA)>
+  <!ELEMENT memo (#PCDATA|ref)*>
+  <!ELEMENT ref (#PCDATA)>
+  <!ELEMENT closing (#PCDATA)>
+  <!ATTLIST ledger currency CDATA #IMPLIED>
+  <!ATTLIST period from CDATA #REQUIRED to CDATA #REQUIRED>
+  <!ATTLIST entry key ID #REQUIRED account NMTOKEN #REQUIRED>
+  <!ATTLIST debit amount CDATA #IMPLIED>
+  <!ATTLIST credit amount CDATA #IMPLIED>
+  <!ENTITY currency-symbol "€">
+]>
+<ledger mode="open" currency="EUR">
+  <header>
+    <caption>Quarterly adjustments</caption>
+    <period from="2026-07-01" to="2026-09-30"/>
+  </header>
+  <entry key="e100" account="travel">
+    <when>2026-09-02</when>
+    <debit amount="83.40">83.40</debit>
+    <memo>Train ticket <ref>TR-19</ref> &currency-symbol;</memo>
+  </entry>
+  <entry key="e101" account="refund">
+    <when>2026-09-05</when>
+    <credit amount="12.00">12.00</credit>
+    <memo><![CDATA[Returned item: <adapter/>]]></memo>
+  </entry>
+  <closing>Pending reconciliation</closing>
+</ledger>
+```
+
+```xml
+<?xml version="1.0"?>
+<pipeline xmlns="urn:example:pipeline" xmlns:c="urn:example:config">
+  <?trace id="p-42"?>
+  <input c:format="csv" c:delimiter=";" c:empty="keep">
+    <source uri="file:///var/tmp/incoming.csv" checksum="sha256:abc123"/>
+    <mapping>
+      <field name="first" target="person.given" required="true"/>
+      <field name="last" target="person.family" required="false"/>
+      <field name="score" target="metrics.score" default="0">
+        <transform name="decimal" scale="3"/>
+      </field>
+    </mapping>
+  </input>
+  <stages>
+    <stage name="sanitize" enabled="true">
+      <rule pattern="[\x00-\x1f]" action="remove"/>
+      <rule pattern="&quot;" action="escape"/>
+    </stage>
+    <stage name="publish" enabled="false" depends="sanitize">
+      <destination protocol="https" host="example.invalid" path="/feed"/>
+      <headers>
+        <header key="X-Mode">dry-run</header>
+        <header key="Accept">application/xml</header>
+      </headers>
+    </stage>
+  </stages>
+  <output c:pretty="yes">
+    <![CDATA[
+      <result status="preview"/>
+    ]]>
+  </output>
+</pipeline>
+```

@@ -1,0 +1,197 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<archive xmlns="urn:example:archive" xmlns:meta="urn:example:metadata">
+  <!-- Namespaced records with recursive folders -->
+  <folder name="incoming">
+    <folder name="2026">
+      <entry meta:kind="report" created="2026-09-23">
+        <name>quarterly-summary.xml</name>
+        <checksum algorithm="sha256">7f83b1657ff1fc53</checksum>
+        <tags>
+          <tag>finance</tag>
+          <tag priority="high">review</tag>
+        </tags>
+        <owner>
+          <display-name>Operations Team</display-name>
+          <contact type="email">ops@example.invalid</contact>
+        </owner>
+      </entry>
+    </folder>
+    <entry meta:kind="image" created="2026-09-22">
+      <name>diagram.svg</name>
+      <location uri="https://example.invalid/assets/diagram.svg"/>
+    </entry>
+  </folder>
+  <folder name="processed"/>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (warehouse*)>
+  <!ELEMENT warehouse (address, bin+)>
+  <!ATTLIST warehouse name CDATA #REQUIRED>
+  <!ELEMENT address (street, city, region?, postal)>
+  <!ELEMENT street (#PCDATA)>
+  <!ELEMENT city (#PCDATA)>
+  <!ELEMENT region (#PCDATA)>
+  <!ELEMENT postal (#PCDATA)>
+  <!ELEMENT bin (product*)>
+  <!ATTLIST bin code CDATA #REQUIRED>
+  <!ELEMENT product (description, quantity, dimensions?)>
+  <!ATTLIST product code CDATA #REQUIRED fragile (yes|no) "no">
+  <!ELEMENT description (#PCDATA)>
+  <!ELEMENT quantity (#PCDATA)>
+  <!ELEMENT dimensions (width, height, depth)>
+  <!ELEMENT width (#PCDATA)>
+  <!ELEMENT height (#PCDATA)>
+  <!ELEMENT depth (#PCDATA)>
+  <!ENTITY warehouse-note "Handle according to local storage policy.">
+]>
+<inventory>
+  <warehouse name="North Depot">
+    <address>
+      <street>18 Meridian Way</street>
+      <city>Riverside</city>
+      <region>West</region>
+      <postal>R4 8QZ</postal>
+    </address>
+    <bin code="A-01">
+      <product code="cable-9" fragile="yes">
+        <description>Shielded cable spool</description>
+        <quantity>42</quantity>
+        <dimensions>
+          <width>30</width>
+          <height>30</height>
+          <depth>18</depth>
+        </dimensions>
+      </product>
+    </bin>
+    <bin code="B-17">
+      <product code="washer-2">
+        <description>Steel washers &warehouse-note;</description>
+        <quantity>900</quantity>
+      </product>
+    </bin>
+  </warehouse>
+</inventory>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <?pipeline mode="deterministic"?>
+  <definition id="compile-release" version="3">
+    <trigger>
+      <schedule timezone="UTC">
+        <day>Monday</day>
+        <day>Thursday</day>
+        <at>02:30</at>
+      </schedule>
+      <manual allowed="true"/>
+    </trigger>
+    <steps>
+      <step id="checkout" type="source">
+        <command><![CDATA[git clone --depth=1 "$REPOSITORY" workspace]]></command>
+      </step>
+      <step id="build" type="process" depends-on="checkout">
+        <environment>
+          <variable name="MODE">release</variable>
+          <variable name="FLAGS">-O2 -g</variable>
+        </environment>
+        <command>make all &amp;&amp; make test</command>
+        <artifact xlink:href="artifacts/build.tar.gz" media-type="application/gzip"/>
+      </step>
+      <step id="publish" type="transfer" depends-on="build" retry="3">
+        <destination scheme="sftp" host="upload.example.invalid" path="/releases"/>
+      </step>
+    </steps>
+  </definition>
+  <!-- An intentionally empty optional extension point -->
+  <extensions/>
+</workflow>
+```
+
+```xml
+<?xml version="1.0"?>
+<geometry xmlns="urn:example:geometry">
+  <scene background="#102030">
+    <transform matrix="1 0 0 0 1 0 0 0 1">
+      <group label="wireframe">
+        <polyline closed="false">
+          <point x="-1.5" y="0" z="2"/>
+          <point x="0" y="3.14159" z="2"/>
+          <point x="1.5" y="0" z="2"/>
+        </polyline>
+        <polygon material="glass">
+          <vertex>
+            <position x="0" y="0" z="0"/>
+            <normal x="0" y="0" z="1"/>
+            <texcoord u="0" v="0"/>
+          </vertex>
+          <vertex>
+            <position x="4" y="0" z="0"/>
+            <normal x="0" y="0" z="1"/>
+            <texcoord u="1" v="0"/>
+          </vertex>
+          <vertex>
+            <position x="4" y="4" z="0"/>
+            <normal x="0" y="0" z="1"/>
+            <texcoord u="1" v="1"/>
+          </vertex>
+        </polygon>
+      </group>
+    </transform>
+    <camera projection="perspective">
+      <position x="0" y="2" z="8"/>
+      <look-at x="0" y="1" z="0"/>
+    </camera>
+  </scene>
+  <metadata>
+    <title>Triangle &amp; Frame</title>
+    <description><![CDATA[Vertices are supplied in counter-clockwise order.]]></description>
+  </metadata>
+</geometry>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<survey xmlns="urn:example:survey" submitted="2026-09-23">
+  <respondent anonymous="true">
+    <locale>en-GB</locale>
+    <consent>
+      <policy version="7"/>
+      <accepted-at>2026-09-22T19:45:00Z</accepted-at>
+    </consent>
+  </respondent>
+  <responses>
+    <response key="satisfaction" type="scale">
+      <question>How would you rate the service?</question>
+      <answer value="4" label="Good"/>
+    </response>
+    <response key="features" type="multiple">
+      <question>Select every feature used.</question>
+      <answer selected="true">Search</answer>
+      <answer selected="false">Exports</answer>
+      <answer selected="true">Notifications</answer>
+    </response>
+    <response key="comment" type="long-text">
+      <question>Additional comments</question>
+      <answer>
+        <paragraph>The interface was clear.</paragraph>
+        <paragraph>Some results took longer than expected.</paragraph>
+      </answer>
+    </response>
+    <response key="contact" type="choice">
+      <question>May we contact you?</question>
+      <answer selected="false">Yes</answer>
+      <answer selected="true">No</answer>
+    </response>
+  </responses>
+  <audit>
+    <event action="opened" timestamp="2026-09-22T19:40:11Z"/>
+    <event action="submitted" timestamp="2026-09-23T06:12:43Z"/>
+  </audit>
+</survey>
+```

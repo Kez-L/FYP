@@ -1,0 +1,118 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry*, note)>
+  <!ELEMENT entry (name, data, link*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (#PCDATA|emph|br)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    refs IDREFS #IMPLIED
+    mode (cold|hot) "cold"
+    asset ENTITY #IMPLIED
+    xml:space (default|preserve) "default">
+  <!ATTLIST link rel NMTOKENS #IMPLIED target IDREF #IMPLIED>
+  <!NOTATION blob SYSTEM "application/octet-stream">
+  <!ENTITY payload "A&amp;B &lt;encoded&gt;">
+  <!ENTITY asset SYSTEM "urn:catalog:asset" NDATA blob>
+]>
+<catalog xmlns:meta="urn:metadata" meta:version="0.0">
+  <?catalog instruction?>
+  <entry id="first" refs="second" asset="asset" mode="hot" xml:space="preserve">
+    <name><![CDATA[primary <entry> name]]></name>
+    <data>before &payload; <emph>inside</emph><br/>after</data>
+    <link rel="related alternate" target="second"/>
+  </entry>
+  <entry id="second">
+    <name>secondary</name>
+    <data><!-- embedded comment --><![CDATA[]]></data>
+  </entry>
+  <note xml:lang="x-klingon">end &#x20AC;</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE network [
+  <!ENTITY % nodeDecl "<!ELEMENT node EMPTY><!ATTLIST node key ID #REQUIRED label CDATA #IMPLIED>">
+  %nodeDecl;
+  <!ELEMENT network (node|edge|annotation)*>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+  <!ELEMENT annotation (#PCDATA)>
+  <!ENTITY first "&second;">
+  <!ENTITY second "&first;">
+]>
+<network>
+  <node key="n1" label="alpha"/>
+  <node key="n2" label="beta"/>
+  <edge from="n1" to="n2" weight="0x10"/>
+  <annotation><![CDATA[graph & topology]]></annotation>
+  <node key="n3" label="&first;"/>
+</network>
+```
+
+```xml
+<?xml version="1.1"?>
+<timeline xmlns="urn:timeline" xmlns:x="urn:extra" xml:lang="fr" xml:base="../archive/">
+  <?xml-stylesheet type="text/css" href="timeline.css"?>
+  <event xml:id="e-001" when="2026-09-23T12:34:56Z" x:flag="yes">
+    <title><![CDATA[Résumé — phase α]]></title>
+    <description>line one&#x85;line two&#x1F;line three&#x2028;line four</description>
+    <!-- a comment containing <markup> and &amp; characters -->
+    <location xmlns="">
+      <city>Paris</city>
+      <coordinates lat="+48.8566" lon="2.3522"/>
+    </location>
+    <payload xmlns:x="urn:payload">
+      <x:item x:key="A&#x0B;B"/>
+      <x:item><![CDATA[raw ]]> text <![CDATA[fragment]]></x:item>
+    </payload>
+  </event>
+</timeline>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix ANY>
+  <!ELEMENT row ANY>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST cell kind (text|number|empty) "text">
+  <!ENTITY % discarded "<!ELEMENT hidden EMPTY><!ATTLIST hidden flag CDATA #IMPLIED>">
+  <![IGNORE[
+    <!ELEMENT ignored (never)>
+    <!ENTITY ignoredEntity "discarded">
+  ]]>
+]>
+<matrix xmlns:q="">
+  <row index="1">
+    <cell kind="number">42</cell>
+    <cell kind="text"><![CDATA[1 < 2 && 3 > 2]]></cell>
+  </row>
+  <row index="2">
+    <cell first="a" first="b">duplicate</cell>
+  </row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE museum SYSTEM "file:///tmp/libxml2-fuzz-missing-subset.dtd">
+<museum xmlns="urn:museum" xml:base="https://invalid.example/archive/">
+  <?processing data with spaces?>
+  <exhibit code="A-0" xml:space="preserve">
+    <label>Unloaded external subset</label>
+    <artifact>
+      <![CDATA[
+        <not-an-element attr='value'/>
+        ]]> 
+      <metadata key="empty"/>
+    </artifact>
+  </exhibit>
+</museum>
+```

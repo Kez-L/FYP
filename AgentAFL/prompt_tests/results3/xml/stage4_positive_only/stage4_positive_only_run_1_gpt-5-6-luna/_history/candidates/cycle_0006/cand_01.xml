@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<envelope xmlns="urn:example:message" xmlns:sec="urn:example:security">
+  <?audit level="trace"?>
+  <header>
+    <message-id>urn:msg:7f3c-0001</message-id>
+    <created>2026-09-23T18:04:05.123456Z</created>
+    <routing>
+      <hop index="0" host="edge.example">
+        <status code="202">accepted</status>
+      </hop>
+      <hop index="1" host="worker.example">
+        <status code="200">complete</status>
+      </hop>
+    </routing>
+  </header>
+  <body>
+    <request method="POST" path="/v2/search">
+      <query><![CDATA[key=(alpha|beta) && score>=0.75]]></query>
+      <filters>
+        <filter field="title" operator="contains">café</filter>
+        <filter field="year" operator="between">
+          <lower inclusive="true">1900</lower>
+          <upper inclusive="false">2000</upper>
+        </filter>
+      </filters>
+    </request>
+    <sec:signature algorithm="sha256">
+      MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+    </sec:signature>
+  </body>
+</envelope>

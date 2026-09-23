@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload, signature)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST package version NMTOKEN #REQUIRED>
+  <!ATTLIST file path CDATA #REQUIRED size CDATA #REQUIRED digest CDATA #IMPLIED>
+  <!ATTLIST chunk index CDATA #REQUIRED encoding (base64|text) "text">
+  <!ENTITY nl "&#xA;">
+]>
+<package version="2.0">
+  <manifest>
+    <file path="readme.txt" size="41" digest="sha256:abc123"/>
+    <file path="data/empty.bin" size="0"/>
+    <file path="data/π.bin" size="7" digest="sha256:00ff"/>
+  </manifest>
+  <payload>
+    <chunk index="0" encoding="text">first line&nl;second line</chunk>
+    <chunk index="1" encoding="base64">AAECAwQF</chunk>
+    <chunk index="2" encoding="text"><![CDATA[<not-a-tag>&not-an-entity;]]></chunk>
+  </payload>
+  <signature>
+    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+    <x>deliberately embedded markup</x>
+    END
+  </signature>
+</package>

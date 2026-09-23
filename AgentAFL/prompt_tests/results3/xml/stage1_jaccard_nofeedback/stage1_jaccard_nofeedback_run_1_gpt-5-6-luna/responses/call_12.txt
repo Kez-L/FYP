@@ -1,0 +1,108 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:meta="urn:example:metadata">
+  <item id="A-001" status="active">
+    <name><![CDATA[Widget <alpha> & beta]]></name>
+    <meta:tags>
+      <meta:tag priority="1">one</meta:tag>
+      <meta:tag priority="2">two</meta:tag>
+    </meta:tags>
+    <description>Mixed <emphasis>content</emphasis> with &#x1F600; and &amp;.</description>
+  </item>
+  <item id="B-002" status="retired">
+    <name>Replacement</name>
+    <related ref="A-001"/>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, section+)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header generated CDATA #IMPLIED>
+  <!ELEMENT section (title, entry*)>
+  <!ATTLIST section key ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (#PCDATA|note)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY copyright "&#169; 2026">
+]>
+<report>
+  <header generated="yes"/>
+  <section key="intro">
+    <title>Overview</title>
+    <entry>First &copyright; <note>internal annotation</note></entry>
+    <entry><![CDATA[raw ]]><note>text</note><![CDATA[ ]]>tail</entry>
+  </section>
+  <section key="details">
+    <title>Details</title>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<message xmlns:x="urn:message:x" xml:lang="fr" xml:space="preserve">
+  <x:header>
+    <x:sender address="a@example.test"/>
+    <x:recipient address="b@example.test"/>
+  </x:header>
+  <x:body>
+    Bonjour
+    <x:line-break/>
+    Texte avec des caractères accentués: é, ñ, ø, Ж.
+  </x:body>
+  <?audit level="trace"?>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE image [
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ELEMENT image (caption, data)>
+  <!ATTLIST image source ENTITY #IMPLIED>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+]>
+<image source="logo">
+  <caption>Embedded reference &quot;logo&quot;</caption>
+  <data>
+    <![CDATA[
+      iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    ]]>
+  </data>
+</image>
+```
+
+```xml
+<?xml version="1.0"?>
+<workflow>
+  <task id="root" depends="">
+    <label>Build</label>
+    <steps>
+      <step ordinal="1" state="done">
+        <command><![CDATA[echo "<ready/>"]]></command>
+        <environment>
+          <var name="MODE">test</var>
+          <var name="PATH">/tmp:&apos;quoted&apos;</var>
+        </environment>
+      </step>
+      <step ordinal="2" state="pending">
+        <command>run --input="&lt;data&gt;"</command>
+        <retry limit="03">
+          <delay unit="ms">000</delay>
+        </retry>
+      </step>
+    </steps>
+  </task>
+  <task id="cleanup" depends="root">
+    <label>Cleanup</label>
+    <steps/>
+  </task>
+</workflow>
+```

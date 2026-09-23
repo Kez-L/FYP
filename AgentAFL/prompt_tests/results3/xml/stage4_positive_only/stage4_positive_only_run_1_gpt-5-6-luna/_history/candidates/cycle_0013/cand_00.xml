@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, entry*)>
+  <!ELEMENT header (name, owner, created)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT owner EMPTY>
+  <!ATTLIST owner uid CDATA #REQUIRED>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT entry (key, payload, checksum?)>
+  <!ATTLIST entry kind (text|binary|empty) "text">
+  <!ATTLIST entry key ID #REQUIRED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk|ref)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk offset NMTOKEN #IMPLIED>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY copyright "© 2026 Example Archive">
+]>
+<archive>
+  <header>
+    <name>incremental-store</name>
+    <owner uid="u-17"/>
+    <created>2026-09-23</created>
+  </header>
+  <entry key="item-a" kind="text">
+    <key>alpha</key>
+    <payload>prefix<chunk offset="0">one</chunk><chunk offset="3">two</chunk>&copyright;<ref target="item-b"/></payload>
+    <checksum>sha256:9f86d081884c7d65</checksum>
+  </entry>
+  <entry key="item-b" kind="empty">
+    <key>beta</key>
+    <payload><![CDATA[]]></payload>
+  </entry>
+</archive>

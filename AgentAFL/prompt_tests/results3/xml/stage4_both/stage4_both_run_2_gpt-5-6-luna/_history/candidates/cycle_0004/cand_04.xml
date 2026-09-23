@@ -1,0 +1,28 @@
+<?xml version="1.1" standalone="yes"?>
+<configuration xmlns="urn:example:config" xmlns:p="urn:example:plugin">
+  <environment name="staging">
+    <variable name="PATH" scope="process">/opt/tools:/usr/bin</variable>
+    <variable name="FEATURE_FLAGS" scope="session">
+      <value>fast-start</value>
+      <value>audit-log</value>
+      <value>unicode-λ</value>
+    </variable>
+  </environment>
+  <plugins>
+    <plugin p:id="parser.core" enabled="true" priority="10">
+      <p:entrypoint>libparser.so</p:entrypoint>
+      <p:option key="mode">strict</p:option>
+    </plugin>
+    <plugin p:id="renderer.alt" enabled="false" priority="20">
+      <p:entrypoint><![CDATA[lib/render/alt.so]]></p:entrypoint>
+      <p:dependencies>
+        <p:dependency ref="parser.core" optional="false"/>
+      </p:dependencies>
+    </plugin>
+  </plugins>
+  <?reload target="environment" immediate="false"?>
+  <limits>
+    <memory unit="MiB" soft="256" hard="512"/>
+    <timeout unit="ms">1500</timeout>
+  </limits>
+</configuration>

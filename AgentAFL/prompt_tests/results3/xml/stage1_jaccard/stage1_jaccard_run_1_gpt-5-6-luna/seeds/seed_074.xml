@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mixed [
+  <!ELEMENT mixed (top, stream)>
+  <!ELEMENT top (#PCDATA)>
+  <!ELEMENT stream (event*)>
+  <!ELEMENT event (value|![CDATA[unexpected]])*>
+  <!ATTLIST event kind CDATA #REQUIRED time NMTOKEN #IMPLIED>
+  <!ELEMENT value (#PCDATA)>
+  <!ENTITY ext SYSTEM "file:///tmp/nonexistent-entity.txt">
+]>
+<mixed>
+  <top xml:space="preserve">  leading
+	&amp; &lt;markup&gt; &#x1F642; </top>
+  <stream>
+    <event kind="start" time="00:00:00"><value>open</value></event>
+    <event kind="data"><value><![CDATA[raw ]]></value><value>next</value></event>
+    <event kind="external"><value>&ext;</value></event>
+    <?stream-end?>
+  </stream>
+</mixed>

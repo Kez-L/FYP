@@ -1,0 +1,112 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (name, tags?, description)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST entry key ID #REQUIRED status (new|old|archived) "new">
+  <!ENTITY company "A &amp; B">
+  <!ENTITY note "line&#10;break">
+]>
+<catalog>
+  <entry key="e1" status="new">
+    <name>&company; &#x1F4A1;</name>
+    <tags><tag>one</tag><tag>two</tag><tag>&lt;three&gt;</tag></tags>
+    <description>Text <em>with emphasis</em><br/>and &note;.</description>
+  </entry>
+  <entry key="e2">
+    <name>Second</name>
+    <description><![CDATA[raw ]]> content &amp; escaped</description>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns="urn:outer" xmlns:p="urn:one">
+  <p:item id="0">
+    <p:value p:kind="alpha">A</p:value>
+    <nested xmlns="" xmlns:p="urn:two">
+      <p:value p:kind="beta">B</p:value>
+      <leaf xmlns:q="urn:q" q:flag="yes"/>
+    </nested>
+  </p:item>
+  <p:item id="1" xmlns:p="">
+    <local>text</local>
+  </p:item>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<feed>
+  <!-- comment before the processing instruction -->
+  <?build mode="test"?>
+  <meta>
+    <created>2026-09-23</created>
+    <empty/>
+    <empty></empty>
+  </meta>
+  <body>
+    leading
+    <section title="A &quot;quoted&quot; section">
+      <line>first</line>
+      <!-- interleaved comment -->
+      <line><![CDATA[second <line> not markup]]></line>
+      <?custom data?>
+    </section>
+    trailing
+  </body>
+</feed>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, attachment*)>
+  <!ELEMENT header (from, to, subject)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment href CDATA #REQUIRED media CDATA #IMPLIED>
+]>
+<message>
+  <header>
+    <from>sender@example.test</from>
+    <to>receiver@example.test</to>
+    <subject>Entities &amp; markup</subject>
+  </header>
+  <body>Visit <link href="https://example.test/?a=1&amp;b=2">this link</link> now.</body>
+  <attachment href="data:text/plain;base64,SGVsbG8=" media="text/plain"/>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<map>
+  <array name="mixed">
+    <value type="null"/>
+    <value type="boolean">true</value>
+    <value type="number">-0.0000000000000000000000000001</value>
+    <value type="string">line1&#xD;&#xA;line2</value>
+    <object>
+      <member key="a"><value type="string"/></member>
+      <member key="b">
+        <array>
+          <value type="number">999999999999999999999999999999999999</value>
+          <value type="boolean">false</value>
+        </array>
+      </member>
+    </object>
+  </array>
+  <value type="string"><![CDATA[]]></value>
+</map>
+```

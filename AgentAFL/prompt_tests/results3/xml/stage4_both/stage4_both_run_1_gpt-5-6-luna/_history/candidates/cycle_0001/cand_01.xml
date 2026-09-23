@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ENTITY open "<part kind='open'>">
+  <!ENTITY close "</part>">
+  <!ENTITY amp "&#38;">
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header generated CDATA "yes" xml:space (default|preserve) "default">
+  <!ELEMENT payload (part+)>
+  <!ELEMENT part (#PCDATA|part|raw)*>
+  <!ATTLIST part kind CDATA #IMPLIED>
+  <!ENTITY % extra "<!ATTLIST part mark CDATA #IMPLIED>">
+  %extra;
+]>
+<envelope>
+  <header generated="&amp;ready;"/>
+  <payload>
+    &open;outer &amp; inner &amp; close;&close;
+    <part kind="nested" mark="x"><![CDATA[<not-an-element/>]]><part>leaf</part></part>
+  </payload>
+</envelope>

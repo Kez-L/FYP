@@ -1,0 +1,158 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+, note?)>
+  <!ELEMENT section (title, entry*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (#PCDATA|link|emph)*>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT emph (#PCDATA|emph)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ATTLIST link href CDATA #REQUIRED target (self|external) "self">
+  <!ENTITY copyright "&#xA9;">
+]>
+<catalog>
+  <section id="s1">
+    <title>References &copyright;</title>
+    <entry>Plain <emph>mixed</emph> text<link href="urn:item:1"/>after the link.</entry>
+    <entry><emph>Nested <emph>emphasis</emph></emph></entry>
+  </section>
+  <section id="s2">
+    <title>Second section</title>
+  </section>
+  <note>Trailing note with &amp; and &lt; markup.</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<r:record xmlns:r="urn:records" xmlns="urn:default" xmlns:x="urn:extra">
+  <r:header x:version="0007" xml:lang="fr-CA" xml:space="preserve">
+    <r:name>Échantillon&#x1F600;</r:name>
+    <?metadata key="a&amp;b"?>
+  </r:header>
+  <payload xmlns="">
+    <![CDATA[
+      <not-an-element attr="&amp;">raw ]]> content
+    ]]>
+  </payload>
+  <r:values>
+    <r:value x:kind="integer">0</r:value>
+    <r:value x:kind="decimal">-12.50</r:value>
+    <r:value x:kind="empty"/>
+  </r:values>
+  <!-- comment containing brackets: ] ]> is avoided -->
+</r:record>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (start, branch*, finish)>
+  <!ELEMENT start EMPTY>
+  <!ELEMENT branch (when, action+, otherwise?)>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT action (input?, output*)>
+  <!ELEMENT input (#PCDATA|token)*>
+  <!ELEMENT token EMPTY>
+  <!ELEMENT output (#PCDATA)>
+  <!ELEMENT otherwise (#PCDATA)>
+  <!ELEMENT finish EMPTY>
+  <!ATTLIST start at CDATA #IMPLIED>
+  <!ATTLIST branch name NMTOKEN #REQUIRED>
+  <!ATTLIST action type (read|write|transform) #REQUIRED>
+  <!ENTITY quoted "He said &quot;go&quot; and used &apos;now&apos;.">
+]>
+<workflow>
+  <start at="00:00:00"/>
+  <branch name="alpha">
+    <when>condition &gt; 0</when>
+    <action type="read">
+      <input>file<token/>name</input>
+      <output>&quoted;</output>
+    </action>
+    <action type="transform">
+      <input><token/>normalize</input>
+      <output>result</output>
+      <output><![CDATA[ x & y ]]></output>
+    </action>
+  </branch>
+  <branch name="fallback">
+    <when>condition = 0</when>
+    <action type="write"><output>empty</output></action>
+    <otherwise>no branch matched</otherwise>
+  </branch>
+  <finish/>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT data (chunk*)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST package id ID #REQUIRED>
+  <!ATTLIST file path CDATA #REQUIRED size CDATA #IMPLIED checksum CDATA #IMPLIED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding (plain|base64|hex) "plain">
+]>
+<package id="pkg-&#x31;">
+  <manifest>
+    <file path="a&amp;b.txt" size="0" checksum=""/>
+    <file path="dir/space name.bin" size="17" checksum="00ff"/>
+  </manifest>
+  <data>
+    <chunk index="0">alpha&#10;beta&#13;gamma</chunk>
+    <chunk index="1" encoding="base64">QUJDRA==</chunk>
+    <chunk index="2" encoding="hex"><![CDATA[00 01 FE FF]]></chunk>
+  </data>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (layer+)>
+  <!ELEMENT layer (object*)>
+  <!ELEMENT object (label?, geometry, metadata*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT geometry (point|box|path)>
+  <!ELEMENT point EMPTY>
+  <!ELEMENT box EMPTY>
+  <!ELEMENT path (point+)>
+  <!ELEMENT metadata (#PCDATA)>
+  <!ATTLIST layer z CDATA #REQUIRED visible (true|false) "true">
+  <!ATTLIST object key ID #REQUIRED kind CDATA #IMPLIED>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ATTLIST box left CDATA #REQUIRED top CDATA #REQUIRED right CDATA #REQUIRED bottom CDATA #REQUIRED>
+  <!ATTLIST path closed (yes|no) "no">
+  <!ENTITY pi "3.14159">
+]>
+<scene>
+  <layer z="0" visible="false">
+    <object key="background" kind="rectangle">
+      <geometry><box left="0" top="0" right="640" bottom="480"/></geometry>
+      <metadata>color=#000000</metadata>
+    </object>
+  </layer>
+  <layer z="1">
+    <object key="shape" kind="polyline">
+      <label>points &lt; &amp; paths</label>
+      <geometry>
+        <path closed="yes">
+          <point x="0" y="0"/>
+          <point x="10.5" y="-2"/>
+          <point x="20" y="&#x2B;3"/>
+        </path>
+      </geometry>
+      <metadata>circle approximation uses pi=&pi;</metadata>
+    </object>
+    <object key="marker">
+      <geometry><point x="NaN" y="INF"/></geometry>
+    </object>
+  </layer>
+</scene>
+```

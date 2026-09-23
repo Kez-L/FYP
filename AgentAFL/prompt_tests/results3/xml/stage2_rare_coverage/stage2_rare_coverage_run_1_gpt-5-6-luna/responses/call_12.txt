@@ -1,0 +1,183 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, entry*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (name, details, price?)>
+  <!ATTLIST entry ref IDREF #IMPLIED status (new|used|archived) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT details (#PCDATA|note|emph)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+]>
+<catalog>
+  <section code="s-alpha">
+    <title>Tools &amp; Parts</title>
+    <entry ref="item-1" status="used">
+      <name>Adapter</name>
+      <details>Compact <emph>multi-purpose</emph> unit<note>Inspect before use.</note></details>
+      <price>19.95</price>
+    </entry>
+    <entry ref="item-2">
+      <name>Bracket</name>
+      <details><![CDATA[Left < right, right > left, and "quoted".]]></details>
+    </entry>
+  </section>
+  <section code="s-beta">
+    <title>References</title>
+    <entry ref="item-1">
+      <name>Cross linked</name>
+      <details>See the earlier entry.</details>
+    </entry>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY company "Northwind &amp; Sons">
+  <!ENTITY intro "A &company; report">
+  <!ENTITY twice "&intro; — &intro;">
+  <!ELEMENT report (meta, body)>
+  <!ELEMENT meta (author, generated)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT body (paragraph+, table)>
+  <!ELEMENT paragraph (#PCDATA|strong|code|link)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link target NMTOKEN #REQUIRED>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell, cell, cell)>
+  <!ELEMENT cell (#PCDATA)>
+]>
+<report>
+  <meta>
+    <author>&company;</author>
+    <generated>2026-09-23T12:34:56Z</generated>
+  </meta>
+  <body>
+    <paragraph>&twice;</paragraph>
+    <paragraph>Use <code>--safe</code> with <strong>care</strong> and visit <link target="docs">manual</link>.</paragraph>
+    <table>
+      <row><cell>name</cell><cell>value</cell><cell>state</cell></row>
+      <row><cell>alpha</cell><cell>0</cell><cell>ready</cell></row>
+      <row><cell>omega</cell><cell>255</cell><cell>pending</cell></row>
+    </table>
+  </body>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:config:root"
+               xmlns:net="urn:config:network"
+               xmlns:sec="urn:config:security"
+               xmlns:xlink="http://www.w3.org/1999/xlink"
+               xml:lang="fr"
+               xml:base="https://example.invalid/config/">
+  <profile id="edge" enabled="yes">
+    <net:listener address="::1" port="8443" protocol="https">
+      <net:certificate xlink:type="simple"
+                       xlink:href="certs/server.pem"
+                       fingerprint="sha256:00"/>
+      <net:routes>
+        <net:route path="/" destination="frontend"/>
+        <net:route path="/api" destination="backend" methods="GET POST"/>
+      </net:routes>
+    </net:listener>
+    <sec:policy name="default">
+      <sec:rule action="allow" subject="operator">
+        <condition xmlns="" field="role" equals="admin"/>
+      </sec:rule>
+      <sec:rule action="deny" subject="guest">
+        <reason xmlns="urn:config:notes">maintenance</reason>
+      </sec:rule>
+    </sec:policy>
+  </profile>
+  <include href="fragments/optional.xml" xmlns="urn:config:include"/>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY logo SYSTEM "images/logo.jpg" NDATA jpeg>
+  <!ELEMENT message (header, content, attachment*)>
+  <!ELEMENT header (sender, recipient, subject)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT content (#PCDATA|quote|br|highlight)*>
+  <!ELEMENT quote (#PCDATA|br)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT highlight (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment name CDATA #REQUIRED
+                       data ENTITY #IMPLIED
+                       media CDATA #IMPLIED>
+]>
+<message>
+  <header>
+    <sender>alice@example.invalid</sender>
+    <recipient>bob@example.invalid</recipient>
+    <subject>Mixed content &lt;test&gt;</subject>
+  </header>
+  <content>
+    Before the quote.
+    <quote>“A line with <br/>a forced break.”</quote>
+    After the quote, <highlight>emphasized</highlight> text.
+    <![CDATA[
+      Literal markup: <not-an-element attr="x & y"/>
+      Literal terminator-like text: ]] > 
+    ]]>
+  </content>
+  <attachment name="logo.jpg" data="logo" media="image/jpeg"/>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<?build tool="generator" mode="fuzz"?>
+<workflow xmlns:w="urn:workflow" xmlns:v="urn:value">
+  <!-- Deliberately irregular but well-formed mixed workflow data -->
+  <w:stage name="prepare">
+    <w:step id="p1" kind="input">
+      <w:argument key="path">/tmp/input&amp;cache</w:argument>
+      <w:argument key="format"><![CDATA[application/xml; charset="utf-8"]]></w:argument>
+    </w:step>
+    <w:step id="p2" kind="transform">
+      <w:depends-on ref="p1"/>
+      <w:expression><![CDATA[
+        if ($value < 10) then "low" else "high"
+      ]]></w:expression>
+    </w:step>
+  </w:stage>
+  <w:stage name="publish" active="false">
+    <w:step id="u1" kind="upload">
+      <w:depends-on ref="p2"/>
+      <w:target>
+        <v:scheme>https</v:scheme>
+        <v:host>example.invalid</v:host>
+        <v:port>443</v:port>
+        <v:path>/incoming/result.xml</v:path>
+      </w:target>
+      <w:headers>
+        <w:header name="X-Trace">a&amp;b&lt;c&gt;</w:header>
+        <w:header name="X-Empty"/>
+      </w:headers>
+    </w:step>
+  </w:stage>
+  <w:metadata>
+    <w:tag>one</w:tag>
+    <w:tag>two</w:tag>
+    <w:tag xmlns="">unqualified</w:tag>
+  </w:metadata>
+</workflow>
+```

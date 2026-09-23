@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (namespace, record*)>
+  <!ELEMENT namespace EMPTY>
+  <!ELEMENT record (key, payload, tag*)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST registry version NMTOKEN #REQUIRED>
+  <!ATTLIST namespace prefix NMTOKEN #REQUIRED uri CDATA #REQUIRED>
+  <!ATTLIST record id ID #REQUIRED state (new|ready|retired) "new" refs IDREFS #IMPLIED>
+  <!ATTLIST key type (string|integer|hex) "string">
+  <!ENTITY lt "<">
+  <!ENTITY amp "&amp;">
+  <!ENTITY newline "&#10;">
+]>
+<registry version="4.0">
+  <namespace prefix="core" uri="urn:sample:core"/>
+  <record id="r-001" state="ready">
+    <key type="string">core.name</key>
+    <payload>alpha<part>one</part><part>two</part></payload>
+    <tag>stable</tag>
+    <tag>public</tag>
+  </record>
+  <record id="r-002" state="new" refs="r-001">
+    <key type="hex">00af10</key>
+    <payload><![CDATA[raw bytes: 00 0A FF; keep <markers> literal]]></payload>
+    <tag>queued</tag>
+  </record>
+  <record id="r-003" state="retired" refs="r-001 r-002">
+    <key type="integer">42</key>
+    <payload>left&newline;right &lt;encoded&gt; &amp; preserved</payload>
+  </record>
+</registry>

@@ -1,0 +1,105 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (item*, note?)>
+  <!ATTLIST section id ID #REQUIRED kind (alpha|beta|other) "other">
+  <!ELEMENT item (#PCDATA|link|emph)*>
+  <!ATTLIST item code CDATA #IMPLIED>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+]>
+<catalog>
+  <section id="s-1" kind="alpha">
+    <item code="A&amp;1">before <emph>inside</emph> after<link href="urn:x"/></item>
+    <item><![CDATA[raw ]]> text &lt;with&gt; references</item>
+    <note>tail</note>
+  </section>
+  <section id="s-2">
+    <item code="&#x41;&#65;">&#x1F600; &apos; mixed</item>
+  </section>
+</catalog>
+```
+
+```xml
+<r xmlns="urn:root" xmlns:p="urn:one" xmlns:q="urn:two" xml:lang="en">
+  <p:branch q:flag="true" p:value="&#x20;">
+    <q:leaf><![CDATA[<not-an-element>&still-raw;</not-an-element>]]></q:leaf>
+    <?probe data="a?>b"?>
+    <empty xmlns="" />
+  </p:branch>
+  <wrapper xmlns:p="urn:shadow">
+    <p:branch p:value="shadow">
+      text &amp; more
+      <!-- comment with - - avoided -->
+    </p:branch>
+  </wrapper>
+</r>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ELEMENT report (header, payload)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header status CDATA "new" stamp CDATA #IMPLIED>
+  <!ELEMENT payload (entry+)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ATTLIST entry ref ENTITY #IMPLIED>
+  <!ENTITY one "first">
+  <!ENTITY two "second &one;">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data.bin" NDATA bin>
+]>
+<report>
+  <header stamp="2026-09-23T00:00:00Z"/>
+  <payload>
+    <entry ref="blob">&two;</entry>
+    <entry>line
+break &#10; &#xD; end</entry>
+  </payload>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<root>
+  <a><b><c><d><e><f><g><h><i><j>deep</j></i></h></g></f></e></d></c></b></a>
+  <sequence>
+    <item id="1"/>
+    <item id="2"></item>
+    <item id="3">
+      <![CDATA[first]]>
+      <![CDATA[second]]>
+    </item>
+  </sequence>
+  <mixed>left<node attr="&quot;quoted&quot;">middle</node>right</mixed>
+  <?instruction?>
+</root>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta?, body)>
+  <!ELEMENT meta (author|empty)*>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT empty EMPTY>
+  <!ELEMENT body ANY>
+  <!ATTLIST envelope version NMTOKEN #REQUIRED>
+  <!ENTITY quote "&#34;">
+  <!ENTITY amp "&#38;">
+]>
+<envelope version="v1.0">
+  <meta>
+    <author>Zoë &amp; Δ</author>
+    <empty/>
+    <author><![CDATA[&quote; remains literal]]></author>
+  </meta>
+  <body>
+    <data key="k&#x2D;1" value="&quote;&amp;quot;">&amp;quote; &amp; &lt; &gt;</data>
+    <data><![CDATA[]]></data>
+    <data><![CDATA[bracket ]]]]><![CDATA[> boundary]]></data>
+  </body>
+</envelope>
+```

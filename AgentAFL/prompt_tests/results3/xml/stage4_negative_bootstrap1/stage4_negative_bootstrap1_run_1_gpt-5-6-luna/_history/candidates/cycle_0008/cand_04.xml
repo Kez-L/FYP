@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (layer+)>
+  <!ELEMENT layer (node*)>
+  <!ATTLIST layer name CDATA #REQUIRED opacity CDATA "1.0">
+  <!ELEMENT node (transform?, geometry?, material?, node*)>
+  <!ATTLIST node id ID #IMPLIED visible (true|false) "true">
+  <!ELEMENT transform EMPTY>
+  <!ATTLIST transform matrix CDATA #IMPLIED origin NMTOKENS #IMPLIED>
+  <!ELEMENT geometry (point|segment|polygon)>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED z CDATA "0">
+  <!ELEMENT segment (point, point)>
+  <!ELEMENT polygon (point+)>
+  <!ELEMENT material (#PCDATA)>
+]>
+<scene>
+  <layer name="background" opacity="0.25">
+    <node id="n0" visible="false">
+      <transform matrix="1 0 0 1 0 0" origin="center local"/>
+      <geometry><polygon>
+        <point x="-1e3" y="0" z="-0"/>
+        <point x="0" y="+Infinity"/>
+        <point x="1e3" y="NaN"/>
+      </polygon></geometry>
+      <material>rgba(0,0,0,0)</material>
+    </node>
+  </layer>
+  <layer name="foreground">
+    <node id="root">
+      <node id="child-a"><geometry><point x="0" y="0"/></geometry></node>
+      <node id="child-b">
+        <geometry><segment>
+          <point x="0.0000000001" y="-0.0000000001"/>
+          <point x="999999999999999999" y="42"/>
+        </segment></geometry>
+      </node>
+    </node>
+  </layer>
+</scene>

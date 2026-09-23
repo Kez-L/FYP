@@ -1,0 +1,35 @@
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header,entry+)>
+  <!ELEMENT header (title,created)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT entry (name,tag*,payload)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|link|br)*>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST archive version NMTOKEN #REQUIRED>
+  <!ATTLIST entry id ID #REQUIRED refs IDREFS #IMPLIED state (new|held|done) "new">
+  <!ATTLIST link target IDREF #REQUIRED>
+  <!ENTITY copyright "&#xA9; 2026">
+  <!ENTITY % audit "<!ATTLIST entry audited (yes|no) 'no'>">
+  %audit;
+]>
+<archive version="7">
+  <header>
+    <title>Transfer &copyright;</title>
+    <created>2026-09-23T12:34:56Z</created>
+  </header>
+  <entry id="e1" state="held" audited="yes">
+    <name>alpha</name>
+    <tag>one</tag>
+    <tag>two &amp; three</tag>
+    <payload>before<link target="e2"/>middle<br/>after</payload>
+  </entry>
+  <entry id="e2" refs="e1" state="done">
+    <name><![CDATA[beta <gamma>]]></name>
+    <payload>terminal</payload>
+  </entry>
+</archive>

@@ -1,0 +1,23 @@
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE command [
+  <!ELEMENT command (option*, input?, output?)>
+  <!ELEMENT option EMPTY>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT output (#PCDATA)>
+  <!ATTLIST command
+    mode (run|test|debug) #REQUIRED
+    flags NMTOKENS #IMPLIED>
+  <!ATTLIST option
+    key NMTOKEN #REQUIRED
+    value CDATA #IMPLIED>
+  <!ATTLIST input
+    source ENTITY #IMPLIED>
+  <!ENTITY sample "a&#x0A;b&#x09;c">
+  <!ENTITY broken "left]]&gt;right">
+]>
+<command mode="debug" flags="fast trace">
+  <option key="--define" value="x&amp;y"/>
+  <option key="empty"/>
+  <input source="sample">&sample;</input>
+  <output><![CDATA[]]></output>
+</command>

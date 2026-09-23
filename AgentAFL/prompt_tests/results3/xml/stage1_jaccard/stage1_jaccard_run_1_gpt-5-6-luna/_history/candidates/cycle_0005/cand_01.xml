@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta?, packet+)>
+  <!ELEMENT meta (#PCDATA)>
+  <!ELEMENT packet (head, data, tail?)>
+  <!ELEMENT head EMPTY>
+  <!ELEMENT data ANY>
+  <!ELEMENT tail (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST packet seq NMTOKEN #REQUIRED>
+  <!ATTLIST head xml:space (default|preserve) "default">
+]>
+<envelope>
+  <meta xml:lang="und-Zzzz">αβγ</meta>
+  <packet seq="00A">
+    <head/>
+    <data><chunk/><chunk><![CDATA[&not-an-entity;]]></chunk></data>
+    <tail>left<chunk>middle</chunk>right</tail>
+  </packet>
+  <packet seq="0xFFFFFFFF"><head/><data/></packet>
+</envelope>

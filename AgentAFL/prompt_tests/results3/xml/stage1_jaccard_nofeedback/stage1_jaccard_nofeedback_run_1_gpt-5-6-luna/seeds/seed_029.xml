@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration [
+  <!ENTITY % switches "<!ELEMENT feature EMPTY><!ATTLIST feature name CDATA #REQUIRED state (on|off) #REQUIRED>">
+  %switches;
+  <!ELEMENT configuration (profile, include*, feature*)>
+  <!ELEMENT profile (name, option*)>
+  <!ATTLIST profile id CDATA #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT option (#PCDATA)>
+  <!ATTLIST option key CDATA #REQUIRED>
+  <!ELEMENT include EMPTY>
+  <!ATTLIST include href CDATA #REQUIRED mode CDATA "merge">
+]>
+<configuration>
+  <profile id="default">
+    <name>baseline</name>
+    <option key="empty"/>
+    <option key="quoted">a&quot;b&apos;c</option>
+  </profile>
+  <include href="urn:config:missing" mode="replace"/>
+  <feature name="compression" state="on"/>
+  <feature name="telemetry" state="off"/>
+</configuration>

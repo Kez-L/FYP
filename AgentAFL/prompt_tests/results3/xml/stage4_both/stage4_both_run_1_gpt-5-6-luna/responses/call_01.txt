@@ -1,0 +1,164 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE warehouse [
+  <!ELEMENT warehouse (aisle+)>
+  <!ATTLIST warehouse region NMTOKEN #REQUIRED>
+  <!ELEMENT aisle (label, bin+)>
+  <!ATTLIST aisle number NMTOKEN #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT bin (description, quantity, location?)>
+  <!ATTLIST bin uid ID #REQUIRED links IDREFS #IMPLIED emblem ENTITY #IMPLIED>
+  <!ELEMENT description (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT quantity (#PCDATA)>
+  <!ELEMENT location (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY logo SYSTEM "warehouse-logo.jpg" NDATA jpeg>
+]>
+<warehouse region="north">
+  <aisle number="A-7">
+    <label>Hardware&nbsp;&amp;&nbsp;Tools</label>
+    <bin uid="b17" emblem="logo">
+      <description>Metric <code>M8</code> fasteners&nbsp;and washers.</description>
+      <quantity>240</quantity>
+      <location>Rack 3, shelf 2</location>
+    </bin>
+    <bin uid="b18" links="b17">
+      <description>Replacement <code>HEX</code> keys</description>
+      <quantity>36</quantity>
+    </bin>
+  </aisle>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<archive xmlns="urn:example:archive" xmlns:m="urn:example:media">
+  <!-- A record containing several namespace scopes -->
+  <collection xml:lang="ja" xml:base="https://example.test/archive/">
+    <m:cover format="image/svg+xml" m:width="640" m:height="480">
+      <![CDATA[<svg><text>not parsed as markup</text></svg>]]>
+    </m:cover>
+    <record key="R-α" revised="2026-09-23T10:20:30Z">
+      <heading>東京 <m:icon aria-label="map"/> collection</heading>
+      <summary>Text with &lt;escaped&gt; delimiters and a nonbreaking space.</summary>
+      <contributors>
+        <person role="editor">佐藤</person>
+        <person role="translator" xmlns="urn:example:people">
+          <name>山田</name>
+          <country>日本</country>
+        </person>
+      </contributors>
+      <?archive-note priority="low"?>
+    </record>
+  </collection>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE survey [
+  <!ELEMENT survey (introduction, question+)>
+  <!ATTLIST survey identifier ID #REQUIRED>
+  <!ELEMENT introduction (#PCDATA|emphasis|break)*>
+  <!ELEMENT question (prompt, option+, answer)>
+  <!ATTLIST question number NMTOKEN #REQUIRED depends IDREFS #IMPLIED>
+  <!ELEMENT prompt (#PCDATA|emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT option (#PCDATA)>
+  <!ATTLIST option key ID #REQUIRED selected (yes|no) "no">
+  <!ELEMENT answer (#PCDATA)>
+  <!ATTLIST answer options IDREFS #IMPLIED>
+  <!ENTITY survey-name "Field&nbsp;Survey">
+  <!ENTITY % annotations "<!ATTLIST question note CDATA #IMPLIED>">
+  %annotations;
+]>
+<survey identifier="s-2026">
+  <introduction>Welcome to the <emphasis>&survey-name;</emphasis>.<break/>Choose one response.</introduction>
+  <question number="1" note="single choice">
+    <prompt>Which medium do you prefer?</prompt>
+    <option key="opt-print">Printed material</option>
+    <option key="opt-digital" selected="yes">Digital material</option>
+    <answer options="opt-digital">digital</answer>
+  </question>
+  <question number="2" depends="opt-digital" note="free text">
+    <prompt>Describe your preference.</prompt>
+    <option key="opt-short">Brief</option>
+    <option key="opt-long">Detailed</option>
+    <answer options="opt-short opt-long">Flexible</answer>
+  </question>
+</survey>
+```
+
+```xml
+<?xml version="1.0"?>
+<workflow xmlns="urn:example:workflow" xmlns:x="urn:example:extension" xml:space="preserve">
+  <?pipeline mode="incremental"?>
+  <start at="ingest">
+    <transition event="accepted" to="review">
+      <condition language="xpath">/request/@priority = 'high'</condition>
+      <x:annotation><![CDATA[manual verification required]]></x:annotation>
+    </transition>
+    <transition event="rejected" to="closed"/>
+  </start>
+  <state name="review" owner="qa-team">
+    <entry>
+      <action type="notify">
+        <parameter name="channel">email</parameter>
+        <parameter name="template">review-required</parameter>
+      </action>
+    </entry>
+    <exit>
+      <action type="record">Reviewed by &quot;QA&quot;</action>
+    </exit>
+  </state>
+  <state name="closed" terminal="true">
+    <description>No further transitions are permitted.</description>
+  </state>
+</workflow>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE log [
+  <!ELEMENT log (meta, event*)>
+  <!ATTLIST log source CDATA #REQUIRED>
+  <!ELEMENT meta (created, owner, tags?)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT event (message, detail?, attachment*)>
+  <!ATTLIST event id ID #REQUIRED category (audit|warning|failure) "audit" severity NMTOKEN #IMPLIED>
+  <!ELEMENT message (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment name CDATA #REQUIRED media NOTATION #IMPLIED>
+  <!NOTATION text SYSTEM "text/plain">
+  <!ENTITY generated "<created>2026-09-23</created>">
+  <!ENTITY product "parser &amp; verifier">
+]>
+<log source="batch-runner">
+  <meta>
+    &generated;
+    <owner>&product;</owner>
+    <tags>
+      <tag>xml</tag>
+      <tag>fuzzing</tag>
+      <tag>nightly</tag>
+    </tags>
+  </meta>
+  <event id="e-001" category="audit" severity="info">
+    <message>Started <mark>normalization</mark>.</message>
+    <detail>Input accepted<linebreak/>No external resources requested.</detail>
+    <attachment name="report.txt" media="text"/>
+  </event>
+  <event id="e-002" category="warning" severity="high">
+    <message>Unexpected character sequence: &lt;&lt;end&gt;&gt;</message>
+  </event>
+</log>
+```

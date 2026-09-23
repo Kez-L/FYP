@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <environment name="staging">
+    <variables>
+      <variable name="HOST">example.test</variable>
+      <variable name="PORT">8443</variable>
+      <variable name="FEATURE_FLAGS">
+        <flag enabled="true">search</flag>
+        <flag enabled="false">telemetry</flag>
+      </variable>
+    </variables>
+  </environment>
+  <services>
+    <service name="gateway" enabled="true">
+      <endpoint protocol="https">
+        <host>${HOST}</host>
+        <port>${PORT}</port>
+      </endpoint>
+      <timeouts>
+        <connect milliseconds="500"/>
+        <read milliseconds="2500"/>
+      </timeouts>
+    </service>
+    <service name="worker" enabled="false">
+      <queue>
+        <name>jobs.low</name>
+        <concurrency>4</concurrency>
+      </queue>
+    </service>
+  </services>
+  <policies>
+    <policy effect="allow" resource="reports">
+      <condition attribute="role">
+        <equals>analyst</equals>
+      </condition>
+    </policy>
+  </policies>
+</configuration>

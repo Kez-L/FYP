@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (meta, item*)>
+  <!ELEMENT meta (created, owner)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT item (name, dependency*, artifact?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT dependency EMPTY>
+  <!ELEMENT artifact (#PCDATA)>
+  <!ATTLIST manifest version CDATA #REQUIRED>
+  <!ATTLIST item key ID #REQUIRED state (new|ready|retired) "new">
+  <!ATTLIST dependency ref IDREF #REQUIRED optional (yes|no) "no">
+  <!ATTLIST artifact encoding (plain|base64) "plain">
+  <!ENTITY product "parser &amp; analyzer">
+]>
+<manifest version="3.14">
+  <meta>
+    <created>2026-09-23T12:00:00Z</created>
+    <owner>&product;</owner>
+  </meta>
+  <item key="core" state="ready">
+    <name>Core runtime</name>
+    <artifact encoding="plain">libcore.so</artifact>
+  </item>
+  <item key="cli">
+    <name>Command line tools</name>
+    <dependency ref="core"/>
+    <dependency ref="docs" optional="yes"/>
+  </item>
+  <item key="docs" state="retired">
+    <name>Reference manuals</name>
+    <artifact>docs.tar</artifact>
+  </item>
+</manifest>

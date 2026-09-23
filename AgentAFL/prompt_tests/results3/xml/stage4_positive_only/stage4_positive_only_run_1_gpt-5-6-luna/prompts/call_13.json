@@ -1,0 +1,23 @@
+{
+  "call": 13,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (header, entry*)>\n  <!ELEMENT header (name, owner, created)>\n  <!ELEMENT name (#PCDATA)>\n  <!ELEMENT owner EMPTY>\n  <!ATTLIST owner uid CDATA #REQUIRED>\n  <!ELEMENT created (#PCDATA)>\n  <!ELEMENT entry (key, payload, checksum?)>\n  <!ATTLIST entry kind (text|binary|empty) \"text\">\n  <!ATTLIST entry key ID #REQUIRED>\n  <!ELEMENT key (#PCDATA)>\n  <!ELEMENT payload (#PCDATA|chunk|ref)*>\n  <!ELEMENT chunk (#PCDATA)>\n  <!ATTLIST chunk offset NMTOKEN #IMPLIED>\n  <!ELEMENT ref EMPTY>\n  <!ATTLIST ref target IDREF #REQUIRED>\n  <!ELEMENT checksum (#PCDATA)>\n  <!ENTITY copyright \"\u00a9 2026 Example Archive\">\n]>\n<archive>\n  <header>\n    <name>incremental-store</name>\n    <owner uid=\"u-17\"/>\n    <created>2026-09-23</created>\n  </header>\n  <entry key=\"item-a\" kind=\"text\">\n    <key>alpha</key>\n    <payload>prefix<chunk offset=\"0\">one</chunk><chunk offset=\"3\">two</chunk>&copyright;<ref target=\"item-b\"/></payload>\n    <checksum>sha256:9f86d081884c7d65</checksum>\n  </entry>\n  <entry key=\"item-b\" kind=\"empty\">\n    <key>beta</key>\n    <payload><![CDATA[]]></payload>\n  </entry>\n</archive>\n\n--- example 2 ---\n<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n<network xmlns=\"urn:example:network\"\n         xmlns:net=\"urn:example:network:devices\"\n         xmlns:log=\"urn:example:network:log\"\n         xml:space=\"preserve\">\n  <?snapshot sequence=\"00000019\"?>\n  <graph directed=\"true\" generated=\"2026-09-23\">\n    <node id=\"router-\u03b1\" role=\"edge\" enabled=\"yes\">\n      <address family=\"ipv6\">2001:db8:85a3::8a2e:370:7334</address>\n      <interfaces>\n        <interface name=\"uplink0\" mtu=\"9000\">\n          <net:mac>02:00:00:aa:bb:01</net:mac>\n          <net:metric>10</net:metric>\n        </interface>\n        <interface name=\"lan0\" mtu=\"1500\">\n          <net:mac>02:00:00:aa:bb:02</net:mac>\n          <net:metric>100</net:metric>\n        </interface>\n      </interfaces>\n    </node>\n    <node id=\"sensor-07\" role=\"leaf\" enabled=\"no\">\n      <address family=\"ipv4\">192.0.2.77</address>\n      <interfaces/>\n    </node>\n    <edge from=\"router-\u03b1\" to=\"sensor-07\" weight=\"0.875\">\n      <log:event level=\"warning\" code=\"LINK_DEGRADED\">\n        packet loss <![CDATA[< 3% ]]>\n      </log:event>\n      <log:sample at=\"12:00:00.000Z\">0.03125</log:sample>\n      <log:sample at=\"12:00:01.000Z\">0.02800</log:sample>\n    </edge>\n  </graph>\n  <policies>\n    <policy name=\"quarantine\" priority=\"7\">\n      <match field=\"role\" equals=\"leaf\"/>\n      <action type=\"rate-limit\" value=\"64kbit/s\"/>\n      <action type=\"notify\">\n        <recipient channel=\"pager\">ops@example.invalid</recipient>\n      </action>\n    </policy>\n  </policies>\n</network>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-23T05:23:28.727604+00:00"
+}

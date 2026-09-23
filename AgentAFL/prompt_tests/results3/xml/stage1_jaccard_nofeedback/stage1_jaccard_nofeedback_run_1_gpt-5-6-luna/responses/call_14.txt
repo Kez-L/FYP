@@ -1,0 +1,97 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <x:item id="A-001" enabled="true">
+    <x:name><![CDATA[alpha < beta && gamma > delta]]></x:name>
+    <x:values>
+      <x:value>0</x:value>
+      <x:value>-9223372036854775808</x:value>
+      <x:value>1.7976931348623157E+308</x:value>
+    </x:values>
+  </x:item>
+  <item xmlns="">
+    <name>plain namespace reset</name>
+    <empty/>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, attachment?)>
+  <!ELEMENT header (from, to, subject)>
+  <!ELEMENT body (#PCDATA|em|br)*>
+  <!ELEMENT attachment EMPTY>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST message priority (low|normal|high) "normal">
+  <!ATTLIST attachment content-type CDATA #REQUIRED>
+]>
+<message priority="high">
+  <header>
+    <from>sender@example.test</from>
+    <to>receiver@example.test</to>
+    <subject>Mixed content</subject>
+  </header>
+  <body>Hello <em>world</em><br/>after line break</body>
+  <attachment content-type="application/octet-stream"/>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<document>
+  <section id="root">
+    <title>Nested text</title>
+    <paragraph>before<mark data-kind="x">inside<mark>deep</mark>after</mark>end</paragraph>
+    <list>
+      <entry key="1">one</entry>
+      <entry key="2">
+        <entry key="2a"/>
+      </entry>
+    </list>
+  </section>
+  <section id="empty">
+    <!-- comment before -->
+    <![CDATA[]]>
+    <?processing instruction-data?>
+  </section>
+</document>
+```
+
+```xml
+<?xml version="1.1"?>
+<root xml:lang="en-US" xml:space="preserve">
+  <data>
+    &#x0A;&#10;&#x20;
+    <![CDATA[
+      ]]>]]><![CDATA[<![CDATA[ nested-looking text ]]>
+    ]]>
+  </data>
+  <unicode name="café">𐀀漢字😀</unicode>
+  <attributes a="&quot;&apos;&lt;&gt;&amp;" b="&#x1F600;" c="line
+break"/>
+</root>
+```
+
+```xml
+<!DOCTYPE r [
+  <!ENTITY one "first">
+  <!ENTITY two "&one;:second">
+  <!ENTITY three "third">
+]>
+<r>
+  <left>&two;</left>
+  <middle>
+    <node a="&three;" b="&two;">&one;</node>
+    <node><![CDATA[&one; &two;]]></node>
+  </middle>
+  <right>
+    <![CDATA[unterminated-looking ]]> tail]]>
+  </right>
+</r>
+```

@@ -1,0 +1,194 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, records, footer)>
+  <!ELEMENT header (created, creator?)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT creator (#PCDATA)>
+  <!ELEMENT records (record+)>
+  <!ELEMENT record (key, value, metadata?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT metadata (tag*)>
+  <!ELEMENT tag EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST archive version CDATA "2">
+  <!ATTLIST record id ID #REQUIRED state (new|held|closed) "new">
+  <!ATTLIST record ref IDREF #IMPLIED>
+  <!ATTLIST tag name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY marker "&#x2063;section">
+]>
+<archive version="2">
+  <header>
+    <created>2026-09-23T00:00:00Z</created>
+    <creator>seed &amp; generator</creator>
+  </header>
+  <records>
+    <record id="r1" state="held">
+      <key>alpha</key>
+      <value>left<part>&marker;</part>right</value>
+      <metadata>
+        <tag name="empty"/>
+        <tag name="quoted" value="a &quot; b"/>
+      </metadata>
+    </record>
+    <record id="r2" ref="r1" state="closed">
+      <key>beta</key>
+      <value><![CDATA[x<y && z>q]]></value>
+    </record>
+  </records>
+  <footer>done</footer>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST matrix axis CDATA #IMPLIED>
+  <!ATTLIST row index NMTOKEN #REQUIRED>
+  <!ATTLIST cell kind (text|number|flag) "text" span NMTOKENS #IMPLIED>
+  <!ENTITY amp "&amp;">
+  <!ENTITY nested "A &amp; B &amp; C">
+  <!ENTITY quote "left &quot; middle &apos; right">
+]>
+<matrix axis="r,c">
+  <row index="zero">
+    <cell kind="number" span="one two">001</cell>
+    <cell kind="text">&nested;</cell>
+    <cell kind="flag">true</cell>
+  </row>
+  <row index="one">
+    <cell><![CDATA[raw ]]> text <![CDATA[ ]]> tail</cell>
+    <cell kind="text">&quote; &amp; &#x1F642;</cell>
+  </row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (soap:header, soap:body)>
+  <!ELEMENT soap:header (auth:token, trace:span?)>
+  <!ELEMENT soap:body (m:request|m:response)>
+  <!ELEMENT auth:token (#PCDATA)>
+  <!ELEMENT trace:span EMPTY>
+  <!ELEMENT m:request (m:argument*)>
+  <!ELEMENT m:response (m:result, m:warning?)>
+  <!ELEMENT m:argument (#PCDATA)>
+  <!ELEMENT m:result (#PCDATA)>
+  <!ELEMENT m:warning (#PCDATA)>
+  <!ATTLIST auth:token scheme CDATA #IMPLIED>
+  <!ATTLIST trace:span id ID #REQUIRED>
+  <!ATTLIST m:argument name CDATA #REQUIRED>
+  <!ENTITY token-part "prefix-&#x2D;-suffix">
+]>
+<envelope xmlns:soap="urn:soap:test"
+          xmlns:auth="urn:auth:test"
+          xmlns:trace="urn:trace:test"
+          xmlns:m="urn:message:test"
+          xmlns="urn:default:test">
+  <soap:header>
+    <auth:token scheme="bearer">&token-part;</auth:token>
+    <trace:span id="trace-1"/>
+  </soap:header>
+  <soap:body>
+    <m:request>
+      <m:argument name="path">/a/b?x=1&amp;y=2</m:argument>
+      <m:argument name="payload"><![CDATA[{ "x": null }]]></m:argument>
+    </m:request>
+  </soap:body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (package, signature?, resource*)>
+  <!ELEMENT package (name, files)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT files (file*)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT signature (digest, certificate)>
+  <!ELEMENT digest (#PCDATA)>
+  <!ELEMENT certificate (#PCDATA)>
+  <!ELEMENT resource (location, checksum?)>
+  <!ELEMENT location (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST manifest generated CDATA #IMPLIED>
+  <!ATTLIST package id ID #REQUIRED format (zip|tar|dir) #REQUIRED>
+  <!ATTLIST file path CDATA #REQUIRED mode NMTOKEN "0644" executable (yes|no) "no">
+  <!ATTLIST resource type NOTATION (binary|text) #IMPLIED>
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!NOTATION text SYSTEM "text/plain">
+  <!ENTITY copyright "Copyright &#169; 2026">
+]>
+<manifest generated="yes">
+  <package id="pkg-main" format="dir">
+    <name>sample-package</name>
+    <files>
+      <file path="bin/run" mode="0755" executable="yes"/>
+      <file path="data/a&amp;b.txt" mode="0640"/>
+      <file path="empty" mode="0000"/>
+    </files>
+  </package>
+  <signature>
+    <digest><![CDATA[sha256:00<11>22]]></digest>
+    <certificate>&copyright;</certificate>
+  </signature>
+  <resource type="text">
+    <location>docs/README</location>
+    <checksum>none</checksum>
+  </resource>
+</manifest>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (opening, transaction*, closing)>
+  <!ELEMENT opening (#PCDATA)>
+  <!ELEMENT transaction (when, debit, credit, memo?)>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT debit (account, amount)>
+  <!ELEMENT credit (account, amount)>
+  <!ELEMENT account (#PCDATA)>
+  <!ELEMENT amount (#PCDATA)>
+  <!ELEMENT memo (#PCDATA)>
+  <!ELEMENT closing (#PCDATA)>
+  <!ATTLIST transaction number NMTOKEN #REQUIRED currency CDATA "EUR">
+  <!ATTLIST amount scale NMTOKEN "2">
+  <!ENTITY euro "&#x20AC;">
+  <!ENTITY line "first&#xA;second">
+]>
+<ledger>
+  <opening>1000.00</opening>
+  <transaction number="0001" currency="EUR">
+    <when>2026-09-23</when>
+    <debit>
+      <account>cash</account>
+      <amount scale="2">12.50</amount>
+    </debit>
+    <credit>
+      <account>supplies</account>
+      <amount>&euro; 12.50</amount>
+    </credit>
+    <memo>&line;</memo>
+  </transaction>
+  <transaction number="0002" currency="USD">
+    <when>2026-09-24</when>
+    <debit>
+      <account><![CDATA[refund<account>]]></account>
+      <amount>0</amount>
+    </debit>
+    <credit>
+      <account>cash</account>
+      <amount>0</amount>
+    </credit>
+  </transaction>
+  <closing>987.50</closing>
+</ledger>
+```

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE pipeline [
+  <!ELEMENT pipeline (stage*)>
+  <!ELEMENT stage (input|transform|output|checkpoint)+>
+  <!ATTLIST stage name CDATA #REQUIRED>
+  <!ELEMENT input EMPTY>
+  <!ATTLIST input source CDATA #REQUIRED format CDATA "text">
+  <!ELEMENT transform (#PCDATA)>
+  <!ELEMENT output EMPTY>
+  <!ATTLIST output destination CDATA #REQUIRED overwrite (yes|no) "no">
+  <!ELEMENT checkpoint EMPTY>
+  <!ATTLIST checkpoint after CDATA #IMPLIED>
+]>
+<?pipeline-mode strict?>
+<!-- Processing instructions and empty elements are intentional. -->
+<pipeline>
+  <stage name="ingest">
+    <input source="stdin" format="binary"/>
+    <checkpoint after="input"/>
+    <transform><![CDATA[
+      normalize(record);
+      split("\x00");
+    ]]></transform>
+  </stage>
+  <stage name="publish">
+    <transform>encrypt(key="demo&amp;test")</transform>
+    <output destination="out/archive.dat" overwrite="yes"/>
+  </stage>
+</pipeline>

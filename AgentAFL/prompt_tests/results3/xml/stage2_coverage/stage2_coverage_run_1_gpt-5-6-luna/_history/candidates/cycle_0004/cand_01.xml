@@ -1,0 +1,45 @@
+<?xml version="1.1"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (entry*, signature)>
+  <!ELEMENT entry (name, digest, metadata?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT digest (#PCDATA)>
+  <!ELEMENT metadata (field*)>
+  <!ELEMENT field (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST entry kind (file|directory|link) "file" mode CDATA #IMPLIED>
+  <!ATTLIST field key NMTOKEN #REQUIRED>
+  <!ENTITY nl "&#xA;">
+  <!ENTITY hex "0x">
+  <![INCLUDE[
+    <!ENTITY build "nightly">
+  ]]>
+  <![IGNORE[
+    <!ELEMENT discarded ANY>
+    <!ENTITY never-used "ignored">
+  ]]>
+]>
+<manifest>
+  <entry kind="file" mode="0644">
+    <name>alpha.txt</name>
+    <digest>sha256:&hex;9a7f</digest>
+    <metadata>
+      <field key="owner">build</field>
+      <field key="channel">&build;</field>
+    </metadata>
+  </entry>
+  <entry kind="link">
+    <name>latest</name>
+    <digest>target-&gt;alpha.txt</digest>
+    <metadata>
+      <field key="notes">line one&nl;line two</field>
+    </metadata>
+  </entry>
+  <entry kind="directory">
+    <name>assets/</name>
+    <digest>empty</digest>
+  </entry>
+  <signature>-----BEGIN &amp; TEST-----&#xD;
+abc123
+-----END-----</signature>
+</manifest>

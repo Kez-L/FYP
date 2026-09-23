@@ -1,0 +1,98 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (metadata, payload)>
+  <!ELEMENT metadata (name, checksum?, property*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT property EMPTY>
+  <!ELEMENT payload EMPTY>
+  <!ATTLIST package xmlns:sec CDATA #FIXED "urn:security"
+                    version NMTOKEN #REQUIRED>
+  <!ATTLIST property key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST payload source ENTITY #IMPLIED>
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY archive SYSTEM "archive.bin" NDATA binary>
+]>
+<package xmlns:sec="urn:security" version="2.7">
+  <metadata>
+    <name>sample</name>
+    <checksum>sha256:0000000000000000</checksum>
+    <property key="mode" value="sealed"/>
+    <property key="owner"/>
+  </metadata>
+  <payload source="archive"/>
+</package>
+```
+
+```xml
+<?xml version="1.1"?>
+<scene xmlns="urn:scene" xmlns:xlink="http://www.w3.org/1999/xlink"
+       xml:lang="und" xml:base="urn:base/">
+  <?render quality="draft"?>
+  <layer id="L0" opacity="0">
+    <transform matrix="1 0 0 1 0 0"/>
+    <path d="M0,0 L10,10 Z" xlink:href="#missing"/>
+    <clip>
+      <point x="+0" y="-0"/>
+      <point x="1e0" y="INF"/>
+    </clip>
+  </layer>
+  <!-- processing instructions and namespace transitions -->
+  <layer xmlns="" id="L1">
+    <item xml:space="preserve">  text  </item>
+  </layer>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<records xmlns:r="urn:records">
+  <r:record id="a">
+    <r:field name="alpha">one</r:field>
+    <r:field name="beta"><![CDATA[unterminated-looking ]]]]><![CDATA[> fragment]]></r:field>
+  </r:record>
+  <r:record id="b" id="duplicate">
+    <r:field name="gamma">two &bogus;</r:field>
+  </r:record>
+</records>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE tree [
+  <!ENTITY % branchdecl "<!ELEMENT branch (leaf|branch)*>">
+  %branchdecl;
+  <!ELEMENT tree (branch)>
+  <!ELEMENT leaf (#PCDATA)>
+  <!ATTLIST tree root ID #REQUIRED>
+  <!ATTLIST branch ref IDREF #IMPLIED count NMTOKEN "0">
+  <!ATTLIST leaf kind (left|right|middle) #IMPLIED>
+  <!ENTITY open "[" >
+  <!ENTITY close "]" >
+]>
+<tree root="root-node">
+  <branch ref="root-node" count="00">
+    <leaf kind="left">&open;first&close;</leaf>
+    <branch count="7">
+      <leaf kind="middle">second</leaf>
+      <leaf kind="right"/>
+    </branch>
+  </branch>
+</tree>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE fault [
+  <!ELEMENT fault (message, detail?)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT detail (#PCDATA)>
+  <!ENTITY loop "&loop;">
+  <!ENTITY nul "&#x0;">
+]>
+<fault>
+  <message>before &loop; after</message>
+  <detail>bad &nul;</detail>
+</fault>
+```

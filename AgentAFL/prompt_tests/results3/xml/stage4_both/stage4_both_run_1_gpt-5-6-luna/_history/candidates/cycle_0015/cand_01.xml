@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<workflow xmlns="urn:acme:workflow" xmlns:ext="urn:acme:extension">
+  <?engine strict="false" trace="full"?>
+  <pipeline id="nightly" enabled="true">
+    <step name="extract" type="source">
+      <input format="csv" path="data/incoming.csv">
+        <columns>
+          <column index="0">account</column>
+          <column index="1">amount</column>
+          <column index="2">currency</column>
+        </columns>
+      </input>
+      <on-success>
+        <emit topic="raw.records"/>
+      </on-success>
+      <on-error>
+        <retry limit="3" delay="PT5M"/>
+      </on-error>
+    </step>
+    <step name="normalize" type="transform">
+      <depends-on ref="extract"/>
+      <script language="xpath"><![CDATA[
+        replace(normalize-space($value), "  ", " ")
+      ]]></script>
+      <ext:option key="case">fold</ext:option>
+    </step>
+    <step name="publish" type="sink">
+      <depends-on ref="normalize"/>
+      <destination scheme="queue" uri="mq://example.invalid/normalized"/>
+    </step>
+  </pipeline>
+</workflow>

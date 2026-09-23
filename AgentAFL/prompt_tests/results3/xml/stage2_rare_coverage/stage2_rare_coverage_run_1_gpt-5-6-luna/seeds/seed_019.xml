@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (trigger, variables?, steps)>
+  <!ELEMENT trigger (event, filter?)>
+  <!ELEMENT event (#PCDATA)>
+  <!ELEMENT filter (expression)>
+  <!ELEMENT expression (#PCDATA)>
+  <!ELEMENT variables (variable*)>
+  <!ELEMENT variable (#PCDATA)>
+  <!ELEMENT steps (step+)>
+  <!ELEMENT step (action, on-success?, on-failure?)>
+  <!ELEMENT action EMPTY>
+  <!ELEMENT on-success (goto|stop)>
+  <!ELEMENT on-failure (goto|retry|stop)>
+  <!ELEMENT goto EMPTY>
+  <!ELEMENT retry EMPTY>
+  <!ELEMENT stop EMPTY>
+  <!ATTLIST variable name NMTOKEN #REQUIRED type (string|number|boolean) "string">
+  <!ATTLIST step id ID #REQUIRED timeout CDATA #IMPLIED>
+  <!ATTLIST action name NMTOKEN #REQUIRED asynchronous (true|false) "false">
+  <!ATTLIST goto step IDREF #REQUIRED>
+  <!ATTLIST retry count CDATA #REQUIRED delay CDATA "0">
+]>
+<workflow xmlns:ext="urn:workflow:extension">
+  <trigger>
+    <event>file.created</event>
+    <filter>
+      <expression>path =~ "^/var/inbox/" and size &gt; 0</expression>
+    </filter>
+  </trigger>
+  <variables>
+    <variable name="attempts" type="number">3</variable>
+    <variable name="notify" type="boolean">true</variable>
+    <variable name="message">Résumé: prêt à traiter</variable>
+  </variables>
+  <steps>
+    <step id="scan" timeout="PT30S">
+      <action name="scan-directory" asynchronous="false"/>
+      <on-success><goto step="archive"/></on-success>
+      <on-failure><retry count="2" delay="PT5S"/></on-failure>
+    </step>
+    <step id="archive">
+      <action name="archive-file"/>
+      <on-success><stop/></on-success>
+      <on-failure><goto step="notify"/></on-failure>
+    </step>
+    <step id="notify">
+      <action name="send-alert"/>
+      <on-failure><stop/></on-failure>
+    </step>
+  </steps>
+</workflow>

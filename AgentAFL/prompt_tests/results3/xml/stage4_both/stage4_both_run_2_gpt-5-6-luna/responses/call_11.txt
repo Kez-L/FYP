@@ -1,0 +1,245 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:acme:catalog" generated="2026-09-23">
+  <collection id="c-42" status="active">
+    <label xml:lang="en">Field Instruments</label>
+    <item sku="FI-100" available="true">
+      <name>Precision Barometer</name>
+      <manufacturer country="DE">Hohenwerk</manufacturer>
+      <specifications>
+        <spec key="range" unit="kPa">80–120</spec>
+        <spec key="resolution" unit="Pa">10</spec>
+        <spec key="display">analog</spec>
+      </specifications>
+      <materials>
+        <material percentage="65">steel</material>
+        <material percentage="20">glass</material>
+        <material percentage="15">brass</material>
+      </materials>
+      <service>
+        <interval unit="months">18</interval>
+        <instruction>Keep away from magnetic fields.</instruction>
+      </service>
+    </item>
+    <item sku="FI-205" available="false">
+      <name>Humidity Probe</name>
+      <manufacturer country="JP">Kisaragi Labs</manufacturer>
+      <specifications>
+        <spec key="range" unit="%RH">0..100</spec>
+        <spec key="interface">I²C</spec>
+      </specifications>
+      <replacement ref="FI-205-SENSOR"/>
+    </item>
+  </collection>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE itinerary [
+  <!ELEMENT itinerary (traveler, journey)>
+  <!ELEMENT traveler (name, contacts)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT contacts (email, phone?)>
+  <!ELEMENT email (#PCDATA)>
+  <!ELEMENT phone (#PCDATA)>
+  <!ELEMENT journey (leg+)>
+  <!ELEMENT leg (departure, arrival, transport, lodging?)>
+  <!ELEMENT departure (place, time)>
+  <!ELEMENT arrival (place, time)>
+  <!ELEMENT place (#PCDATA)>
+  <!ELEMENT time (#PCDATA)>
+  <!ELEMENT transport (#PCDATA)>
+  <!ELEMENT lodging (hotel, nights)>
+  <!ELEMENT hotel (#PCDATA)>
+  <!ELEMENT nights (#PCDATA)>
+  <!ATTLIST itinerary currency CDATA #IMPLIED>
+  <!ATTLIST leg sequence NMTOKEN #REQUIRED>
+  <!ATTLIST transport mode (rail|air|road|sea) #REQUIRED>
+  <!ENTITY city "North Harbor">
+]>
+<itinerary currency="EUR">
+  <traveler>
+    <name>Lin &amp; Noor</name>
+    <contacts>
+      <email>dispatch@example.test</email>
+      <phone>+00 555 0102</phone>
+    </contacts>
+  </traveler>
+  <journey>
+    <leg sequence="A" >
+      <departure>
+        <place>Old Quay</place>
+        <time>2026-10-04T06:45:00+02:00</time>
+      </departure>
+      <arrival>
+        <place>&city;</place>
+        <time>2026-10-04T09:10:00+02:00</time>
+      </arrival>
+      <transport mode="rail">Night express</transport>
+      <lodging>
+        <hotel>Lantern House</hotel>
+        <nights>2</nights>
+      </lodging>
+    </leg>
+    <leg sequence="B">
+      <departure>
+        <place>&city;</place>
+        <time>2026-10-06T14:00:00+02:00</time>
+      </departure>
+      <arrival>
+        <place>Westmere</place>
+        <time>2026-10-06T17:25:00+02:00</time>
+      </arrival>
+      <transport mode="road">Shared coach</transport>
+    </leg>
+  </journey>
+</itinerary>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:lab:workflow" xmlns:cfg="urn:lab:config" id="wf-77">
+  <metadata>
+    <owner>operations</owner>
+    <created>2026-09-23</created>
+    <labels>
+      <label>nightly</label>
+      <label>verification</label>
+    </labels>
+  </metadata>
+  <pipeline>
+    <stage name="prepare" retries="2">
+      <action type="fetch">
+        <source protocol="https">https://data.example.test/input</source>
+        <destination path="/var/tmp/input.bin"/>
+      </action>
+      <action type="unpack" format="tar">
+        <option key="strip-components">1</option>
+      </action>
+    </stage>
+    <stage name="analyze" retries="0" cfg:priority="high">
+      <condition>
+        <all>
+          <exists path="manifest.json"/>
+          <equals left="${environment}" right="staging"/>
+        </all>
+      </condition>
+      <action type="execute" shell="/bin/sh">
+        <command><![CDATA[
+          ./analyze --input ./payload --report ./out/report.json
+        ]]></command>
+        <environment>
+          <variable name="LC_ALL">C</variable>
+          <variable name="MODE">strict</variable>
+        </environment>
+      </action>
+    </stage>
+    <stage name="publish" depends-on="analyze">
+      <action type="copy">
+        <from>./out/report.json</from>
+        <to>archive/report-${run.id}.json</to>
+      </action>
+      <on-error>
+        <notify channel="pager">publication failed</notify>
+      </on-error>
+    </stage>
+  </pipeline>
+</workflow>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (header, body, index?)>
+  <!ELEMENT header (title, author+, date)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT date (#PCDATA)>
+  <!ELEMENT body (paragraph+)>
+  <!ELEMENT paragraph (#PCDATA|highlight|code|break)*>
+  <!ELEMENT highlight (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT index (term+)>
+  <!ELEMENT term (#PCDATA)>
+  <!ATTLIST entry key ID #REQUIRED>
+  <!ATTLIST entry visibility (public|private|restricted) "public">
+  <!ATTLIST paragraph number NMTOKEN #IMPLIED>
+  <!ATTLIST highlight color CDATA #IMPLIED>
+  <!ATTLIST code language CDATA #IMPLIED>
+  <!ENTITY copyright "© 2026">
+]>
+<archive>
+  <entry key="memo-α" visibility="restricted">
+    <header>
+      <title>On bounded retries</title>
+      <author>R. Vale</author>
+      <author>M. Chen</author>
+      <date>2026-09-23</date>
+    </header>
+    <body>
+      <paragraph number="1">A retry is useful only when the failure may change.</paragraph>
+      <paragraph number="2">The service returned <highlight color="amber">temporarily unavailable</highlight> after the third attempt.<break/>We recorded the response as <code language="http">503</code>.</paragraph>
+      <paragraph number="3">&copyright; Keep the interval visible to operators.</paragraph>
+    </body>
+    <index>
+      <term>backoff</term>
+      <term>failure modes</term>
+      <term>observability</term>
+    </index>
+  </entry>
+  <entry key="memo-β">
+    <header>
+      <title>Cold start notes</title>
+      <author>S. Ibarra</author>
+      <date>2026-09-22</date>
+    </header>
+    <body>
+      <paragraph>Initialization completed without a cache.</paragraph>
+    </body>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<survey xmlns="urn:example:survey" xmlns:q="urn:example:question" xmlns:answer="urn:example:answer" version="4">
+  <introduction xml:space="default">
+    <heading>Equipment readiness survey</heading>
+    <text>Please answer each question once.</text>
+  </introduction>
+  <respondent id="r-008" role="supervisor">
+    <identity>
+      <display-name>Élodie Martín</display-name>
+      <organization>Atelier &amp; Sons</organization>
+    </identity>
+    <responses>
+      <q:response q:id="power">
+        <q:prompt>Is backup power available?</q:prompt>
+        <answer:choice code="yes" selected="true">Yes</answer:choice>
+        <answer:comment><![CDATA[Generator tested during the last inspection.]]></answer:comment>
+      </q:response>
+      <q:response q:id="network">
+        <q:prompt>Which connection is preferred?</q:prompt>
+        <answer:choice code="fiber" selected="false">Fiber</answer:choice>
+        <answer:choice code="radio" selected="true">Radio</answer:choice>
+      </q:response>
+      <q:response q:id="hazards">
+        <q:prompt>List known hazards.</q:prompt>
+        <answer:list>
+          <answer:item severity="medium">Condensation</answer:item>
+          <answer:item severity="low">Loose packaging</answer:item>
+          <answer:item severity="high">Unshielded cable</answer:item>
+        </answer:list>
+      </q:response>
+    </responses>
+    <review>
+      <reviewer id="rv-2">K. Okafor</reviewer>
+      <status>pending</status>
+      <remark xml:lang="fr">Vérification requise avant l'installation.</remark>
+    </review>
+  </respondent>
+</survey>
+```

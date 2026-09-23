@@ -1,0 +1,147 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ENTITY greet "hello">
+  <!ENTITY % attrs "priority (low|normal|high) 'normal'">
+  <!ELEMENT message (header, body, footer?)>
+  <!ELEMENT header (from, to, subject)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|br)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST message %attrs; ref ID #IMPLIED>
+]>
+<message ref="m1" priority="high">
+  <header>
+    <from>&greet;@example.org</from>
+    <to>reader@example.net</to>
+    <subject>Nested &amp; encoded</subject>
+  </header>
+  <body>Start<quote>Outer <quote>Inner</quote> tail</quote><br/>End</body>
+  <footer>signed</footer>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (entry*)>
+  <!ELEMENT entry (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (text|number|list|missing)>
+  <!ELEMENT text (#PCDATA)>
+  <!ELEMENT number (#PCDATA)>
+  <!ELEMENT list (value*)>
+  <!ELEMENT missing EMPTY>
+  <!ATTLIST entry name NMTOKEN #REQUIRED>
+]>
+<map>
+  <entry name="alpha">
+    <key>alpha</key>
+    <value><text>one</text></value>
+  </entry>
+  <entry name="beta">
+    <key>beta</key>
+    <value><list>
+      <value><number>001</number></value>
+      <value><missing/></value>
+      <value><text>two &lt; three</text></value>
+    </list></value>
+  </entry>
+  <entry name="gamma">
+    <key><![CDATA[broken-looking ]]> text</key>
+    <value><number>NaN</number></value>
+  </entry>
+</map>
+```
+
+```xml
+<!DOCTYPE canvas [
+  <!ELEMENT canvas (layer+)>
+  <!ELEMENT layer (shape*)>
+  <!ELEMENT shape (point|label|style)*>
+  <!ELEMENT point EMPTY>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT style EMPTY>
+  <!ATTLIST canvas width NMTOKEN #IMPLIED height NMTOKEN #IMPLIED>
+  <!ATTLIST layer name CDATA #IMPLIED opacity CDATA "1.0">
+  <!ATTLIST shape kind (circle|rect|path) #REQUIRED>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ATTLIST style fill CDATA #IMPLIED stroke CDATA #IMPLIED>
+]>
+<canvas width="640" height="480">
+  <layer name="background" opacity="0">
+    <shape kind="rect">
+      <point x="0" y="0"/>
+      <point x="640" y="480"/>
+      <style fill="#000000" stroke="none"/>
+    </shape>
+  </layer>
+  <layer name="foreground" opacity="0.75">
+    <shape kind="path">
+      <point x="-1" y="2"/>
+      <label>curve &amp; control</label>
+      <style stroke="url(#paint_1)"/>
+    </shape>
+  </layer>
+</canvas>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT payload (chunk*)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST package version CDATA #FIXED "2">
+  <!ATTLIST file path CDATA #REQUIRED size NMTOKEN #IMPLIED compressed (yes|no) "no">
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding CDATA "base64">
+]>
+<package version="2">
+  <manifest>
+    <file path="docs/readme.txt" size="17" compressed="no"/>
+    <file path="bin/data&#x2F;raw" size="0" compressed="yes"/>
+  </manifest>
+  <payload>
+    <chunk index="0" encoding="base64">AAEC/f4=</chunk>
+    <chunk index="1" encoding="quoted-printable">a=b=c</chunk>
+    <chunk index="2" encoding="">&#x0D;&#x0A;tail</chunk>
+  </payload>
+</package>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section*, appendix?)>
+  <!ELEMENT section (heading, paragraph+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|term|break)*>
+  <!ELEMENT term (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT appendix (note*)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST section code ID #IMPLIED>
+  <!ATTLIST term id ID #IMPLIED>
+]>
+<report>
+  <section code="sA">
+    <heading>Résumé — café</heading>
+    <paragraph>Before<term id="t1">definition</term>after<break/>end</paragraph>
+    <paragraph>Mixed &#x20AC; and &#x1F600; characters</paragraph>
+  </section>
+  <section>
+    <heading>Second</heading>
+    <paragraph><![CDATA[raw ]]> brackets &amp; entities</paragraph>
+  </section>
+  <appendix>
+    <note>One</note>
+    <note>Two</note>
+  </appendix>
+</report>
+```

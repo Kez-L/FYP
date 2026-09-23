@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, records)>
+  <!ELEMENT header (created, source)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (key, value, ref*)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST record id ID #REQUIRED previous IDREF #IMPLIED state (new|old|removed) "new">
+  <!ATTLIST ref points IDREF #REQUIRED kind NMTOKEN #IMPLIED>
+  <!ENTITY prefix "urn:archive:">
+  <!ENTITY sample "<chunk>expanded</chunk>">
+]>
+<archive>
+  <header>
+    <created>2026-09-23T00:00:00Z</created>
+    <source>&prefix;input</source>
+  </header>
+  <records>
+    <record id="r1" state="new">
+      <key>alpha</key>
+      <value>before <chunk>middle</chunk> after</value>
+      <ref points="r2" kind="forward"/>
+    </record>
+    <record id="r2" previous="r1" state="old">
+      <key>beta</key>
+      <value>&sample;</value>
+    </record>
+  </records>
+</archive>

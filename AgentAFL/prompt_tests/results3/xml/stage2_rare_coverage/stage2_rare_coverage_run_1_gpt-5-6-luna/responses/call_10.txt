@@ -1,0 +1,112 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (entry*)>
+  <!ATTLIST section name CDATA #REQUIRED>
+  <!ELEMENT entry (title, description?, meta*)>
+  <!ATTLIST entry key ID #REQUIRED status (new|old|archived) "new">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+]>
+<catalog>
+  <section name="alpha">
+    <entry key="e1">
+      <title>First &amp; only</title>
+      <description>text <em>with emphasis</em><br/>after break</description>
+      <meta name="empty"/>
+    </entry>
+    <entry key="e2" status="archived">
+      <title>Quotes: &quot;single&quot;</title>
+    </entry>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<root xmlns="urn:base" xmlns:p="urn:p">
+  <p:branch xmlns:p="urn:shadow" xmlns:q="urn:q">
+    <q:leaf q:kind="x" p:old="1">
+      <inner xmlns="">
+        plain
+        <p:rebound xmlns:p="urn:third" p:value="v"/>
+      </inner>
+    </q:leaf>
+  </p:branch>
+  <empty/>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ENTITY greeting "hello">
+  <!ENTITY wrapped "&greeting;, world">
+  <!ENTITY percent "%not-used;">
+  <!ELEMENT message (header, body)>
+  <!ELEMENT header (from, to)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT body (#PCDATA|line|quote)*>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+]>
+<message>
+  <header>
+    <from>sender@example.test</from>
+    <to>receiver@example.test</to>
+  </header>
+  <body>
+    &wrapped;
+    <line>one</line>
+    <quote>He said: &quot;okay&quot;</quote>
+    <line>three</line>
+  </body>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<warehouse>
+  <location code="A-01">
+    <bin capacity="0" occupied="0"/>
+    <bin capacity="10" occupied="10">
+      <item sku="0001" quantity="0000000000000000000000000000000000000007">
+        <name>café</name>
+        <dimensions width="1.0" height="-0.0" depth="NaN"/>
+      </item>
+    </bin>
+  </location>
+  <location code="B&amp;2">
+    <bin capacity="9223372036854775807" occupied="-1">
+      <item sku="x:y" quantity="&#xFFFFFFFF;"/>
+    </bin>
+  </location>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ENTITY local "replacement">
+]>
+<root>
+  <!-- comment with -- forbidden? -->
+  <?processing instruction-data?>
+  <a><![CDATA[raw <markup> & bytes ]]></a>
+  <mixed>left<b/>middle<c attr="&quot;">right</c>tail</mixed>
+  <split>
+    <![CDATA[first]]><![CDATA[second &lt; third]]>
+  </split>
+  <nested>
+    <x><y><z/></y></x>
+  </nested>
+  &local;
+</root>
+```

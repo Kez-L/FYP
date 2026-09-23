@@ -1,0 +1,28 @@
+<?xml version="1.1"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (entry*)>
+  <!ELEMENT entry (path, digest, metadata*)>
+  <!ELEMENT path (#PCDATA)>
+  <!ELEMENT digest (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST manifest version CDATA #FIXED "1.1">
+  <!ATTLIST entry id ID #REQUIRED depends IDREFS #IMPLIED kind (file|directory|link) #REQUIRED>
+  <!ATTLIST metadata name CDATA #REQUIRED value CDATA #IMPLIED>
+]>
+<manifest version="1.1">
+  <entry id="root" kind="directory">
+    <path>/srv/data</path>
+    <digest>none</digest>
+    <metadata name="mode" value="0750"/>
+  </entry>
+  <entry id="readme" kind="file" depends="root">
+    <path>/srv/data/readme.txt</path>
+    <digest>sha256:0123456789abcdef</digest>
+    <metadata name="encoding" value="UTF-8"/>
+    <metadata name="lines" value="42"/>
+  </entry>
+  <entry id="shortcut" kind="link" depends="root readme">
+    <path>/srv/data/current</path>
+    <digest>target=readme</digest>
+  </entry>
+</manifest>

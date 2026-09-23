@@ -1,0 +1,135 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (title, metadata, body)>
+  <!ATTLIST record key ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT metadata (author*, keyword*)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ELEMENT body (#PCDATA|line|emphasis)*>
+  <!ELEMENT line (#PCDATA|emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ENTITY product "XML &amp; Parsing">
+]>
+<archive>
+  <record key="r001">
+    <title>&product; field notes</title>
+    <metadata>
+      <author xml:lang="fr">Élodie Vautrin</author>
+      <author xml:lang="ja">佐藤健</author>
+      <keyword>entities</keyword>
+      <keyword>mixed-content</keyword>
+    </metadata>
+    <body>Text before<line>first <emphasis>important</emphasis> line</line>between<line><![CDATA[raw <markup> & symbols]]></line>after.</body>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:acme:config" xmlns:p="urn:acme:plugin" xml:base="https://example.invalid/config/">
+  <profiles>
+    <profile name="development" active="true">
+      <p:plugin id="renderer" version="2.7">
+        <p:entry point="main">
+          <p:argument name="threshold" type="integer">00042</p:argument>
+          <p:argument name="pattern" type="regex"><![CDATA[[A-Z]{2,4}\s+\d+]]></p:argument>
+        </p:entry>
+      </p:plugin>
+      <paths>
+        <path xml:base="../shared/">templates/default.xml</path>
+        <path xml:base="file:///var/tmp/">cache.bin</path>
+      </paths>
+    </profile>
+  </profiles>
+  <defaults xmlns="">
+    <option key="nullable" value=""/>
+    <option key="escaped">a &quot;b&quot; &apos;c&apos; &amp; d</option>
+  </defaults>
+</configuration>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (opening, transaction*, closing)>
+  <!ELEMENT opening (#PCDATA)>
+  <!ELEMENT transaction (debit?, credit?, note?)>
+  <!ATTLIST transaction id ID #REQUIRED date CDATA #IMPLIED>
+  <!ELEMENT debit EMPTY>
+  <!ATTLIST debit account CDATA #REQUIRED amount CDATA #REQUIRED>
+  <!ELEMENT credit EMPTY>
+  <!ATTLIST credit account CDATA #REQUIRED amount CDATA #REQUIRED>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT closing (#PCDATA)>
+]>
+<ledger>
+  <opening>1&#x202F;000,00</opening>
+  <transaction id="t-α" date="2026-09-23">
+    <debit account="A/17" amount="12.50"/>
+    <credit account="B&amp;19" amount="12.50"/>
+    <note>Transfer &#x1F4B8; — reconciled</note>
+  </transaction>
+  <transaction id="t-β">
+    <credit account="C&lt;22" amount="0.00"/>
+  </transaction>
+  <closing>987.50</closing>
+</ledger>
+```
+
+```xml
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="view.xsl" alternate="yes"?>
+<!-- A document containing processing instructions, comments, and adjacent CDATA sections. -->
+<telemetry xmlns:m="urn:measurement" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <m:device xlink:type="simple" xlink:href="#node-7" id="node-7">
+    <m:name><![CDATA[<rack-Δ>/sensor]]></m:name>
+    <m:status code="200">ready</m:status>
+    <m:sample unit="°C" precision="0.001">-273.149</m:sample>
+    <m:sample unit="Pa" precision="1e-6">101325</m:sample>
+    <?calibrate mode="deferred"?>
+    <m:annotation><![CDATA[first]]><![CDATA[second]]><!-- embedded --><![CDATA[third]]></m:annotation>
+  </m:device>
+  <m:device id="node-8" xlink:href="urn:device:8">
+    <m:name>βeta &amp; gamma</m:name>
+    <m:status code="503">unavailable</m:status>
+  </m:device>
+</telemetry>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node (label?, property*)>
+  <!ATTLIST node id ID #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST property name CDATA #REQUIRED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED kind CDATA "directed">
+]>
+<graph xmlns="urn:graph:test">
+  <node id="n-root">
+    <label>Root</label>
+    <property name="empty"/>
+    <property name="multiline">
+      line one
+      line two
+    </property>
+  </node>
+  <node id="n-2">
+    <label>Left &#x2190; branch</label>
+    <property name="quote">He said, &quot;go&quot;.</property>
+  </node>
+  <node id="n-3">
+    <label>Right &gt; branch</label>
+  </node>
+  <edge from="n-root" to="n-2"/>
+  <edge from="n-root" to="n-3" kind="cross">
+    <!-- whitespace-only content is intentionally not permitted by the DTD -->
+  </edge>
+</graph>
+```

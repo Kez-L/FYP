@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (metadata, widget+)>
+  <!ELEMENT metadata (created, owner, note?)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT note (#PCDATA|strong|br)*>
+  <!ELEMENT widget (caption, value, action*)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT value (#PCDATA|unit)*>
+  <!ELEMENT unit (#PCDATA)>
+  <!ELEMENT action EMPTY>
+  <!ATTLIST dashboard theme (light|dark|contrast) "light">
+  <!ATTLIST widget id ID #REQUIRED kind (gauge|counter|text) #REQUIRED>
+  <!ATTLIST action name CDATA #REQUIRED target CDATA #IMPLIED>
+  <!ENTITY product "Telemetry &amp; Control">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY % optional "INCLUDE">
+  <![%optional;[
+    <!ELEMENT badge (#PCDATA)>
+    <!ATTLIST widget badge CDATA #IMPLIED>
+  ]]>
+]>
+<dashboard theme="contrast">
+  <metadata>
+    <created>2026-09-23T12:00:00Z</created>
+    <owner>&product;</owner>
+    <note>Use <strong>caution</strong> when values exceed limits<br/>and record the event.</note>
+  </metadata>
+  <widget id="w-temp" kind="gauge" badge="live">
+    <caption>Chamber temperature</caption>
+    <value>21.5<unit>°C</unit></value>
+    <action name="calibrate" target="sensor-A"/>
+  </widget>
+  <widget id="w-count" kind="counter">
+    <caption>Processed items</caption>
+    <value>1042& nbsp;</value>
+    <action name="reset"/>
+    <action name="export" target="csv"/>
+  </widget>
+</dashboard>

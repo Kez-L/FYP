@@ -1,0 +1,133 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, meta?, data)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT data ANY>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    status (new|old|archived) "new">
+  <!ATTLIST meta
+    key CDATA #IMPLIED
+    value CDATA #IMPLIED>
+]>
+<catalog>
+  <entry id="e1">
+    <title>alpha &amp; beta</title>
+    <meta key="source" value="import"/>
+    <data><![CDATA[<not-an-element>&still-raw;</not-an-element>]]></data>
+  </entry>
+  <entry id="e2" status="archived">
+    <title>line one
+line two</title>
+    <data>mixed <em>content</em> with &quot;quotes&quot;</data>
+  </entry>
+</catalog>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ELEMENT report (section*)>
+  <!ELEMENT section (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (#PCDATA|note|br)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ENTITY % common "xml:lang CDATA #IMPLIED xml:space (default|preserve) 'default'">
+  <!ATTLIST section
+    %common;
+    code CDATA #REQUIRED>
+]>
+<report xml:lang="fr" xml:space="preserve">
+  <section code="A&amp;B">
+    <heading>Résumé</heading>
+    <item>first<note>nested note</note><br/>second</item>
+    <item><![CDATA[unclosed-looking ]]> marker ]]></item>
+  </section>
+  <section code="Z">
+    <heading>Final</heading>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE map [
+  <!ELEMENT map (node|alias)*>
+  <!ELEMENT node (node|value)*>
+  <!ELEMENT alias EMPTY>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST node name NMTOKEN #REQUIRED>
+  <!ATTLIST alias ref IDREF #REQUIRED>
+  <!ATTLIST value kind CDATA "text">
+]>
+<map>
+  <node name="root">
+    <node name="child">
+      <value kind="number">00123</value>
+      <value kind="boolean">false</value>
+    </node>
+    <alias ref="missing"/>
+  </node>
+  <node name="empty"/>
+</map>
+```
+
+```xml
+<!DOCTYPE svgroot [
+  <!ELEMENT svgroot (shape+)>
+  <!ELEMENT shape (caption?, geometry)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT geometry EMPTY>
+  <!ATTLIST shape
+    id ID #IMPLIED
+    class NMTOKENS #IMPLIED>
+  <!ATTLIST geometry
+    x CDATA "0"
+    y CDATA "0"
+    points CDATA #REQUIRED>
+]>
+<svgroot xmlns="urn:vector" xmlns:x="urn:extra">
+  <shape id="s-1" class="hot highlighted">
+    <caption>x &lt; y &amp; y &gt; z</caption>
+    <geometry points="0,0 10,20 30,5" x="-1" y="+2"/>
+  </shape>
+  <shape class="single">
+    <geometry points="&#x0A;1,2&#x0D;3,4"/>
+  </shape>
+</svgroot>
+```
+
+```xml
+<!DOCTYPE package [
+  <!ELEMENT package (header, payload, footer)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload (record*)>
+  <!ELEMENT record (key, value?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|raw)*>
+  <!ELEMENT raw ANY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST header timestamp CDATA #IMPLIED>
+  <!ATTLIST record index CDATA #REQUIRED>
+]>
+<package>
+  <header timestamp="2026-09-23T00:00:00Z"/>
+  <payload>
+    <record index="0">
+      <key>first</key>
+      <value>text<raw><![CDATA[<&>]]></raw>tail</value>
+    </record>
+    <record index="1">
+      <key>second</key>
+    </record>
+    <record index="2">
+      <key/>
+      <value><![CDATA[]]></value>
+    </record>
+  </payload>
+  <footer>done &#x20; now</footer>
+</package>
+```

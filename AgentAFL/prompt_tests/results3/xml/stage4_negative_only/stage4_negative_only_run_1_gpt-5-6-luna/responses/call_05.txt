@@ -1,0 +1,146 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+, note?)>
+  <!ELEMENT entry (title, payload, checksum)>
+  <!ATTLIST entry id ID #REQUIRED kind (text|binary) "text">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY greeting "hello &amp; welcome">
+]>
+<archive>
+  <entry id="e1" kind="text">
+    <title>&greeting;</title>
+    <payload>alpha<part>one</part>beta<part><![CDATA[x<y && z>]]></part>gamma</payload>
+    <checksum>0000000000000000</checksum>
+  </entry>
+  <entry id="e2">
+    <title>第二項目 — café</title>
+    <payload><part>line
+break</part><part>	indented</part></payload>
+    <checksum>ffffffffffffffff</checksum>
+  </entry>
+  <note>trailing metadata</note>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="urn:default" xmlns:a="urn:a" xmlns:b="urn:b" xml:lang="fr" xml:space="preserve">
+  <a:branch a:flag="1">
+    <a:leaf b:ref="urn:b:item" />
+    <b:leaf a:ref="urn:a:item">texte mixte <b:mark>accentué</b:mark>.</b:leaf>
+  </a:branch>
+  <wrapper xmlns="" xmlns:a="urn:shadow">
+    <a:item id="shadowed">value</a:item>
+    <item xml:base="https://example.invalid/path/">relative</item>
+  </wrapper>
+  <a:branch>
+    <a:leaf><![CDATA[
+      <not-an-element attr="&quot;"/>
+    ]]></a:leaf>
+  </a:branch>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE feed [
+  <!ELEMENT feed (channel)>
+  <!ELEMENT channel (link, description, record*)>
+  <!ATTLIST channel mode CDATA #IMPLIED>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link href CDATA #REQUIRED rel CDATA "self">
+  <!ELEMENT description (#PCDATA)>
+  <!ELEMENT record (key, value?)>
+  <!ATTLIST record index NMTOKEN #REQUIRED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+]>
+<?feed-process normalize?>
+<feed>
+  <channel mode="delta">
+    <link href="urn:feed:42" rel="self"/>
+    <description>Records &lt;may&gt; contain unusual values.</description>
+    <record index="000">
+      <key>empty-value</key>
+      <value/>
+    </record>
+    <record index="A_9">
+      <key>multiline</key>
+      <value>first
+second
+third</value>
+    </record>
+    <record index="last">
+      <key>cdata</key>
+      <value><![CDATA[raw ]]> text ]]&gt; safely represented</value>
+    </record>
+  </channel>
+</feed>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<network>
+  <!-- deliberately mixed content around nested nodes -->
+  <message id="m-7" priority="+001">
+    before
+    <header>
+      <from address="alice@example.invalid"/>
+      <to address="bob@example.invalid"/>
+      <route>
+        <hop host="node-1" port="00080"/>
+        <hop host="node-2" port="443"/>
+      </route>
+    </header>
+    between
+    <body format="markdown"><![CDATA[# Heading
+
+* item one
+* item two
+
+<literal>&text;</literal>]]></body>
+    after
+  </message>
+  <message id="m-8" priority="0">
+    <body format="empty"/>
+  </message>
+  <footer>
+    <signature algorithm="none">﻿</signature>
+  </footer>
+</network>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE labyrinth [
+  <!ELEMENT labyrinth (level)>
+  <!ELEMENT level (north|south|east|west|junction)*>
+  <!ELEMENT north (door|wall|levelref)>
+  <!ELEMENT south (door|wall|levelref)>
+  <!ELEMENT east (door|wall|levelref)>
+  <!ELEMENT west (door|wall|levelref)>
+  <!ELEMENT junction (north|south|east|west|door|wall|levelref)*>
+  <!ELEMENT door EMPTY>
+  <!ATTLIST door id ID #IMPLIED locked (yes|no) "no">
+  <!ELEMENT wall EMPTY>
+  <!ELEMENT levelref EMPTY>
+  <!ATTLIST levelref target IDREF #REQUIRED>
+]>
+<labyrinth>
+  <level id="unused">
+    <north><door id="d0" locked="yes"/></north>
+    <east><junction>
+      <south><wall/></south>
+      <west><levelref target="d0"/></west>
+      <east><door locked="no"/></east>
+    </junction></east>
+    <south><levelref target="d0"/></south>
+    <west><wall/></west>
+  </level>
+</labyrinth>
+```

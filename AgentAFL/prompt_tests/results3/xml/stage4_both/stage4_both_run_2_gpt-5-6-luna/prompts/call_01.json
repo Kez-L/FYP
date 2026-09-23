@@ -1,0 +1,23 @@
+{
+  "call": 1,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (item+, note?)>\n  <!ELEMENT item (name, price, details?)>\n  <!ELEMENT name (#PCDATA)>\n  <!ELEMENT price (#PCDATA)>\n  <!ELEMENT details (#PCDATA|emph)*>\n  <!ELEMENT emph (#PCDATA)>\n  <!ELEMENT note (#PCDATA)>\n  <!ATTLIST item code ID #REQUIRED status (new|used|archived) \"new\">\n]>\n<catalog>\n  <item code=\"x1\" status=\"used\">\n    <name>\u03b1 &amp; \u03b2</name>\n    <price><![CDATA[19.95 < taxable > 0]]></price>\n    <details>first <emph>important</emph> second</details>\n  </item>\n  <item code=\"x2\">\n    <name>zero&#x0A;width</name>\n    <price>0</price>\n  </item>\n  <note><![CDATA[unterminated-looking ]]]]><![CDATA[ text]]></note>\n</catalog>\n\n--- example 2 ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE root [\n  <!ELEMENT root ANY>\n  <!ELEMENT child (sub|sub2)*>\n  <!ELEMENT sub EMPTY>\n  <!ELEMENT sub2 (#PCDATA)>\n  <!ATTLIST root ref ID #IMPLIED>\n  <!NOTATION bin SYSTEM \"application/octet-stream\">\n  <!ENTITY ext SYSTEM \"relative/entity.xml\">\n]>\n<root ref=\"r0\">\n  <child>\n    <sub a=\"1\" b=\"2\"/>\n    <sub2>text &lt; nested &gt; text</sub2>\n    <sub/>\n  </child>\n  <data><![CDATA[\n    ]]>]]&gt;]]>\n  </data>\n</root>\n\nTried before \u2014 no new coverage, avoid repeating:\n--- a seed you generated (cycle 1) added 0 new edges ---\n<?xml version=\"1.1\"?>\n<r xmlns=\"urn:outer\" xmlns:p=\"urn:p\" xmlns:q=\"urn:q\">\n  <p:branch q:k=\"v\">\n    <leaf xmlns=\"urn:inner\" p:x=\"&quot;\">text</leaf>\n    <empty xmlns:p=\"\"> </empty>\n  </p:branch>\n  <q:branch>\n    <p:item xmlns:p=\"urn:changed\">A</p:item>\n    <item xmlns=\"\">B</item>\n  </q:branch>\n</r>\n\n--- a seed you generated (cycle 1) added 0 new edges ---\n<!DOCTYPE log [\n  <!ENTITY open \"<entry kind='generated'>\">\n  <!ENTITY close \"</entry>\">\n  <!ENTITY pair \"&open;payload&close;\">\n]>\n<log>\n  &pair;\n  <entry kind=\"literal\">\n    <![CDATA[<&amp;]]>\n    <field name=\"a\"/>\n    <field name=\"b\">line1&#13;&#10;line2</field>\n  </entry>\n  <mixed>before<!-- comment --><![CDATA[mid]]>after</mixed>\n</log>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-23T05:33:55.946304+00:00"
+}

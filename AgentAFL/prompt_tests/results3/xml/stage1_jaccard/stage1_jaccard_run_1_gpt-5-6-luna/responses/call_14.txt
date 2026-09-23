@@ -1,0 +1,137 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item*)>
+  <!ELEMENT item (name, description?, payload?)>
+  <!ATTLIST item code ID #REQUIRED status (new|used|archived) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emph|break)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT payload EMPTY>
+  <!ATTLIST payload source ENTITY #IMPLIED>
+  <!NOTATION gif SYSTEM "image/gif">
+  <!ENTITY thumbnail SYSTEM "thumbnail.gif" NDATA gif>
+  <!ENTITY mark "&#x2026; catalog &amp; fragment">
+]>
+<catalog>
+  <item code="x1" status="used">
+    <name>alpha &mark;</name>
+    <description>before <emph>inside</emph><break/>after</description>
+    <payload source="thumbnail"/>
+  </item>
+  <item code="x2">
+    <name><![CDATA[raw <name> ]]> content]]></name>
+  </item>
+</catalog>
+```
+
+```xml
+<!DOCTYPE network [
+  <!ELEMENT network (node+, link*)>
+  <!ELEMENT node (label?, property*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST node id ID #REQUIRED role (router|host|sensor) "host">
+  <!ATTLIST property key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link from IDREF #REQUIRED to IDREFS #REQUIRED weight NMTOKEN "1">
+  <!ENTITY divider " :: ">
+]>
+<network>
+  <node id="n0" role="router">
+    <label>gateway&divider;core</label>
+    <property key="zone" value="edge"/>
+  </node>
+  <node id="n1">
+    <property key="flags" value="a b c"/>
+  </node>
+  <node id="n2" role="sensor"/>
+  <link from="n0" to="n1 n2" weight="0x10"/>
+  <link from="n2" to="n0"/>
+</network>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE package [
+  <!ELEMENT package (header, entry+)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header version CDATA #FIXED "3">
+  <!ELEMENT entry (title, data)>
+  <!ATTLIST entry path CDATA #REQUIRED format (text|xml|raw) #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT data (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ENTITY left "[[">
+  <!ENTITY right "]]">
+]>
+<package>
+  <header version="3"/>
+  <entry path="a/b.txt" format="text">
+    <title>first &left;section&right;</title>
+    <data>one<chunk>two &amp; three</chunk><![CDATA[four < five]]>six</data>
+  </entry>
+  <entry path="odd&amp;name" format="xml">
+    <title><?inside instruction?></title>
+    <data><chunk><![CDATA[<x y="z"/>]]></chunk></data>
+  </entry>
+</package>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta, body)>
+  <!ELEMENT meta (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT body (section*)>
+  <!ELEMENT section (heading, paragraph*)>
+  <!ATTLIST section xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href URI #REQUIRED>
+]>
+<envelope>
+  <meta>
+    <tag>one</tag>
+    <!-- comment with -- forbidden? -->
+    <tag><![CDATA[ two ]]></tag>
+    <?meta-pi value?>
+  </meta>
+  <body>
+    <section xml:lang="en-US">
+      <heading>Introduction</heading>
+      <paragraph>See <link href="urn:item:1">this node</link> for details.</paragraph>
+      <paragraph><![CDATA[unescaped & symbols and <markup>]]></paragraph>
+    </section>
+    <section>
+      <heading>Second</heading>
+      <paragraph>tail</paragraph>
+    </section>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mixed [
+  <!ELEMENT mixed (top, stream)>
+  <!ELEMENT top (#PCDATA)>
+  <!ELEMENT stream (event*)>
+  <!ELEMENT event (value|![CDATA[unexpected]])*>
+  <!ATTLIST event kind CDATA #REQUIRED time NMTOKEN #IMPLIED>
+  <!ELEMENT value (#PCDATA)>
+  <!ENTITY ext SYSTEM "file:///tmp/nonexistent-entity.txt">
+]>
+<mixed>
+  <top xml:space="preserve">  leading
+	&amp; &lt;markup&gt; &#x1F642; </top>
+  <stream>
+    <event kind="start" time="00:00:00"><value>open</value></event>
+    <event kind="data"><value><![CDATA[raw ]]></value><value>next</value></event>
+    <event kind="external"><value>&ext;</value></event>
+    <?stream-end?>
+  </stream>
+</mixed>
+```

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (defaults, profile+)>
+  <!ELEMENT defaults (timeout, endpoint)>
+  <!ELEMENT timeout (#PCDATA)>
+  <!ELEMENT endpoint (#PCDATA)>
+  <!ELEMENT profile (name, setting*)>
+  <!ATTLIST profile id ID #REQUIRED inherits IDREF #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT setting (#PCDATA)>
+  <!ATTLIST setting key NMTOKEN #REQUIRED enabled (true|false) "true">
+  <!ENTITY % commonAttrs "<!ATTLIST setting source CDATA 'local'>">
+  %commonAttrs;
+  <![INCLUDE[
+    <!ENTITY standard "production">
+  ]]>
+  <![IGNORE[
+    <!ELEMENT obsolete EMPTY>
+  ]]>
+]>
+<configuration>
+  <defaults>
+    <timeout>45</timeout>
+    <endpoint>https://config.example.test/api</endpoint>
+  </defaults>
+  <profile id="base">
+    <name>&standard;</name>
+    <setting key="cache" source="system">enabled</setting>
+    <setting key="tracing" enabled="false">disabled</setting>
+  </profile>
+  <profile id="operator" inherits="base">
+    <name>operator</name>
+    <setting key="theme">dark</setting>
+  </profile>
+</configuration>

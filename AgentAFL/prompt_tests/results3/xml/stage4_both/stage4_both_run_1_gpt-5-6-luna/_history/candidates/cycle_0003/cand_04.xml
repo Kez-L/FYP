@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (trigger, branch, audit)>
+  <!ATTLIST workflow id ID #REQUIRED revision NMTOKEN #REQUIRED>
+  <!ELEMENT trigger (event, parameters?)>
+  <!ELEMENT event (#PCDATA)>
+  <!ELEMENT parameters (parameter*)>
+  <!ELEMENT parameter (#PCDATA)>
+  <!ATTLIST parameter name NMTOKEN #REQUIRED>
+  <!ELEMENT branch (when+, otherwise?)>
+  <!ELEMENT when (action+)>
+  <!ATTLIST when test CDATA #REQUIRED ref IDREF #IMPLIED>
+  <!ELEMENT otherwise (action+)>
+  <!ELEMENT action (message?, action*)>
+  <!ATTLIST action id ID #IMPLIED kind (notify|store|delegate|stop) #REQUIRED>
+  <!ELEMENT message (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT audit (entry+)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ATTLIST entry action IDREF #REQUIRED at CDATA #REQUIRED>
+  <!ENTITY alert "Attention: ">
+]>
+<workflow id="wf-7" revision="r3">
+  <trigger>
+    <event>document.received</event>
+    <parameters>
+      <parameter name="channel">email</parameter>
+      <parameter name="priority">high</parameter>
+    </parameters>
+  </trigger>
+  <branch>
+    <when test="priority = 'high'">
+      <action id="a-notify" kind="notify">
+        <message>&alert;<code>operator</code> review required</message>
+      </action>
+      <action id="a-store" kind="store">
+        <message>Archive original payload</message>
+      </action>
+    </when>
+    <when test="priority = 'low'" ref="a-store">
+      <action kind="delegate">
+        <message>Route to scheduled queue</message>
+      </action>
+    </when>
+    <otherwise>
+      <action id="a-stop" kind="stop">
+        <message>Unrecognized priority</message>
+      </action>
+    </otherwise>
+  </branch>
+  <audit>
+    <entry action="a-notify" at="2026-09-23T15:30:00Z">notification queued</entry>
+    <entry action="a-store" at="2026-09-23T15:30:01Z">payload archived</entry>
+  </audit>
+</workflow>

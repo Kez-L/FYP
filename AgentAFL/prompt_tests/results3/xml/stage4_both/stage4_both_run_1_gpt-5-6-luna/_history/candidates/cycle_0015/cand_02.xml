@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+)>
+  <!ELEMENT section (heading, block*)>
+  <!ATTLIST section number NMTOKEN #IMPLIED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT block (paragraph|list|table|note|figure)>
+  <!ELEMENT paragraph (#PCDATA|link|code|linebreak)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link target CDATA #REQUIRED>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT list (item+)>
+  <!ATTLIST list ordered (yes|no) "no">
+  <!ELEMENT item (#PCDATA|paragraph)*>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST cell colspan NMTOKEN "1" rowspan NMTOKEN "1">
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST note severity (info|warning|critical) "info">
+  <!ELEMENT figure EMPTY>
+  <!ATTLIST figure src CDATA #REQUIRED caption CDATA #IMPLIED>
+]>
+<report>
+  <section number="I">
+    <heading>Operational summary</heading>
+    <block>
+      <paragraph>The service remained <code>available</code> throughout the window.<linebreak/>See <link target="#details">details</link>.</paragraph>
+    </block>
+    <block>
+      <list ordered="yes">
+        <item>Open the maintenance channel.</item>
+        <item><paragraph>Confirm the backup age.</paragraph></item>
+      </list>
+    </block>
+  </section>
+  <section number="II">
+    <heading>Measurements</heading>
+    <block>
+      <table>
+        <row><cell>Region</cell><cell>Requests</cell><cell>Errors</cell></row>
+        <row><cell colspan="2">north / combined</cell><cell rowspan="2">0</cell></row>
+        <row><cell>south</cell><cell>1842</cell></row>
+      </table>
+    </block>
+    <block><note severity="warning">Values are sampled, not exhaustive.</note></block>
+    <block><figure src="charts/latency.svg" caption="p95 latency"/></block>
+  </section>
+</report>

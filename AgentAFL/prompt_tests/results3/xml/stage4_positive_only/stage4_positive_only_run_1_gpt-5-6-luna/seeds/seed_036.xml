@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<workflow xmlns="urn:example:workflow" xmlns:x="urn:example:extension" id="wf-α" state="paused">
+  <?audit generated-by="seed"?>
+  <inputs>
+    <input name="payload" type="binary" encoding="base64">AAEC/f8=</input>
+    <input name="threshold" type="integer">-9223372036854775808</input>
+    <input name="pattern" type="regex"><![CDATA[(a|b){0,3}\s+\x00]]></input>
+  </inputs>
+  <steps>
+    <step id="prepare" retries="0">
+      <x:transform language="xslt" version="3.0">
+        <x:template match="/">
+          <x:copy-of select="@*|node()"/>
+        </x:template>
+      </x:transform>
+    </step>
+    <step id="dispatch" retries="18446744073709551615">
+      <depends-on ref="prepare"/>
+      <branch condition="payload != ''">
+        <then>
+          <emit channel="stdout">ready</emit>
+        </then>
+        <else>
+          <emit channel="stderr">empty</emit>
+        </else>
+      </branch>
+    </step>
+  </steps>
+  <diagnostics><![CDATA[
+    line 1: <not-an-element>
+    line 2: & malformed-looking text
+  ]]></diagnostics>
+</workflow>

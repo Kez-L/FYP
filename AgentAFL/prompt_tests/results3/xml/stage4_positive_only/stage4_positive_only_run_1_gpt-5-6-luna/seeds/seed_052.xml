@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workspace xmlns="urn:example:workspace"
+           xmlns:xi="http://www.w3.org/2001/XInclude"
+           xml:base="https://example.invalid/projects/aurora/">
+  <!-- A workspace may contain local fragments and generated views. -->
+  <?editor name="orbit" mode="review"?>
+  <identity>
+    <name>aurora-lab</name>
+    <owner uid="u-482">Mira Chen</owner>
+    <tags>
+      <tag>research</tag>
+      <tag>nightly</tag>
+      <tag xml:lang="ja">実験</tag>
+    </tags>
+  </identity>
+  <resources>
+    <xi:include href="fragments/overview.xml" parse="xml">
+      <xi:fallback>
+        <summary>Overview unavailable</summary>
+      </xi:fallback>
+    </xi:include>
+    <resource uri="data:application/octet-stream;base64,AAECAwQF"
+              media="application/octet-stream"/>
+    <resource uri="https://cdn.example.invalid/archive.tar"
+              media="application/x-tar">
+      <checksum algorithm="sha512">00ff11ee22dd33cc</checksum>
+    </resource>
+  </resources>
+  <pipeline enabled="true">
+    <stage name="ingest" retries="0"/>
+    <stage name="normalize">
+      <option key="trim">false</option>
+      <option key="charset">UTF-8</option>
+    </stage>
+    <stage name="publish">
+      <when test="resources/resource[@media='application/x-tar']">
+        <destination protocol="s3" bucket="aurora-staging"/>
+      </when>
+    </stage>
+  </pipeline>
+  <notes>Use <em xmlns="urn:example:workspace:markup">caution</em> with external fragments.</notes>
+</workspace>

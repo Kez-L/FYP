@@ -1,0 +1,122 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+)>
+  <!ELEMENT entry (title, payload, checksum?)>
+  <!ATTLIST entry id ID #REQUIRED kind (text|binary) "text">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY greeting "Hello &amp; welcome">
+]>
+<archive>
+  <entry id="e1" kind="text">
+    <title>&greeting;, parser</title>
+    <payload>prefix<part><![CDATA[raw <content> & bytes]]></part>suffix</payload>
+    <checksum>sha256:00000000000000000000000000000000</checksum>
+  </entry>
+  <entry id="e2">
+    <title>Second entry</title>
+    <payload><part>one</part><part>two</part><part>three</part></payload>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<scene xmlns="urn:scene" xmlns:geo="urn:geo" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <layer name="background" visible="0">
+    <geo:point lat="-90.000000" lon="180.000000" />
+    <geo:polygon>
+      <geo:vertex index="0"><geo:point lat="0" lon="0"/></geo:vertex>
+      <geo:vertex index="1"><geo:point lat="0" lon="1"/></geo:vertex>
+      <geo:vertex index="2"><geo:point lat="1" lon="0"/></geo:vertex>
+    </geo:polygon>
+  </layer>
+  <layer name="foreground" visible="1">
+    <object xlink:type="simple" xlink:href="#shape-7" role="primary">
+      <label xml:lang="fr">Élément principal</label>
+      <metadata xmlns="">
+        <value key="empty"></value>
+        <value key="whitespace">&#x9;&#xA;&#xD;</value>
+      </metadata>
+    </object>
+  </layer>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<message xmlns="urn:mail" xmlns:h="urn:headers">
+  <h:headers>
+    <h:header name="X-Test">alpha&#x0A;beta</h:header>
+    <h:header name="X-Empty"/>
+  </h:headers>
+  <body xml:space="preserve">
+    <![CDATA[
+      <not-an-element>
+        &not-an-entity;
+      </not-an-element>
+    ]]>
+    <section>
+      Before <emphasis>important</emphasis>, after.
+      <line-break/>
+      Final line.
+    </section>
+  </body>
+  <?delivery status="queued"?>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<inventory>
+  <warehouse code="北-01" opened="2020-02-29T23:59:59Z">
+    <bin id="A">
+      <item>
+        <code>00000000000000000000000000000001</code>
+        <quantity unit="pieces">0</quantity>
+        <dimensions>
+          <width unit="mm">0.0000000001</width>
+          <height unit="mm">999999999999999999999999</height>
+          <depth unit="mm">-0.0</depth>
+        </dimensions>
+      </item>
+    </bin>
+    <bin id="B">
+      <item discontinued="true">
+        <code><![CDATA[<>&"' ]]></code>
+        <quantity unit="pieces">18446744073709551616</quantity>
+        <dimensions/>
+      </item>
+    </bin>
+  </warehouse>
+</inventory>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE root [
+  <!ELEMENT root (node)>
+  <!ELEMENT node (node|leaf|branch)*>
+  <!ELEMENT branch (leaf*)>
+  <!ELEMENT leaf EMPTY>
+  <!ATTLIST leaf value CDATA #IMPLIED>
+]>
+<root>
+  <node id="outer">
+    <branch id="middle">
+      <leaf value="a"/>
+      <leaf value="b &amp; c"/>
+    </branch>
+    <node id="inner">
+      <leaf value="&#x1F600;"/>
+      <branch>
+        <leaf/>
+        <leaf value="line&#x85;break"/>
+      </branch>
+    </node>
+  </node>
+</root>
+```

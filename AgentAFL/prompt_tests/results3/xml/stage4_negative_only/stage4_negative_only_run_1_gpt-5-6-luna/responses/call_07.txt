@@ -1,0 +1,167 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+)>
+  <!ELEMENT entry (title, metadata, payload)>
+  <!ATTLIST entry id ID #REQUIRED kind (text|binary) "text">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT metadata (author?, keyword*)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+]>
+<archive>
+  <entry id="e1" kind="text">
+    <title>Field Notes</title>
+    <metadata>
+      <author>R. Chen</author>
+      <keyword>sensor</keyword>
+      <keyword>calibration</keyword>
+    </metadata>
+    <payload>Start <part>alpha</part> and <part>beta</part> finish.</payload>
+  </entry>
+  <entry id="e2">
+    <title>Empty Record</title>
+    <metadata/>
+    <payload><![CDATA[raw <content> & untouched]]></payload>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<message xmlns="urn:message" xmlns:x="urn:extension" xml:lang="fr" xml:space="preserve">
+  <header>
+    <sender address="ops@example.test">Équipe réseau</sender>
+    <recipient address="archive@example.test"/>
+    <timestamp>2026-09-23T14:22:08+02:00</timestamp>
+    <x:priority level="urgent">4</x:priority>
+  </header>
+  <body>
+    Bonjour,
+    <emphasis>La maintenance est terminée.</emphasis>
+    <line-break/>
+    <link x:href="https://example.test/status?view=full&amp;lang=fr">État détaillé</link>
+  </body>
+  <attachments>
+    <attachment filename="résumé.txt" media-type="text/plain">
+      <checksum algorithm="sha256">00ff11aa</checksum>
+    </attachment>
+  </attachments>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE query [
+  <!ELEMENT query (select, from, where?, order-by?)>
+  <!ELEMENT select (field+)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name CDATA #REQUIRED alias CDATA #IMPLIED>
+  <!ELEMENT from (table+)>
+  <!ELEMENT table EMPTY>
+  <!ATTLIST table name CDATA #REQUIRED join CDATA #IMPLIED>
+  <!ELEMENT where (condition|and|or|not)+>
+  <!ELEMENT condition EMPTY>
+  <!ATTLIST condition field CDATA #REQUIRED operator CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT and (condition|or|not)+>
+  <!ELEMENT or (condition|and|not)+>
+  <!ELEMENT not (condition|and|or)>
+  <!ELEMENT order-by (sort+)>
+  <!ELEMENT sort EMPTY>
+  <!ATTLIST sort field CDATA #REQUIRED direction (ascending|descending) "ascending">
+]>
+<query>
+  <select>
+    <field name="device_id" alias="id"/>
+    <field name="last_seen"/>
+  </select>
+  <from>
+    <table name="devices"/>
+    <table name="readings" join="devices.id=readings.device_id"/>
+  </from>
+  <where>
+    <and>
+      <condition field="status" operator="=" value="active"/>
+      <or>
+        <condition field="temperature" operator="&gt;" value="80"/>
+        <not>
+          <condition field="region" operator="=" value="test"/>
+        </not>
+      </or>
+    </and>
+  </where>
+  <order-by>
+    <sort field="last_seen" direction="descending"/>
+  </order-by>
+</query>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow id="wf-42" version="2.7">
+  <trigger type="schedule">
+    <calendar>
+      <day-of-week>MONDAY</day-of-week>
+      <day-of-week>WEDNESDAY</day-of-week>
+      <time zone="America/New_York">09:30:00</time>
+    </calendar>
+  </trigger>
+  <steps>
+    <step id="prepare" action="collect">
+      <parameters>
+        <parameter name="source">/var/log/app</parameter>
+        <parameter name="pattern"><![CDATA[^error:\s+.*$]]></parameter>
+      </parameters>
+      <on-success goto="compress"/>
+      <on-failure goto="notify"/>
+    </step>
+    <step id="compress" action="archive">
+      <input ref="prepare"/>
+      <output path="/tmp/report.tar" format="tar"/>
+      <on-success goto="notify"/>
+    </step>
+    <step id="notify" action="email">
+      <recipients>
+        <address>admin@example.test</address>
+        <address>oncall@example.test</address>
+      </recipients>
+      <subject>Workflow ${workflow.id} completed</subject>
+    </step>
+  </steps>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<geometry xmlns="urn:geometry:2">
+  <coordinate-system name="WGS84" dimensions="3">
+    <axis name="longitude" unit="degree"/>
+    <axis name="latitude" unit="degree"/>
+    <axis name="altitude" unit="meter"/>
+  </coordinate-system>
+  <features>
+    <feature id="route-α" type="polyline">
+      <properties>
+        <property name="label">北部ルート</property>
+        <property name="active" type="boolean">true</property>
+        <property name="distance" type="decimal">12.500</property>
+      </properties>
+      <coordinates>
+        <point lon="-73.9857" lat="40.7484" alt="18.2"/>
+        <point lon="-73.9819" lat="40.7527" alt="21.0"/>
+        <point lon="-73.9772" lat="40.7580" alt="19.8"/>
+      </coordinates>
+    </feature>
+    <feature id="zone-β" type="polygon">
+      <ring closed="true">
+        <point lon="2.2945" lat="48.8584"/>
+        <point lon="2.2950" lat="48.8570"/>
+        <point lon="2.2970" lat="48.8575"/>
+        <point lon="2.2945" lat="48.8584"/>
+      </ring>
+    </feature>
+  </features>
+</geometry>
+```

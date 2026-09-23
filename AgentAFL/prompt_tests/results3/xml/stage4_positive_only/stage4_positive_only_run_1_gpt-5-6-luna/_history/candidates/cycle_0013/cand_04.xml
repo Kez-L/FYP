@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form [
+  <!ELEMENT form (section+)>
+  <!ATTLIST form id ID #REQUIRED locale CDATA "en">
+  <!ELEMENT section (label, control*)>
+  <!ATTLIST section collapsed (true|false) "false">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT control (caption?, option*, validation?)>
+  <!ATTLIST control name ID #REQUIRED type (text|select|toggle|range) #REQUIRED>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT option (#PCDATA)>
+  <!ATTLIST option value CDATA #REQUIRED selected (yes|no) "no">
+  <!ELEMENT validation (rule+)>
+  <!ELEMENT rule EMPTY>
+  <!ATTLIST rule test CDATA #REQUIRED message CDATA #IMPLIED>
+]>
+<form id="preferences" locale="fr-FR">
+  <section collapsed="false">
+    <label>Compte</label>
+    <control name="display-name" type="text">
+      <caption>Nom affiché</caption>
+      <validation>
+        <rule test="length &gt;= 2" message="Trop court"/>
+        <rule test="not contains(@value, '&quot;')"/>
+      </validation>
+    </control>
+    <control name="theme" type="select">
+      <caption>Thème</caption>
+      <option value="system">Système</option>
+      <option value="dark" selected="yes">Sombre</option>
+      <option value="light">Clair</option>
+    </control>
+  </section>
+  <section collapsed="true">
+    <label>Notifications</label>
+    <control name="digest" type="toggle">
+      <caption>Résumé hebdomadaire</caption>
+    </control>
+    <control name="volume" type="range">
+      <caption>Volume: 0–100%</caption>
+      <validation>
+        <rule test="@value &gt;= 0"/>
+        <rule test="@value &lt;= 100"/>
+      </validation>
+    </control>
+  </section>
+</form>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:acme:workflow" xmlns:x="urn:acme:extension" version="3">
+  <metadata>
+    <description xml:lang="ja">夜間バックアップ処理</description>
+    <maintainer email="build@example.invalid">自動化チーム</maintainer>
+    <tag>scheduled</tag>
+    <tag>storage</tag>
+  </metadata>
+  <stages>
+    <stage name="prepare">
+      <command shell="/bin/sh">mkdir -p /var/tmp/backup</command>
+      <environment>
+        <variable name="MODE">incremental</variable>
+        <variable name="TZ">UTC</variable>
+      </environment>
+    </stage>
+    <stage name="transfer" depends-on="prepare">
+      <x:retry count="4" delay="PT30S"/>
+      <source uri="file:///srv/data/"/>
+      <destination uri="s3://archive.example.invalid/nightly/"/>
+      <filter include="*.dat" exclude="*.tmp"/>
+    </stage>
+    <stage name="verify" depends-on="transfer">
+      <x:assert expression="files.transferred &gt; 0"/>
+      <report format="json"><![CDATA[{"notify":true,"severity":"normal"}]]></report>
+    </stage>
+  </stages>
+  <on-failure>
+    <notify channel="email">ops@example.invalid</notify>
+    <rollback stage="transfer"/>
+  </on-failure>
+</workflow>

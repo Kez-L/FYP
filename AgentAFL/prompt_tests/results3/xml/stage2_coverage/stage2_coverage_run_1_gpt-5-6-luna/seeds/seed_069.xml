@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (left, right)>
+  <!ELEMENT left (item|item-ref)*>
+  <!ELEMENT right (item|item-ref)*>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT item-ref EMPTY>
+  <!ATTLIST item code ID #REQUIRED xml:space (default|preserve) "preserve">
+  <!ATTLIST item-ref points IDREF #REQUIRED>
+  <!ENTITY open "<fragment>">
+  <!ENTITY close "</fragment>">
+  <!NOTATION text SYSTEM "text/plain">
+  <!ENTITY external NDATA text>
+]>
+<root>
+  <left>
+    <item code="a&amp;b" xml:space="default"> first </item>
+    <item-ref points="missing"/>
+    <item code="c">third<!-- comment with --? --></item>
+  </left>
+  <right>
+    &open;
+    <item code="d">inside</item>
+    &close;
+    <item-ref points="a&amp;b"/>
+  </right>
+</root>

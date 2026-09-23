@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE bundle [
+  <!ENTITY greeting "Hello, &lt;reader&gt;">
+  <!ENTITY marker "&#x2605;">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+]>
+<bundle xmlns:m="urn:meta" xml:lang="fr" xml:base="https://example.invalid/archive/">
+  <m:metadata>
+    <m:created>2026-09-23T12:34:56Z</m:created>
+    <m:creator role="system">parser-test</m:creator>
+    <m:keywords>
+      <m:keyword priority="1">entities</m:keyword>
+      <m:keyword priority="2">notation</m:keyword>
+      <m:keyword priority="3">fragment</m:keyword>
+    </m:keywords>
+  </m:metadata>
+  <!-- An external-looking reference represented only as an unparsed entity declaration. -->
+  <payload type="mixed">
+    <text>&greeting; &marker;</text>
+    <empty/>
+    <fragment><![CDATA[
+      <not-a-real-element attr="&unexpanded;">text</not-a-real-element>
+    ]]></fragment>
+    <reference name="logo" value="logo.png"/>
+  </payload>
+  <?bundle mode="verification"?>
+</bundle>

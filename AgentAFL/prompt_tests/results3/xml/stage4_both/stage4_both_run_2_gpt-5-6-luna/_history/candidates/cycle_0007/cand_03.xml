@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE form [
+  <!ELEMENT form (legend, fieldset+, submit)>
+  <!ELEMENT legend (#PCDATA)>
+  <!ELEMENT fieldset (legend, field*)>
+  <!ELEMENT field (label, control, error?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT control EMPTY>
+  <!ELEMENT error (#PCDATA)>
+  <!ELEMENT submit (#PCDATA)>
+  <!ATTLIST form action CDATA #REQUIRED method (get|post) "post">
+  <!ATTLIST fieldset name CDATA #REQUIRED collapsed (yes|no) "no">
+  <!ATTLIST field name NMTOKEN #REQUIRED required (true|false) "false">
+  <!ATTLIST control type (text|email|select|checkbox|upload) #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST control autocomplete (on|off) "on">
+  <!ATTLIST error code NMTOKEN #IMPLIED>
+]>
+<form action="/account/preferences" method="post">
+  <legend>Account preferences</legend>
+  <fieldset name="identity">
+    <legend>Personal details</legend>
+    <field name="display-name" required="true">
+      <label>Display name</label>
+      <control type="text" value="R &amp; D" autocomplete="off"/>
+    </field>
+    <field name="email" required="true">
+      <label>Contact address</label>
+      <control type="email" value="user@example.test"/>
+      <error code="format">Enter a valid address.</error>
+    </field>
+  </fieldset>
+  <fieldset name="notifications" collapsed="yes">
+    <legend>Notifications</legend>
+    <field name="digest">
+      <label>Weekly digest</label>
+      <control type="checkbox" value="enabled"/>
+    </field>
+    <field name="channel">
+      <label>Delivery channel</label>
+      <control type="select" value="mail"/>
+    </field>
+  </fieldset>
+  <submit>Save changes</submit>
+</form>

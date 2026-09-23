@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (step+, on-error?)>
+  <!ELEMENT step (input*, action, output*)>
+  <!ELEMENT input EMPTY>
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT output (#PCDATA|uri|message)*>
+  <!ELEMENT uri (#PCDATA)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT on-error (message, retry?)>
+  <!ELEMENT retry EMPTY>
+  <!ATTLIST workflow name CDATA #REQUIRED>
+  <!ATTLIST step id ID #REQUIRED after IDREFS #IMPLIED>
+  <!ATTLIST input key CDATA #REQUIRED value CDATA #IMPLIED secret (yes|no) "no">
+  <!ATTLIST output channel (stdout|stderr|file) "stdout">
+  <!ATTLIST retry count NMTOKEN "0" delay CDATA "0s">
+  <!ENTITY leftparen "&#40;">
+  <!ENTITY rightparen "&#41;">
+  <!ENTITY command "&leftparen;run&rightparen;">
+]>
+<workflow name="nightly-build">
+  <step id="prepare">
+    <input key="root" value="/tmp/work"/>
+    <input key="verbose" value="yes"/>
+    <action>initialize &command;</action>
+    <output channel="stdout">workspace ready</output>
+  </step>
+  <step id="compile" after="prepare">
+    <input key="flags" value="-O2 -Wall"/>
+    <action>compile sources</action>
+    <output channel="stdout">objects produced</output>
+    <output channel="file"><uri>build.log</uri><message>complete</message></output>
+  </step>
+  <step id="publish" after="compile">
+    <action><![CDATA[package && publish --channel="test"]]></action>
+  </step>
+  <on-error>
+    <message>workflow stopped: &lt;diagnostic&gt; required</message>
+    <retry count="3" delay="250ms"/>
+  </on-error>
+</workflow>

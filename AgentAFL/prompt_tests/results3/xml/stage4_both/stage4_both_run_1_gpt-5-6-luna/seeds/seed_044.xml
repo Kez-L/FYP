@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:example:config"
+               xmlns:sec="urn:example:security"
+               version="3">
+  <profile name="minimal" enabled="true">
+    <include path="defaults.xml"/>
+    <setting key="threshold" type="integer">00042</setting>
+    <setting key="pattern" type="string"><![CDATA[[a-z]+(?:-[0-9]+)?]]></setting>
+    <setting key="empty" type="null"/>
+  </profile>
+  <profile name="secure" enabled="false">
+    <inherits from="minimal"/>
+    <sec:policy algorithm="sha-256">
+      <sec:allow action="read" resource="urn:data:public"/>
+      <sec:deny action="write" resource="urn:data:*"/>
+      <sec:condition op="all">
+        <sec:condition op="equals" name="mfa" value="required"/>
+        <sec:condition op="in" name="zone">
+          <sec:value>internal</sec:value>
+          <sec:value>vpn</sec:value>
+        </sec:condition>
+      </sec:condition>
+    </sec:policy>
+  </profile>
+  <paths>
+    <path id="cache" absolute="false">./var/../cache/</path>
+    <path id="root" absolute="true">/srv/app</path>
+  </paths>
+  <extensions xmlns="">
+    <extension name="plain" priority="0">text</extension>
+    <extension name="unicode" priority="-1">λ &amp; Ω</extension>
+  </extensions>
+</configuration>

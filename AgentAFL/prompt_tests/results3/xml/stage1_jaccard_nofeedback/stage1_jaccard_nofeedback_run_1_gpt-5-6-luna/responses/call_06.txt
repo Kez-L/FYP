@@ -1,0 +1,80 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:meta">
+  <x:metadata x:version="2">
+    <x:item id="a&amp;b" enabled="true"/>
+  </x:metadata>
+  <book isbn="&quot;987654321&quot;">
+    <title><![CDATA[An unusual ]]> title &amp; <![CDATA[marker]]></title>
+    <author><name>R&amp;D</name></author>
+    <price currency="&#x20AC;">0.00</price>
+  </book>
+</catalog>
+```
+
+```xml
+<!DOCTYPE records [
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (key, value, value?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|note)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST record state (new|old|unknown) "unknown">
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+]>
+<records>
+  <record state="new">
+    <key>alpha</key>
+    <value>&left;escaped&right;<note>nested</note></value>
+    <value>second</value>
+  </record>
+</records>
+```
+
+```xml
+<?xml version="1.1"?>
+<root>
+  <section id="one">
+    <empty/>
+    <mixed>text<![CDATA[<not-an-element>]]><child attr="a&#10;b">x</child>tail</mixed>
+  </section>
+  <section id="two">
+    <!-- comment with --? -->
+    <?processing instruction-data?>
+    <deep><a><b><c><d/></c></b></a></deep>
+  </section>
+</root>
+```
+
+```xml
+<!DOCTYPE message [
+  <!ENTITY greeting "hello">
+  <!ENTITY suffix "world">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "data:text/plain,external">
+]>
+<message xml:lang="en">
+  <header from="sender@example.test" to="receiver@example.test"/>
+  <body>&greeting;, &suffix;!</body>
+  <attachment type="bin" href="payload.bin"/>
+</message>
+```
+
+```xml
+<configuration>
+  <entry name="path">/tmp/a&amp;b</entry>
+  <entry name="quote">A &quot;quoted&quot; value</entry>
+  <list>
+    <item index="0"/>
+    <item index="1"><![CDATA[]]></item>
+    <item index="2">line1
+line2&#xD;&#xA;line3</item>
+  </list>
+  <wrapper>
+    <inner xmlns="urn:x">
+      <leaf xmlns="">content</leaf>
+    </inner>
+  </wrapper>
+</configuration>
+```

@@ -1,0 +1,24 @@
+<workflow xmlns="urn:workflow:v2" xmlns:ext="urn:workflow:extension">
+  <start ref="prepare"/>
+  <nodes>
+    <node id="prepare" kind="task">
+      <input name="source">stdin</input>
+      <output name="ready">yes</output>
+      <ext:retry limit="3" delay="PT0.5S"/>
+    </node>
+    <node id="branch" kind="switch">
+      <case test="status = 'ok'" next="finish"/>
+      <case test="status != 'ok'" next="recover"/>
+      <default next="abort"/>
+    </node>
+    <node id="finish" kind="terminal"/>
+    <node id="recover" kind="task">
+      <input name="reason">timeout</input>
+    </node>
+    <node id="abort" kind="terminal"/>
+  </nodes>
+  <edges>
+    <edge from="prepare" to="branch"/>
+    <edge from="recover" to="abort"/>
+  </edges>
+</workflow>

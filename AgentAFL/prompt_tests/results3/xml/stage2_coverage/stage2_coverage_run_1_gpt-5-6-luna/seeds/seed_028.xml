@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (event*)>
+  <!ELEMENT event (time, actor, data)>
+  <!ATTLIST event
+    uid ID #REQUIRED
+    previous IDREF #IMPLIED
+    category CDATA #IMPLIED>
+  <!ELEMENT time (#PCDATA)>
+  <!ELEMENT actor EMPTY>
+  <!ATTLIST actor
+    name CDATA #REQUIRED
+    role (reader|writer|admin) "reader">
+  <!ELEMENT data (field|text|fragment)*>
+  <!ELEMENT field (value)>
+  <!ATTLIST field
+    name NMTOKEN #REQUIRED
+    datatype (string|integer|boolean) "string">
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT text (#PCDATA)>
+  <!ELEMENT fragment ANY>
+  <!ENTITY open "&#x7B;">
+  <!ENTITY close "&#x7D;">
+]>
+<stream>
+  <event uid="e0" category="start">
+    <time>2026-09-23T00:00:00Z</time>
+    <actor name="daemon" role="admin"/>
+    <data>
+      <field name="mode" datatype="string"><value>cold</value></field>
+      <field name="count" datatype="integer"><value>0007</value></field>
+      <text>prefix &open;unparsed&close; suffix</text>
+    </data>
+  </event>
+  <event uid="e1" previous="e0">
+    <time>2026-09-23T00:01:02+00:00</time>
+    <actor name="client"/>
+    <data>
+      <fragment><![CDATA[
+        <synthetic>
+          &not-an-entity;
+        </synthetic>
+      ]]></fragment>
+      <field name="enabled" datatype="boolean"><value>true</value></field>
+    </data>
+  </event>
+</stream>

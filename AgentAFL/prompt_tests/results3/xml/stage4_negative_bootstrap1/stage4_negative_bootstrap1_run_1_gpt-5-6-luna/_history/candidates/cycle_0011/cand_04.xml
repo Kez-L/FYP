@@ -1,0 +1,33 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<workflow xmlns="urn:workflow:v2"
+          xmlns:meta="urn:workflow:metadata"
+          xmlns:sec="urn:workflow:security">
+  <meta:info created="2026-09-23T14:05:07Z" revision="0007">
+    <meta:owner>qa-team</meta:owner>
+    <meta:tags>
+      <meta:tag>fuzz</meta:tag>
+      <meta:tag>xml</meta:tag>
+    </meta:tags>
+  </meta:info>
+  <pipeline id="nightly" enabled="yes">
+    <step name="collect" timeout="PT5M">
+      <command><![CDATA[/usr/bin/collect --format="xml" --include='*']]></command>
+      <environment>
+        <variable name="MODE">nightly</variable>
+        <variable name="EMPTY"/>
+      </environment>
+    </step>
+    <step name="publish" depends-on="collect">
+      <condition>
+        <all>
+          <equals left="status" right="success"/>
+          <not><equals left="attempts" right="0"/></not>
+        </all>
+      </condition>
+      <artifact path="out/report.xml" media-type="application/xml"/>
+    </step>
+  </pipeline>
+  <sec:signature algorithm="urn:example:sha256">
+    <sec:digest>e3b0c44298fc1c149afbf4c8996fb924</sec:digest>
+  </sec:signature>
+</workflow>

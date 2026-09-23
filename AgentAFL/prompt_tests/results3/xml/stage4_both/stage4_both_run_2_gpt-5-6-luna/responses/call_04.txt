@@ -1,0 +1,185 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (name, price, details?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST catalog generated CDATA #IMPLIED>
+  <!ATTLIST section id ID #REQUIRED tags NMTOKENS #IMPLIED>
+  <!ATTLIST item ref ID #REQUIRED status (new|used|archived) "new">
+  <!ATTLIST price currency CDATA "USD">
+  <!ENTITY company "A &amp; B Supply">
+  <!ENTITY mark "&#x2605;">
+]>
+<catalog generated="2026-09-23">
+  <section id="hardware" tags="tools clearance">
+    <heading>&company; &mark;</heading>
+    <item ref="item-a" status="used">
+      <name>Adjustable wrench</name>
+      <price currency="EUR">14.95</price>
+      <details>Steel body, <em>reversible</em> jaw, and <code>1/2</code> scale<br/>with grip.</details>
+    </item>
+  </section>
+  <section id="software" tags="licensed">
+    <heading>Utilities</heading>
+    <item ref="item-b">
+      <name>Parser toolkit</name>
+      <price>0.00</price>
+      <details><![CDATA[Use <configure> before invoking the build script.]]></details>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (entry*)>
+  <!ELEMENT entry (path, digest, metadata*)>
+  <!ELEMENT path (#PCDATA)>
+  <!ELEMENT digest (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST manifest version CDATA #FIXED "1.1">
+  <!ATTLIST entry id ID #REQUIRED depends IDREFS #IMPLIED kind (file|directory|link) #REQUIRED>
+  <!ATTLIST metadata name CDATA #REQUIRED value CDATA #IMPLIED>
+]>
+<manifest version="1.1">
+  <entry id="root" kind="directory">
+    <path>/srv/data</path>
+    <digest>none</digest>
+    <metadata name="mode" value="0750"/>
+  </entry>
+  <entry id="readme" kind="file" depends="root">
+    <path>/srv/data/readme.txt</path>
+    <digest>sha256:0123456789abcdef</digest>
+    <metadata name="encoding" value="UTF-8"/>
+    <metadata name="lines" value="42"/>
+  </entry>
+  <entry id="shortcut" kind="link" depends="root readme">
+    <path>/srv/data/current</path>
+    <digest>target=readme</digest>
+  </entry>
+</manifest>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (step+, on-error?)>
+  <!ELEMENT step (input*, action, output*)>
+  <!ELEMENT input EMPTY>
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT output (#PCDATA|uri|message)*>
+  <!ELEMENT uri (#PCDATA)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT on-error (message, retry?)>
+  <!ELEMENT retry EMPTY>
+  <!ATTLIST workflow name CDATA #REQUIRED>
+  <!ATTLIST step id ID #REQUIRED after IDREFS #IMPLIED>
+  <!ATTLIST input key CDATA #REQUIRED value CDATA #IMPLIED secret (yes|no) "no">
+  <!ATTLIST output channel (stdout|stderr|file) "stdout">
+  <!ATTLIST retry count NMTOKEN "0" delay CDATA "0s">
+  <!ENTITY leftparen "&#40;">
+  <!ENTITY rightparen "&#41;">
+  <!ENTITY command "&leftparen;run&rightparen;">
+]>
+<workflow name="nightly-build">
+  <step id="prepare">
+    <input key="root" value="/tmp/work"/>
+    <input key="verbose" value="yes"/>
+    <action>initialize &command;</action>
+    <output channel="stdout">workspace ready</output>
+  </step>
+  <step id="compile" after="prepare">
+    <input key="flags" value="-O2 -Wall"/>
+    <action>compile sources</action>
+    <output channel="stdout">objects produced</output>
+    <output channel="file"><uri>build.log</uri><message>complete</message></output>
+  </step>
+  <step id="publish" after="compile">
+    <action><![CDATA[package && publish --channel="test"]]></action>
+  </step>
+  <on-error>
+    <message>workflow stopped: &lt;diagnostic&gt; required</message>
+    <retry count="3" delay="250ms"/>
+  </on-error>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE geometry [
+  <!ELEMENT geometry (layer+)>
+  <!ELEMENT layer (point|path|group)*>
+  <!ELEMENT point EMPTY>
+  <!ELEMENT path (point+)>
+  <!ELEMENT group (point|path|group)*>
+  <!ATTLIST layer name CDATA #REQUIRED visible (true|false) "true">
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED label CDATA #IMPLIED>
+  <!ATTLIST path id ID #REQUIRED closed (true|false) "false">
+  <!ATTLIST group id ID #IMPLIED transform CDATA #IMPLIED>
+]>
+<g:geometry xmlns:g="urn:example:geometry" xmlns:meta="urn:example:metadata">
+  <g:layer name="background" visible="false">
+    <g:group id="frame" transform="translate(10,20) rotate(3)">
+      <g:point x="0" y="0" label="origin"/>
+      <g:path id="border" closed="true">
+        <g:point x="0" y="0"/>
+        <g:point x="100" y="0"/>
+        <g:point x="100" y="80"/>
+        <g:point x="0" y="80"/>
+      </g:path>
+    </g:group>
+  </g:layer>
+  <g:layer name="annotations">
+    <g:path id="axis">
+      <g:point x="-5" y="40" meta:unit="px"/>
+      <g:point x="105" y="40" meta:unit="px"/>
+    </g:path>
+    <g:group transform="scale(0.5)">
+      <g:point x="12.5" y="7.25" label="half"/>
+    </g:group>
+  </g:layer>
+</g:geometry>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, payload, trailer)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT payload (#PCDATA|chunk|![CDATA[not-valid]] )*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST packet type (request|response|event) #REQUIRED>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED compressed (yes|no) "no">
+  <!ENTITY amp "&#38;">
+  <!ENTITY quote "&#34;">
+]>
+<packet type="event">
+  <header>
+    <field name="source" value="sensor-7"/>
+    <field name="sequence" value="000042"/>
+    <field name="empty" value=""/>
+  </header>
+  <payload>
+    prefix &amp; &amp; &amp;
+    <chunk index="0" compressed="yes">H4sIAAAA</chunk>
+    <![CDATA[
+      bytes <not-an-element> & still literal
+      ]]> 
+    <chunk index="1">tail&#x0A;line</chunk>
+    suffix &quote;quoted&quote; &amp; done
+  </payload>
+  <trailer>checksum=&amp;amp;&amp;amp;</trailer>
+</packet>
+```

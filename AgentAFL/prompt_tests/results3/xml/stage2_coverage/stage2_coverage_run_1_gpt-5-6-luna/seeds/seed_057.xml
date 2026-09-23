@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT payload (data|binary|data)*>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT binary EMPTY>
+  <!ATTLIST package xmlns:p CDATA #FIXED "urn:pkg">
+  <!ATTLIST file name CDATA #REQUIRED size NMTOKEN #IMPLIED type (text|image|other) "text">
+  <!ATTLIST binary src CDATA #REQUIRED format (raw|base64) "raw">
+  <!ENTITY % optional "<!ELEMENT checksum (#PCDATA)>">
+  %optional;
+  <!ENTITY quotemark "&quot;">
+]>
+<package xmlns:p="urn:pkg" p:version="3">
+  <manifest>
+    <file name="readme.txt" size="12" type="text"/>
+    <file name="picture.dat" size="0" type="image"/>
+  </manifest>
+  <payload>
+    <data>line one&#x0A;line two &quot;quoted&quot;</data>
+    <binary src="blob.bin" format="base64"/>
+    <data><![CDATA[
+      <not-an-element>
+      & bogus;
+    ]]></data>
+  </payload>
+</package>

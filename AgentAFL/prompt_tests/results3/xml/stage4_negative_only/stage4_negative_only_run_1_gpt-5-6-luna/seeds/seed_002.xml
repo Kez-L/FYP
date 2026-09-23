@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow id="wf-42">
+  <start ref="collect"/>
+  <steps>
+    <step id="collect" kind="input">
+      <parameters>
+        <parameter name="path" type="string">/var/data/inbox</parameter>
+        <parameter name="recursive" type="boolean">true</parameter>
+      </parameters>
+      <on-success ref="validate"/>
+    </step>
+    <step id="validate" kind="transform">
+      <rules>
+        <rule field="size" operator="greater-than">0</rule>
+        <rule field="extension" operator="in">
+          <value>xml</value>
+          <value>json</value>
+        </rule>
+      </rules>
+      <on-success ref="archive"/>
+      <on-failure ref="reject"/>
+    </step>
+    <step id="archive" kind="output">
+      <destination compression="gzip">archive://daily</destination>
+    </step>
+    <step id="reject" kind="output">
+      <destination>quarantine://manual-review</destination>
+    </step>
+  </steps>
+</workflow>

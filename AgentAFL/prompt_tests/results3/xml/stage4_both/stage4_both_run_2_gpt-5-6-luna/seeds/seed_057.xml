@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:lab:workflow" xmlns:cfg="urn:lab:config" id="wf-77">
+  <metadata>
+    <owner>operations</owner>
+    <created>2026-09-23</created>
+    <labels>
+      <label>nightly</label>
+      <label>verification</label>
+    </labels>
+  </metadata>
+  <pipeline>
+    <stage name="prepare" retries="2">
+      <action type="fetch">
+        <source protocol="https">https://data.example.test/input</source>
+        <destination path="/var/tmp/input.bin"/>
+      </action>
+      <action type="unpack" format="tar">
+        <option key="strip-components">1</option>
+      </action>
+    </stage>
+    <stage name="analyze" retries="0" cfg:priority="high">
+      <condition>
+        <all>
+          <exists path="manifest.json"/>
+          <equals left="${environment}" right="staging"/>
+        </all>
+      </condition>
+      <action type="execute" shell="/bin/sh">
+        <command><![CDATA[
+          ./analyze --input ./payload --report ./out/report.json
+        ]]></command>
+        <environment>
+          <variable name="LC_ALL">C</variable>
+          <variable name="MODE">strict</variable>
+        </environment>
+      </action>
+    </stage>
+    <stage name="publish" depends-on="analyze">
+      <action type="copy">
+        <from>./out/report.json</from>
+        <to>archive/report-${run.id}.json</to>
+      </action>
+      <on-error>
+        <notify channel="pager">publication failed</notify>
+      </on-error>
+    </stage>
+  </pipeline>
+</workflow>

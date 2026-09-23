@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header
+    id ID #REQUIRED
+    ref IDREF #IMPLIED
+    mode (plain|signed|compressed) "plain">
+  <!ELEMENT payload (#PCDATA|chunk|![CDATA[not-a-name]])*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk part NMTOKEN #REQUIRED>
+]>
+<envelope xmlns:a="urn:a" xmlns:b="urn:b">
+  <header id="h-1" ref="missing" mode="signed" a:flag="true"/>
+  <payload>
+    <![CDATA[<escaped> & still literal]]>
+    <chunk part="01">left</chunk>
+    <?transform select="a:b"/>
+    <chunk part="02"><b:inner xmlns:b="">right</b:inner></chunk>
+  </payload>
+</envelope>

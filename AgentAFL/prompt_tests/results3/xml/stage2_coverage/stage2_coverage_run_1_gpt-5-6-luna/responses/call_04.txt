@@ -1,0 +1,153 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (metadata, entry*)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST metadata
+    generated CDATA #IMPLIED
+    revision NMTOKEN "0">
+  <!ELEMENT entry (title, author+, link?, description)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link
+    href URI #REQUIRED
+    rel (self|related|alternate) "self">
+  <!ELEMENT description (#PCDATA|em|code|ref)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    state (new|seen|archived) "new">
+]>
+<catalog>
+  <metadata generated="2026-09-23T12:00:00Z" revision="7"/>
+  <entry id="e1" state="seen">
+    <title>Bracketed &amp; attributed</title>
+    <author>Δelta</author>
+    <author>R&amp;D</author>
+    <link href="urn:item:e1" rel="self"/>
+    <description>text <em>with emphasis</em>, <code>v1&lt;v2</code>, and <ref target="e2"/></description>
+  </entry>
+  <entry id="e2">
+    <title>Second</title>
+    <author>Unknown</author>
+    <description><![CDATA[raw ]]> and ordinary text]]></description>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE envelope [
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+  <!ENTITY quote "'" >
+  <!ENTITY nested "&left;&quote;payload&quote;&right;" >
+  <!ELEMENT envelope (header, payload, trailer)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header stamp CDATA #REQUIRED>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|mark)*>
+  <!ATTLIST chunk kind CDATA #IMPLIED>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT trailer (#PCDATA)>
+]>
+<envelope>
+  <header stamp="&nested;"/>
+  <payload>
+    <chunk kind="alpha">one<mark>two &lt; three</mark>four</chunk>
+    <chunk kind="beta">&nested;</chunk>
+  </payload>
+  <trailer>done &apos; &quot; &amp; &#x41; &#65;</trailer>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node|edge)*>
+  <!ELEMENT node EMPTY>
+  <!ATTLIST node
+    key ID #REQUIRED
+    label CDATA #IMPLIED
+    links IDREFS #IMPLIED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge
+    from IDREF #REQUIRED
+    to IDREF #REQUIRED
+    weight NMTOKEN "1">
+  <!ENTITY % switches "<!ATTLIST graph mode (strict|loose) 'loose'>">
+  %switches;
+]>
+<graph mode="strict">
+  <node key="n&amp;1" label="unexpanded"/>
+  <node key="n2" label="line&#xA;break" links="n1 n2"/>
+  <edge from="n1" to="n2" weight="01"/>
+  <?graph-processing instruction?>
+  <!-- comment with -- forbidden-looking text -->
+</graph>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE warehouse [
+  <!ELEMENT warehouse (aisle, aisle?)>
+  <!ELEMENT aisle (bin+)>
+  <!ATTLIST aisle number NMTOKEN #REQUIRED>
+  <!ELEMENT bin (item*)>
+  <!ATTLIST bin
+    code CDATA #REQUIRED
+    sealed (yes|no) #IMPLIED>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item sku CDATA #REQUIRED quantity CDATA "0">
+]>
+<warehouse>
+  <aisle number="A-01">
+    <bin code="&quot;left&quot;" sealed="no">
+      <item sku="café-01" quantity="12">Crème brûlée</item>
+      <item sku="x&#233;" quantity="&#x30;"/>
+    </bin>
+  </aisle>
+  <aisle number="B-02">
+    <bin code="right">payload&#10;with&#9;controls</bin>
+  </aisle>
+</warehouse>
+```
+
+```xml
+<!DOCTYPE package [
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY % feature "INCLUDE">
+  <!ELEMENT package (manifest, body, checksum?)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+    name CDATA #REQUIRED
+    type NOTATION (png|text) #IMPLIED
+    data ENTITY #IMPLIED>
+  <!ELEMENT body (part|separator)*>
+  <!ELEMENT part (#PCDATA|highlight)*>
+  <!ELEMENT highlight (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <![%feature;[
+    <!ATTLIST package format (v1|v2) "v2">
+  ]]>
+]>
+<package format="v1">
+  <manifest>
+    <file name="logo.png" type="png" data="logo"/>
+    <file name="readme.txt" type="text"/>
+  </manifest>
+  <body>
+    <part>start <highlight>middle</highlight> end</part>
+    <separator/>
+    <part><![CDATA[<literal>tag</literal> & not markup]]></part>
+  </body>
+  <checksum>sha256:0000&amp;ffff</checksum>
+</package>
+```

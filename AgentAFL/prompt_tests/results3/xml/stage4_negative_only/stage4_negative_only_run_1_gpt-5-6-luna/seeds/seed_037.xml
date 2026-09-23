@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE query [
+  <!ELEMENT query (select, from, where?, order-by?)>
+  <!ELEMENT select (field+)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name CDATA #REQUIRED alias CDATA #IMPLIED>
+  <!ELEMENT from (table+)>
+  <!ELEMENT table EMPTY>
+  <!ATTLIST table name CDATA #REQUIRED join CDATA #IMPLIED>
+  <!ELEMENT where (condition|and|or|not)+>
+  <!ELEMENT condition EMPTY>
+  <!ATTLIST condition field CDATA #REQUIRED operator CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT and (condition|or|not)+>
+  <!ELEMENT or (condition|and|not)+>
+  <!ELEMENT not (condition|and|or)>
+  <!ELEMENT order-by (sort+)>
+  <!ELEMENT sort EMPTY>
+  <!ATTLIST sort field CDATA #REQUIRED direction (ascending|descending) "ascending">
+]>
+<query>
+  <select>
+    <field name="device_id" alias="id"/>
+    <field name="last_seen"/>
+  </select>
+  <from>
+    <table name="devices"/>
+    <table name="readings" join="devices.id=readings.device_id"/>
+  </from>
+  <where>
+    <and>
+      <condition field="status" operator="=" value="active"/>
+      <or>
+        <condition field="temperature" operator="&gt;" value="80"/>
+        <not>
+          <condition field="region" operator="=" value="test"/>
+        </not>
+      </or>
+    </and>
+  </where>
+  <order-by>
+    <sort field="last_seen" direction="descending"/>
+  </order-by>
+</query>

@@ -1,0 +1,206 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ENTITY product "Aster-9">
+  <!ENTITY notice "Transmission received">
+]>
+<env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope"
+              xmlns:m="urn:example:metrics"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <?trace id="7f3a"?>
+  <env:Header>
+    <m:correlation priority="high">c-20260923-0042</m:correlation>
+    <m:credentials xsi:nil="true"/>
+  </env:Header>
+  <env:Body>
+    <m:telemetry device="&product;" timestamp="2026-09-23T12:45:08Z">
+      <m:reading unit="kelvin">294.15</m:reading>
+      <m:reading unit="pascal">101325</m:reading>
+      <m:status>&notice;: <![CDATA[stable <within> tolerance]]></m:status>
+      <m:annotations>
+        <m:item key="operator">Δ-17</m:item>
+        <m:item key="location">bay-α/03</m:item>
+      </m:annotations>
+    </m:telemetry>
+  </env:Body>
+</env:Envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="640" height="360" viewBox="0 0 640 360">
+  <title>Night Transit</title>
+  <desc>A layered illustration with embedded vector geometry.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#07152f"/>
+      <stop offset="100%" stop-color="#4b2d5e"/>
+    </linearGradient>
+    <path id="route" d="M48 284 C160 210 260 302 372 224 S530 164 606 92"/>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3"/>
+    </filter>
+  </defs>
+  <rect width="640" height="360" fill="url(#sky)"/>
+  <g id="constellation" fill="#fff">
+    <circle cx="82" cy="74" r="2"/>
+    <circle cx="188" cy="42" r="1.5"/>
+    <circle cx="514" cy="61" r="2.5"/>
+    <path d="M82 74 L188 42 L302 86 L514 61" fill="none" stroke="#b8d7ff"
+          stroke-dasharray="2 8"/>
+  </g>
+  <g id="railway" fill="none" stroke-linecap="round">
+    <use xlink:href="#route" stroke="#d6d9e8" stroke-width="9"/>
+    <use xlink:href="#route" stroke="#20243b" stroke-width="3"/>
+  </g>
+  <g id="train" transform="translate(300 205) rotate(-8)">
+    <rect x="-72" y="-28" width="144" height="52" rx="12" fill="#e7b94e"/>
+    <rect x="-55" y="-18" width="28" height="18" fill="#17223c"/>
+    <rect x="-19" y="-18" width="28" height="18" fill="#17223c"/>
+    <rect x="17" y="-18" width="28" height="18" fill="#17223c"/>
+    <circle cx="-44" cy="28" r="8" fill="#111522"/>
+    <circle cx="44" cy="28" r="8" fill="#111522"/>
+    <foreignObject x="-48" y="-12" width="96" height="14">
+      <div xmlns="http://www.w3.org/1999/xhtml"
+           style="font:8px sans-serif;color:#dce9ff;text-align:center">L-204</div>
+    </foreignObject>
+  </g>
+  <script type="application/ecmascript"><![CDATA[
+    const label = "route <night>";
+    function pulse(node) { node.setAttribute("opacity", "0.92"); }
+  ]]></script>
+</svg>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workspace xmlns="urn:example:workspace"
+           xmlns:xi="http://www.w3.org/2001/XInclude"
+           xml:base="https://example.invalid/projects/aurora/">
+  <!-- A workspace may contain local fragments and generated views. -->
+  <?editor name="orbit" mode="review"?>
+  <identity>
+    <name>aurora-lab</name>
+    <owner uid="u-482">Mira Chen</owner>
+    <tags>
+      <tag>research</tag>
+      <tag>nightly</tag>
+      <tag xml:lang="ja">実験</tag>
+    </tags>
+  </identity>
+  <resources>
+    <xi:include href="fragments/overview.xml" parse="xml">
+      <xi:fallback>
+        <summary>Overview unavailable</summary>
+      </xi:fallback>
+    </xi:include>
+    <resource uri="data:application/octet-stream;base64,AAECAwQF"
+              media="application/octet-stream"/>
+    <resource uri="https://cdn.example.invalid/archive.tar"
+              media="application/x-tar">
+      <checksum algorithm="sha512">00ff11ee22dd33cc</checksum>
+    </resource>
+  </resources>
+  <pipeline enabled="true">
+    <stage name="ingest" retries="0"/>
+    <stage name="normalize">
+      <option key="trim">false</option>
+      <option key="charset">UTF-8</option>
+    </stage>
+    <stage name="publish">
+      <when test="resources/resource[@media='application/x-tar']">
+        <destination protocol="s3" bucket="aurora-staging"/>
+      </when>
+    </stage>
+  </pipeline>
+  <notes>Use <em xmlns="urn:example:workspace:markup">caution</em> with external fragments.</notes>
+</workspace>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (entry+, index)>
+  <!ELEMENT entry (label, description, link*)>
+  <!ATTLIST entry id ID #REQUIRED category (alpha|beta|deprecated) "alpha">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT description (#PCDATA|code|emph)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target IDREF #REQUIRED relation CDATA #IMPLIED>
+  <!ELEMENT index (pointer+)>
+  <!ELEMENT pointer EMPTY>
+  <!ATTLIST pointer ref IDREF #REQUIRED>
+  <!ENTITY trademark "©">
+]>
+<registry>
+  <entry id="r1" category="alpha">
+    <label>Quartz parser</label>
+    <description>Fast <emph>streaming</emph> reader for <code>qz</code> records &trademark;.</description>
+    <link target="r2" relation="successor"/>
+  </entry>
+  <entry id="r2" category="beta">
+    <label>Quartz writer</label>
+    <description>Produces escaped values such as &lt;token&gt; and preserves mixed text.</description>
+    <link target="r1" relation="companion"/>
+    <link target="r3" relation="related"/>
+  </entry>
+  <entry id="r3" category="deprecated">
+    <label>Legacy bridge</label>
+    <description><code>qz-0</code> compatibility adapter.</description>
+  </entry>
+  <index>
+    <pointer ref="r3"/>
+    <pointer ref="r1"/>
+    <pointer ref="r2"/>
+  </index>
+</registry>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<network xmlns="urn:example:network"
+         xmlns:net="urn:example:network:devices"
+         xmlns:log="urn:example:network:log"
+         xml:space="preserve">
+  <?snapshot sequence="00000019"?>
+  <graph directed="true" generated="2026-09-23">
+    <node id="router-α" role="edge" enabled="yes">
+      <address family="ipv6">2001:db8:85a3::8a2e:370:7334</address>
+      <interfaces>
+        <interface name="uplink0" mtu="9000">
+          <net:mac>02:00:00:aa:bb:01</net:mac>
+          <net:metric>10</net:metric>
+        </interface>
+        <interface name="lan0" mtu="1500">
+          <net:mac>02:00:00:aa:bb:02</net:mac>
+          <net:metric>100</net:metric>
+        </interface>
+      </interfaces>
+    </node>
+    <node id="sensor-07" role="leaf" enabled="no">
+      <address family="ipv4">192.0.2.77</address>
+      <interfaces/>
+    </node>
+    <edge from="router-α" to="sensor-07" weight="0.875">
+      <log:event level="warning" code="LINK_DEGRADED">
+        packet loss <![CDATA[< 3% ]]>
+      </log:event>
+      <log:sample at="12:00:00.000Z">0.03125</log:sample>
+      <log:sample at="12:00:01.000Z">0.02800</log:sample>
+    </edge>
+  </graph>
+  <policies>
+    <policy name="quarantine" priority="7">
+      <match field="role" equals="leaf"/>
+      <action type="rate-limit" value="64kbit/s"/>
+      <action type="notify">
+        <recipient channel="pager">ops@example.invalid</recipient>
+      </action>
+    </policy>
+  </policies>
+</network>
+```

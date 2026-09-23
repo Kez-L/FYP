@@ -1,0 +1,23 @@
+{
+  "call": 3,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ATTLIST koo xml:lang CDATA \"eng\">\n  <!ATTLIST foo bar CDATA \"&lt;&gt;)qrking Group (orisable oveuot;\">\n]>\n<root>\n  <foo xml:lang=\"ger\">Ja</fo\u0000\u0004\n</roos>\n\n\n--- example 2 ---\n<!DOCTYPE doc [\n<!ELEMENT doc EMPTY>\n<!ATTLIST doc\n defatt  (0|1)   \"0\"\n     xmlns:tst CDATA #FIXED \"http://example.org\"  tst:att  (0|1)   \"0\"\n    att (0|1)   \"1\">\n]>\n<doc att=\"1B/h12;&laugh12;&laugh12;&la>\n\n\nTried before \u2014 no new coverage, avoid repeating:\n--- a seed you generated (cycle 3) added 0 new edges ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ENTITY % common \"id ID #REQUIRED\">\n  <!ELEMENT catalog (section+)>\n  <!ELEMENT section (title, item*)>\n  <!ATTLIST section %common; kind NMTOKEN \"general\">\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT item (#PCDATA|em|link)*>\n  <!ELEMENT em (#PCDATA)>\n  <!ELEMENT link EMPTY>\n  <!ATTLIST link href URI #IMPLIED>\n  <![IGNORE[\n    <!ELEMENT discarded ANY>\n    <!ENTITY hidden \"not expanded\">\n  ]]>\n]>\n<catalog>\n  <section id=\"s1\" kind=\"news\">\n    <title><![CDATA[<Updates & Notices>]]></title>\n    <item>Plain <em>emphasized</em> text<link href=\"urn:x\"/>after</item>\n  </section>\n</catalog>\n\n--- a seed you generated (cycle 3) added 0 new edges ---\n<?xml version=\"1.1\"?>\n<!DOCTYPE envelope [\n  <!ELEMENT envelope (meta, payload)>\n  <!ELEMENT meta EMPTY>\n  <!ATTLIST meta\n    xmlns:aux CDATA #FIXED \"urn:aux\"\n    aux:flag (yes|no) \"no\"\n    stamp CDATA #IMPLIED>\n  <!ELEMENT payload ANY>\n]>\n<envelope xmlns=\"urn:main\" xmlns:a=\"urn:a\" xmlns:b=\"urn:b\" xml:lang=\"fr\">\n  <meta a:flag=\"yes\" stamp=\"&#x0D;&#x0A;\"/>\n  <payload xmlns=\"\" a:item=\"&#x2028;\" b:item=\"caf\u00e9\">\n    <a:node><!-- adjacent --><![CDATA[data]]><?work value?><![CDATA[]]></a:node>\n  </payload>\n</envelope>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage-per-byte",
+  "positive_feedback": false,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-23T05:54:45.217382+00:00"
+}

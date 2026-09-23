@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE questionnaire [
+  <!ELEMENT questionnaire (section+)>
+  <!ATTLIST questionnaire locale CDATA #IMPLIED>
+  <!ELEMENT section (heading, question+)>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT question (prompt, choice*, answer?)>
+  <!ATTLIST question id ID #REQUIRED required (true|false) "false">
+  <!ELEMENT prompt (#PCDATA|code|br)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT choice (#PCDATA)>
+  <!ATTLIST choice value CDATA #REQUIRED selected (true|false) "false">
+  <!ELEMENT answer (#PCDATA)>
+]>
+<questionnaire locale="en-US">
+  <section id="intro">
+    <heading>Parsing edge cases</heading>
+    <question id="q1" required="true">
+      <prompt>Which sequence represents <code>&lt;tag&gt;</code>?<br/>Choose one.</prompt>
+      <choice value="literal" selected="true">&lt;tag&gt;</choice>
+      <choice value="escaped">&amp;lt;tag&amp;gt;</choice>
+      <answer>literal</answer>
+    </question>
+    <question id="q2">
+      <prompt>Can whitespace be preserved?</prompt>
+      <choice value="yes">Yes</choice>
+      <choice value="no" selected="true">No</choice>
+    </question>
+  </section>
+  <section id="unicode">
+    <heading>Unicode and normalization</heading>
+    <question id="q3" required="false">
+      <prompt>Café, café, and <code>λ</code>.</prompt>
+      <choice value="a">naïve</choice>
+      <choice value="b" selected="true">東京 — Москва — القاهرة</choice>
+      <answer><![CDATA[User supplied: "a < b > c"]]></answer>
+    </question>
+  </section>
+</questionnaire>

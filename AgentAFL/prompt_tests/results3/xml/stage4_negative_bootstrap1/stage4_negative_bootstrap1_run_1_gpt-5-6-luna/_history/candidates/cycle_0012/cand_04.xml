@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow" xmlns:ext="urn:example:extension">
+  <state id="start" terminal="false">
+    <transition event="open" target="ready">
+      <guard language="expr">count(items) &gt; 0</guard>
+      <action name="initialize">
+        <parameter key="mode" value="safe"/>
+        <parameter key="retry" value="2"/>
+      </action>
+    </transition>
+  </state>
+  <state id="ready" terminal="false">
+    <transition event="process" target="done">
+      <parallel>
+        <branch name="primary">
+          <task id="scan" timeout="PT0S"/>
+          <task id="validate" timeout="PT1.500S"/>
+        </branch>
+        <branch name="audit">
+          <ext:checkpoint severity="notice">
+            <ext:message>Audit trail enabled</ext:message>
+          </ext:checkpoint>
+        </branch>
+      </parallel>
+    </transition>
+  </state>
+  <state id="done" terminal="true">
+    <on-enter>
+      <log><![CDATA[workflow completed: <ok/>]]></log>
+    </on-enter>
+  </state>
+</workflow>

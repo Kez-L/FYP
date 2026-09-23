@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE labyrinth [
+  <!ELEMENT labyrinth (entrance, chamber)>
+  <!ELEMENT entrance EMPTY>
+  <!ATTLIST entrance target IDREF #REQUIRED>
+  <!ELEMENT chamber (corridor|room|trap)*>
+  <!ELEMENT corridor (door, chamber?)>
+  <!ELEMENT door EMPTY>
+  <!ATTLIST door leads IDREF #IMPLIED locked (yes|no) "no">
+  <!ELEMENT room (object|mirror|exit)*>
+  <!ATTLIST room id ID #IMPLIED shape NMTOKEN #IMPLIED>
+  <!ELEMENT object (#PCDATA)>
+  <!ELEMENT mirror (#PCDATA)>
+  <!ELEMENT exit EMPTY>
+  <!ATTLIST exit id ID #IMPLIED>
+  <!ELEMENT trap (#PCDATA)>
+]>
+<labyrinth>
+  <entrance target="r_outer"/>
+  <chamber>
+    <corridor>
+      <door leads="r_inner" locked="yes"/>
+      <chamber>
+        <room id="r_inner" shape="hexagon">
+          <object>key</object>
+          <mirror>left &amp; right</mirror>
+        </room>
+        <trap>Do not step beyond this point.</trap>
+      </chamber>
+    </corridor>
+    <room id="r_outer" shape="circle">
+      <exit id="way_out"/>
+      <object>compass</object>
+    </room>
+  </chamber>
+</labyrinth>

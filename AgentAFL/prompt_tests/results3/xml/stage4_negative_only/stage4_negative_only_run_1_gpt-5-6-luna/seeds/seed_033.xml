@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<network xmlns="urn:example:net" xmlns:ip="urn:example:ip">
+  <interface id="lo0" state="up">
+    <ip:address family="ipv4" ip:prefix="127.0.0.1/8"/>
+    <ip:address family="ipv6" ip:prefix="::1/128"/>
+    <statistics>
+      <received packets="0" bytes="0"/>
+      <transmitted packets="18446744073709551615" bytes="4294967296"/>
+    </statistics>
+  </interface>
+  <interface id="wan0" state="down" mtu="1500">
+    <route destination="0.0.0.0/0" gateway="192.0.2.1">
+      <metric>10</metric>
+    </route>
+    <dns>
+      <server>2001:db8::53</server>
+      <server>192.0.2.53</server>
+    </dns>
+  </interface>
+  <policy default="deny">
+    <rule action="allow" protocol="tcp">
+      <source>198.51.100.0/24</source>
+      <destination port="443">203.0.113.8</destination>
+    </rule>
+    <rule action="reject" protocol="icmp"/>
+  </policy>
+</network>

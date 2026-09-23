@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE assembly [
+  <!ENTITY product "modular assembly">
+  <!ENTITY version "2.4">
+  <!ELEMENT assembly (module+, summary)>
+  <!ATTLIST assembly id ID #REQUIRED>
+  <!ELEMENT module (header, component*)>
+  <!ATTLIST module code NMTOKEN #REQUIRED depends IDREFS #IMPLIED>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT component (part, quantity, options?)>
+  <!ATTLIST component state (installed|pending|removed) #REQUIRED>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT quantity (#PCDATA)>
+  <!ELEMENT options (option*)>
+  <!ELEMENT option EMPTY>
+  <!ATTLIST option name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT summary (#PCDATA)>
+]>
+<assembly id="a-main">
+  <module code="core">
+    <header>&product; version &version;</header>
+    <component state="installed">
+      <part>frame</part>
+      <quantity>1</quantity>
+    </component>
+    <component state="pending">
+      <part>fastener</part>
+      <quantity>24</quantity>
+      <options>
+        <option name="finish" value="black"/>
+        <option name="coated"/>
+      </options>
+    </component>
+  </module>
+  <module code="ui" depends="core">
+    <header>Operator interface</header>
+    <component state="removed">
+      <part>legacy-panel</part>
+      <quantity>1</quantity>
+    </component>
+  </module>
+  <summary>Assembly contains two modules.</summary>
+</assembly>

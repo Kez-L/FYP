@@ -1,0 +1,28 @@
+<?xml version="1.1"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+, note?)>
+  <!ELEMENT entry (name, data, link*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST archive xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST entry id ID #REQUIRED status (new|held|closed) "new">
+  <!ATTLIST link target IDREF #REQUIRED relation NMTOKEN #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY binary SYSTEM "blob.dat" NDATA bin>
+  <!ENTITY mark "&#x2063;">
+]>
+<archive xml:lang="en-US">
+  <entry id="e1" status="held">
+    <name>First &mark; record</name>
+    <data>alpha<em>beta</em><br/>gamma</data>
+    <link target="e2" relation="next"/>
+  </entry>
+  <entry id="e2">
+    <name>Second record</name>
+    <data><![CDATA[raw ]]> text <![CDATA[with ]]]]><![CDATA[> delimiter]]></data>
+  </entry>
+  <note>Unparsed entities remain declarations, not text: &amp;binary;</note>
+</archive>

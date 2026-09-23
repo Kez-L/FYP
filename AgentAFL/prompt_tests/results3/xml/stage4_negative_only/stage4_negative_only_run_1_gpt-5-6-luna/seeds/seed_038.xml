@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow id="wf-42" version="2.7">
+  <trigger type="schedule">
+    <calendar>
+      <day-of-week>MONDAY</day-of-week>
+      <day-of-week>WEDNESDAY</day-of-week>
+      <time zone="America/New_York">09:30:00</time>
+    </calendar>
+  </trigger>
+  <steps>
+    <step id="prepare" action="collect">
+      <parameters>
+        <parameter name="source">/var/log/app</parameter>
+        <parameter name="pattern"><![CDATA[^error:\s+.*$]]></parameter>
+      </parameters>
+      <on-success goto="compress"/>
+      <on-failure goto="notify"/>
+    </step>
+    <step id="compress" action="archive">
+      <input ref="prepare"/>
+      <output path="/tmp/report.tar" format="tar"/>
+      <on-success goto="notify"/>
+    </step>
+    <step id="notify" action="email">
+      <recipients>
+        <address>admin@example.test</address>
+        <address>oncall@example.test</address>
+      </recipients>
+      <subject>Workflow ${workflow.id} completed</subject>
+    </step>
+  </steps>
+</workflow>

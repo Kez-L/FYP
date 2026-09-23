@@ -1,0 +1,162 @@
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+, note?)>
+  <!ELEMENT entry (name, data, link*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST archive xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST entry id ID #REQUIRED status (new|held|closed) "new">
+  <!ATTLIST link target IDREF #REQUIRED relation NMTOKEN #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY binary SYSTEM "blob.dat" NDATA bin>
+  <!ENTITY mark "&#x2063;">
+]>
+<archive xml:lang="en-US">
+  <entry id="e1" status="held">
+    <name>First &mark; record</name>
+    <data>alpha<em>beta</em><br/>gamma</data>
+    <link target="e2" relation="next"/>
+  </entry>
+  <entry id="e2">
+    <name>Second record</name>
+    <data><![CDATA[raw ]]> text <![CDATA[with ]]]]><![CDATA[> delimiter]]></data>
+  </entry>
+  <note>Unparsed entities remain declarations, not text: &amp;binary;</note>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (region*)>
+  <!ELEMENT region (label, point+, boundary?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT point EMPTY>
+  <!ELEMENT boundary (#PCDATA)>
+  <!ATTLIST map xmlns CDATA #IMPLIED>
+  <!ATTLIST region code NMTOKEN #REQUIRED xml:base URI #IMPLIED>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED role (start|stop|turn) "turn">
+  <!ENTITY degree "&#176;">
+]>
+<map xmlns="urn:geo:map" xmlns:g="urn:geo:point">
+  <region code="north" xml:base="https://example.invalid/north">
+    <label>North &degree; sector</label>
+    <point g:lat="51.5" g:lon="-0.1" x="10" y="20" role="start"/>
+    <point g:lat="51.6" g:lon="-0.2" x="30" y="40"/>
+    <boundary xmlns="">
+      This element has no default namespace and contains ordinary text.
+    </boundary>
+  </region>
+  <region code="south">
+    <label xml:lang="fr">Région sud</label>
+    <point x="0" y="0" role="stop"/>
+  </region>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ENTITY % states "<!ELEMENT state EMPTY>
+    <!ATTLIST state name NMTOKEN #REQUIRED result (pass|fail|skip) #IMPLIED>">
+  <!ENTITY % actions "<!ELEMENT action (state*, message?)>
+    <!ATTLIST action id ID #REQUIRED>">
+  %states;
+  %actions;
+  <!ELEMENT workflow (phase+)>
+  <!ELEMENT phase (action+)>
+  <!ELEMENT message (#PCDATA)>
+  <!ATTLIST workflow version CDATA #FIXED "3">
+  <!ATTLIST phase id ID #REQUIRED depends IDREFS #IMPLIED>
+  <!ENTITY open "[" >
+  <!ENTITY close "]" >
+]>
+<workflow version="3">
+  <phase id="compile">
+    <action id="compile-main">
+      <state name="lexer" result="pass"/>
+      <state name="parser" result="skip"/>
+      <message>&open;phase complete&close;</message>
+    </action>
+  </phase>
+  <phase id="test" depends="compile">
+    <action id="run-tests">
+      <state name="unit" result="pass"/>
+      <state name="integration"/>
+    </action>
+  </phase>
+</workflow>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item | comment | empty)*>
+  <!ELEMENT item (title, description?, price)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|b|i|line)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT line EMPTY>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT comment (#PCDATA)>
+  <!ATTLIST item sku ID #REQUIRED category NMTOKENS #IMPLIED featured (yes|no) "no">
+  <!ATTLIST price currency (USD|EUR|JPY) #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quote "&quot;">
+  <!ENTITY phrase "salt &amp; pepper">
+]>
+<catalog>
+  <item sku="p-001" category="food pantry" featured="yes">
+    <title>Mixed &quote;goods&quote;</title>
+    <description>
+      <b>Fresh</b><line/><i>seasonal</i> produce&nbsp;and &phrase;.
+    </description>
+    <price currency="EUR">12.50</price>
+  </item>
+  <comment><![CDATA[The sequence ]]> is split across CDATA sections.]]></comment>
+  <empty/>
+  <item sku="p-002" category="tools">
+    <title>Plain item</title>
+    <price currency="JPY">900</price>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header (source, timestamp, flags?)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT flags EMPTY>
+  <!ELEMENT payload ANY>
+  <!ATTLIST envelope id ID #REQUIRED mode (sync|async) #IMPLIED>
+  <!ATTLIST header version CDATA #REQUIRED>
+  <!ATTLIST flags urgent (true|false) "false" trace CDATA #IMPLIED>
+  <!ENTITY left "<![CDATA[">
+  <!ENTITY right "]]>">
+  <!ENTITY amp "&amp;">
+]>
+<envelope id="msg-7" mode="async">
+  <header version="2.0">
+    <source>device/Δ-4</source>
+    <timestamp>2026-09-23T12:34:56Z</timestamp>
+    <flags urgent="true" trace="a&amp;b"/>
+  </header>
+  <payload>
+    <record type="mixed">
+      <value><![CDATA[<not-an-element>]]></value>
+      <value>escaped &lt;markup&gt; and &amp; entities</value>
+      <value><![CDATA[first]]><![CDATA[second]]></value>
+    </record>
+    <?payload instruction?>
+    <trailer>&left;not actually a CDATA opener&right;</trailer>
+  </payload>
+</envelope>
+```

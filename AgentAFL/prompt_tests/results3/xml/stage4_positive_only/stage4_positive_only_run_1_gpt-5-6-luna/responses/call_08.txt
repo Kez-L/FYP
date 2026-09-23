@@ -1,0 +1,212 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE observatory [
+  <!ELEMENT observatory (station, observation*)>
+  <!ATTLIST observatory opened CDATA #IMPLIED>
+  <!ELEMENT station (name, coordinates, instrument+)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT coordinates (latitude, longitude, elevation?)>
+  <!ELEMENT latitude (#PCDATA)>
+  <!ELEMENT longitude (#PCDATA)>
+  <!ELEMENT elevation (#PCDATA)>
+  <!ELEMENT instrument (model, calibration)>
+  <!ATTLIST instrument id ID #REQUIRED>
+  <!ELEMENT model (#PCDATA)>
+  <!ELEMENT calibration (#PCDATA)>
+  <!ELEMENT observation (target, timestamp, measurement+)>
+  <!ATTLIST observation instrument IDREF #IMPLIED status (complete|pending|invalid) "complete">
+  <!ELEMENT target (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT measurement (#PCDATA)>
+  <!ATTLIST measurement unit CDATA #REQUIRED>
+]>
+<observatory opened="1998-11-03">
+  <station>
+    <name>North Ridge Array</name>
+    <coordinates>
+      <latitude>64.1466</latitude>
+      <longitude>-21.9426</longitude>
+      <elevation>312</elevation>
+    </coordinates>
+    <instrument id="spectro-7">
+      <model>HelioScan Ω</model>
+      <calibration>2026-04-17T08:30:00Z</calibration>
+    </instrument>
+    <instrument id="radio-2">
+      <model><![CDATA[Long-baseline / Mk IV]]></model>
+      <calibration>2026-04-15T19:12:44Z</calibration>
+    </instrument>
+  </station>
+  <observation instrument="spectro-7" status="complete">
+    <target>NGC 2392</target>
+    <timestamp>2026-09-22T03:18:09.442Z</timestamp>
+    <measurement unit="nm">486.133</measurement>
+    <measurement unit="km/s">-18.7</measurement>
+  </observation>
+  <observation instrument="radio-2" status="pending">
+    <target>J0437−4715</target>
+    <timestamp>2026-09-22T03:21:10Z</timestamp>
+    <measurement unit="Jy">0.742</measurement>
+  </observation>
+</observatory>
+```
+
+```xml
+<?xml version="1.0"?>
+<package xmlns="urn:archive:bundle" xmlns:sec="urn:archive:security" xml:lang="fr">
+  <!-- An intentionally mixed-content manifest -->
+  <header generated="2026-09-23T00:00:00Z">
+    <creator>Équipe Delta</creator>
+    <description>Rapport &amp; données associées</description>
+  </header>
+  <entries>
+    <entry path="notes/readme.txt" media-type="text/plain">
+      <hash algorithm="sha256">e3b0c44298fc1c149afbf4c8996fb924</hash>
+      <permissions owner="analyst" group="research">0640</permissions>
+    </entry>
+    <entry path="data/mesures.csv" media-type="text/csv" compressed="true">
+      <hash algorithm="blake2b">9f86d081884c7d659a2feaa0c55ad015</hash>
+      <permissions owner="robot" group="research">0600</permissions>
+    </entry>
+  </entries>
+  <sec:signature method="urn:example:ed25519">
+    <sec:key-id>key:archive/2026/09</sec:key-id>
+    <sec:value><![CDATA[
+-----BEGIN SIGNATURE-----
+RHVtbXkgc2lnbmF0dXJlICsgPD4gJiA=
+-----END SIGNATURE-----
+]]></sec:value>
+  </sec:signature>
+  <trailers>
+    <note>Fin du manifeste.</note>
+    <note xml:space="preserve">  whitespace   remains  </note>
+  </trailers>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ENTITY owner "ops &amp; reliability">
+  <!ENTITY warning "Do not retry after the cutoff time.">
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ELEMENT workflow (variables, stages, audit)>
+  <!ELEMENT variables (variable*)>
+  <!ELEMENT variable EMPTY>
+  <!ATTLIST variable name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT stages (stage+)>
+  <!ELEMENT stage (description, action+, on-success?, on-failure?)>
+  <!ATTLIST stage name ID #REQUIRED timeout CDATA "30s">
+  <!ELEMENT description (#PCDATA)>
+  <!ELEMENT action EMPTY>
+  <!ATTLIST action type (shell|http|notify) #REQUIRED command CDATA #IMPLIED>
+  <!ELEMENT on-success (#PCDATA)>
+  <!ELEMENT on-failure (#PCDATA)>
+  <!ELEMENT audit (event*)>
+  <!ELEMENT event (#PCDATA)>
+  <!ATTLIST event at CDATA #REQUIRED actor CDATA #REQUIRED>
+]>
+<workflow>
+  <variables>
+    <variable name="REGION" value="eu-west-3"/>
+    <variable name="OWNER" value="&owner;"/>
+    <variable name="EMPTY" value=""/>
+  </variables>
+  <stages>
+    <stage name="prepare" timeout="5m">
+      <description>Validate the incoming bundle.</description>
+      <action type="shell" command="/usr/local/bin/check-bundle --strict"/>
+      <on-success>deploy</on-success>
+      <on-failure>halt</on-failure>
+    </stage>
+    <stage name="deploy" timeout="1h">
+      <description><![CDATA[Promote <artifact> only after all checks pass.]]></description>
+      <action type="http" command="POST /v2/releases"/>
+      <action type="notify" command="pager://platform"/>
+      <on-success>finish</on-success>
+      <on-failure>&warning;</on-failure>
+    </stage>
+  </stages>
+  <audit>
+    <event at="2026-09-23T01:02:03Z" actor="scheduler">workflow accepted</event>
+    <event at="2026-09-23T01:02:07Z" actor="runner-α">stage prepare complete</event>
+  </audit>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:p="urn:example:pricing" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <section id="tea" label="Tea &amp; Infusions">
+    <item sku="T-001" seasonal="false">
+      <name>Jasmine Pearl</name>
+      <aliases>
+        <alias xml:lang="zh">茉莉龙珠</alias>
+        <alias xml:lang="ja">ジャスミン茶</alias>
+      </aliases>
+      <origin country="CN" region="Fujian"/>
+      <packaging>
+        <size amount="50" unit="g"/>
+        <size amount="100" unit="g"/>
+      </packaging>
+      <p:price currency="EUR" tax="included">14.95</p:price>
+      <related xlink:type="simple" xlink:href="#T-002" xlink:actuate="onRequest">similar blend</related>
+    </item>
+    <item sku="T-002" seasonal="true">
+      <name>Smoked Lapsang</name>
+      <origin country="CN">
+        <region>Wuyi Mountains</region>
+      </origin>
+      <p:price currency="EUR">9.50</p:price>
+      <availability>
+        <warehouse code="NL-1">23</warehouse>
+        <warehouse code="DE-4">0</warehouse>
+      </availability>
+    </item>
+  </section>
+  <section id="tools" label="Accessories">
+    <item sku="A-101">
+      <name>Stoneware strainer</name>
+      <origin country="PT"/>
+      <p:price currency="EUR" discount="0.15">18.00</p:price>
+      <dimensions>
+        <length unit="mm">92</length>
+        <width unit="mm">74</width>
+        <height unit="mm">61</height>
+      </dimensions>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<conversation xmlns="urn:chat:transcript" id="c-77" started="2026-09-22T22:10:00+02:00">
+  <participants>
+    <participant uid="u1" role="human" display="Mira"/>
+    <participant uid="u2" role="agent" display="Rook"/>
+    <participant uid="u3" role="human" display="Νίκος"/>
+  </participants>
+  <thread topic="parser regression">
+    <message uid="m1" from="u1" sent="2026-09-22T22:10:14+02:00">
+      <body format="markdown">Can you inspect the attachment?</body>
+      <attachment name="sample.xml" content-type="application/xml" size="1842">
+        <checksum>sha256:4a7d1ed414474e4033ac29ccb8653d9b</checksum>
+      </attachment>
+    </message>
+    <message uid="m2" from="u2" sent="2026-09-22T22:10:31+02:00">
+      <body format="html"><![CDATA[<p>It contains <strong>nested</strong> records.</p>]]></body>
+      <reaction by="u3" emoji="🧪"/>
+    </message>
+    <message uid="m3" from="u3" sent="2026-09-22T22:11:02+02:00">
+      <quote ref="m1">Can you inspect the attachment?</quote>
+      <body format="plain">Oui — je vais comparer les nœuds, les attributs et les espaces.</body>
+    </message>
+  </thread>
+  <resolution state="open">
+    <tag>xml</tag>
+    <tag>namespaces</tag>
+    <next-review at="2026-09-24"/>
+  </resolution>
+</conversation>
+```

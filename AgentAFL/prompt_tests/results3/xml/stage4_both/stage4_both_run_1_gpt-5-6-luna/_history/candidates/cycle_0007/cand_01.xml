@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow>
+  <step name="extract" retry="2">
+    <command><![CDATA[tar -xf "input.tar" -C "$WORKDIR"]]></command>
+    <environment>
+      <variable name="LANG">C.UTF-8</variable>
+      <variable name="FLAGS">--strict --verbose</variable>
+    </environment>
+    <on-success>
+      <emit channel="log">extraction complete</emit>
+    </on-success>
+  </step>
+  <step name="transform" retry="0">
+    <command>convert --input &quot;$WORKDIR/in &amp; out&quot; --output=result.xml</command>
+    <stdin><![CDATA[
+      <literal>
+        This text contains <angle brackets>, ampersands & symbols,
+        and a closing-looking sequence ]] ]]> split across markup.
+      </literal>
+    ]]></stdin>
+    <on-failure>
+      <emit channel="stderr">transform failed</emit>
+    </on-failure>
+  </step>
+  <finally>
+    <cleanup path="${WORKDIR}" recursive="true"/>
+  </finally>
+</workflow>

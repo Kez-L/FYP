@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % core "<!ELEMENT catalog (entry|group)*>">
+  %core;
+  <!ELEMENT entry (#PCDATA|note|![CDATA[x]]>)*>
+  <!ELEMENT group (entry*)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST entry key NMTOKEN #IMPLIED state (new|old|none) "none">
+  <!ENTITY amp "&#38;">
+  <!ENTITY nested "&amp;&amp;&amp;">
+]>
+<catalog>
+  <entry key="a:b" state="new">alpha<note><![CDATA[<raw>&not-an-entity;]]></note>&amp;</entry>
+  <group>
+    <entry key="mixed">before &nested; <![CDATA[]]> after</entry>
+    <entry><![CDATA[one]]><![CDATA[two]]></entry>
+  </group>
+</catalog>

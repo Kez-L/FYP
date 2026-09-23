@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ledger [
+  <!ENTITY % switches "<!ATTLIST ledger mode (open|closed|frozen) 'open'>">
+  %switches;
+  <!ELEMENT ledger (header, entry*, closing?)>
+  <!ELEMENT header (caption, period)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT period EMPTY>
+  <!ELEMENT entry (when, debit?, credit?, memo?)>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT debit (#PCDATA)>
+  <!ELEMENT credit (#PCDATA)>
+  <!ELEMENT memo (#PCDATA|ref)*>
+  <!ELEMENT ref (#PCDATA)>
+  <!ELEMENT closing (#PCDATA)>
+  <!ATTLIST ledger currency CDATA #IMPLIED>
+  <!ATTLIST period from CDATA #REQUIRED to CDATA #REQUIRED>
+  <!ATTLIST entry key ID #REQUIRED account NMTOKEN #REQUIRED>
+  <!ATTLIST debit amount CDATA #IMPLIED>
+  <!ATTLIST credit amount CDATA #IMPLIED>
+  <!ENTITY currency-symbol "€">
+]>
+<ledger mode="open" currency="EUR">
+  <header>
+    <caption>Quarterly adjustments</caption>
+    <period from="2026-07-01" to="2026-09-30"/>
+  </header>
+  <entry key="e100" account="travel">
+    <when>2026-09-02</when>
+    <debit amount="83.40">83.40</debit>
+    <memo>Train ticket <ref>TR-19</ref> &currency-symbol;</memo>
+  </entry>
+  <entry key="e101" account="refund">
+    <when>2026-09-05</when>
+    <credit amount="12.00">12.00</credit>
+    <memo><![CDATA[Returned item: <adapter/>]]></memo>
+  </entry>
+  <closing>Pending reconciliation</closing>
+</ledger>

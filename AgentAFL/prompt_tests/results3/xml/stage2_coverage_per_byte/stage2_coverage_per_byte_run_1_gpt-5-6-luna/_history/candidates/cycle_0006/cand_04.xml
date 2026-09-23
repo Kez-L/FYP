@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (packet*)>
+  <!ELEMENT packet (data, checksum?)>
+  <!ATTLIST packet seq CDATA #REQUIRED type CDATA "raw">
+  <!ELEMENT data (#PCDATA|fragment)*>
+  <!ELEMENT fragment (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY open "<fragment>">
+  <!ENTITY close "</fragment>">
+  <!ENTITY amp "&amp;">
+]>
+<stream>
+  <packet seq="0" type="binary">
+    <data>
+      prefix &lt;tag&gt;
+      <fragment>literal</fragment>
+      <![CDATA[&not-an-entity;]]>
+    </data>
+    <checksum>0xDEAD&#10;BEEF</checksum>
+  </packet>
+  <packet seq="1">
+    <data>&open;broken &amp; text&close;</data>
+  </packet>
+  <packet seq="2" type="quoted">
+    <data><![CDATA[unterminated-looking ]]]]><![CDATA[> boundary]]></data>
+  </packet>
+</stream>

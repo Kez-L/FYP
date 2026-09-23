@@ -1,0 +1,24 @@
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE package [
+  <!ELEMENT package (header, entry+)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header version CDATA #FIXED "3">
+  <!ELEMENT entry (title, data)>
+  <!ATTLIST entry path CDATA #REQUIRED format (text|xml|raw) #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT data (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ENTITY left "[[">
+  <!ENTITY right "]]">
+]>
+<package>
+  <header version="3"/>
+  <entry path="a/b.txt" format="text">
+    <title>first &left;section&right;</title>
+    <data>one<chunk>two &amp; three</chunk><![CDATA[four < five]]>six</data>
+  </entry>
+  <entry path="odd&amp;name" format="xml">
+    <title><?inside instruction?></title>
+    <data><chunk><![CDATA[<x y="z"/>]]></chunk></data>
+  </entry>
+</package>

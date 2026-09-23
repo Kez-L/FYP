@@ -1,0 +1,23 @@
+{
+  "call": 11,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<!DOCTYPE registry [\n  <!ELEMENT registry (entry+, index)>\n  <!ELEMENT entry (label, description, link*)>\n  <!ATTLIST entry id ID #REQUIRED category (alpha|beta|deprecated) \"alpha\">\n  <!ELEMENT label (#PCDATA)>\n  <!ELEMENT description (#PCDATA|code|emph)*>\n  <!ELEMENT code (#PCDATA)>\n  <!ELEMENT emph (#PCDATA)>\n  <!ELEMENT link EMPTY>\n  <!ATTLIST link target IDREF #REQUIRED relation CDATA #IMPLIED>\n  <!ELEMENT index (pointer+)>\n  <!ELEMENT pointer EMPTY>\n  <!ATTLIST pointer ref IDREF #REQUIRED>\n  <!ENTITY trademark \"\u00a9\">\n]>\n<registry>\n  <entry id=\"r1\" category=\"alpha\">\n    <label>Quartz parser</label>\n    <description>Fast <emph>streaming</emph> reader for <code>qz</code> records &trademark;.</description>\n    <link target=\"r2\" relation=\"successor\"/>\n  </entry>\n  <entry id=\"r2\" category=\"beta\">\n    <label>Quartz writer</label>\n    <description>Produces escaped values such as &lt;token&gt; and preserves mixed text.</description>\n    <link target=\"r1\" relation=\"companion\"/>\n    <link target=\"r3\" relation=\"related\"/>\n  </entry>\n  <entry id=\"r3\" category=\"deprecated\">\n    <label>Legacy bridge</label>\n    <description><code>qz-0</code> compatibility adapter.</description>\n  </entry>\n  <index>\n    <pointer ref=\"r3\"/>\n    <pointer ref=\"r1\"/>\n    <pointer ref=\"r2\"/>\n  </index>\n</registry>\n\n--- example 2 ---\n<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n<network xmlns=\"urn:example:network\"\n         xmlns:net=\"urn:example:network:devices\"\n         xmlns:log=\"urn:example:network:log\"\n         xml:space=\"preserve\">\n  <?snapshot sequence=\"00000019\"?>\n  <graph directed=\"true\" generated=\"2026-09-23\">\n    <node id=\"router-\u03b1\" role=\"edge\" enabled=\"yes\">\n      <address family=\"ipv6\">2001:db8:85a3::8a2e:370:7334</address>\n      <interfaces>\n        <interface name=\"uplink0\" mtu=\"9000\">\n          <net:mac>02:00:00:aa:bb:01</net:mac>\n          <net:metric>10</net:metric>\n        </interface>\n        <interface name=\"lan0\" mtu=\"1500\">\n          <net:mac>02:00:00:aa:bb:02</net:mac>\n          <net:metric>100</net:metric>\n        </interface>\n      </interfaces>\n    </node>\n    <node id=\"sensor-07\" role=\"leaf\" enabled=\"no\">\n      <address family=\"ipv4\">192.0.2.77</address>\n      <interfaces/>\n    </node>\n    <edge from=\"router-\u03b1\" to=\"sensor-07\" weight=\"0.875\">\n      <log:event level=\"warning\" code=\"LINK_DEGRADED\">\n        packet loss <![CDATA[< 3% ]]>\n      </log:event>\n      <log:sample at=\"12:00:00.000Z\">0.03125</log:sample>\n      <log:sample at=\"12:00:01.000Z\">0.02800</log:sample>\n    </edge>\n  </graph>\n  <policies>\n    <policy name=\"quarantine\" priority=\"7\">\n      <match field=\"role\" equals=\"leaf\"/>\n      <action type=\"rate-limit\" value=\"64kbit/s\"/>\n      <action type=\"notify\">\n        <recipient channel=\"pager\">ops@example.invalid</recipient>\n      </action>\n    </policy>\n  </policies>\n</network>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-23T05:22:53.284820+00:00"
+}

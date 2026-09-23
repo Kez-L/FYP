@@ -1,0 +1,132 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE archive [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY logo SYSTEM "logo.bin" NDATA bin>
+  <!ENTITY greeting "hello &amp; welcome">
+  <!ELEMENT archive (header,entry*,footer)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT entry (title,body,attachment?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (#PCDATA|section|link)*>
+  <!ELEMENT section (#PCDATA|section|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST archive xml:space (default|preserve) "default">
+  <!ATTLIST entry id ID #REQUIRED kind (text|binary) "text">
+  <!ATTLIST link target IDREF #IMPLIED>
+  <!ATTLIST attachment source ENTITY #REQUIRED>
+]>
+<archive xml:space="preserve">
+  <header>&greeting;</header>
+  <entry id="first" kind="text">
+    <title><![CDATA[<encoded> & unusual ]]></title>
+    <body>intro<section>nested<section>deep</section></section><link target="first">self</link></body>
+  </entry>
+  <entry id="second" kind="binary">
+    <title>payload</title>
+    <body>before &lt; after &#x3e;</body>
+    <attachment source="logo"/>
+  </entry>
+  <footer>done</footer>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:request xmlns:r="urn:request:v2" xmlns:m="urn:meta" xmlns="urn:payload">
+  <r:header m:trace="&#x1f;alpha" m:empty="">
+    <?audit level="verbose"?>
+    <!-- comment with -- edge avoided -->
+    <m:token>abc&amp;xyz</m:token>
+  </r:header>
+  <r:payload xmlns="" xmlns:p="urn:payload:item">
+    <item p:type="scalar" xml:lang="fr">
+      <![CDATA[raw ]]> characters &amp; references
+      <value xmlns:q="urn:qualified"><q:part q:id="7"/></value>
+    </item>
+    <item xmlns:p="" p:broken="literal" />
+  </r:payload>
+  <r:tail xmlns:r="urn:request:v2">
+    <?processing data?>
+    <r:status code="204">ok</r:status>
+  </r:tail>
+</r:request>
+```
+
+```xml
+<?xml version="1.0" encoding="Windows-1252"?>
+<!DOCTYPE form [
+  <!ELEMENT form (field|group)+>
+  <!ELEMENT group (field|group)*>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST form version CDATA "1">
+  <!ATTLIST group name NMTOKEN #REQUIRED>
+  <!ATTLIST field name CDATA #REQUIRED type (text|number|date) "text">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quote "&#34;">
+  <!ENTITY percent "&#37;">
+]>
+<form version="2">
+  <field name="title" type="text">Caf&#233; &nbsp; &quote;</field>
+  <group name="details">
+    <field name="count" type="number">00042</field>
+    <group name="dates">
+      <field name="created" type="date">2026-09-23</field>
+    </group>
+  </group>
+  <field name="tail">100&percent;</field>
+</form>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (part,part?)>
+  <!ELEMENT part (data|fault|data)*>
+  <!ELEMENT data (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT fault EMPTY>
+  <!ATTLIST part role (request|response) #REQUIRED>
+  <!ATTLIST fault code CDATA #IMPLIED>
+  <!ENTITY amp "&amp;">
+  <!ENTITY open "<">
+  <!ENTITY % optional "<!ELEMENT ignored EMPTY>">
+  <![IGNORE[
+    <!ELEMENT discarded (never)>
+    <!ATTLIST discarded flag CDATA #IMPLIED>
+  ]]>
+  %optional;
+]>
+<envelope>
+  <part role="request">
+    <data>one<chunk><![CDATA[two ]]> three</chunk>four</data>
+    <data>&amp; &amp; &amp;</data>
+  </part>
+  <part role="response">
+    <fault code="E-&#x0A;17"/>
+    <data>prefix &lt;middle&gt; suffix</data>
+  </part>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node*,edge*)>
+  <!ELEMENT node EMPTY>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST graph mode (directed|undirected) "directed">
+  <!ATTLIST node id ID #REQUIRED label CDATA #IMPLIED tags NMTOKENS #IMPLIED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight NMTOKEN #IMPLIED>
+]>
+<graph mode="undirected">
+  <node id="n0" label="root" tags="entry start"/>
+  <node id="n1" label="left &lt; branch" tags="leaf"/>
+  <node id="n2" label="right" tags="leaf terminal"/>
+  <node id="n3" label="unconnected"/>
+  <edge from="n0" to="n1" weight="01"/>
+  <edge from="n1" to="n2"/>
+  <edge from="n2" to="n0" weight="0x10"/>
+</graph>
+```

@@ -1,0 +1,142 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY % model "
+    <!ELEMENT catalog (entry+)>
+    <!ELEMENT entry (title, price?, note*)>
+    <!ELEMENT title (#PCDATA)>
+    <!ELEMENT price (#PCDATA)>
+    <!ELEMENT note (#PCDATA)>
+    <!ATTLIST entry
+      code ID #REQUIRED
+      status (new|used|archived) 'new'>
+  ">
+  %model;
+  <!ENTITY euro "&#x20AC;">
+]>
+<catalog>
+  <entry code="a17" status="new">
+    <title>Handbook</title>
+    <price>19 &euro; 95</price>
+    <note>sealed</note>
+  </entry>
+  <entry code="b04" status="archived">
+    <title>Archive box</title>
+    <note><![CDATA[marked <fragile> & retained]]></note>
+    <note xml:space="preserve">  trailing spaces  </note>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workspace xmlns="urn:workspace" xmlns:m="urn:meta">
+  <?prepare mode="incremental"?>
+  <!-- mixed namespace scope and empty default namespace -->
+  <m:header m:revision="07" xml:lang="fr">
+    <m:label>Résumé</m:label>
+    <m:author>Élodie</m:author>
+  </m:header>
+  <folder name="inbox">
+    intro
+    <item xmlns="" id="x-1" xml:space="preserve">  A &amp; B  </item>
+    <item xmlns="urn:workspace" priority="high">
+      <title><![CDATA[<draft> & review]]></title>
+      <tags><tag>one</tag><tag>two</tag></tags>
+    </item>
+  </folder>
+  <folder name="empty"><item xmlns="" id="x-2"/></folder>
+</workspace>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!NOTATION png SYSTEM "image/png">
+  <!NOTATION text PUBLIC "-//EXAMPLE//NOTATION Plain Text//EN">
+  <!ENTITY logo SYSTEM "assets/logo.png" NDATA png>
+  <!ELEMENT package (header, asset+, description)>
+  <!ELEMENT header (name, version)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT version (#PCDATA)>
+  <!ELEMENT asset EMPTY>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST asset
+    source ENTITY #REQUIRED
+    format NOTATION #REQUIRED
+    optional ENTITY #IMPLIED>
+]>
+<package>
+  <header><name>bundle</name><version>3.0</version></header>
+  <asset source="logo" format="png"/>
+  <asset source="logo" format="png" optional="logo"/>
+  <description>Use <em>carefully</em><br/>after unpacking.</description>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config [
+  <!ELEMENT config (group*)>
+  <!ELEMENT group (setting|group|comment)*>
+  <!ELEMENT setting (#PCDATA)>
+  <!ELEMENT comment (#PCDATA)>
+  <!ATTLIST group name CDATA #IMPLIED>
+  <!ENTITY % settingAttributes
+    "<!ATTLIST setting
+       scope (global|local) 'local'
+       xml:space (default|preserve) 'default'>">
+  %settingAttributes;
+  <!ENTITY newline "&#xA;">
+  <!ENTITY marker "[configured]">
+]>
+<config>
+  <group name="outer">
+    <setting scope="global">path=/srv/data&newline;</setting>
+    <comment><![CDATA[not parsed: <setting scope="fake"/>]]></comment>
+    <group name="nested">
+      <setting xml:space="preserve">  key = value  </setting>
+      <setting scope="local">&marker;</setting>
+    </group>
+  </group>
+  <group>
+    <setting>unset</setting>
+  </group>
+</config>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node (label?, data*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST node
+    id ID #REQUIRED
+    refs IDREFS #IMPLIED
+    kind (source|sink|relay) "relay">
+  <!ATTLIST edge
+    from IDREF #REQUIRED
+    to IDREF #REQUIRED
+    weight CDATA "1">
+  <!ENTITY unit "kg&#x2F;m&#x00B3;">
+]>
+<graph>
+  <node id="n1" kind="source">
+    <label>Input</label>
+    <data>density: 7 &unit;</data>
+  </node>
+  <node id="n2" refs="n1 n3">
+    <label>Middle &amp; mirror</label>
+    <data><![CDATA[line one
+line two]]></data>
+  </node>
+  <node id="n3" kind="sink"><label>Output</label></node>
+  <edge from="n1" to="n2" weight="0.50"/>
+  <edge from="n2" to="n3"/>
+</graph>
+```

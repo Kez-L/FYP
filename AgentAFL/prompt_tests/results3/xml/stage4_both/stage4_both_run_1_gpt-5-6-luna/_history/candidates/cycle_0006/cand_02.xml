@@ -1,0 +1,35 @@
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (record*)>
+  <!ELEMENT record (name, alias*, detail)>
+  <!ATTLIST record
+    id ID #REQUIRED
+    refs IDREFS #IMPLIED
+    state (active|paused|retired) "active"
+    visible (yes|no) "yes">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT alias (#PCDATA)>
+  <!ELEMENT detail ANY>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target IDREF #REQUIRED>
+  <!ENTITY mark "&#x2605;">
+]>
+<registry>
+  <record id="r1" refs="r2 r3" state="active">
+    <name>&mark; Primary record</name>
+    <alias>first</alias>
+    <detail>
+      <note>Contains <b>unknown</b> content permitted by ANY.</note>
+      <link target="r2"/>
+    </detail>
+  </record>
+  <record id="r2" state="paused" visible="no">
+    <name>Secondary</name>
+    <detail>Plain detail text.</detail>
+  </record>
+  <record id="r3">
+    <name>Terminal</name>
+    <detail><note>Last entry</note></detail>
+  </record>
+</registry>

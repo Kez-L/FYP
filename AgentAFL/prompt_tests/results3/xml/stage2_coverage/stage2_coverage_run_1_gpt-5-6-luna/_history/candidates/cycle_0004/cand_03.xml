@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (system, exchange+)>
+  <!ELEMENT system (#PCDATA|instruction)*>
+  <!ELEMENT instruction (#PCDATA)>
+  <!ELEMENT exchange (request, response, tool-call?)>
+  <!ELEMENT request (#PCDATA|attachment)*>
+  <!ELEMENT response (#PCDATA|warning|result)*>
+  <!ELEMENT warning (#PCDATA)>
+  <!ELEMENT result (#PCDATA)>
+  <!ELEMENT tool-call (argument*)>
+  <!ELEMENT argument (#PCDATA)>
+  <!ATTLIST exchange turn CDATA #REQUIRED status (ok|error|pending) "ok">
+  <!ATTLIST attachment href URI #REQUIRED media CDATA #IMPLIED>
+  <!ATTLIST tool-call name NMTOKEN #REQUIRED>
+  <!ENTITY prompt "Use &quot;careful&quot; parsing &amp; report delimiters.">
+]>
+<conversation xmlns="urn:chat">
+  <system>Initialize. <instruction>&prompt;</instruction></system>
+  <exchange turn="1" status="ok">
+    <request>Parse this expression: <attachment href="data.txt" media="text/plain"/> x &lt; y</request>
+    <response><result><![CDATA[result: <x/> remains literal]]></result></response>
+    <tool-call name="normalize">
+      <argument>trim</argument>
+      <argument><![CDATA[keep ]] ]]> bracket text</argument>
+    </tool-call>
+  </exchange>
+  <exchange turn="2" status="error">
+    <request>unbalanced input &amp; unresolved-looking text</request>
+    <response>
+      <warning>unexpected token at offset 17</warning>
+      <result>recovered</result>
+    </response>
+  </exchange>
+</conversation>

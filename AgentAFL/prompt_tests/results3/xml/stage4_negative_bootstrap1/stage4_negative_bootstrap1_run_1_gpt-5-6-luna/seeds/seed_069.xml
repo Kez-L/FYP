@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE timeline [
+  <!ELEMENT timeline (event|gap|group)*>
+  <!ELEMENT event (label,detail?)>
+  <!ATTLIST event at CDATA #REQUIRED kind CDATA "ordinary">
+  <!ELEMENT gap EMPTY>
+  <!ATTLIST gap from CDATA #REQUIRED to CDATA #REQUIRED reason CDATA #IMPLIED>
+  <!ELEMENT group (event|gap|group)*>
+  <!ATTLIST group name CDATA #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+]>
+<timeline>
+  <event at="00:00:00Z" kind="start">
+    <label>Initialization</label>
+    <detail>Created <link href="#root">root record</link>.</detail>
+  </event>
+  <gap from="00:01:00Z" to="00:01:05Z" reason="clock adjustment"/>
+  <group name="nested">
+    <event at="00:02:03+05:30">
+      <label>Payload</label>
+      <detail><![CDATA[raw: ]]><link href="urn:x:test?x=1&amp;y=2">inspect</link></detail>
+    </event>
+    <group name="empty-group"/>
+  </group>
+  <event at="24:00:00" kind="end">
+    <label>Finished &#x1F680;</label>
+  </event>
+</timeline>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (participants, thread)>
+  <!ELEMENT participants (person+)>
+  <!ELEMENT person EMPTY>
+  <!ATTLIST person id ID #REQUIRED name CDATA #REQUIRED>
+  <!ELEMENT thread (message+)>
+  <!ELEMENT message (from, to*, body, attachment*)>
+  <!ATTLIST message id ID #REQUIRED reply-to IDREF #IMPLIED sent CDATA #REQUIRED>
+  <!ELEMENT from EMPTY>
+  <!ATTLIST from ref IDREF #REQUIRED>
+  <!ELEMENT to EMPTY>
+  <!ATTLIST to ref IDREF #REQUIRED>
+  <!ELEMENT body (#PCDATA|quote|mention|linebreak)*>
+  <!ELEMENT quote (#PCDATA|linebreak)*>
+  <!ELEMENT mention EMPTY>
+  <!ATTLIST mention ref IDREF #REQUIRED>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT attachment (description, data)>
+  <!ATTLIST attachment media CDATA #REQUIRED>
+  <!ELEMENT description (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+]>
+<conversation>
+  <participants>
+    <person id="p1" name="Zoë"/>
+    <person id="p2" name="李明"/>
+    <person id="p3" name="O'Neill"/>
+  </participants>
+  <thread>
+    <message id="m1" sent="2026-09-23T08:00:00+00:00">
+      <from ref="p1"/>
+      <to ref="p2"/>
+      <body>Hello <mention ref="p3"/><linebreak/>Can you review <quote>the draft &amp; its appendix?</quote></body>
+      <attachment media="text/plain">
+        <description>notes.txt</description>
+        <data><![CDATA[line one
+line two
+]]></data>
+      </attachment>
+    </message>
+    <message id="m2" reply-to="m1" sent="2026-09-23T08:14:09Z">
+      <from ref="p2"/>
+      <to ref="p1"/>
+      <to ref="p3"/>
+      <body>已收到 — merci&nbsp;!</body>
+    </message>
+  </thread>
+</conversation>

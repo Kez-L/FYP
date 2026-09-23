@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, records, footer)>
+  <!ELEMENT header (created, creator?)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT creator (#PCDATA)>
+  <!ELEMENT records (record+)>
+  <!ELEMENT record (key, value, metadata?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT metadata (tag*)>
+  <!ELEMENT tag EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST archive version CDATA "2">
+  <!ATTLIST record id ID #REQUIRED state (new|held|closed) "new">
+  <!ATTLIST record ref IDREF #IMPLIED>
+  <!ATTLIST tag name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY marker "&#x2063;section">
+]>
+<archive version="2">
+  <header>
+    <created>2026-09-23T00:00:00Z</created>
+    <creator>seed &amp; generator</creator>
+  </header>
+  <records>
+    <record id="r1" state="held">
+      <key>alpha</key>
+      <value>left<part>&marker;</part>right</value>
+      <metadata>
+        <tag name="empty"/>
+        <tag name="quoted" value="a &quot; b"/>
+      </metadata>
+    </record>
+    <record id="r2" ref="r1" state="closed">
+      <key>beta</key>
+      <value><![CDATA[x<y && z>q]]></value>
+    </record>
+  </records>
+  <footer>done</footer>
+</archive>

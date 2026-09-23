@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:acme:workflow" xmlns:sec="urn:acme:security">
+  <definition name="nightly-maintenance" revision="12">
+    <trigger type="calendar">
+      <schedule zone="UTC">0 3 * * *</schedule>
+      <exclude date="2026-12-25"/>
+    </trigger>
+    <pipeline>
+      <task id="snapshot" role="storage" sec:clearance="internal">
+        <command><![CDATA[/usr/bin/snapshot --all --quiet]]></command>
+        <retry limit="2" delay="PT30S"/>
+      </task>
+      <branch test="artifact-count > 0">
+        <when-true>
+          <task id="publish" role="release">
+            <input from="snapshot"/>
+            <output uri="urn:artifact:latest"/>
+          </task>
+        </when-true>
+        <when-false>
+          <notify channel="ops">No artifacts were produced.</notify>
+        </when-false>
+      </branch>
+      <finally>
+        <audit actor="scheduler" result="recorded"/>
+      </finally>
+    </pipeline>
+  </definition>
+  <credentials sec:mode="delegated">
+    <principal name="maintainer">
+      <permission resource="archive" action="write"/>
+      <permission resource="report" action="read"/>
+    </principal>
+  </credentials>
+</workflow>

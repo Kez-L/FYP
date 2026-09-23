@@ -1,0 +1,23 @@
+{
+  "call": 14,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (section+)>\n  <!ELEMENT section (title, item*)>\n  <!ATTLIST section code ID #REQUIRED>\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT item (label, price, details?)>\n  <!ATTLIST item sku ID #REQUIRED status (active|retired) \"active\">\n  <!ELEMENT label (#PCDATA)>\n  <!ELEMENT price (#PCDATA)>\n  <!ELEMENT details (#PCDATA|note|br)*>\n  <!ELEMENT note (#PCDATA)>\n  <!ELEMENT br EMPTY>\n  <!ENTITY currency \"\u20ac\">\n]>\n<catalog>\n  <section code=\"hardware\">\n    <title>Field Equipment</title>\n    <item sku=\"hx-001\">\n      <label>Thermal probe</label>\n      <price>129 &currency;</price>\n      <details>Weatherproof <note>calibrated in-house</note><br/>range: -40 to 125</details>\n    </item>\n    <item sku=\"hx-002\" status=\"retired\">\n      <label>Signal beacon</label>\n      <price>84 &currency;</price>\n    </item>\n  </section>\n  <section code=\"software\">\n    <title>Utilities</title>\n    <item sku=\"sw-404\">\n      <label>Diagnostics bundle</label>\n      <price>0 &currency;</price>\n      <details><![CDATA[requires <runtime version=\"4\"/>]]></details>\n    </item>\n  </section>\n</catalog>\n\n--- example 2 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE conversation [\n  <!ELEMENT conversation (participants, thread)>\n  <!ELEMENT participants (person+)>\n  <!ELEMENT person EMPTY>\n  <!ATTLIST person id ID #REQUIRED name CDATA #REQUIRED>\n  <!ELEMENT thread (message+)>\n  <!ELEMENT message (from, to*, body, attachment*)>\n  <!ATTLIST message id ID #REQUIRED reply-to IDREF #IMPLIED sent CDATA #REQUIRED>\n  <!ELEMENT from EMPTY>\n  <!ATTLIST from ref IDREF #REQUIRED>\n  <!ELEMENT to EMPTY>\n  <!ATTLIST to ref IDREF #REQUIRED>\n  <!ELEMENT body (#PCDATA|quote|mention|linebreak)*>\n  <!ELEMENT quote (#PCDATA|linebreak)*>\n  <!ELEMENT mention EMPTY>\n  <!ATTLIST mention ref IDREF #REQUIRED>\n  <!ELEMENT linebreak EMPTY>\n  <!ELEMENT attachment (description, data)>\n  <!ATTLIST attachment media CDATA #REQUIRED>\n  <!ELEMENT description (#PCDATA)>\n  <!ELEMENT data (#PCDATA)>\n]>\n<conversation>\n  <participants>\n    <person id=\"p1\" name=\"Zo\u00eb\"/>\n    <person id=\"p2\" name=\"\u674e\u660e\"/>\n    <person id=\"p3\" name=\"O'Neill\"/>\n  </participants>\n  <thread>\n    <message id=\"m1\" sent=\"2026-09-23T08:00:00+00:00\">\n      <from ref=\"p1\"/>\n      <to ref=\"p2\"/>\n      <body>Hello <mention ref=\"p3\"/><linebreak/>Can you review <quote>the draft &amp; its appendix?</quote></body>\n      <attachment media=\"text/plain\">\n        <description>notes.txt</description>\n        <data><![CDATA[line one\nline two\n]]></data>\n      </attachment>\n    </message>\n    <message id=\"m2\" reply-to=\"m1\" sent=\"2026-09-23T08:14:09Z\">\n      <from ref=\"p2\"/>\n      <to ref=\"p1\"/>\n      <to ref=\"p3\"/>\n      <body>\u5df2\u6536\u5230 \u2014 merci&nbsp;!</body>\n    </message>\n  </thread>\n</conversation>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-23T05:23:43.170102+00:00"
+}

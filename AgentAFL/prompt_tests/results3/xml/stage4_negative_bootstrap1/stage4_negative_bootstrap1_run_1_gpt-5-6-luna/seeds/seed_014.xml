@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:automation:flow" xmlns:r="urn:automation:run">
+  <trigger type="schedule">
+    <cron timezone="UTC">0 5 * * 1-5</cron>
+    <condition operator="all">
+      <equals path="/env" value="staging"/>
+      <not>
+        <equals path="/freeze" value="true"/>
+      </not>
+    </condition>
+  </trigger>
+  <steps>
+    <step id="fetch" retry="3" timeout="PT2M">
+      <r:request method="GET" url="https://example.invalid/input">
+        <r:header name="Accept">application/xml</r:header>
+        <r:header name="X-Trace">flow-17</r:header>
+      </r:request>
+      <on-error>
+        <emit severity="warning">input unavailable</emit>
+      </on-error>
+    </step>
+    <parallel limit="2">
+      <branch name="alpha">
+        <invoke service="indexer">
+          <argument name="mode">fast</argument>
+          <argument name="batch">32</argument>
+        </invoke>
+      </branch>
+      <branch name="beta">
+        <invoke service="archiver">
+          <argument name="compression">zstd</argument>
+        </invoke>
+      </branch>
+    </parallel>
+    <step id="publish">
+      <choose>
+        <when test="count(/items) &gt; 0">
+          <emit severity="info">published</emit>
+        </when>
+        <otherwise>
+          <emit severity="debug">nothing to publish</emit>
+        </otherwise>
+      </choose>
+    </step>
+  </steps>
+</workflow>

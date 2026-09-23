@@ -1,0 +1,149 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ATTLIST archive created CDATA #IMPLIED>
+  <!ELEMENT record (key, payload, checksum?)>
+  <!ATTLIST record id ID #REQUIRED state (new|sealed|void) "new">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+  <!ENTITY sample "&left;synthetic&right;">
+]>
+<archive created="2026-09-23">
+  <record id="r001" state="sealed">
+    <key>alpha</key>
+    <payload><![CDATA[raw text with <tags>, ]]> and ]]> markers]]></payload>
+    <checksum>9f2a</checksum>
+  </record>
+  <record id="r002">
+    <key>beta</key>
+    <payload>Entity expansion: &sample;</payload>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<envelope xmlns="urn:example:envelope"
+          xmlns:sec="urn:example:security"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:type="SignedEnvelope">
+  <header>
+    <transaction id="tx-2048" priority="high"/>
+    <sec:credentials>
+      <sec:principal>service-reader</sec:principal>
+      <sec:roles>
+        <sec:role>observer</sec:role>
+        <sec:role>auditor</sec:role>
+      </sec:roles>
+    </sec:credentials>
+  </header>
+  <body>
+    <request method="query">
+      <path>/objects/alpha</path>
+      <parameters>
+        <parameter name="limit">25</parameter>
+        <parameter name="cursor"/>
+      </parameters>
+    </request>
+    <response status="202">
+      <message xml:lang="en">Accepted</message>
+    </response>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (section*)>
+  <!ELEMENT section (property*)>
+  <!ATTLIST section name CDATA #REQUIRED enabled (true|false) "true">
+  <!ELEMENT property (value|list)>
+  <!ATTLIST property key CDATA #REQUIRED type (string|integer|boolean|path) "string">
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT list (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY local "localhost">
+  <!ENTITY port "8080">
+]>
+<configuration>
+  <section name="network">
+    <property key="host" type="string"><value>&local;</value></property>
+    <property key="port" type="integer"><value>&port;</value></property>
+    <property key="trusted" type="boolean"><value>true</value></property>
+  </section>
+  <section name="paths" enabled="false">
+    <property key="roots" type="path">
+      <list>
+        <item>/var/lib/app</item>
+        <item>/tmp/cache</item>
+        <item>.</item>
+      </list>
+    </property>
+  </section>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"
+      xmlns:media="http://search.yahoo.com/mrss/"
+      xml:lang="en">
+  <title>Engineering Notes</title>
+  <subtitle type="html">Short observations &amp; experiments</subtitle>
+  <updated>2026-09-23T18:42:11Z</updated>
+  <id>urn:uuid:7b6f5c2a-8e5d-4b31-9a0d-111111111111</id>
+  <link rel="self" type="application/atom+xml" href="https://example.invalid/feed"/>
+  <entry>
+    <title type="text">Boundary cases</title>
+    <id>tag:example.invalid,2026:boundary-1</id>
+    <published>2026-09-22T10:00:00Z</published>
+    <author><name>Example Writer</name></author>
+    <category term="testing" label="Parser testing"/>
+    <content type="xhtml">
+      <div xmlns="http://www.w3.org/1999/xhtml">
+        <p>Mixed <strong>content</strong> with <code>markup</code>.</p>
+        <ul><li>one</li><li>two</li></ul>
+      </div>
+    </content>
+    <media:thumbnail url="https://example.invalid/image.png" width="64" height="64"/>
+  </entry>
+</feed>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (warehouse+)>
+  <!ELEMENT warehouse (aisle+)>
+  <!ATTLIST warehouse code ID #REQUIRED>
+  <!ELEMENT aisle (bin+)>
+  <!ATTLIST aisle number CDATA #REQUIRED>
+  <!ELEMENT bin (item*)>
+  <!ATTLIST bin label CDATA #REQUIRED capacity CDATA #IMPLIED>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item sku ID #REQUIRED quantity NMTOKEN #REQUIRED fragile (yes|no) "no">
+]>
+<inventory>
+  <warehouse code="north">
+    <aisle number="A-01">
+      <bin label="top" capacity="12">
+        <item sku="sku-100" quantity="3" fragile="yes"/>
+        <item sku="sku-101" quantity="0"/>
+      </bin>
+      <bin label="bottom">
+        <item sku="sku-102" quantity="27"/>
+      </bin>
+    </aisle>
+  </warehouse>
+  <warehouse code="south">
+    <aisle number="B-09">
+      <bin label="overflow"/>
+    </aisle>
+  </warehouse>
+</inventory>
+```

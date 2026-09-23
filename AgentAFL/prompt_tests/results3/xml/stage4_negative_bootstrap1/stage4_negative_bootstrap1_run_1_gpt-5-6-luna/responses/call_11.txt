@@ -1,0 +1,146 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title,summary,metadata)>
+  <!ATTLIST entry id ID #REQUIRED status (draft|published|archived) "draft">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|mark|code)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT metadata (author,related*)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT related EMPTY>
+  <!ATTLIST related ref IDREF #REQUIRED>
+]>
+<catalog>
+  <entry id="e-001" status="published">
+    <title>Entity-aware records</title>
+    <summary>Text with <mark>highlighted</mark> and <code>inline code</code>.</summary>
+    <metadata>
+      <author>R. Example</author>
+    </metadata>
+  </entry>
+  <entry id="e-002">
+    <title>Cross references</title>
+    <summary>Draft material with a <mark>pending</mark> annotation.</summary>
+    <metadata>
+      <author>J. Sample</author>
+      <related ref="e-001"/>
+    </metadata>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest xml:lang="fr" xml:base="https://example.invalid/archive/">
+  <!-- A manifest containing several namespace scopes -->
+  <package xmlns="urn:example:package" id="pkg-42">
+    <meta>
+      <title xml:lang="en">A multilingual package</title>
+      <creator xmlns:dc="http://purl.org/dc/elements/1.1/" dc:type="person">
+        <dc:name>Élodie Martin</dc:name>
+      </creator>
+    </meta>
+    <resources>
+      <resource href="docs/intro.xml" media-type="application/xml">
+        <alternate xmlns:html="http://www.w3.org/1999/xhtml">
+          <html:body><html:p>Résumé <html:strong>court</html:strong>.</html:p></html:body>
+        </alternate>
+      </resource>
+      <resource href="data.bin" media-type="application/octet-stream" length="0"/>
+    </resources>
+    <?build mode="reproducible" timestamp="2026-09-23T00:00:00Z"?>
+  </package>
+</manifest>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE report [
+  <!ENTITY product "delta &amp; epsilon">
+  <!ENTITY note "Generated for parser testing">
+]>
+<report>
+  <header>
+    <name>&product;</name>
+    <version>1&#x2E;0</version>
+    <description><![CDATA[Literal markup: <tag attr="value">not parsed</tag>]]></description>
+  </header>
+  <sections>
+    <section number="1">
+      <heading>Overview</heading>
+      <body>Alpha &lt; beta; &note;.</body>
+    </section>
+    <section number="2">
+      <heading>Observations</heading>
+      <body>
+        <list>
+          <item key="a">First</item>
+          <item key="b"><![CDATA[Second & third]]></item>
+          <item key="c">Last</item>
+        </list>
+      </body>
+    </section>
+  </sections>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<scene xmlns="urn:example:scene" xmlns:g="urn:example:geometry" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <g:point id="origin" x="0" y="0"/>
+    <g:style name="outlined">
+      <g:stroke color="#223344" width="1.25"/>
+      <g:fill color="none"/>
+    </g:style>
+  </defs>
+  <layer id="background" visible="false"/>
+  <layer id="foreground" visible="true">
+    <group transform="translate(12.5,-3.75) rotate(45)">
+      <path d="M0,0 C10,20 30,-5 40,0 Z" style="outlined">
+        <metadata><![CDATA[Path with commas, spaces, and a literal ]]> marker]]></metadata>
+      </path>
+      <use xlink:href="#origin" opacity="0.5"/>
+    </group>
+    <text x="4" y="18" xml:space="preserve">  spaced <tspan emphasis="strong">label</tspan>  </text>
+  </layer>
+</scene>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow" xmlns:ext="urn:example:extension">
+  <state id="start" terminal="false">
+    <transition event="open" target="ready">
+      <guard language="expr">count(items) &gt; 0</guard>
+      <action name="initialize">
+        <parameter key="mode" value="safe"/>
+        <parameter key="retry" value="2"/>
+      </action>
+    </transition>
+  </state>
+  <state id="ready" terminal="false">
+    <transition event="process" target="done">
+      <parallel>
+        <branch name="primary">
+          <task id="scan" timeout="PT0S"/>
+          <task id="validate" timeout="PT1.500S"/>
+        </branch>
+        <branch name="audit">
+          <ext:checkpoint severity="notice">
+            <ext:message>Audit trail enabled</ext:message>
+          </ext:checkpoint>
+        </branch>
+      </parallel>
+    </transition>
+  </state>
+  <state id="done" terminal="true">
+    <on-enter>
+      <log><![CDATA[workflow completed: <ok/>]]></log>
+    </on-enter>
+  </state>
+</workflow>
+```

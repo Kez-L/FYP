@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config [
+  <!ELEMENT config (group*)>
+  <!ELEMENT group (setting|group|comment)*>
+  <!ELEMENT setting (#PCDATA)>
+  <!ELEMENT comment (#PCDATA)>
+  <!ATTLIST group name CDATA #IMPLIED>
+  <!ENTITY % settingAttributes
+    "<!ATTLIST setting
+       scope (global|local) 'local'
+       xml:space (default|preserve) 'default'>">
+  %settingAttributes;
+  <!ENTITY newline "&#xA;">
+  <!ENTITY marker "[configured]">
+]>
+<config>
+  <group name="outer">
+    <setting scope="global">path=/srv/data&newline;</setting>
+    <comment><![CDATA[not parsed: <setting scope="fake"/>]]></comment>
+    <group name="nested">
+      <setting xml:space="preserve">  key = value  </setting>
+      <setting scope="local">&marker;</setting>
+    </group>
+  </group>
+  <group>
+    <setting>unset</setting>
+  </group>
+</config>

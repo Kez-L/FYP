@@ -1,0 +1,111 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+, note?)>
+  <!ELEMENT section (title, entry*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ATTLIST entry ref IDREF #IMPLIED>
+  <!ENTITY mark "&#x2603;">
+  <!ENTITY phrase "catalog &amp; index">
+]>
+<catalog>
+  <section code="s1">
+    <title>Symbols &amp; &mark;</title>
+    <entry ref="s1">First <em>annotated</em> item<br/>continues.</entry>
+    <entry>Second <![CDATA[raw <markup> and ]]> delimiters]]>.</entry>
+  </section>
+  <note>Use &phrase; when searching.</note>
+</catalog>
+```
+
+```xml
+<world xmlns="urn:outer" xmlns:m="urn:middle" xml:lang="fr">
+  <region xml:id="r-é" xml:base="https://example.invalid/a/">
+    <m:name>Monde</m:name>
+    <m:boundary kind="closed">
+      <point lat="0" lon="0"/>
+      <point lat="48.8566" lon="2.3522"/>
+      <point lat="-33.8688" lon="151.2093"/>
+    </m:boundary>
+    <island xmlns="urn:islands" xml:lang="ja">
+      <label>島</label>
+      <description>été — 東京 — café</description>
+    </island>
+    <metadata xmlns="">
+      <owner>archive</owner>
+      <checksum algorithm="none"/>
+    </metadata>
+  </region>
+</world>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<packet>
+  <?route via="edge"?>
+  <!-- comment containing -- unusual but legal? -->
+  <header size="00000000000000000007" empty="">
+    <key><![CDATA[alpha&beta]]></key>
+    <value>&#0;</value>
+  </header>
+  <body>
+    text
+    <![CDATA[
+      ]]> is represented by split sections:
+    ]]><![CDATA[<inside-cdata/>]]>
+    <fragment a="&quot;" b="&#x1F642;">&lt;escaped&gt;</fragment>
+  </body>
+  <tail><![CDATA[]]></tail>
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ENTITY % common "<!ELEMENT record (name,tag*)>">
+  %common;
+  <!ELEMENT archive (record+)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST record ident ID #REQUIRED state (new|old|hold) "new">
+  <!ATTLIST tag target IDREF #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data:application/octet-stream;base64,AAEC" NDATA bin>
+  <!ENTITY greeting "hello &amp; archive">
+]>
+<archive>
+  <record ident="r0" state="new">
+    <name>&greeting;</name>
+    <tag target="r0">self</tag>
+  </record>
+  <record ident="r1" state="hold">
+    <name>second</name>
+    <tag target="r0">linked</tag>
+    <tag>unlinked</tag>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns:x="urn:x" xmlns:y="urn:y">
+  <x:branch id="a">
+    <x:leaf/>
+    <y:leaf role="alt">
+      <y:text>one</y:text>
+      <y:text>two</y:text>
+    </y:leaf>
+  </x:branch>
+  <switch xmlns:x="">
+    <item>plain</item>
+    <item><![CDATA[<x:branch xmlns:x="urn:shadow"/>]]></item>
+  </switch>
+  <?checkpoint?>
+  <empty xmlns:y="" x:flag="kept"/>
+</root>
+```

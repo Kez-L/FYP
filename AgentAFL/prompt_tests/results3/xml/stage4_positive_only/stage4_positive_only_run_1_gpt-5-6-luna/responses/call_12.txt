@@ -1,0 +1,206 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, entry*)>
+  <!ELEMENT header (name, owner, created)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT owner EMPTY>
+  <!ATTLIST owner uid CDATA #REQUIRED>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT entry (key, payload, checksum?)>
+  <!ATTLIST entry kind (text|binary|empty) "text">
+  <!ATTLIST entry key ID #REQUIRED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk|ref)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk offset NMTOKEN #IMPLIED>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY copyright "© 2026 Example Archive">
+]>
+<archive>
+  <header>
+    <name>incremental-store</name>
+    <owner uid="u-17"/>
+    <created>2026-09-23</created>
+  </header>
+  <entry key="item-a" kind="text">
+    <key>alpha</key>
+    <payload>prefix<chunk offset="0">one</chunk><chunk offset="3">two</chunk>&copyright;<ref target="item-b"/></payload>
+    <checksum>sha256:9f86d081884c7d65</checksum>
+  </entry>
+  <entry key="item-b" kind="empty">
+    <key>beta</key>
+    <payload><![CDATA[]]></payload>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<render-job xmlns="urn:render" xmlns:x="urn:render:extension">
+  <settings>
+    <viewport width="1280" height="720" density="2.0"/>
+    <background color="#101820" alpha="0.95"/>
+    <clip x="-4.5" y="2.25" width="640" height="360"/>
+  </settings>
+  <scene id="main">
+    <layer opacity="0.75" blend="screen">
+      <transform matrix="1 0 0 1 12.5 -8.75"/>
+      <group name="labels">
+        <text x="10" y="20" rotate="0">A &amp; B</text>
+        <text x="10" y="48" rotate="-12"><![CDATA[<not-an-element>]]></text>
+      </group>
+      <x:filter type="gaussian" radius="3.5">
+        <x:parameter name="edgeMode">duplicate</x:parameter>
+      </x:filter>
+    </layer>
+    <layer opacity="1" blend="normal">
+      <path fill="none" stroke="#ffcc00" d="M0,0 C10,20 30,-5 44,18 Z"/>
+      <image href="data:image/svg+xml;base64,PHN2Zy8+" preserve="true"/>
+    </layer>
+  </scene>
+  <?render profile="preview"?>
+</render-job>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (participants, thread)>
+  <!ELEMENT participants (person+)>
+  <!ELEMENT person EMPTY>
+  <!ATTLIST person id ID #REQUIRED name CDATA #REQUIRED>
+  <!ELEMENT thread (message+)>
+  <!ELEMENT message (from, to*, body, attachment*)>
+  <!ATTLIST message id ID #REQUIRED reply-to IDREF #IMPLIED sent CDATA #REQUIRED>
+  <!ELEMENT from EMPTY>
+  <!ATTLIST from ref IDREF #REQUIRED>
+  <!ELEMENT to EMPTY>
+  <!ATTLIST to ref IDREF #REQUIRED>
+  <!ELEMENT body (#PCDATA|quote|mention|linebreak)*>
+  <!ELEMENT quote (#PCDATA|linebreak)*>
+  <!ELEMENT mention EMPTY>
+  <!ATTLIST mention ref IDREF #REQUIRED>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT attachment (description, data)>
+  <!ATTLIST attachment media CDATA #REQUIRED>
+  <!ELEMENT description (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+]>
+<conversation>
+  <participants>
+    <person id="p1" name="Zoë"/>
+    <person id="p2" name="李明"/>
+    <person id="p3" name="O'Neill"/>
+  </participants>
+  <thread>
+    <message id="m1" sent="2026-09-23T08:00:00+00:00">
+      <from ref="p1"/>
+      <to ref="p2"/>
+      <body>Hello <mention ref="p3"/><linebreak/>Can you review <quote>the draft &amp; its appendix?</quote></body>
+      <attachment media="text/plain">
+        <description>notes.txt</description>
+        <data><![CDATA[line one
+line two
+]]></data>
+      </attachment>
+    </message>
+    <message id="m2" reply-to="m1" sent="2026-09-23T08:14:09Z">
+      <from ref="p2"/>
+      <to ref="p1"/>
+      <to ref="p3"/>
+      <body>已收到 — merci&nbsp;!</body>
+    </message>
+  </thread>
+</conversation>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest xmlns="urn:pkg:manifest" xmlns:s="urn:pkg:signature">
+  <package name="delta.bundle" version="4.0.0-beta+17">
+    <requires>
+      <runtime name="vm" min="2.8" max="&lt;3.0"/>
+      <capability>filesystem.read</capability>
+      <capability optional="true">network.dns</capability>
+    </requires>
+    <files>
+      <file path="bin/launch" mode="0755" size="1482" digest="sha256:abc123"/>
+      <file path="share/config/default.xml" mode="0644" size="311" digest="sha256:def456"/>
+      <directory path="var/cache"/>
+      <symlink path="current" target="../releases/4.0.0"/>
+    </files>
+    <hooks>
+      <hook phase="install" command="/bin/sh">
+        <environment>
+          <variable name="LANG">C.UTF-8</variable>
+          <variable name="EMPTY"/>
+        </environment>
+        <script><![CDATA[
+          echo "installing"
+          test -n "$PACKAGE_NAME"
+        ]]></script>
+      </hook>
+      <hook phase="remove" command="/bin/sh" once="false">
+        <script>rm -f -- "$PREFIX/current"</script>
+      </hook>
+    </hooks>
+    <signature algorithm="ed25519">
+      <s:key-id>release-2026-a</s:key-id>
+      <s:value encoding="base64">AAECAwQFBgcICQ==</s:value>
+    </signature>
+  </package>
+</manifest>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form [
+  <!ELEMENT form (section+)>
+  <!ATTLIST form id ID #REQUIRED locale CDATA "en">
+  <!ELEMENT section (label, control*)>
+  <!ATTLIST section collapsed (true|false) "false">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT control (caption?, option*, validation?)>
+  <!ATTLIST control name ID #REQUIRED type (text|select|toggle|range) #REQUIRED>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT option (#PCDATA)>
+  <!ATTLIST option value CDATA #REQUIRED selected (yes|no) "no">
+  <!ELEMENT validation (rule+)>
+  <!ELEMENT rule EMPTY>
+  <!ATTLIST rule test CDATA #REQUIRED message CDATA #IMPLIED>
+]>
+<form id="preferences" locale="fr-FR">
+  <section collapsed="false">
+    <label>Compte</label>
+    <control name="display-name" type="text">
+      <caption>Nom affiché</caption>
+      <validation>
+        <rule test="length &gt;= 2" message="Trop court"/>
+        <rule test="not contains(@value, '&quot;')"/>
+      </validation>
+    </control>
+    <control name="theme" type="select">
+      <caption>Thème</caption>
+      <option value="system">Système</option>
+      <option value="dark" selected="yes">Sombre</option>
+      <option value="light">Clair</option>
+    </control>
+  </section>
+  <section collapsed="true">
+    <label>Notifications</label>
+    <control name="digest" type="toggle">
+      <caption>Résumé hebdomadaire</caption>
+    </control>
+    <control name="volume" type="range">
+      <caption>Volume: 0–100%</caption>
+      <validation>
+        <rule test="@value &gt;= 0"/>
+        <rule test="@value &lt;= 100"/>
+      </validation>
+    </control>
+  </section>
+</form>
+```

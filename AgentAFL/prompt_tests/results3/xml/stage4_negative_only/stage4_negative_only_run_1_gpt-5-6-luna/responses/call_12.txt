@@ -1,0 +1,125 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+)>
+  <!ELEMENT entry (title, description, value)>
+  <!ATTLIST entry id ID #REQUIRED category (alpha|beta|gamma) "alpha">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ENTITY product "A &amp; B">
+  <!ENTITY stamp "2026-09-23T12:34:56Z">
+]>
+<archive>
+  <entry id="e1" category="beta">
+    <title>&product;</title>
+    <description>Primary <emphasis>calibration</emphasis> record.</description>
+    <value>&stamp;</value>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<scene xmlns="urn:example:scene" xmlns:geo="urn:example:geo" xml:space="preserve">
+  Introductory text
+  <layer name="foreground">
+    <geo:point geo:lat="51.5074" geo:lon="-0.1278">
+      <geo:label>Central &amp; West</geo:label>
+    </geo:point>
+    <object xml:id="obj-α" visibility="hidden">
+      <name>  spaced object  </name>
+      <property key="empty"></property>
+      <property key="quote">He said &quot;hello&quot;.</property>
+    </object>
+  </layer>
+  <layer xmlns="" name="unqualified">
+    <node><![CDATA[raw ]]> text <![CDATA[<node>]]></node>
+  </layer>
+</scene>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:example:config"
+              xmlns:x="urn:example:extension"
+              xmlns:xi="http://www.w3.org/2001/XInclude">
+  <?profile name="edge-case" enabled="yes"?>
+  <!-- Configuration with alternate representations -->
+  <module id="core">
+    <setting name="threshold" type="integer">00042</setting>
+    <setting name="enabled" type="boolean">false</setting>
+    <setting name="pattern" type="regex"><![CDATA[(a|b)+\s*\d{2,4}]]></setting>
+  </module>
+  <x:module x:id="plugin-1">
+    <x:dependency optional="true" version=">=1.0 &lt;2.0"/>
+  </x:module>
+  <xi:include href="missing-fragment.xml" parse="xml">
+    <xi:fallback>
+      <fallback reason="unavailable">Use defaults</fallback>
+    </xi:fallback>
+  </xi:include>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<network>
+  <device id="router-01">
+    <interface name="eth0">
+      <address family="ipv4">192.0.2.1</address>
+      <address family="ipv6">2001:db8::1</address>
+      <routes>
+        <route destination="0.0.0.0/0" gateway="192.0.2.254"/>
+        <route destination="2001:db8:1::/64">
+          <gateway>2001:db8::fe</gateway>
+          <metric>10</metric>
+        </route>
+      </routes>
+    </interface>
+    <interface name="lo" state="up">
+      <address family="ipv4">127.0.0.1</address>
+    </interface>
+  </device>
+  <device id="sensor-β" state="maintenance">
+    <interface name="radio">
+      <capabilities>
+        <capability>low-power</capability>
+        <capability>mesh</capability>
+      </capabilities>
+    </interface>
+  </device>
+</network>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE report [
+  <!ELEMENT report (metadata, section*)>
+  <!ELEMENT metadata (created, author?)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT section (heading, paragraph+)>
+  <!ATTLIST section level NMTOKEN #IMPLIED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|code|break)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT break EMPTY>
+]>
+<report>
+  <metadata>
+    <created>2026-09-23</created>
+    <author>Δelta &amp; Co.</author>
+  </metadata>
+  <section level="1">
+    <heading>Input boundaries</heading>
+    <paragraph>Text before<code>NULL&#x0A;TAB&#x09;</code>text after<break/></paragraph>
+    <paragraph>Symbols: &#x20AC; &#x1F680; &#169; and escaped &lt;markup&gt;.</paragraph>
+  </section>
+  <section level="2">
+    <heading>Final notes</heading>
+    <paragraph><![CDATA[This section contains ]]> characters in a CDATA boundary.</paragraph>
+  </section>
+</report>
+```

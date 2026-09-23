@@ -1,0 +1,163 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common "sku ID #REQUIRED category CDATA #IMPLIED">
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (item+, note?)>
+  <!ATTLIST section name NMTOKEN #REQUIRED>
+  <!ELEMENT item (title, price, metadata*)>
+  <!ATTLIST item %common;>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST metadata key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT note (#PCDATA|em|strong)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT strong (#PCDATA)>
+]>
+<catalog>
+  <section name="hardware">
+    <item sku="A-17" category="tools">
+      <title>Threaded spindle</title>
+      <price>19.95</price>
+      <metadata key="unit" value="metric"/>
+      <metadata key="origin"/>
+    </item>
+    <note>Limited <em>seasonal</em> stock and <strong>special</strong> handling.</note>
+  </section>
+  <section name="misc">
+    <item sku="B-04">
+      <title>Glass &amp; wire</title>
+      <price>0.004</price>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, records, footer)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST field key CDATA #REQUIRED>
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (value, value?, flag*)>
+  <!ATTLIST record ident ID #REQUIRED ref IDREF #IMPLIED>
+  <!ELEMENT value (#PCDATA|br)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST flag type (hot|cold|unknown) "unknown">
+  <!ELEMENT footer (#PCDATA)>
+]>
+<report>
+  <header>
+    <field key="generated">2026-09-23T00:00:00Z</field>
+    <field key="source"><![CDATA[alpha < beta && gamma]]></field>
+  </header>
+  <records>
+    <record ident="r1">
+      <value>left<br/>right</value>
+      <flag type="hot"/>
+    </record>
+    <record ident="r2" ref="r1">
+      <value><![CDATA[]]></value>
+      <value>secondary &#x1F; segment</value>
+      <flag/>
+    </record>
+  </records>
+  <footer>2 records</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ENTITY % switches "<!ELEMENT map (node|alias)*>">
+  %switches;
+  <!ELEMENT node (node|label|data)*>
+  <!ATTLIST node xmlns CDATA #IMPLIED name CDATA #REQUIRED>
+  <!ELEMENT alias EMPTY>
+  <!ATTLIST alias target IDREF #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+  <!ENTITY left "L">
+  <!ENTITY right "R">
+]>
+<map xmlns="urn:example:map" xmlns:x="urn:example:extra">
+  <node name="root" id="base">
+    <label>&left;&right;</label>
+    <node name="branch">
+      <label>nested</label>
+      <data x:kind="bytes">00 7F FF</data>
+      <alias target="base"/>
+    </node>
+    <node name="empty"/>
+  </node>
+</map>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE exchange [
+  <!ELEMENT exchange (packet+)>
+  <!ELEMENT packet (source, destination, payload)>
+  <!ATTLIST packet sequence NMTOKEN #REQUIRED>
+  <!ELEMENT source EMPTY>
+  <!ATTLIST source code CDATA #REQUIRED>
+  <!ELEMENT destination EMPTY>
+  <!ATTLIST destination code CDATA #REQUIRED>
+  <!ELEMENT payload (#PCDATA|line|binary)*>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT binary (#PCDATA)>
+]>
+<exchange>
+  <packet sequence="0001">
+    <source code="α-1"/>
+    <destination code="ω-9"/>
+    <payload>
+      start
+      <line>first&#x85;line</line>
+      <line>second&#x2028;line</line>
+      <binary><![CDATA[AA/BB==]]></binary>
+      end
+    </payload>
+  </packet>
+  <packet sequence="0002">
+    <source code="north"/>
+    <destination code="south"/>
+    <payload>&#x9;&#xA;&#xD;boundary</payload>
+  </packet>
+</exchange>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!NOTATION png SYSTEM "image/png">
+  <!NOTATION text SYSTEM "text/plain">
+  <!ENTITY icon SYSTEM "missing-image.png" NDATA png>
+  <!ELEMENT scene (layer*)>
+  <!ELEMENT layer (shape|use|comment)*>
+  <!ATTLIST layer z CDATA "0">
+  <!ELEMENT shape EMPTY>
+  <!ATTLIST shape kind (line|circle|polygon) #REQUIRED points CDATA #IMPLIED>
+  <!ELEMENT use EMPTY>
+  <!ATTLIST use href URI #REQUIRED>
+  <!ELEMENT comment (#PCDATA)>
+  <!ATTLIST comment author CDATA #IMPLIED>
+]>
+<scene>
+  <layer z="10">
+    <shape kind="line" points="0,0 10,10"/>
+    <shape kind="polygon" points="0,0;5,8;9,1"/>
+    <use href="#shape-unknown"/>
+    <comment author="&quot;renderer&quot;">unresolved reference &amp; fallback</comment>
+  </layer>
+  <layer>
+    <comment><![CDATA[
+      text containing ]]> is intentionally split ]]></comment>
+    <shape kind="circle" points="4,4;2"/>
+  </layer>
+</scene>
+```

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (message+)>
+  <!ELEMENT message (sender, recipients, content, attachment*)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipients (recipient+)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT content (#PCDATA|strong|link|br)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST conversation topic CDATA #IMPLIED>
+  <!ATTLIST message timestamp CDATA #REQUIRED direction (in|out) #REQUIRED>
+  <!ATTLIST link href URI #REQUIRED>
+  <!ATTLIST attachment filename CDATA #REQUIRED size NMTOKEN #IMPLIED>
+]>
+<conversation topic="release &amp; review">
+  <message timestamp="2026-09-23T09:15:00Z" direction="out">
+    <sender>build-bot</sender>
+    <recipients>
+      <recipient>team@example.test</recipient>
+      <recipient>qa@example.test</recipient>
+    </recipients>
+    <content>Please review the <strong>candidate</strong> build.<br/>See <link href="https://example.test/report?id=7">the report</link>.</content>
+    <attachment filename="report.xml" size="4096"/>
+  </message>
+  <message timestamp="2026-09-23T09:22:11Z" direction="in">
+    <sender>qa@example.test</sender>
+    <recipients>
+      <recipient>build-bot</recipient>
+    </recipients>
+    <content><![CDATA[Looks good; retain the literal <tag> sample.]]></content>
+  </message>
+</conversation>

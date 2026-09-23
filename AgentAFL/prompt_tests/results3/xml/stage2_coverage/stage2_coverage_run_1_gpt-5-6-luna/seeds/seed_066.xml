@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (preamble?, payload, signature?)>
+  <!ELEMENT preamble (#PCDATA)>
+  <!ELEMENT payload (chunk|alias|empty-chunk)+>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT alias EMPTY>
+  <!ELEMENT empty-chunk EMPTY>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST envelope xmlns:soap CDATA #FIXED "urn:soap:test"
+                    soap:version (one|two) "two">
+  <!ATTLIST chunk xmlns CDATA #IMPLIED index NMTOKEN #REQUIRED>
+  <!ATTLIST alias soap:ref IDREF #REQUIRED>
+  <!ENTITY x "X">
+  <!ENTITY y "&x;&x;&x;">
+  <!ENTITY z "&#x3C;escaped&#x3E;">
+]>
+<envelope xmlns:soap="urn:soap:test" soap:version="two">
+  <preamble>start</preamble>
+  <payload xmlns="urn:payload">
+    <chunk index="01">A&y;B</chunk>
+    <alias soap:ref="c-2"/>
+    <chunk index="02" id="c-2">C&z;D</chunk>
+    <empty-chunk/>
+  </payload>
+  <signature xmlns="">sha256: &amp;unknown-looking;</signature>
+</envelope>

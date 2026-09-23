@@ -1,0 +1,133 @@
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section code ID #REQUIRED xml:lang NMTOKEN "en">
+  <!ELEMENT title (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT item (name, price?, note?)>
+  <!ATTLIST item ref IDREF #IMPLIED status (new|used|archived) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emph|link)*>
+  <!ATTLIST note target IDREF #IMPLIED>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link href CDATA #REQUIRED>
+]>
+<catalog>
+  <section code="s-one" xml:lang="fr">
+    <title>Résumé <emph>été</emph></title>
+    <item ref="s-one">
+      <name><![CDATA[alpha < beta && gamma]]></name>
+      <price>12.50</price>
+      <note target="s-one">Voir <link href="urn:x:y?z=1&amp;q=2"/> maintenant.</note>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ENTITY open "<part kind='open'>">
+  <!ENTITY close "</part>">
+  <!ENTITY amp "&#38;">
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header generated CDATA "yes" xml:space (default|preserve) "default">
+  <!ELEMENT payload (part+)>
+  <!ELEMENT part (#PCDATA|part|raw)*>
+  <!ATTLIST part kind CDATA #IMPLIED>
+  <!ENTITY % extra "<!ATTLIST part mark CDATA #IMPLIED>">
+  %extra;
+]>
+<envelope>
+  <header generated="&amp;ready;"/>
+  <payload>
+    &open;outer &amp; inner &amp; close;&close;
+    <part kind="nested" mark="x"><![CDATA[<not-an-element/>]]><part>leaf</part></part>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE r:root [
+  <!ELEMENT r:root (r:entry*, x:entry?)>
+  <!ATTLIST r:root xmlns:r CDATA #FIXED "urn:root" xmlns:x CDATA #FIXED "urn:extra">
+  <!ELEMENT r:entry (r:key, r:value)>
+  <!ATTLIST r:entry xmlns:r CDATA #IMPLIED>
+  <!ELEMENT r:key (#PCDATA)>
+  <!ELEMENT r:value (#PCDATA|x:mark)*>
+  <!ELEMENT x:entry EMPTY>
+  <!ATTLIST x:entry xmlns:x CDATA #IMPLIED code CDATA #REQUIRED>
+  <!ELEMENT x:mark (#PCDATA)>
+]>
+<r:root xmlns:r="urn:root" xmlns:x="urn:extra">
+  <r:entry xmlns:r="urn:root:shadow">
+    <r:key xml:lang="zh">键</r:key>
+    <r:value>左<x:mark>中</x:mark>右</r:value>
+  </r:entry>
+  <x:entry code="A&amp;B"/>
+</r:root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE document [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY picture SYSTEM "images/pixel.bin" NDATA bin>
+  <!ELEMENT document (meta, body, attachment*)>
+  <!ELEMENT meta (created, flags?)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT flags EMPTY>
+  <!ATTLIST flags readonly (true|false) "false">
+  <!ELEMENT body (p|list|quote)+>
+  <!ELEMENT p (#PCDATA|b|i|br)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT list (li+)>
+  <!ELEMENT li (#PCDATA|p)*>
+  <!ELEMENT quote (#PCDATA|p)*>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment src ENTITY #REQUIRED media CDATA #IMPLIED>
+]>
+<document>
+  <meta>
+    <created>2026-09-23T00:00:00Z</created>
+    <flags readonly="true"/>
+  </meta>
+  <body>
+    <p>one <b>two</b><br/> three <i>four</i></p>
+    <list><li>first</li><li><p>second</p></li></list>
+    <quote><![CDATA[quoted ]]></quote>
+  </body>
+  <attachment src="picture" media="image/png"/>
+</document>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (branch)>
+  <!ELEMENT branch (leaf, branch?)>
+  <!ATTLIST branch depth NMTOKEN #IMPLIED>
+  <!ELEMENT leaf (#PCDATA)>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+  <!ENTITY text "a &left;b&right; c">
+]>
+<root>
+  <branch depth="0">
+    <leaf>&text;</leaf>
+    <branch depth="1">
+      <leaf><![CDATA[content with ]]> and markup-like text</leaf>
+      <branch depth="2">
+        <leaf>tail &lt; &gt; &quot; &apos; &#x1F642;</leaf>
+      </branch>
+    </branch>
+  </branch>
+</root>
+```

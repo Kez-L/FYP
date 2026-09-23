@@ -1,0 +1,216 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, entry*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (name, description, price?, availability)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT availability EMPTY>
+  <!ATTLIST section id ID #REQUIRED xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST entry sku ID #REQUIRED category NMTOKEN #IMPLIED>
+  <!ATTLIST availability state (in-stock|backorder|retired) "in-stock">
+  <!ENTITY brand "Example &amp; Sons">
+]>
+<catalog>
+  <section id="tools" xml:lang="en">
+    <title>&brand; tools</title>
+    <entry sku="item-001" category="hand">
+      <name>Ratcheting &amp;ldquo;</name>
+      <description>Compact <em>reversible</em> handle with <code>1/4-inch</code> drive.</description>
+      <price currency="EUR">19.95</price>
+      <availability state="in-stock"/>
+    </entry>
+    <entry sku="item-002">
+      <name>Long nose pliers</name>
+      <description><![CDATA[Jaw length: 42 mm; finish: matte <steel>.]]></description>
+      <availability state="backorder"/>
+    </entry>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (meta, records)>
+  <!ELEMENT meta (generated, owner, note?)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (field+)>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST record id ID #REQUIRED severity (low|medium|high) "low">
+  <!ATTLIST field name NMTOKEN #REQUIRED type CDATA "text">
+  <!ENTITY % common "xml:lang NMTOKEN #IMPLIED">
+  <!ATTLIST report %common;>
+]>
+<report xml:lang="fr">
+  <meta>
+    <generated>2026-09-23T12:34:56Z</generated>
+    <owner>département-énergie</owner>
+    <note>Values may contain &lt;escaped&gt; markup and &amp; symbols.</note>
+  </meta>
+  <records>
+    <record id="r-α" severity="high">
+      <field name="message">Temperature threshold exceeded</field>
+      <field name="value" type="decimal">98.125</field>
+      <field name="source">capteur-7</field>
+    </record>
+    <record id="r-β">
+      <field name="message"><![CDATA[unparsed ]]> content]]&gt;</field>
+      <field name="value" type="integer">0</field>
+    </record>
+  </records>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (layer+, legend)>
+  <!ELEMENT layer (feature*)>
+  <!ELEMENT feature (geometry, properties)>
+  <!ELEMENT geometry (point|line|polygon)>
+  <!ELEMENT point EMPTY>
+  <!ELEMENT line (point+)>
+  <!ELEMENT polygon (ring+)>
+  <!ELEMENT ring (point+)>
+  <!ELEMENT properties (property*)>
+  <!ELEMENT property (#PCDATA)>
+  <!ELEMENT legend (#PCDATA)>
+  <!ATTLIST layer name CDATA #REQUIRED visible (true|false) "true">
+  <!ATTLIST feature fid ID #REQUIRED>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ATTLIST property key NMTOKEN #REQUIRED>
+]>
+<map>
+  <layer name="roads" visible="true">
+    <feature fid="road-1">
+      <geometry>
+        <line>
+          <point x="-73.9857" y="40.7484"/>
+          <point x="-73.9851" y="40.7490"/>
+          <point x="-73.9842" y="40.7493"/>
+        </line>
+      </geometry>
+      <properties>
+        <property key="name">5th Avenue</property>
+        <property key="surface">asphalt</property>
+      </properties>
+    </feature>
+  </layer>
+  <layer name="parks" visible="false">
+    <feature fid="park-9">
+      <geometry>
+        <polygon>
+          <ring>
+            <point x="10" y="10"/>
+            <point x="20" y="10"/>
+            <point x="20" y="20"/>
+            <point x="10" y="20"/>
+            <point x="10" y="10"/>
+          </ring>
+        </polygon>
+      </geometry>
+      <properties>
+        <property key="name">Jardin d'été</property>
+      </properties>
+    </feature>
+  </layer>
+  <legend>Coordinates use WGS84; empty layers are permitted.</legend>
+</map>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload, signature)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST package version NMTOKEN #REQUIRED>
+  <!ATTLIST file path CDATA #REQUIRED size CDATA #REQUIRED digest CDATA #IMPLIED>
+  <!ATTLIST chunk index CDATA #REQUIRED encoding (base64|text) "text">
+  <!ENTITY nl "&#xA;">
+]>
+<package version="2.0">
+  <manifest>
+    <file path="readme.txt" size="41" digest="sha256:abc123"/>
+    <file path="data/empty.bin" size="0"/>
+    <file path="data/π.bin" size="7" digest="sha256:00ff"/>
+  </manifest>
+  <payload>
+    <chunk index="0" encoding="text">first line&nl;second line</chunk>
+    <chunk index="1" encoding="base64">AAECAwQF</chunk>
+    <chunk index="2" encoding="text"><![CDATA[<not-a-tag>&not-an-entity;]]></chunk>
+  </payload>
+  <signature>
+    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+    <x>deliberately embedded markup</x>
+    END
+  </signature>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (trigger, variables?, steps)>
+  <!ELEMENT trigger (event, filter?)>
+  <!ELEMENT event (#PCDATA)>
+  <!ELEMENT filter (expression)>
+  <!ELEMENT expression (#PCDATA)>
+  <!ELEMENT variables (variable*)>
+  <!ELEMENT variable (#PCDATA)>
+  <!ELEMENT steps (step+)>
+  <!ELEMENT step (action, on-success?, on-failure?)>
+  <!ELEMENT action EMPTY>
+  <!ELEMENT on-success (goto|stop)>
+  <!ELEMENT on-failure (goto|retry|stop)>
+  <!ELEMENT goto EMPTY>
+  <!ELEMENT retry EMPTY>
+  <!ELEMENT stop EMPTY>
+  <!ATTLIST variable name NMTOKEN #REQUIRED type (string|number|boolean) "string">
+  <!ATTLIST step id ID #REQUIRED timeout CDATA #IMPLIED>
+  <!ATTLIST action name NMTOKEN #REQUIRED asynchronous (true|false) "false">
+  <!ATTLIST goto step IDREF #REQUIRED>
+  <!ATTLIST retry count CDATA #REQUIRED delay CDATA "0">
+]>
+<workflow xmlns:ext="urn:workflow:extension">
+  <trigger>
+    <event>file.created</event>
+    <filter>
+      <expression>path =~ "^/var/inbox/" and size &gt; 0</expression>
+    </filter>
+  </trigger>
+  <variables>
+    <variable name="attempts" type="number">3</variable>
+    <variable name="notify" type="boolean">true</variable>
+    <variable name="message">Résumé: prêt à traiter</variable>
+  </variables>
+  <steps>
+    <step id="scan" timeout="PT30S">
+      <action name="scan-directory" asynchronous="false"/>
+      <on-success><goto step="archive"/></on-success>
+      <on-failure><retry count="2" delay="PT5S"/></on-failure>
+    </step>
+    <step id="archive">
+      <action name="archive-file"/>
+      <on-success><stop/></on-success>
+      <on-failure><goto step="notify"/></on-failure>
+    </step>
+    <step id="notify">
+      <action name="send-alert"/>
+      <on-failure><stop/></on-failure>
+    </step>
+  </steps>
+</workflow>
+```

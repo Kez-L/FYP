@@ -1,0 +1,93 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="urn:missing-style" media="screen"?>
+<catalog xmlns="urn:example:catalog" xmlns:m="urn:example:meta" xml:lang="en-US" xml:base="urn:catalog:root">
+  <!-- comment with markup-looking text: <fake attr="&amp;"/> -->
+  <item id="α-01" m:state="draft" xml:space="preserve">
+    <title><![CDATA[<untouched> & not expanded ]]></title>
+    <m:details priority="0" enabled="true">
+      <m:tag>one</m:tag>
+      <m:tag>two</m:tag>
+    </m:details>
+    mixed
+    <empty/>
+    text
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header,entry+)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT entry (name,blob?,link*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT blob (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST entry index NMTOKEN #REQUIRED kind (text|binary|other) "other">
+  <!ATTLIST link href URI #IMPLIED rel CDATA #IMPLIED>
+  <!ENTITY greeting "hello &amp; goodbye">
+  <!ENTITY hex "&#x41;&#65;">
+  <!NOTATION raw SYSTEM "urn:example:raw">
+  <!ENTITY payload SYSTEM "urn:example:payload" NDATA raw>
+]>
+<archive>
+  <header>&greeting;: &hex;</header>
+  <entry index="0007" kind="binary">
+    <name>sample</name>
+    <blob>before &lt; after &#x1F; end</blob>
+    <link href="urn:a" rel="next"/>
+    <link href="" rel="alternate"/>
+  </entry>
+  <entry index="last">
+    <name>tail</name>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.1"?>
+<r:root xmlns:r="urn:r" xmlns:q="urn:q" xmlns="urn:default" q:flag="yes">
+  <r:branch xmlns:r="" q:item="v">
+    <leaf/>
+  </r:branch>
+  <q:branch xmlns:q="urn:other">
+    <q:leaf q:data="&amp;"/>
+  </q:branch>
+  <?local instruction?>
+  <text>line&#x85;separator&#x2028;next</text>
+</r:root>
+```
+
+```xml
+<?xml version="1.0"?>
+<document xml:lang="x-private" xml:space="default">
+  <section>
+    <![CDATA[]]>
+    <![CDATA[a]]><![CDATA[b]]><![CDATA[]]>
+    <![CDATA[ raw ]]> 
+    <quote>&quot; &apos; &lt; &gt; &amp; &#0; &#xD800;</quote>
+  </section>
+  <!-- ]]> appears only as text in this comment: ]]&gt; -->
+  <tail><![CDATA[closing sequence split ]]]]><![CDATA[> safely]]></tail>
+</document>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % ext SYSTEM "urn:unavailable:parameter">
+  <!ENTITY local "L">
+  <!ENTITY nested "N&amp;local;">
+  <!ELEMENT root ANY>
+  <!ATTLIST root mode CDATA "default">
+]>
+<root mode="&nested;" a="1" b="2" c="3">
+  <child xmlns:one="urn:one" one:x="&local;">
+    <![CDATA[entity boundaries are not expanded here: &nested;]]>
+  </child>
+  <child><![CDATA[<x/>]]></child>
+  <?pi data="unterminated-looking &local;"?>
+</root>
+```

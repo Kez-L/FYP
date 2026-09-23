@@ -1,0 +1,148 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % parts "
+    <!ELEMENT entry (name, price, tags?)>
+    <!ELEMENT name (#PCDATA)>
+    <!ELEMENT price (#PCDATA)>
+    <!ELEMENT tags (tag+)>
+    <!ELEMENT tag (#PCDATA)>
+  ">
+  %parts;
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY logo SYSTEM "logo.jpg" NDATA jpeg>
+  <!ELEMENT catalog (entry|&amp;logo;)*>
+  <!ATTLIST catalog
+    xmlns CDATA #IMPLIED
+    version NMTOKEN "1">
+  <![IGNORE[
+    <!ELEMENT ignored ANY>
+    <!ATTLIST ignored temporary CDATA #IMPLIED>
+  ]]>
+]>
+<catalog xmlns="urn:inventory" version="2">
+  <entry>
+    <name>tea &amp; honey</name>
+    <price currency="EUR">4.75</price>
+    <tags><tag>organic</tag><tag>loose-leaf</tag></tags>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header
+    id ID #REQUIRED
+    ref IDREF #IMPLIED
+    mode (plain|signed|compressed) "plain">
+  <!ELEMENT payload (#PCDATA|chunk|![CDATA[not-a-name]])*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk part NMTOKEN #REQUIRED>
+]>
+<envelope xmlns:a="urn:a" xmlns:b="urn:b">
+  <header id="h-1" ref="missing" mode="signed" a:flag="true"/>
+  <payload>
+    <![CDATA[<escaped> & still literal]]>
+    <chunk part="01">left</chunk>
+    <?transform select="a:b"/>
+    <chunk part="02"><b:inner xmlns:b="">right</b:inner></chunk>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node (label?, property*)>
+  <!ATTLIST node
+    key ID #REQUIRED
+    kind (source|sink|middle) #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA|value)*>
+  <!ATTLIST property name CDATA #REQUIRED>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge
+    from IDREF #REQUIRED
+    to IDREF #REQUIRED
+    weight CDATA "1.0">
+  <!ENTITY amp "&#38;">
+  <!ENTITY quoted "&quot;quoted&quot;">
+]>
+<graph>
+  <node key="n1" kind="source">
+    <label>alpha &amp; beta</label>
+    <property name="path"><value>/tmp/&amp;data</value></property>
+  </node>
+  <node key="n2"><property name="note">&quoted;</property></node>
+  <edge from="n1" to="n2" weight="0.75"/>
+  <edge from="n2" to="n1"/>
+</graph>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section*)>
+  <!ELEMENT section (heading, body)>
+  <!ATTLIST section xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT body (line|break|table)*>
+  <!ELEMENT line (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+]>
+<report xml:space="preserve">
+  <section xml:lang="fr">
+    <heading>Résumé &#x2026;</heading>
+    <body>
+      <line>avant <em>milieu</em> après</line>
+      <break/>
+      <table>
+        <row><cell>A</cell><cell><![CDATA[B < C]]></cell></row>
+        <row><cell>𐐷</cell><cell>fin</cell></row>
+      </table>
+      <line><code>if (x &lt; 2) return;</code><?note data?>tail</line>
+    </body>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (packet*)>
+  <!ELEMENT packet (data, checksum?)>
+  <!ATTLIST packet seq CDATA #REQUIRED type CDATA "raw">
+  <!ELEMENT data (#PCDATA|fragment)*>
+  <!ELEMENT fragment (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY open "<fragment>">
+  <!ENTITY close "</fragment>">
+  <!ENTITY amp "&amp;">
+]>
+<stream>
+  <packet seq="0" type="binary">
+    <data>
+      prefix &lt;tag&gt;
+      <fragment>literal</fragment>
+      <![CDATA[&not-an-entity;]]>
+    </data>
+    <checksum>0xDEAD&#10;BEEF</checksum>
+  </packet>
+  <packet seq="1">
+    <data>&open;broken &amp; text&close;</data>
+  </packet>
+  <packet seq="2" type="quoted">
+    <data><![CDATA[unterminated-looking ]]]]><![CDATA[> boundary]]></data>
+  </packet>
+</stream>
+```

@@ -1,0 +1,23 @@
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (part|separator)+>
+  <!ELEMENT part (name, data)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ATTLIST part id ID #IMPLIED>
+  <!ENTITY open "[[">
+  <!ENTITY close "]]">
+]>
+<envelope>
+  <part id="p1">
+    <name>broken sample</name>
+    <data>prefix &open;<chunk>inside</chunk>suffix &close;</data>
+  </part>
+  <separator/>
+  <part id="p2" id="duplicate">
+    <name>unclosed data</name>
+    <data><![CDATA[unterminated-looking content ]]> and &missing;</data>
+  </part>
+</envelope>

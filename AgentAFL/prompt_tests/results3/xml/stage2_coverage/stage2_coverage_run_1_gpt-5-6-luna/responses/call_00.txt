@@ -1,0 +1,97 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+)>
+  <!ELEMENT item (name, price?, notes?)>
+  <!ATTLIST item id ID #REQUIRED status (new|used|archived) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT notes (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+]>
+<catalog>
+  <item id="i1" status="used">
+    <name><![CDATA[alpha < beta & gamma]]></name>
+    <price>12.50</price>
+    <notes>old <emph>stock</emph> &#x1F; revised</notes>
+  </item>
+  <item id="i2">
+    <name>delta &amp; epsilon</name>
+    <notes><![CDATA[
+      mixed ]]]]><![CDATA[> sections
+    ]]></notes>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE r:root [
+  <!ELEMENT r:root (r:entry*)>
+  <!ELEMENT r:entry EMPTY>
+  <!ATTLIST r:entry r:key NMTOKEN #IMPLIED xml:space (default|preserve) "default">
+]>
+<r:root xmlns:r="urn:records" xmlns:p="urn:payload" xml:base="http://example.invalid/a/">
+  <r:entry r:key="a_1" p:flag="yes"/>
+  <r:entry r:key="ümlaut" xml:space="preserve"></r:entry>
+  <r:entry r:key="a:broken" xmlns:r="urn:shadow"/>
+</r:root>
+```
+
+```xml
+<!DOCTYPE message [
+  <!ENTITY local "inside">
+  <!ENTITY quoted "&lt;tag attr=&quot;v&quot;&gt;">
+  <!ENTITY nested "&local;:&quoted;">
+  <!ELEMENT message (#PCDATA|part|tail)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT tail EMPTY>
+]>
+<message>
+  prefix
+  <part><![CDATA[raw ]]> content <![CDATA[ [brackets] ]]></part>
+  &nested;
+  <tail/>
+  &#0;
+  &unknown;
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body)>
+  <!ELEMENT header (token, token?)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT body (chunk*)>
+  <!ELEMENT chunk (#PCDATA|chunk)*>
+]>
+<envelope>
+  <header>
+    <token>one</token>
+    <token><![CDATA[two]]></token>
+  </header>
+  <body>
+    <chunk>outer<chunk>inner</chunk>tail</chunk>
+    <chunk>&#xD;&#xA;&#x9;</chunk>
+  </body>
+</envelope>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ENTITY % parameter "<!ELEMENT injected EMPTY>">
+  %parameter;
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY external SYSTEM "file:///tmp/nonexistent" NDATA bin>
+]>
+<root xmlns="urn:default" xmlns:x="urn:x">
+  <x:node a="1 &amp; 2" b="&#x20;&#65;">
+    <?processing instruction?>
+    <!-- comment with -- oddity -->
+    <injected/>
+    <![CDATA[unclosed-looking ]]> text
+  </x:node>
+</root>
+```

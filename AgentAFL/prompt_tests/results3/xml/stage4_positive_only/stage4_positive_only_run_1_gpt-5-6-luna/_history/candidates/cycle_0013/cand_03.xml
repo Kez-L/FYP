@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest xmlns="urn:pkg:manifest" xmlns:s="urn:pkg:signature">
+  <package name="delta.bundle" version="4.0.0-beta+17">
+    <requires>
+      <runtime name="vm" min="2.8" max="&lt;3.0"/>
+      <capability>filesystem.read</capability>
+      <capability optional="true">network.dns</capability>
+    </requires>
+    <files>
+      <file path="bin/launch" mode="0755" size="1482" digest="sha256:abc123"/>
+      <file path="share/config/default.xml" mode="0644" size="311" digest="sha256:def456"/>
+      <directory path="var/cache"/>
+      <symlink path="current" target="../releases/4.0.0"/>
+    </files>
+    <hooks>
+      <hook phase="install" command="/bin/sh">
+        <environment>
+          <variable name="LANG">C.UTF-8</variable>
+          <variable name="EMPTY"/>
+        </environment>
+        <script><![CDATA[
+          echo "installing"
+          test -n "$PACKAGE_NAME"
+        ]]></script>
+      </hook>
+      <hook phase="remove" command="/bin/sh" once="false">
+        <script>rm -f -- "$PREFIX/current"</script>
+      </hook>
+    </hooks>
+    <signature algorithm="ed25519">
+      <s:key-id>release-2026-a</s:key-id>
+      <s:value encoding="base64">AAECAwQFBgcICQ==</s:value>
+    </signature>
+  </package>
+</manifest>

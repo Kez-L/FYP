@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ENTITY % states "<!ELEMENT state EMPTY>
+    <!ATTLIST state name NMTOKEN #REQUIRED result (pass|fail|skip) #IMPLIED>">
+  <!ENTITY % actions "<!ELEMENT action (state*, message?)>
+    <!ATTLIST action id ID #REQUIRED>">
+  %states;
+  %actions;
+  <!ELEMENT workflow (phase+)>
+  <!ELEMENT phase (action+)>
+  <!ELEMENT message (#PCDATA)>
+  <!ATTLIST workflow version CDATA #FIXED "3">
+  <!ATTLIST phase id ID #REQUIRED depends IDREFS #IMPLIED>
+  <!ENTITY open "[" >
+  <!ENTITY close "]" >
+]>
+<workflow version="3">
+  <phase id="compile">
+    <action id="compile-main">
+      <state name="lexer" result="pass"/>
+      <state name="parser" result="skip"/>
+      <message>&open;phase complete&close;</message>
+    </action>
+  </phase>
+  <phase id="test" depends="compile">
+    <action id="run-tests">
+      <state name="unit" result="pass"/>
+      <state name="integration"/>
+    </action>
+  </phase>
+</workflow>

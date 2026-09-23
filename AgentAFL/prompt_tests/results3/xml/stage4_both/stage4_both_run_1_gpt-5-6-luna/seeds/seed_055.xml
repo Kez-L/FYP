@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, metrics, findings, footer)>
+  <!ELEMENT header (title, generated, owner)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT metrics (metric+)>
+  <!ELEMENT metric EMPTY>
+  <!ATTLIST metric name NMTOKEN #REQUIRED
+                    value CDATA #REQUIRED
+                    unit CDATA #IMPLIED>
+  <!ELEMENT findings (finding*)>
+  <!ELEMENT finding (#PCDATA|evidence)*>
+  <!ATTLIST finding severity (low|medium|high|critical) "low"
+                    id ID #REQUIRED>
+  <!ELEMENT evidence (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY product "Telemetry Engine">
+]>
+<report>
+  <header>
+    <title>Nightly &product; Audit</title>
+    <generated>2026-09-23T02:14:09Z</generated>
+    <owner>operations@example.invalid</owner>
+  </header>
+  <metrics>
+    <metric name="requests" value="18429" unit="count"/>
+    <metric name="duration" value="913.7" unit="seconds"/>
+    <metric name="error-rate" value="0.0041"/>
+  </metrics>
+  <findings>
+    <finding id="f-001" severity="medium">Expired cache entry found <evidence>node-17</evidence> during rotation.</finding>
+    <finding id="f-002" severity="critical"><evidence>queue://alerts</evidence> exceeded its configured threshold.</finding>
+  </findings>
+  <footer>End of report.</footer>
+</report>

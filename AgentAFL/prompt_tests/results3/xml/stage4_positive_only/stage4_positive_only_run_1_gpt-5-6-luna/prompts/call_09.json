@@ -1,0 +1,23 @@
+{
+  "call": 9,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE observatory [\n  <!ELEMENT observatory (station, observation*)>\n  <!ATTLIST observatory opened CDATA #IMPLIED>\n  <!ELEMENT station (name, coordinates, instrument+)>\n  <!ELEMENT name (#PCDATA)>\n  <!ELEMENT coordinates (latitude, longitude, elevation?)>\n  <!ELEMENT latitude (#PCDATA)>\n  <!ELEMENT longitude (#PCDATA)>\n  <!ELEMENT elevation (#PCDATA)>\n  <!ELEMENT instrument (model, calibration)>\n  <!ATTLIST instrument id ID #REQUIRED>\n  <!ELEMENT model (#PCDATA)>\n  <!ELEMENT calibration (#PCDATA)>\n  <!ELEMENT observation (target, timestamp, measurement+)>\n  <!ATTLIST observation instrument IDREF #IMPLIED status (complete|pending|invalid) \"complete\">\n  <!ELEMENT target (#PCDATA)>\n  <!ELEMENT timestamp (#PCDATA)>\n  <!ELEMENT measurement (#PCDATA)>\n  <!ATTLIST measurement unit CDATA #REQUIRED>\n]>\n<observatory opened=\"1998-11-03\">\n  <station>\n    <name>North Ridge Array</name>\n    <coordinates>\n      <latitude>64.1466</latitude>\n      <longitude>-21.9426</longitude>\n      <elevation>312</elevation>\n    </coordinates>\n    <instrument id=\"spectro-7\">\n      <model>HelioScan \u03a9</model>\n      <calibration>2026-04-17T08:30:00Z</calibration>\n    </instrument>\n    <instrument id=\"radio-2\">\n      <model><![CDATA[Long-baseline / Mk IV]]></model>\n      <calibration>2026-04-15T19:12:44Z</calibration>\n    </instrument>\n  </station>\n  <observation instrument=\"spectro-7\" status=\"complete\">\n    <target>NGC 2392</target>\n    <timestamp>2026-09-22T03:18:09.442Z</timestamp>\n    <measurement unit=\"nm\">486.133</measurement>\n    <measurement unit=\"km/s\">-18.7</measurement>\n  </observation>\n  <observation instrument=\"radio-2\" status=\"pending\">\n    <target>J0437\u22124715</target>\n    <timestamp>2026-09-22T03:21:10Z</timestamp>\n    <measurement unit=\"Jy\">0.742</measurement>\n  </observation>\n</observatory>\n\n--- example 2 ---\n<?xml version=\"1.0\"?>\n<package xmlns=\"urn:archive:bundle\" xmlns:sec=\"urn:archive:security\" xml:lang=\"fr\">\n  <!-- An intentionally mixed-content manifest -->\n  <header generated=\"2026-09-23T00:00:00Z\">\n    <creator>\u00c9quipe Delta</creator>\n    <description>Rapport &amp; donn\u00e9es associ\u00e9es</description>\n  </header>\n  <entries>\n    <entry path=\"notes/readme.txt\" media-type=\"text/plain\">\n      <hash algorithm=\"sha256\">e3b0c44298fc1c149afbf4c8996fb924</hash>\n      <permissions owner=\"analyst\" group=\"research\">0640</permissions>\n    </entry>\n    <entry path=\"data/mesures.csv\" media-type=\"text/csv\" compressed=\"true\">\n      <hash algorithm=\"blake2b\">9f86d081884c7d659a2feaa0c55ad015</hash>\n      <permissions owner=\"robot\" group=\"research\">0600</permissions>\n    </entry>\n  </entries>\n  <sec:signature method=\"urn:example:ed25519\">\n    <sec:key-id>key:archive/2026/09</sec:key-id>\n    <sec:value><![CDATA[\n-----BEGIN SIGNATURE-----\nRHVtbXkgc2lnbmF0dXJlICsgPD4gJiA=\n-----END SIGNATURE-----\n]]></sec:value>\n  </sec:signature>\n  <trailers>\n    <note>Fin du manifeste.</note>\n    <note xml:space=\"preserve\">  whitespace   remains  </note>\n  </trailers>\n</package>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-23T05:22:10.481627+00:00"
+}

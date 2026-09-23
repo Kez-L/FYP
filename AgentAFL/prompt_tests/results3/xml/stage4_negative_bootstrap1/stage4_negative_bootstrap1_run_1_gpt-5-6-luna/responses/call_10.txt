@@ -1,0 +1,159 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+, index?)>
+  <!ELEMENT record (title, data, note?)>
+  <!ATTLIST record id ID #REQUIRED ref IDREF #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT note (#PCDATA|em)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT index (entry*)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry target IDREF #REQUIRED>
+  <!ENTITY company "Aster &amp; Finch">
+  <!ENTITY mark "&#x2605;">
+]>
+<archive>
+  <record id="r1" ref="r2">
+    <title>&company; &mark; quarterly report</title>
+    <data><![CDATA[alpha < beta && gamma > delta]]></data>
+    <note>Reviewed by <em>operations</em>.</note>
+  </record>
+  <record id="r2">
+    <title>Appendix</title>
+    <data>Line one&#10;Line two&#13;&#10;Line three</data>
+  </record>
+  <index>
+    <entry target="r1"/>
+    <entry target="r2"/>
+  </index>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog"
+         xmlns:bk="urn:example:book"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xml:lang="fr">
+  <section key="fiction">
+    <bk:book isbn="978-0-00-000001-1" available="true">
+      <bk:title xml:space="preserve">  Les îles silencieuses  </bk:title>
+      <bk:author>
+        <bk:name family="Durand" given="Élodie"/>
+        <bk:contact xlink:type="simple" xlink:href="mailto:elodie@example.invalid">courriel</bk:contact>
+      </bk:author>
+      <bk:keywords>
+        <bk:keyword>mer</bk:keyword>
+        <bk:keyword>mémoire</bk:keyword>
+        <bk:keyword>voyage</bk:keyword>
+      </bk:keywords>
+    </bk:book>
+  </section>
+  <section key="reference">
+    <bk:book isbn="978-0-00-000009-7" available="false">
+      <bk:title>Atlas des formes</bk:title>
+      <bk:author>
+        <bk:name family="Ng" given="Mina"/>
+      </bk:author>
+      <bk:related xlink:type="extended">
+        <bk:link xlink:role="preview" xlink:href="#page-17"/>
+      </bk:related>
+    </bk:book>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<?processing instruction-data?>
+<!-- A document with mixed content, CDATA, and significant whitespace. -->
+<manual xml:base="https://docs.example.invalid/root/" xml:space="default">
+  <chapter number="1">
+    <heading>Parsing &amp; validation</heading>
+    <paragraph>Text before <code>token</code>, text after, and a line break<break/>here.</paragraph>
+    <example xml:space="preserve"><![CDATA[
+      if (a < b && b > c) {
+        emit("literal");
+      }
+    ]]></example>
+    <list>
+      <item priority="low">first</item>
+      <item priority="high"><![CDATA[second & third]]></item>
+      <item priority="medium">
+        <label>fourth</label>
+        <details>contains <em>nested</em> emphasis</details>
+      </item>
+    </list>
+  </chapter>
+  <chapter number="2" xml:lang="en">
+    <heading>References</heading>
+    <paragraph>See <ref href="appendix.xml#syntax">the appendix</ref>.</paragraph>
+  </chapter>
+</manual>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file path CDATA #REQUIRED kind (text|binary|link) "text" size NMTOKEN #IMPLIED>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ENTITY % common "xml:lang NMTOKEN #IMPLIED">
+  <!ATTLIST package version NMTOKEN #REQUIRED %common;>
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+]>
+<package version="2.4" xml:lang="en">
+  <manifest>
+    <file path="readme.txt" kind="text" size="42"/>
+    <file path="assets/icon.bin" kind="binary" size="0"/>
+    <file path="latest" kind="link"/>
+  </manifest>
+  <payload>
+    <chunk id="a">&left;segment-one&right;</chunk>
+    <chunk id="b">line-1&#x0A;line-2&#x0A;line-3</chunk>
+    <chunk id="c"><![CDATA[raw bytes: \x00 \x01 \x7f]]></chunk>
+  </payload>
+</package>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<workflow xmlns="urn:workflow:v2"
+          xmlns:meta="urn:workflow:metadata"
+          xmlns:sec="urn:workflow:security">
+  <meta:info created="2026-09-23T14:05:07Z" revision="0007">
+    <meta:owner>qa-team</meta:owner>
+    <meta:tags>
+      <meta:tag>fuzz</meta:tag>
+      <meta:tag>xml</meta:tag>
+    </meta:tags>
+  </meta:info>
+  <pipeline id="nightly" enabled="yes">
+    <step name="collect" timeout="PT5M">
+      <command><![CDATA[/usr/bin/collect --format="xml" --include='*']]></command>
+      <environment>
+        <variable name="MODE">nightly</variable>
+        <variable name="EMPTY"/>
+      </environment>
+    </step>
+    <step name="publish" depends-on="collect">
+      <condition>
+        <all>
+          <equals left="status" right="success"/>
+          <not><equals left="attempts" right="0"/></not>
+        </all>
+      </condition>
+      <artifact path="out/report.xml" media-type="application/xml"/>
+    </step>
+  </pipeline>
+  <sec:signature algorithm="urn:example:sha256">
+    <sec:digest>e3b0c44298fc1c149afbf4c8996fb924</sec:digest>
+  </sec:signature>
+</workflow>
+```

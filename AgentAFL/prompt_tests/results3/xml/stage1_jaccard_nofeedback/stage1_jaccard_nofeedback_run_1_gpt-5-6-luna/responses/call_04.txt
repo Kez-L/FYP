@@ -1,0 +1,102 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, details?, item*)>
+  <!ATTLIST entry id ID #REQUIRED status (new|old|archived) "new">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT details (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item key CDATA #IMPLIED value CDATA #IMPLIED>
+]>
+<catalog>
+  <entry id="e1" status="archived">
+    <title>Alpha &amp; Omega</title>
+    <details>before <em>inside</em><br/>after</details>
+    <item key="x" value="1"/>
+    <item key="y" value="&quot;two&quot;"/>
+  </entry>
+  <entry id="e2">
+    <title><![CDATA[<not-an-element> & raw text]]></title>
+    <item key="empty" value=""/>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<r xmlns="urn:root" xmlns:a="urn:a" xmlns:b="urn:b" xml:base="http://example.invalid/a/">
+  <a:node xml:lang="en-US" a:k="v">
+    <b:child xmlns:b="" b:k="shadowed">text</b:child>
+    <a:node xmlns:a="urn:other">
+      <a:leaf xml:space="preserve">  padded&#x0A;text  </a:leaf>
+    </a:node>
+  </a:node>
+  <empty xmlns="" xmlns:q="urn:q" q:x="1"/>
+</r>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ELEMENT report (section*)>
+  <!ELEMENT section (heading, paragraph*)>
+  <!ATTLIST section name CDATA #IMPLIED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|code|link)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href URI #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY left "<">
+  <!ENTITY right ">">
+]>
+<report>
+  <section name="mixed">
+    <heading>Entities &nbsp; &left;tag&right;</heading>
+    <paragraph>one <code>i &lt; j</code> and <link href="urn:x">two</link>.</paragraph>
+  </section>
+  <section>
+    <heading/>
+    <paragraph><![CDATA[line one
+line two
+]]></paragraph>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <level n="0">
+    <level n="1">
+      <level n="2">
+        <level n="3">
+          <value a="&apos;quoted&apos;" b="&#x1F600;" c="&#x9;&#xA;&#xD;"/>
+        </level>
+        <sibling><![CDATA[ ]]]]><![CDATA[> tricky delimiter ]]></sibling>
+      </level>
+      <mixed>left<mark/>right<mark><inner>deep</inner></mark></mixed>
+    </level>
+  </level>
+  <tail><!-- comment --><![CDATA[unterminated-looking ] text]]></tail>
+</root>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ELEMENT envelope (header, payload, footer)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header version NMTOKEN #REQUIRED>
+  <!ELEMENT payload (#PCDATA)>
+  <!ATTLIST payload kind NOTATION (bin) #IMPLIED>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<envelope>
+  <header version="v2"/>
+  <payload kind="bin">base64:AAECAwQFBgcICQoLDA0O</payload>
+  <footer>checksum=&quot;00ff&quot;</footer>
+</envelope>
+```

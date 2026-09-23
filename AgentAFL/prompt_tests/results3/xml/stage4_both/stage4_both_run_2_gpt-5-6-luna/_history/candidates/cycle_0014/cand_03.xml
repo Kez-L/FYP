@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE logbook [
+  <!ELEMENT logbook (entry+)>
+  <!ELEMENT entry (timestamp, operator, event, measurements?, attachment*)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT operator (name, badge)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT badge (#PCDATA)>
+  <!ELEMENT event (#PCDATA)>
+  <!ELEMENT measurements (measurement+)>
+  <!ELEMENT measurement EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST entry id ID #REQUIRED severity (info|notice|warning|critical) "info">
+  <!ATTLIST measurement key NMTOKEN #REQUIRED value CDATA #REQUIRED unit CDATA #IMPLIED>
+  <!ATTLIST attachment href URI #REQUIRED media CDATA #REQUIRED>
+  <!NOTATION csv SYSTEM "text/csv">
+  <!ENTITY % common "source CDATA #IMPLIED">
+  <!ATTLIST attachment %common;>
+]>
+<?audit source="instrument-panel"?>
+<logbook>
+  <entry id="e-100" severity="notice">
+    <timestamp>2026-09-23T06:14:09Z</timestamp>
+    <operator>
+      <name>Leila Grant</name>
+      <badge>BG-41</badge>
+    </operator>
+    <event>Calibration cycle completed</event>
+    <measurements>
+      <measurement key="temperature" value="21.7" unit="C"/>
+      <measurement key="humidity" value="43" unit="percent"/>
+      <measurement key="drift" value="0.003" unit="mm"/>
+    </measurements>
+    <attachment href="calibration-100.csv" media="text/csv" source="bench-4"/>
+  </entry>
+  <entry id="e-101" severity="warning">
+    <timestamp>2026-09-23T06:19:44Z</timestamp>
+    <operator>
+      <name>Leila Grant</name>
+      <badge>BG-41</badge>
+    </operator>
+    <event>Unexpected vibration detected</event>
+    <measurements>
+      <measurement key="amplitude" value="7.2" unit="milli-g"/>
+    </measurements>
+    <attachment href="vibration-101.dat" media="application/octet-stream"/>
+  </entry>
+  <entry id="e-102" severity="critical">
+    <timestamp>2026-09-23T06:27:00Z</timestamp>
+    <operator>
+      <name>Owen Mbaye</name>
+      <badge>OP-09</badge>
+    </operator>
+    <event>Automatic shutdown initiated</event>
+  </entry>
+</logbook>

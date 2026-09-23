@@ -1,0 +1,121 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, record+)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT record (title, body, metadata?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (#PCDATA|em|ref)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT metadata (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST record id ID #REQUIRED status (new|old|held) "new">
+  <!ATTLIST ref target IDREF #IMPLIED>
+  <!ATTLIST tag key CDATA #REQUIRED>
+  <!ENTITY mark "&#x2605;">
+]>
+<archive xmlns="urn:example:archive" xmlns:x="urn:example:meta">
+  <header>Entries &mark; and <em>notes</em>.</header>
+  <record id="r1" status="new">
+    <title><![CDATA[An <unparsed> title]]></title>
+    <body>Before <em>important</em> text <ref target="r1"/> after.</body>
+    <metadata>
+      <tag key="owner">delta</tag>
+      <tag x:class="priority" key="rank">7</tag>
+    </metadata>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section*)>
+  <!ELEMENT section (item|section)*>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST section name CDATA #IMPLIED>
+  <!ATTLIST item code NMTOKEN #REQUIRED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "blob.bin" NDATA bin>
+]>
+<catalog>
+  <section name="outer">
+    <item code="A-01"/>
+    <section name="inner">
+      <item code="B_02"></item>
+      <item code="C.03"/>
+    </section>
+  </section>
+  <section>
+    <!-- deliberately adjacent empty elements -->
+    <item code="Z9"/>
+    <?catalog-process mode="compact"?>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<message xmlns="urn:msg" xmlns:a="urn:aux" xml:lang="en">
+  <a:route from="α" to="β">
+    <![CDATA[
+      <payload kind="literal">&not-an-entity;</payload>
+      ]]> 
+  </a:route>
+  <content xml:space="preserve">line one&#x85;line two&#x2028;line three</content>
+  <?audit checksum="0x00&amp;ff"?>
+  <items>
+    <item index="0"/>
+    <item index="1"><![CDATA[]]></item>
+    <item index="2">résumé — 東京</item>
+  </items>
+</message>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ENTITY % switch "<!ELEMENT envelope (meta, payload, signature)>">
+  %switch;
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST meta timestamp CDATA #IMPLIED>
+  <!ATTLIST chunk n CDATA #REQUIRED>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<envelope>
+  <meta timestamp="1970-01-01T00:00:00Z"/>
+  <payload>
+    <chunk n="1">alpha<part>&left;nested&right;</part>omega</chunk>
+    <chunk n="2"><part><![CDATA[raw ]]></part>tail</chunk>
+  </payload>
+  <signature>sha256:&amp;unknown;</signature>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell*)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST row index CDATA #IMPLIED>
+  <!ATTLIST cell r CDATA #IMPLIED c CDATA #IMPLIED>
+]>
+<matrix>
+  <row index="0">
+    <cell r="0" c="0">zero</cell>
+    <cell r="0" c="1">one &amp; two</cell>
+  </row>
+  <row index="1">
+    <cell r="1" c="0"><![CDATA[<x/>]]></cell>
+    <cell r="1" c="1">text<!-- split -->continued</cell>
+    <cell r="1" c="2"><?cell data?><![CDATA[&]]></cell>
+  </row>
+  <row index="2"/>
+</matrix>
+```

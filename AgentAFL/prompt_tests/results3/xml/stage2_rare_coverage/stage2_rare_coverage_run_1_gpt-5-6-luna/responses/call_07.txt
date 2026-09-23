@@ -1,0 +1,141 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE library [
+  <!ELEMENT library (section+, note?)>
+  <!ELEMENT section (title, book*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT book (name, author+, summary?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|em|ref)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST book code ID #REQUIRED edition CDATA "first">
+  <!ATTLIST ref target IDREF #IMPLIED>
+  <!ENTITY copyright "© 2026">
+  <!ENTITY intro "A &emph;small&emph; collection">
+  <!ENTITY emph "compact">
+]>
+<library>
+  <section>
+    <title>&intro;</title>
+    <book code="b1" edition="&copyright;">
+      <name>Parsing &amp; Trees</name>
+      <author>One</author>
+      <author>Two</author>
+      <summary>Text <em>with emphasis</em> and a <ref target="b1"/> link.</summary>
+    </book>
+  </section>
+  <note>End &amp; review.</note>
+</library>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<warehouse xmlns="urn:warehouse" xmlns:p="urn:product" xml:lang="fr" xml:base="https://example.invalid/root/">
+  <!-- inventory boundary -->
+  <?sync mode="delta" checksum="00000000"?>
+  <aisle id="A&amp;1" xml:space="preserve">
+    <![CDATA[
+      whitespace <tags> and ]] sequences are data
+    ]]>
+    <p:crate p:kind="fragile" p:count="00000000000000000007">
+      <p:item p:sku="α-01">café &amp; thé</p:item>
+      <p:item p:sku="β-02"/>
+    </p:crate>
+    <bin>
+      <label xml:lang="en">mixed <strong>content</strong> follows</label>
+      <measure unit="m" value="1.0e+3"/>
+    </bin>
+  </aisle>
+  <aisle id="B-0">
+    <empty/>
+  </aisle>
+</warehouse>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, body, trailer)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field (#PCDATA)>
+  <!ELEMENT body (record*)>
+  <!ELEMENT record (key, value*)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST record n NMTOKEN #REQUIRED>
+]>
+<packet>
+  <header>
+    <field>alpha</field>
+    <field>beta&#x85;gamma</field>
+  </header>
+  <body>
+    <record n="r-01">
+      <key>status</key>
+      <value>open</value>
+      <value><part>left</part>&#x2028;<part>right</part></value>
+    </record>
+    <record n="r-02">
+      <key>payload</key>
+      <value><![CDATA[raw &lt; bytes]]></value>
+    </record>
+  </body>
+  <trailer/>
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node (meta*)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST node id ID #REQUIRED>
+  <!ATTLIST meta key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+]>
+<graph>
+  <node id="n-root">
+    <meta key="role" value="entry"/>
+    <meta key="empty"/>
+  </node>
+  <node id="n-leaf">
+    <meta key="quoted" value="a &quot;b&quot; c"/>
+  </node>
+  <edge from="n-root" to="n-leaf" weight="0"/>
+  <edge from="n-leaf" to="n-root" weight="999999999999999999999999"/>
+</graph>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<envelope xmlns:h="urn:hdr" xmlns:m="urn:msg" xmlns:x="urn:extra">
+  <h:context>
+    <h:token>t-000</h:token>
+    <h:options>
+      <h:option name="trace">true</h:option>
+      <h:option name="retries">-1</h:option>
+    </h:options>
+  </h:context>
+  <m:message m:id="42">
+    <m:subject><![CDATA[<not-an-element> & data]]></m:subject>
+    <m:parts>
+      <m:part index="0">first</m:part>
+      <m:part index="1"><![CDATA[second]]></m:part>
+      <m:part index="2">
+        <x:attachment x:type="binary" x:length="0"/>
+      </m:part>
+    </m:parts>
+  </m:message>
+  <?audit result="pending"?>
+  <tail xmlns="">
+    <entry key="z">unqualified</entry>
+  </tail>
+</envelope>
+```

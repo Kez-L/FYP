@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<workflow id="wf-2048" xmlns="urn:example:workflow" xmlns:x="urn:example:extension">
+  <start at="validate"/>
+  <step name="validate" retry="2">
+    <input source="stdin" format="json"/>
+    <condition language="xpath">/record/@active = 'true'</condition>
+    <on-success goto="transform"/>
+    <on-failure goto="quarantine"/>
+  </step>
+  <step name="transform" retry="0">
+    <x:script><![CDATA[
+      function normalize(value) {
+        return value.replace(/\s+/g, " ").trim();
+      }
+    ]]></x:script>
+    <emit destination="queue://processed">
+      <header name="content-type">application/xml</header>
+      <header name="priority">high</header>
+    </emit>
+    <on-success goto="archive"/>
+  </step>
+  <parallel name="archive">
+    <branch id="primary">
+      <action type="store" location="/var/lib/archive/current"/>
+    </branch>
+    <branch id="replica">
+      <action type="store" location="s3://backup/archive">
+        <option key="encryption">aes256</option>
+      </action>
+    </branch>
+  </parallel>
+  <?workflow audit="enabled"?>
+  <quarantine reason="validation-failure">
+    <message>Input requires manual review</message>
+  </quarantine>
+</workflow>

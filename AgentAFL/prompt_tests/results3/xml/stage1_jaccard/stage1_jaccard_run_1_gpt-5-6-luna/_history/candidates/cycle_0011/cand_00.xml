@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE archive [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY logo SYSTEM "logo.bin" NDATA bin>
+  <!ENTITY greeting "hello &amp; welcome">
+  <!ELEMENT archive (header,entry*,footer)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT entry (title,body,attachment?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (#PCDATA|section|link)*>
+  <!ELEMENT section (#PCDATA|section|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST archive xml:space (default|preserve) "default">
+  <!ATTLIST entry id ID #REQUIRED kind (text|binary) "text">
+  <!ATTLIST link target IDREF #IMPLIED>
+  <!ATTLIST attachment source ENTITY #REQUIRED>
+]>
+<archive xml:space="preserve">
+  <header>&greeting;</header>
+  <entry id="first" kind="text">
+    <title><![CDATA[<encoded> & unusual ]]></title>
+    <body>intro<section>nested<section>deep</section></section><link target="first">self</link></body>
+  </entry>
+  <entry id="second" kind="binary">
+    <title>payload</title>
+    <body>before &lt; after &#x3e;</body>
+    <attachment source="logo"/>
+  </entry>
+  <footer>done</footer>
+</archive>

@@ -1,0 +1,119 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common "sku ID #REQUIRED price CDATA #IMPLIED">
+  <!ELEMENT catalog (entry+, note?)>
+  <!ELEMENT entry (title, detail, related*)>
+  <!ATTLIST entry %common;>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|emph|code)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT related EMPTY>
+  <!ATTLIST related ref IDREF #REQUIRED>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY ampersand "&#38;">
+]>
+<catalog>
+  <entry sku="A-1" price="&amp;7">
+    <title>Alpha &amp; Beta</title>
+    <detail>Use <emph>care</emph> with <code>&amp;entity;</code>.</detail>
+    <related ref="A-1"/>
+  </entry>
+  <entry sku="B-2">
+    <title>Second</title>
+    <detail>mixed <emph>text</emph> and <code>markup</code></detail>
+  </entry>
+  <note>literal &amp;ampersand; and &amp;entity;</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<r:root xmlns:r="urn:root" xmlns:a="urn:alpha" xmlns:b="urn:beta" xmlns="">
+  <r:branch a:k="&#x20; &#xA;" b:k="one">
+    <r:leaf xml:space="preserve">  padded&#x9;text  </r:leaf>
+    <r:leaf><![CDATA[
+      ]]>]]>&lt;not-an-element&gt;<![CDATA[tail]]></r:leaf>
+  </r:branch>
+  <item xmlns="urn:item" xmlns:r="urn:shadow">
+    <r:node r:flag="true"/>
+    <node xmlns:r="">plain</node>
+  </item>
+  <?state key="x?>y"?>
+</r:root>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, trailer)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name NMTOKEN #REQUIRED value CDATA "">
+  <!ELEMENT payload ANY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ENTITY qmark "?">
+  <!ENTITY nested "left-&qmark;-right">
+]>
+<envelope>
+  <header>
+    <field name="a" value="1"/>
+    <field name="b"/>
+    <field name="c" value="&nested;"/>
+  </header>
+  <payload>
+    <data><![CDATA[<x><y/></x>]]></data>
+    <data attr="unterminated><inside/></data>
+    <empty />
+  </payload>
+  <trailer>finish</trailer>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE form [
+  <!ELEMENT form (section|separator)*>
+  <!ELEMENT section (label, input*)>
+  <!ATTLIST section key NMTOKEN #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT input EMPTY>
+  <!ATTLIST input
+    name CDATA #REQUIRED
+    type (text|checkbox|hidden) "text"
+    checked (yes|no) "no">
+  <!ELEMENT separator EMPTY>
+]>
+<form>
+  <section key="first">
+    <label>Résumé &amp; overview</label>
+    <input name="q" type="text"/>
+    <input name="agree" type="checkbox" checked="yes"/>
+  </section>
+  <separator/>
+  <section>
+    <label><![CDATA[raw ]]> label</label>
+    <input name="token" type="hidden" checked="maybe"/>
+  </section>
+</form>
+```
+
+```xml
+<warehouse xmlns="urn:warehouse" xmlns:m="urn:meta">
+  <rack id="R1">
+    <bin id="B1" m:status="open">
+      <item code="X&amp;Y" quantity="0003">bolt</item>
+      <item code="Z" quantity="-1"/>
+    </bin>
+    <bin id="B2" m:status="sealed">
+      <![CDATA[unclosed cdata marker ]]> ]]>
+    </bin>
+  </rack>
+  <rack id="R2">
+    <bin id="B3">
+      <item code="Q" quantity="2"><![CDATA[alpha]]></item>
+      <item code="W" quantity="4"><sub>unexpected</sub></item>
+    </rack>
+  </rack>
+</warehouse>
+```

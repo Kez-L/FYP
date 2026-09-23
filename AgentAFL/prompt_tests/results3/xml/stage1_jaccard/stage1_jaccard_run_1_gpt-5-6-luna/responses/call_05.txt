@@ -1,0 +1,123 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, description?, ref*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emph|break)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST entry id ID #REQUIRED links IDREFS #IMPLIED status (new|old|held) "new">
+  <!ATTLIST ref target IDREF #REQUIRED kind NMTOKEN #IMPLIED>
+]>
+<catalog>
+  <entry id="e1" links="e2 e3" status="held">
+    <title>First &amp; Final</title>
+    <description>alpha <emph>βeta</emph><break/>gamma</description>
+    <ref target="e2" kind="cross-link"/>
+  </entry>
+  <entry id="e2">
+    <title>Second</title>
+    <ref target="e1"/>
+  </entry>
+  <entry id="e3">
+    <title>Third</title>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, payload, trailer)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT payload (#PCDATA)>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST trailer checksum CDATA #REQUIRED>
+]>
+<packet>
+  <header>
+    <field name="empty" value=""/>
+    <field name="quote" value="&quot;&apos;&lt;&gt;&amp;"/>
+    <field name="spaces" value="&#x9;&#xA;&#xD;"/>
+  </header>
+  <payload>left&#x0A;middle&#x20;right&#x1F600;end</payload>
+  <trailer checksum="0x00FF"/>
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<forest>
+  <tree kind="deciduous">
+    <branch>
+      <leaf index="0"/>
+      <leaf index="1"/>
+      <branch>
+        <leaf index="2"/>
+      </branch>
+    </branch>
+  </tree>
+  <tree kind="conifer">
+    <branch><leaf index="3"/></branch>
+  </tree>
+  <fallen>
+    text-before
+    <mark>embedded</mark>
+    text-after
+  </fallen>
+</forest>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section|note)*>
+  <!ELEMENT section (heading, item+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST section number CDATA #IMPLIED>
+]>
+<report>
+  <section number="1">
+    <heading>Overview</heading>
+    <item>alpha</item>
+    <item>beta &amp; gamma</item>
+  </section>
+  <note><![CDATA[unterminated-looking ]]]]><![CDATA[> split]]></note>
+  <section number="2">
+    <heading>Details</heading>
+    <item>one</item>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE media [
+  <!ELEMENT media (asset*, archive?)>
+  <!ELEMENT asset EMPTY>
+  <!ELEMENT archive (asset*)>
+  <!ATTLIST asset
+    name CDATA #REQUIRED
+    format NOTATION (png|jpeg|bin) #IMPLIED
+    source ENTITY #IMPLIED
+  >
+  <!NOTATION png SYSTEM "image/png">
+  <!NOTATION jpeg PUBLIC "image/jpeg">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY blob SYSTEM "payload.bin" NDATA bin>
+]>
+<media>
+  <asset name="cover" format="png" source="logo"/>
+  <asset name="raw" format="bin" source="blob"/>
+  <archive>
+    <asset name="nested" format="jpeg"/>
+  </archive>
+</media>
+```

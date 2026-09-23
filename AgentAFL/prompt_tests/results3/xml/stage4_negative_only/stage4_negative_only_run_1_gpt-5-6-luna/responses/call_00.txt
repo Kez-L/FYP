@@ -1,0 +1,164 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" generated="2026-09-23">
+  <section id="hardware">
+    <item sku="A-001" available="true">
+      <name>Compact Sensor</name>
+      <price currency="EUR">19.95</price>
+      <tags>
+        <tag>embedded</tag>
+        <tag>low-power</tag>
+      </tags>
+    </item>
+    <item sku="A-002" available="false">
+      <name>Signal Bridge</name>
+      <price currency="USD">74.00</price>
+      <tags/>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<message xmlns="urn:example:message" xmlns:x="urn:example:meta">
+  <header>
+    <sender x:id="node-7">relay@example.test</sender>
+    <recipients>
+      <recipient priority="high">alpha@example.test</recipient>
+      <recipient priority="normal">beta@example.test</recipient>
+    </recipients>
+  </header>
+  <body format="text"><![CDATA[
+Line one
+Line two contains <literal> markup and & symbols.
+]]></body>
+  <x:annotations>
+    <x:annotation key="checksum">a1b2c3</x:annotation>
+  </x:annotations>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow id="wf-42">
+  <start ref="collect"/>
+  <steps>
+    <step id="collect" kind="input">
+      <parameters>
+        <parameter name="path" type="string">/var/data/inbox</parameter>
+        <parameter name="recursive" type="boolean">true</parameter>
+      </parameters>
+      <on-success ref="validate"/>
+    </step>
+    <step id="validate" kind="transform">
+      <rules>
+        <rule field="size" operator="greater-than">0</rule>
+        <rule field="extension" operator="in">
+          <value>xml</value>
+          <value>json</value>
+        </rule>
+      </rules>
+      <on-success ref="archive"/>
+      <on-failure ref="reject"/>
+    </step>
+    <step id="archive" kind="output">
+      <destination compression="gzip">archive://daily</destination>
+    </step>
+    <step id="reject" kind="output">
+      <destination>quarantine://manual-review</destination>
+    </step>
+  </steps>
+</workflow>
+```
+
+```xml
+<?xml version="1.0"?>
+<library>
+  <book isbn="978-0-00-000001-1">
+    <title>Maps of Quiet Places</title>
+    <authors>
+      <author>
+        <given>Rhea</given>
+        <family>North</family>
+      </author>
+      <author>
+        <given>Jon</given>
+        <family>Vale</family>
+      </author>
+    </authors>
+    <metadata>
+      <published year="2024" month="11"/>
+      <subjects>
+        <subject>cartography</subject>
+        <subject>travel</subject>
+      </subjects>
+    </metadata>
+    <chapters count="2">
+      <chapter number="1">
+        <heading>Arrival</heading>
+        <paragraph>At dawn, the station was empty.</paragraph>
+      </chapter>
+      <chapter number="2">
+        <heading>Departure</heading>
+        <paragraph>The last map folded into a smaller shape.</paragraph>
+      </chapter>
+    </chapters>
+  </book>
+  <book isbn="978-0-00-000002-8">
+    <title>Recursive Gardens</title>
+    <authors>
+      <author>
+        <given>Mina</given>
+        <family>Orchard</family>
+      </author>
+    </authors>
+    <metadata>
+      <published year="2026"/>
+      <subjects/>
+    </metadata>
+    <chapters count="0"/>
+  </book>
+</library>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <environment name="staging">
+    <variables>
+      <variable name="HOST">example.test</variable>
+      <variable name="PORT">8443</variable>
+      <variable name="FEATURE_FLAGS">
+        <flag enabled="true">search</flag>
+        <flag enabled="false">telemetry</flag>
+      </variable>
+    </variables>
+  </environment>
+  <services>
+    <service name="gateway" enabled="true">
+      <endpoint protocol="https">
+        <host>${HOST}</host>
+        <port>${PORT}</port>
+      </endpoint>
+      <timeouts>
+        <connect milliseconds="500"/>
+        <read milliseconds="2500"/>
+      </timeouts>
+    </service>
+    <service name="worker" enabled="false">
+      <queue>
+        <name>jobs.low</name>
+        <concurrency>4</concurrency>
+      </queue>
+    </service>
+  </services>
+  <policies>
+    <policy effect="allow" resource="reports">
+      <condition attribute="role">
+        <equals>analyst</equals>
+      </condition>
+    </policy>
+  </policies>
+</configuration>
+```

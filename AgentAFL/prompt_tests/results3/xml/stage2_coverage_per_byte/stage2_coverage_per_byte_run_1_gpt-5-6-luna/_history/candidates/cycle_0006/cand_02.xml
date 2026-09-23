@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node (label?, property*)>
+  <!ATTLIST node
+    key ID #REQUIRED
+    kind (source|sink|middle) #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA|value)*>
+  <!ATTLIST property name CDATA #REQUIRED>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge
+    from IDREF #REQUIRED
+    to IDREF #REQUIRED
+    weight CDATA "1.0">
+  <!ENTITY amp "&#38;">
+  <!ENTITY quoted "&quot;quoted&quot;">
+]>
+<graph>
+  <node key="n1" kind="source">
+    <label>alpha &amp; beta</label>
+    <property name="path"><value>/tmp/&amp;data</value></property>
+  </node>
+  <node key="n2"><property name="note">&quoted;</property></node>
+  <edge from="n1" to="n2" weight="0.75"/>
+  <edge from="n2" to="n1"/>
+</graph>

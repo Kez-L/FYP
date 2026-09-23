@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ELEMENT config (defaults,profile+)>
+  <!ELEMENT defaults EMPTY>
+  <!ELEMENT profile (option|include|value)*>
+  <!ELEMENT option EMPTY>
+  <!ELEMENT include EMPTY>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST config xmlns CDATA #IMPLIED>
+  <!ATTLIST defaults
+    timeout NMTOKEN "30"
+    retries NMTOKEN "3">
+  <!ATTLIST profile
+    name ID #REQUIRED
+    parent IDREF #IMPLIED
+    enabled (true|false) "true">
+  <!ATTLIST option key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST include href URI #REQUIRED mode (replace|merge) "merge">
+  <!ENTITY % optional "<!ATTLIST value lang NMTOKEN #IMPLIED>">
+  %optional;
+  <![IGNORE[
+    <!ELEMENT obsolete (#PCDATA)>
+    <!ATTLIST obsolete since CDATA #IMPLIED>
+  ]]>
+]>
+<config xmlns="urn:config">
+  <defaults timeout="000" retries="&#x32;"/>
+  <profile name="base">
+    <option key="path" value="/var/lib/app"/>
+    <value lang="en">A&nbsp;B</value>
+    <include href="config-extra.xml" mode="replace"/>
+  </profile>
+  <profile name="child" parent="base" enabled="false">
+    <option key="flags" value="x y z"/>
+    <value><![CDATA[${HOME}/cache &amp; logs]]></value>
+  </profile>
+</config>

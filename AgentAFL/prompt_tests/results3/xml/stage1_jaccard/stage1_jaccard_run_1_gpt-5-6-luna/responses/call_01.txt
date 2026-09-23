@@ -1,0 +1,113 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|note|ref)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST section id ID #REQUIRED mode (open|closed) "open">
+  <!ATTLIST item key NMTOKEN #IMPLIED>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY % extra "<!ATTLIST note xml:lang CDATA #IMPLIED>">
+  %extra;
+]>
+<catalog>
+  <section id="s-alpha" mode="closed">
+    <title>Signals &amp; &quot;noise&quot;</title>
+    <item key="a">first<note xml:lang="fr">résumé&nbsp;</note><ref target="s-alpha"/></item>
+  </section>
+  <section id="s-beta">
+    <title><![CDATA[<opaque> & strange ]]> material</title>
+    <item key="b">second<!--comment--><?hint value?></item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload (chunk|payload)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST header xmlns CDATA #IMPLIED xmlns:q CDATA #IMPLIED>
+  <!ATTLIST payload level NMTOKEN #IMPLIED>
+  <!ENTITY open "<">
+  <!ENTITY close ">">
+  <!ENTITY quote "&quot;">
+]>
+<e:envelope xmlns:e="urn:env" xmlns:q="urn:qualified" q:route="&quote;west&quote;">
+  <e:header xmlns="urn:header" xmlns:q="urn:header-q" q:version="007"/>
+  <e:payload level="0">
+    <e:chunk><![CDATA[raw ]]>]]><![CDATA[ still raw]]></e:chunk>
+    <e:payload level="1">
+      <e:chunk>&open;tag&close; &amp; text</e:chunk>
+      <e:payload level="2"><e:chunk>leaf</e:chunk></e:payload>
+    </e:payload>
+  </e:payload>
+</e:envelope>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ENTITY % switches "INCLUDE">
+  <!ENTITY % definitions '
+    <!ELEMENT report (record*)>
+    <!ELEMENT record (value|empty|![CDATA[x]])*>
+    <!ELEMENT value (#PCDATA)>
+    <!ELEMENT empty EMPTY>
+    <!ATTLIST record code CDATA #IMPLIED>
+  '>
+  %definitions;
+  <![%switches;[
+    <!ENTITY injected "inside-section">
+  ]]>
+]>
+<report>
+  <record code="A&amp;B"><value>one &injected;</value><empty/></record>
+  <record><value><![CDATA[brackets ]]> and ]]><![CDATA[ more]]></value></record>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ELEMENT branch ANY>
+  <!ELEMENT leaf (#PCDATA)>
+  <!ATTLIST branch flag CDATA #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "missing-data.bin" NDATA bin>
+  <!ENTITY text "alpha&#x0A;beta&#x09;gamma">
+]>
+<?xml-stylesheet type="text/xsl" href="missing.xsl"?>
+<root xmlns="urn:tree" xml:base="file:///tmp/example/">
+  <branch flag="&quot;quoted&quot;">
+    <leaf>&text;</leaf>
+    <branch xml:lang="und">
+      <?local instruction?>
+      <leaf>before&amp;after</leaf>
+      <leaf><![CDATA[<not-an-element attr="x"/>]]></leaf>
+    </branch>
+  </branch>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE broken [
+  <!ELEMENT broken (a,b,c)>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c EMPTY>
+  <!ENTITY x "X">
+]>
+<broken>
+  <a>prefix &x; &unknown; <![CDATA[unterminated-looking]]></a>
+  <b attr='single quote' other="&x;">text
+  <c>
+</broken>
+```

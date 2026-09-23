@@ -1,0 +1,140 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, price, details?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|emph|code)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ATTLIST entry id ID #REQUIRED region CDATA "unknown">
+  <!ENTITY vendor "A &amp; B Supplies">
+  <!ENTITY intro "catalogue item">
+  <!ENTITY % extra "<!ATTLIST entry audited (yes|no) 'no'>">
+  %extra;
+]>
+<catalog>
+  <entry id="item-α" region="west" audited="yes">
+    <title>&intro;: &vendor;</title>
+    <price currency="EUR">19&#x2E;95</price>
+    <details>Use <emph>carefully</emph>; see <code>item-α</code>.</details>
+  </entry>
+  <entry id="item-β">
+    <title>Replacement &amp; repair</title>
+    <price currency="JPY">2400</price>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?processing instruction-data?>
+<r:report xmlns:r="urn:example:report"
+          xmlns:m="urn:example:meta"
+          xmlns="urn:example:default"
+          xml:lang="fr"
+          xml:space="preserve">
+  <!-- A comment between namespace-aware elements -->
+  <r:header m:generated="2026-09-23T00:00:00Z">
+    <r:name>Résumé</r:name>
+    <r:flag enabled="true"/>
+  </r:header>
+  <r:body>
+    <![CDATA[
+      <not-an-element attr="1 & 2">raw ]]> text
+      ]]>
+    <m:annotation xml:base="./notes/">ligne&nbsp;non résolue</m:annotation>
+    <section xmlns="">
+      <label>alpha</label>
+      <value>one</value>
+      <value><![CDATA[two < three > one]]></value>
+    </section>
+  </r:body>
+</r:report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE media [
+  <!ELEMENT media (caption, asset, metadata*)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT asset EMPTY>
+  <!ELEMENT metadata (#PCDATA)>
+  <!ATTLIST asset
+            source ENTITY #REQUIRED
+            format NOTATION #IMPLIED
+            width NMTOKEN #IMPLIED
+            height NMTOKEN #IMPLIED>
+  <!NOTATION gif SYSTEM "image/gif">
+  <!NOTATION svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+  <!ENTITY picture SYSTEM "images/banner.gif" NDATA gif>
+  <!ENTITY mark "R&amp;D &lt;archive&gt;">
+]>
+<media>
+  <caption>&mark; &#x1F4F7; &#10; archive</caption>
+  <asset source="picture" format="gif" width="001024" height="000256"/>
+  <metadata key="empty"></metadata>
+  <metadata><![CDATA[bytes: 00 01 02 ]]></metadata>
+</media>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (part|separator)+>
+  <!ELEMENT part (name, data)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ATTLIST part id ID #IMPLIED>
+  <!ENTITY open "[[">
+  <!ENTITY close "]]">
+]>
+<envelope>
+  <part id="p1">
+    <name>broken sample</name>
+    <data>prefix &open;<chunk>inside</chunk>suffix &close;</data>
+  </part>
+  <separator/>
+  <part id="p2" id="duplicate">
+    <name>unclosed data</name>
+    <data><![CDATA[unterminated-looking content ]]> and &missing;</data>
+  </part>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (title, grid)>
+  <!ELEMENT title (#PCDATA|br)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT grid (cell*)>
+  <!ELEMENT cell (value?, note?)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST cell row NMTOKEN #REQUIRED col NMTOKEN #REQUIRED state CDATA "new">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY twice "&#x25; &amp; &lt;">
+]>
+<?xml-stylesheet type="text/css" href="dash.css"?>
+<dashboard xmlns:ui="urn:ui" ui:version="2">
+  <title>Daily<br/>status &nbsp; &twice;</title>
+  <grid>
+    <cell row="1" col="1" state="ready">
+      <value>42</value>
+      <note xml:lang="en">steady</note>
+    </cell>
+    <cell row="1" col="2" state="stalled"/>
+    <cell row="2" col="1">
+      <value><![CDATA[
+        line-one
+        line-two
+      ]]></value>
+      <note><!-- deliberately empty --></note>
+    </cell>
+  </grid>
+</dashboard>
+```

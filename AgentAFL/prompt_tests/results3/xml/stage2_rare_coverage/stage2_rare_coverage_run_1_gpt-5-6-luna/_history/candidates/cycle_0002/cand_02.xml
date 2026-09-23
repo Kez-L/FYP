@@ -1,0 +1,30 @@
+<?xml version="1.1"?>
+<network xmlns="urn:net" xmlns:x="urn:extension" xmlns:y="urn:extension">
+  <endpoint address="[2001:db8::1]:443" enabled="yes">
+    <tls>
+      <protocol>1.3</protocol>
+      <cipher-suite name="TLS_AES_128_GCM_SHA256"/>
+      <certificate>
+        <![CDATA[
+-----BEGIN CERTIFICATE-----
+MIIB-invalid-test-data
+-----END CERTIFICATE-----
+        ]]>
+      </certificate>
+    </tls>
+    <routes>
+      <route method="GET" path="/α/β">
+        <x:header name="Accept">application/xml</x:header>
+        <x:header name="X-Trace"><![CDATA[a&b<c]]></x:header>
+      </route>
+      <route method="POST" path="/submit">
+        <body media-type="application/xml">
+          <packet y:kind="nested"><value>17</value></packet>
+        </body>
+      </route>
+    </routes>
+  </endpoint>
+  <endpoint address="unix:/tmp/service.sock" enabled="no">
+    <failure reason="maintenance"/>
+  </endpoint>
+</network>

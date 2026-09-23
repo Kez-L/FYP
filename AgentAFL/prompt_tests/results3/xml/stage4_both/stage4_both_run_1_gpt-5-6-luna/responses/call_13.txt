@@ -1,0 +1,181 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (intro, product*)>
+  <!ELEMENT intro (#PCDATA)>
+  <!ELEMENT product (name, description, price, tags)>
+  <!ATTLIST product code ID #REQUIRED currency (EUR|USD|JPY) "EUR">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|strong|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ENTITY brand "Northwind &amp; Sons">
+  <!ENTITY trademark "™">
+]>
+<catalog>
+  <intro>Featured products from &brand; &trademark;.</intro>
+  <product code="p-001" currency="USD">
+    <name>Field notebook</name>
+    <description>Water-resistant <strong>recycled</strong> paper.<br/>Fits in an <em>ordinary</em> pocket.</description>
+    <price>14.95</price>
+    <tags><tag>stationery</tag><tag>outdoor</tag></tags>
+  </product>
+  <product code="p-002">
+    <name>Desk lamp</name>
+    <description>Adjustable arm with a warm light.</description>
+    <price>39.00</price>
+    <tags><tag>office</tag></tags>
+  </product>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:example:config"
+               xmlns:env="urn:example:environment"
+               xmlns:sec="urn:example:secret"
+               version="3">
+  <profile name="staging" enabled="true">
+    <env:variables>
+      <env:variable name="PORT" value="8088"/>
+      <env:variable name="LOG_LEVEL">verbose</env:variable>
+    </env:variables>
+    <database>
+      <endpoint protocol="postgres" host="db.internal" port="5432">
+        <database-name>reports</database-name>
+        <sec:credential algorithm="plain">
+          <sec:user>reporter</sec:user>
+          <sec:password>change-me</sec:password>
+        </sec:credential>
+      </endpoint>
+      <pool min="2" max="12">
+        <timeout unit="ms">4500</timeout>
+        <retry count="3" backoff="exponential"/>
+      </pool>
+    </database>
+    <features>
+      <feature key="new-dashboard">
+        <rule audience="staff">enabled</rule>
+        <rule audience="guest">disabled</rule>
+      </feature>
+      <feature key="audit-log"><rule audience="*">enabled</rule></feature>
+    </features>
+  </profile>
+</configuration>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (participant+, message*)>
+  <!ELEMENT participant EMPTY>
+  <!ATTLIST participant id ID #REQUIRED role NMTOKEN #REQUIRED>
+  <!ELEMENT message (#PCDATA|mention|attachment|quote)*>
+  <!ATTLIST message from IDREF #REQUIRED timestamp CDATA #REQUIRED>
+  <!ELEMENT mention (#PCDATA)>
+  <!ATTLIST mention user IDREF #REQUIRED>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment href URI #REQUIRED media CDATA #IMPLIED>
+  <!ELEMENT quote (#PCDATA|message)*>
+]>
+<conversation>
+  <participant id="u-alex" role="moderator"/>
+  <participant id="u-bea" role="member"/>
+  <participant id="u-cai" role="member"/>
+  <message from="u-alex" timestamp="2026-09-23T09:15:00Z">
+    Welcome, <mention user="u-bea">@Bea</mention>.
+    <attachment href="https://example.invalid/files/agenda.pdf" media="application/pdf"/>
+  </message>
+  <message from="u-bea" timestamp="2026-09-23T09:17:41Z">
+    <quote><message from="u-alex" timestamp="earlier">Welcome everyone.</message></quote>
+    I have a question about the schedule.
+  </message>
+  <message from="u-cai" timestamp="2026-09-23T09:19:02Z">
+    The symbols <![CDATA[<slot/> & {placeholder}]]> are examples, not markup.
+  </message>
+</conversation>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<graph xmlns="urn:example:graph"
+       xmlns:xlink="http://www.w3.org/1999/xlink"
+       directed="true">
+  <metadata>
+    <created>2026-09-23</created>
+    <description>Dependency graph with nested annotations.</description>
+  </metadata>
+  <vertices>
+    <vertex id="build" kind="task">
+      <label>Compile sources</label>
+      <property name="worker">linux-amd64</property>
+      <property name="parallel">false</property>
+    </vertex>
+    <vertex id="test" kind="task">
+      <label>Run tests</label>
+      <property name="timeout">900</property>
+    </vertex>
+    <vertex id="publish" kind="release">
+      <label>Publish artifacts</label>
+    </vertex>
+  </vertices>
+  <edges>
+    <edge id="e1" from="build" to="test" weight="1.0">
+      <condition>exit-code = 0</condition>
+    </edge>
+    <edge id="e2" from="test" to="publish" weight="0.75">
+      <condition><![CDATA[coverage >= 80 && failures == 0]]></condition>
+      <link xlink:type="simple" xlink:href="urn:artifact:test-report"/>
+    </edge>
+  </edges>
+  <clusters>
+    <cluster id="ci">
+      <member ref="build"/>
+      <member ref="test"/>
+      <cluster id="release-stage">
+        <member ref="publish"/>
+      </cluster>
+    </cluster>
+  </clusters>
+</graph>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder|file|shortcut)*>
+  <!ELEMENT folder (folder|file|shortcut)*>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ELEMENT file (checksum|content?)>
+  <!ATTLIST file name CDATA #REQUIRED size NMTOKEN #IMPLIED executable (yes|no) "no">
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST checksum algorithm (sha256|md5) "sha256">
+  <!ELEMENT content (#PCDATA)>
+  <!ELEMENT shortcut EMPTY>
+  <!ATTLIST shortcut name CDATA #REQUIRED target CDATA #REQUIRED>
+]>
+<archive>
+  <folder name="documents">
+    <file name="readme.txt" size="42">
+      <checksum algorithm="sha256">8f434346648f6b96df89dda901c517a7</checksum>
+      <content>Archive manifest follows.</content>
+    </file>
+    <folder name="drafts">
+      <file name="outline.xml" executable="no">
+        <content><![CDATA[<outline><item>First</item></outline>]]></content>
+      </file>
+      <shortcut name="latest" target="../readme.txt"/>
+    </folder>
+  </folder>
+  <folder name="bin">
+    <file name="pack" size="8192" executable="yes">
+      <checksum>00000000000000000000000000000000</checksum>
+    </file>
+  </folder>
+  <file name="empty.dat" size="0"/>
+</archive>
+```

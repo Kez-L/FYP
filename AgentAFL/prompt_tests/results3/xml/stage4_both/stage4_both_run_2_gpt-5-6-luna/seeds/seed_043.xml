@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (header, payload, signature?)>
+  <!ELEMENT header (field+)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT signature (algorithm, digest)>
+  <!ELEMENT algorithm (#PCDATA)>
+  <!ELEMENT digest (#PCDATA)>
+  <!ATTLIST package id ID #REQUIRED compression (none|gzip|zstd) "none">
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST chunk number CDATA #REQUIRED final (yes|no) "no">
+  <!ATTLIST link href URI #REQUIRED rel CDATA #IMPLIED>
+  <!ENTITY % crypto "IGNORE">
+  <![%crypto;[
+    <!ATTLIST signature verified (yes|no) "no">
+  ]]>
+  <!ENTITY nbsp "&#160;">
+]>
+<package id="p-42" compression="zstd">
+  <header>
+    <field name="content-type" value="application/octet-stream"/>
+    <field name="content-length" value="4096"/>
+    <field name="description" value="binary &amp; metadata"/>
+  </header>
+  <payload>
+    <chunk number="0">AAECAwQF<link href="urn:chunk:0" rel="self"/>Zg==</chunk>
+    <chunk number="1">H4sI&nbsp;encoded&#x0A;payload</chunk>
+    <chunk number="2" final="yes"><![CDATA[7f8e9d0c]]></chunk>
+  </payload>
+  <signature>
+    <algorithm>sha512</algorithm>
+    <digest>c29tZS1kaWdlc3Q=</digest>
+  </signature>
+</package>

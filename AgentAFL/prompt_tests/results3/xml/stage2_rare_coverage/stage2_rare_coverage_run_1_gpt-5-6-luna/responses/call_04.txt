@@ -1,0 +1,151 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, entry*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (name, price?, note?)>
+  <!ATTLIST entry ref IDREF #IMPLIED status (new|used|archived) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ENTITY currency "€">
+]>
+<catalog>
+  <section code="s-main">
+    <title>Special offers</title>
+    <entry ref="item-1" status="new">
+      <name>Glass &amp; Stone</name>
+      <price>19 &currency; 95</price>
+      <note>Limited <emph>edition</emph> available.</note>
+    </entry>
+    <entry ref="item-2">
+      <name>Plain item</name>
+      <note><![CDATA[raw <markup> and ]] characters]]></note>
+    </entry>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="urn:outer" xmlns:m="urn:middle" xmlns:n="urn:nested">
+  text-before
+  <m:branch id="b1">
+    <m:leaf/>
+    <n:wrapper xmlns:n="urn:shadow">
+      <n:leaf n:value="α"/>
+      <leaf xmlns="">unqualified</leaf>
+    </n:wrapper>
+    <m:branch>
+      <m:leaf><![CDATA[one & two < three]]></m:leaf>
+    </m:branch>
+  </m:branch>
+  <tail xmlns="" data="x&#10;y">
+    <child xmlns="urn:outer" m:flag="true" xmlns:m="urn:middle"/>
+  </tail>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (meta, body, attachment*)>
+  <!ELEMENT meta (from, to+, timestamp)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT body (p|quote|list)*>
+  <!ELEMENT p (#PCDATA|link|br)*>
+  <!ELEMENT quote (#PCDATA|p)*>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|p)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment filename CDATA #REQUIRED media CDATA #IMPLIED>
+]>
+<message>
+  <meta>
+    <from>sender@example.test</from>
+    <to>one@example.test</to>
+    <to>two@example.test</to>
+    <timestamp>2026-09-23T12:34:56Z</timestamp>
+  </meta>
+  <body>
+    <p>Hello <link>world</link><br/>again.</p>
+    <quote><p>Nested quotation.</p></quote>
+    <list>
+      <item>first</item>
+      <item><p>second paragraph</p><p>continuation</p></item>
+    </list>
+  </body>
+  <attachment filename="empty.bin" media="application/octet-stream"/>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE universe [
+  <!ENTITY greeting "hello">
+  <!ENTITY recursive "&greeting;, universe">
+  <!NOTATION jpg SYSTEM "image/jpeg">
+  <!ELEMENT universe (region*)>
+  <!ELEMENT region (world|void|world)*>
+  <!ATTLIST region name CDATA #IMPLIED>
+  <!ELEMENT world (continent*)>
+  <!ATTLIST world id ID #IMPLIED>
+  <!ELEMENT continent (#PCDATA|city)*>
+  <!ATTLIST continent code CDATA #IMPLIED>
+  <!ELEMENT city EMPTY>
+  <!ATTLIST city name CDATA #REQUIRED population NMTOKEN #IMPLIED>
+  <!ELEMENT void EMPTY>
+  <!ATTLIST void kind (black-hole|empty) "empty">
+]>
+<universe>
+  <region name="north">
+    <world id="earth">
+      <continent code="EU">The &recursive; <city name="Paris" population="2161000"/></continent>
+      <continent code="AS">
+        <city name="Tokyo" population="14000000"/>
+      </continent>
+    </world>
+    <void kind="black-hole"/>
+    <world>
+      <continent code="OC"><city name="Suva"/></continent>
+    </world>
+  </region>
+  <region name="empty"/>
+</universe>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<document>
+  <metadata>
+    <field name="empty"/>
+    <field name="multiline">line one
+line two
+line three</field>
+    <field name="symbols">&lt;tag&gt; &quot;quoted&quot; &apos;apostrophe&apos;</field>
+  </metadata>
+  <records>
+    <record key="A">
+      <value type="integer">-9223372036854775808</value>
+      <value type="decimal">0.0000000000000000000001</value>
+      <value type="boolean">false</value>
+    </record>
+    <record key="B">
+      <value type="hex">0x00ffEE</value>
+      <value type="nan">NaN</value>
+      <value type="infinity">INF</value>
+    </record>
+  </records>
+  <mixed>prefix <b>bold</b> middle <i>italic <u>underlined</u></i> suffix</mixed>
+  <empty-container>
+    <a><b><c><d/></c></b></a>
+  </empty-container>
+</document>
+```

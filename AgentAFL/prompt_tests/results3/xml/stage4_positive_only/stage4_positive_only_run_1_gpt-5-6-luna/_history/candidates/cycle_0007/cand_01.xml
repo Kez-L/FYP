@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<configuration xmlns="urn:example:config" xmlns:sec="urn:example:security">
+  <?build profile="fuzz-seed"?>
+  <service name="relay" enabled="yes">
+    <endpoint scheme="https" host="relay.example.test" port="443">
+      <path>/v2/messages</path>
+      <headers>
+        <header key="Accept">application/xml</header>
+        <header key="X-Trace">a7f0c91e-2d11-4b44-9a00-001122334455</header>
+      </headers>
+    </endpoint>
+    <retry count="03">
+      <delay unit="milliseconds">000250</delay>
+      <backoff multiplier="1.50"/>
+    </retry>
+  </service>
+  <sec:credentials>
+    <sec:token><![CDATA[opaque&token<value>]]></sec:token>
+    <sec:scopes>
+      <sec:scope>read</sec:scope>
+      <sec:scope>publish</sec:scope>
+    </sec:scopes>
+  </sec:credentials>
+</configuration>

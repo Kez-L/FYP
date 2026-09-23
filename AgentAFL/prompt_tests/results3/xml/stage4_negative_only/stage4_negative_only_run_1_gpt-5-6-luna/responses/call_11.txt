@@ -1,0 +1,108 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+, footer?)>
+  <!ELEMENT entry (title, body, link*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST entry id ID #REQUIRED kind (note|record|draft) "record">
+  <!ATTLIST link target IDREF #IMPLIED rel CDATA #IMPLIED>
+  <!ENTITY company "Northwind &amp; Sons">
+]>
+<archive>
+  <entry id="e1" kind="note">
+    <title>Release &company;</title>
+    <body>Mixed <em>emphasis</em>, inline <code>code()</code><br/>and text.</body>
+    <link target="e2" rel="related"/>
+  </entry>
+  <entry id="e2" kind="draft">
+    <title>Second entry</title>
+    <body>Unusual whitespace&#x0A;and a nonbreaking space&#xA0;.</body>
+  </entry>
+  <footer>End of archive</footer>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:root xmlns:r="urn:outer" xmlns="urn:default" xmlns:q="urn:one" xml:lang="fr" xml:space="preserve">
+  <r:branch name="north">
+    <leaf xmlns="" xml:lang="en">plain namespace</leaf>
+    <q:item xmlns:q="urn:two" q:flag="yes" q:kind="alternate">
+      <q:value xml:base="https://example.invalid/a/../b/">42</q:value>
+    </q:item>
+  </r:branch>
+  <r:branch name="south" xmlns:z="urn:unused">
+    <node z:marker="kept" xmlns:z="urn:marker"/>
+    <node xmlns="urn:rebound"><child/></node>
+  </r:branch>
+</r:root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE form [
+  <!ELEMENT form (field|group)+>
+  <!ELEMENT group (label, field*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST field name CDATA #REQUIRED type CDATA "text" readonly (yes|no) "no">
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+  <!ENTITY sample "A &amp; B &lt; C">
+]>
+<form>
+  <group>
+    <label>Contact &left;primary&right;</label>
+    <field name="address" type="multiline" readonly="yes">one&#13;two&#10;three</field>
+    <field name="comment"><![CDATA[raw ]]> text]]&gt; safely</field>
+  </group>
+  <field name="token">value &sample;</field>
+</form>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?processing target-data?>
+<!-- comment before the document element -->
+<scene>
+  <![CDATA[This is not allowed outside an element]]>
+</scene>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (metadata, payload)>
+  <!ELEMENT metadata (name, checksum, flags)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT flags (flag*)>
+  <!ELEMENT flag EMPTY>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ATTLIST package version NMTOKEN #REQUIRED>
+  <!ATTLIST flag key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+]>
+<package version="v2.0-beta">
+  <metadata>
+    <name xml:space="default">Δelta &amp; Ωmega</name>
+    <checksum>sha256:0000ffff</checksum>
+    <flags>
+      <flag key="compressed" value="false"/>
+      <flag key="signed"/>
+    </flags>
+  </metadata>
+  <payload>
+    <chunk>prefix<part>middle</part>suffix</chunk>
+    <chunk><part>nested</part>and<part>adjacent</part>&nbsp;</chunk>
+  </payload>
+</package>
+```

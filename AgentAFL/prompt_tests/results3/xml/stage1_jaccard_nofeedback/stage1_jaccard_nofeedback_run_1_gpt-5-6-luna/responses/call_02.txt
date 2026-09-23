@@ -1,0 +1,93 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:seed:catalog" xmlns:x="urn:seed:extra">
+  <x:entry id="α-0" enabled="yes">
+    <title><![CDATA[<&]]></title>
+    <value>left &amp; right &#x1F600;</value>
+    <!-- nested-looking markup inside a comment: <fake attr="&quot;"/> -->
+    <x:meta key="k&#13;&#10;v">text</x:meta>
+  </x:entry>
+  <entry id="broken">
+    <child/>
+    <child><![CDATA[]]></child>
+  </entry>
+</catalog>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ELEMENT report (section+, footer?)>
+  <!ELEMENT section (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (#PCDATA|note)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST section name ID #REQUIRED>
+  <!ENTITY warning "use &lt;carefully&gt; &amp; verify">
+]>
+<report>
+  <section name="s1">
+    <heading>First &warning;</heading>
+    <item>alpha<note>embedded</note>omega</item>
+    <item><![CDATA[raw ]]> text &warning;</item>
+  </section>
+  <section name="s2">
+    <heading>Second</heading>
+  </section>
+  <footer>done</footer>
+</report>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE envelope [
+  <!ENTITY ext SYSTEM "relative/path/that/does/not/exist.ent">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "payload.bin" NDATA bin>
+]>
+<envelope>
+  <header xml:lang="und" xml:space="preserve">
+    <token><![CDATA[abc]]></token>
+  </header>
+  <body>
+    <reference href="urn:test" value="&ext;"/>
+    <binary>&blob;</binary>
+    <?processing instruction-data?>
+  </body>
+</envelope>
+```
+
+```xml
+<root xmlns:a="urn:a" xmlns:b="urn:b" xmlns="urn:default">
+  <a:item a:id="1" b:flag="true">
+    <a:item>
+      <b:value>one</b:value>
+      <b:value>two</b:value>
+    </a:item>
+  </a:item>
+  <mixed>before<a:empty/>middle<![CDATA[after <tag>]]></mixed>
+  <lookup xmlns="" xmlns:a="urn:shadow">
+    <a:item a:id="shadow"/>
+  </lookup>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map ANY>
+  <!ENTITY q "quot">
+  <!ENTITY lt "<">
+  <!ENTITY gt ">">
+  <!ENTITY pair "&lt;pair key='k'&gt;value&lt;/pair&gt;">
+]>
+<map>
+  <item key="&q;">&lt;escaped&gt;</item>
+  &pair;
+  <container>
+    <empty></empty>
+    <data><![CDATA[unterminated-looking ]]]]><![CDATA[> boundary]]></data>
+  </container>
+  <tail>one&#x0A;two&#x09;three</tail>
+</map>
+```

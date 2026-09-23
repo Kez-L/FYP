@@ -1,0 +1,28 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (profile, modules, secrets?)>
+  <!ELEMENT profile EMPTY>
+  <!ELEMENT modules (module*)>
+  <!ELEMENT module (dependency*)>
+  <!ELEMENT dependency EMPTY>
+  <!ELEMENT secrets (token+)>
+  <!ELEMENT token (#PCDATA)>
+  <!ATTLIST profile environment (development|testing|production) #REQUIRED debug (0|1) "0">
+  <!ATTLIST module name NMTOKEN #REQUIRED enabled (true|false) "true">
+  <!ATTLIST dependency name NMTOKEN #REQUIRED version CDATA #IMPLIED optional (true|false) "false">
+  <!ATTLIST token name CDATA #REQUIRED>
+]>
+<configuration>
+  <profile environment="testing" debug="1"/>
+  <modules>
+    <module name="parser" enabled="true">
+      <dependency name="core" version="2.4.0"/>
+      <dependency name="trace" optional="true"/>
+    </module>
+    <module name="cache" enabled="false"/>
+  </modules>
+  <secrets>
+    <token name="alpha">A&amp;B&lt;C</token>
+    <token name="beta"><![CDATA[raw ]]></token>
+  </secrets>
+</configuration>

@@ -1,0 +1,31 @@
+<?xml version="1.1"?>
+<!DOCTYPE exchange [
+  <!ELEMENT exchange (packet+)>
+  <!ELEMENT packet (source, destination, payload)>
+  <!ATTLIST packet sequence NMTOKEN #REQUIRED>
+  <!ELEMENT source EMPTY>
+  <!ATTLIST source code CDATA #REQUIRED>
+  <!ELEMENT destination EMPTY>
+  <!ATTLIST destination code CDATA #REQUIRED>
+  <!ELEMENT payload (#PCDATA|line|binary)*>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT binary (#PCDATA)>
+]>
+<exchange>
+  <packet sequence="0001">
+    <source code="α-1"/>
+    <destination code="ω-9"/>
+    <payload>
+      start
+      <line>first&#x85;line</line>
+      <line>second&#x2028;line</line>
+      <binary><![CDATA[AA/BB==]]></binary>
+      end
+    </payload>
+  </packet>
+  <packet sequence="0002">
+    <source code="north"/>
+    <destination code="south"/>
+    <payload>&#x9;&#xA;&#xD;boundary</payload>
+  </packet>
+</exchange>

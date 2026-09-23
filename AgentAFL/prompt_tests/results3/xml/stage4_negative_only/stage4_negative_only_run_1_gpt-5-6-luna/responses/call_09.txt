@@ -1,0 +1,131 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE museum [
+  <!ELEMENT museum (exhibit+, curator?)>
+  <!ELEMENT exhibit (title, description, artifact*)>
+  <!ATTLIST exhibit code ID #REQUIRED era (ancient|modern|future) "modern">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emphasis|br)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT artifact EMPTY>
+  <!ATTLIST artifact ref IDREF #IMPLIED material CDATA #IMPLIED>
+  <!ELEMENT curator (#PCDATA)>
+]>
+<museum>
+  <exhibit code="x-17" era="ancient">
+    <title>Fragments</title>
+    <description>Recovered <emphasis>ceramic</emphasis> shards<br/>from a coastal site.</description>
+    <artifact ref="x-17" material="clay"/>
+  </exhibit>
+  <curator>Ada &amp; Noor</curator>
+</museum>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<message xmlns="urn:example:message" xmlns:h="urn:example:header" xmlns:p="urn:example:payload" xml:lang="fr">
+  <h:header>
+    <h:sender xml:id="sender-1">station-α</h:sender>
+    <h:recipients>
+      <h:recipient priority="high">relay.example</h:recipient>
+      <h:recipient priority="low">archive.example</h:recipient>
+    </h:recipients>
+    <h:flags urgent="yes" encrypted="no"/>
+  </h:header>
+  <p:payload xml:space="preserve">
+    <p:entry key="delta">ligne 1
+      <p:fragment><![CDATA[<not-an-element>&still-text;</not-an-element>]]></p:fragment>
+    </p:entry>
+    <p:entry key="epsilon" xmlns="">
+      <value>42</value>
+      <value>3.14159</value>
+    </p:entry>
+  </p:payload>
+  <?delivery mode="deferred"?>
+</message>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE ledger [
+  <!ENTITY company "North &amp; South">
+  <!ENTITY stamp "2026-09-23T12:34:56Z">
+  <!ENTITY note "audited by &company; at &stamp;">
+  <!ELEMENT ledger (opening, transaction*, closing)>
+  <!ELEMENT opening (#PCDATA)>
+  <!ELEMENT transaction (debit|credit, memo?)>
+  <!ATTLIST transaction number NMTOKEN #REQUIRED>
+  <!ELEMENT debit (#PCDATA)>
+  <!ELEMENT credit (#PCDATA)>
+  <!ELEMENT memo (#PCDATA)>
+  <!ELEMENT closing (#PCDATA)>
+]>
+<ledger>
+  <opening>1000.00</opening>
+  <transaction number="001">
+    <credit>250.00</credit>
+    <memo>&note;</memo>
+  </transaction>
+  <transaction number="002">
+    <debit>75.50</debit>
+    <memo>Office supplies &#x1F4CE;</memo>
+  </transaction>
+  <closing>1174.50</closing>
+</ledger>
+```
+
+```xml
+<?xml version="1.0"?>
+<package xmlns="urn:example:package"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xml:base="https://invalid.example/archive/">
+  <manifest generated="now">
+    <resource href="parts/intro.xml" media-type="application/xml">
+      <xi:include href="parts/intro.xml" parse="xml">
+        <xi:fallback>
+          <summary>intro unavailable</summary>
+        </xi:fallback>
+      </xi:include>
+    </resource>
+    <resource href="manual.txt" media-type="text/plain">
+      <xi:include href="manual.txt" parse="text"/>
+    </resource>
+  </manifest>
+  <checksums>
+    <checksum algorithm="sha256">0000000000000000000000000000000000000000000000000000000000000000</checksum>
+    <checksum algorithm="crc32">deadbeef</checksum>
+  </checksums>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE scene [
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ELEMENT scene (layer*)>
+  <!ELEMENT layer (sprite|text|group)*>
+  <!ATTLIST layer name CDATA #IMPLIED z CDATA "0">
+  <!ELEMENT group (sprite|text|group)*>
+  <!ATTLIST group transform CDATA #IMPLIED>
+  <!ELEMENT sprite EMPTY>
+  <!ATTLIST sprite asset ENTITY #IMPLIED x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST text align (left|center|right) "left">
+]>
+<scene>
+  <layer name="background" z="-1">
+    <sprite asset="logo" x="0" y="0"/>
+  </layer>
+  <layer name="foreground" z="10">
+    <group transform="translate(12,8) rotate(3.5)">
+      <text align="center">A &lt; B &amp; C</text>
+      <sprite x="128" y="64"/>
+      <group transform="scale(0.5)">
+        <text>nested label</text>
+      </group>
+    </group>
+  </layer>
+</scene>
+```

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ENTITY % common "<!ELEMENT record (name,tag*)>">
+  %common;
+  <!ELEMENT archive (record+)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST record ident ID #REQUIRED state (new|old|hold) "new">
+  <!ATTLIST tag target IDREF #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data:application/octet-stream;base64,AAEC" NDATA bin>
+  <!ENTITY greeting "hello &amp; archive">
+]>
+<archive>
+  <record ident="r0" state="new">
+    <name>&greeting;</name>
+    <tag target="r0">self</tag>
+  </record>
+  <record ident="r1" state="hold">
+    <name>second</name>
+    <tag target="r0">linked</tag>
+    <tag>unlinked</tag>
+  </record>
+</archive>

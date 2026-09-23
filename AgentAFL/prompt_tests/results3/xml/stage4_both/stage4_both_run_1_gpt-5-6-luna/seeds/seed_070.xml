@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record*)>
+  <!ELEMENT record (key, payload, checksum?)>
+  <!ATTLIST record kind (text|binary|empty) "text">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk|meta)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY left-bracket "&#x5B;">
+  <!ENTITY right-bracket "&#x5D;">
+]>
+<archive>
+  <record kind="text">
+    <key>alpha/001</key>
+    <payload>prefix &left-bracket;<chunk index="0">middle &amp; data</chunk>&right-bracket;</payload>
+    <checksum>sha256:0000000000000000000000000000000000000000000000000000000000000000</checksum>
+  </record>
+  <record kind="binary">
+    <key>blob/002</key>
+    <payload>
+      <meta name="encoding" value="base64"/>
+      <chunk index="0"><![CDATA[AAECAwQFBgcICQ==]]></chunk>
+      <chunk index="1">Cg0PEBESExQ=</chunk>
+    </payload>
+  </record>
+  <record kind="empty">
+    <key>void/003</key>
+    <payload/>
+  </record>
+</archive>

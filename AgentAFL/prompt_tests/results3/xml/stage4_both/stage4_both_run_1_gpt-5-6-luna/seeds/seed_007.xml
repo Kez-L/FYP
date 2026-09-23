@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE survey [
+  <!ELEMENT survey (introduction, question+)>
+  <!ATTLIST survey identifier ID #REQUIRED>
+  <!ELEMENT introduction (#PCDATA|emphasis|break)*>
+  <!ELEMENT question (prompt, option+, answer)>
+  <!ATTLIST question number NMTOKEN #REQUIRED depends IDREFS #IMPLIED>
+  <!ELEMENT prompt (#PCDATA|emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT option (#PCDATA)>
+  <!ATTLIST option key ID #REQUIRED selected (yes|no) "no">
+  <!ELEMENT answer (#PCDATA)>
+  <!ATTLIST answer options IDREFS #IMPLIED>
+  <!ENTITY survey-name "Field&nbsp;Survey">
+  <!ENTITY % annotations "<!ATTLIST question note CDATA #IMPLIED>">
+  %annotations;
+]>
+<survey identifier="s-2026">
+  <introduction>Welcome to the <emphasis>&survey-name;</emphasis>.<break/>Choose one response.</introduction>
+  <question number="1" note="single choice">
+    <prompt>Which medium do you prefer?</prompt>
+    <option key="opt-print">Printed material</option>
+    <option key="opt-digital" selected="yes">Digital material</option>
+    <answer options="opt-digital">digital</answer>
+  </question>
+  <question number="2" depends="opt-digital" note="free text">
+    <prompt>Describe your preference.</prompt>
+    <option key="opt-short">Brief</option>
+    <option key="opt-long">Detailed</option>
+    <answer options="opt-short opt-long">Flexible</answer>
+  </question>
+</survey>

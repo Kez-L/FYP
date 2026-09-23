@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE script [
+  <!ELEMENT script (setup?, action*, result?)>
+  <!ELEMENT setup (#PCDATA)>
+  <!ELEMENT action (argument*)>
+  <!ELEMENT argument (#PCDATA|CDATA_SECTION)*>
+  <!ELEMENT result (message|error)*>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT error (#PCDATA)>
+  <!ATTLIST action name NMTOKEN #REQUIRED id ID #IMPLIED>
+  <!ATTLIST argument key CDATA #IMPLIED>
+  <!ENTITY newline "&#10;">
+  <!ENTITY weird "&#x1F;not-valid-xml-char">
+]>
+<?processing instruction-data?>
+<script xmlns:z="urn:z" z:version="2">
+  <setup><![CDATA[if (a < b) return;]]></setup>
+  <action name="load" id="a1">
+    <argument key="path">/tmp/a&amp;b</argument>
+    <argument key="query">x=1&amp;&amp;y=2</argument>
+  </action>
+  <action name="emit">
+    <argument key="text">first&newline;second</argument>
+    <argument><![CDATA[]]></argument>
+  </action>
+  <result>
+    <message>ok</message>
+    <error><![CDATA[warning: ]]> &lt;none&gt;</error>
+  </result>
+</script>

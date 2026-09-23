@@ -1,0 +1,23 @@
+{
+  "call": 2,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE svg [\n  <!ELEMENT svg (metadata?, defs?, g*)>\n  <!ATTLIST svg xmlns CDATA #FIXED \"http://www.w3.org/2000/svg\"\n                viewBox CDATA #IMPLIED>\n  <!ELEMENT metadata (#PCDATA)>\n  <!ELEMENT defs (linearGradient|path)*>\n  <!ELEMENT linearGradient (stop+)>\n  <!ATTLIST linearGradient id ID #REQUIRED>\n  <!ELEMENT stop EMPTY>\n  <!ATTLIST stop offset CDATA #REQUIRED stop-color CDATA #IMPLIED>\n  <!ELEMENT path EMPTY>\n  <!ATTLIST path d CDATA #REQUIRED fill CDATA #IMPLIED>\n  <!ELEMENT g (use|path|text)*>\n  <!ATTLIST g id ID #IMPLIED transform CDATA #IMPLIED>\n  <!ELEMENT use EMPTY>\n  <!ATTLIST use href CDATA #REQUIRED>\n  <!ELEMENT text (#PCDATA)>\n]>\n<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 120 80\">\n  <metadata>gradient &amp; geometry</metadata>\n  <defs>\n    <linearGradient id=\"shade\">\n      <stop offset=\"0%\" stop-color=\"#fff\"/>\n      <stop offset=\"100%\" stop-color=\"#000\"/>\n    </linearGradient>\n    <path d=\"M0,0 L10,10 Z\" fill=\"url(#shade)\"/>\n  </defs>\n  <g id=\"layer\" transform=\"rotate(15 20 20)\">\n    <use href=\"#missing\"/>\n    <path d=\"M1,2 C3,4 5,6 7,8\"/>\n    <text>vector <![CDATA[<not-an-element>]]> label</text>\n  </g>\n</svg>\n\n--- example 2 ---\n<!DOCTYPE doc [\n<!ELEMENT doc EMPTY>\n<!ATTLIST doc\n defatt  (0|1)   \"0\"\n     xmlns:tst CDATA #FIXED \"http://exa_ple.org\"  tst:att  (0|1)   \"0\"\n    att (0|1)   \"1\">\n]>\n<doc att=\"1Bcrontic.com - Warning: Breakdancing midget with tourette&apos;s syndrome o#16060;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#&#x\">\n160;&#160;&#160;&#160;&#160;&#16<doc xmlns:a=\"urn:a\" xmlns:b=\"u?@???Xrn:a\">\n    <elem a:160;&#&#160;&#160;&#160;&#160;&#160;&#160;&#x\">\n<!-- <!ENT0;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\" url=\"ht.icrontic.c/h12;&laugh12;&laugh12;&la>\n\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-23T05:20:01.531636+00:00"
+}

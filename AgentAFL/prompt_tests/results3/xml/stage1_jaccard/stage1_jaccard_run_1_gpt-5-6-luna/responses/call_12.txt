@@ -1,0 +1,141 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE archive SYSTEM "missing-external-subset.dtd" [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY logo SYSTEM "logo.bin" NDATA bin>
+  <!ENTITY local "alpha &amp; beta &#x1F600;">
+  <!ELEMENT archive (entry+,tail?)>
+  <!ELEMENT entry (title,body,ref*)>
+  <!ATTLIST entry id ID #REQUIRED kind (text|binary|empty) "text">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA|br)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ELEMENT tail EMPTY>
+]>
+<archive>
+  <entry id="e1" kind="text">
+    <title>&local;</title>
+    <body>before <em>inside<br/></em> after<ref target="e1"/></body>
+  </entry>
+  <entry id="e2" kind="binary">
+    <title>external entity follows</title>
+    <body>&logo;</body>
+  </entry>
+  <tail/>
+</archive>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<records>
+  <?xml-stylesheet type="text/xsl" href="view.xsl" alternate="yes"?>
+  <!-- comment with --? no, this is ordinary -->
+  <record key="&#x0B;&#x85;&#x2028;">
+    <![CDATA[raw <markup> & entities ]]>
+    <value>line&#x85;break&#x2028;next</value>
+    <?audit stage="one"?>
+  </record>
+  <record key="second">
+    <value><![CDATA[]]></value>
+    <!-- embedded ] characters: ]]]]]>
+    <empty></empty>
+  </record>
+</records>
+```
+
+```xml
+<!DOCTYPE galaxy [
+  <!ELEMENT galaxy (cluster|void|cluster)+>
+  <!ELEMENT cluster (star|planet|cluster)*>
+  <!ELEMENT star EMPTY>
+  <!ATTLIST star name NMTOKEN #REQUIRED mass CDATA #IMPLIED>
+  <!ELEMENT planet (name,moon*)>
+  <!ATTLIST planet xmlns CDATA #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT moon (#PCDATA)>
+  <!ELEMENT void EMPTY>
+]>
+<g:galaxy xmlns:g="urn:outer" xmlns:a="urn:alpha" xmlns:b="urn:beta">
+  <g:cluster a:level="0">
+    <g:star name="Sirius" mass="2.02"/>
+    <g:planet xmlns="" id="p1">
+      <name>detached namespace</name>
+      <moon a:code="m&amp;1">one</moon>
+      <moon b:code="m2">two</moon>
+    </g:planet>
+    <g:cluster b:level="1">
+      <g:star name="&#x41;&#x42;&#x43;"/>
+    </g:cluster>
+  </g:cluster>
+  <g:void/>
+  <g:cluster a:level="final"/>
+</g:galaxy>
+```
+
+```xml
+<!DOCTYPE config [
+  <!ENTITY % common '
+    <!ELEMENT setting (#PCDATA)>
+    <!ATTLIST setting name CDATA #REQUIRED value CDATA #IMPLIED>
+  '>
+  %common;
+  <!ENTITY % optional '
+    <!ELEMENT feature (setting*,flag?)>
+    <!ELEMENT flag EMPTY>
+    <!ATTLIST flag enabled (yes|no) "no">
+  '>
+  <![IGNORE[
+    <!ENTITY ignored "not declared">
+    <!ELEMENT discarded ANY>
+  ]]>
+  <![INCLUDE[
+    %optional;
+  ]]>
+  <!ELEMENT config (setting*,feature,setting*)>
+]>
+<config>
+  <setting name="mode" value="safe"/>
+  <feature>
+    <setting name="path">/var/tmp</setting>
+    <setting name="quote" value="&quot;&apos;&gt;&lt;&amp;"/>
+    <flag enabled="yes"/>
+  </feature>
+  <setting name="last">text <![CDATA[with ]] ]]> delimiters</setting>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, trailer)>
+  <!ELEMENT header (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item name CDATA #REQUIRED>
+  <!ELEMENT payload ANY>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST trailer checksum CDATA #IMPLIED>
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+]>
+<envelope>
+  <header>
+    <item name="a">one</item>
+    <item name="b">two &left;&right;</item>
+    <item name="c">three</item>
+  </header>
+  <payload>
+    <section data-x="&quot;quoted&quot;" data-y="&apos;single&apos;">
+      <leaf/>
+      <leaf>mixed <![CDATA[data]]> content</leaf>
+    </section>
+    <section><![CDATA[
+      whitespace
+      and	 tabs
+    ]]></section>
+  </payload>
+  <trailer checksum="sha256:00-11-22"/>
+</envelope>
+```

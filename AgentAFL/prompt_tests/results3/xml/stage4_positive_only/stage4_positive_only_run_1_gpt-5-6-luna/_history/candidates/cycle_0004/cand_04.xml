@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?processing mode="compat"?>
+<configuration xmlns="urn:config:alpha"
+              xmlns:sec="urn:security"
+              xml:base="https://config.invalid/root/">
+  <!-- values intentionally exercise empty and repeated containers -->
+  <profile name="staging" active="true">
+    <include href="parts/database.xml"/>
+    <include href="parts/cache.xml" optional="yes"/>
+    <limits>
+      <limit resource="connections" value="0"/>
+      <limit resource="payload" value="18446744073709551615"/>
+    </limits>
+    <features>
+      <feature key="trace">
+        <value type="boolean">false</value>
+      </feature>
+      <feature key="banner">
+        <value type="string"><![CDATA[<maintenance> & soon]]></value>
+      </feature>
+    </features>
+    <sec:credentials>
+      <sec:principal>service/worker</sec:principal>
+      <sec:token expires="never">opaque&amp;token</sec:token>
+    </sec:credentials>
+  </profile>
+  <profile name="minimal" active="false">
+    <limits/>
+    <features/>
+  </profile>
+  <?checkpoint id="after-profiles"?>
+</configuration>

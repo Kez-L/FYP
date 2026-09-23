@@ -1,0 +1,180 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<scene xmlns="urn:graphics:scene" xmlns:svg="http://www.w3.org/2000/svg" version="2.7">
+  <svg:canvas width="640" height="480" viewBox="0 0 640 480">
+    <svg:group id="background" opacity="0.875">
+      <svg:rect x="0" y="0" width="640" height="480" fill="#101820"/>
+      <svg:circle cx="320" cy="240" r="180" fill="none" stroke="#f2aa4c" stroke-width="3"/>
+    </svg:group>
+    <layer name="foreground">
+      <svg:path id="wave" d="M 5,230 C 80,20 160,460 240,230 S 400,20 475,230 S 560,460 635,230"
+                fill="none" stroke="white"/>
+      <label anchor="middle" baseline="central">
+        <text>θ = 45°</text>
+        <text xml:space="preserve">   rendered   </text>
+      </label>
+    </layer>
+  </svg:canvas>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<envelope xmlns="urn:example:message" xmlns:sec="urn:example:security">
+  <?audit level="trace"?>
+  <header>
+    <message-id>urn:msg:7f3c-0001</message-id>
+    <created>2026-09-23T18:04:05.123456Z</created>
+    <routing>
+      <hop index="0" host="edge.example">
+        <status code="202">accepted</status>
+      </hop>
+      <hop index="1" host="worker.example">
+        <status code="200">complete</status>
+      </hop>
+    </routing>
+  </header>
+  <body>
+    <request method="POST" path="/v2/search">
+      <query><![CDATA[key=(alpha|beta) && score>=0.75]]></query>
+      <filters>
+        <filter field="title" operator="contains">café</filter>
+        <filter field="year" operator="between">
+          <lower inclusive="true">1900</lower>
+          <upper inclusive="false">2000</upper>
+        </filter>
+      </filters>
+    </request>
+    <sec:signature algorithm="sha256">
+      MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+    </sec:signature>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (warehouse+)>
+  <!ELEMENT warehouse (section+)>
+  <!ATTLIST warehouse code NMTOKEN #REQUIRED>
+  <!ELEMENT section (bin*)>
+  <!ATTLIST section name CDATA #IMPLIED>
+  <!ELEMENT bin (item+)>
+  <!ATTLIST bin label ID #IMPLIED>
+  <!ELEMENT item (description, quantity, cost)>
+  <!ATTLIST item code NMTOKEN #REQUIRED state (new|used|hold) "new">
+  <!ELEMENT description (#PCDATA)>
+  <!ELEMENT quantity (#PCDATA)>
+  <!ELEMENT cost (#PCDATA)>
+  <!ENTITY copper "Cu">
+  <!ENTITY euro "&#x20AC;">
+  <!ENTITY notice "Handle &copper; components carefully.">
+]>
+<inventory>
+  <warehouse code="north">
+    <section name="fasteners">
+      <bin label="bin-a">
+        <item code="SC-01">
+          <description>Machine screw &notice;</description>
+          <quantity>00000017</quantity>
+          <cost>12.50 &euro;</cost>
+        </item>
+        <item code="SC-02" state="used">
+          <description>Washer</description>
+          <quantity>4</quantity>
+          <cost>0.08 &euro;</cost>
+        </item>
+      </bin>
+    </section>
+  </warehouse>
+  <warehouse code="south">
+    <section name="cables">
+      <bin label="bin-z">
+        <item code="CB-99" state="hold">
+          <description>Shielded cable</description>
+          <quantity>2</quantity>
+          <cost>18 &euro;</cost>
+        </item>
+      </bin>
+    </section>
+  </warehouse>
+</inventory>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns:r="urn:report" xmlns:m="urn:metrics">
+  <r:metadata xml:lang="fr">
+    <r:title>Analyse trimestrielle</r:title>
+    <r:authors>
+      <r:author id="u-1" role="lead"/>
+      <r:author id="u-2" role="reviewer"/>
+    </r:authors>
+  </r:metadata>
+  <r:sections>
+    <r:section id="s1" level="1">
+      <r:heading>Résumé</r:heading>
+      <r:paragraph>Résultat stable, mais <r:emphasis>volatilité accrue</r:emphasis> en fin de période.</r:paragraph>
+      <r:table columns="3">
+        <r:row>
+          <r:cell header="true">Mois</r:cell>
+          <r:cell header="true">Valeur</r:cell>
+          <r:cell header="true">Écart</r:cell>
+        </r:row>
+        <r:row>
+          <r:cell>janvier</r:cell>
+          <r:cell><m:number scale="2">104.20</m:number></r:cell>
+          <r:cell><m:number signed="true">-0.03</m:number></r:cell>
+        </r:row>
+      </r:table>
+    </r:section>
+    <r:section id="s2" level="2">
+      <r:heading>Annexes</r:heading>
+      <r:list ordered="false">
+        <r:item>Source A</r:item>
+        <r:item>Source B</r:item>
+        <r:item><r:link href="urn:ref:17">Données brutes</r:link></r:item>
+      </r:list>
+    </r:section>
+  </r:sections>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<configuration xmlns="urn:acme:config" xmlns:env="urn:acme:environment">
+  <?generated-by tool="seed-builder"?>
+  <profiles>
+    <profile name="development" enabled="true">
+      <inherits from="base"/>
+      <property key="retries" type="integer">3</property>
+      <property key="timeout" type="duration">PT0.750S</property>
+      <property key="endpoint" type="uri">https://dev.example.test/api?q=a&amp;b=c</property>
+      <secret ref="vault://dev/database/password"/>
+    </profile>
+    <profile name="production" enabled="false">
+      <inherits from="base">
+        <override key="region">eu-central</override>
+      </inherits>
+      <property key="retries" type="integer">0000000000008</property>
+      <property key="timeout" type="duration">P1DT2H3M4.005S</property>
+    </profile>
+  </profiles>
+  <base>
+    <env:variable name="PATH" value="/usr/local/bin:/usr/bin"/>
+    <env:variable name="FLAGS">--safe --no-color</env:variable>
+    <mount source="/var/lib/app" target="/data" readonly="true"/>
+    <limits>
+      <memory unit="MiB">4096</memory>
+      <workers min="0" max="128"/>
+    </limits>
+  </base>
+  <extensions>
+    <extension name="metrics" class="com.acme.Metrics">
+      <option name="interval">00:00:05</option>
+      <option name="labels"><![CDATA[service="api",tier="edge"]]></option>
+    </extension>
+  </extensions>
+</configuration>
+```

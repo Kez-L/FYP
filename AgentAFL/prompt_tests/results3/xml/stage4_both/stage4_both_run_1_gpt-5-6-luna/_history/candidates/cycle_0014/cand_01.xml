@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:example:config"
+               xmlns:env="urn:example:environment"
+               xmlns:sec="urn:example:secret"
+               version="3">
+  <profile name="staging" enabled="true">
+    <env:variables>
+      <env:variable name="PORT" value="8088"/>
+      <env:variable name="LOG_LEVEL">verbose</env:variable>
+    </env:variables>
+    <database>
+      <endpoint protocol="postgres" host="db.internal" port="5432">
+        <database-name>reports</database-name>
+        <sec:credential algorithm="plain">
+          <sec:user>reporter</sec:user>
+          <sec:password>change-me</sec:password>
+        </sec:credential>
+      </endpoint>
+      <pool min="2" max="12">
+        <timeout unit="ms">4500</timeout>
+        <retry count="3" backoff="exponential"/>
+      </pool>
+    </database>
+    <features>
+      <feature key="new-dashboard">
+        <rule audience="staff">enabled</rule>
+        <rule audience="guest">disabled</rule>
+      </feature>
+      <feature key="audit-log"><rule audience="*">enabled</rule></feature>
+    </features>
+  </profile>
+</configuration>

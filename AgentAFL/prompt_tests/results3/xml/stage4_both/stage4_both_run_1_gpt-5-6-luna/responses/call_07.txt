@@ -1,0 +1,163 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="view.xsl"?>
+<!-- A namespaced document with mixed content and xml:base. -->
+<r:report xmlns:r="urn:example:report" xmlns:m="urn:example:metrics"
+          xml:base="https://example.invalid/reports/">
+  <r:header>
+    <r:title>Quarterly <r:emphasis>signal</r:emphasis> review</r:title>
+    <r:generated>2026-09-23T12:30:00Z</r:generated>
+  </r:header>
+  <r:body>
+    <r:paragraph>Observed values are <r:strong>stable</r:strong> across the sample.</r:paragraph>
+    <m:measurement unit="ms" scale="10">
+      <m:value>14.25</m:value>
+      <m:confidence>0.997</m:confidence>
+    </m:measurement>
+    <r:paragraph xml:lang="fr">Résumé avec des caractères Unicode : café, naïve, €.</r:paragraph>
+  </r:body>
+</r:report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (key, title, body, metadata?)>
+  <!ATTLIST record revision CDATA "0">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (#PCDATA|code|quote|br)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT metadata (author+, tag*)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ENTITY intro "Archived text: ">
+]>
+<archive>
+  <record revision="7">
+    <key>R-α-001</key>
+    <title>Parser notes</title>
+    <body>&intro;<quote>Keep boundaries explicit.</quote><br/>
+      <code>&lt;node attribute="value"/&gt;</code>
+    </body>
+    <metadata>
+      <author>Lin</author>
+      <author>Rao</author>
+      <tag>xml</tag>
+      <tag>testing</tag>
+    </metadata>
+  </record>
+  <record>
+    <key>R-002</key>
+    <title>Empty body case</title>
+    <body><![CDATA[Literal <text> with ]]> and ampersands & signs]]></body>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="urn:example:package" xmlns:xlink="http://www.w3.org/1999/xlink"
+         id="pkg-17">
+  <manifest>
+    <entry path="docs/readme.txt" media-type="text/plain"
+           checksum="sha256:00000000000000000000000000000000"/>
+    <entry path="data/sample.bin" media-type="application/octet-stream"
+           checksum="sha256:ffffffffffffffffffffffffffffffff"/>
+  </manifest>
+  <links>
+    <link rel="home" xlink:type="simple"
+          xlink:href="https://example.invalid/home">Home</link>
+    <link rel="next" xlink:type="simple" xlink:href="#chapter-2"/>
+  </links>
+  <content>
+    <chapter id="chapter-1">
+      <heading>Introduction</heading>
+      <section>
+        <heading>Scope</heading>
+        <p>One <span class="term">package</span> may contain several resources.</p>
+      </section>
+    </chapter>
+    <chapter id="chapter-2">
+      <heading>Appendix</heading>
+      <table>
+        <row><cell>A</cell><cell>1</cell></row>
+        <row><cell>B</cell><cell>2</cell></row>
+      </table>
+    </chapter>
+  </content>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<configuration>
+  <defaults>
+    <path>/var/tmp/cache</path>
+    <limits>
+      <soft>64</soft>
+      <hard>128</hard>
+    </limits>
+  </defaults>
+  <profiles>
+    <profile name="minimal" enabled="true">
+      <include>core</include>
+      <exclude>network</exclude>
+      <option key="threads" value="1"/>
+    </profile>
+    <profile name="full" enabled="false">
+      <include>core</include>
+      <include>network</include>
+      <include>diagnostics</include>
+      <option key="threads" value="16"/>
+      <option key="timeout" value="00:05:30"/>
+    </profile>
+  </profiles>
+  <overrides>
+    <set target="minimal" key="path"><![CDATA[/tmp/a&b]]></set>
+    <unset target="full" key="legacy-mode"/>
+  </overrides>
+  <?checkpoint?>
+  <!-- Deliberately empty containers. -->
+  <extensions>
+    <extension name="alpha"/>
+    <extension name="beta">
+      <property name="mode">safe</property>
+    </extension>
+  </extensions>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<conversation xmlns="urn:example:chat" xmlns:meta="urn:example:meta"
+              meta:format="threaded">
+  <participants>
+    <person uid="u1"><name>Alex</name><role>author</role></person>
+    <person uid="u2"><name>Bea</name><role>reviewer</role></person>
+  </participants>
+  <thread id="root">
+    <message from="u1" time="2026-09-23T08:00:00Z">
+      <text>Hello <mention ref="u2">@Bea</mention>, see the attached note.</text>
+      <attachment name="note.txt" type="text/plain">
+        <![CDATA[line one
+line two
+]]>
+      </attachment>
+    </message>
+    <reply to="root" from="u2" time="2026-09-23T08:04:11Z">
+      <text>Reviewed; <reaction code="ok"/> no changes requested.</text>
+    </reply>
+    <reply to="root" from="u1" time="2026-09-23T08:05:00Z">
+      <text>Thanks.</text>
+      <meta:labels>
+        <meta:label>resolved</meta:label>
+        <meta:label priority="low">follow-up</meta:label>
+      </meta:labels>
+    </reply>
+  </thread>
+</conversation>
+```

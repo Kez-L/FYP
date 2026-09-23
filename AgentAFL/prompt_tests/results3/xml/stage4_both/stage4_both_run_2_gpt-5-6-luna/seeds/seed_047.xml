@@ -1,0 +1,25 @@
+<?xml version="1.1"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder+)>
+  <!ELEMENT folder (folder|file|alias)*>
+  <!ELEMENT file (#PCDATA)>
+  <!ELEMENT alias EMPTY>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ATTLIST file name CDATA #REQUIRED digest CDATA #IMPLIED>
+  <!ATTLIST alias name CDATA #REQUIRED target IDREF #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ATTLIST file format NOTATION (bin) #IMPLIED>
+]>
+<archive>
+  <folder name="root">
+    <folder name="reports">
+      <file name="summary.txt" digest="sha256:abc123">Total: 42& nbsp;items</file>
+      <file name="raw.bin" format="bin"><![CDATA[00 FF 10 7E]]></file>
+    </folder>
+    <folder name="links">
+      <alias name="latest" target="summary.txt"/>
+    </folder>
+    <folder name="empty"/>
+  </folder>
+</archive>

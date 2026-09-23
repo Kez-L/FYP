@@ -1,0 +1,227 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE library [
+  <!ELEMENT library (section+)>
+  <!ATTLIST library version CDATA #IMPLIED>
+  <!ELEMENT section (title, shelf+)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT shelf (label, book*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT book (title, author+, metadata?, summary?)>
+  <!ATTLIST book isbn CDATA #IMPLIED available (yes|no) "yes">
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT metadata (published, pages)>
+  <!ELEMENT published (#PCDATA)>
+  <!ELEMENT pages (#PCDATA)>
+  <!ELEMENT summary (#PCDATA)>
+]>
+<library version="7">
+  <section code="fiction">
+    <title>Fiction &amp; Myth</title>
+    <shelf>
+      <label>Upper East</label>
+      <book isbn="978-0-123456-78-9">
+        <title>The Glass Orchard</title>
+        <author>Marin Vale</author>
+        <author>I. K. Rowan</author>
+        <metadata>
+          <published>2024</published>
+          <pages>384</pages>
+        </metadata>
+        <summary><![CDATA[An orchard grows beneath the city, where every fruit remembers a different century.]]></summary>
+      </book>
+    </shelf>
+    <shelf>
+      <label>Lower West</label>
+      <book available="no">
+        <title>Salt Compass</title>
+        <author>O. N. Reyes</author>
+        <summary>North is a story people tell themselves.</summary>
+      </book>
+    </shelf>
+  </section>
+  <section code="reference">
+    <title>Reference</title>
+    <shelf>
+      <label>Maps and Atlases</label>
+    </shelf>
+  </section>
+</library>
+```
+
+```xml
+<?xml version="1.0"?>
+<workflow id="wf-2048" xmlns="urn:example:workflow" xmlns:x="urn:example:extension">
+  <start at="validate"/>
+  <step name="validate" retry="2">
+    <input source="stdin" format="json"/>
+    <condition language="xpath">/record/@active = 'true'</condition>
+    <on-success goto="transform"/>
+    <on-failure goto="quarantine"/>
+  </step>
+  <step name="transform" retry="0">
+    <x:script><![CDATA[
+      function normalize(value) {
+        return value.replace(/\s+/g, " ").trim();
+      }
+    ]]></x:script>
+    <emit destination="queue://processed">
+      <header name="content-type">application/xml</header>
+      <header name="priority">high</header>
+    </emit>
+    <on-success goto="archive"/>
+  </step>
+  <parallel name="archive">
+    <branch id="primary">
+      <action type="store" location="/var/lib/archive/current"/>
+    </branch>
+    <branch id="replica">
+      <action type="store" location="s3://backup/archive">
+        <option key="encryption">aes256</option>
+      </action>
+    </branch>
+  </parallel>
+  <?workflow audit="enabled"?>
+  <quarantine reason="validation-failure">
+    <message>Input requires manual review</message>
+  </quarantine>
+</workflow>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<survey xmlns="urn:example:survey" xmlns:geo="urn:example:geo" date="2026-09-23">
+  <respondent id="r-001">
+    <profile>
+      <name>Алексей Иванов</name>
+      <age>37</age>
+      <contact preferred="email">alexey@example.test</contact>
+    </profile>
+    <answers>
+      <answer key="q1" score="5">
+        <text>What makes a city feel welcoming?</text>
+        <choice>Public gardens</choice>
+        <choice selected="true">Reliable transit</choice>
+      </answer>
+      <answer key="q2" score="3">
+        <text>Describe your ideal weekend.</text>
+        <freeform>Walking by the river &amp; listening to street musicians.</freeform>
+      </answer>
+    </answers>
+    <geo:location>
+      <geo:latitude>55.7558</geo:latitude>
+      <geo:longitude>37.6173</geo:longitude>
+      <geo:accuracy unit="m">12.5</geo:accuracy>
+    </geo:location>
+  </respondent>
+  <respondent id="r-002">
+    <profile>
+      <name>Zoë Martín</name>
+      <age>29</age>
+      <contact preferred="sms">+34-600-000-000</contact>
+    </profile>
+    <answers>
+      <answer key="q1" score="4">
+        <text>What makes a city feel welcoming?</text>
+        <choice selected="true">Late-night cafés</choice>
+      </answer>
+    </answers>
+  </respondent>
+</survey>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE drawing [
+  <!ELEMENT drawing (layer+)>
+  <!ELEMENT layer (item+)>
+  <!ATTLIST layer name CDATA #REQUIRED visible (true|false) "true">
+  <!ELEMENT item (geometry, style?)>
+  <!ATTLIST item kind (path|circle|text|group) #REQUIRED>
+  <!ELEMENT geometry (point*, segment*, radius?, content?)>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ELEMENT segment EMPTY>
+  <!ATTLIST segment from CDATA #REQUIRED to CDATA #REQUIRED>
+  <!ELEMENT radius (#PCDATA)>
+  <!ELEMENT content (#PCDATA)>
+  <!ELEMENT style (fill?, stroke?, opacity?)>
+  <!ELEMENT fill (#PCDATA)>
+  <!ELEMENT stroke (#PCDATA)>
+  <!ELEMENT opacity (#PCDATA)>
+]>
+<drawing>
+  <layer name="background">
+    <item kind="circle">
+      <geometry>
+        <point x="256" y="256"/>
+        <radius>240</radius>
+      </geometry>
+      <style>
+        <fill>#102030</fill>
+        <stroke>#405060</stroke>
+        <opacity>0.92</opacity>
+      </style>
+    </item>
+  </layer>
+  <layer name="constellation" visible="true">
+    <item kind="path">
+      <geometry>
+        <point x="44" y="88"/>
+        <point x="119" y="173"/>
+        <point x="201" y="121"/>
+        <segment from="p1" to="p2"/>
+        <segment from="p2" to="p3"/>
+      </geometry>
+      <style>
+        <stroke><![CDATA[rgba(255, 220, 120, .8)]]></stroke>
+      </style>
+    </item>
+    <item kind="text">
+      <geometry>
+        <point x="212" y="116"/>
+        <content>Orion Δ</content>
+      </geometry>
+    </item>
+  </layer>
+</drawing>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title type="html">Notes &amp; Signals</title>
+  <subtitle><![CDATA[Short dispatches from the edge of the network.]]></subtitle>
+  <id>urn:uuid:2f8c7b5e-4e51-4f4b-9c0f-9d6d8f01a222</id>
+  <updated>2026-09-23T12:45:00Z</updated>
+  <generator uri="https://example.test/reader" version="3.1">Field Reader</generator>
+  <link rel="self" type="application/atom+xml" href="https://example.test/feed.xml"/>
+  <link rel="alternate" hreflang="en" href="https://example.test/"/>
+  <entry>
+    <title>After the Rain</title>
+    <id>tag:example.test,2026:entry-17</id>
+    <published>2026-09-22T18:20:00Z</published>
+    <updated>2026-09-23T07:04:11Z</updated>
+    <author>
+      <name>R. Chen</name>
+      <uri>https://example.test/people/rchen</uri>
+      <email>rchen@example.test</email>
+    </author>
+    <category term="weather" label="Weather"/>
+    <content type="xhtml">
+      <div xmlns="http://www.w3.org/1999/xhtml">
+        <p>The pavement reflected <em>three moons</em> before sunrise.</p>
+        <p>Temperature: 11 °C; visibility: 8 km.</p>
+      </div>
+    </content>
+  </entry>
+  <entry>
+    <title>Maintenance Window</title>
+    <id>tag:example.test,2026:entry-18</id>
+    <updated>2026-09-23T09:00:00Z</updated>
+    <summary type="text">Service may be unavailable between 02:00 and 02:15 UTC.</summary>
+    <content type="text">Rollback plan: restore snapshot &lt;nightly-42&gt;.</content>
+  </entry>
+</feed>
+```

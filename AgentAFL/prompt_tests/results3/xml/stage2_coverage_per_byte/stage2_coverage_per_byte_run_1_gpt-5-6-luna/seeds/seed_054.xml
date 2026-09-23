@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node (label?, data*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST node
+    id ID #REQUIRED
+    refs IDREFS #IMPLIED
+    kind (source|sink|relay) "relay">
+  <!ATTLIST edge
+    from IDREF #REQUIRED
+    to IDREF #REQUIRED
+    weight CDATA "1">
+  <!ENTITY unit "kg&#x2F;m&#x00B3;">
+]>
+<graph>
+  <node id="n1" kind="source">
+    <label>Input</label>
+    <data>density: 7 &unit;</data>
+  </node>
+  <node id="n2" refs="n1 n3">
+    <label>Middle &amp; mirror</label>
+    <data><![CDATA[line one
+line two]]></data>
+  </node>
+  <node id="n3" kind="sink"><label>Output</label></node>
+  <edge from="n1" to="n2" weight="0.50"/>
+  <edge from="n2" to="n3"/>
+</graph>

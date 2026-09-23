@@ -1,0 +1,97 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+, note?)>
+  <!ELEMENT section (title, entry*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (#PCDATA|link|emph)*>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link href CDATA #REQUIRED target IDREF #IMPLIED>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST catalog version NMTOKEN #REQUIRED>
+  <!ENTITY intro "Generated &amp; indexed">
+]>
+<catalog version="1.0">
+  <section>
+    <title>&intro;</title>
+    <entry>alpha <emph>one</emph> <link href="a" target="item2"/></entry>
+    <entry xml:id="item2">beta &lt; gamma</entry>
+  </section>
+  <section>
+    <title>Second</title>
+    <entry>delta</entry>
+  </section>
+  <note>tail</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="urn:outer" xmlns:p="urn:p">
+  <p:branch p:id="A">
+    <leaf xmlns="" xml:lang="fr" xml:space="preserve">  text  </leaf>
+    <p:branch xmlns:p="urn:alternate">
+      <p:leaf p:kind="nested"/>
+    </p:branch>
+  </p:branch>
+  <wrapper xmlns:q="urn:q">
+    <q:item q:a="1" q:b="2">
+      <q:item q:a="3"/>
+    </q:item>
+  </wrapper>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!-- comment before the document element -->
+<?probe data?>
+<packet mode="mixed">
+  leading
+  <![CDATA[<fake attr="&not-an-entity;">raw]]>
+  <part>
+    <![CDATA[]]><value>42</value><![CDATA[still raw]]>
+  </part>
+  trailing
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header
+    from CDATA #IMPLIED
+    to CDATA #IMPLIED
+    flags NMTOKENS #IMPLIED>
+  <!ELEMENT body (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+]>
+<envelope>
+  <header from="a&amp;b" to="receiver" flags="urgent encrypted"/>
+  <body>
+    <chunk>&left;first&right;</chunk>
+    <chunk>second&#x0A;line&#10;end</chunk>
+    <chunk>third &quot;quoted&quot; &apos;text&apos;</chunk>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report SYSTEM "missing-external-subset.dtd">
+<report>
+  <metadata/>
+  <section id="x">
+    <title>External subset probe</title>
+    <value>content</value>
+  </section>
+  <section id="y">
+    <value><![CDATA[unterminated-looking ]]]]><![CDATA[> boundary]]></value>
+  </section>
+</report>
+```

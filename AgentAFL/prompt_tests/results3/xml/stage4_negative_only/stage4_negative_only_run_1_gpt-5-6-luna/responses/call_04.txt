@@ -1,0 +1,125 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (title,entry+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (key,value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ATTLIST entry id ID #REQUIRED>
+  <!ENTITY brand "A &amp; B">
+]>
+<report>
+  <title>Inventory &brand;</title>
+  <entry id="e1">
+    <key>status</key>
+    <value>Ready <emph>now</emph>.</value>
+  </entry>
+  <entry id="e2">
+    <key>message</key>
+    <value><![CDATA[raw <markup> and ]]> brackets]]></value>
+  </entry>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<message xmlns="urn:msg" xmlns:m="urn:meta" xml:lang="fr">
+  <?processing mode="compact"?>
+  <header m:id="h-7" m:priority="high">
+    <sender>équipe@example.test</sender>
+    <recipient role="archive">réception@example.test</recipient>
+  </header>
+  <!-- Mixed content intentionally surrounds the payload. -->
+  <body xml:space="preserve">Bonjour, <strong>monde</strong> !
+    <attachment m:encoding="base64">QkFTRTY0KURBVEE=</attachment>
+  </body>
+  <footer>
+    <checksum algorithm="sha256">0000000000000000000000000000000000000000000000000000000000000000</checksum>
+  </footer>
+</message>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<telemetry xmlns="urn:telemetry:2026" xmlns:x="urn:extra">
+  <device x:model="μ-controller" serial="SN-0000">
+    <label>温度センサー 💡</label>
+    <reading unit="°C" scale="10">23.75</reading>
+    <reading unit="V" scale="1000">3.300</reading>
+    <flags>
+      <flag enabled="1">cold&#x85;start</flag>
+      <flag enabled="0">line&#x2028;break</flag>
+      <flag enabled="1">&#x1F4A1;</flag>
+    </flags>
+  </device>
+  <calibration>
+    <point input="-40" output="-40"/>
+    <point input="0" output="0"/>
+    <point input="125" output="125"/>
+  </calibration>
+</telemetry>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:library" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <book isbn="978-0-00-000000-0">
+    <dc:title>Paths &amp; Places</dc:title>
+    <dc:creator>J. Example</dc:creator>
+    <chapter number="1">
+      Prologue:
+      <![CDATA[
+        This text contains <tags>, ampersands (&), and a fake end marker: ]]]]><![CDATA[>.
+      ]]>
+      <note type="editorial">Revised in 2026</note>
+    </chapter>
+    <chapter number="2">
+      <section heading="A">
+        <paragraph>First paragraph.</paragraph>
+        <paragraph>Second <i>annotated</i> paragraph.</paragraph>
+      </section>
+      <section heading="B"/>
+    </chapter>
+  </book>
+  <book isbn="unknown">
+    <dc:title/>
+    <dc:creator xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+  </book>
+</library>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta?,payload,signature?)>
+  <!ELEMENT meta (origin,timestamp)>
+  <!ELEMENT origin (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT signature (#PCDATA)>
+  <!ENTITY leftBracket "&#x5B;">
+  <!ENTITY rightBracket "&#x5D;">
+  <!ENTITY quote "&quot;">
+]>
+<envelope>
+  <meta>
+    <origin>fuzzer-seed</origin>
+    <timestamp>2026-09-23T00:00:00Z</timestamp>
+  </meta>
+  <payload>
+    <map>
+      <entry key="alpha"><value type="integer">0</value></entry>
+      <entry key="beta"><value type="null"/></entry>
+      <entry key="gamma">
+        <value type="array">
+          <item>&leftBracket;one&rightBracket;</item>
+          <item>two &quote;quoted&quote;</item>
+        </value>
+      </entry>
+    </map>
+  </payload>
+  <signature>none</signature>
+</envelope>
+```

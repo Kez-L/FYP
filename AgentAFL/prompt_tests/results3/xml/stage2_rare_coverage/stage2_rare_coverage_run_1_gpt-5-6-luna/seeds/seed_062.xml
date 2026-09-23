@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:config:root"
+               xmlns:net="urn:config:network"
+               xmlns:sec="urn:config:security"
+               xmlns:xlink="http://www.w3.org/1999/xlink"
+               xml:lang="fr"
+               xml:base="https://example.invalid/config/">
+  <profile id="edge" enabled="yes">
+    <net:listener address="::1" port="8443" protocol="https">
+      <net:certificate xlink:type="simple"
+                       xlink:href="certs/server.pem"
+                       fingerprint="sha256:00"/>
+      <net:routes>
+        <net:route path="/" destination="frontend"/>
+        <net:route path="/api" destination="backend" methods="GET POST"/>
+      </net:routes>
+    </net:listener>
+    <sec:policy name="default">
+      <sec:rule action="allow" subject="operator">
+        <condition xmlns="" field="role" equals="admin"/>
+      </sec:rule>
+      <sec:rule action="deny" subject="guest">
+        <reason xmlns="urn:config:notes">maintenance</reason>
+      </sec:rule>
+    </sec:policy>
+  </profile>
+  <include href="fragments/optional.xml" xmlns="urn:config:include"/>
+</configuration>

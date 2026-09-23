@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (chunk+)>
+  <!ELEMENT chunk (#PCDATA|part|gap)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT gap EMPTY>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!ATTLIST part kind (alpha|beta|gamma) #IMPLIED>
+  <!ATTLIST gap count CDATA "1">
+  <!ENTITY % decorations "<!ATTLIST part xmlns:q CDATA #IMPLIED>">
+  %decorations;
+]>
+<stream>
+  <chunk index="0">start<part kind="alpha">A</part><gap count="2"/><![CDATA[&broken;]]></chunk>
+  <chunk index="1">
+    <part xmlns:q="urn:q" q:value="v">B</part>
+    <!-- split
+         comment -->
+    <part kind="gamma">C &quot; D</part>
+  </chunk>
+  <chunk index="2"><gap/></chunk>
+</stream>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graph xmlns="urn:example:graph"
+       xmlns:xlink="http://www.w3.org/1999/xlink"
+       directed="true">
+  <metadata>
+    <created>2026-09-23</created>
+    <description>Dependency graph with nested annotations.</description>
+  </metadata>
+  <vertices>
+    <vertex id="build" kind="task">
+      <label>Compile sources</label>
+      <property name="worker">linux-amd64</property>
+      <property name="parallel">false</property>
+    </vertex>
+    <vertex id="test" kind="task">
+      <label>Run tests</label>
+      <property name="timeout">900</property>
+    </vertex>
+    <vertex id="publish" kind="release">
+      <label>Publish artifacts</label>
+    </vertex>
+  </vertices>
+  <edges>
+    <edge id="e1" from="build" to="test" weight="1.0">
+      <condition>exit-code = 0</condition>
+    </edge>
+    <edge id="e2" from="test" to="publish" weight="0.75">
+      <condition><![CDATA[coverage >= 80 && failures == 0]]></condition>
+      <link xlink:type="simple" xlink:href="urn:artifact:test-report"/>
+    </edge>
+  </edges>
+  <clusters>
+    <cluster id="ci">
+      <member ref="build"/>
+      <member ref="test"/>
+      <cluster id="release-stage">
+        <member ref="publish"/>
+      </cluster>
+    </cluster>
+  </clusters>
+</graph>

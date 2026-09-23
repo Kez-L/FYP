@@ -1,0 +1,23 @@
+{
+  "call": 10,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (record+)>\n  <!ATTLIST archive created CDATA #IMPLIED>\n  <!ELEMENT record (key, payload, checksum?)>\n  <!ATTLIST record id ID #REQUIRED state (new|sealed|void) \"new\">\n  <!ELEMENT key (#PCDATA)>\n  <!ELEMENT payload (#PCDATA)>\n  <!ELEMENT checksum (#PCDATA)>\n  <!ENTITY left \"&#x3C;\">\n  <!ENTITY right \"&#x3E;\">\n  <!ENTITY sample \"&left;synthetic&right;\">\n]>\n<archive created=\"2026-09-23\">\n  <record id=\"r001\" state=\"sealed\">\n    <key>alpha</key>\n    <payload><![CDATA[raw text with <tags>, ]]> and ]]> markers]]></payload>\n    <checksum>9f2a</checksum>\n  </record>\n  <record id=\"r002\">\n    <key>beta</key>\n    <payload>Entity expansion: &sample;</payload>\n  </record>\n</archive>\n\n--- example 2 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<?xml-stylesheet type=\"text/xsl\" href=\"view.xsl\"?>\n<!-- A namespaced document with mixed content and xml:base. -->\n<r:report xmlns:r=\"urn:example:report\" xmlns:m=\"urn:example:metrics\"\n          xml:base=\"https://example.invalid/reports/\">\n  <r:header>\n    <r:title>Quarterly <r:emphasis>signal</r:emphasis> review</r:title>\n    <r:generated>2026-09-23T12:30:00Z</r:generated>\n  </r:header>\n  <r:body>\n    <r:paragraph>Observed values are <r:strong>stable</r:strong> across the sample.</r:paragraph>\n    <m:measurement unit=\"ms\" scale=\"10\">\n      <m:value>14.25</m:value>\n      <m:confidence>0.997</m:confidence>\n    </m:measurement>\n    <r:paragraph xml:lang=\"fr\">R\u00e9sum\u00e9 avec des caract\u00e8res Unicode : caf\u00e9, na\u00efve, \u20ac.</r:paragraph>\n  </r:body>\n</r:report>\n\nTried before \u2014 no new coverage, avoid repeating:\n--- 6 of your past seeds (cycles 8,9,10) drove the same already-covered path with 0 new edges ---\n<?xml version=\"1.0\"?>\n<envelope xmlns=\"urn:example:envelope\"\n          xmlns:sec=\"urn:example:security\"\n          xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n          xsi:type=\"SignedEnvelope\">\n  <header>\n    <transaction id=\"tx-2048\" priority=\"high\"/>\n    <sec:credentials>\n      <sec:principal>service-reader</sec:principal>\n      <sec:roles>\n        <sec:role>observer</sec:role>\n        <sec:role>auditor</sec:role>\n      </sec:roles>\n    </sec:credentials>\n  </header>\n  <body>\n    <request method=\"query\">\n      <path>/objects/alpha</path>\n      <parameters>\n        <parameter name=\"limit\">25</parameter>\n        <parameter name=\"cursor\"/>\n      </parameters>\n    </request>\n    <re...[truncated, 806 chars total]\n\n--- 2 of your past seeds (cycles 5,9) drove the same already-covered path with 0 new edges ---\n<?xml version=\"1.1\"?>\n<map xmlns=\"urn:cartography:map\"\n     xmlns:p=\"urn:cartography:point\"\n     xmlns:svg=\"http://www.w3.org/2000/svg\"\n     xml:base=\"https://maps.example.invalid/tiles/\"\n     xml:lang=\"ja\">\n  <metadata>\n    <title>\u6771\u4eac\u306e\u6b69\u9053</title>\n    <keywords>\u6b69\u9053,\u99c5,\u516c\u5712</keywords>\n  </metadata>\n  <viewport west=\"139.70\" south=\"35.66\" east=\"139.78\" north=\"35.72\">\n    <p:way id=\"w-17\" p:closed=\"false\">\n      <p:node lat=\"35.681\" lon=\"139.767\"/>\n      <p:node lat=\"35.689\" lon=\"139.692\"/>\n      <p:node lat=\"35.710\" lon=\"139.810\"/>\n    </p:way>\n    <svg:svg viewBox=\"0 0 100 40\" width=\"200\" height=\"80\">\n      <svg:path d=\"M2,30 C20,4 44,36 70,10\"/>\n      <svg:text x=\"4\" y=\"38\">\u99c5</svg:text>\n    </svg:...[truncated, 817 chars total]\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-23T05:31:40.807235+00:00"
+}

@@ -1,0 +1,162 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (title, payload, checksum?)>
+  <!ATTLIST record id ID #REQUIRED category CDATA "general">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY intro "This payload contains &lt;escaped&gt; content.">
+]>
+<archive>
+  <record id="r-001" category="binary">
+    <title>Encoded sample</title>
+    <payload>
+      &intro;
+      <chunk><![CDATA[AAECAwQFBgcICQoLDA0ODw==]]></chunk>
+      <chunk>tail &amp; delimiter</chunk>
+    </payload>
+    <checksum>sha256:9f86d081884c7d659a2feaa0c55ad015</checksum>
+  </record>
+  <record id="r-002">
+    <title>Second record</title>
+    <payload>plain text</payload>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope
+    xmlns:soap="http://www.w3.org/2003/05/soap-envelope"
+    xmlns:svc="urn:example:service"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <soap:Header>
+    <svc:RequestContext xsi:type="svc:BatchContext">
+      <svc:requestId>7f3e2c10</svc:requestId>
+      <svc:roles>
+        <svc:role>reader</svc:role>
+        <svc:role>auditor</svc:role>
+      </svc:roles>
+      <svc:flags enabled="true" retry-count="0"/>
+    </svc:RequestContext>
+  </soap:Header>
+  <soap:Body>
+    <svc:Submit>
+      <svc:document xml:lang="en-US" xml:base="https://example.invalid/input/">
+        <svc:heading>Quarterly &amp; provisional</svc:heading>
+        <svc:paragraph>Text before <svc:emphasis>inline markup</svc:emphasis> and after.</svc:paragraph>
+        <svc:attachment media-type="application/octet-stream">
+          <![CDATA[
+            00010203-0405-0607-0809
+          ]]>
+        </svc:attachment>
+      </svc:document>
+    </svc:Submit>
+  </soap:Body>
+</soap:Envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:store:catalog" xmlns:p="urn:store:product" xmlns:m="urn:store:money">
+  <catalog-info>
+    <name xml:lang="fr">Collection expérimentale</name>
+    <valid-from>2026-01-01</valid-from>
+    <valid-until>2026-12-31</valid-until>
+  </catalog-info>
+  <products>
+    <p:product code="A&amp;B-42" discontinued="false">
+      <p:name>Mixed &lt;materials&gt;</p:name>
+      <p:prices>
+        <m:price currency="EUR">19.95</m:price>
+        <m:price currency="JPY">3200</m:price>
+      </p:prices>
+      <p:attributes>
+        <p:attribute key="weight" value="0"/>
+        <p:attribute key="color">blue</p:attribute>
+        <p:attribute key="origin"><![CDATA[unknown & unresolved]]></p:attribute>
+      </p:attributes>
+    </p:product>
+    <p:product code="Z-900">
+      <p:name>Replacement part</p:name>
+      <p:prices/>
+      <p:related>
+        <p:ref code="A&amp;B-42"/>
+        <p:ref code="missing"/>
+      </p:related>
+    </p:product>
+  </products>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="320" height="180" viewBox="0 0 320 180">
+  <title>Layered illustration</title>
+  <desc>Shapes with gradients, paths, and embedded metadata</desc>
+  <defs>
+    <linearGradient id="fade" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0" stop-color="#112233" stop-opacity="1"/>
+      <stop offset="0.5" stop-color="#abcdef" stop-opacity=".75"/>
+      <stop offset="100%" stop-color="none"/>
+    </linearGradient>
+    <clipPath id="window">
+      <rect x="8" y="8" width="304" height="164" rx="12"/>
+    </clipPath>
+  </defs>
+  <g id="scene" clip-path="url(#window)" transform="translate(3,-2) rotate(1)">
+    <rect x="0" y="0" width="320" height="180" fill="url(#fade)"/>
+    <path d="M 10 140 C 40 90, 80 175, 120 120 S 210 80, 310 145"
+          fill="none" stroke="#ffffff" stroke-width="2"/>
+    <circle cx="260" cy="42" r="24" fill="#ffcc00">
+      <title>Sun</title>
+    </circle>
+    <image x="16" y="16" width="32" height="32"
+           xlink:href="data:image/png;base64,iVBORw0KGgo=" preserveAspectRatio="none"/>
+    <text x="20" y="160" xml:space="preserve">A &amp; B — <tspan font-weight="bold">C</tspan></text>
+  </g>
+</svg>
+```
+
+```xml
+<?xml version="1.0"?>
+<report xmlns:r="urn:research:report" xmlns:xlink="http://www.w3.org/1999/xlink"
+        generated="2026-09-23T00:00:00+00:00">
+  <!-- Mixed-content report with references and optional sections -->
+  <r:subject id="case-17" xml:lang="und">Boundary analysis</r:subject>
+  <r:observations>
+    <r:observation n="1" confidence="0.0">
+      Before <r:term ref="#term-a">alpha</r:term>, there is whitespace.
+      <r:value unit="ms">0.000</r:value>
+    </r:observation>
+    <r:observation n="2" confidence="1">
+      <![CDATA[raw text ]]> <r:term ref="#term-b">beta</r:term>
+      <r:link xlink:type="simple" xlink:href="#attachment-1">source</r:link>
+    </r:observation>
+  </r:observations>
+  <r:vocabulary>
+    <r:entry id="term-a" kind="symbol">
+      <r:label>α</r:label>
+      <r:definition>First marker</r:definition>
+    </r:entry>
+    <r:entry id="term-b" kind="symbol">
+      <r:label>β</r:label>
+      <r:definition/>
+    </r:entry>
+  </r:vocabulary>
+  <r:attachments>
+    <r:attachment id="attachment-1" content-type="text/plain" compression="none">
+      <r:data><![CDATA[line one
+line two
+]]></r:data>
+    </r:attachment>
+  </r:attachments>
+  <r:review status="pending">
+    <r:reviewer role="external" xml:lang="de">Prüfung</r:reviewer>
+  </r:review>
+</report>
+```

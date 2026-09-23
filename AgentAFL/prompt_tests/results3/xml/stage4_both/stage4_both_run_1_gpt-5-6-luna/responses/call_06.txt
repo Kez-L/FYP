@@ -1,0 +1,160 @@
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE catalog [
+  <!ENTITY company "Northwind &amp; Sons">
+  <!ENTITY note "Use &#x2192; for the next aisle.">
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (name, item*)>
+  <!ATTLIST section code ID #REQUIRED parent IDREF #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT item (label, price, details?)>
+  <!ATTLIST item sku ID #REQUIRED tags NMTOKENS #IMPLIED state (active|held|retired) "active">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|b|i|ref)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT ref (#PCDATA)>
+]>
+<catalog>
+  <section code="hardware">
+    <name>&company; Hardware</name>
+    <item sku="bolt-08" tags="steel metric" state="active">
+      <label>Hex bolt</label>
+      <price>0.18</price>
+      <details>Grade <b>8.8</b>; see <ref>&note;</ref>.</details>
+    </item>
+  </section>
+  <section code="clearance" parent="hardware">
+    <name>Clearance</name>
+    <item sku="washer-02" tags="steel flat" state="held">
+      <label>Washer</label>
+      <price>0.05</price>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow>
+  <step name="extract" retry="2">
+    <command><![CDATA[tar -xf "input.tar" -C "$WORKDIR"]]></command>
+    <environment>
+      <variable name="LANG">C.UTF-8</variable>
+      <variable name="FLAGS">--strict --verbose</variable>
+    </environment>
+    <on-success>
+      <emit channel="log">extraction complete</emit>
+    </on-success>
+  </step>
+  <step name="transform" retry="0">
+    <command>convert --input &quot;$WORKDIR/in &amp; out&quot; --output=result.xml</command>
+    <stdin><![CDATA[
+      <literal>
+        This text contains <angle brackets>, ampersands & symbols,
+        and a closing-looking sequence ]] ]]> split across markup.
+      </literal>
+    ]]></stdin>
+    <on-failure>
+      <emit channel="stderr">transform failed</emit>
+    </on-failure>
+  </step>
+  <finally>
+    <cleanup path="${WORKDIR}" recursive="true"/>
+  </finally>
+</workflow>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (opening, transaction*, closing)>
+  <!ELEMENT opening (#PCDATA)>
+  <!ELEMENT transaction (debit|credit, memo?, allocation*)>
+  <!ATTLIST transaction ref ID #REQUIRED account IDREF #REQUIRED>
+  <!ELEMENT debit (#PCDATA)>
+  <!ELEMENT credit (#PCDATA)>
+  <!ELEMENT memo (#PCDATA)>
+  <!ELEMENT allocation EMPTY>
+  <!ATTLIST allocation cost-center NMTOKEN #REQUIRED percent NMTOKEN "100">
+  <!ELEMENT closing (#PCDATA)>
+]>
+<ledger>
+  <opening>2026-01-01T00:00:00Z</opening>
+  <transaction ref="t001" account="acct-main">
+    <debit>1250.00</debit>
+    <memo>Quarterly service &amp; maintenance</memo>
+    <allocation cost-center="ops" percent="75"/>
+    <allocation cost-center="research" percent="25"/>
+  </transaction>
+  <transaction ref="t002" account="acct-main">
+    <credit>400.50</credit>
+    <allocation cost-center="ops"/>
+  </transaction>
+  <closing>2026-03-31T23:59:59Z</closing>
+</ledger>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<message>
+  <header>
+    <sender><![CDATA[robot/alpha]]></sender>
+    <recipient>queue:ingest</recipient>
+    <flags>
+      <flag>urgent</flag>
+      <flag>compressed</flag>
+    </flags>
+  </header>
+  <body>
+    <paragraph>First line&#x0D;&#x0A;second line with a tab&#x09;before data.</paragraph>
+    <table columns="3">
+      <row>
+        <cell kind="text">A</cell>
+        <cell kind="number">001</cell>
+        <cell kind="empty"/>
+      </row>
+      <row>
+        <cell kind="text"><![CDATA[x < y && y < z]]></cell>
+        <cell kind="number">-7.25</cell>
+        <cell kind="text">snowman: &#x2603;</cell>
+      </row>
+    </table>
+    <?delivery route="secondary" attempt="03"?>
+    <attachment media-type="application/octet-stream" size="0">
+      <checksum algorithm="none"/>
+    </attachment>
+  </body>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE tree [
+  <!ENTITY leaf "<leaf value='generated'/>">
+  <!ENTITY pair "<branch><left/><right/></branch>">
+  <!ELEMENT tree (branch|leaf|marker)+>
+  <!ELEMENT branch (branch|leaf|marker|left|right)+>
+  <!ELEMENT left EMPTY>
+  <!ELEMENT right EMPTY>
+  <!ELEMENT leaf EMPTY>
+  <!ELEMENT marker (#PCDATA)>
+  <!ATTLIST leaf value CDATA #IMPLIED>
+]>
+<tree>
+  <branch id="root">
+    <branch id="north">
+      &leaf;
+      <marker>north &lt; west</marker>
+      &pair;
+    </branch>
+    <branch id="south">
+      <left/>
+      <right/>
+      <leaf value="literal"/>
+    </branch>
+  </branch>
+  <marker><![CDATA[boundary ]]> <![CDATA[ marker]]></marker>
+</tree>
+```

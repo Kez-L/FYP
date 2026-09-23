@@ -1,0 +1,173 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (warehouse+, summary)>
+  <!ELEMENT warehouse (label, bin+)>
+  <!ATTLIST warehouse id ID #REQUIRED region NMTOKEN #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT bin (item*)>
+  <!ATTLIST bin code NMTOKEN #REQUIRED>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item sku ID #REQUIRED quantity CDATA #REQUIRED state (available|reserved|damaged) "available">
+  <!ELEMENT summary (#PCDATA)>
+]>
+<inventory>
+  <warehouse id="wh-north" region="eu-west">
+    <label>North distribution center</label>
+    <bin code="A-01">
+      <item sku="sku-100" quantity="24"/>
+      <item sku="sku-101" quantity="0" state="reserved"/>
+    </bin>
+    <bin code="B-07"/>
+  </warehouse>
+  <warehouse id="wh-south" region="us-east">
+    <label>South distribution center</label>
+    <bin code="C-03">
+      <item sku="sku-220" quantity="7" state="damaged"/>
+    </bin>
+  </warehouse>
+  <summary>Inventory snapshot: 3 bins inspected.</summary>
+</inventory>
+```
+
+```xml
+<?xml version="1.0"?>
+<article xmlns="urn:example:article"
+         xmlns:ref="urn:example:reference"
+         xml:lang="fr"
+         xml:space="preserve">
+  <!-- Mixed prose, inline elements, and a processing instruction. -->
+  <?review status="pending"?>
+  <header>
+    <title>Le langage des arbres</title>
+    <byline>Camille Renard</byline>
+  </header>
+  <body>
+    <section id="intro">
+      <heading>Introduction</heading>
+      <paragraph>Un arbre possède une <emphasis>racine</emphasis> et des branches.</paragraph>
+      <paragraph><![CDATA[
+        Cette zone conserve les espaces, les symboles < et >,
+        ainsi qu'une notation semi-structurée.
+      ]]></paragraph>
+    </section>
+    <section id="refs">
+      <heading>Références</heading>
+      <list>
+        <entry><ref:link target="book-1">Volume I</ref:link></entry>
+        <entry><ref:link target="book-2">Volume II</ref:link></entry>
+      </list>
+    </section>
+  </body>
+  <appendix>
+    <note>Dernière mise à jour : 23 septembre 2026.</note>
+  </appendix>
+</article>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow"
+          xmlns:ext="urn:example:workflow-extension"
+          version="3.4"
+          name="nightly-build">
+  <variables>
+    <variable key="workspace" value="/srv/build"/>
+    <variable key="attempts" value="2"/>
+  </variables>
+  <graph>
+    <node id="compile" type="task">
+      <command><![CDATA[make all && make test]]></command>
+      <on-success ref="package"/>
+      <on-failure ref="notify"/>
+    </node>
+    <node id="package" type="task">
+      <input path="dist/"/>
+      <artifact name="release.tar" media-type="application/x-tar"/>
+      <on-success ref="publish"/>
+    </node>
+    <node id="publish" type="gate" enabled="false">
+      <condition language="expr">branch == "main" and signed == true</condition>
+      <ext:approval required="2">
+        <ext:group>release-engineering</ext:group>
+        <ext:group>security</ext:group>
+      </ext:approval>
+    </node>
+    <node id="notify" type="notification">
+      <recipient channel="email">builds@example.invalid</recipient>
+      <recipient channel="chat">#build-alerts</recipient>
+    </node>
+  </graph>
+  <metadata>
+    <created>2026-09-23</created>
+    <owner>platform</owner>
+  </metadata>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<archive xmlns="urn:example:archive"
+         xmlns:meta="urn:example:metadata"
+         id="arc-77">
+  <?archive mode="incremental"?>
+  <entry path="docs/readme.txt" checksum="sha256:abc123">
+    <meta:size unit="bytes">1840</meta:size>
+    <meta:modified>2026-09-20T11:42:00Z</meta:modified>
+    <content encoding="utf-8"><![CDATA[Welcome & enjoy the archive.]]></content>
+  </entry>
+  <entry path="images/logo.bin" checksum="sha256:def456">
+    <meta:size unit="bytes">4096</meta:size>
+    <meta:modified>2026-09-21T07:15:33Z</meta:modified>
+    <content encoding="base64">AAECAwQFBgcICQ==</content>
+  </entry>
+  <entry path="empty/" checksum="">
+    <meta:size unit="bytes">0</meta:size>
+    <content encoding="none"/>
+  </entry>
+  <manifest>
+    <count>3</count>
+    <signature algorithm="ed25519">MEQCIFakeSignatureData</signature>
+  </manifest>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE note [
+  <!ENTITY % common "xml:space (default|preserve) 'default'">
+  <!ELEMENT note (subject, recipients, body, attachments?)>
+  <!ATTLIST note %common; priority (low|normal|urgent) "normal">
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT recipients (to+, cc*)>
+  <!ELEMENT to (#PCDATA)>
+  <!ATTLIST to address CDATA #REQUIRED>
+  <!ELEMENT cc (#PCDATA)>
+  <!ATTLIST cc address CDATA #REQUIRED>
+  <!ELEMENT body (#PCDATA|strong|link|br)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT attachments (attachment+)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment filename CDATA #REQUIRED media-type CDATA #REQUIRED>
+]>
+<note priority="urgent" xml:space="preserve">
+  <subject>Deployment window &amp; rollback plan</subject>
+  <recipients>
+    <to address="ops@example.invalid">Operations</to>
+    <to address="qa@example.invalid">Quality Assurance</to>
+    <cc address="audit@example.invalid">Audit</cc>
+  </recipients>
+  <body>
+    Please verify the <strong>staging</strong> environment.<br/>
+    See the <link href="https://example.invalid/runbook">runbook</link>
+    before proceeding.
+  </body>
+  <attachments>
+    <attachment filename="runbook.pdf" media-type="application/pdf"/>
+    <attachment filename="checksums.txt" media-type="text/plain"/>
+  </attachments>
+</note>
+```

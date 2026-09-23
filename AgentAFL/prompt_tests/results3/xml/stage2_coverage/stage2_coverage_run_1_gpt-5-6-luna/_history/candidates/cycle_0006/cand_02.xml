@@ -1,0 +1,44 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE package [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!NOTATION image PUBLIC "-//EXAMPLE//NOTATION Image 1.0//EN" "image/x-example">
+  <!ENTITY payload SYSTEM "payload.dat" NDATA bin>
+  <!ENTITY picture SYSTEM "picture.img" NDATA image>
+  <!ENTITY literal "A&amp;B&lt;C&gt;&quot;D&apos;E">
+  <!ELEMENT package (header, item*, footer)>
+  <!ELEMENT header (name, checksum)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT item (description, resource?, properties)>
+  <!ATTLIST item
+    id ID #REQUIRED
+    kind (binary|image|text) "text"
+    source ENTITY #IMPLIED>
+  <!ELEMENT description (#PCDATA|quote)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT resource EMPTY>
+  <!ATTLIST resource ref ENTITY #REQUIRED>
+  <!ELEMENT properties (property*)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST property key NMTOKEN #REQUIRED>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<package>
+  <header>
+    <name>sample &literal;</name>
+    <checksum><![CDATA[00-11-22-33]]></checksum>
+  </header>
+  <item id="text1" kind="text">
+    <description>plain <quote>quoted</quote> text</description>
+    <properties>
+      <property key="mode">read-only</property>
+      <property key="size">42</property>
+    </properties>
+  </item>
+  <item id="blob1" kind="binary" source="payload">
+    <description>external resource</description>
+    <resource ref="payload"/>
+    <properties/>
+  </item>
+  <footer>complete</footer>
+</package>

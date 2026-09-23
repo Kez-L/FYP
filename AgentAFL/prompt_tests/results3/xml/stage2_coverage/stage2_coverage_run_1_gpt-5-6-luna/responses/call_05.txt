@@ -1,0 +1,209 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (meta, folder+)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta
+    xml:lang NMTOKEN #IMPLIED
+    generated CDATA #FIXED "seed">
+  <!ELEMENT folder (label, entry*)>
+  <!ATTLIST folder
+    name ID #REQUIRED
+    xml:base CDATA #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT entry (#PCDATA|link|emphasis|![CDATA[not-a-declaration]])*>
+  <!ATTLIST entry
+    key ID #REQUIRED
+    refs IDREFS #IMPLIED>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target IDREF #REQUIRED>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ENTITY badge "&#x2605; &amp; ready">
+]>
+<archive xmlns="urn:archive:v2" xmlns:r="urn:ref">
+  <meta xml:lang="en-US"/>
+  <folder name="root" xml:base="https://example.invalid/data/">
+    <label>Catalog &badge;</label>
+    <entry key="first" refs="second third">alpha <emphasis><![CDATA[x < y && y > z]]></emphasis> omega</entry>
+    <entry key="second" refs="first">
+      <link target="first"/>
+      <r:note>prefixed content</r:note>
+    </entry>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % common '<!ELEMENT report (title,body)>
+    <!ELEMENT title (#PCDATA)>
+    <!ELEMENT body (section+)>
+    <!ELEMENT section (heading,para*)>
+    <!ELEMENT heading (#PCDATA)>
+    <!ELEMENT para (#PCDATA|code|br)*>
+    <!ELEMENT code (#PCDATA)>
+    <!ELEMENT br EMPTY>
+    <!ATTLIST section level (one|two|three) "one">'>
+  %common;
+  <!ENTITY % optional "<!ELEMENT appendix (#PCDATA)>">
+  <![INCLUDE[
+    %optional;
+    <!ATTLIST report appendix IDREF #IMPLIED>
+  ]]>
+  <!ENTITY amp "&amp;">
+  <!ENTITY word "left-&amp;-right">
+]>
+<report appendix="extra">
+  <title>Conditional sections &amp; parameter entities</title>
+  <body>
+    <section level="two">
+      <heading>Overview</heading>
+      <para>A &word; boundary <code>&lt;tag&gt;</code><br/>tail</para>
+    </section>
+    <section>
+      <heading>Details</heading>
+      <para>Numeric &#x1F642; and decimal &#128512; &amp; &amp;</para>
+    </section>
+  </body>
+  <appendix>ignored by the body grammar but declared in the subset</appendix>
+</report>
+```
+
+```xml
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE package [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!NOTATION image PUBLIC "-//EXAMPLE//NOTATION Image 1.0//EN" "image/x-example">
+  <!ENTITY payload SYSTEM "payload.dat" NDATA bin>
+  <!ENTITY picture SYSTEM "picture.img" NDATA image>
+  <!ENTITY literal "A&amp;B&lt;C&gt;&quot;D&apos;E">
+  <!ELEMENT package (header, item*, footer)>
+  <!ELEMENT header (name, checksum)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT item (description, resource?, properties)>
+  <!ATTLIST item
+    id ID #REQUIRED
+    kind (binary|image|text) "text"
+    source ENTITY #IMPLIED>
+  <!ELEMENT description (#PCDATA|quote)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT resource EMPTY>
+  <!ATTLIST resource ref ENTITY #REQUIRED>
+  <!ELEMENT properties (property*)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST property key NMTOKEN #REQUIRED>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<package>
+  <header>
+    <name>sample &literal;</name>
+    <checksum><![CDATA[00-11-22-33]]></checksum>
+  </header>
+  <item id="text1" kind="text">
+    <description>plain <quote>quoted</quote> text</description>
+    <properties>
+      <property key="mode">read-only</property>
+      <property key="size">42</property>
+    </properties>
+  </item>
+  <item id="blob1" kind="binary" source="payload">
+    <description>external resource</description>
+    <resource ref="payload"/>
+    <properties/>
+  </item>
+  <footer>complete</footer>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (event*)>
+  <!ELEMENT event (time, actor, data)>
+  <!ATTLIST event
+    uid ID #REQUIRED
+    previous IDREF #IMPLIED
+    category CDATA #IMPLIED>
+  <!ELEMENT time (#PCDATA)>
+  <!ELEMENT actor EMPTY>
+  <!ATTLIST actor
+    name CDATA #REQUIRED
+    role (reader|writer|admin) "reader">
+  <!ELEMENT data (field|text|fragment)*>
+  <!ELEMENT field (value)>
+  <!ATTLIST field
+    name NMTOKEN #REQUIRED
+    datatype (string|integer|boolean) "string">
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT text (#PCDATA)>
+  <!ELEMENT fragment ANY>
+  <!ENTITY open "&#x7B;">
+  <!ENTITY close "&#x7D;">
+]>
+<stream>
+  <event uid="e0" category="start">
+    <time>2026-09-23T00:00:00Z</time>
+    <actor name="daemon" role="admin"/>
+    <data>
+      <field name="mode" datatype="string"><value>cold</value></field>
+      <field name="count" datatype="integer"><value>0007</value></field>
+      <text>prefix &open;unparsed&close; suffix</text>
+    </data>
+  </event>
+  <event uid="e1" previous="e0">
+    <time>2026-09-23T00:01:02+00:00</time>
+    <actor name="client"/>
+    <data>
+      <fragment><![CDATA[
+        <synthetic>
+          &not-an-entity;
+        </synthetic>
+      ]]></fragment>
+      <field name="enabled" datatype="boolean"><value>true</value></field>
+    </data>
+  </event>
+</stream>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (axis, axis, cells)>
+  <!ELEMENT axis (point+)>
+  <!ATTLIST axis direction (x|y) #REQUIRED>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST point
+    id ID #REQUIRED
+    label CDATA #IMPLIED>
+  <!ELEMENT cells (cell*)>
+  <!ELEMENT cell EMPTY>
+  <!ATTLIST cell
+    x IDREF #REQUIRED
+    y IDREF #REQUIRED
+    value CDATA #IMPLIED
+    flags NMTOKENS #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY newline "&#x85;">
+]>
+<matrix>
+  <axis direction="x">
+    <point id="x1" label="zero"/>
+    <point id="x2" label="one &nbsp;"/>
+    <point id="x3" label="two"/>
+  </axis>
+  <axis direction="y">
+    <point id="y1" label="first"/>
+    <point id="y2" label="second"/>
+  </axis>
+  <cells>
+    <cell x="x1" y="y1" value="0" flags="origin sparse"/>
+    <cell x="x2" y="y1" value="1"/>
+    <cell x="x3" y="y1" value="2 &newline;"/>
+    <cell x="x1" y="y2" value="3" flags="computed"/>
+    <cell x="x2" y="y2" value="4"/>
+    <cell x="x3" y="y2" value="5 &amp; final"/>
+  </cells>
+</matrix>
+```

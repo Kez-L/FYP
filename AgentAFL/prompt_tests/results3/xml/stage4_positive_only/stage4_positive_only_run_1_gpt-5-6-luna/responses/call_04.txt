@@ -1,0 +1,137 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:store:catalog" xmlns:p="urn:store:price">
+  <product sku="A-001" available="true">
+    <name><![CDATA[Glass & Granite]]></name>
+    <dimensions unit="mm">
+      <width>12.5</width>
+      <height>0</height>
+      <depth>999999999999999999999</depth>
+    </dimensions>
+    <p:price currency="€">1.2e+03</p:price>
+    <tags>
+      <tag>fragile</tag>
+      <tag>石</tag>
+      <tag xml:space="preserve">  spaced  </tag>
+    </tags>
+  </product>
+  <product sku="B-002" available="false">
+    <name>R&amp;D &quot;prototype&quot;</name>
+    <notes>line one
+line two
+line three</notes>
+  </product>
+</catalog>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ENTITY company "North &amp; South">
+  <!ENTITY stamp "2026-09-23T00:00:00Z">
+  <!ELEMENT report (header, section+, appendix?)>
+  <!ELEMENT header (subject, generated)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT section (heading, paragraph*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT appendix (#PCDATA)>
+]>
+<report xml:lang="en">
+  <header>
+    <subject>&company; / status</subject>
+    <generated>&stamp;</generated>
+  </header>
+  <section id="α">
+    <heading>Summary</heading>
+    <paragraph>One <em>important</em> result<br/>was recorded.</paragraph>
+    <paragraph><![CDATA[raw ]]> text &lt;with&gt; markup</paragraph>
+  </section>
+  <section id="β">
+    <heading>Details</heading>
+  </section>
+  <appendix>© 2026 — résumé</appendix>
+</report>
+```
+
+```xml
+<package xmlns="urn:example:package" xmlns:x="urn:example:extra">
+  <manifest generated="yes">
+    <entry path="/" type="directory"/>
+    <entry path="data.bin" type="application/octet-stream" size="18446744073709551615"/>
+    <entry path="文書/é.txt" type="text/plain">
+      <checksum algorithm="sha256">0000000000000000000000000000000000000000000000000000000000000000</checksum>
+    </entry>
+  </manifest>
+  <payload>
+    <x:blob encoding="base64">
+      AAEC/f8=
+    </x:blob>
+    <metadata>
+      <field name="empty"/>
+      <field name="quote">a &quot; b &apos; c</field>
+      <field name="nested"><value><value><value/></value></value></field>
+    </metadata>
+  </payload>
+  <links>
+    <link rel="self" href="urn:test:package"/>
+    <link rel="next" href="#missing"/>
+  </links>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ELEMENT node ANY>
+  <!ATTLIST node key ID #IMPLIED ref IDREF #IMPLIED>
+  <!ENTITY local "replacement">
+  <!ENTITY recursive "&local; &local;">
+]>
+<root xmlns:a="urn:a" xmlns:b="urn:b">
+  <node key="n0" ref="n2">
+    <node key="n1">
+      <value>&recursive;</value>
+      <value><![CDATA[]]></value>
+      <value><![CDATA[<not-an-element>&still-raw;</not-an-element>]]></value>
+    </node>
+    <a:item b:flag="yes" a:count="00000000000000000000000000042"/>
+    <node key="n2">
+      <mixed>left<![CDATA[middle]]>right</mixed>
+    </node>
+  </node>
+  <tail><!-- comment --><![CDATA[ x ]]></tail>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<exchange xmlns="urn:example:exchange" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <request id="req-00000000000000000000000000000001" xsi:type="Batch">
+    <credentials>
+      <user><![CDATA[user]]></user>
+      <token>abc&amp;def&lt;ghi</token>
+    </credentials>
+    <operations>
+      <operation action="create">
+        <resource uri="/v1/items?x=1&amp;y=2">
+          <property name="nullable" xsi:nil="true"/>
+          <property name="count">-9223372036854775808</property>
+          <property name="ratio">NaN</property>
+        </resource>
+      </operation>
+      <operation action="delete">
+        <resource uri=""/>
+      </operation>
+    </operations>
+  </request>
+  <response status="207">
+    <result code="0">ok</result>
+    <result code="4"><![CDATA[partial <failure>]]></result>
+  </response>
+</exchange>
+```

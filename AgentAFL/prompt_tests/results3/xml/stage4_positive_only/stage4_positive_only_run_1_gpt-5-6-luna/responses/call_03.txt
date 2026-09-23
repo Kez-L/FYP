@@ -1,0 +1,192 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (metadata, layer+)>
+  <!ELEMENT metadata (title, author?, keywords?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT keywords (keyword*)>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ELEMENT layer (group|shape|text)*>
+  <!ATTLIST layer name CDATA #REQUIRED opacity CDATA "1.0">
+  <!ELEMENT group (group|shape|text)*>
+  <!ATTLIST group id ID #IMPLIED transform CDATA #IMPLIED>
+  <!ELEMENT shape EMPTY>
+  <!ATTLIST shape kind (circle|rect|path) #REQUIRED x CDATA #IMPLIED y CDATA #IMPLIED>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST text x CDATA #REQUIRED y CDATA #REQUIRED>
+]>
+<scene xmlns="urn:example:graphics" version="2.4">
+  <metadata>
+    <title>Night Garden</title>
+    <author>Élodie &amp; Ren</author>
+    <keywords>
+      <keyword>luminous</keyword>
+      <keyword>vector</keyword>
+      <keyword>quiet</keyword>
+    </keywords>
+  </metadata>
+  <layer name="background" opacity="0.85">
+    <shape kind="rect" x="0" y="0"/>
+    <group id="constellation" transform="rotate(3)">
+      <shape kind="circle" x="12.5" y="8.25"/>
+      <shape kind="path" x="18" y="11"/>
+      <text x="4" y="22">north &lt; east</text>
+    </group>
+  </layer>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+          xmlns:m="urn:inventory:v3"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <soap:Header>
+    <m:RequestId xsi:type="m:Token">7f3a-Δ-991</m:RequestId>
+    <m:Options>
+      <m:Cache enabled="false"/>
+      <m:Locale>fr-FR</m:Locale>
+    </m:Options>
+  </soap:Header>
+  <soap:Body>
+    <m:Lookup>
+      <m:Warehouse region="eu-west">
+        <m:Bin code="A-04">
+          <m:Item sku="P-17" quantity="0003"/>
+          <m:Item sku="Q-22" quantity="1">
+            <m:Description><![CDATA[brackets: < > & and terminators ]] ]]> remain text</m:Description>
+          </m:Item>
+        </m:Bin>
+      </m:Warehouse>
+      <m:Filter>
+        <m:Expression>stock &gt; 0 and aisle != "closed"</m:Expression>
+      </m:Filter>
+    </m:Lookup>
+  </soap:Body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE notebook [
+  <!ELEMENT notebook (chapter+)>
+  <!ATTLIST notebook xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT chapter (heading, block+)>
+  <!ATTLIST chapter number CDATA #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT block (para|list|quote|code)>
+  <!ELEMENT para (#PCDATA|ref|br)*>
+  <!ELEMENT ref (#PCDATA)>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT list (entry+)>
+  <!ELEMENT entry (para)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+]>
+<notebook xml:lang="en">
+  <chapter number="I">
+    <heading>Small Machines</heading>
+    <block>
+      <para>A <ref target="motor">motor</ref> turns, pauses<br/>and turns again.</para>
+    </block>
+    <block>
+      <list>
+        <entry><para>Measure the axle.</para></entry>
+        <entry><para>Mark the center.</para></entry>
+      </list>
+    </block>
+    <block>
+      <quote>Motion is a kind of memory.</quote>
+    </block>
+    <block>
+      <code>for (step = 0; step &lt; 4; step++) { tick(); }</code>
+    </block>
+  </chapter>
+  <chapter number="II">
+    <heading>References</heading>
+    <block><para id="motor">The index is deliberately compact.</para></block>
+  </chapter>
+</notebook>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ENTITY company "North &amp; South Research">
+  <!ENTITY stamp "2026-09-23T12:45:00Z">
+  <!ELEMENT archive (record*)>
+  <!ELEMENT record (header, payload, tags?)>
+  <!ATTLIST record key ID #REQUIRED state (new|held|closed) "new">
+  <!ELEMENT header (subject, created, owner)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT owner EMPTY>
+  <!ATTLIST owner name CDATA #REQUIRED team CDATA #IMPLIED>
+  <!ELEMENT payload ANY>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+]>
+<archive>
+  <record key="r001" state="held">
+    <header>
+      <subject>Calibration &amp; drift</subject>
+      <created>&stamp;</created>
+      <owner name="&company;" team="observatory"/>
+    </header>
+    <payload>
+      <![CDATA[
+        {"samples":[0.00,1.25,2.50],"valid":true,"note":"raw"}
+      ]]>
+    </payload>
+    <tags>
+      <tag>instrument</tag>
+      <tag>review</tag>
+    </tags>
+  </record>
+  <record key="r002">
+    <header>
+      <subject>Empty payload</subject>
+      <created>2026-01-01</created>
+      <owner name="M. Ito"/>
+    </header>
+    <payload><binary encoding="base64">AAEC/f8=</binary></payload>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?processing mode="compat"?>
+<configuration xmlns="urn:config:alpha"
+              xmlns:sec="urn:security"
+              xml:base="https://config.invalid/root/">
+  <!-- values intentionally exercise empty and repeated containers -->
+  <profile name="staging" active="true">
+    <include href="parts/database.xml"/>
+    <include href="parts/cache.xml" optional="yes"/>
+    <limits>
+      <limit resource="connections" value="0"/>
+      <limit resource="payload" value="18446744073709551615"/>
+    </limits>
+    <features>
+      <feature key="trace">
+        <value type="boolean">false</value>
+      </feature>
+      <feature key="banner">
+        <value type="string"><![CDATA[<maintenance> & soon]]></value>
+      </feature>
+    </features>
+    <sec:credentials>
+      <sec:principal>service/worker</sec:principal>
+      <sec:token expires="never">opaque&amp;token</sec:token>
+    </sec:credentials>
+  </profile>
+  <profile name="minimal" active="false">
+    <limits/>
+    <features/>
+  </profile>
+  <?checkpoint id="after-profiles"?>
+</configuration>
+```

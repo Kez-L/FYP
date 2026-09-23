@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE document [
+  <!ELEMENT document (container, index)>
+  <!ELEMENT container (part|container)*>
+  <!ELEMENT part (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT index EMPTY>
+  <!ATTLIST container depth CDATA #IMPLIED>
+  <!ATTLIST part id ID #IMPLIED role CDATA "content">
+  <!ATTLIST index first IDREF #IMPLIED>
+  <!ENTITY words "alpha &amp; omega">
+  <!ENTITY fragment "<part id='generated' role='embedded'>inside &words;</part>">
+  <!ENTITY quoted "a &quot;quoted&quot; value">
+]>
+<document>
+  <container depth="outer">
+    <part id="one">before <emph>&words;</emph> after</part>
+    &fragment;
+    <container depth="inner">
+      &fragment;
+      <part role="quoted" data="&quoted;">tail</part>
+    </container>
+  </container>
+  <index first="generated"/>
+</document>

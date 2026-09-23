@@ -1,0 +1,23 @@
+<!DOCTYPE network [
+  <!ELEMENT network (node+, link*)>
+  <!ELEMENT node (label?, property*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST node id ID #REQUIRED role (router|host|sensor) "host">
+  <!ATTLIST property key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link from IDREF #REQUIRED to IDREFS #REQUIRED weight NMTOKEN "1">
+  <!ENTITY divider " :: ">
+]>
+<network>
+  <node id="n0" role="router">
+    <label>gateway&divider;core</label>
+    <property key="zone" value="edge"/>
+  </node>
+  <node id="n1">
+    <property key="flags" value="a b c"/>
+  </node>
+  <node id="n2" role="sensor"/>
+  <link from="n0" to="n1 n2" weight="0x10"/>
+  <link from="n2" to="n0"/>
+</network>

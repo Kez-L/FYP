@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (meta, folder+)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta
+    xml:lang NMTOKEN #IMPLIED
+    generated CDATA #FIXED "seed">
+  <!ELEMENT folder (label, entry*)>
+  <!ATTLIST folder
+    name ID #REQUIRED
+    xml:base CDATA #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT entry (#PCDATA|link|emphasis|![CDATA[not-a-declaration]])*>
+  <!ATTLIST entry
+    key ID #REQUIRED
+    refs IDREFS #IMPLIED>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target IDREF #REQUIRED>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ENTITY badge "&#x2605; &amp; ready">
+]>
+<archive xmlns="urn:archive:v2" xmlns:r="urn:ref">
+  <meta xml:lang="en-US"/>
+  <folder name="root" xml:base="https://example.invalid/data/">
+    <label>Catalog &badge;</label>
+    <entry key="first" refs="second third">alpha <emphasis><![CDATA[x < y && y > z]]></emphasis> omega</entry>
+    <entry key="second" refs="first">
+      <link target="first"/>
+      <r:note>prefixed content</r:note>
+    </entry>
+  </folder>
+</archive>

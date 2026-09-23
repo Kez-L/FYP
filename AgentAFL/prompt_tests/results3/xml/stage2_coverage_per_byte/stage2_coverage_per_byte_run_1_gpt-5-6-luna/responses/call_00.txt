@@ -1,0 +1,94 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common "CDATA">
+  <!ELEMENT catalog (item+, note?)>
+  <!ELEMENT item (name, price, description?)>
+  <!ATTLIST item id ID #REQUIRED status (new|used|archived) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+]>
+<catalog>
+  <item id="a1" status="archived">
+    <name>alpha</name>
+    <price>12.50</price>
+    <description>old <emph>stock</emph></description>
+  </item>
+  <note>check &amp; verify</note>
+</catalog>
+```
+
+```xml
+<!DOCTYPE message [
+  <!ELEMENT message (header, body)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header
+    from NMTOKEN #IMPLIED
+    priority NMTOKENS "low normal">
+  <!ELEMENT body (#PCDATA)>
+]>
+<message>
+  <header from="sender@example" priority="high urgent"/>
+  <body><![CDATA[<not-an-element> & raw text]]></body>
+</message>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE r [
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+  <!ELEMENT r (a|b|c)*>
+  <!ELEMENT a EMPTY>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c ANY>
+]>
+<r xmlns:x="urn:test" x:q="&left;value&right;">
+  <a/>
+  <b>one &lt; two</b>
+  <c><nested><deep/></nested></c>
+</r>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ELEMENT report (section)>
+  <!ELEMENT section (title, entry*)>
+  <!ATTLIST section xml:space (default|preserve) "default">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|br)*>
+  <!ELEMENT br EMPTY>
+]>
+<report>
+  <section xml:space="preserve">
+    <title>Summary</title>
+    <entry><key>A</key><value>left<br/>right</value></entry>
+    <entry><key>B</key><value><![CDATA[&broken;]]></value></entry>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta?, payload)>
+  <!ELEMENT meta (created, tags?)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT payload (#PCDATA)>
+  <!ATTLIST payload format NOTATION (text|binary) "text">
+]>
+<envelope>
+  <meta>
+    <created>2026-09-23T00:00:00Z</created>
+    <tags><tag>one</tag><tag>two</tag></tags>
+  </meta>
+  <payload format="binary">A&amp;B&lt;C&gt;</payload>
+</envelope>
+```

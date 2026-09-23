@@ -1,0 +1,162 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+, index)>
+  <!ELEMENT entry (title, metadata?, body)>
+  <!ATTLIST entry id ID #REQUIRED kind (note|report|memo) "note">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT metadata (author, keywords?)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT keywords (keyword+)>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ELEMENT body (#PCDATA|em|strong|link)*>
+  <!ELEMENT em (#PCDATA|strong)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ELEMENT index (ref+)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY product "XML &amp; validation">
+]>
+<archive>
+  <entry id="e1" kind="report">
+    <title>Parser &product; Survey</title>
+    <metadata>
+      <author>Ada Example</author>
+      <keywords>
+        <keyword>grammar</keyword>
+        <keyword>entities</keyword>
+      </keywords>
+    </metadata>
+    <body>Text with <em>mixed <strong>content</strong></em> and a <link href="urn:ref:1">reference</link>.</body>
+  </entry>
+  <entry id="e2">
+    <title>Short Memo</title>
+    <body><![CDATA[Characters such as < and > remain literal here.]]></body>
+  </entry>
+  <index>
+    <ref target="e1"/>
+    <ref target="e2"/>
+  </index>
+</archive>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<workspace xmlns="urn:acme:workspace" xmlns:x="urn:acme:extension" xml:lang="fr" xml:base="https://example.invalid/root/">
+  <x:manifest version="2.7">
+    <x:asset x:id="a-17" media-type="application/octet-stream" checksum="sha256:abc123">
+      <x:location>objects/17.bin</x:location>
+      <x:permissions read="true" write="false"/>
+    </x:asset>
+  </x:manifest>
+  <folder name="projets">
+    <folder name="été" xml:space="preserve">
+      <document created="2026-09-23T12:34:56Z">
+        <heading>Résumé — essais</heading>
+        <paragraph>Une ligne avec des espaces   conservés.</paragraph>
+        <paragraph><term>XML</term> est <x:mark>extensible</x:mark>.</paragraph>
+      </document>
+    </folder>
+  </folder>
+</workspace>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE pipeline [
+  <!ELEMENT pipeline (stage*)>
+  <!ELEMENT stage (input|transform|output|checkpoint)+>
+  <!ATTLIST stage name CDATA #REQUIRED>
+  <!ELEMENT input EMPTY>
+  <!ATTLIST input source CDATA #REQUIRED format CDATA "text">
+  <!ELEMENT transform (#PCDATA)>
+  <!ELEMENT output EMPTY>
+  <!ATTLIST output destination CDATA #REQUIRED overwrite (yes|no) "no">
+  <!ELEMENT checkpoint EMPTY>
+  <!ATTLIST checkpoint after CDATA #IMPLIED>
+]>
+<?pipeline-mode strict?>
+<!-- Processing instructions and empty elements are intentional. -->
+<pipeline>
+  <stage name="ingest">
+    <input source="stdin" format="binary"/>
+    <checkpoint after="input"/>
+    <transform><![CDATA[
+      normalize(record);
+      split("\x00");
+    ]]></transform>
+  </stage>
+  <stage name="publish">
+    <transform>encrypt(key="demo&amp;test")</transform>
+    <output destination="out/archive.dat" overwrite="yes"/>
+  </stage>
+</pipeline>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<network xmlns="urn:example:net" xmlns:ip="urn:example:ip">
+  <interface id="lo0" state="up">
+    <ip:address family="ipv4" ip:prefix="127.0.0.1/8"/>
+    <ip:address family="ipv6" ip:prefix="::1/128"/>
+    <statistics>
+      <received packets="0" bytes="0"/>
+      <transmitted packets="18446744073709551615" bytes="4294967296"/>
+    </statistics>
+  </interface>
+  <interface id="wan0" state="down" mtu="1500">
+    <route destination="0.0.0.0/0" gateway="192.0.2.1">
+      <metric>10</metric>
+    </route>
+    <dns>
+      <server>2001:db8::53</server>
+      <server>192.0.2.53</server>
+    </dns>
+  </interface>
+  <policy default="deny">
+    <rule action="allow" protocol="tcp">
+      <source>198.51.100.0/24</source>
+      <destination port="443">203.0.113.8</destination>
+    </rule>
+    <rule action="reject" protocol="icmp"/>
+  </policy>
+</network>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE library [
+  <!ELEMENT library (shelf*)>
+  <!ELEMENT shelf (book*)>
+  <!ATTLIST shelf code NMTOKEN #REQUIRED>
+  <!ELEMENT book (title, author+, edition?, description?)>
+  <!ATTLIST book isbn CDATA #IMPLIED available (true|false) "true">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT edition EMPTY>
+  <!ATTLIST edition number NMTOKEN #REQUIRED published CDATA #IMPLIED>
+  <!ELEMENT description (#PCDATA|quote|br)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT br EMPTY>
+]>
+<library>
+  <shelf code="A&amp;B">
+    <book isbn="978-0-00-000000-0" available="false">
+      <title>The &lt;Hidden&gt; Index</title>
+      <author>R. N. Tester</author>
+      <author>J. Q. Parser</author>
+      <edition number="3" published="2026-01-01"/>
+      <description>A catalog entry with a <quote>quoted passage</quote><br/>and a second line.</description>
+    </book>
+  </shelf>
+  <shelf code="Ω-2">
+    <book available="true">
+      <title>Whitespace Study</title>
+      <author><![CDATA[Anonymous]]></author>
+      <description><![CDATA[Literal markup: <tag attr="value"/>]]></description>
+    </book>
+  </shelf>
+</library>
+```

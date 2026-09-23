@@ -1,0 +1,187 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE library [
+  <!ELEMENT library (shelf+)>
+  <!ELEMENT shelf (book*)>
+  <!ATTLIST shelf code NMTOKEN #REQUIRED>
+  <!ELEMENT book (title, author+, metadata?, summary)>
+  <!ATTLIST book isbn CDATA #IMPLIED available (yes|no) "yes">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT metadata (published, pages)>
+  <!ELEMENT published (#PCDATA)>
+  <!ELEMENT pages (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|emphasis|link)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+]>
+<library>
+  <shelf code="A-01">
+    <book isbn="978-0000000001" available="yes">
+      <title>The Glass Archive</title>
+      <author>R. Ilyan</author>
+      <author>M. Chen</author>
+      <metadata>
+        <published>2024-02-29</published>
+        <pages>417</pages>
+      </metadata>
+      <summary>A record of <emphasis>fragmented</emphasis> memories and <link>unreliable maps</link>.</summary>
+    </book>
+  </shelf>
+  <shelf code="rare">
+    <book isbn="X&amp;Y&lt;7">
+      <title><![CDATA[Signals & Symbols]]></title>
+      <author>Élodie Nør</author>
+      <summary>Stored below <emphasis>zero</emphasis> degrees.</summary>
+    </book>
+  </shelf>
+</library>
+```
+
+```xml
+<?xml version="1.0"?>
+<workflow xmlns="urn:example:workflow" xmlns:x="urn:example:extension" id="wf-α" state="paused">
+  <?audit generated-by="seed"?>
+  <inputs>
+    <input name="payload" type="binary" encoding="base64">AAEC/f8=</input>
+    <input name="threshold" type="integer">-9223372036854775808</input>
+    <input name="pattern" type="regex"><![CDATA[(a|b){0,3}\s+\x00]]></input>
+  </inputs>
+  <steps>
+    <step id="prepare" retries="0">
+      <x:transform language="xslt" version="3.0">
+        <x:template match="/">
+          <x:copy-of select="@*|node()"/>
+        </x:template>
+      </x:transform>
+    </step>
+    <step id="dispatch" retries="18446744073709551615">
+      <depends-on ref="prepare"/>
+      <branch condition="payload != ''">
+        <then>
+          <emit channel="stdout">ready</emit>
+        </then>
+        <else>
+          <emit channel="stderr">empty</emit>
+        </else>
+      </branch>
+    </step>
+  </steps>
+  <diagnostics><![CDATA[
+    line 1: <not-an-element>
+    line 2: & malformed-looking text
+  ]]></diagnostics>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (key, value, tags?, payload)>
+  <!ATTLIST entry id ID #REQUIRED kind CDATA #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT payload ANY>
+]>
+<archive>
+  <entry id="e0" kind="empty">
+    <key></key>
+    <value/>
+    <payload/>
+  </entry>
+  <entry id="e1" kind="mixed">
+    <key>line&#x0A;break&#x09;tab</key>
+    <value>5 &lt; 9 &amp;&amp; 9 &gt; 5</value>
+    <tags>
+      <tag>one</tag>
+      <tag>two</tag>
+      <tag><![CDATA[three & four]]></tag>
+    </tags>
+    <payload>
+      <!-- nested commentary -->
+      <chunk index="0"><![CDATA[raw <bytes> & markers]]></chunk>
+      <chunk index="1">text before <inner attr="&quot;quoted&quot;">Ω</inner> text after</chunk>
+    </payload>
+  </entry>
+  <entry id="e2">
+    <key>surrogate-like text: &#x1F4A9;</key>
+    <value>   surrounding whitespace   </value>
+    <payload><?inside data?><item a="1" b="2"/></payload>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<network xmlns="urn:net" xmlns:m="urn:meta" xml:base="https://example.invalid/root/">
+  <header>
+    <m:created xml:lang="zh-Hant">二〇二六年</m:created>
+    <m:checksum algorithm="sha-256">0000000000000000000000000000000000000000000000000000000000000000</m:checksum>
+  </header>
+  <nodes>
+    <node name="router&amp;gateway" address="::1">
+      <interface name="lo" mtu="65535">
+        <address family="ipv6">0:0:0:0:0:0:0:1</address>
+        <address family="ipv4">127.0.0.1</address>
+      </interface>
+      <routes>
+        <route destination="0.0.0.0/0" gateway="192.0.2.1"/>
+        <route destination="2001:db8::/32" gateway="2001:db8::1" metric="0000000000000000000000000000000000000000000000000000000000000007"/>
+      </routes>
+    </node>
+    <node name="leaf" address="2001:db8::dead:beef">
+      <interface name="uplink" mtu="0">
+        <address family="ipv6"><![CDATA[2001:db8::2]]></address>
+      </interface>
+    </node>
+  </nodes>
+  <notes>Use <emphasis>no</emphasis> default route; this text is mixed.</notes>
+</network>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE questionnaire [
+  <!ELEMENT questionnaire (section+)>
+  <!ATTLIST questionnaire locale CDATA #IMPLIED>
+  <!ELEMENT section (heading, question+)>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT question (prompt, choice*, answer?)>
+  <!ATTLIST question id ID #REQUIRED required (true|false) "false">
+  <!ELEMENT prompt (#PCDATA|code|br)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT choice (#PCDATA)>
+  <!ATTLIST choice value CDATA #REQUIRED selected (true|false) "false">
+  <!ELEMENT answer (#PCDATA)>
+]>
+<questionnaire locale="en-US">
+  <section id="intro">
+    <heading>Parsing edge cases</heading>
+    <question id="q1" required="true">
+      <prompt>Which sequence represents <code>&lt;tag&gt;</code>?<br/>Choose one.</prompt>
+      <choice value="literal" selected="true">&lt;tag&gt;</choice>
+      <choice value="escaped">&amp;lt;tag&amp;gt;</choice>
+      <answer>literal</answer>
+    </question>
+    <question id="q2">
+      <prompt>Can whitespace be preserved?</prompt>
+      <choice value="yes">Yes</choice>
+      <choice value="no" selected="true">No</choice>
+    </question>
+  </section>
+  <section id="unicode">
+    <heading>Unicode and normalization</heading>
+    <question id="q3" required="false">
+      <prompt>Café, café, and <code>λ</code>.</prompt>
+      <choice value="a">naïve</choice>
+      <choice value="b" selected="true">東京 — Москва — القاهرة</choice>
+      <answer><![CDATA[User supplied: "a < b > c"]]></answer>
+    </question>
+  </section>
+</questionnaire>
+```

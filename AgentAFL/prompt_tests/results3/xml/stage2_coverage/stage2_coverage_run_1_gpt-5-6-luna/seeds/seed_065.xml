@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, data, footer)>
+  <!ELEMENT header (#PCDATA|meta|processing)*>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT data (record+)>
+  <!ELEMENT record (key, value, blob?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|ref|linebreak)*>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT blob (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST report xmlns CDATA #IMPLIED generated CDATA #IMPLIED>
+  <!ATTLIST meta name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST record id ID #REQUIRED kind (alpha|numeric|mixed) "mixed">
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY intro "before &amp; after">
+  <!ENTITY quoted "&quot;quoted&quot;">
+]>
+<report xmlns="urn:example:report" generated="yes">
+  <header>&intro;<meta name="mode" value="&quot;compact&quot;"/><?audit enabled?></header>
+  <data>
+    <record id="r1" kind="alpha">
+      <key>name</key>
+      <value>left<linebreak/>middle<ref target="r2"/>right</value>
+      <blob><![CDATA[<not-an-element>&still-cdata;</not-an-element>]]></blob>
+    </record>
+    <record id="r2" kind="numeric">
+      <key>count</key>
+      <value>42</value>
+    </record>
+  </data>
+  <footer>&quoted;</footer>
+</report>

@@ -1,0 +1,191 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, metrics, findings, footer)>
+  <!ELEMENT header (title, generated, owner)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT metrics (metric+)>
+  <!ELEMENT metric EMPTY>
+  <!ATTLIST metric name NMTOKEN #REQUIRED
+                    value CDATA #REQUIRED
+                    unit CDATA #IMPLIED>
+  <!ELEMENT findings (finding*)>
+  <!ELEMENT finding (#PCDATA|evidence)*>
+  <!ATTLIST finding severity (low|medium|high|critical) "low"
+                    id ID #REQUIRED>
+  <!ELEMENT evidence (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY product "Telemetry Engine">
+]>
+<report>
+  <header>
+    <title>Nightly &product; Audit</title>
+    <generated>2026-09-23T02:14:09Z</generated>
+    <owner>operations@example.invalid</owner>
+  </header>
+  <metrics>
+    <metric name="requests" value="18429" unit="count"/>
+    <metric name="duration" value="913.7" unit="seconds"/>
+    <metric name="error-rate" value="0.0041"/>
+  </metrics>
+  <findings>
+    <finding id="f-001" severity="medium">Expired cache entry found <evidence>node-17</evidence> during rotation.</finding>
+    <finding id="f-002" severity="critical"><evidence>queue://alerts</evidence> exceeded its configured threshold.</finding>
+  </findings>
+  <footer>End of report.</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<package xmlns="urn:example:package"
+         xmlns:m="urn:example:manifest"
+         xmlns:xlink="http://www.w3.org/1999/xlink">
+  <?build profile="release" reproducible="true"?>
+  <archive name="delta-2026-09-23.tar">
+    <m:manifest checksum-algorithm="sha256">
+      <m:file path="bin/runner" size="48320" mode="0755"
+              checksum="e3b0c44298fc1c149afbf4c8996fb924"/>
+      <m:file path="etc/config.ini" size="812" mode="0644"
+              checksum="ca978112ca1bbdcafac231b39a23dc4d"/>
+      <m:file path="share/readme.txt" size="0" mode="0644"
+              checksum="00000000000000000000000000000000"/>
+    </m:manifest>
+    <m:signature algorithm="ed25519" key-id="release-7">
+      <![CDATA[
+-----BEGIN SIGNATURE-----
+MDEyMzQ1Njc4OWFiY2RlZg==
+-----END SIGNATURE-----
+      ]]>
+    </m:signature>
+    <documentation xlink:type="simple"
+                   xlink:href="https://docs.example.invalid/package"
+                   xml:lang="en">Installation notes</documentation>
+  </archive>
+  <!-- A processing instruction and a namespaced manifest are intentional. -->
+  <attributes>
+    <attribute key="platform">linux-amd64</attribute>
+    <attribute key="channel">stable</attribute>
+  </attributes>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (participant+, message+)>
+  <!ELEMENT participant EMPTY>
+  <!ATTLIST participant
+            id ID #REQUIRED
+            display-name CDATA #REQUIRED
+            active (yes|no) "yes">
+  <!ELEMENT message (#PCDATA|mention|attachment|linebreak)*>
+  <!ATTLIST message from IDREF #REQUIRED
+                  reply-to IDREF #IMPLIED
+                  sent CDATA #REQUIRED>
+  <!ELEMENT mention EMPTY>
+  <!ATTLIST mention user IDREF #REQUIRED>
+  <!ELEMENT attachment (#PCDATA)>
+  <!ATTLIST attachment media-type CDATA #REQUIRED
+                       size CDATA #IMPLIED>
+  <!ELEMENT linebreak EMPTY>
+]>
+<conversation>
+  <participant id="p1" display-name="Nora" active="yes"/>
+  <participant id="p2" display-name="Ilya"/>
+  <participant id="p3" display-name="Mina" active="no"/>
+  <message from="p1" sent="2026-09-23T09:00:00Z">Build completed,
+    <mention user="p2"/> please review the output.<linebreak/>
+    The checksum is &lt;pending&gt;.
+  </message>
+  <message from="p2" reply-to="p1" sent="2026-09-23T09:03:12Z">
+    I found an unexpected byte sequence in the attached log.
+    <attachment media-type="text/plain" size="16384">build.log</attachment>
+  </message>
+  <message from="p3" sent="2026-09-23T09:04:01Z"><![CDATA[Looks good: 2 < 3 && 4 > 1]]></message>
+</conversation>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow"
+          xmlns:task="urn:example:task"
+          xmlns:fn="urn:example:function"
+          id="wf-42" version="3">
+  <description xml:lang="en">Conditional deployment workflow</description>
+  <variables>
+    <variable name="region" type="string">eu-west</variable>
+    <variable name="attempts" type="integer">0</variable>
+    <variable name="dry-run" type="boolean">false</variable>
+  </variables>
+  <steps>
+    <task:step id="validate" timeout="PT30S">
+      <task:run executable="/opt/tools/check">
+        <task:argument>--strict</task:argument>
+        <task:argument value-from="region"/>
+      </task:run>
+      <task:on-success next="publish"/>
+      <task:on-failure next="halt"/>
+    </task:step>
+    <task:step id="publish" timeout="PT5M">
+      <task:condition>
+        <fn:equals>
+          <fn:left>${dry-run}</fn:left>
+          <fn:right>false</fn:right>
+        </fn:equals>
+      </task:condition>
+      <task:run executable="/opt/tools/publish">
+        <task:environment name="TARGET_REGION">${region}</task:environment>
+      </task:run>
+      <task:on-success next="notify"/>
+    </task:step>
+    <task:step id="notify">
+      <task:run executable="/opt/tools/notify"/>
+    </task:step>
+    <task:step id="halt">
+      <task:run executable="/bin/false"/>
+    </task:step>
+  </steps>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<inventory xmlns="urn:example:inventory"
+           xmlns:loc="urn:example:location"
+           xml:base="https://warehouse.example.invalid/items/">
+  <warehouse code="WH-09">
+    <loc:address>
+      <loc:line>42 Example Avenue</loc:line>
+      <loc:city>Reykjavík</loc:city>
+      <loc:postal-code>101</loc:postal-code>
+      <loc:country code="IS">Iceland</loc:country>
+    </loc:address>
+    <bins>
+      <bin id="A-01" temperature="-18.5" sealed="true">
+        <item sku="ICE-001" quantity="7">
+          <label>Frozen berries</label>
+          <notes>Keep below -15°C.</notes>
+        </item>
+      </bin>
+      <bin id="B-07" temperature="21" sealed="false">
+        <item sku="GLS-002" quantity="0">
+          <label>Glass vials</label>
+          <notes><![CDATA[Fragile; handle with care & do not stack.]]></notes>
+        </item>
+        <item sku="LAB-Ω9" quantity="12">
+          <label>Calibration weights</label>
+        </item>
+      </bin>
+    </bins>
+    <audit>
+      <entry at="2026-09-22T23:59:59+00:00" actor="scanner-4"
+             action="recount" result="changed"/>
+      <entry at="2026-09-23T00:00:03Z" actor="operator-2"
+             action="seal-check" result="passed"/>
+    </audit>
+  </warehouse>
+</inventory>
+```

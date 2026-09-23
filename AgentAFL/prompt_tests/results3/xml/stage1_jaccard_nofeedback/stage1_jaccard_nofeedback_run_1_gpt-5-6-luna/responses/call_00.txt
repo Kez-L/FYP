@@ -1,0 +1,108 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <x:section id="s-001" enabled="true">
+    <item priority="0" quantity="-1">
+      <name><![CDATA[alpha < beta && gamma > delta]]></name>
+      <value>42</value>
+      <metadata>
+        <entry key="empty"/>
+        <entry key="quoted">"apostrophe' &amp; ampersand"</entry>
+      </metadata>
+    </item>
+  </x:section>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (warehouse+)>
+  <!ELEMENT warehouse (bin*)>
+  <!ATTLIST warehouse code ID #REQUIRED>
+  <!ELEMENT bin (sku, count, note?)>
+  <!ELEMENT sku (#PCDATA)>
+  <!ELEMENT count (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+]>
+<inventory>
+  <warehouse code="w-east">
+    <bin><sku>A-01</sku><count>000000</count><note/></bin>
+    <bin><sku>B-02</sku><count>9</count></bin>
+  </warehouse>
+  <warehouse code="w-west"/>
+</inventory>
+```
+
+```xml
+<message xmlns:m="urn:msg" xml:lang="x-klingon">
+  <?route channel="archive"?>
+  <m:header>
+    <m:sender><![CDATA[user@example.invalid]]></m:sender>
+    <m:recipient>ops@example.invalid</m:recipient>
+    <m:flags>
+      <m:flag value="A&amp;B"/>
+      <m:flag value="&quot;quoted&quot;"/>
+    </m:flags>
+  </m:header>
+  <!-- comment with -- no, this ends safely -->
+  <m:body>
+    <m:paragraph>Line one&#xA;Line two&#13;&#10;Line three</m:paragraph>
+    <m:attachment content-type="application/octet-stream">
+      <![CDATA[
+        binary-ish: \x00 \x01 \x7f
+      ]]>
+    </m:attachment>
+  </m:body>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+)>
+  <!ELEMENT node (label?, edge*)>
+  <!ATTLIST node id ID #REQUIRED kind (root|leaf|cycle) "leaf">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge to IDREF #IMPLIED weight CDATA "1">
+]>
+<graph>
+  <node id="n0" kind="root">
+    <label>origin</label>
+    <edge to="n1" weight="0"/>
+    <edge to="n2" weight="-999999999999999999999"/>
+  </node>
+  <node id="n1">
+    <edge to="n0"/>
+  </node>
+  <node id="n2" kind="cycle">
+    <label><![CDATA[]]></label>
+    <edge to="n2" weight="NaN"/>
+  </node>
+</graph>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <level-0 a="&lt;&amp;&quot;&apos;&gt;">
+    <level-1>
+      <level-2><![CDATA[ ]]></level-2>
+      <level-2>
+        <mixed>text<empty/><![CDATA[split]]>tail</mixed>
+      </level-2>
+    </level-1>
+  </level-0>
+  <siblings>
+    <one/>
+    <two x="1" y="2">
+      <three>
+        <four>
+          <five>deep</five>
+        </four>
+      </three>
+    </two>
+  </siblings>
+</root>
+```

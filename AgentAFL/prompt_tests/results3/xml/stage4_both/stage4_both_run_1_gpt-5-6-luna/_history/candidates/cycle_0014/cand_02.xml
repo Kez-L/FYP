@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (participant+, message*)>
+  <!ELEMENT participant EMPTY>
+  <!ATTLIST participant id ID #REQUIRED role NMTOKEN #REQUIRED>
+  <!ELEMENT message (#PCDATA|mention|attachment|quote)*>
+  <!ATTLIST message from IDREF #REQUIRED timestamp CDATA #REQUIRED>
+  <!ELEMENT mention (#PCDATA)>
+  <!ATTLIST mention user IDREF #REQUIRED>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment href URI #REQUIRED media CDATA #IMPLIED>
+  <!ELEMENT quote (#PCDATA|message)*>
+]>
+<conversation>
+  <participant id="u-alex" role="moderator"/>
+  <participant id="u-bea" role="member"/>
+  <participant id="u-cai" role="member"/>
+  <message from="u-alex" timestamp="2026-09-23T09:15:00Z">
+    Welcome, <mention user="u-bea">@Bea</mention>.
+    <attachment href="https://example.invalid/files/agenda.pdf" media="application/pdf"/>
+  </message>
+  <message from="u-bea" timestamp="2026-09-23T09:17:41Z">
+    <quote><message from="u-alex" timestamp="earlier">Welcome everyone.</message></quote>
+    I have a question about the schedule.
+  </message>
+  <message from="u-cai" timestamp="2026-09-23T09:19:02Z">
+    The symbols <![CDATA[<slot/> & {placeholder}]]> are examples, not markup.
+  </message>
+</conversation>

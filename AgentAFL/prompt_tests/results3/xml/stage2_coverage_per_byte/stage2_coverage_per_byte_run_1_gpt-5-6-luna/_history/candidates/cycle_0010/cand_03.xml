@@ -1,0 +1,25 @@
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT data ANY>
+  <!ATTLIST file path CDATA #REQUIRED checksum CDATA #IMPLIED>
+  <!ENTITY % declarations '<!ELEMENT generated EMPTY><!ATTLIST generated flag CDATA "yes">'>
+  %declarations;
+  <!ENTITY internal "A&amp;B">
+  <![IGNORE[
+    <!ELEMENT ignored (never)>
+    <!ATTLIST ignored x CDATA #REQUIRED>
+  ]]>
+]>
+<package>
+  <manifest>
+    <file path="a&#x2F;b" checksum="&internal;"/>
+    <file path=""/>
+  </manifest>
+  <data>
+    <generated/>
+    <wrapper><![CDATA[&internal;]]></wrapper>
+    <generated flag="no"/>
+  </data>
+</package>

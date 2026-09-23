@@ -1,0 +1,32 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <?pipeline mode="deterministic"?>
+  <definition id="compile-release" version="3">
+    <trigger>
+      <schedule timezone="UTC">
+        <day>Monday</day>
+        <day>Thursday</day>
+        <at>02:30</at>
+      </schedule>
+      <manual allowed="true"/>
+    </trigger>
+    <steps>
+      <step id="checkout" type="source">
+        <command><![CDATA[git clone --depth=1 "$REPOSITORY" workspace]]></command>
+      </step>
+      <step id="build" type="process" depends-on="checkout">
+        <environment>
+          <variable name="MODE">release</variable>
+          <variable name="FLAGS">-O2 -g</variable>
+        </environment>
+        <command>make all &amp;&amp; make test</command>
+        <artifact xlink:href="artifacts/build.tar.gz" media-type="application/gzip"/>
+      </step>
+      <step id="publish" type="transfer" depends-on="build" retry="3">
+        <destination scheme="sftp" host="upload.example.invalid" path="/releases"/>
+      </step>
+    </steps>
+  </definition>
+  <!-- An intentionally empty optional extension point -->
+  <extensions/>
+</workflow>

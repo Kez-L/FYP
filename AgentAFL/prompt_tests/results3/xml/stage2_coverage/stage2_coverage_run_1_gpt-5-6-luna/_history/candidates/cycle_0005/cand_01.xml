@@ -1,0 +1,23 @@
+<?xml version="1.1"?>
+<!DOCTYPE envelope [
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+  <!ENTITY quote "'" >
+  <!ENTITY nested "&left;&quote;payload&quote;&right;" >
+  <!ELEMENT envelope (header, payload, trailer)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header stamp CDATA #REQUIRED>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|mark)*>
+  <!ATTLIST chunk kind CDATA #IMPLIED>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT trailer (#PCDATA)>
+]>
+<envelope>
+  <header stamp="&nested;"/>
+  <payload>
+    <chunk kind="alpha">one<mark>two &lt; three</mark>four</chunk>
+    <chunk kind="beta">&nested;</chunk>
+  </payload>
+  <trailer>done &apos; &quot; &amp; &#x41; &#65;</trailer>
+</envelope>

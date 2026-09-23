@@ -1,0 +1,137 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE warehouse [
+  <!ELEMENT warehouse (aisle*, audit)>
+  <!ELEMENT aisle (bin+)>
+  <!ELEMENT bin (label, item*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT item EMPTY>
+  <!ELEMENT audit (#PCDATA)>
+  <!ATTLIST warehouse xmlns CDATA #IMPLIED>
+  <!ATTLIST aisle code NMTOKEN #REQUIRED>
+  <!ATTLIST bin id ID #REQUIRED sealed (yes|no) "no">
+  <!ATTLIST item sku CDATA #REQUIRED quantity NMTOKEN #IMPLIED>
+  <!ENTITY warning "Use &quot;approved&quot; stock only">
+]>
+<warehouse xmlns="urn:stock">
+  <aisle code="A-7">
+    <bin id="b17" sealed="yes">
+      <label>Odd &amp; fragile</label>
+      <item sku="Q&amp;R" quantity="004"/>
+      <item sku="&#x1F4E6;" quantity="1"/>
+    </bin>
+  </aisle>
+  <audit>&warning;</audit>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, signature?)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload ANY>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST envelope xmlns:soap CDATA #FIXED "urn:soap:test"
+                    soap:mode (sync|async) "sync">
+  <!ATTLIST header soap:mustUnderstand (0|1) "0">
+  <!ENTITY left "<![CDATA[">
+  <!ENTITY right "]]>">
+]>
+<envelope xmlns:soap="urn:soap:test" soap:mode="async">
+  <header soap:mustUnderstand="1"/>
+  <payload>
+    <?transform mode="compact"?>
+    <data xmlns="urn:data" id="x">
+      text &lt;not markup&gt;
+      <![CDATA[ ]]>
+      <nested xmlns:soap="">
+        &left;apparently raw &amp; unparsed&right;
+      </nested>
+    </data>
+  </payload>
+  <signature>abc<!-- unterminated-looking --></signature>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node|edge)*>
+  <!ELEMENT node EMPTY>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST graph xmlns:g CDATA #IMPLIED>
+  <!ATTLIST node g:key NMTOKEN #REQUIRED
+                refs IDREFS #IMPLIED>
+  <!ATTLIST edge from IDREF #REQUIRED
+                to IDREF #REQUIRED
+                weight CDATA "0.0">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "payload.bin" NDATA bin>
+]>
+<graph xmlns:g="urn:graph">
+  <node g:key="root" refs="leaf branch"/>
+  <node g:key="leaf"/>
+  <node g:key="branch"/>
+  <edge from="root" to="leaf" weight="1&amp;2"/>
+  <edge from="root" to="branch"/>
+  <?edge hint?>
+</graph>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (chunk+)>
+  <!ELEMENT chunk (#PCDATA|part|gap)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT gap EMPTY>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!ATTLIST part kind (alpha|beta|gamma) #IMPLIED>
+  <!ATTLIST gap count CDATA "1">
+  <!ENTITY % decorations "<!ATTLIST part xmlns:q CDATA #IMPLIED>">
+  %decorations;
+]>
+<stream>
+  <chunk index="0">start<part kind="alpha">A</part><gap count="2"/><![CDATA[&broken;]]></chunk>
+  <chunk index="1">
+    <part xmlns:q="urn:q" q:value="v">B</part>
+    <!-- split
+         comment -->
+    <part kind="gamma">C &quot; D</part>
+  </chunk>
+  <chunk index="2"><gap/></chunk>
+</stream>
+```
+
+```xml
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE museum [
+  <!ELEMENT museum (room+)>
+  <!ELEMENT room (caption, artifact*)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT artifact (name, note?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT note (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ATTLIST museum xmlns:m CDATA #IMPLIED>
+  <!ATTLIST room number NMTOKEN #REQUIRED>
+  <!ATTLIST artifact m:class (painting|tool|text) #REQUIRED
+                    accession ID #REQUIRED>
+  <!ATTLIST note xml:lang CDATA #IMPLIED>
+  <!ENTITY museumName "The &apos;North Wing&apos;">
+]>
+<museum xmlns:m="urn:museum">
+  <room number="IV">
+    <caption>&museumName;</caption>
+    <artifact m:class="painting" accession="a-01">
+      <name>Blue <mark>Study</mark></name>
+      <note xml:lang="fr">trait &amp; couleur</note>
+    </artifact>
+    <artifact m:class="text" accession="a-02">
+      <name>Fragment</name>
+    </artifact>
+  </room>
+  <room number="V"><caption><![CDATA[Closed]]></caption></room>
+</museum>
+```

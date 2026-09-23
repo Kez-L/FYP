@@ -1,0 +1,131 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section code NMTOKEN #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (name, price, note?)>
+  <!ATTLIST item sku ID #REQUIRED available (yes|no) "yes">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+]>
+<catalog>
+  <section code="tools">
+    <title>Workshop supplies</title>
+    <item sku="hammer-1" available="yes">
+      <name>Claw hammer</name>
+      <price>19.95</price>
+      <note>Steel head with <emph>wooden</emph> handle.</note>
+    </item>
+    <item sku="vise-2" available="no">
+      <name>Bench vise</name>
+      <price>88.00</price>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<exchange xmlns="urn:example:exchange"
+          xmlns:fx="urn:example:fixed"
+          xml:lang="fr">
+  <fx:header>
+    <fx:sender id="node-A">émetteur</fx:sender>
+    <fx:timestamp>2026-09-23T12:34:56Z</fx:timestamp>
+  </fx:header>
+  <payload>
+    <record key="α-001" active="true">
+      <value><![CDATA[<raw>&unexpanded;</raw>]]></value>
+      <value>line one&#x0A;line two</value>
+      <fx:checksum algorithm="sha256">00ff11ee</fx:checksum>
+    </record>
+    <record key="β-002" active="false">
+      <value>quoted &quot;text&quot; and apostrophe &apos;</value>
+    </record>
+  </payload>
+</exchange>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY company "North &amp; South">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY note "Use &company; &nbsp;only in prose.">
+]>
+<report>
+  <prologue>
+    <heading>Quarterly &company; review</heading>
+    <description>&note;</description>
+  </prologue>
+  <table border="1">
+    <row index="1">
+      <cell kind="header">Name</cell>
+      <cell kind="header">Result</cell>
+    </row>
+    <row index="2">
+      <cell>Alpha</cell>
+      <cell><![CDATA[pass <pending>]]></cell>
+    </row>
+  </table>
+  <?audit level="verbose"?>
+  <conclusion>Complete</conclusion>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<archive xmlns="urn:archive:v2"
+         xmlns:xlink="http://www.w3.org/1999/xlink">
+  <manifest generated="2026-09-23">
+    <entry path="docs/readme.txt" size="42" checksum="abc123"/>
+    <entry path="data/items.xml" size="0" checksum="">
+      <link xlink:type="simple"
+            xlink:href="urn:archive:blob:7"
+            xlink:show="embed"/>
+    </entry>
+  </manifest>
+  <contents>
+    <document id="d1">
+      <section level="1">
+        <paragraph>First section.</paragraph>
+        <list ordered="false">
+          <item>one</item>
+          <item>two</item>
+        </list>
+      </section>
+    </document>
+  </contents>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (meta?, body)>
+  <!ELEMENT meta (field*)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT body (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk seq CDATA #REQUIRED encoding (plain|base64) "plain">
+]>
+<packet>
+  <meta>
+    <field name="source" value="sensor-17"/>
+    <field name="priority" value="high"/>
+    <field name="empty"/>
+  </meta>
+  <body>
+    <chunk seq="0001">temperature=21.5;humidity=48%</chunk>
+    <chunk seq="0002" encoding="base64">SGVsbG8gWE1M</chunk>
+    <chunk seq="0003"><![CDATA[
+      binary-like: \x00 \x01 &lt;not markup&gt;
+    ]]></chunk>
+  </body>
+</packet>
+```

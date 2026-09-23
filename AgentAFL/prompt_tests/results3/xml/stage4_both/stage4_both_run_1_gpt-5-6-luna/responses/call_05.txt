@@ -1,0 +1,161 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE gallery [
+  <!NOTATION png SYSTEM "image/png">
+  <!NOTATION jpeg PUBLIC "-//Example//NOTATION JPEG//EN" "image/jpeg">
+  <!ENTITY logo SYSTEM "assets/logo.png" NDATA png>
+  <!ELEMENT gallery (caption, image+, credits?)>
+  <!ATTLIST gallery xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT caption (#PCDATA|em)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT image EMPTY>
+  <!ATTLIST image
+    id ID #REQUIRED
+    src ENTITY #REQUIRED
+    format NOTATION (png|jpeg) #REQUIRED
+    alt CDATA #IMPLIED>
+  <!ELEMENT credits (#PCDATA)>
+]>
+<gallery xml:lang="en">
+  <caption>Seasonal <em>collection</em></caption>
+  <image id="cover" src="logo" format="png" alt="Company mark"/>
+  <image id="preview" src="logo" format="jpeg"/>
+  <credits>Images supplied by the archive.</credits>
+</gallery>
+```
+
+```xml
+<?xml version="1.0"?>
+<document xmlns="urn:example:document"
+          xmlns:a="urn:example:annotation"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xml:space="preserve">
+  <header a:revision="7" xlink:type="simple" xlink:href="#body">
+    <title>Namespace transitions</title>
+    <?audit actor="parser"?>
+  </header>
+  <body id="body">
+    <section a:role="intro">
+      <p>Default namespace content.</p>
+      <foreign xmlns="">
+        <raw data-kind="literal">unqualified element</raw>
+        <a:marker xmlns:a="urn:example:annotation" a:level="high"/>
+      </foreign>
+    </section>
+    <!-- A comment between namespace scopes -->
+    <section xmlns:b="urn:example:binding" b:mode="compact">
+      <item key="A&amp;B">left &lt; right</item>
+      <item key="C&#x2D;D"><![CDATA[embedded <markup> stays text]]></item>
+    </section>
+  </body>
+</document>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (record*)>
+  <!ELEMENT record (name, alias*, detail)>
+  <!ATTLIST record
+    id ID #REQUIRED
+    refs IDREFS #IMPLIED
+    state (active|paused|retired) "active"
+    visible (yes|no) "yes">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT alias (#PCDATA)>
+  <!ELEMENT detail ANY>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target IDREF #REQUIRED>
+  <!ENTITY mark "&#x2605;">
+]>
+<registry>
+  <record id="r1" refs="r2 r3" state="active">
+    <name>&mark; Primary record</name>
+    <alias>first</alias>
+    <detail>
+      <note>Contains <b>unknown</b> content permitted by ANY.</note>
+      <link target="r2"/>
+    </detail>
+  </record>
+  <record id="r2" state="paused" visible="no">
+    <name>Secondary</name>
+    <detail>Plain detail text.</detail>
+  </record>
+  <record id="r3">
+    <name>Terminal</name>
+    <detail><note>Last entry</note></detail>
+  </record>
+</registry>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<message priority="high" xml:space="default">
+  <routing>
+    <from>alpha@example.invalid</from>
+    <to>beta@example.invalid</to>
+    <reply-to>noreply@example.invalid</reply-to>
+  </routing>
+  <subject>Résumé: café, naïve façade</subject>
+  <body>
+    <![CDATA[
+      The following is data, not markup:
+      <message priority="low">&amp; &#169;</message>
+    ]]>
+    <line-break/>
+    <text>5 &lt; 8 &amp;&amp; 9 &gt; 2</text>
+  </body>
+  <?delivery mode="deferred" retry="03"?>
+  <attachments>
+    <attachment name="empty.bin" length="0"/>
+    <attachment name="report.txt" length="17">checksum: 00ff</attachment>
+  </attachments>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE assembly [
+  <!ENTITY product "modular assembly">
+  <!ENTITY version "2.4">
+  <!ELEMENT assembly (module+, summary)>
+  <!ATTLIST assembly id ID #REQUIRED>
+  <!ELEMENT module (header, component*)>
+  <!ATTLIST module code NMTOKEN #REQUIRED depends IDREFS #IMPLIED>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT component (part, quantity, options?)>
+  <!ATTLIST component state (installed|pending|removed) #REQUIRED>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT quantity (#PCDATA)>
+  <!ELEMENT options (option*)>
+  <!ELEMENT option EMPTY>
+  <!ATTLIST option name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT summary (#PCDATA)>
+]>
+<assembly id="a-main">
+  <module code="core">
+    <header>&product; version &version;</header>
+    <component state="installed">
+      <part>frame</part>
+      <quantity>1</quantity>
+    </component>
+    <component state="pending">
+      <part>fastener</part>
+      <quantity>24</quantity>
+      <options>
+        <option name="finish" value="black"/>
+        <option name="coated"/>
+      </options>
+    </component>
+  </module>
+  <module code="ui" depends="core">
+    <header>Operator interface</header>
+    <component state="removed">
+      <part>legacy-panel</part>
+      <quantity>1</quantity>
+    </component>
+  </module>
+  <summary>Assembly contains two modules.</summary>
+</assembly>
+```

@@ -1,0 +1,29 @@
+<!DOCTYPE config [
+  <!ENTITY % common '
+    <!ELEMENT setting (#PCDATA)>
+    <!ATTLIST setting name CDATA #REQUIRED value CDATA #IMPLIED>
+  '>
+  %common;
+  <!ENTITY % optional '
+    <!ELEMENT feature (setting*,flag?)>
+    <!ELEMENT flag EMPTY>
+    <!ATTLIST flag enabled (yes|no) "no">
+  '>
+  <![IGNORE[
+    <!ENTITY ignored "not declared">
+    <!ELEMENT discarded ANY>
+  ]]>
+  <![INCLUDE[
+    %optional;
+  ]]>
+  <!ELEMENT config (setting*,feature,setting*)>
+]>
+<config>
+  <setting name="mode" value="safe"/>
+  <feature>
+    <setting name="path">/var/tmp</setting>
+    <setting name="quote" value="&quot;&apos;&gt;&lt;&amp;"/>
+    <flag enabled="yes"/>
+  </feature>
+  <setting name="last">text <![CDATA[with ]] ]]> delimiters</setting>
+</config>

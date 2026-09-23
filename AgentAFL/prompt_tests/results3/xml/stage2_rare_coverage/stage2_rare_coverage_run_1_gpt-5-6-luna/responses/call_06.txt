@@ -1,0 +1,132 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+)>
+  <!ELEMENT entry (title, body, metadata?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (#PCDATA|section|br)*>
+  <!ELEMENT section (title?, body?)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST entry id ID #REQUIRED kind (note|report|draft) "note">
+  <!ATTLIST metadata source CDATA #IMPLIED>
+  <!ENTITY company "Example &amp; Company">
+  <!ENTITY intro "This entry belongs to &company;.">
+]>
+<archive>
+  <entry id="e1" kind="report">
+    <title>Quarterly &company; Summary</title>
+    <body>&intro;<br/><section><title>Details</title><body>alpha <![CDATA[<literal> & data]]> omega</body></section></body>
+    <metadata source="generated"/>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+  <product sku="A-01" available="yes">
+    <name>Plain text</name>
+    <price currency="USD">19.95</price>
+    <tags>
+      <tag>one</tag>
+      <tag>two</tag>
+      <tag>three</tag>
+    </tags>
+  </product>
+  <product sku="B-02" available="no">
+    <name>Mixed <![CDATA[content]]> example</name>
+    <price currency="EUR">0</price>
+    <tags/>
+  </product>
+  <?catalog-hint refresh="false"?>
+  <!-- comment containing -- no, this is safe -->
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE map [
+  <!ELEMENT map (node|value)*>
+  <!ELEMENT node (key, map)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT key (#PCDATA)>
+  <!ATTLIST node id ID #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+]>
+<map>
+  <node id="root">
+    <key>root</key>
+    <map>
+      <value>first&nbsp;value</value>
+      <node>
+        <key>nested</key>
+        <map>
+          <value>line one
+line two</value>
+        </map>
+      </node>
+    </map>
+  </node>
+  <value><![CDATA[
+  preserved
+  whitespace
+  ]]></value>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, records)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (field, field?, note?)>
+  <!ELEMENT field (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST header created CDATA #REQUIRED>
+  <!ATTLIST record key NMTOKEN #REQUIRED>
+  <!ATTLIST field name CDATA #IMPLIED>
+  <!ENTITY % optional "(note?)">
+]>
+<report>
+  <header created="2026-09-23T12:34:56Z"/>
+  <records>
+    <record key="r_001">
+      <field name="status">ok</field>
+      <field name="count">0000000000000000000000000000000000000007</field>
+      <note>line &quot;one&quot; &amp; line two</note>
+    </record>
+    <record key="r-002">
+      <field name="status"><![CDATA[<pending>]]></field>
+    </record>
+  </records>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope ANY>
+  <!ELEMENT header ANY>
+  <!ELEMENT payload ANY>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ATTLIST payload format NOTATION (bin) "bin">
+]>
+<envelope xmlns="urn:example:envelope" xmlns:x="urn:example:extra">
+  <header>
+    <x:trace id="00000000-0000-0000-0000-000000000000"/>
+    <x:meta key="empty"/>
+  </header>
+  <payload format="bin">
+    <chunk>&left;raw&amp;escaped&right;</chunk>
+    <chunk><![CDATA[]]>]]></chunk>
+  </payload>
+  <footer xmlns="">
+    <status code="204">No Content</status>
+  </footer>
+</envelope>
+```

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (stage+)>
+  <!ELEMENT stage (task+, transition*)>
+  <!ELEMENT task (input*, action, output*)>
+  <!ELEMENT input EMPTY>
+  <!ELEMENT action (#PCDATA|script)*>
+  <!ELEMENT script (#PCDATA)>
+  <!ELEMENT output EMPTY>
+  <!ELEMENT transition EMPTY>
+  <!ATTLIST workflow name CDATA #REQUIRED>
+  <!ATTLIST stage id ID #REQUIRED mode (serial|parallel) "serial">
+  <!ATTLIST task id ID #REQUIRED timeout CDATA #IMPLIED>
+  <!ATTLIST input name CDATA #REQUIRED required (true|false) "true">
+  <!ATTLIST action language (shell|python|text) "text">
+  <!ATTLIST output name CDATA #REQUIRED path CDATA #IMPLIED>
+  <!ATTLIST transition to IDREF #REQUIRED when CDATA #IMPLIED>
+]>
+<workflow name="nightly-build">
+  <stage id="prepare" mode="parallel">
+    <task id="fetch" timeout="30s">
+      <input name="remote"/>
+      <action language="shell">fetch --quiet <script>source</script></action>
+      <output name="workspace" path="/tmp/work"/>
+    </task>
+    <task id="validate">
+      <input name="workspace" required="false"/>
+      <action language="python"><![CDATA[
+if value is None:
+    print("skipped")
+]]></action>
+    </task>
+    <transition to="compile" when="all-success"/>
+  </stage>
+  <stage id="compile">
+    <task id="cc" timeout="5m">
+      <input name="workspace"/>
+      <action language="shell">make -j2 &amp;&amp; make check</action>
+      <output name="binary" path="build/app"/>
+      <output name="report"/>
+    </task>
+    <transition to="publish" when="tests-passed"/>
+  </stage>
+  <stage id="publish">
+    <task id="archive">
+      <action>package artifacts</action>
+    </task>
+  </stage>
+</workflow>

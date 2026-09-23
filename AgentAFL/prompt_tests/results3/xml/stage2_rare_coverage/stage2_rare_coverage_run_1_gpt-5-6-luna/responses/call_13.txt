@@ -1,0 +1,135 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+, footer?)>
+  <!ELEMENT section (title, entry*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (name, price, note?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emph|br)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST section code ID #IMPLIED>
+  <!ATTLIST entry sku ID #REQUIRED status (new|old|hold) "new">
+  <!ENTITY mark "&#x2605;">
+]>
+<catalog>
+  <section code="s1">
+    <title>Tools &amp; Parts</title>
+    <entry sku="p1" status="new">
+      <name>socket</name>
+      <price>19.95</price>
+      <note>preferred &mark; <emph>limited</emph><br/>stock</note>
+    </entry>
+  </section>
+  <footer>End</footer>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<warehouse>
+  <aisle number="07">
+    <bin label="A">
+      <object><![CDATA[<embedded><tag attr="x"/></embedded>]]></object>
+      <object>alpha &lt; beta &amp;&amp; gamma</object>
+    </bin>
+    <bin label="B"/>
+  </aisle>
+  <?inventory refresh="true"?>
+  <aisle number="08">
+    <bin label="C">
+      <object>
+        <part id="x"><value>1</value></part>
+        <part id="y"><value>2</value></part>
+      </object>
+    </bin>
+  </aisle>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (node)>
+  <!ELEMENT node (name, node*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ATTLIST node key NMTOKEN #IMPLIED>
+]>
+<map>
+  <node key="root">
+    <name>root</name>
+    <node key="left">
+      <name>left</name>
+      <node key="leaf-1"><name>one</name></node>
+      <node key="leaf-2"><name>two</name></node>
+    </node>
+    <node key="right">
+      <name>right</name>
+      <node key="deep">
+        <name>deep</name>
+        <node key="bottom"><name>bottom</name></node>
+      </node>
+    </node>
+  </node>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<message xmlns="urn:mail" xmlns:m="urn:meta" m:version="2">
+  <sender>
+    <address><![CDATA[user@example.invalid]]></address>
+    <display>R&amp;D</display>
+  </sender>
+  <recipients>
+    <to priority="1">a@example.invalid</to>
+    <cc priority="0">b@example.invalid</cc>
+  </recipients>
+  <body format="mixed">
+    Before
+    <quote who="sender">quoted <strong>text</strong></quote>
+    after
+    <attachment name="empty.bin" media="application/octet-stream"/>
+  </body>
+  <signature xml:space="preserve">  signed
+line  </signature>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, table, summary)>
+  <!ELEMENT header (generated, source)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ATTLIST row index CDATA #REQUIRED>
+  <!ATTLIST cell kind (text|number|empty) "text">
+]>
+<report>
+  <header>
+    <generated>2026-09-23T00:00:00Z</generated>
+    <source>batch-α</source>
+  </header>
+  <table>
+    <row index="0">
+      <cell kind="text">Name</cell>
+      <cell kind="number">Count</cell>
+      <cell kind="empty"></cell>
+    </row>
+    <row index="1">
+      <cell kind="text">delta</cell>
+      <cell kind="number">-0007</cell>
+      <cell kind="text">x&#x0A;y</cell>
+    </row>
+  </table>
+  <summary><![CDATA[rows=2; checksum=<untrusted>]]></summary>
+</report>
+```

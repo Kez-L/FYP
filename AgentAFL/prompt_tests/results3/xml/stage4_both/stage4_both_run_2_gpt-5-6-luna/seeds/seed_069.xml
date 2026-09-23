@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graph xmlns="urn:example:graph" directed="true">
+  <metadata>
+    <created>2026-09-23</created>
+    <creator><![CDATA[analysis-team / night shift]]></creator>
+    <description>Dependency graph with disconnected and cyclic components.</description>
+  </metadata>
+  <nodes>
+    <node id="n1" kind="source" label="Input stream">
+      <property name="format">binary</property>
+      <property name="priority">high</property>
+    </node>
+    <node id="n2" kind="transform" label="Normalizer">
+      <property name="version">3.4</property>
+    </node>
+    <node id="n3" kind="sink" label="Archive">
+      <property name="retention">90d</property>
+    </node>
+    <node id="n4" kind="transform" label="Feedback">
+      <property name="enabled">true</property>
+    </node>
+    <node id="orphan" kind="note" label="Unconnected note"/>
+  </nodes>
+  <edges>
+    <edge id="e1" from="n1" to="n2" weight="1.0"/>
+    <edge id="e2" from="n2" to="n3" weight="0.75">
+      <annotation>primary route</annotation>
+    </edge>
+    <edge id="e3" from="n3" to="n4" weight="0.25">
+      <annotation><![CDATA[archive -> feedback]]></annotation>
+    </edge>
+    <edge id="e4" from="n4" to="n2" weight="0.25"/>
+  </edges>
+  <annotations>
+    <annotation target="n1" author="qa">Input is synthetic.</annotation>
+    <annotation target="e2" author="ops">Verify retention policy.</annotation>
+  </annotations>
+</graph>

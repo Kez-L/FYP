@@ -1,0 +1,103 @@
+```xml
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="view.xsl"?>
+<catalog xmlns="urn:seed:catalog" xmlns:m="urn:seed:meta" xml:lang="en">
+  <!-- mixed content with CDATA and processing instructions -->
+  <entry id="A-01" m:state="draft">
+    alpha <![CDATA[<not-an-element>&still-text;</not-an-element>]]>
+    <title><![CDATA[Brackets ]]> and ]]&gt; entities</title>
+    <?note data?>
+    <link href="urn:test:one" rel="alternate"/>
+  </entry>
+  <entry id="B-02" xml:space="preserve">
+    <title>βeta &amp; gamma</title>
+    <description>before <emphasis>inside</emphasis> after</description>
+  </entry>
+</catalog>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ELEMENT report ANY>
+  <!ELEMENT section (#PCDATA|item|section)*>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item key ID #IMPLIED value CDATA "default">
+  <!ENTITY plain "A&amp;B&lt;C">
+  <!ENTITY quoted 'single "quoted" value'>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "payload.bin" NDATA bin>
+]>
+<report>
+  &plain;
+  <section name="outer">
+    <item key="first" value="&quot;&apos;"/>
+    <section name="inner">
+      &quoted;
+      <item key="second"/>
+    </section>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % declarations '
+    <!ELEMENT root (a|b|c)*>
+    <!ATTLIST root mode (one|two|three) "two">
+  '>
+  %declarations;
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b EMPTY>
+  <!ELEMENT c ANY>
+  <!ATTLIST c ref IDREF #IMPLIED>
+]>
+<root mode="three">
+  <c ref="missing">
+    <a>text <![CDATA[data]]></a>
+    <b/>
+    <c><a>nested</a></c>
+  </c>
+  <a>tail</a>
+</root>
+```
+
+```xml
+<message xmlns="urn:msg" xmlns:x="urn:extra" xml:base="http://example.invalid/a/">
+  <header>
+    <x:sender x:id="s-1">sender</x:sender>
+    <x:recipient>receiver</x:recipient>
+    <timestamp>2026-09-23T00:00:00Z</timestamp>
+  </header>
+  <body>
+    <x:part x:type="text/plain">first</x:part>
+    <x:part x:type="application/xml">
+      <nested xmlns="urn:nested" xmlns:x="">
+        <value>shadowed</value>
+      </nested>
+    </x:part>
+    <attachment href="../bin/%E2%82%AC.dat" checksum=""/>
+  </body>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (data)>
+  <!ELEMENT data (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk n NMTOKEN #REQUIRED>
+]>
+<envelope>
+  <data>
+    <chunk n="0">zero</chunk>
+    <chunk n="1">one &amp; two</chunk>
+    <chunk n="2"><![CDATA[
+      line one
+      line two
+    ]]></chunk>
+    <chunk n="3">unclosed-looking &lt;tag&gt; text</chunk>
+  </data>
+</envelope>
+```

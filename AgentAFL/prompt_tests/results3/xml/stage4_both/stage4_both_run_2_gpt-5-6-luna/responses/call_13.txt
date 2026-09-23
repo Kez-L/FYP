@@ -1,0 +1,251 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE library [
+  <!ELEMENT library (shelf+)>
+  <!ELEMENT shelf (name, book*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT book (title, author+, published?, description)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT published (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST shelf id ID #REQUIRED>
+  <!ATTLIST book isbn CDATA #IMPLIED available (yes|no) "yes">
+  <!ENTITY library-name "Riverside &amp; Municipal Library">
+]>
+<library>
+  <shelf id="fiction">
+    <name>&library-name; — Fiction</name>
+    <book isbn="978-0-00-000001-1">
+      <title>The Glass Meridian</title>
+      <author>Amara Vale</author>
+      <author>Jon Bell</author>
+      <published>2019</published>
+      <description>A study of <em>memory</em> and <code>place</code>.<br/>Second edition.</description>
+    </book>
+    <book isbn="978-0-00-000002-8" available="no">
+      <title>Winter Signals</title>
+      <author>M. R. Chen</author>
+      <description>Short stories from the northern coast.</description>
+    </book>
+  </shelf>
+  <shelf id="reference">
+    <name>Reference</name>
+    <book isbn="978-0-00-000003-5">
+      <title>Atlas of Small Waters</title>
+      <author>Priya Nandakumar</author>
+      <published>2024</published>
+      <description>Maps, notes, and field observations.</description>
+    </book>
+  </shelf>
+</library>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<warehouse xmlns="urn:example:warehouse"
+           xmlns:p="urn:example:product"
+           xmlns:xlink="http://www.w3.org/1999/xlink"
+           xml:lang="en">
+  <section xml:id="cold-storage" code="C-17">
+    <label>Cold storage</label>
+    <location>
+      <coordinates lat="51.0486" lon="-114.0708"/>
+      <address>
+        <line>17 Aurora Way</line>
+        <line>Calgary</line>
+        <postal-code>T2P 1J9</postal-code>
+      </address>
+    </location>
+    <inventory>
+      <p:item p:code="ice-442" quantity="18" unit="crate">
+        <p:name>Laboratory ice packs</p:name>
+        <p:condition status="sealed" inspected="2026-08-11"/>
+        <p:related xlink:type="simple" xlink:href="#cold-storage">stored here</p:related>
+      </p:item>
+      <p:item p:code="gel-091" quantity="240" unit="piece">
+        <p:name>Reusable gel sleeves</p:name>
+        <p:condition status="open-box" inspected="2026-08-12"/>
+      </p:item>
+    </inventory>
+    <contact role="manager">
+      <name>Rina Solberg</name>
+      <email>rina@example.invalid</email>
+    </contact>
+  </section>
+  <section xml:id="dispatch" code="D-03">
+    <label>Dispatch bay</label>
+    <inventory>
+      <p:item p:code="box-220" quantity="64" unit="carton">
+        <p:name>Insulated cartons</p:name>
+        <p:condition status="sealed" inspected="2026-09-01"/>
+      </p:item>
+    </inventory>
+  </section>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE manual [
+  <!ELEMENT manual (frontmatter, chapter+)>
+  <!ELEMENT frontmatter (title, revision, notice)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT revision (#PCDATA)>
+  <!ELEMENT notice (#PCDATA)>
+  <!ELEMENT chapter (heading, section+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT section (heading, para+, example?)>
+  <!ELEMENT para (#PCDATA|term|link|listref)*>
+  <!ELEMENT term (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT listref EMPTY>
+  <!ELEMENT example (caption?, listing)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT listing (#PCDATA)>
+  <!ATTLIST chapter number NMTOKEN #REQUIRED>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ATTLIST link target IDREF #REQUIRED>
+  <!ATTLIST listref type (ordered|unordered) "unordered">
+  <!ENTITY warning "Read all safety instructions before operation.">
+]>
+<manual>
+  <frontmatter>
+    <title>Portable Signal Recorder</title>
+    <revision>R5.2</revision>
+    <notice>&warning;</notice>
+  </frontmatter>
+  <chapter number="1">
+    <heading>Getting started</heading>
+    <section id="power">
+      <heading>Powering the unit</heading>
+      <para>Insert the charged cell before pressing the <term>record</term> key.</para>
+      <para>For connector details, see <link target="connectors">the connector reference</link>.</para>
+      <example>
+        <caption>Initial status check</caption>
+        <listing><![CDATA[
+status
+battery: 98%
+signal: ready
+]]></listing>
+      </example>
+    </section>
+    <section id="connectors">
+      <heading>Connector reference</heading>
+      <para>Keep unused ports covered during transport.</para>
+      <listref type="unordered"/>
+    </section>
+  </chapter>
+  <chapter number="2">
+    <heading>Recording modes</heading>
+    <section id="profiles">
+      <heading>Profile selection</heading>
+      <para>Choose a profile that matches the environment.</para>
+      <listref type="ordered"/>
+    </section>
+  </chapter>
+</manual>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE logbook [
+  <!ELEMENT logbook (entry+)>
+  <!ELEMENT entry (timestamp, operator, event, measurements?, attachment*)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT operator (name, badge)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT badge (#PCDATA)>
+  <!ELEMENT event (#PCDATA)>
+  <!ELEMENT measurements (measurement+)>
+  <!ELEMENT measurement EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST entry id ID #REQUIRED severity (info|notice|warning|critical) "info">
+  <!ATTLIST measurement key NMTOKEN #REQUIRED value CDATA #REQUIRED unit CDATA #IMPLIED>
+  <!ATTLIST attachment href URI #REQUIRED media CDATA #REQUIRED>
+  <!NOTATION csv SYSTEM "text/csv">
+  <!ENTITY % common "source CDATA #IMPLIED">
+  <!ATTLIST attachment %common;>
+]>
+<?audit source="instrument-panel"?>
+<logbook>
+  <entry id="e-100" severity="notice">
+    <timestamp>2026-09-23T06:14:09Z</timestamp>
+    <operator>
+      <name>Leila Grant</name>
+      <badge>BG-41</badge>
+    </operator>
+    <event>Calibration cycle completed</event>
+    <measurements>
+      <measurement key="temperature" value="21.7" unit="C"/>
+      <measurement key="humidity" value="43" unit="percent"/>
+      <measurement key="drift" value="0.003" unit="mm"/>
+    </measurements>
+    <attachment href="calibration-100.csv" media="text/csv" source="bench-4"/>
+  </entry>
+  <entry id="e-101" severity="warning">
+    <timestamp>2026-09-23T06:19:44Z</timestamp>
+    <operator>
+      <name>Leila Grant</name>
+      <badge>BG-41</badge>
+    </operator>
+    <event>Unexpected vibration detected</event>
+    <measurements>
+      <measurement key="amplitude" value="7.2" unit="milli-g"/>
+    </measurements>
+    <attachment href="vibration-101.dat" media="application/octet-stream"/>
+  </entry>
+  <entry id="e-102" severity="critical">
+    <timestamp>2026-09-23T06:27:00Z</timestamp>
+    <operator>
+      <name>Owen Mbaye</name>
+      <badge>OP-09</badge>
+    </operator>
+    <event>Automatic shutdown initiated</event>
+  </entry>
+</logbook>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<graph xmlns="urn:example:graph" directed="true">
+  <metadata>
+    <created>2026-09-23</created>
+    <creator><![CDATA[analysis-team / night shift]]></creator>
+    <description>Dependency graph with disconnected and cyclic components.</description>
+  </metadata>
+  <nodes>
+    <node id="n1" kind="source" label="Input stream">
+      <property name="format">binary</property>
+      <property name="priority">high</property>
+    </node>
+    <node id="n2" kind="transform" label="Normalizer">
+      <property name="version">3.4</property>
+    </node>
+    <node id="n3" kind="sink" label="Archive">
+      <property name="retention">90d</property>
+    </node>
+    <node id="n4" kind="transform" label="Feedback">
+      <property name="enabled">true</property>
+    </node>
+    <node id="orphan" kind="note" label="Unconnected note"/>
+  </nodes>
+  <edges>
+    <edge id="e1" from="n1" to="n2" weight="1.0"/>
+    <edge id="e2" from="n2" to="n3" weight="0.75">
+      <annotation>primary route</annotation>
+    </edge>
+    <edge id="e3" from="n3" to="n4" weight="0.25">
+      <annotation><![CDATA[archive -> feedback]]></annotation>
+    </edge>
+    <edge id="e4" from="n4" to="n2" weight="0.25"/>
+  </edges>
+  <annotations>
+    <annotation target="n1" author="qa">Input is synthetic.</annotation>
+    <annotation target="e2" author="ops">Verify retention policy.</annotation>
+  </annotations>
+</graph>
+```

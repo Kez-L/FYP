@@ -1,0 +1,186 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record*)>
+  <!ELEMENT record (key, payload, checksum?)>
+  <!ATTLIST record kind (text|binary|empty) "text">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk|meta)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY left-bracket "&#x5B;">
+  <!ENTITY right-bracket "&#x5D;">
+]>
+<archive>
+  <record kind="text">
+    <key>alpha/001</key>
+    <payload>prefix &left-bracket;<chunk index="0">middle &amp; data</chunk>&right-bracket;</payload>
+    <checksum>sha256:0000000000000000000000000000000000000000000000000000000000000000</checksum>
+  </record>
+  <record kind="binary">
+    <key>blob/002</key>
+    <payload>
+      <meta name="encoding" value="base64"/>
+      <chunk index="0"><![CDATA[AAECAwQFBgcICQ==]]></chunk>
+      <chunk index="1">Cg0PEBESExQ=</chunk>
+    </payload>
+  </record>
+  <record kind="empty">
+    <key>void/003</key>
+    <payload/>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<workflow xmlns="urn:acme:workflow" xmlns:ext="urn:acme:extension">
+  <?engine strict="false" trace="full"?>
+  <pipeline id="nightly" enabled="true">
+    <step name="extract" type="source">
+      <input format="csv" path="data/incoming.csv">
+        <columns>
+          <column index="0">account</column>
+          <column index="1">amount</column>
+          <column index="2">currency</column>
+        </columns>
+      </input>
+      <on-success>
+        <emit topic="raw.records"/>
+      </on-success>
+      <on-error>
+        <retry limit="3" delay="PT5M"/>
+      </on-error>
+    </step>
+    <step name="normalize" type="transform">
+      <depends-on ref="extract"/>
+      <script language="xpath"><![CDATA[
+        replace(normalize-space($value), "  ", " ")
+      ]]></script>
+      <ext:option key="case">fold</ext:option>
+    </step>
+    <step name="publish" type="sink">
+      <depends-on ref="normalize"/>
+      <destination scheme="queue" uri="mq://example.invalid/normalized"/>
+    </step>
+  </pipeline>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+)>
+  <!ELEMENT section (heading, block*)>
+  <!ATTLIST section number NMTOKEN #IMPLIED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT block (paragraph|list|table|note|figure)>
+  <!ELEMENT paragraph (#PCDATA|link|code|linebreak)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link target CDATA #REQUIRED>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT list (item+)>
+  <!ATTLIST list ordered (yes|no) "no">
+  <!ELEMENT item (#PCDATA|paragraph)*>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST cell colspan NMTOKEN "1" rowspan NMTOKEN "1">
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST note severity (info|warning|critical) "info">
+  <!ELEMENT figure EMPTY>
+  <!ATTLIST figure src CDATA #REQUIRED caption CDATA #IMPLIED>
+]>
+<report>
+  <section number="I">
+    <heading>Operational summary</heading>
+    <block>
+      <paragraph>The service remained <code>available</code> throughout the window.<linebreak/>See <link target="#details">details</link>.</paragraph>
+    </block>
+    <block>
+      <list ordered="yes">
+        <item>Open the maintenance channel.</item>
+        <item><paragraph>Confirm the backup age.</paragraph></item>
+      </list>
+    </block>
+  </section>
+  <section number="II">
+    <heading>Measurements</heading>
+    <block>
+      <table>
+        <row><cell>Region</cell><cell>Requests</cell><cell>Errors</cell></row>
+        <row><cell colspan="2">north / combined</cell><cell rowspan="2">0</cell></row>
+        <row><cell>south</cell><cell>1842</cell></row>
+      </table>
+    </block>
+    <block><note severity="warning">Values are sampled, not exhaustive.</note></block>
+    <block><figure src="charts/latency.svg" caption="p95 latency"/></block>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="urn:example:package"
+         xmlns:m="urn:example:manifest"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xml:lang="fr">
+  <m:manifest version="2.4">
+    <m:item href="doc/intro.xml" media-type="application/xml" checksum="abc123"/>
+    <m:item href="img/logo.svg" media-type="image/svg+xml" checksum="def456"/>
+    <m:item href="data/table.bin" media-type="application/octet-stream" checksum="789abc"/>
+  </m:manifest>
+  <content xml:space="preserve">
+    <title>Résumé &amp; index</title>
+    <include xlink:href="doc/intro.xml" xlink:actuate="onRequest"/>
+    <resource id="logo">
+      <xlink:locator xlink:href="img/logo.svg" xlink:label="primary"/>
+    </resource>
+    <binary encoding="hex">00 FF 10 20 7F</binary>
+    <metadata>
+      <entry name="created">2026-09-23T00:00:00Z</entry>
+      <entry name="empty"></entry>
+      <entry name="multiline"><![CDATA[first
+second
+third]]></entry>
+    </metadata>
+  </content>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (layer+)>
+  <!ATTLIST scene width NMTOKEN #REQUIRED height NMTOKEN #REQUIRED>
+  <!ELEMENT layer (group|shape|text|use)*>
+  <!ATTLIST layer id ID #REQUIRED z NMTOKEN "0">
+  <!ELEMENT group (group|shape|text|use)*>
+  <!ATTLIST group transform CDATA #IMPLIED opacity CDATA "1">
+  <!ELEMENT shape EMPTY>
+  <!ATTLIST shape type (rect|circle|path|line) #REQUIRED x CDATA #IMPLIED y CDATA #IMPLIED
+            width CDATA #IMPLIED height CDATA #IMPLIED d CDATA #IMPLIED fill CDATA #IMPLIED>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST text x CDATA #REQUIRED y CDATA #REQUIRED anchor (start|middle|end) "start">
+  <!ELEMENT use EMPTY>
+  <!ATTLIST use ref IDREF #REQUIRED dx CDATA "0" dy CDATA "0">
+]>
+<scene width="640" height="480">
+  <layer id="background" z="-1">
+    <shape type="rect" x="0" y="0" width="640" height="480" fill="#101820"/>
+  </layer>
+  <layer id="foreground" z="1">
+    <group transform="translate(24,36)" opacity="0.875">
+      <shape type="circle" x="80" y="80" fill="url(#accent)"/>
+      <shape type="path" d="M0 120 C40 20 180 20 240 120 Z" fill="#ffcc00"/>
+      <text x="12" y="188" anchor="start">A &lt;small&gt;scene&lt;/small&gt;</text>
+      <use ref="background" dx="400" dy="120"/>
+    </group>
+    <shape type="line" x="0" y="0" width="640" height="480" fill="none"/>
+  </layer>
+</scene>
+```

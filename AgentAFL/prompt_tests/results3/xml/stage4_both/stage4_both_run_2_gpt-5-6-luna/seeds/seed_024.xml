@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, payload, trailer)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT payload (#PCDATA|chunk|![CDATA[not-valid]] )*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST packet type (request|response|event) #REQUIRED>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED compressed (yes|no) "no">
+  <!ENTITY amp "&#38;">
+  <!ENTITY quote "&#34;">
+]>
+<packet type="event">
+  <header>
+    <field name="source" value="sensor-7"/>
+    <field name="sequence" value="000042"/>
+    <field name="empty" value=""/>
+  </header>
+  <payload>
+    prefix &amp; &amp; &amp;
+    <chunk index="0" compressed="yes">H4sIAAAA</chunk>
+    <![CDATA[
+      bytes <not-an-element> & still literal
+      ]]> 
+    <chunk index="1">tail&#x0A;line</chunk>
+    suffix &quote;quoted&quote; &amp; done
+  </payload>
+  <trailer>checksum=&amp;amp;&amp;amp;</trailer>
+</packet>

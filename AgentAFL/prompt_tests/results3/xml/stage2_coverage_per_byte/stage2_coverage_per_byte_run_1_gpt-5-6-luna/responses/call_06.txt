@@ -1,0 +1,160 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, author*, summary?, link)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST entry id ID #REQUIRED status (draft|published|archived) "draft">
+  <!ATTLIST link href URI #REQUIRED rel CDATA #IMPLIED>
+  <!ENTITY % common " xml:space (default|preserve) 'default'">
+  <!ATTLIST summary%common;>
+]>
+<catalog>
+  <entry id="a1" status="published">
+    <title>Signals &amp; Symbols</title>
+    <author>Ada</author>
+    <author>Lin</author>
+    <summary xml:space="preserve">Use <em>carefully</em> and <code>&lt;token&gt;</code>.</summary>
+    <link href="https://example.invalid/a?x=1&amp;y=2" rel="alternate"/>
+  </entry>
+  <entry id="b2">
+    <title><![CDATA[Raw ]]> text ]]&gt;</title>
+    <summary/>
+    <link href="#a1"/>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, footer)>
+  <!ELEMENT header (stamp, source)>
+  <!ELEMENT stamp (#PCDATA)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST envelope xmlns CDATA #IMPLIED>
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY picture SYSTEM "photo.jpg" NDATA jpeg>
+  <!ENTITY greeting "hello &amp; goodbye">
+]>
+<envelope xmlns="urn:packet" xmlns:x="urn:extra">
+  <header>
+    <stamp>2026-09-23T12:34:56Z</stamp>
+    <source x:id="node-7">sensor-A</source>
+  </header>
+  <payload>
+    <x:item kind="binary" size="0"/>
+    <x:item kind="text">status: &greeting;</x:item>
+    <!-- comment with -- invalid? -->
+    <?trace level="verbose"?>
+  </payload>
+  <footer>done&#x20;</footer>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ENTITY % switch "<!ELEMENT debug (#PCDATA)>">
+  <![IGNORE[
+    <!ELEMENT hidden EMPTY>
+    <!ATTLIST hidden secret CDATA #REQUIRED>
+  ]]>
+  %switch;
+  <!ELEMENT report (section+)>
+  <!ELEMENT section (heading, debug?, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (#PCDATA|br|ref)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST section name NMTOKEN #REQUIRED>
+  <!ATTLIST item code NMTOKEN #IMPLIED>
+  <!ATTLIST ref target IDREF #IMPLIED>
+]>
+<report>
+  <section name="north">
+    <heading>North &apos;wind&apos;</heading>
+    <debug>trace <![CDATA[<raw>]]> tail</debug>
+    <item code="A_1">one<br/>two<ref target="missing"/></item>
+    <item>προσπάθεια &#945; &#x1F642;</item>
+  </section>
+  <section name="south">
+    <heading>South</heading>
+    <item><![CDATA[]]></item>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (layer*)>
+  <!ELEMENT layer (node|edge)*>
+  <!ELEMENT node EMPTY>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST layer id ID #REQUIRED mode (open|closed) "open">
+  <!ATTLIST node id ID #REQUIRED x CDATA #REQUIRED y CDATA #REQUIRED label CDATA #IMPLIED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+]>
+<map xmlns:g="urn:graph" xml:base="file:///tmp/maps/">
+  <layer id="roads" mode="closed">
+    <node id="n0" x="0" y="0" label="origin"/>
+    <node id="n1" x="-1.25" y="3.14159" label="&quot;π&quot;"/>
+    <edge from="n0" to="n1" weight="0"/>
+    <g:node id="foreign" x="NaN" y="INF" g:flag="yes"/>
+  </layer>
+  <layer id="empty"/>
+</map>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE query [
+  <!ELEMENT query (select, from, where?, order?)>
+  <!ELEMENT select (field+)>
+  <!ELEMENT field (#PCDATA)>
+  <!ELEMENT from (table+)>
+  <!ELEMENT table (#PCDATA)>
+  <!ELEMENT where (and|or|not|condition)>
+  <!ELEMENT and (and|or|not|condition)+>
+  <!ELEMENT or (and|or|not|condition)+>
+  <!ELEMENT not (condition|and|or|not)>
+  <!ELEMENT condition EMPTY>
+  <!ELEMENT order (by+)>
+  <!ELEMENT by (#PCDATA)>
+  <!ATTLIST condition field CDATA #REQUIRED op (eq|ne|lt|gt|like) #REQUIRED value CDATA #REQUIRED>
+  <!ATTLIST by direction (asc|desc) "asc">
+]>
+<query>
+  <select>
+    <field>name</field>
+    <field>count(*)</field>
+  </select>
+  <from>
+    <table>users</table>
+    <table>events</table>
+  </from>
+  <where>
+    <and>
+      <condition field="active" op="eq" value="true"/>
+      <or>
+        <condition field="name" op="like" value="A%"/>
+        <not>
+          <condition field="role" op="eq" value="guest"/>
+        </not>
+      </or>
+    </and>
+  </where>
+  <order>
+    <by direction="desc">created_at</by>
+    <by>name</by>
+  </order>
+</query>
+```

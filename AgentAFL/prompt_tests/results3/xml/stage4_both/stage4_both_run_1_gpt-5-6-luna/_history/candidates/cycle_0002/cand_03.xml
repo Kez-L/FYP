@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<workflow xmlns="urn:example:workflow" xmlns:x="urn:example:extension" xml:space="preserve">
+  <?pipeline mode="incremental"?>
+  <start at="ingest">
+    <transition event="accepted" to="review">
+      <condition language="xpath">/request/@priority = 'high'</condition>
+      <x:annotation><![CDATA[manual verification required]]></x:annotation>
+    </transition>
+    <transition event="rejected" to="closed"/>
+  </start>
+  <state name="review" owner="qa-team">
+    <entry>
+      <action type="notify">
+        <parameter name="channel">email</parameter>
+        <parameter name="template">review-required</parameter>
+      </action>
+    </entry>
+    <exit>
+      <action type="record">Reviewed by &quot;QA&quot;</action>
+    </exit>
+  </state>
+  <state name="closed" terminal="true">
+    <description>No further transitions are permitted.</description>
+  </state>
+</workflow>

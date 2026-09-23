@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (warehouse, warehouse)>
+  <!ELEMENT warehouse (shelf+)>
+  <!ELEMENT shelf (slot*)>
+  <!ELEMENT slot EMPTY>
+  <!ATTLIST warehouse code ID #REQUIRED>
+  <!ATTLIST shelf label NMTOKEN #IMPLIED>
+  <!ATTLIST slot item IDREF #IMPLIED state (open|closed) "open" tags NMTOKENS #IMPLIED>
+  <!ENTITY left "L">
+  <!ENTITY right "R">
+  <!ENTITY pair "&left;:&right;">
+  <!ENTITY % extra "<!ELEMENT marker (#PCDATA)>">
+  %extra;
+]>
+<inventory>
+  <warehouse code="west">
+    <shelf label="A_1">
+      <slot item="thing-1" state="closed" tags="red blue"/>
+      <slot item="thing-2"><!-- empty element with content forbidden intentionally --></slot>
+    </shelf>
+    <shelf><marker>&pair;</marker></shelf>
+  </warehouse>
+  <warehouse code="east"><shelf><slot item="thing-1"/></shelf></warehouse>
+</inventory>

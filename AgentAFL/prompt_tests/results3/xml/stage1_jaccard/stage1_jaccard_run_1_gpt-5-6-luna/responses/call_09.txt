@@ -1,0 +1,141 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, note?)>
+  <!ELEMENT item (name, meta*, description)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA|em|br)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST catalog xmlns CDATA #IMPLIED
+                    xmlns:x CDATA #IMPLIED>
+  <!ATTLIST item sku CDATA #REQUIRED
+                  x:featured (yes|no) "no">
+  <!ATTLIST meta key CDATA #REQUIRED value CDATA #IMPLIED>
+]>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <item sku="A-17" x:featured="yes">
+    <name>α &amp; β</name>
+    <meta key="color" value="blue"/>
+    <meta key="stock"/>
+    <description>Text <em>with nested emphasis</em><br/>and a trailing fragment.</description>
+  </item>
+  <item sku="B-42">
+    <name>Second item</name>
+    <description><![CDATA[raw <markup> and ]]]]><![CDATA[> boundaries]]></description>
+  </item>
+  <note xml:lang="en">catalog footer</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!NOTATION txt SYSTEM "text/plain">
+  <!ENTITY logo SYSTEM "logo.gif" NDATA gif>
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (title, payload?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT payload EMPTY>
+  <!ATTLIST entry key ID #REQUIRED
+                  link IDREFS #IMPLIED
+                  kind (text|binary) "text">
+  <!ATTLIST payload src ENTITY #IMPLIED
+                    format NOTATION #IMPLIED>
+]>
+<archive>
+  <entry key="first" kind="binary">
+    <title>Graphic asset</title>
+    <payload src="logo" format="gif"/>
+  </entry>
+  <entry key="second" link="first" kind="text">
+    <title>Referenced record</title>
+    <payload src="logo" format="gif"/>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<message xmlns="urn:acme:message"
+         xmlns:m="urn:acme:meta"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xml:lang="fr">
+  <?trace level="verbose"?>
+  <!-- a comment containing <tags> and -- punctuation -->
+  <m:header m:id="h-01" xlink:href="urn:header">
+    <m:source>émetteur</m:source>
+    <m:flags enabled="true" count="0007"/>
+  </m:header>
+  <body>
+    Intro &lt;escaped&gt; text
+    <section name="alpha">
+      <![CDATA[CDATA content with & and < characters]]>
+      <line>one</line>
+      <line xml:space="preserve">  two&#x20;&#x20;</line>
+    </section>
+    <section name="β">
+      <empty/>
+      <?instruction data with spaces?>
+    </section>
+  </body>
+  <m:footer m:checksum="a:b:c">fin</m:footer>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE document [
+  <!ELEMENT document (container, index)>
+  <!ELEMENT container (part|container)*>
+  <!ELEMENT part (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT index EMPTY>
+  <!ATTLIST container depth CDATA #IMPLIED>
+  <!ATTLIST part id ID #IMPLIED role CDATA "content">
+  <!ATTLIST index first IDREF #IMPLIED>
+  <!ENTITY words "alpha &amp; omega">
+  <!ENTITY fragment "<part id='generated' role='embedded'>inside &words;</part>">
+  <!ENTITY quoted "a &quot;quoted&quot; value">
+]>
+<document>
+  <container depth="outer">
+    <part id="one">before <emph>&words;</emph> after</part>
+    &fragment;
+    <container depth="inner">
+      &fragment;
+      <part role="quoted" data="&quoted;">tail</part>
+    </container>
+  </container>
+  <index first="generated"/>
+</document>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8" standalone="yes"?>
+<packet xmlns="urn:wire:packet"
+        xmlns:q="urn:wire:qualified"
+        q:version="1.1"
+        xml:base="urn:example:base/">
+  <header>
+    <sequence q:value="00000000000000000001">1</sequence>
+    <timestamp>2026-09-23T00:00:00Z</timestamp>
+  </header>
+  <payload encoding="mixed">
+    <![CDATA[]]>
+    <![CDATA[first]]><![CDATA[second]]>
+    <chunk id="a">left&#x85;middle&#x2028;right</chunk>
+    <chunk id="b" q:empty="true"/>
+    <chunk id="c">
+      <q:value><![CDATA[x]]></q:value>
+      <q:value><![CDATA[y]]></q:value>
+    </chunk>
+  </payload>
+  <trailer checksum="0x00ff">
+    <?close reason="complete"?>
+  </trailer>
+</packet>
+```

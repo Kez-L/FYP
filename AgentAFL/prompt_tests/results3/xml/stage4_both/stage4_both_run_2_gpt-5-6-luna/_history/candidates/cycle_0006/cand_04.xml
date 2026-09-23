@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<pipeline xmlns="urn:example:pipeline" xmlns:c="urn:example:config">
+  <?trace id="p-42"?>
+  <input c:format="csv" c:delimiter=";" c:empty="keep">
+    <source uri="file:///var/tmp/incoming.csv" checksum="sha256:abc123"/>
+    <mapping>
+      <field name="first" target="person.given" required="true"/>
+      <field name="last" target="person.family" required="false"/>
+      <field name="score" target="metrics.score" default="0">
+        <transform name="decimal" scale="3"/>
+      </field>
+    </mapping>
+  </input>
+  <stages>
+    <stage name="sanitize" enabled="true">
+      <rule pattern="[\x00-\x1f]" action="remove"/>
+      <rule pattern="&quot;" action="escape"/>
+    </stage>
+    <stage name="publish" enabled="false" depends="sanitize">
+      <destination protocol="https" host="example.invalid" path="/feed"/>
+      <headers>
+        <header key="X-Mode">dry-run</header>
+        <header key="Accept">application/xml</header>
+      </headers>
+    </stage>
+  </stages>
+  <output c:pretty="yes">
+    <![CDATA[
+      <result status="preview"/>
+    ]]>
+  </output>
+</pipeline>

@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<configuration xmlns="urn:config"
+               xmlns:sec="urn:security"
+               xmlns:meta="urn:metadata">
+  <!-- configuration with repeated, ordered sections -->
+  <profile name="default" active="1">
+    <meta:owner id="u-0">
+      <meta:name>test-user</meta:name>
+      <meta:tags>
+        <meta:tag>alpha</meta:tag>
+        <meta:tag>βeta</meta:tag>
+      </meta:tags>
+    </meta:owner>
+    <pipeline>
+      <stage id="pre">
+        <command timeout="0">normalize</command>
+        <command><![CDATA[split & preserve]]></command>
+      </stage>
+      <stage id="post" depends-on="pre">
+        <command>archive</command>
+        <condition>
+          <all>
+            <equals left="${status}" right="ok"/>
+            <not><equals left="${retries}" right="0"/></not>
+          </all>
+        </condition>
+      </stage>
+    </pipeline>
+    <sec:credentials>
+      <sec:key algorithm="urn:sha256">AAECAwQ=</sec:key>
+      <sec:certificate><![CDATA[
+-----BEGIN CERTIFICATE-----
+not-a-real-certificate
+-----END CERTIFICATE-----
+]]></sec:certificate>
+    </sec:credentials>
+  </profile>
+</configuration>

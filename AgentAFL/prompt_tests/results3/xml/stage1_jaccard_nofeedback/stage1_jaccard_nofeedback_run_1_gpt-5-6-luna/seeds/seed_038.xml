@@ -1,0 +1,21 @@
+<!DOCTYPE envelope [
+  <!ENTITY % switch "<!ELEMENT envelope (meta, payload, signature)>">
+  %switch;
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST meta timestamp CDATA #IMPLIED>
+  <!ATTLIST chunk n CDATA #REQUIRED>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<envelope>
+  <meta timestamp="1970-01-01T00:00:00Z"/>
+  <payload>
+    <chunk n="1">alpha<part>&left;nested&right;</part>omega</chunk>
+    <chunk n="2"><part><![CDATA[raw ]]></part>tail</chunk>
+  </payload>
+  <signature>sha256:&amp;unknown;</signature>
+</envelope>

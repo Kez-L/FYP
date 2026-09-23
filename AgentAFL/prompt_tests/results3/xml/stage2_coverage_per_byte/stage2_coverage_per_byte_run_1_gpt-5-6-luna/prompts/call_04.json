@@ -1,0 +1,23 @@
+{
+  "call": 4,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ATTLIST koo xml:lang CDATA \"eng\">\n  <!ATTLIST foo bar CDATA \"&lt;&gt;)qrking Group (orisable oveuot;\">\n]>\n<root>\n  <foo xml:lang=\"ger\">Ja</fo\u0000\u0004\n</roos>\n\n\n--- example 2 ---\n<!DOCTYPE doc [\n<!ELEMENT doc EMPTY>\n<!ATTLIST doc\n defatt  (0|1)   \"0\"\n     xmlns:tst CDATA #FIXED \"http://example.org\"  tst:att  (0|1)   \"0\"\n    att (0|1)   \"1\">\n]>\n<doc att=\"1B/h12;&laugh12;&laugh12;&la>\n\n\nTried before \u2014 no new coverage, avoid repeating:\n--- a seed you generated (cycle 4) added 0 new edges ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE packet [\n  <!ENTITY % flags '\n    <!ATTLIST packet priority (low|normal|high) \"normal\">\n  '>\n  %flags;\n  <!ELEMENT packet (header, body, trailer?)>\n  <!ELEMENT header (field+)>\n  <!ELEMENT field EMPTY>\n  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>\n  <!ELEMENT body ANY>\n  <!ELEMENT trailer (#PCDATA)>\n  <!ENTITY amp \"&amp;\">\n]>\n<packet priority=\"high\">\n  <header>\n    <field name=\"mode\" value=\"batch\"/>\n    <field name=\"retry\" value=\"3\"/>\n  </header>\n  <body>\n    <?route path=\"a&amp;b\"?>\n    <chunk><![CDATA[first]]></chunk>\n    <chunk>second &amp; &amp; third</chunk>\n  </body>\n  <trailer>checksum:&amp;amp;</trailer>\n</packet>\n\n--- a seed you generated (cycle 4) added 0 new edges ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE scene [\n  <!ELEMENT scene (actor, action*, exit)>\n  <!ELEMENT actor (#PCDATA)>\n  <!ELEMENT action (say|move|pause)>\n  <!ELEMENT say (#PCDATA)>\n  <!ELEMENT move EMPTY>\n  <!ATTLIST move x CDATA #REQUIRED y CDATA #REQUIRED>\n  <!ELEMENT pause EMPTY>\n  <!ATTLIST pause duration CDATA \"0\">\n  <!ELEMENT exit EMPTY>\n  <!ATTLIST exit code CDATA #IMPLIED>\n  <!ENTITY greeting \"Hello &#x2603;\">\n]>\n<scene>\n  <actor>&greeting;</actor>\n  <action><say>Turn <em>left</em> now</say></action>\n  <action><move x=\"-7\" y=\"004\"/></action>\n  <action><pause duration=\"&#x09;\"/></action>\n  <exit code=\"done\"/>\n</scene>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage-per-byte",
+  "positive_feedback": false,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-23T05:55:00.050867+00:00"
+}

@@ -1,0 +1,23 @@
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, trailer)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name NMTOKEN #REQUIRED value CDATA "">
+  <!ELEMENT payload ANY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ENTITY qmark "?">
+  <!ENTITY nested "left-&qmark;-right">
+]>
+<envelope>
+  <header>
+    <field name="a" value="1"/>
+    <field name="b"/>
+    <field name="c" value="&nested;"/>
+  </header>
+  <payload>
+    <data><![CDATA[<x><y/></x>]]></data>
+    <data attr="unterminated><inside/></data>
+    <empty />
+  </payload>
+  <trailer>finish</trailer>
+</envelope>

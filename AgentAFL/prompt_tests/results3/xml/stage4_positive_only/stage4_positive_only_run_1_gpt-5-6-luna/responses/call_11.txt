@@ -1,0 +1,244 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE library [
+  <!ELEMENT library (metadata, shelf*)>
+  <!ELEMENT metadata (title, generated, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT note (#PCDATA|em)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT shelf (book+)>
+  <!ATTLIST shelf name CDATA #REQUIRED>
+  <!ELEMENT book (isbn, title, author+, summary?, tags?)>
+  <!ATTLIST book id ID #REQUIRED status (available|loaned|reserved) "available">
+  <!ELEMENT isbn (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|em|br)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+]>
+<library>
+  <metadata>
+    <title>Small Reference Library</title>
+    <generated>2026-09-23T14:22:11Z</generated>
+    <note>Use <em>exact</em> matching when importing records.<br/>Whitespace is significant.</note>
+  </metadata>
+  <shelf name="languages">
+    <book id="b101" status="loaned">
+      <isbn>978-0-00-000101-7</isbn>
+      <title>Parsing by Hand</title>
+      <author>R. Ibarra</author>
+      <author>M. Chen</author>
+      <summary>A guide to <em>incremental</em> grammars and token boundaries.</summary>
+      <tags><tag>xml</tag><tag>parsing</tag></tags>
+    </book>
+    <book id="b102">
+      <isbn>978-0-00-000102-4</isbn>
+      <title>Quiet Machines</title>
+      <author>S. Novak</author>
+      <summary>Notes on deterministic systems.<br/>Second edition.</summary>
+    </book>
+  </shelf>
+</library>
+```
+
+```xml
+<?xml version="1.0"?>
+<invoice xmlns="urn:billing:invoice" xmlns:c="urn:billing:common">
+  <header>
+    <c:identifier scheme="internal">INV-2026-00481</c:identifier>
+    <issued timezone="+05:30">2026-09-23</issued>
+    <currency>EUR</currency>
+  </header>
+  <parties>
+    <party role="seller">
+      <name>Northwind Atelier</name>
+      <address>
+        <line>17 River Lane</line>
+        <line>Unit 4B</line>
+        <postal country="DE">10115</postal>
+      </address>
+    </party>
+    <party role="buyer">
+      <name>Example Research Group</name>
+      <address>
+        <line>9 Observatory Road</line>
+        <postal country="GB">OX1 3PA</postal>
+      </address>
+    </party>
+  </parties>
+  <items>
+    <item line="1">
+      <description>Precision sensor &amp; mounting kit</description>
+      <quantity unit="set">2</quantity>
+      <unit-price tax="standard">1250.50</unit-price>
+      <discount kind="percent">5</discount>
+    </item>
+    <item line="2">
+      <description><![CDATA[Calibration service: phase <A> / phase <B>]]></description>
+      <quantity unit="hour">3.5</quantity>
+      <unit-price tax="reduced">80</unit-price>
+    </item>
+  </items>
+  <totals>
+    <subtotal>2646.75</subtotal>
+    <tax rate="0.19">502.88</tax>
+    <grand-total>3149.63</grand-total>
+  </totals>
+  <?audit actor="importer" mode="strict"?>
+</invoice>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (setting, actor*, action+)>
+  <!ELEMENT setting (location, weather)>
+  <!ELEMENT location (#PCDATA)>
+  <!ELEMENT weather (#PCDATA)>
+  <!ELEMENT actor (name, prop*)>
+  <!ATTLIST actor code ID #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT prop (#PCDATA)>
+  <!ELEMENT action (actor-ref, dialogue?, movement?, sound*)>
+  <!ATTLIST action number CDATA #REQUIRED>
+  <!ELEMENT actor-ref EMPTY>
+  <!ATTLIST actor-ref code IDREF #REQUIRED>
+  <!ELEMENT dialogue (#PCDATA|pause)*>
+  <!ELEMENT pause EMPTY>
+  <!ELEMENT movement (#PCDATA)>
+  <!ELEMENT sound (#PCDATA)>
+]>
+<scene>
+  <setting>
+    <location>Station platform at dawn</location>
+    <weather>Thin fog; intermittent rain</weather>
+  </setting>
+  <actor code="conductor">
+    <name>Conductor Vale</name>
+    <prop>brass watch</prop>
+    <prop>folded timetable</prop>
+  </actor>
+  <actor code="traveler">
+    <name>The Traveler</name>
+    <prop>canvas case</prop>
+  </actor>
+  <action number="1">
+    <actor-ref code="conductor"/>
+    <movement>Checks the watch twice and looks toward the tunnel.</movement>
+    <sound>clang</sound>
+  </action>
+  <action number="2">
+    <actor-ref code="traveler"/>
+    <dialogue>Is this the last departure?<pause/>I was told there would be another.</dialogue>
+    <movement>Places the case beside the bench.</movement>
+  </action>
+  <action number="3">
+    <actor-ref code="conductor"/>
+    <dialogue>There is always another schedule.</dialogue>
+    <sound><![CDATA[whistle: low, rising, abruptly cut]]></sound>
+  </action>
+</scene>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset xmlns="urn:acme:data" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="local.xsd">
+  <dimensions>
+    <dimension name="time" type="date">
+      <value>2026-09-23</value>
+      <value>2026-09-24</value>
+    </dimension>
+    <dimension name="region" type="token">
+      <value>north</value>
+      <value>south</value>
+    </dimension>
+  </dimensions>
+  <series id="temperature" unit="C" precision="2">
+    <caption>Daily mean temperature</caption>
+    <point at="2026-09-23" region="north" quality="measured">18.25</point>
+    <point at="2026-09-23" region="south" quality="estimated">23.00</point>
+    <point at="2026-09-24" region="north" quality="missing"/>
+  </series>
+  <series id="rainfall" unit="mm" precision="1">
+    <caption>Accumulated precipitation</caption>
+    <point at="2026-09-23" region="north" quality="measured">0.0</point>
+    <point at="2026-09-23" region="south" quality="measured">4.7</point>
+    <point at="2026-09-24" region="north" quality="estimated">1.2</point>
+  </series>
+  <annotations>
+    <annotation series="temperature" at="2026-09-23">
+      Sensor maintenance window
+      <details priority="low">Values interpolated between 08:00 and 09:30.</details>
+    </annotation>
+    <annotation series="rainfall" at="2026-09-23">
+      <details priority="high"><![CDATA[Gauge overflow flag: <threshold=5.0>]]></details>
+    </annotation>
+  </annotations>
+</dataset>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder+)>
+  <!ELEMENT folder (folder|file|link|comment)*>
+  <!ATTLIST folder path CDATA #REQUIRED>
+  <!ELEMENT file (name, checksum, metadata, content)>
+  <!ATTLIST file id ID #REQUIRED compressed (yes|no) "no">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT metadata (size, media, modified)>
+  <!ELEMENT size (#PCDATA)>
+  <!ELEMENT media (#PCDATA)>
+  <!ELEMENT modified (#PCDATA)>
+  <!ELEMENT content (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target IDREF #REQUIRED>
+  <!ELEMENT comment (#PCDATA)>
+]>
+<archive>
+  <folder path="/">
+    <folder path="/reports">
+      <file id="f1" compressed="yes">
+        <name>summary.xml</name>
+        <checksum algorithm="sha256">7f83b1657ff1fc53b92dc18148a1d65dfa135cdef</checksum>
+        <metadata>
+          <size>4096</size>
+          <media>application/xml</media>
+          <modified>2026-09-20T08:10:00Z</modified>
+        </metadata>
+        <content><![CDATA[<embedded><row key="a">1</row><row key="b">2</row></embedded>]]></content>
+      </file>
+      <link target="f3"/>
+      <comment>Generated after the overnight export.</comment>
+    </folder>
+    <folder path="/reports/raw">
+      <file id="f2">
+        <name>values.csv</name>
+        <checksum algorithm="md5">d41d8cd98f00b204e9800998ecf8427e</checksum>
+        <metadata>
+          <size>27</size>
+          <media>text/csv</media>
+          <modified>2026-09-21T11:45:02+00:00</modified>
+        </metadata>
+        <content>key,value
+alpha,10
+beta,20</content>
+      </file>
+    </folder>
+    <file id="f3">
+      <name>README.txt</name>
+      <checksum algorithm="sha256">abc123</checksum>
+      <metadata>
+        <size>12</size>
+        <media>text/plain</media>
+        <modified>2026-09-22T17:00:00Z</modified>
+      </metadata>
+      <content>See reports.</content>
+    </file>
+  </folder>
+</archive>
+```

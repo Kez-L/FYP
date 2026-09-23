@@ -1,0 +1,94 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (item*, note?)>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ELEMENT item (#PCDATA|price|tag)*>
+  <!ATTLIST item sku CDATA #IMPLIED>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT tag EMPTY>
+  <!ATTLIST tag name NMTOKEN #REQUIRED>
+  <!ELEMENT note (#PCDATA)>
+]>
+<catalog>
+  <section id="s-001">
+    <item sku="A&amp;B"><tag name="fragile"/>glass<price>12.50</price></item>
+    <note><![CDATA[unescaped <markup> and ]]> characters]]></note>
+  </section>
+  <section id="s-002"/>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<r xmlns="urn:root" xmlns:x="urn:x" xmlns:y="urn:y">
+  <x:branch y:flag="true">
+    <leaf xmlns="">
+      <value x:kind="mixed">alpha</value>
+    </leaf>
+    <y:branch>
+      <x:leaf>beta</x:leaf>
+    </y:branch>
+  </x:branch>
+  <branch xmlns:x="urn:alternate">
+    <x:value>gamma</x:value>
+  </branch>
+</r>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ENTITY open "<part role='a'>">
+  <!ENTITY close "</part>">
+  <!ENTITY nested "&open;inside&close;">
+]>
+<envelope>
+  &nested;
+  <part role="b">
+    <![CDATA[&open; is literal here]]>
+  </part>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell EMPTY>
+  <!ATTLIST row index NMTOKEN #REQUIRED>
+  <!ATTLIST cell
+    col NMTOKEN #REQUIRED
+    value CDATA #IMPLIED
+    selected (yes|no) "no">
+]>
+<matrix>
+  <row index="01">
+    <cell col="A" value="&quot;one&quot;" selected="yes"/>
+    <cell col="B"/>
+  </row>
+  <row index="02">
+    <cell col="A" value="two&#x0A;lines"/>
+    <cell col="B" selected="no"/>
+    <cell col="C" value="three"/>
+  </row>
+</matrix>
+```
+
+```xml
+<?xml version="1.1"?>
+<archive xmlns:meta="urn:meta">
+  <entry>
+    <meta:info created="2024-02-29T23:59:60Z">
+      <meta:title>Résumé &amp; Notes</meta:title>
+      <meta:author><![CDATA[A < B > C]]></meta:author>
+    </meta:info>
+    <payload>
+      <line number="1">first</line>
+      <line number="2"/>
+      <line number="3">last&#x85;part</line>
+    </payload>
+  </entry>
+</archive>
+```

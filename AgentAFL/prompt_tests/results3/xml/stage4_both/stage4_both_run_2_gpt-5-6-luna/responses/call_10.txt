@@ -1,0 +1,223 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (metadata, widget+)>
+  <!ELEMENT metadata (created, owner, note?)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT note (#PCDATA|strong|br)*>
+  <!ELEMENT widget (caption, value, action*)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT value (#PCDATA|unit)*>
+  <!ELEMENT unit (#PCDATA)>
+  <!ELEMENT action EMPTY>
+  <!ATTLIST dashboard theme (light|dark|contrast) "light">
+  <!ATTLIST widget id ID #REQUIRED kind (gauge|counter|text) #REQUIRED>
+  <!ATTLIST action name CDATA #REQUIRED target CDATA #IMPLIED>
+  <!ENTITY product "Telemetry &amp; Control">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY % optional "INCLUDE">
+  <![%optional;[
+    <!ELEMENT badge (#PCDATA)>
+    <!ATTLIST widget badge CDATA #IMPLIED>
+  ]]>
+]>
+<dashboard theme="contrast">
+  <metadata>
+    <created>2026-09-23T12:00:00Z</created>
+    <owner>&product;</owner>
+    <note>Use <strong>caution</strong> when values exceed limits<br/>and record the event.</note>
+  </metadata>
+  <widget id="w-temp" kind="gauge" badge="live">
+    <caption>Chamber temperature</caption>
+    <value>21.5<unit>°C</unit></value>
+    <action name="calibrate" target="sensor-A"/>
+  </widget>
+  <widget id="w-count" kind="counter">
+    <caption>Processed items</caption>
+    <value>1042& nbsp;</value>
+    <action name="reset"/>
+    <action name="export" target="csv"/>
+  </widget>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE manuscript [
+  <!ELEMENT manuscript (front, chapter+)>
+  <!ELEMENT front (title, subtitle?, epigraph?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT subtitle (#PCDATA)>
+  <!ELEMENT epigraph (#PCDATA|quote|cite)*>
+  <!ELEMENT chapter (heading, para+, footnote*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT para (#PCDATA|em|term|link|quote)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT term (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT quote (#PCDATA|em)*>
+  <!ELEMENT cite (#PCDATA)>
+  <!ELEMENT footnote (#PCDATA|em)*>
+  <!ATTLIST manuscript language CDATA #IMPLIED revision CDATA #IMPLIED>
+  <!ATTLIST chapter number NMTOKEN #REQUIRED>
+  <!ATTLIST link ref IDREF #REQUIRED>
+  <!ATTLIST term id ID #IMPLIED>
+  <!ENTITY dash "&#x2014;">
+  <!ENTITY author "A. Researcher">
+]>
+<manuscript language="en" revision="r3">
+  <front>
+    <title>Signals in Quiet Systems</title>
+    <subtitle>Notes on observation</subtitle>
+    <epigraph>Measure twice<quote>then question the instrument</quote><cite>&author;</cite></epigraph>
+  </front>
+  <chapter number="1">
+    <heading>Arrival</heading>
+    <para>The first reading was <em>unexpected</em>&dash;the dial had moved.</para>
+    <para>We marked the <term id="threshold">threshold</term> before changing the load.</para>
+    <footnote>All times are local; see <em>Appendix A</em>.</footnote>
+  </chapter>
+  <chapter number="2">
+    <heading>Revision</heading>
+    <para>A second observer followed the <link ref="threshold">same procedure</link>.</para>
+    <para><![CDATA[The recorded trace contains the literal sequence <angle> without markup.]]></para>
+  </chapter>
+</manuscript>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (namespace, record*)>
+  <!ELEMENT namespace EMPTY>
+  <!ELEMENT record (key, payload, tag*)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST registry version NMTOKEN #REQUIRED>
+  <!ATTLIST namespace prefix NMTOKEN #REQUIRED uri CDATA #REQUIRED>
+  <!ATTLIST record id ID #REQUIRED state (new|ready|retired) "new" refs IDREFS #IMPLIED>
+  <!ATTLIST key type (string|integer|hex) "string">
+  <!ENTITY lt "<">
+  <!ENTITY amp "&amp;">
+  <!ENTITY newline "&#10;">
+]>
+<registry version="4.0">
+  <namespace prefix="core" uri="urn:sample:core"/>
+  <record id="r-001" state="ready">
+    <key type="string">core.name</key>
+    <payload>alpha<part>one</part><part>two</part></payload>
+    <tag>stable</tag>
+    <tag>public</tag>
+  </record>
+  <record id="r-002" state="new" refs="r-001">
+    <key type="hex">00af10</key>
+    <payload><![CDATA[raw bytes: 00 0A FF; keep <markers> literal]]></payload>
+    <tag>queued</tag>
+  </record>
+  <record id="r-003" state="retired" refs="r-001 r-002">
+    <key type="integer">42</key>
+    <payload>left&newline;right &lt;encoded&gt; &amp; preserved</payload>
+  </record>
+</registry>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE itinerary [
+  <!ELEMENT itinerary (route, stop+)>
+  <!ELEMENT route (name, departure, arrival)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT departure (#PCDATA)>
+  <!ELEMENT arrival (#PCDATA)>
+  <!ELEMENT stop (location, depart?, arrive?, service?)>
+  <!ELEMENT location (#PCDATA)>
+  <!ELEMENT depart (#PCDATA)>
+  <!ELEMENT arrive (#PCDATA)>
+  <!ELEMENT service (#PCDATA|delay|platform)*>
+  <!ELEMENT delay EMPTY>
+  <!ELEMENT platform (#PCDATA)>
+  <!ATTLIST itinerary date CDATA #REQUIRED>
+  <!ATTLIST route mode (rail|bus|ferry) #REQUIRED>
+  <!ATTLIST stop code NMTOKEN #REQUIRED sequence NMTOKEN #REQUIRED>
+  <!ATTLIST delay minutes CDATA #REQUIRED reason CDATA #IMPLIED>
+  <!ENTITY morning "06:30">
+  <!ENTITY arrow "&#x2192;">
+]>
+<itinerary date="2026-09-23">
+  <route mode="rail">
+    <name>North Loop &arrow; Harbor</name>
+    <departure>&morning;</departure>
+    <arrival>09:15</arrival>
+  </route>
+  <stop code="NTH" sequence="1">
+    <location>North Terminal</location>
+    <depart>06:30</depart>
+    <arrive>06:42</arrive>
+    <service><platform>4</platform></service>
+  </stop>
+  <stop code="MKT" sequence="2">
+    <location>Market Square</location>
+    <depart>07:10</depart>
+    <arrive>07:18</arrive>
+    <service>Boarding change <delay minutes="4" reason="signal inspection"/><platform>2B</platform></service>
+  </stop>
+  <stop code="HBR" sequence="3">
+    <location><![CDATA[Harbor Gate <east>]]></location>
+    <arrive>09:15</arrive>
+    <service><platform>1</platform></service>
+  </stop>
+</itinerary>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body)>
+  <!ELEMENT header (token, timestamp, flags?)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT flags (flag*)>
+  <!ELEMENT flag EMPTY>
+  <!ELEMENT body (request|response|fault)>
+  <!ELEMENT request (method, parameter*)>
+  <!ELEMENT response (status, result?)>
+  <!ELEMENT fault (code, message, detail?)>
+  <!ELEMENT method (#PCDATA)>
+  <!ELEMENT parameter (#PCDATA)>
+  <!ELEMENT status (#PCDATA)>
+  <!ELEMENT result (#PCDATA|item)*>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|line)*>
+  <!ELEMENT line (#PCDATA)>
+  <!ATTLIST envelope id ID #REQUIRED>
+  <!ATTLIST token scheme (bearer|basic|none) "none">
+  <!ATTLIST flag name NMTOKEN #REQUIRED enabled (true|false) "true">
+  <!ATTLIST request method-id ID #IMPLIED>
+  <!ATTLIST parameter name CDATA #REQUIRED type (text|number|boolean) "text">
+  <!ATTLIST response status-code CDATA #REQUIRED>
+  <!ENTITY quote "&quot;">
+]>
+<envelope id="msg-77">
+  <header>
+    <token scheme="bearer">opaque-token-value</token>
+    <timestamp>2026-09-23T18:44:02Z</timestamp>
+    <flags>
+      <flag name="compressed" enabled="false"/>
+      <flag name="trace" enabled="true"/>
+    </flags>
+  </header>
+  <body>
+    <request method-id="req-9">
+      <method>search</method>
+      <parameter name="query">name &quote;delta&quote;</parameter>
+      <parameter name="limit" type="number">25</parameter>
+      <parameter name="includeArchived" type="boolean">false</parameter>
+    </request>
+  </body>
+</envelope>
+```

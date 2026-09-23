@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<configuration xmlns="urn:config:v2" xmlns:sec="urn:security" xmlns:env="urn:environment">
+  <environment name="staging" immutable="false">
+    <env:variable name="EMPTY" value=""/>
+    <env:variable name="QUOTED" value="a &quot;b&quot; c"/>
+    <env:variable name="MULTILINE">first
+second
+third</env:variable>
+  </environment>
+  <services>
+    <service name="alpha" enabled="true">
+      <listen address="::1" port="0" protocol="tcp"/>
+      <limits requests-per-minute="000100" burst="0x10" timeout-ms="001"/>
+      <depends-on optional="yes">
+        <service-ref name="beta"/>
+        <service-ref name="gamma"/>
+      </depends-on>
+      <sec:credentials>
+        <sec:method>token</sec:method>
+        <sec:token><![CDATA[eyJhbGciOiJub25lIn0=.invalid]]></sec:token>
+      </sec:credentials>
+    </service>
+    <service name="beta" enabled="false">
+      <listen address="0.0.0.0" port="65535" protocol="udp"/>
+      <routes>
+        <route pattern="/**" target="blackhole" priority="-1"/>
+        <route pattern="/health" target="local" priority="100"/>
+      </routes>
+    </service>
+  </services>
+  <policies>
+    <policy id="p0" effect="deny">
+      <subject kind="anonymous"/>
+      <resource path="/admin/*"/>
+      <condition operator="not">
+        <condition operator="equals" left="env" right="production"/>
+      </condition>
+    </policy>
+  </policies>
+</configuration>

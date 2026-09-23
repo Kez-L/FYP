@@ -1,0 +1,27 @@
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (part,part?)>
+  <!ELEMENT part (data|fault|data)*>
+  <!ELEMENT data (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT fault EMPTY>
+  <!ATTLIST part role (request|response) #REQUIRED>
+  <!ATTLIST fault code CDATA #IMPLIED>
+  <!ENTITY amp "&amp;">
+  <!ENTITY open "<">
+  <!ENTITY % optional "<!ELEMENT ignored EMPTY>">
+  <![IGNORE[
+    <!ELEMENT discarded (never)>
+    <!ATTLIST discarded flag CDATA #IMPLIED>
+  ]]>
+  %optional;
+]>
+<envelope>
+  <part role="request">
+    <data>one<chunk><![CDATA[two ]]> three</chunk>four</data>
+    <data>&amp; &amp; &amp;</data>
+  </part>
+  <part role="response">
+    <fault code="E-&#x0A;17"/>
+    <data>prefix &lt;middle&gt; suffix</data>
+  </part>
+</envelope>

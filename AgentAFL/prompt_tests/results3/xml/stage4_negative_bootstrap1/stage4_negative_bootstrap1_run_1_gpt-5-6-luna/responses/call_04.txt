@@ -1,0 +1,167 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (book+)>
+  <!ELEMENT book (title, author+, description?, price)>
+  <!ATTLIST book isbn ID #REQUIRED category CDATA "general">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emph|code)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ENTITY publisher "Northwind &amp; Sons">
+]>
+<catalog>
+  <book isbn="bk-001" category="science">
+    <title>Parsing the Unseen</title>
+    <author>Lin Mora</author>
+    <author>Devi Kaur</author>
+    <description>A guide to <emph>careful</emph> handling of <code>markup</code> and entities.</description>
+    <price currency="USD">&publisher; 19.95</price>
+  </book>
+</catalog>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<warehouse xmlns="urn:inventory:v2" xmlns:bin="urn:inventory:bin" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <section code="A-7">
+    <bin:location aisle="04" shelf="B" level="02"/>
+    <item sku="QX-77" quantity="00012" xlink:type="simple" xlink:href="urn:item:QX-77">
+      <![CDATA[Temperature-sensitive <component> & requires inspection]]>
+      <dimensions unit="mm">
+        <length>120.0</length>
+        <width>18.5</width>
+        <height>7</height>
+      </dimensions>
+      <tags>
+        <tag priority="high">fragile</tag>
+        <tag priority="low">sealed</tag>
+      </tags>
+    </item>
+  </section>
+  <section code="C-2">
+    <bin:location aisle="11" shelf="F" level="01"/>
+    <item sku="LM-03" quantity="4">
+      <dimensions unit="cm"><length>3</length><width>3</width><height>9</height></dimensions>
+    </item>
+  </section>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (intro, entries, conclusion)>
+  <!ELEMENT intro (#PCDATA)>
+  <!ELEMENT entries (entry*)>
+  <!ELEMENT entry (when, text, measurement*)>
+  <!ATTLIST entry ref ID #REQUIRED status (open|closed|deferred) "open">
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT text (#PCDATA|quote|br)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT measurement (#PCDATA)>
+  <!ATTLIST measurement name CDATA #REQUIRED unit CDATA #IMPLIED>
+  <!ELEMENT conclusion (#PCDATA)>
+]>
+<report>
+  <?audit source="field-team"?>
+  <intro>Observations recorded during the northern traverse.</intro>
+  <entries>
+    <entry ref="e17" status="closed">
+      <when>2026-01-14T06:30:00Z</when>
+      <text>Surface was quiet.<br/>The operator noted <quote>unusual resonance</quote>.</text>
+      <measurement name="depth" unit="m">48.25</measurement>
+      <measurement name="salinity" unit="ppt">31.8</measurement>
+    </entry>
+    <entry ref="e18">
+      <when>2026-01-14T08:05:11+02:00</when>
+      <text>Signal lost after marker 9.</text>
+    </entry>
+  </entries>
+  <conclusion>Further sampling is recommended.</conclusion>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+  <title type="html">Small Signals &amp; Large Questions</title>
+  <subtitle><![CDATA[Notes from a distributed observatory]]></subtitle>
+  <id>tag:example.invalid,2026:observatory</id>
+  <generator uri="https://example.invalid/forge" version="7.2">ForgePress</generator>
+  <updated>2026-09-23T18:42:10Z</updated>
+  <entry>
+    <id>urn:uuid:7f9d5e46-1d6d-4d30-9fe0-3f2b5c2d9b11</id>
+    <title type="text">A gap in the telemetry</title>
+    <published>2026-09-22T02:04:00Z</published>
+    <updated>2026-09-23T09:00:00-04:00</updated>
+    <author><name>R. Ilyan</name><email>r.ilyan@example.invalid</email></author>
+    <category term="telemetry" scheme="urn:topics"/>
+    <link rel="alternate" type="text/html" href="https://example.invalid/posts/gap"/>
+    <content type="xhtml">
+      <div xmlns="http://www.w3.org/1999/xhtml">
+        <p>The monitor returned <em>silence</em> for eleven minutes.</p>
+        <p>See <a href="urn:station:delta-4">station Delta-4</a>.</p>
+      </div>
+    </content>
+  </entry>
+</feed>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (setting, actors, actions)>
+  <!ELEMENT setting (place, time, weather?)>
+  <!ELEMENT place (#PCDATA)>
+  <!ELEMENT time (#PCDATA)>
+  <!ELEMENT weather (#PCDATA)>
+  <!ELEMENT actors (actor+)>
+  <!ELEMENT actor (name, role?, prop*)>
+  <!ATTLIST actor key ID #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT role (#PCDATA)>
+  <!ELEMENT prop (#PCDATA)>
+  <!ELEMENT actions (action+)>
+  <!ELEMENT action (speaker?, line?, cue*)>
+  <!ATTLIST action actor IDREF #IMPLIED>
+  <!ELEMENT speaker (#PCDATA)>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT cue (#PCDATA)>
+]>
+<scene>
+  <setting>
+    <place>Room 12, below the old observatory</place>
+    <time>just before dawn</time>
+    <weather>rain against the eastern windows</weather>
+  </setting>
+  <actors>
+    <actor key="actor-m">
+      <name>Mara</name>
+      <role>cartographer</role>
+      <prop>brass compass</prop>
+      <prop>folded chart</prop>
+    </actor>
+    <actor key="actor-s">
+      <name>Soren</name>
+      <role>caretaker</role>
+    </actor>
+  </actors>
+  <actions>
+    <action actor="actor-m">
+      <speaker>Mara</speaker>
+      <line>The needle moved before the door opened.</line>
+      <cue>She places the compass on the table.</cue>
+    </action>
+    <action actor="actor-s">
+      <speaker>Soren</speaker>
+      <line>Then we should not follow it.</line>
+      <cue>The lights flicker.</cue>
+      <cue>Blackout.</cue>
+    </action>
+  </actions>
+</scene>
+```

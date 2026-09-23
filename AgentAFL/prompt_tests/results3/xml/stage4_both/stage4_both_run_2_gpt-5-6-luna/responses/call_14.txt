@@ -1,0 +1,273 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (title, layer+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT layer (name, bounds, feature*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT bounds EMPTY>
+  <!ELEMENT feature (label?, geometry, metadata?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT geometry (point|path|polygon)>
+  <!ELEMENT point EMPTY>
+  <!ELEMENT path EMPTY>
+  <!ELEMENT polygon EMPTY>
+  <!ELEMENT metadata (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST layer id ID #REQUIRED visible (true|false) "true">
+  <!ATTLIST bounds north CDATA #REQUIRED south CDATA #REQUIRED east CDATA #REQUIRED west CDATA #REQUIRED>
+  <!ATTLIST feature id ID #REQUIRED kind (landmark|road|water|boundary) #REQUIRED>
+  <!ATTLIST point lat CDATA #REQUIRED lon CDATA #REQUIRED>
+  <!ATTLIST path d CDATA #REQUIRED>
+  <!ATTLIST polygon points CDATA #REQUIRED>
+  <!ATTLIST item key NMTOKEN #REQUIRED>
+]>
+<map>
+  <title>Coastal Survey 2042</title>
+  <layer id="terrain" visible="true">
+    <name>Terrain</name>
+    <bounds north="52.14" south="51.88" east="-1.02" west="-1.47"/>
+    <feature id="f001" kind="landmark">
+      <label>Old Observatory</label>
+      <geometry>
+        <point lat="52.031" lon="-1.214"/>
+      </geometry>
+      <metadata>
+        <item key="elevation">318m</item>
+        <item key="condition">restored</item>
+      </metadata>
+    </feature>
+    <feature id="f002" kind="road">
+      <label>North Ridge Track</label>
+      <geometry>
+        <path d="M -1.40,51.92 C -1.31,51.98 -1.27,52.04 -1.12,52.11"/>
+      </geometry>
+    </feature>
+  </layer>
+  <layer id="coastline">
+    <name>Protected Shore</name>
+    <bounds north="52.10" south="51.90" east="-1.08" west="-1.43"/>
+    <feature id="f003" kind="boundary">
+      <geometry>
+        <polygon points="-1.40,51.93 -1.28,51.91 -1.10,51.98 -1.17,52.08"/>
+      </geometry>
+      <metadata>
+        <item key="status">restricted &amp; monitored</item>
+      </metadata>
+    </feature>
+  </layer>
+</map>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<ws:Envelope xmlns:ws="http://www.w3.org/2003/05/soap-envelope"
+             xmlns:inv="urn:example:inventory"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ws:Header>
+    <ws:Action>urn:example:inventory:GetStock</ws:Action>
+    <ws:MessageID>urn:uuid:4d2e6c4f-4c4a-4bc3-b7a1-91b0b3bbd01e</ws:MessageID>
+    <ws:ReplyTo>
+      <ws:Address>https://services.example.invalid/replies</ws:Address>
+    </ws:ReplyTo>
+    <inv:Credentials environment="staging">
+      <inv:Client>warehouse-console</inv:Client>
+      <inv:Token xsi:nil="true"/>
+    </inv:Credentials>
+  </ws:Header>
+  <ws:Body>
+    <inv:GetStockRequest warehouse="WH-07">
+      <inv:Query>
+        <inv:Sku>NX-440</inv:Sku>
+        <inv:Sku>NX-441</inv:Sku>
+        <inv:Location aisle="C" bin="14"/>
+      </inv:Query>
+      <inv:Options includeReserved="false">
+        <inv:Format>summary</inv:Format>
+        <inv:MaximumRows>25</inv:MaximumRows>
+      </inv:Options>
+    </inv:GetStockRequest>
+  </ws:Body>
+</ws:Envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (collection+)>
+  <!ELEMENT collection (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (name, summary, price, tags, availability)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|strong|link)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT availability EMPTY>
+  <!ATTLIST collection code ID #REQUIRED>
+  <!ATTLIST item code ID #REQUIRED featured (yes|no) "no">
+  <!ATTLIST link href URI #REQUIRED>
+  <!ATTLIST availability quantity CDATA #REQUIRED state (in-stock|backorder|retired) #REQUIRED>
+  <!ENTITY currency "€">
+]>
+<catalog>
+  <collection code="tools">
+    <heading>Workshop Instruments</heading>
+    <item code="caliper-01" featured="yes">
+      <name>Digital Caliper</name>
+      <summary>Measures with <strong>0.01 mm</strong> resolution; see <link href="https://example.invalid/manuals/caliper">manual</link>.</summary>
+      <price>&currency;42.50</price>
+      <tags>
+        <tag>precision</tag>
+        <tag>steel</tag>
+        <tag>metric</tag>
+      </tags>
+      <availability quantity="18" state="in-stock"/>
+    </item>
+    <item code="gauge-02">
+      <name>Thread Gauge Set</name>
+      <summary><![CDATA[Includes UNC, UNF, and metric leaves.]]></summary>
+      <price>&currency;19.95</price>
+      <tags>
+        <tag>threads</tag>
+        <tag>inspection</tag>
+      </tags>
+      <availability quantity="0" state="backorder"/>
+    </item>
+  </collection>
+  <collection code="safety">
+    <heading>Protective Equipment</heading>
+    <item code="visor-07">
+      <name>Face Shield</name>
+      <summary>Clear replacement visor for lab and shop use.</summary>
+      <price>&currency;8.00</price>
+      <tags><tag>ppe</tag></tags>
+      <availability quantity="0" state="retired"/>
+    </item>
+  </collection>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?processing mode="incremental"?>
+<archive xmlns="urn:example:archive" xmlns:meta="urn:example:metadata">
+  <!-- Records are ordered by accession date. -->
+  <manifest generated="2026-09-23T11:05:00Z" checksum="sha256:abc123">
+    <entry path="notes/field-01.txt" bytes="184" media-type="text/plain">
+      <meta:owner>R. Okafor</meta:owner>
+      <meta:labels>
+        <meta:label>fieldwork</meta:label>
+        <meta:label>priority</meta:label>
+      </meta:labels>
+    </entry>
+    <entry path="images/site-a.tif" bytes="482901" media-type="image/tiff">
+      <meta:owner>R. Okafor</meta:owner>
+      <meta:labels>
+        <meta:label>survey</meta:label>
+      </meta:labels>
+      <meta:dimensions width="4096" height="3072" depth="16"/>
+    </entry>
+  </manifest>
+  <records>
+    <record uid="r-88" status="verified">
+      <header>
+        <subject>River sediment sample</subject>
+        <date>2026-09-18</date>
+        <coordinates lat="48.1142" lon="-3.8810"/>
+      </header>
+      <content format="text">
+        <![CDATA[
+          Grain distribution changed after the autumn storm.
+          Follow-up sample recommended within fourteen days.
+        ]]>
+      </content>
+      <references>
+        <reference target="notes/field-01.txt" relation="derived-from"/>
+        <reference target="images/site-a.tif" relation="illustrated-by"/>
+      </references>
+    </record>
+    <record uid="r-89" status="pending">
+      <header>
+        <subject>Unclassified mineral fragment</subject>
+        <date>2026-09-20</date>
+        <coordinates lat="48.1178" lon="-3.8921"/>
+      </header>
+      <content format="xml">
+        <observation confidence="0.61">
+          <colour>amber</colour>
+          <hardness scale="Mohs">6</hardness>
+        </observation>
+      </content>
+    </record>
+  </records>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE simulation [
+  <!ELEMENT simulation (scenario, timeline, results)>
+  <!ELEMENT scenario (parameter+)>
+  <!ELEMENT parameter EMPTY>
+  <!ELEMENT timeline (step+)>
+  <!ELEMENT step (input*, action*, checkpoint?)>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT checkpoint (metric+)>
+  <!ELEMENT metric (#PCDATA)>
+  <!ELEMENT results (run+)>
+  <!ELEMENT run (status, statistic+)>
+  <!ELEMENT status (#PCDATA)>
+  <!ELEMENT statistic (#PCDATA)>
+  <!ATTLIST simulation id ID #REQUIRED engine CDATA #REQUIRED>
+  <!ATTLIST parameter name NMTOKEN #REQUIRED value CDATA #REQUIRED mutable (true|false) "false">
+  <!ATTLIST step number CDATA #REQUIRED duration CDATA #IMPLIED>
+  <!ATTLIST checkpoint label CDATA #REQUIRED>
+  <!ATTLIST metric name NMTOKEN #REQUIRED unit CDATA #IMPLIED>
+  <!ATTLIST run seed CDATA #REQUIRED outcome (pass|fail|timeout) #REQUIRED>
+]>
+<simulation id="sim-204" engine="orbit-modeler-3">
+  <scenario>
+    <parameter name="gravity" value="9.80665"/>
+    <parameter name="dragCoefficient" value="0.014" mutable="true"/>
+    <parameter name="launchAngle" value="37.5" mutable="true"/>
+    <parameter name="payloadMass" value="12.4"/>
+  </scenario>
+  <timeline>
+    <step number="1" duration="00:00:08">
+      <input>initial altitude = 1200 m</input>
+      <input>initial velocity = 84 m/s</input>
+      <action>release payload</action>
+      <checkpoint label="separation">
+        <metric name="altitude" unit="m">1176.4</metric>
+        <metric name="velocity" unit="m/s">83.2</metric>
+      </checkpoint>
+    </step>
+    <step number="2" duration="00:00:15">
+      <action>apply guidance correction</action>
+      <action><![CDATA[vector = (0.18, -0.04, 0.91)]]></action>
+      <checkpoint label="midcourse">
+        <metric name="range" unit="m">2480.7</metric>
+        <metric name="error" unit="m">3.2</metric>
+      </checkpoint>
+    </step>
+    <step number="3">
+      <action>terminate on ground contact</action>
+    </step>
+  </timeline>
+  <results>
+    <run seed="11802" outcome="pass">
+      <status>nominal trajectory</status>
+      <statistic name="flightTime" unit="s">42.18</statistic>
+      <statistic name="impactSpeed" unit="m/s">17.6</statistic>
+    </run>
+    <run seed="11803" outcome="timeout">
+      <status>solver exceeded iteration limit</status>
+      <statistic name="iterations">100000</statistic>
+    </run>
+  </results>
+</simulation>
+```

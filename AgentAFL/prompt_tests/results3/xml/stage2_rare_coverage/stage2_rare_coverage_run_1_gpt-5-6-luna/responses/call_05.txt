@@ -1,0 +1,132 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY company "Northwind &amp; Sons">
+  <!ENTITY label "inventory">
+  <!ENTITY nested "&company; &amp; &label;">
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, product*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT product (name, description?, price)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ATTLIST product sku CDATA #REQUIRED status (active|retired) "active">
+]>
+<catalog>
+  <section code="hardware">
+    <title>&nested;</title>
+    <product sku="A-001">
+      <name>Widget &amp; Gear</name>
+      <description>Compact <emph>reusable</emph> component.</description>
+      <price>19.95</price>
+    </product>
+    <product sku="B-002" status="retired">
+      <name>Bracket</name>
+      <price>7.50</price>
+    </product>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<world xmlns="urn:example:world"
+       xmlns:geo="urn:example:geo"
+       xmlns:meta="urn:example:meta"
+       xml:lang="el">
+  <geo:location geo:lat="37.9838" geo:lon="23.7275">
+    <geo:name>Αθήνα</geo:name>
+    <geo:point>
+      <geo:axis>north</geo:axis>
+      <geo:axis>east</geo:axis>
+    </geo:point>
+  </geo:location>
+  <meta:record meta:id="r-17" meta:revision="00000000000000000001">
+    <meta:note xml:space="preserve">  leading and trailing spaces  </meta:note>
+    <meta:empty xmlns="" />
+    <meta:tags>
+      <meta:tag>café</meta:tag>
+      <meta:tag>東京</meta:tag>
+      <meta:tag>🧭</meta:tag>
+    </meta:tags>
+  </meta:record>
+</world>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<article xml:space="default">
+  <!-- Deliberately mixed prose with markup-like text in CDATA. -->
+  <heading>Parsing &lt;markup&gt; safely</heading>
+  <body>
+    Text before
+    <mark data-level="1">highlighted</mark>
+    text between
+    <code><![CDATA[if (a < b && b > c) return "&raw;";]]></code>
+    and after.
+    <?render mode="compact"?>
+    <line-break/>
+    <quote author="A &amp; B">“Quoted” &#x2014; text</quote>
+  </body>
+  <?audit checksum="00ff11ee22dd33cc"?>
+  <footer><![CDATA[]]></footer>
+</article>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!NOTATION png SYSTEM "image/png">
+  <!NOTATION svg SYSTEM "image/svg+xml">
+  <!ENTITY cover SYSTEM "urn:asset:cover" NDATA png>
+  <!ENTITY diagram SYSTEM "urn:asset:diagram" NDATA svg>
+  <!ELEMENT archive (entry*, manifest)>
+  <!ELEMENT entry (title, payload?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT payload EMPTY>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST entry key ID #REQUIRED kind (binary|text) "text">
+  <!ATTLIST payload source ENTITY #IMPLIED>
+  <!ATTLIST file name CDATA #REQUIRED format NOTATION (png|svg) #IMPLIED>
+]>
+<archive>
+  <entry key="e1">
+    <title>Readme</title>
+    <payload/>
+  </entry>
+  <entry key="e2" kind="binary">
+    <title>Cover image</title>
+    <payload source="cover"/>
+  </entry>
+  <manifest>
+    <file name="cover.png" format="png"/>
+    <file name="diagram.svg" format="svg"/>
+    <file name="notes.txt"/>
+  </manifest>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<session xmlns="urn:session" xmlns:x="urn:extension" id="s-9">
+  <open at="2026-09-23T00:00:00Z"/>
+  <event type="message">
+    <x:payload><![CDATA[
+      <not-really-parsed attr="&broken;">
+        raw bytes remain text
+      </not-really-parsed>
+    ]]></x:payload>
+  </event>
+  <event type="state" value="paused">
+    <details>
+      <reason code="42">manual</reason>
+      <counter>0000000000000000000000000000000000000001</counter>
+    </details>
+  </event>
+  <close status="ok"/>
+</session>
+```

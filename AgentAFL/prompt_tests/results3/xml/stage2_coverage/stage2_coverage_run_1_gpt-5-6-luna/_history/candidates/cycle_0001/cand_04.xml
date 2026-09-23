@@ -1,0 +1,15 @@
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ENTITY % parameter "<!ELEMENT injected EMPTY>">
+  %parameter;
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY external SYSTEM "file:///tmp/nonexistent" NDATA bin>
+]>
+<root xmlns="urn:default" xmlns:x="urn:x">
+  <x:node a="1 &amp; 2" b="&#x20;&#65;">
+    <?processing instruction?>
+    <!-- comment with -- oddity -->
+    <injected/>
+    <![CDATA[unclosed-looking ]]> text
+  </x:node>
+</root>

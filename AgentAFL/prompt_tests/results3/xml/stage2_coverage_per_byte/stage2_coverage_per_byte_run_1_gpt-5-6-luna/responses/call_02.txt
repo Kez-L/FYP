@@ -1,0 +1,104 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common "id ID #REQUIRED">
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section %common; kind NMTOKEN "general">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|em|link)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link href URI #IMPLIED>
+  <![IGNORE[
+    <!ELEMENT discarded ANY>
+    <!ENTITY hidden "not expanded">
+  ]]>
+]>
+<catalog>
+  <section id="s1" kind="news">
+    <title><![CDATA[<Updates & Notices>]]></title>
+    <item>Plain <em>emphasized</em> text<link href="urn:x"/>after</item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta, payload)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta
+    xmlns:aux CDATA #FIXED "urn:aux"
+    aux:flag (yes|no) "no"
+    stamp CDATA #IMPLIED>
+  <!ELEMENT payload ANY>
+]>
+<envelope xmlns="urn:main" xmlns:a="urn:a" xmlns:b="urn:b" xml:lang="fr">
+  <meta a:flag="yes" stamp="&#x0D;&#x0A;"/>
+  <payload xmlns="" a:item="&#x2028;" b:item="café">
+    <a:node><!-- adjacent --><![CDATA[data]]><?work value?><![CDATA[]]></a:node>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (record*)>
+  <!ELEMENT record (key, value?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST record state (open|closed|pending) "pending">
+  <!ENTITY open "<marker kind='start'/>">
+  <!ENTITY close "</marker>">
+]>
+<stream>
+  <record state="open">
+    <key>α&amp;β</key>
+    <value>left &open; right</value>
+  </record>
+  <record state="closed">
+    <key>k&#x3C;1</key>
+  </record>
+</stream>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data:application/octet-stream;base64,AAEC" NDATA bin>
+  <!ELEMENT report (header, attachment, tail)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment source ENTITY #REQUIRED>
+  <!ELEMENT tail (#PCDATA)>
+]>
+<report>
+  <header>before<?audit level="verbose"?>after</header>
+  <attachment source="blob"/>
+  <tail><![CDATA[raw ]]> text &apos;after&apos;</tail>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA|subcell)*>
+  <!ELEMENT subcell EMPTY>
+  <!ATTLIST row index NMTOKEN #REQUIRED>
+  <!ATTLIST cell
+    colspan NMTOKEN "1"
+    data CDATA #IMPLIED>
+]>
+<matrix>
+  <row index="001">
+    <cell colspan="2" data="  a&#x9;b  ">first<subcell/>second</cell>
+    <cell><![CDATA[]]><![CDATA[split]]><?cell note?></cell>
+  </row>
+  <row index="002"><cell data="&quot;&#xA;&quot;">&#x1F642;</cell></row>
+</matrix>
+```

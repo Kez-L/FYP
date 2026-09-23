@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ENTITY open "<step state='queued'>">
+  <!ENTITY close "</step>">
+  <!ELEMENT workflow (phase+)>
+  <!ELEMENT phase (title, step+)>
+  <!ATTLIST phase number NMTOKEN #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT step (#PCDATA|owner|command)*>
+  <!ATTLIST step state (queued|running|done|failed) #REQUIRED>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT command (#PCDATA)>
+]>
+<workflow>
+  <phase number="01">
+    <title>Bootstrap</title>
+    &open;
+      <owner>build-bot</owner>
+      <command>configure --with-debug</command>
+    &close;
+    <step state="done">environment verified</step>
+  </phase>
+  <phase number="02">
+    <title>Compile &amp; package</title>
+    <step state="running">
+      <owner>operator</owner>
+      <command><![CDATA[make -j2 && make install]]></command>
+    </step>
+  </phase>
+</workflow>

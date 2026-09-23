@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE broken [
+  <!ENTITY x "one">
+  <!ENTITY y "&x;:&x;">
+  <!ELEMENT broken (head, body)>
+  <!ELEMENT head (#PCDATA)>
+  <!ELEMENT body (line*)>
+  <!ELEMENT line (#PCDATA)>
+  <!ATTLIST line n CDATA #IMPLIED>
+]>
+<broken>
+  <head>&y;&#x0A;tail</head>
+  <body>
+    <line n="1">ok</line>
+    <line n="2"><![CDATA[unterminated-looking ]]> text &unknown;</line>
+    <line n="3">bad &#x110000;</line>
+  </body>
+  <extra>mismatched</broken>

@@ -1,0 +1,133 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+)>
+  <!ELEMENT entry (title,summary?,payload)>
+  <!ATTLIST entry code ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ENTITY company "Northwind &amp; Sons">
+]>
+<archive>
+  <!-- An entry containing mixed content and a CDATA section. -->
+  <entry code="e-17">
+    <title>Release &amp; Recovery</title>
+    <summary>&company; operational notes</summary>
+    <payload>prefix<chunk><![CDATA[<opaque><bytes>00 ff</bytes></opaque>]]></chunk>suffix</payload>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.1"?>
+<r:graph xmlns:r="urn:graph" xmlns:x="urn:vertex" xmlns:y="urn:edge">
+  <r:vertex x:key="v0" x:kind="root"/>
+  <r:vertex x:key="v1" x:kind="leaf">
+    <r:label xml:space="preserve">  spaced
+label  </r:label>
+    <r:property name="threshold" value="1e-9"/>
+  </r:vertex>
+  <r:edge y:from="v0" y:to="v1">
+    <r:weight>0</r:weight>
+    <?trace phase="parse"?>
+  </r:edge>
+  <r:edge y:from="v1" y:to="v0">
+    <r:weight><![CDATA[-9223372036854775808]]></r:weight>
+  </r:edge>
+</r:graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, attachment*)>
+  <!ELEMENT header (from, to, subject)>
+  <!ELEMENT from EMPTY>
+  <!ATTLIST from address CDATA #REQUIRED>
+  <!ELEMENT to EMPTY>
+  <!ATTLIST to address CDATA #REQUIRED>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body ANY>
+  <!ELEMENT attachment (#PCDATA)>
+  <!ATTLIST attachment media CDATA "application/octet-stream">
+]>
+<message>
+  <header>
+    <from address="sender@example.invalid"/>
+    <to address="receiver@example.invalid"/>
+    <subject>Re: &quot;boundary&quot; test</subject>
+  </header>
+  <body>
+    <blockquote cite="urn:quote">
+      Line one
+      <br/>
+      Line two &amp; three
+    </blockquote>
+    <table border="0">
+      <row><cell>α</cell><cell>β</cell></row>
+    </table>
+  </body>
+  <attachment media="text/plain">YWJjZA==</attachment>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:config:v3" xmlns:sec="urn:security">
+  <defaults>
+    <retry count="0" delay="PT0S"/>
+    <limits max-items="18446744073709551615" enabled="false"/>
+  </defaults>
+  <profiles>
+    <profile name="minimal">
+      <include path="/etc/example.conf"/>
+      <exclude path="../cache" recursive="true"/>
+    </profile>
+    <profile name="secure" sec:level="high">
+      <include path="config&#x2F;local"/>
+      <secret><![CDATA[not-expanded-&amp;-data]]></secret>
+    </profile>
+  </profiles>
+  <overrides>
+    <set key="mode">safe</set>
+    <set key="empty"/>
+    <remove key="obsolete"/>
+  </overrides>
+</configuration>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (environment, actor*, event+)>
+  <!ELEMENT environment EMPTY>
+  <!ATTLIST environment weather (clear|rain|snow) "clear">
+  <!ELEMENT actor (name,position?,inventory?)>
+  <!ATTLIST actor ref ID #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT position EMPTY>
+  <!ATTLIST position x CDATA #REQUIRED y CDATA #REQUIRED z CDATA #IMPLIED>
+  <!ELEMENT inventory (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item id ID #IMPLIED>
+  <!ELEMENT event (#PCDATA|move|say)*>
+  <!ELEMENT move EMPTY>
+  <!ATTLIST move actor IDREF #REQUIRED to IDREF #IMPLIED>
+  <!ELEMENT say (#PCDATA)>
+]>
+<scene>
+  <environment weather="rain"/>
+  <actor ref="hero">
+    <name>Rin</name>
+    <position x="-0.0" y="4" z=""/>
+    <inventory>
+      <item id="potion">red &lt; vial</item>
+      <item/>
+    </inventory>
+  </actor>
+  <event>begin<move actor="hero" to="hero"/><say>Wait…</say>end</event>
+  <event><?checkpoint?><say><![CDATA[echo &lt; raw]]></say></event>
+</scene>
+```

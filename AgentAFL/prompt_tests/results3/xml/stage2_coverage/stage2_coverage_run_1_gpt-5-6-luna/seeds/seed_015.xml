@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (warehouse+, audit?)>
+  <!ELEMENT warehouse (label, shelf*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT shelf (bin+)>
+  <!ELEMENT bin (sku, quantity, description?)>
+  <!ELEMENT sku (#PCDATA)>
+  <!ELEMENT quantity (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT audit EMPTY>
+  <!ATTLIST warehouse id ID #REQUIRED region (north|south|east|west) "north">
+  <!ATTLIST shelf number CDATA #IMPLIED>
+  <!ATTLIST bin ref ID #IMPLIED state (new|used|held) "new">
+  <!ATTLIST audit checked IDREF #IMPLIED>
+  <!ENTITY company "Example &amp; Sons">
+  <!ENTITY mark "™">
+  <!ENTITY phrase "stock &company; &mark;">
+]>
+<inventory>
+  <warehouse id="w1" region="east">
+    <label>&company; — &quot;Central&quot;</label>
+    <shelf number="A&amp;1">
+      <bin ref="b1" state="new">
+        <sku>B-001</sku>
+        <quantity>0007</quantity>
+        <description>sealed <em>premium</em> <code>BX&amp;7</code></description>
+      </bin>
+      <bin ref="b2">
+        <sku>B-002</sku>
+        <quantity>12</quantity>
+        <description><![CDATA[fragile <glass> & keep dry]]></description>
+      </bin>
+    </shelf>
+  </warehouse>
+  <warehouse id="w2" region="west">
+    <label>&phrase;</label>
+    <shelf number="Ω">
+      <bin ref="b3" state="held">
+        <sku>B-003</sku>
+        <quantity>1</quantity>
+      </bin>
+    </shelf>
+  </warehouse>
+  <audit checked="b2"/>
+</inventory>
