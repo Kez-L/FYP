@@ -1,0 +1,111 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, metadata?)>
+  <!ELEMENT entry (title, price?, description?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emph|link)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST entry code ID #REQUIRED status (new|old|archived) "new">
+  <!ATTLIST link href CDATA #IMPLIED>
+  <!ENTITY company "A &amp; B Holdings">
+]>
+<catalog>
+  <entry code="e1" status="archived">
+    <title>&company; &lt;annual&gt;</title>
+    <price>19.95</price>
+    <description>Text <emph>with emphasis</emph> and <link href="urn:x">a link</link>.</description>
+  </entry>
+  <entry code="e2">
+    <title><![CDATA[Unescaped ]]> marker]]></title>
+    <metadata/>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<r xmlns="urn:default" xmlns:a="urn:a" xmlns:b="urn:b" a:id="42">
+  <a:group b:kind="mixed">
+    <b:item a:flag="yes"/>
+    <item xml:lang="fr">
+      <![CDATA[alpha < beta && gamma > delta]]>
+    </item>
+    <a:item>
+      <nested xmlns=""/>
+      <nested xmlns:a="urn:shadow" a:x="q"/>
+    </a:item>
+  </a:group>
+  <tail xmlns:a="">
+    <value>001&#x0A;002</value>
+  </tail>
+</r>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope ANY>
+  <!ENTITY left "<part role='open'>">
+  <!ENTITY right "</part>">
+  <!ENTITY quote "&quot;&apos;&amp;&lt;&gt;">
+  <!ENTITY % injected "<!ATTLIST part level CDATA 'implicit'>">
+  %injected;
+]>
+<envelope>
+  &left;
+  <part level="explicit">inside &quote;</part>
+  &right;
+  <part><![CDATA[raw ]]> text ]]> trailing</part>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (node*)>
+  <!ELEMENT node (key, value|node)*>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST node id ID #IMPLIED ref IDREF #IMPLIED>
+]>
+<map>
+  <node id="root">
+    <key>root</key>
+    <node id="child" ref="root">
+      <key>child</key>
+      <value>first</value>
+      <value><![CDATA[second]]></value>
+    </node>
+    <node ref="missing">
+      <key>orphan</key>
+      <value>5 &lt; 9</value>
+    </node>
+  </node>
+  <node id="leaf"><key>leaf</key></node>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE batch [
+  <!ELEMENT batch (job*)>
+  <!ELEMENT job (input, output?)>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT output (#PCDATA)>
+  <!ATTLIST job priority NMTOKEN #IMPLIED enabled (true|false) "true">
+]>
+<batch>
+  <job priority="007" enabled="false">
+    <input>file:///tmp/a&amp;b.txt</input>
+    <output>ok&#13;&#10;done</output>
+  </job>
+  <job priority="high">
+    <input><![CDATA[&not-an-entity; <payload/>]]></input>
+  </job>
+  <job enabled="maybe">
+    <input>unterminated
+</batch>
+```

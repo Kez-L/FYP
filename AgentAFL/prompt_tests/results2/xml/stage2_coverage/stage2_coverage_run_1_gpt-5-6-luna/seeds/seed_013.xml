@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % common "(alpha|beta|gamma)">
+  <!ENTITY % attrs "<!ATTLIST root mode (strict|loose) 'strict'>">
+  %attrs;
+  <!ELEMENT root (%common;)+>
+  <!ELEMENT alpha (#PCDATA)>
+  <!ELEMENT beta (leaf*)>
+  <!ELEMENT gamma EMPTY>
+  <!ELEMENT leaf (#PCDATA)>
+  <!ENTITY quote "&#34;">
+  <![IGNORE[
+    <!ELEMENT discarded EMPTY>
+    <!ENTITY hidden "not expanded">
+  ]]>
+  <![INCLUDE[
+    <!ELEMENT included EMPTY>
+    <!ATTLIST included mark CDATA #IMPLIED>
+  ]]>
+]>
+<root mode="loose">
+  <alpha>A &quote;quoted&quote; value</alpha>
+  <beta>
+    <leaf>nested-1</leaf>
+    <leaf><![CDATA[nested-2]]></leaf>
+  </beta>
+  <gamma/>
+  <included mark="from-conditional-section"/>
+  <alpha>tail</alpha>
+</root>

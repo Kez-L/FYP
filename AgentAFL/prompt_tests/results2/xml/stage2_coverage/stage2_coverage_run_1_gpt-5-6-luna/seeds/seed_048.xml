@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (chunk*)>
+  <!ELEMENT chunk (#PCDATA|![CDATA[not-a-markup-token]]|newline)*>
+  <!ELEMENT newline EMPTY>
+  <!ATTLIST chunk
+    sequence NMTOKEN #REQUIRED
+    checksum CDATA #IMPLIED>
+  <!ENTITY open "[[">
+  <!ENTITY close "]]">
+  <!ENTITY quote "&quot;">
+]>
+<stream>
+  <chunk sequence="001" checksum="0x00">alpha &amp; beta</chunk>
+  <chunk sequence="002">before <![CDATA[<literal>&unexpanded;</literal>]]> after</chunk>
+  <newline/>
+  <chunk sequence="003"><![CDATA[
+    ]]> split ]]> marker &open;payload&close;</chunk>
+  <chunk sequence="004" checksum="&quote;odd&amp;even&quot;">
+    line one
+    <newline/>
+    line two
+  </chunk>
+</stream>

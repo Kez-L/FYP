@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ENTITY % external SYSTEM "http://invalid.example/entities.dtd">
+  <!ENTITY % local "<!ATTLIST envelope xmlns:p CDATA #IMPLIED p:flag CDATA #IMPLIED>">
+  %local;
+  <!ELEMENT envelope (p:message, attachment*)>
+  <!ELEMENT p:message (p:from, p:to+, p:body)>
+  <!ELEMENT p:from (#PCDATA)>
+  <!ELEMENT p:to (#PCDATA)>
+  <!ELEMENT p:body (#PCDATA|p:quote|p:br)*>
+  <!ELEMENT p:quote (#PCDATA|p:br)*>
+  <!ELEMENT p:br EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment
+    href URI #REQUIRED
+    format NOTATION #IMPLIED>
+]>
+<envelope xmlns:p="urn:proto" p:flag="yes">
+  <p:message>
+    <p:from>sender@example.invalid</p:from>
+    <p:to>one@example.invalid</p:to>
+    <p:to>two@example.invalid</p:to>
+    <p:body>Hello<p:quote>quoted <p:br/> text</p:quote>after</p:body>
+  </p:message>
+  <attachment href="data:text/plain,one%00two" format="missing"/>
+</envelope>

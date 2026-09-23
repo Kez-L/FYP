@@ -1,0 +1,84 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:books" xmlns:meta="urn:metadata">
+  <book id="b-17" meta:status="draft">
+    <title><![CDATA[Angles <and> ampersands & safely]]></title>
+    <authors>
+      <author>
+        <given>Zoë</given>
+        <family>Ng</family>
+      </author>
+      <author>
+        <given>Иван</given>
+        <family>Petrov</family>
+      </author>
+    </authors>
+    <price currency="EUR">12.50</price>
+  </book>
+</catalog>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ENTITY intro "Quarterly &amp; internal">
+  <!ENTITY note "line-one&#10;line-two">
+]>
+<report>
+  <header>
+    <subject>&intro;</subject>
+    <message>&note;</message>
+  </header>
+  <sections>
+    <section name="alpha"><item>one</item><item>two</item></section>
+    <section name="beta"><item><![CDATA[x]]></item></section>
+  </sections>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<?build mode="fuzz"?>
+<!-- comment before the document element -->
+<scene xmlns:p="urn:props">
+  <p:node p:key="a&amp;b">
+    text
+    <p:node p:key="quoted&apos;">
+      <![CDATA[raw ]]> data
+    </p:node>
+  </p:node>
+  <!-- trailing element comment -->
+</scene>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ENTITY writer "Ada">
+  <!ENTITY stamp "2026-09-22T00:00:00Z">
+]>
+<envelope>
+  <metadata>
+    <created by="&writer;">&stamp;</created>
+  </metadata>
+  <payload>
+    <record>
+      <field name="empty"/>
+      <field name="whitespace">   </field>
+      <field name="symbols">&lt;tag&gt; &quot;value&quot; &apos;x&apos;</field>
+    </record>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <level1>
+    <level2>
+      <level3><![CDATA[unterminated-looking ]]]></level3>
+      <level3 attr="a&#x0A;b">mixed <b>content</b> tail</level3>
+    </level2>
+  </level1>
+  <empty></empty>
+  <tail xmlns:x="urn:x" x:a="1" x:b="2"/>
+</root>
+```

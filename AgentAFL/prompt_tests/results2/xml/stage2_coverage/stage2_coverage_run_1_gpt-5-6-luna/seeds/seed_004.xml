@@ -1,0 +1,26 @@
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file name CDATA #REQUIRED
+                checksum CDATA #IMPLIED
+                role (source|resource|unknown) "resource">
+  <!ELEMENT data (block*)>
+  <!ELEMENT block (#PCDATA|part)*>
+  <!ATTLIST block id ID #IMPLIED>
+  <!ELEMENT part (#PCDATA)>
+  <!ATTLIST part file IDREF #IMPLIED>
+  <!ENTITY intro "begin">
+  <!ENTITY nested "&intro;:package">
+]>
+<package xml:base="https://example.invalid/archive/">
+  <manifest>
+    <file name="main.bin" checksum="sha256:00" role="source"/>
+    <file name="space &quot; map" role="resource"/>
+  </manifest>
+  <data>
+    <block id="b0">&nested;<part file="b0">payload</part><![CDATA[
+      binary-like: \x00 \xff
+    ]]></block>
+  </data>
+</package>

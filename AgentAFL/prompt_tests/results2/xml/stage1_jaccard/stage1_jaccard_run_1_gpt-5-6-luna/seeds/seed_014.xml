@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pipeline [
+  <!ELEMENT pipeline (stage, checkpoint?, stage*)>
+  <!ELEMENT stage (input*, transform*, output?)>
+  <!ATTLIST stage name NMTOKEN #REQUIRED depends IDREFS #IMPLIED>
+  <!ELEMENT input EMPTY>
+  <!ATTLIST input path CDATA #REQUIRED format (xml|json|raw) "raw">
+  <!ELEMENT transform (parameter*)>
+  <!ATTLIST transform class CDATA #REQUIRED enabled (true|false) "true">
+  <!ELEMENT parameter (#PCDATA)>
+  <!ATTLIST parameter key CDATA #REQUIRED>
+  <!ELEMENT output EMPTY>
+  <!ATTLIST output path CDATA #REQUIRED overwrite (yes|no) "no">
+  <!ELEMENT checkpoint EMPTY>
+  <!ATTLIST checkpoint at CDATA #IMPLIED>
+  <!ENTITY percent "&#37;">
+  <!ENTITY config "mode=&quot;safe&quot; retry=&percent;3">
+]>
+<pipeline>
+  <stage name="ingest">
+    <input path="/tmp/in&amp;put.xml" format="xml"/>
+    <transform class="normalize">
+      <parameter key="flags">&config;</parameter>
+      <parameter key="pattern"><![CDATA[(a|b)+?\\z]]></parameter>
+    </transform>
+    <output path="build/normalized.xml" overwrite="yes"/>
+  </stage>
+  <checkpoint at="post-normalize"/>
+  <stage name="export" depends="ingest">
+    <input path="-" format="raw"/>
+    <transform class="emit" enabled="false"/>
+    <output path="out/result.dat"/>
+  </stage>
+</pipeline>

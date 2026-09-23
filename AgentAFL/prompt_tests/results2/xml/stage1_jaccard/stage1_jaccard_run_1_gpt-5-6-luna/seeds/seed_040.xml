@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE museum [
+  <!ELEMENT museum (room+)>
+  <!ELEMENT room (label,artifact*,caption?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT artifact (#PCDATA|link|mark)*>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ATTLIST museum xml:base CDATA #IMPLIED>
+  <!ATTLIST room number NMTOKEN #REQUIRED climate (dry|humid|cold) "dry">
+  <!ATTLIST artifact ref ID #IMPLIED source ENTITY #IMPLIED>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!NOTATION sketch SYSTEM "application/x-sketch">
+  <!ENTITY plan SYSTEM "plans/wing-a.sketch" NDATA sketch>
+  <!ENTITY ampersand "&#38;">
+  <!ENTITY quoted "&quot;inside&quot;">
+]>
+<?museum mode="night"?>
+<museum xmlns="urn:archive:rooms" xml:base="https://example.invalid/archive/">
+  <room number="A-0" climate="humid">
+    <label>Flooded Gallery</label>
+    <artifact ref="item-1" source="plan">stone &amp; &quoted;</artifact>
+    <artifact ref="item-1"><mark><![CDATA[raw <angle> & symbols]]></mark><link href="urn:item:1"/></artifact>
+    <caption>Use &amp;ampersand; only in prose.</caption>
+  </room>
+  <room number="B-7">
+    <label>Uncatalogued</label>
+    <artifact ref="item-2">&amp; &lt; &gt; &#x41; &#65;</artifact>
+  </room>
+</museum>

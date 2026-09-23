@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ENTITY % pieces "(summary?, detail*, footer?)">
+  <!ELEMENT report %pieces;>
+  <!ELEMENT summary (#PCDATA|mark)*>
+  <!ELEMENT detail (title, data, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT data (#PCDATA|entry|mark)*>
+  <!ELEMENT entry EMPTY>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT note (#PCDATA|mark)*>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST detail
+    code ID #REQUIRED
+    priority (low|medium|high) #IMPLIED>
+  <!ATTLIST entry
+    name CDATA #REQUIRED
+    value CDATA #IMPLIED
+    type (text|number|date) "text">
+  <!ENTITY amp "&amp;">
+  <!ENTITY malformed "x &amp; y &#x110000;">
+]>
+<report>
+  <summary>overview <mark level="1">highlight</mark></summary>
+  <detail code="d1" priority="high">
+    <title>First</title>
+    <data>
+      <entry name="count" value="18446744073709551616" type="number"/>
+      <mark>embedded</mark>
+      <![CDATA[raw ]]>&amp; <![CDATA[tail]]>
+    </data>
+    <note>note &amp; <mark>nested</mark></note>
+  </detail>
+  <detail code="d2">
+    <title>Second</title>
+    <data><entry name="empty" value=""/><entry name="broken"></entry></data>
+  </detail>
+  <footer>&amp; &lt; &gt; &#0;</footer>
+</report>

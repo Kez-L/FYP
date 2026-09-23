@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE workspace [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY logo SYSTEM "missing-logo.bin" NDATA bin>
+  <!ENTITY % nodeDecl "<!ELEMENT node (name, value?, node*)>">
+  %nodeDecl;
+  <!ELEMENT workspace (header, node*)>
+  <!ELEMENT header (#PCDATA|meta|![CDATA[section]]|node)*>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA|ref)*>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST workspace
+    version CDATA "0"
+    logo ENTITY #IMPLIED>
+  <!ATTLIST node
+    key ID #IMPLIED
+    parent IDREF #IMPLIED
+    mode (leaf|branch|unknown) "leaf">
+  <!ATTLIST ref target IDREF #REQUIRED>
+]>
+<workspace version="1.0" logo="logo">
+  <header>start<meta/><![CDATA[x < y & z]]><node key="ghost"><name>nested</name></node></header>
+  <node key="root" mode="branch">
+    <name>α &amp; β</name>
+    <value><ref target="root"/></value>
+    <node parent="root"><name>child</name><value>tail</value></node>
+  </node>
+</workspace>

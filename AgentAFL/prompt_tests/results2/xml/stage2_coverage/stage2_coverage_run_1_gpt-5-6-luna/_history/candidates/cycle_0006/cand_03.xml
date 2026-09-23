@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (header, widget+, footer?)>
+  <!ELEMENT header (label,updated)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT updated (#PCDATA)>
+  <!ELEMENT widget (caption, value, details?)>
+  <!ATTLIST widget id ID #REQUIRED type (gauge|sparkline|alert) #REQUIRED>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT value (#PCDATA|unit|emphasis)*>
+  <!ELEMENT unit EMPTY>
+  <!ATTLIST unit code NMTOKEN #REQUIRED>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT details (line*)>
+  <!ELEMENT line (#PCDATA|link)*>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link href URI #IMPLIED rel CDATA #IMPLIED>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY product "Orion">
+  <!ENTITY status "nominal">
+]>
+<dashboard xmlns="urn:example:dashboard"
+           xmlns:x="urn:example:extra"
+           xml:base="https://example.invalid/telemetry/"
+           xml:lang="en">
+  <header>
+    <label>&product; control&nbsp;center</label>
+    <updated>2026-09-22T10:15:00Z</updated>
+  </header>
+  <widget id="w-temp" type="gauge">
+    <caption>ambient temperature</caption>
+    <value>21.5<unit code="C"/></value>
+    <details>
+      <line>steady <emphasis>&status;</emphasis></line>
+      <line><link href="sensors/temp" rel="source"/>calibrated</line>
+    </details>
+  </widget>
+  <widget id="w-load" type="sparkline">
+    <caption><x:label>CPU load</x:label></caption>
+    <value>0.42<unit code="ratio"/></value>
+  </widget>
+  <widget id="w-warning" type="alert">
+    <caption>maintenance window</caption>
+    <value><emphasis>scheduled</emphasis></value>
+  </widget>
+  <footer>© Orion / <x:contact>ops@example.invalid</x:contact></footer>
+</dashboard>

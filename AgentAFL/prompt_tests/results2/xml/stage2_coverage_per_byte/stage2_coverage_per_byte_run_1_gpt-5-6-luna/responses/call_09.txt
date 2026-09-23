@@ -1,0 +1,127 @@
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, note?)>
+  <!ELEMENT entry (title, value, tag*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT value (#PCDATA|em|br)*>
+  <!ELEMENT tag EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST catalog version CDATA #REQUIRED>
+  <!ATTLIST entry id ID #REQUIRED status (new|old|held) "new">
+  <!ATTLIST tag key NMTOKEN #REQUIRED>
+  <!ENTITY mark "&#x2603;">
+]>
+<catalog version="2">
+  <!-- an intentionally mixed-content record -->
+  <entry id="e1" status="held">
+    <title>Résumé &amp; &quot;notes&quot;</title>
+    <value>left<em>center</em>right<br/>tail &mark;</value>
+    <tag key="alpha"/>
+    <tag key="βeta"/>
+  </entry>
+  <note><![CDATA[raw brackets: [a < b] and quotes]]></note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:assembly xmlns:r="urn:parts:root" xmlns:x="urn:parts:extra" xml:lang="fr">
+  <?build mode="incremental"?>
+  <r:header x:code="A&#x2F;7" xml:space="preserve">
+    <r:name>élément</r:name>
+    <r:stamp>2026-09-22T12:34:56Z</r:stamp>
+  </r:header>
+  <r:body>
+    <x:item>
+      <x:field name="one">1</x:field>
+      <x:field name="two"><![CDATA[<&>]]></x:field>
+    </x:item>
+    <r:item id="last"/>
+  </r:body>
+  <r:footer><!-- deliberately empty --></r:footer>
+</r:assembly>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ENTITY % pair "(key, value)">
+  <!ELEMENT map (pairset, comment?)>
+  <!ELEMENT pairset (pair+)>
+  <!ELEMENT pair %pair;>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|list)*>
+  <!ELEMENT list (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT comment (#PCDATA)>
+  <!ATTLIST pair kind (scalar|compound) "scalar">
+  <!ATTLIST item n NMTOKEN #IMPLIED>
+]>
+<map>
+  <pairset>
+    <pair kind="scalar">
+      <key>path</key>
+      <value>/var/tmp</value>
+    </pair>
+    <pair kind="compound">
+      <key>options</key>
+      <value>
+        <list>
+          <item n="0">fast</item>
+          <item n="1">safe</item>
+          <item n="2"/>
+        </list>
+      </value>
+    </pair>
+  </pairset>
+  <comment>after the final pair</comment>
+</map>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section|separator)+>
+  <!ELEMENT section (heading, data)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT data (#PCDATA|line|ref)*>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT separator EMPTY>
+  <!ATTLIST section number ID #REQUIRED>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ATTLIST separator style (thin|thick) #IMPLIED>
+  <!ENTITY intro "alpha &amp; omega">
+  <!ENTITY quoted "&quot;quoted&quot;">
+]>
+<report>
+  <section number="sA">
+    <heading>&intro;</heading>
+    <data>
+      first<line>second&#x0A;third</line>
+      <ref target="sA"/>end &quoted;
+    </data>
+  </section>
+  <separator style="thick"/>
+  <section number="sB">
+    <heading>Δ</heading>
+    <data><![CDATA[less-than: <, greater-than: >, ampersand: &]]></data>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE broken [
+  <!ELEMENT broken (a, b)>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b EMPTY>
+  <!ATTLIST b flag CDATA #IMPLIED>
+]>
+<broken>
+  <a attr="one &amp; two" attr2="&#x41;">text<![CDATA[unfinished-looking ]]]></a>
+  <b flag="x"/>
+  <?late instruction?>
+</broken>
+```

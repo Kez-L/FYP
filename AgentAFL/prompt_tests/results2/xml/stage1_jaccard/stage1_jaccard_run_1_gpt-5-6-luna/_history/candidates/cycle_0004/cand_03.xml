@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE frame [
+  <!ELEMENT frame (meta?, stream)>
+  <!ELEMENT meta (kv*)>
+  <!ELEMENT kv EMPTY>
+  <!ELEMENT stream (packet*)>
+  <!ELEMENT packet (data | checksum | data)*>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST kv key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST packet seq NMTOKEN #REQUIRED>
+  <!ATTLIST data encoding (hex|raw) "raw">
+  <!ENTITY amp "&amp;">
+]>
+<frame>
+  <meta>
+    <kv key="mode" value="burst"/>
+    <kv key="window" value="0"/>
+  </meta>
+  <stream>
+    <packet seq="000">
+      <data encoding="hex">00ff7e</data>
+      <checksum>deadbeef</checksum>
+      <data>left &amp; right &amp; &amp;amp;</data>
+    </packet>
+    <packet seq="001"><data><![CDATA[abc]]></data><checksum/></packet>
+  </stream>
+</frame>

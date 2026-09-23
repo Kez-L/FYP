@@ -1,0 +1,121 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|link|note)*>
+  <!ATTLIST item ref IDREF #IMPLIED state (new|old|archived) "new">
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target CDATA #REQUIRED>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY label "catalog-entry">
+]>
+<catalog>
+  <section code="s-alpha">
+    <title>&label; &amp; index</title>
+    <item ref="s-alpha" state="old">first<link target="urn:x"/>second<note><![CDATA[a < b && c > d]]></note></item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header (stamp, flag?)>
+  <!ELEMENT stamp (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST flag enabled (yes|no) "yes">
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|chunk)*>
+  <!ATTLIST chunk depth NMTOKEN #IMPLIED>
+]>
+<envelope xmlns="urn:envelope:main" xmlns:x="urn:envelope:aux">
+  <header><stamp>2026-09-22T00:00:00Z</stamp><flag enabled="no"/></header>
+  <payload>
+    <chunk depth="0">outer<chunk depth="1">inner<chunk>leaf</chunk></chunk></chunk>
+  </payload>
+</envelope>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ELEMENT report (meta, body, footer)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta xmlns:r CDATA #FIXED "urn:report"
+                r:version NMTOKEN #REQUIRED
+                generated CDATA #IMPLIED>
+  <!ELEMENT body (entry*)>
+  <!ELEMENT entry (value, value?, details?)>
+  <!ATTLIST entry key CDATA #REQUIRED>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT details (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY open "<em>">
+  <!ENTITY close "</em>">
+]>
+<report>
+  <meta r:version="v2" generated="yes"/>
+  <body>
+    <entry key="k&amp;1"><value>42</value><details>&open;marked&close;<br/>tail</details></entry>
+    <entry key="empty"><value></value></entry>
+  </body>
+  <footer><![CDATA[raw ]]> text &lt;end&gt;</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ATTLIST row index (zero|one|two) #REQUIRED>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST cell x CDATA #IMPLIED y CDATA #IMPLIED kind (text|number|empty) "text">
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<matrix xmlns:m="urn:matrix">
+  <row index="zero">
+    <cell x="0" y="0" kind="text">&left;alpha&#x20;beta&right;</cell>
+    <cell x="1" y="0" kind="number">0007</cell>
+  </row>
+  <row index="one">
+    <cell x="0" y="1" kind="empty"/>
+    <cell x="1" y="1"><![CDATA[<not-an-element/>]]></cell>
+  </row>
+</matrix>
+```
+
+```xml
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file name CDATA #REQUIRED
+                checksum CDATA #IMPLIED
+                role (source|resource|unknown) "resource">
+  <!ELEMENT data (block*)>
+  <!ELEMENT block (#PCDATA|part)*>
+  <!ATTLIST block id ID #IMPLIED>
+  <!ELEMENT part (#PCDATA)>
+  <!ATTLIST part file IDREF #IMPLIED>
+  <!ENTITY intro "begin">
+  <!ENTITY nested "&intro;:package">
+]>
+<package xml:base="https://example.invalid/archive/">
+  <manifest>
+    <file name="main.bin" checksum="sha256:00" role="source"/>
+    <file name="space &quot; map" role="resource"/>
+  </manifest>
+  <data>
+    <block id="b0">&nested;<part file="b0">payload</part><![CDATA[
+      binary-like: \x00 \xff
+    ]]></block>
+  </data>
+</package>
+```

@@ -1,0 +1,127 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ENTITY % common "id ID #IMPLIED category NMTOKENS #IMPLIED">
+  <!ELEMENT archive (record+, trailer?)>
+  <!ELEMENT record (title, body, link*)>
+  <!ATTLIST record %common; status (new|held|closed) "new">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link href URI #REQUIRED rel CDATA "related">
+  <!ELEMENT trailer (#PCDATA)>
+  <!ENTITY notice "Use &lt;record&gt; elements only.">
+]>
+<archive>
+  <record id="r-7" category="alpha beta" status="held">
+    <title>First &amp; Final</title>
+    <body>Text <em>with emphasis</em><br/><code>a&lt;b</code>.</body>
+    <link href="urn:item:7"/>
+  </record>
+  <record category="gamma">
+    <title>Second</title>
+    <body>&notice;</body>
+  </record>
+  <trailer>done</trailer>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<warehouse xmlns="urn:warehouse" xmlns:x="urn:extra" xml:lang="en">
+  <zone code="A">
+    <bin x:kind="cold" xml:space="preserve">
+      <![CDATA[raw <label> & untouched]]>
+      <label> A-01 </label>
+      <item sku="K9">
+        <name>Nut</name>
+        <quantity unit="pcs">00012</quantity>
+      </item>
+    </bin>
+    <bin xmlns="" code="unqualified">
+      <note xml:lang="fr">réserve</note>
+    </bin>
+  </zone>
+  <?audit level="verbose"?>
+  <zone code="B">
+    <bin><item sku="Q2"><name>Washer</name><quantity unit="kg">1.25</quantity></item></bin>
+  </zone>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, payload)>
+  <!ELEMENT header (from, to, subject?)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ATTLIST part type (text|binary|unknown) "text">
+  <!ENTITY quoted "&#34;quoted&#34;">
+]>
+<message>
+  <header>
+    <from>sender@example.test</from>
+    <to>receiver@example.test</to>
+    <subject>&quoted;</subject>
+  </header>
+  <payload>prefix<part type="text">line one&#x0A;line two</part>suffix</payload>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section*)>
+  <!ELEMENT section (heading?, entry*)>
+  <!ATTLIST section name CDATA #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry key CDATA #REQUIRED value CDATA #IMPLIED flag (yes|no) "no">
+  <!ENTITY amp "&#38;">
+  <!ENTITY nested "left-&amp;-right">
+]>
+<report>
+  <section name="empty"/>
+  <section name="metrics">
+    <heading>Totals</heading>
+    <entry key="count" value="42" flag="yes"/>
+    <entry key="ratio" value="0.00"/>
+    <entry key="literal" value="&lt;not-an-element&gt;"/>
+  </section>
+  <section name="mixed">
+    <heading>Names &amp; Values</heading>
+    <entry key="entity" value="&nested;"/>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE form [
+  <!ELEMENT form (field | group)+>
+  <!ELEMENT group (field*)>
+  <!ATTLIST group label CDATA #IMPLIED>
+  <!ELEMENT field (#PCDATA|option)*>
+  <!ATTLIST field name CDATA #REQUIRED kind (text|select|flag) "text" required (true|false) "false">
+  <!ELEMENT option (#PCDATA)>
+  <!ATTLIST option value CDATA #REQUIRED selected (true|false) "false">
+]>
+<form>
+  <group label="account">
+    <field name="user" required="true">alice</field>
+    <field name="mode" kind="select">
+      <option value="a">A</option>
+      <option value="b" selected="true">B &amp; B</option>
+    </field>
+  </group>
+  <field name="enabled" kind="flag">true</field>
+  <field name="comment"><![CDATA[unclosed-looking ]]]]><![CDATA[> text]]></field>
+</form>
+```

@@ -1,0 +1,210 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (header,entry*,footer)>
+  <!ELEMENT header (title,generated,summary?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated EMPTY>
+  <!ELEMENT summary (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT entry (label,value,note?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA|em|code|![CDATA[]])>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST ledger xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST generated when CDATA #REQUIRED zone CDATA #IMPLIED>
+  <!ATTLIST entry code ID #REQUIRED refs IDREFS #IMPLIED status (open|closed|held) "open">
+  <!ATTLIST value unit CDATA #IMPLIED>
+  <!ENTITY euro "&#x20AC;">
+  <!ENTITY amp "&amp;">
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY attachment SYSTEM "payload.bin" NDATA binary>
+]>
+<?audit level="verbose"?>
+<ledger xml:lang="en">
+  <header>
+    <title>Quarterly &amp; provisional</title>
+    <generated when="2026-09-22T00:00:00Z" zone="UTC"/>
+    <summary>Use <em>carefully</em> and <code>validate</code> &euro;</summary>
+  </header>
+  <entry code="e1" status="closed" refs="e2 e3">
+    <label>alpha</label>
+    <value unit="currency"><![CDATA[12 < 14 && 18 > 7]]></value>
+    <note>literal &amp; escaped</note>
+  </entry>
+  <entry code="e2" status="held">
+    <label>beta</label>
+    <value unit="count">0</value>
+  </entry>
+  <entry code="e3" status="open">
+    <label>gamma</label>
+    <value unit="file">attachment.bin</value>
+  </entry>
+  <footer>completion marker</footer>
+</ledger>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ENTITY % declarations '
+    <!ELEMENT dashboard (config,stream,alert*)>
+    <!ELEMENT config EMPTY>
+    <!ATTLIST config mode (cold|warm|hot) "warm" threshold CDATA #IMPLIED>
+    <!ELEMENT stream (packet+)>
+    <!ELEMENT packet (#PCDATA|field)*>
+    <!ELEMENT field (#PCDATA)>
+    <!ATTLIST packet seq NMTOKEN #REQUIRED>
+    <!ATTLIST field name CDATA #REQUIRED kind (text|number|flag) "text">
+    <!ELEMENT alert (message,action?)>
+    <!ELEMENT message (#PCDATA)>
+    <!ELEMENT action EMPTY>
+    <!ATTLIST action target CDATA #REQUIRED>
+  '>
+  %declarations;
+  <!ENTITY % enabled "INCLUDE">
+  <![%enabled;[
+    <!ELEMENT feature EMPTY>
+    <!ATTLIST feature name CDATA #REQUIRED>
+  ]]>
+  <![IGNORE[
+    <!ELEMENT discarded (never)>
+    <!ELEMENT never EMPTY>
+  ]]>
+  <!ENTITY tick "&#x2713;">
+  <!ENTITY payload "left &amp; right &lt;edge&gt;">
+]>
+<dashboard>
+  <?mode name="streaming"?>
+  <config mode="hot" threshold="&#x3C;=42"/>
+  <stream>
+    <packet seq="0001"><field name="kind" kind="text">start</field><field name="ok" kind="flag">&tick;</field></packet>
+    <packet seq="0002">prefix<field name="value" kind="number">17</field>suffix</packet>
+  </stream>
+  <alert><message>&payload;</message><action target="console"/></alert>
+  <feature name="late"/>
+</dashboard>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest,content,signature)>
+  <!ELEMENT manifest (item+)>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item path CDATA #REQUIRED kind (text|binary|link) #REQUIRED size NMTOKEN #IMPLIED>
+  <!ELEMENT content (section|line|ref)*>
+  <!ELEMENT section (line|section|ref)*>
+  <!ATTLIST section name CDATA #IMPLIED level NMTOKEN #IMPLIED>
+  <!ELEMENT line (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref id ID #REQUIRED>
+  <!ELEMENT signature (#PCDATA)>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+  <!ENTITY nested "&left;inside&right;" >
+]>
+<package xml:base="urn:archive:2026">
+  <manifest>
+    <item path="README" kind="text" size="0012"/>
+    <item path="bin/data" kind="binary" size="0000"/>
+    <item path="current" kind="link"/>
+  </manifest>
+  <content>
+    <section name="outer" level="1">
+      <line>one <mark>highlighted</mark> line</line>
+      <section name="inner" level="2">
+        <line>&nested; &#x85; &#x2028;</line>
+        <ref id="anchor"/>
+      </section>
+      <line>tail after nesting</line>
+    </section>
+    <ref id="second"/>
+  </content>
+  <signature><![CDATA[-----BEGIN SIGNATURE-----
+a+b/c==
+-----END SIGNATURE-----]]></signature>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (layer+)>
+  <!ELEMENT layer (group|shape|use|text)*>
+  <!ATTLIST layer name CDATA #REQUIRED visible (true|false) "true">
+  <!ELEMENT group (group|shape|use|text)*>
+  <!ATTLIST group transform CDATA #IMPLIED>
+  <!ELEMENT shape EMPTY>
+  <!ATTLIST shape id ID #IMPLIED type (rect|circle|path|line) #REQUIRED data CDATA #IMPLIED>
+  <!ELEMENT use EMPTY>
+  <!ATTLIST use ref IDREF #REQUIRED opacity NMTOKEN #IMPLIED>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST text align (left|center|right) "left">
+  <!ENTITY mark "<text align='center'>A &amp; B</text>">
+]>
+<scene xmlns="urn:scene" xmlns:g="urn:graphic" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <layer name="background" visible="false">
+    <g:shape id="back" type="rect" data="0,0,640,480"/>
+  </layer>
+  <layer name="foreground">
+    <group transform="translate(4.5,-2)">
+      <shape id="circle1" type="circle" data="32,32,8"/>
+      <use ref="circle1" opacity="0.50"/>
+      &mark;
+      <text align="right">x &lt; y &amp;&amp; y &gt; z</text>
+    </group>
+    <g:group>
+      <g:shape type="path" data="M0 0 L1 1 Z"/>
+    </g:group>
+  </layer>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE exchange [
+  <!ELEMENT exchange (request,response?,fault?)>
+  <!ELEMENT request (header*,body)>
+  <!ELEMENT response (header*,body)>
+  <!ELEMENT fault (code,detail?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ATTLIST header name NMTOKEN #REQUIRED>
+  <!ELEMENT body (#PCDATA|part|binary)*>
+  <!ELEMENT part (body)>
+  <!ATTLIST part media CDATA #IMPLIED boundary NMTOKEN #IMPLIED>
+  <!ELEMENT binary (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|part)*>
+  <!ENTITY qmark "&#x3F;">
+  <!ENTITY ampersand "&amp;">
+  <!ENTITY recursive "&recursive;">
+]>
+<exchange version="2.0" xmlns:m="urn:message">
+  <request>
+    <header name="Content-Type">multipart/mixed; boundary="cut"</header>
+    <header name="X-Trace">a:b:c &qmark;</header>
+    <body>
+      preface
+      <part media="text/plain" boundary="cut">
+        <body>first &amp; second</body>
+      </part>
+      <part media="application/octet-stream">
+        <body><binary><![CDATA[AAECAwQFBgcICQ==]]></binary></body>
+      </part>
+      suffix
+    </body>
+  </request>
+  <response>
+    <header name="Status">207 Multi-Status</header>
+    <body><![CDATA[<not-an-element attr="&fake;">]]></body>
+  </response>
+  <fault>
+    <code>W-&#x1F;17</code>
+    <detail><part media="text/xml"><body>trailing detail</body></part></detail>
+  </fault>
+</exchange>
+```

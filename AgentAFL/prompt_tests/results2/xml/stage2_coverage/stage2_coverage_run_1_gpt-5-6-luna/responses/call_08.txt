@@ -1,0 +1,165 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (name, price, stock?, description?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT stock (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST section key ID #REQUIRED>
+  <!ATTLIST item sku ID #REQUIRED ref IDREFS #IMPLIED>
+  <!ENTITY dash "&#x2014;">
+  <!ENTITY note "half &dash; price">
+]>
+<catalog>
+  <section key="s1">
+    <heading>Hardware</heading>
+    <item sku="i1" ref="i2">
+      <name>Widget &note;</name>
+      <price>19.95</price>
+      <stock>7</stock>
+      <description>small <em>blue</em> unit<br/>with <code>USB</code> port</description>
+    </item>
+    <item sku="i2">
+      <name>Adapter</name>
+      <price>0</price>
+      <description>legacy &amp; replacement</description>
+    </item>
+  </section>
+  <section key="s2">
+    <heading>Empty section</heading>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (account+)>
+  <!ELEMENT account (owner, entry+)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST account number NMTOKEN #REQUIRED>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    account IDREF #REQUIRED
+    amount CDATA #REQUIRED
+    cleared (yes|no) "no">
+  <!ENTITY % flags "(cleared|pending)">
+  <!ELEMENT marker %flags;>
+]>
+<ledger>
+  <account number="A-001">
+    <owner>R&amp;D</owner>
+    <entry id="e01" account="A-001" amount="-12.50" cleared="yes"/>
+    <entry id="e02" account="A-001" amount="&#x2B;12.50"/>
+  </account>
+  <account number="A_002">
+    <owner>Operations&#x85;Team</owner>
+    <entry id="e03" account="missing" amount="NaN" cleared="no"></entry>
+    <entry id="e04" account="A_002" amount="1&#x0D;2"/>
+  </account>
+</ledger>
+```
+
+```xml
+<!DOCTYPE map [
+  <!ELEMENT map (node|edge)*>
+  <!ELEMENT node EMPTY>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST node
+    name NMTOKEN #REQUIRED
+    label CDATA #IMPLIED
+    tags NMTOKENS #IMPLIED>
+  <!ATTLIST edge
+    from IDREF #REQUIRED
+    to IDREF #REQUIRED
+    weight CDATA #IMPLIED>
+  <!ENTITY left "&lt;">
+  <!ENTITY right "&gt;">
+  <!ENTITY quote "&quot;">
+]>
+<map>
+  <node name="root" label="&left;root&right;" tags="top primary"/>
+  <node name="leaf-1" label="A &quote;quoted&quote; value"/>
+  <edge from="root" to="leaf-1" weight="0xFFFFFFFF"/>
+  <node name="leaf-2" label="line&#xA;break" tags=""/>
+  <edge from="root" to="leaf-2" weight="&#x2D;0.25"/>
+  <node name="orphan" label="&amp;"/>
+  <edge from="leaf-2" to="orphan"/>
+</map>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE bundle [
+  <!ELEMENT bundle (header, payload, checksum?)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST bundle version CDATA #FIXED "2">
+  <!ENTITY % extra "INTERNAL">
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data:application/octet-stream;base64,AAEC">
+]>
+<bundle version="2">
+  <header>
+    <field>alpha</field>
+    <field><![CDATA[beta < gamma && delta]]></field>
+    <field><![CDATA[]]></field>
+  </header>
+  <payload>
+    <binary encoding="base64"><![CDATA[AAECAwQFBgcICQ==]]></binary>
+    <text><![CDATA[
+      ]]> tricky <![CDATA[ boundary ]]>
+    </text>
+    <nested><x/><y a="1 &amp; 2"/></nested>
+  </payload>
+  <checksum>deadbeef&#x0A;</checksum>
+</bundle>
+```
+
+```xml
+<!DOCTYPE transform [
+  <!ELEMENT transform (input, steps, output)>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT steps (step+)>
+  <!ELEMENT step (arg*)>
+  <!ELEMENT arg (#PCDATA|value)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT output (#PCDATA)>
+  <!ATTLIST step
+    op (copy|rename|replace|delete) #REQUIRED
+    select CDATA #IMPLIED
+    enabled (true|false) "true">
+  <!ATTLIST arg name NMTOKEN #IMPLIED>
+  <!ENTITY amp "&amp;">
+  <!ENTITY recursive "&recursive;">
+]>
+<transform>
+  <input>one &amp; two &lt; three</input>
+  <steps>
+    <step op="rename" select="/a/b" enabled="false">
+      <arg name="new-name">c</arg>
+    </step>
+    <step op="replace" select="//*[&quot;@id&quot;]">
+      <arg name="value"><value>replacement</value></arg>
+      <arg name="mode">all &amp; once</arg>
+    </step>
+    <step op="delete" select="//empty">
+      <arg/>
+    </step>
+    <step op="copy" select="text()[position() &gt; 1]">
+      <arg name="destination">/result</arg>
+    </step>
+  </steps>
+  <output><![CDATA[result: <pending> & raw]]></output>
+</transform>
+```

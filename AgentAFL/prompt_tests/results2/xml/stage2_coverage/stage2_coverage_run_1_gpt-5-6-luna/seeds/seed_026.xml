@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!ENTITY cover SYSTEM "cover.gif" NDATA gif>
+  <!ENTITY % include-meta "INCLUDE">
+  <![%include-meta;[
+    <!ELEMENT metadata (author, checksum)>
+    <!ELEMENT author (#PCDATA)>
+    <!ELEMENT checksum (#PCDATA)>
+  ]]>
+  <!ELEMENT package (manifest, metadata, payload)>
+  <!ATTLIST package release CDATA #IMPLIED>
+  <!ELEMENT manifest (item+)>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item ref ENTITY #REQUIRED role (cover|thumbnail|data) "data">
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|part)*>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!ELEMENT part (#PCDATA)>
+  <!ENTITY marker "A&amp;B">
+]>
+<package release="nightly">
+  <manifest>
+    <item ref="cover" role="cover"/>
+    <item ref="cover" role="thumbnail"/>
+  </manifest>
+  <metadata>
+    <author>system &marker;</author>
+    <checksum>sha256:00aa11bb22cc</checksum>
+  </metadata>
+  <payload>
+    <chunk index="01">begin<part><![CDATA[raw <payload> bytes]]></part>end</chunk>
+    <chunk index="02"><part>αβγ</part><part>tail</part></chunk>
+  </payload>
+</package>

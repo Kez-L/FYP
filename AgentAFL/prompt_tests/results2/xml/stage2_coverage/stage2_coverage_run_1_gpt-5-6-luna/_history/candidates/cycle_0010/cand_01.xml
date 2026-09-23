@@ -1,0 +1,36 @@
+<?xml version="1.1" standalone="yes"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (header, transaction*, trailer)>
+  <!ELEMENT header (owner, created)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT transaction (debit|credit)>
+  <!ELEMENT debit (#PCDATA)>
+  <!ELEMENT credit (#PCDATA)>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST ledger xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST transaction
+    number ID #REQUIRED
+    links IDREFS #IMPLIED
+    currency NMTOKEN "EUR">
+  <!ATTLIST debit account NMTOKEN #REQUIRED>
+  <!ATTLIST credit account NMTOKEN #REQUIRED>
+  <!ENTITY nl "&#x85;">
+  <!ENTITY euro "&#x20AC;">
+  <!ENTITY quoted "&quot;quoted&quot;">
+  <!ENTITY % common "(debit|credit)">
+  <!ELEMENT audit %common;>
+]>
+<ledger xml:lang="en-US">
+  <header>
+    <owner>R&amp;D &quoted;</owner>
+    <created>2026-09-22&nl;09:30</created>
+  </header>
+  <transaction number="tx-1" currency="EUR">
+    <debit account="A_01">12.50 &euro;</debit>
+  </transaction>
+  <transaction number="tx-2" links="tx-1" currency="USD">
+    <credit account="B.02">12.50 &#x24;</credit>
+  </transaction>
+  <trailer/>
+</ledger>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ENTITY % optional "<!ELEMENT trace (event*)>">
+  %optional;
+  <!ELEMENT envelope (context,body,trace)>
+  <!ELEMENT context (token,origin)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT origin (#PCDATA)>
+  <!ELEMENT body (message|attachment|separator)+>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment media CDATA #REQUIRED name CDATA #IMPLIED>
+  <!ELEMENT separator EMPTY>
+  <!ELEMENT trace (event*)>
+  <!ELEMENT event (#PCDATA)>
+  <!ATTLIST event level (info|warn|error) "info">
+]>
+<envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Batch">
+  <context>
+    <token>α-β-γ</token>
+    <origin>https://example.invalid/api?x=1&amp;y=2</origin>
+  </context>
+  <body>
+    <message>first <![CDATA[chunk]]> second</message>
+    <separator/>
+    <attachment media="application/octet-stream" name="data&amp;1"/>
+    <message>line one
+line two
+line three</message>
+  </body>
+  <trace>
+    <event level="info">accepted</event>
+    <event level="warn"><![CDATA[unexpected ]]> marker</event>
+    <event level="error">failure &lt;code&gt;42&lt;/code&gt;</event>
+  </trace>
+</envelope>

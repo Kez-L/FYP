@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % atoms '
+    <!ELEMENT report (header, group*)>
+    <!ELEMENT header EMPTY>
+    <!ATTLIST header version CDATA #REQUIRED stamp CDATA #IMPLIED>
+    <!ELEMENT group (entry+)>
+    <!ATTLIST group name CDATA #REQUIRED>
+    <!ELEMENT entry (name, metric, detail?)>
+    <!ATTLIST entry state (open|closed|pending) "pending">
+    <!ELEMENT name (#PCDATA)>
+    <!ELEMENT metric (#PCDATA)>
+    <!ELEMENT detail (#PCDATA)>
+  '>
+  %atoms;
+  <!ENTITY % extra '<!ELEMENT audit (#PCDATA)>'>
+  %extra;
+  <!ENTITY high "&#x3C;threshold&#x3E;">
+]>
+<report>
+  <header version="v&amp;1" stamp="&quot;quoted&quot;"/>
+  <group name="north">
+    <entry state="open">
+      <name>first</name>
+      <metric>17</metric>
+      <detail>&high;</detail>
+    </entry>
+    <entry>
+      <name>second</name>
+      <metric>4&amp;5</metric>
+    </entry>
+  </group>
+  <group name="empty-looking">
+    <entry state="closed">
+      <name><![CDATA[x<y>z]]></name>
+      <metric>line one&#xD;&#xA;line two</metric>
+    </entry>
+  </group>
+</report>

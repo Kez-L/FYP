@@ -30,6 +30,7 @@ Stage 1 arm exactly.
     python3 run_build_context.py --seed-selector coverage            # Stage 2 (-> stage2_coverage)
     python3 run_build_context.py --seed-selector coverage-per-byte   # Stage 2.1 (-> stage2_coverage_per_byte)
     python3 run_build_context.py --seed-selector rare-coverage       # Stage 2.2 (-> stage2_rare_coverage)
+    python3 run_build_context.py --seed-selector stage1-jaccard      # Stage 1, edge-Jaccard dedup (-> stage1_jaccard)
     python3 run_build_context.py --rotate                            # Stage 3 (-> stage3_rotation)
     python3 run_build_context.py --provider openai --no-temperature --rotate
     python3 run_build_context.py --no-feedback                       # good seeds only (-> stage1_raw_nofeedback)
@@ -39,6 +40,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -61,7 +63,8 @@ from batch_harness import (                                          # noqa: E40
 )
 from select_seeds_by_coverage import (                              # noqa: E402
     make_coverage_selector, make_coverage_per_byte_selector,
-    make_rare_coverage_selector, high_coverage_selector, no_seed_selector,
+    make_rare_coverage_selector, make_stage1_jaccard_selector,
+    high_coverage_selector, no_seed_selector,
 )
 
 DEFAULT_CAMPAIGN = REPO_ROOT / "afl-output-libxml2-20260907"          # the 12-hour run
@@ -70,8 +73,26 @@ DEFAULT_TARGET = "/home/user/Documents/AFLPlus/libxml2-build/xmllint-afl"
 DEFAULT_TARGET_ARGS = "--noout @@"
 # Shared frozen corpus baseline — every arm scores against the identical edge
 # set (PLAN.md Sec 6). Used automatically when present; pass a path to override,
-# or a non-existent path to force a fresh afl-showmap queue scan.
+# or a non-existent path to force a fresh afl-showmap queue scan. Deliberately
+# still points at the old results/ location (not results2/xml/) — the frozen
+# corpus itself hasn't changed, so there's no reason to force an expensive
+# ~1-min-per-instance rescan just because new run output moved. Each run still
+# writes its own copy of baseline_edges.json into its own out_dir regardless.
 DEFAULT_BASELINE = HERE / "results" / "baseline_edges.json"
+
+
+def _next_run_number(group_dir: Path, label: str) -> int:
+    """Next unused "{label}_run_N..." number under group_dir, scanning by
+    label alone (not label+tag) — a rerun with a different --model still
+    gets a fresh number, so nothing overlays a previous run regardless of
+    which model it used. 1 if group_dir doesn't exist yet or has no run
+    dirs for this label."""
+    if not group_dir.is_dir():
+        return 1
+    pat = re.compile(rf"^{re.escape(label)}_run_(\d+)")
+    nums = [int(m.group(1)) for d in group_dir.iterdir() if d.is_dir()
+            for m in [pat.match(d.name)] if m]
+    return max(nums, default=0) + 1
 
 
 def _memoise_scan_queue():
@@ -109,19 +130,27 @@ def main():
     ap.add_argument(
         "--seed-selector",
         choices=("default", "coverage", "coverage-per-byte",
-                 "high-coverage", "rare-coverage", "no-seed"),
+                 "high-coverage", "rare-coverage", "stage1-jaccard", "no-seed"),
         default="default",
         help="how the good-seed examples are picked from the +cov queue entries. "
-             "'default' = build_context.select_diverse_seeds (size/printability band). "
-             "'coverage' = rank by total edges hit via afl-showmap, same size band, "
-             "edge-set-Jaccard de-dup (make_coverage_selector). "
-             "'coverage-per-byte' = Stage 2.1: rank by edges-per-byte (coverage density) "
-             "in a tight 200-800 B band, fall back to 'default' if nothing is in band "
-             "(make_coverage_per_byte_selector). "
+             "'default' = build_context.select_diverse_seeds — ranks by closeness to a "
+             "400 B target within a 32-3000 B band, de-dupes a later pick by byte-content "
+             "similarity (is_similar). "
+             "'coverage' = rank by total edges hit via afl-showmap, in the shared "
+             "200-800 B band (widening to 1500 B if nothing lands in it, then falling "
+             "back to 'default' if still nothing), edge-set-Jaccard de-dup, jaccard_max=0.7 "
+             "(make_coverage_selector). "
+             "'coverage-per-byte' = Stage 2.1: rank by edges-per-byte (coverage density), "
+             "same shared band/fallback/de-dup as 'coverage' (make_coverage_per_byte_selector). "
              "'rare-coverage' = Stage 2.2: rank by edge rarity (sum of 1/frequency over "
              "the seed's edges, frequency counted across the in-band candidates) — "
-             "AFLFast's rarely-hit-path emphasis, same 200-800 B band "
-             "(make_rare_coverage_selector). "
+             "AFLFast's rarely-hit-path emphasis, same shared band/fallback/de-dup as "
+             "'coverage' (make_rare_coverage_selector). "
+             "'stage1-jaccard' = a Stage 1 sibling, not a Stage 2 arm: same ranking key as "
+             "'default' (closeness to 400 B) and the same shared 200-800->1500 B band as "
+             "the coverage arms, but de-dupes a later pick by edge-Jaccard (jaccard_max=0.7) "
+             "instead of byte-content similarity — isolates the ranking-criterion variable "
+             "when A/B-testing against 'coverage' (make_stage1_jaccard_selector). "
              "'high-coverage'/'no-seed' = the remaining select_seeds_by_coverage stubs.",
     )
     ap.add_argument("--n-history-failure", type=int, default=2,
@@ -157,11 +186,16 @@ def main():
     ap.add_argument("--fence-lang", default="")
     ap.add_argument("--no-asan-hint", action="store_true", help="drop the 'built with ASan' system line")
     ap.add_argument("--label", default=None,
-                    help="base name -> results/<label>_<tag>/ "
+                    help="base name -> results2/<format-dir>/<label>/<label>_run_N_<tag>/ "
                          "(default: stage3_rotation with --rotate, else stage1_raw)")
     ap.add_argument("--tag", default=None,
                     help="folder suffix for the AI used (default: auto — haiku / gpt-4o-mini / ...)")
-    ap.add_argument("--out", type=Path, default=None, help="output dir (overrides --label/--tag)")
+    ap.add_argument("--format-dir", default="xml",
+                    help="results2/<format-dir>/ — which target this run belongs under "
+                         "(default 'xml' for the libxml2 campaign; pass e.g. 'ical' when "
+                         "using --campaign-root/--target for a different target, so its runs "
+                         "don't land in the xml/ folder).")
+    ap.add_argument("--out", type=Path, default=None, help="output dir (overrides --label/--tag/--format-dir)")
     ap.add_argument("--env-file", type=Path, default=None)
     # campaign state feeding the prompt
     ap.add_argument("--campaign-root", type=Path, default=DEFAULT_CAMPAIGN)
@@ -204,6 +238,12 @@ def main():
             label = "stage2_neg_hypothesis"
         elif args.rotate:
             label = "stage3_rotation"
+        elif args.seed_selector == "stage1-jaccard":
+            # A Stage 1 sibling (same ranking key, different de-dup
+            # mechanism), not a Stage 2 arm — must not fall into the generic
+            # stage2_<selector> branch below, same reasoning as
+            # stage2_neg_hypothesis's own hand-naming above.
+            label = "stage1_jaccard"
         elif args.seed_selector != "default":
             label = f"stage2_{args.seed_selector.replace('-', '_')}"
         else:
@@ -212,7 +252,18 @@ def main():
             label += "_nofeedback"
     model = args.model or DEFAULT_MODEL[args.provider]
     tag = args.tag or model_tag(args.provider, model)
-    out_dir = args.out or (HERE / "results" / f"{label}_{tag}")
+    if args.out:
+        out_dir = args.out
+    else:
+        # One folder per arm (label), then a fresh numbered run subfolder
+        # inside it each invocation — so repeat runs of the same arm (e.g.
+        # to get multiple 50-seed batches for later averaging/significance
+        # testing) never overlay a previous run's output. Grouped under
+        # --format-dir first so different targets (xml/ical/...) never share
+        # a label's run-numbering or results tree.
+        group_dir = HERE / "results2" / args.format_dir / label
+        run_n = _next_run_number(group_dir, label)
+        out_dir = group_dir / f"{label}_run_{run_n}_{tag}"
     temperature = None if args.no_temperature else args.temperature
     caller = ProviderCaller(args.provider, model, temperature, args.env_file)
     _memoise_scan_queue()
@@ -220,17 +271,36 @@ def main():
     # Good-seed selection strategy (Stage 2). Built ONCE here, not inside
     # prompt_fn, so make_coverage_selector's afl-showmap edge cache is shared
     # across all 10 calls (the frozen queue is showmap'd once, then reused).
+    # fallback_log: every time one of the 4 coverage-aware selectors gives up
+    # on its own band/edges and defers to select_diverse_seeds, that gets
+    # appended here (and printed live to stderr) — see select_seeds_by_coverage
+    # ._log_fallback. Lives in out_dir so it's found alongside this run's own
+    # results, not lost in a shared/rotating location.
+    fallback_log = out_dir / "selector_fallback.log"
+    # call_ctx: the seed_selector(candidates, n_seeds) contract assemble_prompt
+    # calls has no call-index slot, so this mutable dict is how a fallback log
+    # line finds out which call (prompts/call_NN.json) it happened during —
+    # prompt_fn below updates call_ctx["call"] right before each
+    # assemble_prompt call, and _log_fallback reads it at fallback time.
+    call_ctx = {"call": None}
     if args.seed_selector == "default":
         seed_selector = bc.select_diverse_seeds
     elif args.seed_selector == "coverage":
         seed_selector = make_coverage_selector(
-            args.target, args.target_args.split(), afl_showmap_bin=args.afl_showmap_bin)
+            args.target, args.target_args.split(), afl_showmap_bin=args.afl_showmap_bin,
+            log_path=fallback_log, call_ctx=call_ctx)
     elif args.seed_selector == "coverage-per-byte":
         seed_selector = make_coverage_per_byte_selector(
-            args.target, args.target_args.split(), afl_showmap_bin=args.afl_showmap_bin)
+            args.target, args.target_args.split(), afl_showmap_bin=args.afl_showmap_bin,
+            log_path=fallback_log, call_ctx=call_ctx)
     elif args.seed_selector == "rare-coverage":
         seed_selector = make_rare_coverage_selector(
-            args.target, args.target_args.split(), afl_showmap_bin=args.afl_showmap_bin)
+            args.target, args.target_args.split(), afl_showmap_bin=args.afl_showmap_bin,
+            log_path=fallback_log, call_ctx=call_ctx)
+    elif args.seed_selector == "stage1-jaccard":
+        seed_selector = make_stage1_jaccard_selector(
+            args.target, args.target_args.split(), afl_showmap_bin=args.afl_showmap_bin,
+            log_path=fallback_log, call_ctx=call_ctx)
     elif args.seed_selector == "high-coverage":
         seed_selector = high_coverage_selector
     else:
@@ -241,6 +311,7 @@ def main():
     # mutate-existing x5, call 2 -> semantic-equiv x5, call 3 -> generate-new x5,
     # ...). Without --rotate this is byte-for-byte the Stage 1 arm.
     def prompt_fn(call_index, history_dir):
+        call_ctx["call"] = call_index  # see call_ctx's own comment above
         closing = strategies.rotate(call_index) if args.rotate else None
 
         history_override = None

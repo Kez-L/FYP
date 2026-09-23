@@ -1,0 +1,143 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, metadata?)>
+  <!ELEMENT entry (title, price, details)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details ANY>
+  <!ATTLIST entry code ID #REQUIRED status (active|retired) "active">
+  <!ENTITY currency "&#x20AC;">
+]>
+<catalog>
+  <entry code="p001">
+    <title>Widget &amp; Sons</title>
+    <price>&currency;19.95</price>
+    <details><obsolete>ignored</obsolete><![CDATA[raw <payload>]]></details>
+  </entry>
+  <entry code="p002" status="retired">
+    <title>Gadget</title>
+    <price>0</price>
+    <details/>
+  </entry>
+  <metadata/>
+</catalog>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body, signature)>
+  <!ELEMENT header (sender, recipient, timestamp)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT body ANY>
+  <!ELEMENT signature EMPTY>
+  <!ATTLIST signature algorithm CDATA #IMPLIED value CDATA #REQUIRED>
+]>
+<envelope>
+  <header>
+    <sender>alice@example.invalid</sender>
+    <recipient>bob@example.invalid</recipient>
+    <timestamp>2026-09-22T12:34:56Z</timestamp>
+  </header>
+  <body>
+    <message priority="high">Use &quot;quoted&quot; text &amp; symbols.</message>
+    <attachment type="application/octet-stream"><![CDATA[
+      A+B/C== 
+    ]]></attachment>
+  </body>
+  <signature algorithm="none" value=""/>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (node*)>
+  <!ELEMENT node (key, value, node*)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|node)*>
+  <!ATTLIST node id ID #IMPLIED ref IDREF #IMPLIED>
+]>
+<map>
+  <node id="root">
+    <key>configuration</key>
+    <value>
+      <node id="child-a">
+        <key>mode</key>
+        <value>safe</value>
+      </node>
+      <node id="child-b" ref="child-a">
+        <key>alias</key>
+        <value>child-a</value>
+      </node>
+    </value>
+    <node>
+      <key>empty</key>
+      <value/>
+    </node>
+  </node>
+</map>
+```
+
+```xml
+<!DOCTYPE log [
+  <!ELEMENT log (record*)>
+  <!ELEMENT record (level, message, context?)>
+  <!ELEMENT level (#PCDATA)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT context (field*)>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST record seq NMTOKEN #REQUIRED time CDATA #IMPLIED>
+  <!ATTLIST field name CDATA #REQUIRED>
+]>
+<log>
+  <record seq="001" time="09:00:00">
+    <level>INFO</level>
+    <message><![CDATA[start <service>]]></message>
+    <context>
+      <field name="pid">42</field>
+      <field name="path">/tmp/a&amp;b</field>
+    </context>
+  </record>
+  <record seq="002">
+    <level>WARN</level>
+    <message>unexpected ]]> marker ]]&gt; remains text</message>
+  </record>
+  <record seq="003" time="">
+    <level>ERROR</level>
+    <message>line one
+line two&#x0A;line three</message>
+    <context/>
+  </record>
+</log>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (name, item*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT item EMPTY>
+  <!ELEMENT data (blob|text|blob)*>
+  <!ELEMENT blob (#PCDATA)>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST item path CDATA #REQUIRED kind (file|directory) "file" size NMTOKEN #IMPLIED>
+  <!ATTLIST blob encoding (hex|base64) #REQUIRED>
+]>
+<package>
+  <manifest>
+    <name>sample.pkg</name>
+    <item path="bin/run" kind="file" size="12"/>
+    <item path="var/cache" kind="directory"/>
+    <item path="README" size="0"/>
+  </manifest>
+  <data>
+    <blob encoding="hex">00ff10aa</blob>
+    <text>alpha &lt; beta &#13;&#10; gamma</text>
+    <blob encoding="base64"><![CDATA[YWJjZA==]]></blob>
+  </data>
+</package>
+```

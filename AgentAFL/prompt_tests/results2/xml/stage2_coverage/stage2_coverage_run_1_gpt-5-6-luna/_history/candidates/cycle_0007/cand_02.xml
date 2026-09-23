@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (opening, transaction*, closing)>
+  <!ELEMENT opening (#PCDATA)>
+  <!ELEMENT transaction (date, account, amount, memo?)>
+  <!ATTLIST transaction
+    ref ID #REQUIRED
+    links IDREFS #IMPLIED
+    type (credit|debit|transfer) "transfer">
+  <!ELEMENT date (#PCDATA)>
+  <!ELEMENT account EMPTY>
+  <!ATTLIST account
+    number CDATA #REQUIRED
+    currency (EUR|USD|JPY) "EUR">
+  <!ELEMENT amount (#PCDATA)>
+  <!ELEMENT memo (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT closing (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY arrow "&#x2192;">
+]>
+<ledger>
+  <opening>opening balance: &nbsp; 1200</opening>
+  <transaction ref="t1" type="credit" links="t2">
+    <date>2026-01-01</date>
+    <account number="A-01" currency="USD"/>
+    <amount>1200.00</amount>
+    <memo>initial deposit<linebreak/>from vault</memo>
+  </transaction>
+  <transaction ref="t2" type="transfer" links="t1 t3">
+    <date>2026-02-29</date>
+    <account number="A-01"/>
+    <amount>-17.50</amount>
+    <memo>route &arrow; clearing &amp; settlement</memo>
+  </transaction>
+  <transaction ref="t3" type="debit">
+    <date>2026-03-01</date>
+    <account number="B-77" currency="JPY"/>
+    <amount>900</amount>
+  </transaction>
+  <closing>reconciled</closing>
+</ledger>

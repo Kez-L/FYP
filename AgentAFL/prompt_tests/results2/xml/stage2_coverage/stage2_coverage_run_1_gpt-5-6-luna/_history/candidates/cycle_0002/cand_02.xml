@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ENTITY % declarations '
+    <!ELEMENT packet (header, payload, trailer)>
+    <!ATTLIST packet version CDATA #FIXED "2">
+    <!ELEMENT header (source, destination, flags?)>
+    <!ELEMENT source (#PCDATA)>
+    <!ELEMENT destination (#PCDATA)>
+    <!ELEMENT flags EMPTY>
+    <!ATTLIST flags urgent (yes|no) "no" compressed (yes|no) "no">
+    <!ELEMENT payload (chunk+)>
+    <!ELEMENT chunk (#PCDATA)>
+    <!ATTLIST chunk number NMTOKEN #REQUIRED checksum CDATA #IMPLIED>
+    <!ELEMENT trailer (#PCDATA)>
+  '>
+  %declarations;
+  <!ENTITY open "<![CDATA[">
+  <!ENTITY close "]]>">
+]>
+<packet version="2">
+  <header>
+    <source>node-A</source>
+    <destination>node-B</destination>
+    <flags urgent="yes" compressed="no"/>
+  </header>
+  <payload>
+    <chunk number="001" checksum="a9f">first segment</chunk>
+    <chunk number="002"><![CDATA[bytes: <FF><00>&not-an-entity;]]></chunk>
+    <chunk number="003">last segment&#x0A;with newline</chunk>
+  </payload>
+  <trailer>complete</trailer>
+</packet>

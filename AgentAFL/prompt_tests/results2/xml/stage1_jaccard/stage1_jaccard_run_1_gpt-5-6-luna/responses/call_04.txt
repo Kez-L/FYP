@@ -1,0 +1,174 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE catalog [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!NOTATION jpg PUBLIC "-//JPEG//" "image/jpeg">
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section
+    code ID #REQUIRED
+    kind (hardware|software|other) "other">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item
+    id ID #REQUIRED
+    ref IDREFS #IMPLIED
+    media ENTITY #IMPLIED
+    status (new|used|retired) "new">
+  <!ENTITY logo SYSTEM "logo.gif" NDATA gif>
+  <!ENTITY photo SYSTEM "photo.jpg" NDATA jpg>
+]>
+<catalog>
+  <section code="s-main" kind="hardware">
+    <title>Devices &amp; Accessories</title>
+    <item id="i-one" media="logo" status="new"/>
+    <item id="i-two" ref="i-one" status="used"/>
+  </section>
+  <section code="s-extra">
+    <title>Miscellaneous</title>
+    <item id="i-three" ref="i-one i-two"/>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta, payload)>
+  <!ELEMENT meta (created, tag*)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT tag (#PCDATA|tag)*>
+  <!ELEMENT payload (record | note | blob)*>
+  <!ELEMENT record (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA|em|br)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT blob (#PCDATA)>
+  <!ATTLIST record priority NMTOKEN #IMPLIED>
+  <!ATTLIST blob encoding (base64|hex) #REQUIRED>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+  <!ENTITY mark "&left;quoted&right;" >
+]>
+<envelope>
+  <meta>
+    <created>2026-09-22T12:34:56Z</created>
+    <tag>alpha<tag>nested</tag>omega</tag>
+    <tag>&mark;</tag>
+  </meta>
+  <payload>
+    <record priority="P1">
+      <key>name</key>
+      <value>before<em>inside<br/>deep</em>after</value>
+    </record>
+    <note><![CDATA[<not-an-element> & still text]]></note>
+    <blob encoding="hex">00ff7f&#x0A;ab</blob>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % atoms '
+    <!ELEMENT report (header, group*)>
+    <!ELEMENT header EMPTY>
+    <!ATTLIST header version CDATA #REQUIRED stamp CDATA #IMPLIED>
+    <!ELEMENT group (entry+)>
+    <!ATTLIST group name CDATA #REQUIRED>
+    <!ELEMENT entry (name, metric, detail?)>
+    <!ATTLIST entry state (open|closed|pending) "pending">
+    <!ELEMENT name (#PCDATA)>
+    <!ELEMENT metric (#PCDATA)>
+    <!ELEMENT detail (#PCDATA)>
+  '>
+  %atoms;
+  <!ENTITY % extra '<!ELEMENT audit (#PCDATA)>'>
+  %extra;
+  <!ENTITY high "&#x3C;threshold&#x3E;">
+]>
+<report>
+  <header version="v&amp;1" stamp="&quot;quoted&quot;"/>
+  <group name="north">
+    <entry state="open">
+      <name>first</name>
+      <metric>17</metric>
+      <detail>&high;</detail>
+    </entry>
+    <entry>
+      <name>second</name>
+      <metric>4&amp;5</metric>
+    </entry>
+  </group>
+  <group name="empty-looking">
+    <entry state="closed">
+      <name><![CDATA[x<y>z]]></name>
+      <metric>line one&#xD;&#xA;line two</metric>
+    </entry>
+  </group>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (node+)>
+  <!ELEMENT node (label, node*)>
+  <!ATTLIST node
+    id ID #IMPLIED
+    parent IDREF #IMPLIED
+    flags NMTOKENS #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ENTITY amp "&#38;">
+  <!ENTITY nested "A&amp;B">
+  <![IGNORE[
+    <!ELEMENT discarded ANY>
+    <!ATTLIST discarded mode CDATA #IMPLIED>
+  ]]>
+  <![INCLUDE[
+    <!ENTITY active "enabled">
+  ]]>
+]>
+<map>
+  <node id="root" flags="top visible">
+    <label>R&amp;D &amp; &active;</label>
+    <node id="left" parent="root" flags="leaf">
+      <label>&nested;</label>
+    </node>
+    <node id="right" parent="root">
+      <label><![CDATA[raw ]]>&amp;<![CDATA[ data]]></label>
+      <node id="deep" parent="right">
+        <label>level&#x32;</label>
+      </node>
+    </node>
+  </node>
+</map>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (frame*)>
+  <!ELEMENT frame (header, data)>
+  <!ATTLIST frame seq NMTOKEN #REQUIRED type (text|binary|mixed) #IMPLIED>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT data (#PCDATA|chunk|separator)*>
+  <!ELEMENT chunk (#PCDATA|chunk)*>
+  <!ELEMENT separator EMPTY>
+  <!ENTITY apos "&#x27;">
+  <!ENTITY percent "&#37;">
+  <!ENTITY quoted "&apos;quoted&apos;">
+]>
+<stream>
+  <frame seq="0001" type="text">
+    <header>start &quoted;</header>
+    <data>alpha<separator/>beta<chunk>gamma<chunk>delta</chunk></chunk>omega</data>
+  </frame>
+  <frame seq="0002" type="mixed">
+    <header>symbols: &percent; &amp; &#x2028;</header>
+    <data><![CDATA[<frame seq="fake">]]><chunk>payload&#x0D;&#x0A;tail</chunk></data>
+  </frame>
+</stream>
+```

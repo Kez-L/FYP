@@ -1,0 +1,120 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common "<!ELEMENT catalog (entry+)><!ELEMENT entry (name,price,meta?)>">
+  %common;
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    state (new|used|archived) "new"
+    ref IDREF #IMPLIED>
+  <!ATTLIST meta
+    key CDATA #REQUIRED
+    value CDATA #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "blob.bin" NDATA bin>
+]>
+<catalog>
+  <entry id="a1" state="new">
+    <name>alpha &amp; beta</name>
+    <price>19.95</price>
+    <meta key="source" value="&quot;import&quot;"/>
+  </entry>
+  <entry id="b2" ref="a1" state="archived">
+    <name><![CDATA[delta < epsilon]]></name>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:envelope xmlns:r="urn:root" xmlns:a="urn:a" xmlns:b="urn:b" xmlns="urn:default" xml:lang="fr">
+  <r:header a:id="h-7" b:flag="yes">
+    <?route target?>
+    <a:token xmlns:a="">unprefixed-after-rebind</a:token>
+  </r:header>
+  <r:body xmlns="urn:payload" xmlns:p="urn:payload">
+    <item p:code="&lt;x&gt;" xmlns:p="urn:other">
+      <p:value>42</p:value>
+      <!-- comment with --? -->
+      <empty/>
+    </item>
+    <item xmlns:r="urn:shadow" r:value="two">text</item>
+  </r:body>
+</r:envelope>
+```
+
+```xml
+<!DOCTYPE image [
+  <!ELEMENT image (caption, data)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT data (#PCDATA|chunk|break)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ATTLIST image width NMTOKEN #IMPLIED height NMTOKEN #IMPLIED>
+  <!ATTLIST chunk index CDATA #REQUIRED>
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+]>
+<image width="0x20" height="∞">
+  <caption>&left;raw&right; <![CDATA[brackets ]]> <![CDATA[and]]> text</caption>
+  <data>
+    <chunk index="0">A&amp;B</chunk>
+    <break/>
+    <chunk index="1"><![CDATA[unterminated-looking ]]]]>tail</chunk>
+    <?data-pi a="b"?>
+  </data>
+</image>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ENTITY alpha "one">
+  <!ENTITY beta "&alpha; &gamma;">
+  <!ENTITY gamma "three">
+  <!ENTITY % ext SYSTEM "missing-subset.dtd">
+  <!ENTITY % conditional "<!ELEMENT injected (#PCDATA)>">
+  %conditional;
+  <![IGNORE[
+    <!ELEMENT ignored EMPTY>
+    <!ATTLIST ignored x CDATA "y">
+  ]]>
+]>
+<root a="1" b="2">
+  <injected>before &beta; after</injected>
+  <node>
+    <![CDATA[
+      ]]> is data only inside this section
+    ]]>
+  </node>
+  <node><![CDATA[x]]></node>
+</root>
+```
+
+```xml
+<?xml version="1.1" standalone="yes"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell*)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST row n NMTOKEN #REQUIRED>
+  <!ATTLIST cell
+    c NMTOKEN #IMPLIED
+    kind (text|number|empty) "text">
+]>
+<matrix>
+  <row n="1">
+    <cell c="A" kind="text">line&#x2028;break</cell>
+    <cell c="B" kind="number">1&#x2E;0</cell>
+  </row>
+  <row n="2"><cell c="A" kind="empty"/></row>
+  <row n="3">
+    <cell c="A">left&#13;&#10;right</cell>
+    <?checkpoint?>
+  </row>
+</matrix>
+```

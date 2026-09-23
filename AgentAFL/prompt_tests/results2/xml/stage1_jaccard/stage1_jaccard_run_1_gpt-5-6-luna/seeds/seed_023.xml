@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (node+)>
+  <!ELEMENT node (label, node*)>
+  <!ATTLIST node
+    id ID #IMPLIED
+    parent IDREF #IMPLIED
+    flags NMTOKENS #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ENTITY amp "&#38;">
+  <!ENTITY nested "A&amp;B">
+  <![IGNORE[
+    <!ELEMENT discarded ANY>
+    <!ATTLIST discarded mode CDATA #IMPLIED>
+  ]]>
+  <![INCLUDE[
+    <!ENTITY active "enabled">
+  ]]>
+]>
+<map>
+  <node id="root" flags="top visible">
+    <label>R&amp;D &amp; &active;</label>
+    <node id="left" parent="root" flags="leaf">
+      <label>&nested;</label>
+    </node>
+    <node id="right" parent="root">
+      <label><![CDATA[raw ]]>&amp;<![CDATA[ data]]></label>
+      <node id="deep" parent="right">
+        <label>level&#x32;</label>
+      </node>
+    </node>
+  </node>
+</map>

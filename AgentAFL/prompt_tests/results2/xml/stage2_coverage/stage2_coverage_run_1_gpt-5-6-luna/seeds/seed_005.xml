@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+, audit?)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (name, price, note?)>
+  <!ATTLIST item ref ID #REQUIRED related IDREFS #IMPLIED state (new|used|held) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT audit EMPTY>
+  <!ATTLIST audit when CDATA #IMPLIED by CDATA #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY logo SYSTEM "logo.bin" NDATA bin>
+]>
+<catalog>
+  <!-- inventory with typed identifiers -->
+  <section code="hardware">
+    <title>Devices &amp; Accessories</title>
+    <item ref="item-a" related="item-b item-c" state="used">
+      <name>Sensor &lt;A&gt;</name>
+      <price>19.95</price>
+      <note>calibrated <emph>twice</emph> before shipment</note>
+    </item>
+    <item ref="item-b">
+      <name>Adapter</name>
+      <price>4.00</price>
+    </item>
+  </section>
+  <section code="software">
+    <title>Utilities</title>
+    <item ref="item-c" state="held">
+      <name>Trace Viewer</name>
+      <price>0</price>
+      <note><![CDATA[requires <runtime> and "permissions"]]></note>
+    </item>
+  </section>
+  <audit when="2026-09-22T12:30:00Z" by="qa"/>
+</catalog>

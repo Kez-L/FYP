@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns="urn:example:grammar" xmlns:x="urn:example:lexicon">
+  <rule id="root" priority="10">
+    <match kind="sequence">
+      <token value="(" escaped="false"/>
+      <choice>
+        <token value="alpha"/>
+        <token value="beta"/>
+        <group repeat="0..3">
+          <token value="gamma"/>
+          <separator value=","/>
+        </group>
+      </choice>
+      <token value=")" escaped="true"/>
+    </match>
+    <action><![CDATA[
+      if (depth > 0) {
+        emit("<node/>");
+      }
+    ]]></action>
+  </rule>
+  <rule id="quoted" priority="2">
+    <match kind="regex" flags="ims">
+      <pattern><![CDATA[[A-Z_][A-Z0-9_]*]]></pattern>
+    </match>
+    <metadata xmlns:x="urn:example:lexicon">
+      <x:entry key="quote">" &amp; '</x:entry>
+      <x:entry key="slash">\\</x:entry>
+    </metadata>
+  </rule>
+  <include href="subgrammar.xml" parse="xml"/>
+  <include href="tokens.txt" parse="text"/>
+</grammar>

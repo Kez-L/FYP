@@ -1,0 +1,121 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % flags "enabled">
+  <!ELEMENT catalog (entry+, audit?)>
+  <!ELEMENT entry (#PCDATA|name|value)*>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value EMPTY>
+  <!ATTLIST entry id ID #REQUIRED state CDATA "%flags;">
+  <!ATTLIST value kind NOTATION (plain|binary) "plain">
+  <!NOTATION plain SYSTEM "text/plain">
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <![IGNORE[
+    <!ELEMENT ignored ANY>
+    <!ENTITY ghost "not expanded">
+  ]]>
+]>
+<catalog>
+  <entry id="e1"><name>alpha</name>prefix<value kind="plain"/>suffix</entry>
+  <entry id="e2" state="disabled"><name>beta</name><value/></entry>
+  <audit>created&#xD;&#xA;updated</audit>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (node|leaf)*>
+  <!ELEMENT node (node|leaf)*>
+  <!ELEMENT leaf EMPTY>
+  <!ATTLIST node
+    path CDATA #IMPLIED
+    xmlns CDATA #IMPLIED>
+  <!ATTLIST leaf
+    key CDATA #REQUIRED
+    value CDATA #IMPLIED>
+]>
+<map xmlns="urn:map">
+  <node path="/root">
+    <leaf key="a" value="&quot;&amp;&lt;"/>
+    <node path="/root/b">
+      <leaf key="b1"/>
+      <leaf key="b2" value="&#x1F;"/>
+    </node>
+  </node>
+  <node xmlns="" path="literal">
+    <leaf key="unqualified" value="text"/>
+  </node>
+</map>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (chunk*)>
+  <!ELEMENT chunk (#PCDATA|![CDATA[not markup]]>)*>
+  <!ATTLIST chunk seq NMTOKEN #REQUIRED encoding (raw|base64) "raw">
+  <!ENTITY open "<chunk seq='entity'>">
+  <!ENTITY close "</chunk>">
+]>
+<stream>
+  <chunk seq="0"><![CDATA[
+    <tag attr="&quot;"> &broken; ]]>tail</chunk>
+  <chunk seq="1" encoding="base64">YWJj&#10;ZA==</chunk>
+  &open;payload&close;
+</stream>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, trailer?)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT payload ANY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY percent "%">
+  <!ENTITY recursive "A&amp;recursive;">
+]>
+<envelope xmlns:x="urn:x" xmlns:y="urn:y">
+  <header>
+    <field name="content-type" value="application/xml"/>
+    <field name="length" value="&percent;42"/>
+    <field name="quote" value="&quot;quoted&quot;"/>
+  </header>
+  <payload>
+    <x:data y:mode="compact" xmlns:y="urn:other">
+      <![CDATA[raw ]]> text <!-- embedded --> <?pi data?>
+    </x:data>
+    <x:data xmlns:x="">unbound-prefix</x:data>
+  </payload>
+  <trailer>recursive=&recursive;</trailer>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (alpha?, beta*, gamma)>
+  <!ELEMENT alpha EMPTY>
+  <!ELEMENT beta (item|item2)+>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT item2 EMPTY>
+  <!ELEMENT gamma (#PCDATA)>
+  <!ATTLIST root mode (one|two|three) "two" ref IDREFS #IMPLIED>
+  <!ATTLIST alpha flag (yes|no) #IMPLIED>
+  <!ATTLIST beta rank CDATA #IMPLIED>
+  <!ATTLIST item id ID #IMPLIED>
+]>
+<root mode="three" ref="i1 i2 missing">
+  <alpha flag="maybe"/>
+  <beta rank="01">
+    <item id="i1">first &amp; second</item>
+    <item2/>
+    <item id="i2"><![CDATA[]]></item>
+  </beta>
+  <beta rank="&#x30;2"><item>last</item></beta>
+  <gamma>text &lt; text &gt; text</gamma>
+</root>
+```

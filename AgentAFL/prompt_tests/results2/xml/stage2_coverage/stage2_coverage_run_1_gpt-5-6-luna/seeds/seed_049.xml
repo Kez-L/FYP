@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, signature?)>
+  <!ELEMENT header (to, from, subject, reply-to?)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT reply-to (#PCDATA)>
+  <!ELEMENT body (paragraph|list|quote|image)*>
+  <!ELEMENT paragraph (#PCDATA|strong|br|link)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|paragraph|list)*>
+  <!ELEMENT quote (#PCDATA|paragraph)*>
+  <!ELEMENT image EMPTY>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST message
+    id ID #REQUIRED
+    priority (low|normal|urgent) "normal"
+    xml:space (default|preserve) "default">
+  <!ATTLIST link href CDATA #REQUIRED rel NMTOKEN #IMPLIED>
+  <!ATTLIST image src CDATA #REQUIRED alt CDATA #IMPLIED>
+  <!ENTITY greeting "Hello &amp; welcome">
+  <!ENTITY nested "&greeting; to the &quot;archive&quot;">
+]>
+<message id="m-900" priority="urgent" xml:space="preserve">
+  <header>
+    <to>ops@example.invalid</to>
+    <from>robot@example.invalid</from>
+    <subject>&nested;</subject>
+    <reply-to>noreply@example.invalid</reply-to>
+  </header>
+  <body>
+    <paragraph>&greeting;, <strong>operator</strong>.<br/>Review <link href="urn:item:7" rel="related">this record</link>.</paragraph>
+    <list>
+      <item>First entry</item>
+      <item><paragraph>Second entry with a nested list:</paragraph><list><item>Inner A</item><item>Inner B</item></list></item>
+    </list>
+    <quote><paragraph><![CDATA[Quoted markup: <tag attr="x"/>]]></paragraph></quote>
+    <image src="cid:chart-1" alt="status chart"/>
+  </body>
+  <signature>signed-by=key-1; algorithm=none</signature>
+</message>

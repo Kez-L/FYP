@@ -1,0 +1,35 @@
+<!DOCTYPE transform [
+  <!ELEMENT transform (input, steps, output)>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT steps (step+)>
+  <!ELEMENT step (arg*)>
+  <!ELEMENT arg (#PCDATA|value)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT output (#PCDATA)>
+  <!ATTLIST step
+    op (copy|rename|replace|delete) #REQUIRED
+    select CDATA #IMPLIED
+    enabled (true|false) "true">
+  <!ATTLIST arg name NMTOKEN #IMPLIED>
+  <!ENTITY amp "&amp;">
+  <!ENTITY recursive "&recursive;">
+]>
+<transform>
+  <input>one &amp; two &lt; three</input>
+  <steps>
+    <step op="rename" select="/a/b" enabled="false">
+      <arg name="new-name">c</arg>
+    </step>
+    <step op="replace" select="//*[&quot;@id&quot;]">
+      <arg name="value"><value>replacement</value></arg>
+      <arg name="mode">all &amp; once</arg>
+    </step>
+    <step op="delete" select="//empty">
+      <arg/>
+    </step>
+    <step op="copy" select="text()[position() &gt; 1]">
+      <arg name="destination">/result</arg>
+    </step>
+  </steps>
+  <output><![CDATA[result: <pending> & raw]]></output>
+</transform>

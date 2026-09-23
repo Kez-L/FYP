@@ -1,0 +1,159 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE vault [
+  <!ELEMENT vault (section+)>
+  <!ELEMENT section (title, entry*)>
+  <!ATTLIST section id ID #REQUIRED mode (open|sealed|archived) "open">
+  <!ELEMENT title (#PCDATA|emph|mark)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT entry (key, value, note?)>
+  <!ATTLIST entry ref IDREF #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|emph|mark|br)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY stamp "vault-&nbsp;-record">
+]>
+<vault>
+  <section id="s1" mode="sealed">
+    <title>alpha <emph>encrypted</emph> <mark>zone</mark></title>
+    <entry ref="s2">
+      <key>name</key>
+      <value>first<br/>value &stamp;</value>
+      <note>line one<!-- embedded comment -->line two</note>
+    </entry>
+  </section>
+  <section id="s2">
+    <title>second</title>
+    <entry>
+      <key>checksum</key>
+      <value><![CDATA[9f00<raw>&opaque]]></value>
+    </entry>
+  </section>
+</vault>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE canvas [
+  <!ELEMENT canvas (layer|guide|alias)*>
+  <!ELEMENT layer (shape+)>
+  <!ATTLIST layer name CDATA #REQUIRED visible (yes|no) "yes">
+  <!ELEMENT shape EMPTY>
+  <!ATTLIST shape kind (line|arc|polygon) #REQUIRED points CDATA #IMPLIED>
+  <!ELEMENT guide (#PCDATA)>
+  <!ELEMENT alias EMPTY>
+  <!ATTLIST alias target ENTITY #REQUIRED>
+  <!NOTATION svg SYSTEM "image/svg+xml">
+  <!ENTITY drawing SYSTEM "sketch.svg" NDATA svg>
+  <!ENTITY % extras "<!ELEMENT metadata (#PCDATA)>">
+  %extras;
+]>
+<canvas>
+  <layer name="foreground" visible="no">
+    <shape kind="polygon" points="0,0 4,9 8,1"/>
+    <shape kind="arc" points="5,5;3,2"/>
+  </layer>
+  <guide>north<!--cut-->east &amp; west</guide>
+  <alias target="drawing"/>
+  <metadata><![CDATA[<layer fake="yes"/>]]></metadata>
+</canvas>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (participant+, message*)>
+  <!ELEMENT participant EMPTY>
+  <!ATTLIST participant uid ID #REQUIRED role NMTOKENS #IMPLIED>
+  <!ELEMENT message (#PCDATA|quote|attachment|br)*>
+  <!ATTLIST message from IDREF #REQUIRED to IDREFS #IMPLIED sent CDATA #IMPLIED>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment href URI #REQUIRED digest CDATA #IMPLIED>
+  <!ELEMENT br EMPTY>
+  <!ENTITY open "&#xAB;">
+  <!ENTITY close "&#xBB;">
+  <!ENTITY nested "&open;quoted &open;inner&close;&close;">
+]>
+<conversation>
+  <participant uid="u1" role="sender moderator"/>
+  <participant uid="u2" role="recipient"/>
+  <message from="u1" to="u2" sent="2026-09-22T12:00:00Z">
+    hello <quote>outer <quote>inner</quote> tail</quote><br/>
+    &nested; <attachment href="urn:blob:7/../8" digest="a&amp;b"/>
+  </message>
+  <message from="u2" to="u1 u2">reply&#x0A;with&#x09;controls</message>
+</conversation>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (record*)>
+  <!ELEMENT record (label, data?, link*)>
+  <!ATTLIST record code ID #REQUIRED state (new|old|void) #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT data ANY>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link rel CDATA #REQUIRED destination CDATA #REQUIRED>
+  <!ENTITY left "&lt;&lt;">
+  <!ENTITY right "&gt;&gt;">
+  <!ENTITY pair "&left;core&right;">
+]>
+<catalog>
+  <record code="r-a" state="new">
+    <label>first &pair;</label>
+    <data>
+      <unknown xmlns="urn:foreign"><foreign:node attr="x"/></unknown>
+      <?local instruction?>
+      <!-- data boundary -->
+    </data>
+    <link rel="self" destination="urn:item:r-a"/>
+  </record>
+  <record code="r-b">
+    <label><![CDATA[unescaped ]]> characters]]></label>
+    <link rel="next" destination="../r-a#part"/>
+    <link rel="alternate" destination="mailto:a@b.example"/>
+  </record>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pipeline [
+  <!ELEMENT pipeline (stage, checkpoint?, stage*)>
+  <!ELEMENT stage (input*, transform*, output?)>
+  <!ATTLIST stage name NMTOKEN #REQUIRED depends IDREFS #IMPLIED>
+  <!ELEMENT input EMPTY>
+  <!ATTLIST input path CDATA #REQUIRED format (xml|json|raw) "raw">
+  <!ELEMENT transform (parameter*)>
+  <!ATTLIST transform class CDATA #REQUIRED enabled (true|false) "true">
+  <!ELEMENT parameter (#PCDATA)>
+  <!ATTLIST parameter key CDATA #REQUIRED>
+  <!ELEMENT output EMPTY>
+  <!ATTLIST output path CDATA #REQUIRED overwrite (yes|no) "no">
+  <!ELEMENT checkpoint EMPTY>
+  <!ATTLIST checkpoint at CDATA #IMPLIED>
+  <!ENTITY percent "&#37;">
+  <!ENTITY config "mode=&quot;safe&quot; retry=&percent;3">
+]>
+<pipeline>
+  <stage name="ingest">
+    <input path="/tmp/in&amp;put.xml" format="xml"/>
+    <transform class="normalize">
+      <parameter key="flags">&config;</parameter>
+      <parameter key="pattern"><![CDATA[(a|b)+?\\z]]></parameter>
+    </transform>
+    <output path="build/normalized.xml" overwrite="yes"/>
+  </stage>
+  <checkpoint at="post-normalize"/>
+  <stage name="export" depends="ingest">
+    <input path="-" format="raw"/>
+    <transform class="emit" enabled="false"/>
+    <output path="out/result.dat"/>
+  </stage>
+</pipeline>
+```

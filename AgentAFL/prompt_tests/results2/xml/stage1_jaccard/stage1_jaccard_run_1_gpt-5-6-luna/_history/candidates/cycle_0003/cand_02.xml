@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (participant+, message*)>
+  <!ELEMENT participant EMPTY>
+  <!ATTLIST participant uid ID #REQUIRED role NMTOKENS #IMPLIED>
+  <!ELEMENT message (#PCDATA|quote|attachment|br)*>
+  <!ATTLIST message from IDREF #REQUIRED to IDREFS #IMPLIED sent CDATA #IMPLIED>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment href URI #REQUIRED digest CDATA #IMPLIED>
+  <!ELEMENT br EMPTY>
+  <!ENTITY open "&#xAB;">
+  <!ENTITY close "&#xBB;">
+  <!ENTITY nested "&open;quoted &open;inner&close;&close;">
+]>
+<conversation>
+  <participant uid="u1" role="sender moderator"/>
+  <participant uid="u2" role="recipient"/>
+  <message from="u1" to="u2" sent="2026-09-22T12:00:00Z">
+    hello <quote>outer <quote>inner</quote> tail</quote><br/>
+    &nested; <attachment href="urn:blob:7/../8" digest="a&amp;b"/>
+  </message>
+  <message from="u2" to="u1 u2">reply&#x0A;with&#x09;controls</message>
+</conversation>

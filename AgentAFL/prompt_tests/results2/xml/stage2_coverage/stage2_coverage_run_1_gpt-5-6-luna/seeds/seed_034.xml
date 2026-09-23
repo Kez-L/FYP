@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data.bin" NDATA binary>
+  <!ENTITY greeting "hello">
+  <!ELEMENT package (manifest, resource+, trailer?)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry
+    name NMTOKEN #REQUIRED
+    type (text|binary|link) "text"
+    href CDATA #IMPLIED
+    size NMTOKEN #IMPLIED>
+  <!ELEMENT resource (name,content|name,link|name,raw)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT content (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link rel CDATA #REQUIRED>
+  <!ELEMENT raw (#PCDATA)>
+  <!ELEMENT trailer (#PCDATA)>
+]>
+<package>
+  <manifest>
+    <entry name="readme" type="text" href="readme.txt" size="18"/>
+    <entry name="payload" type="binary" href="data.bin" size="4096"/>
+    <entry name="shortcut" type="link" href="../elsewhere"/>
+  </manifest>
+  <resource>
+    <name>readme</name>
+    <content>&greeting;, package users.
+      <![CDATA[
+<literal>
+  not markup
+</literal>]]>
+    </content>
+  </resource>
+  <resource>
+    <name>payload</name>
+    <raw>external entity follows: &blob;</raw>
+  </resource>
+  <resource>
+    <name>shortcut</name>
+    <link rel="canonical"/>
+  </resource>
+  <trailer><?checksum algorithm="none"?>end</trailer>
+</package>

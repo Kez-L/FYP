@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (preamble?, payload, checksum?)>
+  <!ELEMENT preamble (#PCDATA|part)*>
+  <!ELEMENT payload (part+)>
+  <!ELEMENT part (#PCDATA|part)*>
+  <!ELEMENT checksum EMPTY>
+  <!ATTLIST packet mode (fast|safe) "safe" xmlns CDATA #IMPLIED>
+  <!ATTLIST part index NMTOKEN #REQUIRED compressed (yes|no) #IMPLIED>
+  <!ATTLIST checksum algorithm CDATA #REQUIRED value CDATA #REQUIRED>
+  <!ENTITY left "[[">
+  <!ENTITY right "]]">
+]>
+<packet mode="fast" xmlns="urn:packet">
+  <preamble>start<part index="p0">intro</part>end</preamble>
+  <payload>
+    <part index="1" compressed="no">alpha<part index="1.1"><![CDATA[&lt;raw&gt;]]></part>omega</part>
+    <part index="2" compressed="yes">&left;encoded&right;</part>
+  </payload>
+  <checksum algorithm="sha256" value=""/>
+</packet>

@@ -28,22 +28,42 @@ contract, so these are drop-in replacements).
 
   Arm A'' — make_coverage_per_byte_selector(...) : "Stage 2.1". Same
         machinery as Arm A', but ranks by COVERAGE DENSITY — total edges hit
-        / file size in bytes — instead of absolute edge count, inside a
-        deliberately TIGHTER size band (COVPB_MIN_SIZE..COVPB_MAX_SIZE). Arm
-        A' ranking on absolute edges in a 3 KB band reliably promotes AFL's
-        multi-KB block-extension mutants (they "cover" only by brute-forcing
-        parser loops); the model imitates them into mode collapse. Dividing
-        by size makes a compact, structurally dense seed win; the hard floor
-        stops the opposite degeneracy (a 40-byte fragment scoring high
-        edge/B while teaching nothing). See analysis/stage1_vs_stage2_xml.md
-        Sec 6.1-6.2 for the measured failure this fixes.
+        / file size in bytes — instead of absolute edge count, inside the
+        shared size band (COV_MIN_SIZE..COV_MAX_SIZE, widening to
+        COV_FALLBACK_MAX_SIZE if nothing lands in the primary band — see
+        _band_with_fallback). Arm A' ranking on absolute edges in a wide
+        band reliably promotes AFL's multi-KB block-extension mutants (they
+        "cover" only by brute-forcing parser loops); the model imitates them
+        into mode collapse. Dividing by size makes a compact, structurally
+        dense seed win; the hard floor stops the opposite degeneracy (a
+        40-byte fragment scoring high edge/B while teaching nothing). See
+        analysis/stage1_vs_stage2_xml.md Sec 6.1-6.2 for the measured
+        failure this fixes.
 
   Arm B' — make_rare_coverage_selector(...) : "Stage 2.2", the WORKING
         version of Arm B. Ranks by edge RARITY — sum over the seed's edges
         of 1 / freq(edge), freq counted across the in-band candidates — so a
         seed reaching edges few other seeds touch wins, AFLFast's "reward the
         rarely-hit path" (AFL++ `-p rare`), the deliberate opposite of Arm
-        A''. Same COVPB size band, fallback and Jaccard de-dup as Arm A''.
+        A''. Same shared size band, fallback and Jaccard de-dup as Arm A''.
+
+  make_stage1_jaccard_selector(...) : a Stage-1 sibling, not a Stage-2 arm —
+        keeps select_diverse_seeds' own ranking key (closeness to
+        build_context.FEWSHOT_TARGET_SIZE, printable-ratio tiebreak) inside
+        the same shared size band as the coverage arms, but de-dupes a
+        second+ pick by edge-set Jaccard overlap instead of
+        select_diverse_seeds' byte-content is_similar() check. Exists so a
+        Stage 1 vs Stage 2 (coverage) A/B comparison isolates exactly the
+        ranking-criterion variable — same band, same de-dup mechanism, same
+        jaccard_max — rather than conflating that with a de-dup-mechanism
+        difference too. select_diverse_seeds itself is untouched; this is a
+        separate, opt-in selector.
+
+All four coverage-aware selectors share one band+fallback ladder
+(_band_with_fallback: primary COV_MIN_SIZE..COV_MAX_SIZE, widen to
+COV_FALLBACK_MAX_SIZE if empty, bail to select_diverse_seeds if still
+empty) so none of them can silently drift apart on band width or on what
+"nothing in band" means — see _band_with_fallback's own docstring.
 
 The stub selectors (high_coverage_selector / rare_coverage_selector /
 no_seed_selector) below still use the get_edge_ids() NotImplementedError
@@ -57,6 +77,7 @@ from __future__ import annotations
 
 import hashlib
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 # evaluate_seeds.py lives at the repo root, one level up from prompt_tests/.
@@ -64,20 +85,25 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-# Same readable-size band build_context.select_diverse_seeds ranks within —
-# imported (not re-declared) so the two selectors stay in lockstep if it is
-# ever retuned.
-from build_context import FEWSHOT_MIN_SIZE, FEWSHOT_MAX_SIZE, select_diverse_seeds
+# FEWSHOT_TARGET_SIZE (the ~400B "structurally complete seed" target) is
+# imported, not re-declared, so make_stage1_jaccard_selector's ranking key
+# stays in lockstep with select_diverse_seeds' own if it's ever retuned.
+# select_diverse_seeds is reused as the final fallback for every selector in
+# this file (see _band_with_fallback).
+from build_context import FEWSHOT_TARGET_SIZE, select_diverse_seeds
 from evaluate_seeds import run_showmap
 
-# --- coverage-per-byte (Arm A'') own size band ---------------------------------
-# Deliberately tighter than select_diverse_seeds' 32..3000. Dividing edges by
+# --- shared size band for every coverage-aware selector in this file -----------
+# Deliberately tighter than build_context's own 32..3000 band. Dividing edges by
 # size already rewards compactness, so the HARD FLOOR is what stops the ranking
 # collapsing onto degenerate minimized fragments, and the low CEILING keeps the
 # promoted example out of the multi-KB block-extension-mutant regime that made
-# Arm A' regress (analysis/stage1_vs_stage2_xml.md Sec 6.2).
-COVPB_MIN_SIZE = 200   # floor: below this an XML seed can't carry a real DTD internal subset
-COVPB_MAX_SIZE = 800   # ceiling: ~2x the corpus median for a structurally complete seed
+# Arm A' regress (analysis/stage1_vs_stage2_xml.md Sec 6.2). One shared band
+# (not one per selector) so Stage 1 (Jaccard) vs Coverage vs Coverage-per-byte
+# vs Rare-coverage never silently disagree on what "in band" means.
+COV_MIN_SIZE = 200            # floor: below this an XML seed can't carry a real DTD internal subset
+COV_MAX_SIZE = 800            # primary ceiling: ~2x the corpus median for a structurally complete seed
+COV_FALLBACK_MAX_SIZE = 1500  # widened ceiling, tried before bailing to select_diverse_seeds entirely
 
 
 def get_edge_ids(seed_path: Path) -> set[int]:
@@ -157,6 +183,48 @@ def _edge_jaccard(a: set, b: set) -> float:
     return len(a & b) / len(a | b)
 
 
+def _band_with_fallback(candidates, min_size=COV_MIN_SIZE, max_size=COV_MAX_SIZE,
+                        fallback_max_size=COV_FALLBACK_MAX_SIZE):
+    """The one banding rule shared by every coverage-aware selector in this
+    file. Primary band first; if nothing lands in it, widen the ceiling
+    (same floor) instead of going fully unbounded or switching to a
+    different selector outright — a 1000-1500B seed is still a plausible
+    XML document, unlike the 5+KB block-extension mutants an unbounded pool
+    would readmit. Still empty after widening -> returns [] so the caller
+    can do its own final bail (every make_*_selector below falls back to
+    select_diverse_seeds at that point)."""
+    banded = [c for c in candidates if min_size <= c[2] <= max_size]
+    if banded:
+        return banded
+    return [c for c in candidates if min_size <= c[2] <= fallback_max_size]
+
+
+def _log_fallback(log_path, arm_name: str, reason: str, call_ctx=None) -> None:
+    """Every time a coverage-aware selector gives up and defers to
+    select_diverse_seeds instead of its own ranking, this is the ONE place
+    that records it — always to stderr (visible live, mid-run), and to
+    log_path too when the caller has one (a durable record you can check
+    after the fact, so a silent fallback can't masquerade as a normal
+    coverage-ranked pick in the results). log_path=None skips the file
+    write; the stderr print always happens.
+
+    call_ctx: the same mutable {"call": int|None} dict passed to the
+    selector factory (see make_coverage_selector's call_ctx param) — the
+    seed_selector(candidates, n_seeds) contract build_context.assemble_prompt
+    calls has no call-index slot, so run_build_context.py's prompt_fn instead
+    updates this dict's "call" key right before each assemble_prompt call,
+    and this function reads it at fallback time. None/missing -> "call=?"."""
+    call = (call_ctx or {}).get("call")
+    call_str = f"call={call} (prompts/call_{call:02d}.json)" if call is not None else "call=?"
+    msg = f"[selector-fallback] {arm_name} {call_str}: {reason} -> deferring to select_diverse_seeds"
+    print(f"  ! {msg}", file=sys.stderr)
+    if log_path is not None:
+        log_path = Path(log_path)
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        with log_path.open("a") as f:
+            f.write(f"{datetime.now(timezone.utc).isoformat()} {msg}\n")
+
+
 def _make_edges_for(target_binary, args, afl_showmap_bin, showmap_timeout, cache):
     """Closure: seed path -> its afl-showmap edge set, memoised in `cache` on
     (content-hash, target, args). The ONE edge-extraction path in this file —
@@ -177,6 +245,93 @@ def _make_edges_for(target_binary, args, afl_showmap_bin, showmap_timeout, cache
     return edges_for
 
 
+# ---------------------------------------------------------------------------
+# Stage 1 sibling — select_diverse_seeds' own ranking key, edge-Jaccard dedup
+# ---------------------------------------------------------------------------
+
+def make_stage1_jaccard_selector(
+    target_binary: str,
+    target_args=None,
+    *,
+    afl_showmap_bin: str = "afl-showmap",
+    showmap_timeout: int = 30,
+    jaccard_max: float = 0.7,
+    edge_cache: dict | None = None,
+    log_path=None,
+    call_ctx=None,
+):
+    """A Stage-1 sibling, not a Stage-2 arm: same ranking key as
+    select_diverse_seeds (closeness to build_context.FEWSHOT_TARGET_SIZE,
+    printable-ratio tiebreak), same shared size band as the coverage arms
+    (_band_with_fallback), but a later pick is rejected by edge-set Jaccard
+    overlap (matching make_coverage_selector's own de-dup mechanism and
+    jaccard_max default) instead of select_diverse_seeds' byte-content
+    is_similar() check.
+
+    Why this exists: a Stage 1 vs Stage 2 (coverage) A/B comparison is only
+    informative about the RANKING criterion (size-closeness vs coverage) if
+    everything else — band, de-dup mechanism, de-dup threshold — is held
+    identical between the two arms. select_diverse_seeds' is_similar() dedup
+    and make_coverage_selector's edge-Jaccard dedup are a second, unintended
+    variable riding along with the intended one. This selector holds Stage
+    1's ranking fixed and swaps only the de-dup mechanism, so the remaining
+    difference from make_coverage_selector is exactly the ranking criterion.
+
+    log_path: passed straight through to _log_fallback — see its docstring.
+    Every time this selector gives up and defers to select_diverse_seeds
+    (band empty even after widening, or nothing survived the edge/dedup
+    pass), that's logged there so a run's results can be trusted to
+    actually reflect this selector, not a silent fallback to a different one.
+
+    Factory, shared edge_cache, target_args rules: identical to
+    make_coverage_selector — see its docstring.
+    """
+    args = list(target_args) if target_args is not None else ["@@"]
+    cache = edge_cache if edge_cache is not None else {}
+    _edges_for = _make_edges_for(target_binary, args, afl_showmap_bin, showmap_timeout, cache)
+
+    def stage1_jaccard_selector(candidates, n_seeds):
+        """candidates: scan_queue's output, [(path, printable_ratio, size), ...]."""
+        if not candidates:
+            return []
+
+        pool = _band_with_fallback(candidates)
+        if not pool:
+            _log_fallback(log_path, "stage1-jaccard", "no candidate within 200-1500B", call_ctx=call_ctx)
+            return select_diverse_seeds(candidates, n_seeds)
+
+        # select_diverse_seeds' own ranking key: closeness to the ~400B
+        # target, printable ratio as tiebreak. Unlike the coverage arms,
+        # edges are never used for ranking here — only for the dedup gate
+        # below — so this candidate never even needs a showmap call unless
+        # it's actually being considered as a pick.
+        ranked = sorted(pool, key=lambda t: (abs(t[2] - FEWSHOT_TARGET_SIZE), -t[1]))
+
+        chosen: list = []
+        chosen_edges: list = []
+        for path, _ratio, size in ranked:
+            if len(chosen) >= n_seeds:
+                break
+            edges = _edges_for(path)
+            if not edges:  # crash-with-no-map / timeout / genuinely no coverage
+                continue
+            if any(_edge_jaccard(edges, e) > jaccard_max for e in chosen_edges):
+                continue
+            chosen.append((path, f"stage1-jaccard (size {size}B, {len(edges)} edges)"))
+            chosen_edges.append(edges)
+
+        if not chosen:
+            # every ranked candidate was un-showmap-able (crash/timeout) —
+            # same "no usable coverage signal" fallback as the coverage arms.
+            _log_fallback(log_path, "stage1-jaccard",
+                         "no in-band candidate produced a showmap-able edge set", call_ctx=call_ctx)
+            return select_diverse_seeds(candidates, n_seeds)
+
+        return chosen
+
+    return stage1_jaccard_selector
+
+
 def make_coverage_selector(
     target_binary: str,
     target_args=None,
@@ -185,9 +340,11 @@ def make_coverage_selector(
     showmap_timeout: int = 30,
     jaccard_max: float = 0.7,
     edge_cache: dict | None = None,
+    log_path=None,
+    call_ctx=None,
 ):
     """Build a seed_selector that ranks AFL-queue candidates by TOTAL edges
-    hit (afl-showmap), within the same size band as select_diverse_seeds,
+    hit (afl-showmap), within the shared size band (_band_with_fallback),
     de-duped by edge-set overlap.
 
     Why a factory: the seed_selector contract build_context expects is just
@@ -228,9 +385,12 @@ def make_coverage_selector(
         if not candidates:
             return []
 
-        banded = [c for c in candidates
-                  if FEWSHOT_MIN_SIZE <= c[2] <= FEWSHOT_MAX_SIZE]
-        pool = banded or candidates  # same fallback as select_diverse_seeds
+        pool = _band_with_fallback(candidates)
+        if not pool:
+            # nothing within COV_MIN_SIZE..COV_FALLBACK_MAX_SIZE at all —
+            # never silently rank the giants outside it (see module docstring).
+            _log_fallback(log_path, "coverage", "no candidate within 200-1500B", call_ctx=call_ctx)
+            return select_diverse_seeds(candidates, n_seeds)
 
         scored = []
         for path, ratio, size in pool:
@@ -238,6 +398,13 @@ def make_coverage_selector(
             if not edges:  # crash-with-no-map / timeout / genuinely no coverage
                 continue
             scored.append((path, edges, ratio, size))
+
+        if not scored:
+            # every in-band candidate came back crash/timeout/no-coverage —
+            # same "no usable coverage signal" case as an empty band.
+            _log_fallback(log_path, "coverage",
+                         "no in-band candidate produced a showmap-able edge set", call_ctx=call_ctx)
+            return select_diverse_seeds(candidates, n_seeds)
 
         # most edges first; ties broken by more-printable then smaller, purely
         # so the pick is deterministic across runs.
@@ -268,16 +435,20 @@ def make_coverage_per_byte_selector(
     *,
     afl_showmap_bin: str = "afl-showmap",
     showmap_timeout: int = 30,
-    min_size: int = COVPB_MIN_SIZE,
-    max_size: int = COVPB_MAX_SIZE,
+    min_size: int = COV_MIN_SIZE,
+    max_size: int = COV_MAX_SIZE,
+    fallback_max_size: int = COV_FALLBACK_MAX_SIZE,
     jaccard_max: float = 0.7,
     edge_cache: dict | None = None,
+    log_path=None,
+    call_ctx=None,
 ):
     """Like make_coverage_selector, but ranks by COVERAGE DENSITY —
-    total afl-showmap edges hit / file size in bytes — descending, inside a
-    tight [min_size, max_size] band, de-duped by edge-set overlap.
+    total afl-showmap edges hit / file size in bytes — descending, inside
+    the shared [min_size, max_size] band (_band_with_fallback), de-duped by
+    edge-set overlap.
 
-    Why density and not absolute count: ranking on raw edge count in a 3 KB
+    Why density and not absolute count: ranking on raw edge count in a wide
     band reliably promotes AFL's multi-KB block-extension mutants (repeated
     attributes, character-reference walls) that "cover" a lot only by
     brute-forcing parser loops. The model imitates them and the batch
@@ -287,9 +458,11 @@ def make_coverage_per_byte_selector(
     Why a HARD size band (not `banded or candidates`): dividing by size
     rewards small, so without a floor the ranking drifts to sub-DTD
     minimized fragments that score high edge/B while teaching nothing; the
-    ceiling keeps the promoted example out of the mutant regime. If NOTHING
-    is in band, defer to build_context.select_diverse_seeds rather than
-    silently re-admit the oversized files (analysis Sec 6.2).
+    ceiling keeps the promoted example out of the mutant regime. If nothing
+    is in the primary band, _band_with_fallback tries the widened
+    [min_size, fallback_max_size] band before this selector defers to
+    build_context.select_diverse_seeds — never silently re-admit the
+    oversized files the band excludes (analysis Sec 6.2).
 
     Factory, shared edge_cache, target_args rules: all identical to
     make_coverage_selector — see its docstring.
@@ -303,19 +476,28 @@ def make_coverage_per_byte_selector(
         if not candidates:
             return []
 
-        banded = [c for c in candidates if min_size <= c[2] <= max_size]
-        if not banded:
-            # Nothing compact-and-in-band — fall back to the size/diversity
-            # selector, never rank the oversized mutants this band excludes.
+        pool = _band_with_fallback(candidates, min_size, max_size, fallback_max_size)
+        if not pool:
+            # Nothing compact-and-in-band, even widened — fall back to the
+            # size/diversity selector, never rank the oversized mutants this
+            # band excludes.
+            _log_fallback(log_path, "coverage-per-byte", "no candidate within 200-1500B", call_ctx=call_ctx)
             return select_diverse_seeds(candidates, n_seeds)
 
         scored = []
-        for path, ratio, size in banded:
+        for path, ratio, size in pool:
             edges = _edges_for(path)
             if not edges or size <= 0:  # crash-no-map / timeout / no coverage
                 continue
             density = len(edges) / size
             scored.append((path, edges, density, ratio, size))
+
+        if not scored:
+            # every in-band candidate came back crash/timeout/no-coverage —
+            # same "no usable coverage signal" case as an empty band.
+            _log_fallback(log_path, "coverage-per-byte",
+                         "no in-band candidate produced a showmap-able edge set", call_ctx=call_ctx)
+            return select_diverse_seeds(candidates, n_seeds)
 
         # highest edge/byte first; ties -> more printable, then smaller,
         # purely for a deterministic pick across runs.
@@ -349,10 +531,13 @@ def make_rare_coverage_selector(
     *,
     afl_showmap_bin: str = "afl-showmap",
     showmap_timeout: int = 30,
-    min_size: int = COVPB_MIN_SIZE,
-    max_size: int = COVPB_MAX_SIZE,
+    min_size: int = COV_MIN_SIZE,
+    max_size: int = COV_MAX_SIZE,
+    fallback_max_size: int = COV_FALLBACK_MAX_SIZE,
     jaccard_max: float = 0.7,
     edge_cache: dict | None = None,
+    log_path=None,
+    call_ctx=None,
 ):
     """The WORKING version of rare_coverage_selector. Ranks +cov queue
     candidates by how RARE the edges they hit are — AFLFast's "reward the
@@ -368,9 +553,10 @@ def make_rare_coverage_selector(
     (The averaged variant was tried first and dropped — see this file's
     history in PLAN.md.)
 
-    Same [min_size, max_size] hard band, select_diverse_seeds fallback, and
-    Jaccard de-dup as make_coverage_per_byte_selector. Factory / shared
-    edge_cache / target_args rules identical to make_coverage_selector.
+    Same shared [min_size, max_size] band (_band_with_fallback),
+    select_diverse_seeds fallback, and Jaccard de-dup as
+    make_coverage_per_byte_selector. Factory / shared edge_cache /
+    target_args rules identical to make_coverage_selector.
     """
     args = list(target_args) if target_args is not None else ["@@"]
     cache = edge_cache if edge_cache is not None else {}
@@ -381,19 +567,22 @@ def make_rare_coverage_selector(
         if not candidates:
             return []
 
-        banded = [c for c in candidates if min_size <= c[2] <= max_size]
-        if not banded:
+        pool = _band_with_fallback(candidates, min_size, max_size, fallback_max_size)
+        if not pool:
+            _log_fallback(log_path, "rare-coverage", "no candidate within 200-1500B", call_ctx=call_ctx)
             return select_diverse_seeds(candidates, n_seeds)
 
         # First pass: every in-band seed's edge set (needed before any edge's
         # frequency across the band is known).
         seen = []
-        for path, ratio, size in banded:
+        for path, ratio, size in pool:
             edges = _edges_for(path)
             if not edges:  # crash-no-map / timeout / no coverage
                 continue
             seen.append((path, edges, ratio, size))
         if not seen:
+            _log_fallback(log_path, "rare-coverage",
+                         "no in-band candidate produced a showmap-able edge set", call_ctx=call_ctx)
             return select_diverse_seeds(candidates, n_seeds)
 
         freq: dict[int, int] = {}
@@ -567,3 +756,145 @@ if __name__ == "__main__":
             assert picks[0] == "rare", "expected 'rare' (30 band-private edges -> top Sum 1/freq)"
             assert "huge" not in picks and "frag" not in picks, "out-of-band seeds must be dropped"
             print("ARM B' TESTS PASSED — inverse-frequency-sum ranking + size band")
+
+    # --- shared band+fallback ladder: widen tier, then full bail -------------
+    # Exercised identically against all four coverage-aware selectors (Arm A',
+    # A'', B', and the new stage1-jaccard) so none of them can silently regress
+    # the ladder independently.
+    all_factories = {
+        "coverage": make_coverage_selector,
+        "coverage_per_byte": make_coverage_per_byte_selector,
+        "rare_coverage": make_rare_coverage_selector,
+        "stage1_jaccard": make_stage1_jaccard_selector,
+    }
+
+    # Widen tier: nothing in the primary 200-800B band, but "midband" (1000B)
+    # is inside the widened 200-1500B ceiling and must be picked; "giant"
+    # (5000B) must never be, even though it would carry more edges.
+    ladder_edges = {
+        "midband": set(range(1, 21)),   # 20 edges
+        "giant": set(range(1, 999)),    # 998 edges — most of any pool, must still be excluded
+    }
+    with tempfile.TemporaryDirectory() as td:
+        tdp = Path(td)
+        lpaths = {}
+        for name, sz in (("midband", 1000), ("giant", 5000)):
+            p = tdp / name
+            p.write_bytes(name.encode().ljust(sz, b"."))
+            lpaths[name] = p
+        ladder_candidates = [(lpaths[n], 1.0, len(lpaths[n].read_bytes())) for n in ladder_edges]
+
+        with mock.patch(
+            __name__ + ".run_showmap",
+            side_effect=lambda _bin, _t, _a, path, timeout=30: (
+                "ok", ladder_edges[Path(path).name]
+            ),
+        ):
+            for arm_name, factory in all_factories.items():
+                sel = factory("dummy-target", ["@@"])
+                picks = [p.name for p, _ in sel(ladder_candidates, 1)]
+                assert picks == ["midband"], (
+                    f"{arm_name}: expected widen-tier to pick 'midband' only, got {picks}"
+                )
+            print("WIDEN-TIER TESTS PASSED — all four selectors try 200-1500B before bailing")
+
+    # Full bail: nothing between 200-1500B at all ("tiny"=50B, "giant"=5000B —
+    # both outside every coverage-arm band). Every selector must defer to
+    # select_diverse_seeds, which re-applies ITS OWN 32-3000B band to the
+    # original candidate list and picks "tiny" (the only one inside it).
+    with tempfile.TemporaryDirectory() as td:
+        tdp = Path(td)
+        bpaths = {}
+        for name, sz in (("tiny", 50), ("giant", 5000)):
+            p = tdp / name
+            p.write_bytes(name.encode().ljust(sz, b"."))
+            bpaths[name] = p
+        bail_candidates = [(bpaths[n], 1.0, len(bpaths[n].read_bytes())) for n in ("tiny", "giant")]
+
+        with mock.patch(
+            __name__ + ".run_showmap",
+            side_effect=AssertionError("run_showmap should never be called once every "
+                                       "coverage-arm band is empty — the bail must happen "
+                                       "before any afl-showmap call"),
+        ):
+            for arm_name, factory in all_factories.items():
+                sel = factory("dummy-target", ["@@"])
+                picks = [p.name for p, _ in sel(bail_candidates, 1)]
+                assert picks == ["tiny"], (
+                    f"{arm_name}: expected full bail to select_diverse_seeds -> 'tiny', got {picks}"
+                )
+            print("FULL-BAIL TESTS PASSED — all four selectors defer to select_diverse_seeds "
+                  "without ever calling afl-showmap")
+
+    # --- fallback logging: a triggered bail is actually recorded, not silent -
+    with tempfile.TemporaryDirectory() as td:
+        tdp = Path(td)
+        for name, sz in (("tiny", 50), ("giant", 5000)):
+            (tdp / name).write_bytes(name.encode().ljust(sz, b"."))
+        bail_candidates = [((tdp / n), 1.0, (tdp / n).stat().st_size) for n in ("tiny", "giant")]
+        log_path = tdp / "nested" / "selector_fallback.log"  # nested: proves mkdir(parents=True)
+
+        with mock.patch(__name__ + ".run_showmap", side_effect=AssertionError("unused")):
+            for arm_name, factory in all_factories.items():
+                sel = factory("dummy-target", ["@@"], log_path=log_path)
+                sel(bail_candidates, 1)
+        assert log_path.is_file(), "log_path should have been created by the first fallback"
+        lines = log_path.read_text().splitlines()
+        assert len(lines) == len(all_factories), (
+            f"expected one logged line per selector that fell back, got {len(lines)}: {lines}"
+        )
+        for arm_name in all_factories:
+            assert any(arm_name.replace("_", "-") in line or arm_name in line for line in lines), (
+                f"no fallback log line mentions {arm_name}: {lines}"
+            )
+        print("FALLBACK-LOG TESTS PASSED — a triggered bail is written to log_path, not just printed")
+
+    # --- stage1-jaccard: proves the DEDUP MECHANISM actually changed ---------
+    # Same ranking key as select_diverse_seeds (closeness to 400B, all these
+    # candidates sit exactly at 400B so ranking ties on insertion order), but
+    # acceptance is edge-Jaccard, not byte-content is_similar(). Two checks,
+    # each the mirror image of what a content-similarity dedup would do:
+    stage1j_edges = {
+        "near1": set(range(1, 11)),                    # 10 edges — the baseline pick
+        "near3_overlap": set(range(1, 10)) | {101},     # 9/10 shared with near1 -> Jaccard 0.818 (REJECT)
+        "near2_disjoint": set(range(201, 211)),          # fully disjoint from near1 -> Jaccard 0.0 (ACCEPT)
+    }
+    with tempfile.TemporaryDirectory() as td:
+        tdp = Path(td)
+        jpaths = {}
+        # near1 / near3_overlap: near-IDENTICAL length, deliberately different
+        # byte content — a content-similarity dedup would happily accept
+        # near3_overlap as "different enough"; edge-Jaccard must reject it.
+        (tdp / "near1").write_bytes(b"A" * 400)
+        (tdp / "near3_overlap").write_bytes(b"Z" * 400)
+        # near2_disjoint: byte-for-byte near1 with ONE byte changed — a
+        # content-similarity dedup would almost certainly reject this as "too
+        # similar to near1"; edge-Jaccard must accept it, since its edges
+        # don't overlap near1's at all.
+        (tdp / "near2_disjoint").write_bytes(b"A" * 399 + b"B")
+        for name in stage1j_edges:
+            jpaths[name] = tdp / name
+
+        with mock.patch(
+            __name__ + ".run_showmap",
+            side_effect=lambda _bin, _t, _a, path, timeout=30: (
+                "ok", stage1j_edges[Path(path).name]
+            ),
+        ):
+            sel = make_stage1_jaccard_selector("dummy-target", ["@@"])
+
+            reject_candidates = [(jpaths["near1"], 1.0, 400), (jpaths["near3_overlap"], 1.0, 400)]
+            picks = [p.name for p, _ in sel(reject_candidates, 2)]
+            assert picks == ["near1"], (
+                f"expected near3_overlap rejected despite different bytes (edge-Jaccard "
+                f"0.818 > 0.7), got {picks}"
+            )
+
+            accept_candidates = [(jpaths["near1"], 1.0, 400), (jpaths["near2_disjoint"], 1.0, 400)]
+            picks = [p.name for p, _ in sel(accept_candidates, 2)]
+            assert set(picks) == {"near1", "near2_disjoint"}, (
+                f"expected near2_disjoint accepted despite near-identical bytes (edge-Jaccard "
+                f"0.0), got {picks}"
+            )
+            print("STAGE1-JACCARD DEDUP TESTS PASSED — acceptance tracks edge overlap, "
+                  "not byte content")

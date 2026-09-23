@@ -1,0 +1,109 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ENTITY % common "<!ELEMENT record (title, body, link?)>">
+  %common;
+  <!ELEMENT archive (record+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST record key ID #REQUIRED status (draft|final) "draft">
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ENTITY copyright "&#169; 2026">
+]>
+<archive>
+  <record key="r001" status="final">
+    <title>Quarterly &copyright;</title>
+    <body>Plain <em>emphasis</em><br/>continued text.</body>
+    <link href="urn:record:r001"/>
+  </record>
+  <record key="r002">
+    <title>Second entry</title>
+    <body>Words and symbols: &lt; &amp; &gt;.</body>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (section+)>
+  <!ELEMENT section (header, point*)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT point (#PCDATA)>
+  <!ATTLIST section xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST point ref IDREF #IMPLIED kind NMTOKEN "note">
+]>
+<map xmlns="urn:example:map" xmlns:g="urn:example:geo">
+  <section xml:lang="fr">
+    <header>Repères</header>
+    <point ref="missing" kind="warning">Unresolved reference</point>
+    <point g:lat="48.8566" g:lon="2.3522">Paris</point>
+  </section>
+  <section xml:lang="ja">
+    <header>地点</header>
+    <point kind="label">東京</point>
+  </section>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file name CDATA #REQUIRED type CDATA #REQUIRED>
+  <!ELEMENT payload ANY>
+  <!ENTITY quote "He said &quot;ready&quot;">
+]>
+<package>
+  <manifest>
+    <file name="alpha.bin" type="application/octet-stream"/>
+    <file name="β.txt" type="text/plain"/>
+  </manifest>
+  <payload>
+    <chunk><![CDATA[raw bytes: ]]>]]&gt;<![CDATA[ and a closing marker]]></chunk>
+    <chunk>&quote;</chunk>
+    <empty xmlns="urn:payload"/>
+  </payload>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (heading, table?)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT table (row*)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST row number CDATA #IMPLIED>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<report>
+  <heading>Broken-but-parseable input</heading>
+  <table>
+    <row number="01"><cell>&left;one&right;</cell><cell>two</cell></row>
+    <row number="02"><cell>three</cell><cell>four</cell></row>
+  </table>
+</report>
+<trailing/>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE envelope SYSTEM "missing-external-subset.dtd">
+<envelope xmlns="urn:wire:envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <header>
+    <sender xsi:type="unknown">node-A</sender>
+    <timestamp>2026-09-22T12:34:56Z</timestamp>
+  </header>
+  <body>
+    <message priority="high">Payload with &#x41; and &#65;</message>
+  </body>
+</envelope>
+```

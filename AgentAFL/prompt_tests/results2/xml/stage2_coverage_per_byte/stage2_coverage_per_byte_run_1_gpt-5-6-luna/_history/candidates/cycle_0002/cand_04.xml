@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file path CDATA #REQUIRED type CDATA #IMPLIED size CDATA #IMPLIED>
+  <!ELEMENT data (chunk*)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk file CDATA #REQUIRED offset CDATA "0">
+]>
+<package xmlns:x="urn:pkg:extra">
+  <!-- deliberately mixed metadata and processing instructions -->
+  <?build mode="incremental"?>
+  <manifest>
+    <file path="a/b.txt" type="text/plain" size="17"/>
+    <file path="images/π.png" type="image/png" size="0"/>
+    <file path="empty" type="application/octet-stream"/>
+  </manifest>
+  <data>
+    <chunk file="a/b.txt" offset="0">line one&#xA;line two</chunk>
+    <chunk file="a/b.txt" offset="11"><![CDATA[&lt;not-an-entity;]]></chunk>
+    <chunk file="images/π.png" offset="0">base64:////</chunk>
+  </data>
+</package>

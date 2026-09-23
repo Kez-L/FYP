@@ -1,0 +1,91 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!ENTITY logo SYSTEM "logo.gif" NDATA gif>
+  <!ELEMENT catalog (item*, note?)>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item
+    id ID #REQUIRED
+    ref IDREFS #IMPLIED
+    media ENTITY #IMPLIED
+    enabled (yes|no) "yes">
+  <!ELEMENT note (#PCDATA)>
+]>
+<catalog>
+  <item id="first" ref="second third" media="logo"/>
+  <item id="second" enabled="no"/>
+  <item id="third"/>
+  <note>catalog-end</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<ns:packet xmlns:ns="urn:packet:v1" xmlns:x="urn:extra" x:flag="a&amp;b">
+  <ns:header>
+    <ns:id>001</ns:id>
+    <ns:empty/>
+  </ns:header>
+  <ns:payload><![CDATA[
+    <not-an-element attr="&amp;">]]]]><![CDATA[></not-an-element>
+  ]]></ns:payload>
+  <x:extension x:value="&#xD;&#xA;&#x9;">text</x:extension>
+</ns:packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST cell colspan NMTOKEN "1">
+]>
+<matrix>
+  <row><cell colspan="000">A</cell><cell>B</cell></row>
+  <row><cell colspan="1 2">C</cell><cell><![CDATA[]]></cell><cell>D&amp;E</cell></row>
+  <row><cell>line1
+line2&#10;line3</cell></row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE r [
+  <!ELEMENT r ANY>
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+  <!ENTITY amp "&#x26;">
+]>
+<r>
+  &left;tag attr="&amp;"&right;
+  <a><![CDATA[x]]></a>
+  <!-- comment with -- no, this is text -->
+  <?pi data='quoted'?>
+  <b>&left;&amp;&right;</b>
+  <![CDATA[raw ]]> boundary <![CDATA[and another]]>
+</r>
+```
+
+```xml
+<configuration>
+  <path>/var//tmp/../cache</path>
+  <values>
+    <value key="empty"></value>
+    <value key="spaces">   </value>
+    <value key="mixed">before<inner/>after<inner><![CDATA[z]]></inner>end</value>
+  </values>
+  <sequence>
+    <one/>
+    <two a="1" b="2">
+      <three>
+        <four/>
+      </three>
+    </two>
+  </sequence>
+  <trailing xmlns="urn:test">
+    <item xml:lang="en-US" xml:space="preserve">alpha&#x20;beta</item>
+  </trailing>
+</configuration>
+```

@@ -1,0 +1,23 @@
+<?xml version="1.1"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (frame*)>
+  <!ELEMENT frame (header, data)>
+  <!ATTLIST frame seq NMTOKEN #REQUIRED type (text|binary|mixed) #IMPLIED>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT data (#PCDATA|chunk|separator)*>
+  <!ELEMENT chunk (#PCDATA|chunk)*>
+  <!ELEMENT separator EMPTY>
+  <!ENTITY apos "&#x27;">
+  <!ENTITY percent "&#37;">
+  <!ENTITY quoted "&apos;quoted&apos;">
+]>
+<stream>
+  <frame seq="0001" type="text">
+    <header>start &quoted;</header>
+    <data>alpha<separator/>beta<chunk>gamma<chunk>delta</chunk></chunk>omega</data>
+  </frame>
+  <frame seq="0002" type="mixed">
+    <header>symbols: &percent; &amp; &#x2028;</header>
+    <data><![CDATA[<frame seq="fake">]]><chunk>payload&#x0D;&#x0A;tail</chunk></data>
+  </frame>
+</stream>

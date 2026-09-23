@@ -1,0 +1,96 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:store" xmlns:p="urn:price">
+  <product id="A-001" active="true">
+    <name>Gadget &amp; Gear</name>
+    <p:price currency="EUR">19.95</p:price>
+    <tags>
+      <tag><![CDATA[alpha<beta]]></tag>
+      <tag>γεια</tag>
+    </tags>
+  </product>
+  <product id="B-002">
+    <name>Widget</name>
+    <p:price currency="USD">0</p:price>
+  </product>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ENTITY % common "id ID #IMPLIED role CDATA 'message'">
+  <!ELEMENT envelope (meta, payload)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta %common;>
+  <!ELEMENT payload (#PCDATA|part|link)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ATTLIST part kind (text|binary|unknown) "text">
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link href URI #REQUIRED>
+]>
+<envelope>
+  <meta id="m1"/>
+  <payload>
+    lead
+    <part kind="unknown">A&amp;B</part>
+    <link href="urn:x:y"/>
+    tail
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<?pipeline mode="incremental"?>
+<r:request xmlns:r="urn:req" xmlns:x="urn:ext" x:flag="yes">
+  <!-- comment with --? -->
+  <r:headers>
+    <r:header name="Accept">application/xml</r:header>
+    <r:header name="X-Count">&#x31;&#50;</r:header>
+  </r:headers>
+  <r:body><![CDATA[
+    {"key":"value","array":[1,2,3]}
+  ]]></r:body>
+  <?checkpoint?>
+</r:request>
+```
+
+```xml
+<!DOCTYPE map [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY logo SYSTEM "logo.jpg" NDATA jpeg>
+  <!ELEMENT map (entry+)>
+  <!ELEMENT entry (key, value?, ref*)>
+  <!ATTLIST entry code ID #REQUIRED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #IMPLIED>
+]>
+<map>
+  <entry code="first">
+    <key>one</key>
+    <value>1</value>
+    <ref target="second"/>
+  </entry>
+  <entry code="second">
+    <key>two</key>
+  </entry>
+</map>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<root>
+  <branch level="0">
+    <leaf>text</leaf>
+    <branch level="1">
+      <leaf a="&quot;&amp;">x</leaf>
+      <leaf><![CDATA[]]></leaf>
+    </branch>
+  </branch>
+  <empty/>
+  <mixed>before<node/>after<node>inside</node>end</mixed>
+</root>
+```

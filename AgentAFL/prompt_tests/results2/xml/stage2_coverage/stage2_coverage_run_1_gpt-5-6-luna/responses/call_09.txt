@@ -1,0 +1,202 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, metadata)>
+  <!ELEMENT item (name, description, link?, tags?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST catalog
+    version CDATA #REQUIRED
+    root ID #IMPLIED>
+  <!ATTLIST item
+    id ID #REQUIRED
+    related IDREFS #IMPLIED
+    state (new|used|archived) "new"
+    payload ENTITY #IMPLIED>
+  <!ATTLIST link
+    href CDATA #REQUIRED
+    kind (html|binary|other) "other">
+  <!ATTLIST metadata
+    format NOTATION #IMPLIED>
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY copyright "&#xA9; 2026">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY sample "A &amp; B &lt; C">
+  <!ENTITY blob SYSTEM "data.bin" NDATA binary>
+]>
+<catalog version="2" root="i-001">
+  <item id="i-001" state="new" related="i-002" payload="blob">
+    <name>&copyright; &nbsp; Toolkit</name>
+    <description>Text with <em>emphasis</em>, <code>&sample;</code>, and<br/>a break.</description>
+    <link href="https://example.invalid/a?x=1&amp;y=2" kind="html"/>
+    <tags><tag>xml</tag><tag>fuzz</tag></tags>
+  </item>
+  <item id="i-002" state="archived">
+    <name>Second item</name>
+    <description><![CDATA[raw ]]> content &amp; delimiters]]></description>
+  </item>
+  <metadata format="binary"/>
+</catalog>
+```
+
+```xml
+<?xml version="1.1" standalone="yes"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (header, transaction*, trailer)>
+  <!ELEMENT header (owner, created)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT transaction (debit|credit)>
+  <!ELEMENT debit (#PCDATA)>
+  <!ELEMENT credit (#PCDATA)>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST ledger xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST transaction
+    number ID #REQUIRED
+    links IDREFS #IMPLIED
+    currency NMTOKEN "EUR">
+  <!ATTLIST debit account NMTOKEN #REQUIRED>
+  <!ATTLIST credit account NMTOKEN #REQUIRED>
+  <!ENTITY nl "&#x85;">
+  <!ENTITY euro "&#x20AC;">
+  <!ENTITY quoted "&quot;quoted&quot;">
+  <!ENTITY % common "(debit|credit)">
+  <!ELEMENT audit %common;>
+]>
+<ledger xml:lang="en-US">
+  <header>
+    <owner>R&amp;D &quoted;</owner>
+    <created>2026-09-22&nl;09:30</created>
+  </header>
+  <transaction number="tx-1" currency="EUR">
+    <debit account="A_01">12.50 &euro;</debit>
+  </transaction>
+  <transaction number="tx-2" links="tx-1" currency="USD">
+    <credit account="B.02">12.50 &#x24;</credit>
+  </transaction>
+  <trailer/>
+</ledger>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workspace [
+  <!ELEMENT workspace (folder|file|shortcut)*>
+  <!ELEMENT folder (folder|file|shortcut)*>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT shortcut EMPTY>
+  <!ATTLIST workspace
+    xmlns:meta CDATA #IMPLIED
+    profile (minimal|full) "full">
+  <!ATTLIST folder
+    name CDATA #REQUIRED
+    open (true|false) "true">
+  <!ATTLIST file
+    id ID #REQUIRED
+    name CDATA #REQUIRED
+    checksum CDATA #IMPLIED
+    owner IDREF #IMPLIED
+    flags NMTOKENS #IMPLIED>
+  <!ATTLIST shortcut
+    target IDREF #REQUIRED
+    label CDATA #IMPLIED>
+  <!ENTITY left "&lt;">
+  <!ENTITY right "&gt;">
+  <!ENTITY % optional "INCLUDE">
+  <![%optional;[
+    <!ATTLIST file executable (yes|no) "no">
+  ]]>
+]>
+<workspace xmlns:meta="urn:meta" profile="full">
+  <folder name="src" open="true">
+    <file id="f-1" name="main&amp;test.c" owner="f-2" flags="read write" executable="yes"/>
+    <folder name="nested" open="false">
+      <file id="f-2" name="helper.h" checksum="&left;abc&right;" executable="no"/>
+      <shortcut target="f-1" label="entry point"/>
+    </folder>
+  </folder>
+  <file id="f-3" name="README.txt" flags="read"/>
+</workspace>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (chunk*)>
+  <!ELEMENT chunk (#PCDATA|![CDATA[not-a-markup-token]]|newline)*>
+  <!ELEMENT newline EMPTY>
+  <!ATTLIST chunk
+    sequence NMTOKEN #REQUIRED
+    checksum CDATA #IMPLIED>
+  <!ENTITY open "[[">
+  <!ENTITY close "]]">
+  <!ENTITY quote "&quot;">
+]>
+<stream>
+  <chunk sequence="001" checksum="0x00">alpha &amp; beta</chunk>
+  <chunk sequence="002">before <![CDATA[<literal>&unexpanded;</literal>]]> after</chunk>
+  <newline/>
+  <chunk sequence="003"><![CDATA[
+    ]]> split ]]> marker &open;payload&close;</chunk>
+  <chunk sequence="004" checksum="&quote;odd&amp;even&quot;">
+    line one
+    <newline/>
+    line two
+  </chunk>
+</stream>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, signature?)>
+  <!ELEMENT header (to, from, subject, reply-to?)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT reply-to (#PCDATA)>
+  <!ELEMENT body (paragraph|list|quote|image)*>
+  <!ELEMENT paragraph (#PCDATA|strong|br|link)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|paragraph|list)*>
+  <!ELEMENT quote (#PCDATA|paragraph)*>
+  <!ELEMENT image EMPTY>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST message
+    id ID #REQUIRED
+    priority (low|normal|urgent) "normal"
+    xml:space (default|preserve) "default">
+  <!ATTLIST link href CDATA #REQUIRED rel NMTOKEN #IMPLIED>
+  <!ATTLIST image src CDATA #REQUIRED alt CDATA #IMPLIED>
+  <!ENTITY greeting "Hello &amp; welcome">
+  <!ENTITY nested "&greeting; to the &quot;archive&quot;">
+]>
+<message id="m-900" priority="urgent" xml:space="preserve">
+  <header>
+    <to>ops@example.invalid</to>
+    <from>robot@example.invalid</from>
+    <subject>&nested;</subject>
+    <reply-to>noreply@example.invalid</reply-to>
+  </header>
+  <body>
+    <paragraph>&greeting;, <strong>operator</strong>.<br/>Review <link href="urn:item:7" rel="related">this record</link>.</paragraph>
+    <list>
+      <item>First entry</item>
+      <item><paragraph>Second entry with a nested list:</paragraph><list><item>Inner A</item><item>Inner B</item></list></item>
+    </list>
+    <quote><paragraph><![CDATA[Quoted markup: <tag attr="x"/>]]></paragraph></quote>
+    <image src="cid:chart-1" alt="status chart"/>
+  </body>
+  <signature>signed-by=key-1; algorithm=none</signature>
+</message>
+```

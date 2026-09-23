@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ENTITY % declarations '
+    <!ELEMENT dashboard (config,stream,alert*)>
+    <!ELEMENT config EMPTY>
+    <!ATTLIST config mode (cold|warm|hot) "warm" threshold CDATA #IMPLIED>
+    <!ELEMENT stream (packet+)>
+    <!ELEMENT packet (#PCDATA|field)*>
+    <!ELEMENT field (#PCDATA)>
+    <!ATTLIST packet seq NMTOKEN #REQUIRED>
+    <!ATTLIST field name CDATA #REQUIRED kind (text|number|flag) "text">
+    <!ELEMENT alert (message,action?)>
+    <!ELEMENT message (#PCDATA)>
+    <!ELEMENT action EMPTY>
+    <!ATTLIST action target CDATA #REQUIRED>
+  '>
+  %declarations;
+  <!ENTITY % enabled "INCLUDE">
+  <![%enabled;[
+    <!ELEMENT feature EMPTY>
+    <!ATTLIST feature name CDATA #REQUIRED>
+  ]]>
+  <![IGNORE[
+    <!ELEMENT discarded (never)>
+    <!ELEMENT never EMPTY>
+  ]]>
+  <!ENTITY tick "&#x2713;">
+  <!ENTITY payload "left &amp; right &lt;edge&gt;">
+]>
+<dashboard>
+  <?mode name="streaming"?>
+  <config mode="hot" threshold="&#x3C;=42"/>
+  <stream>
+    <packet seq="0001"><field name="kind" kind="text">start</field><field name="ok" kind="flag">&tick;</field></packet>
+    <packet seq="0002">prefix<field name="value" kind="number">17</field>suffix</packet>
+  </stream>
+  <alert><message>&payload;</message><action target="console"/></alert>
+  <feature name="late"/>
+</dashboard>

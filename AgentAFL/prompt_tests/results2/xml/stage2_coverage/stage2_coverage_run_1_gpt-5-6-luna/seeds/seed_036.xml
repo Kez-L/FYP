@@ -1,0 +1,25 @@
+<?xml version="1.1"?>
+<!DOCTYPE stream [
+  <!ENTITY open "<item>">
+  <!ENTITY close "</item>">
+  <!ENTITY weird "&#x0B;&#x85;&#x2028;">
+  <!ELEMENT stream (item|gap|chunk)*>
+  <!ELEMENT item (#PCDATA|item|gap)*>
+  <!ELEMENT gap EMPTY>
+  <!ELEMENT chunk ANY>
+  <!ATTLIST item
+    level NMTOKEN #IMPLIED
+    tags NMTOKENS #IMPLIED
+    enabled (yes|no) "yes">
+  <!ATTLIST chunk
+    kind CDATA #FIXED "raw">
+]>
+<stream>
+  &open;first &weird; second&close;
+  <gap/>
+  <item level="01 0xFF" tags="one two	three" enabled="no">
+    <![CDATA[unclosed-looking ]]> text
+    <item level="nested">A&amp;B</item>
+  </item>
+  <chunk kind="raw"><![CDATA[<item>&bad;</item>]]></chunk>
+</stream>

@@ -1,0 +1,75 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:seed:catalog" xmlns:x="urn:seed:extra">
+  <x:item id="α-01" enabled="true">
+    <name><![CDATA[<& tricky ]]> tail]]></name>
+    <price currency="€">0.0000000000000000000001</price>
+    <metadata>
+      <entry key="empty"></entry>
+      <entry key="mixed">text<inner/><![CDATA[data]]>after</entry>
+    </metadata>
+  </x:item>
+  <item id="2" enabled="false"/>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!-- before the document element -->
+<?probe a="1" b='&quot;'?>
+<root>
+  text
+  <a><b><c><d><e/></d></c></b></a>
+  <![CDATA[
+    ]]]]><![CDATA[>]]>
+  <tail><![CDATA[embedded <tags> & entities]]></tail>
+  <?nested instruction?>
+</root>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, footer?)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload (#PCDATA|part|separator)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST header version NMTOKEN #REQUIRED>
+  <!ATTLIST part kind (text|binary|unknown) "unknown">
+]>
+<envelope>
+  <header version="0000000000000000000000000000000000000000000001"/>
+  <payload>start<part kind="text">alpha &amp; beta</part><separator/><part kind="binary"><![CDATA[AAECAwQFBgcICQ==]]></part>end</payload>
+  <footer>last</footer>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:root xmlns:r="urn:root" xmlns:a="urn:a" xmlns:b="urn:b">
+  <a:branch xmlns:a="">
+    <b:leaf xmlns:b="urn:shadow" a="&lt;&amp;&quot;&apos;&gt;">value</b:leaf>
+  </a:branch>
+  <r:branch xmlns="urn:default">
+    <child xmlns:r="urn:rebound">
+      <r:item/>
+      <item xmlns=""/>
+    </child>
+  </r:branch>
+</r:root>
+```
+
+```xml
+<document>
+  <section name="one">
+    <![CDATA[unterminated-looking ]]]]><![CDATA[> boundary]]>
+    <line>one&#x0A;two&#x0D;&#x0A;three&#x20;&#x9;four</line>
+  </section>
+  <section name="two">
+    <empty/>
+    <nested level="0"><nested level="1"><nested level="2"><nested level="3"/></nested></nested></nested>
+  </section>
+  <section name="three"><![CDATA[&lt;not markup&gt;]]></section>
+</document>
+```

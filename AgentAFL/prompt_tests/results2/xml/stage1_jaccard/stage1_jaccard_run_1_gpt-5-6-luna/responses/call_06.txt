@@ -1,0 +1,144 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION jpg SYSTEM "image/jpeg">
+  <!ENTITY logo SYSTEM "logo.jpg" NDATA jpg>
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title,price?,details)>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    kind (book|video|audio) "book"
+    cover ENTITY #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ENTITY brand "A&amp;B Supplies">
+]>
+<catalog>
+  <entry id="e1" kind="video" cover="logo">
+    <title>&brand; &quot;Archive&quot;</title>
+    <price>19.95</price>
+    <details>disc <link>region-0</link> restored</details>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+)>
+  <!ELEMENT section (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST section
+    code ID #IMPLIED
+    level NMTOKEN "1">
+  <!ENTITY % switches '
+    <!ATTLIST item
+      state (new|old|unknown) "unknown"
+      note CDATA #IMPLIED>
+  '>
+  %switches;
+  <![IGNORE[
+    <!ELEMENT discarded EMPTY>
+    <!ENTITY hidden "not expanded">
+  ]]>
+  <![INCLUDE[
+    <!ENTITY visible "included-value">
+  ]]>
+]>
+<report>
+  <section code="s-a" level="2">
+    <heading>Summary</heading>
+    <item state="new" note="x &amp; y">alpha &visible;</item>
+    <item>beta</item>
+  </section>
+  <section>
+    <heading>Details</heading>
+    <item state="old">gamma</item>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta,body,tail)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT body (chunk+)>
+  <!ELEMENT chunk (#PCDATA|chunk)*>
+  <!ELEMENT tail (#PCDATA)>
+  <!ATTLIST meta
+    timestamp CDATA #REQUIRED
+    active (yes|no) "yes">
+  <!ENTITY open "<chunk level='generated'>">
+  <!ENTITY close "</chunk>">
+  <!ENTITY text "nested &amp; material">
+]>
+<envelope>
+  <meta timestamp="2026-09-22T00:00:00Z" active="yes"/>
+  <body>
+    <chunk level="root">start <chunk level="inner">&text;</chunk> finish</chunk>
+    &open;payload &text;&close;
+  </body>
+  <tail>after-body</tail>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a|b|c)*>
+  <!ELEMENT a EMPTY>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c (d,e?)>
+  <!ELEMENT d (#PCDATA)>
+  <!ELEMENT e EMPTY>
+  <!ATTLIST a xmlns CDATA #IMPLIED xmlns:q CDATA #IMPLIED>
+  <!ATTLIST b q:kind CDATA #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quote "&#34;">
+]>
+<root xmlns="urn:default" xmlns:q="urn:q">
+  <a xmlns="" xmlns:q="urn:shadow" q:value="one" xmlns:r="urn:r"/>
+  <b q:kind="&quote;">left&nbsp;right</b>
+  <c>
+    <d>first &#x2028; second</d>
+    <e/>
+  </c>
+  <b xmlns:q="">unprefixed namespace scope</b>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (record*)>
+  <!ELEMENT record (key,value,blob?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT blob (#PCDATA)>
+  <!ATTLIST record
+    index ID #REQUIRED
+    flags NMTOKENS #IMPLIED>
+  <!ENTITY tab "&#9;">
+  <!ENTITY line "&#10;">
+  <!ENTITY mark "&#x1F642;">
+]>
+<stream>
+  <record index="r001" flags="fast checked">
+    <key>alpha</key>
+    <value>one&tab;two&line;three</value>
+    <blob>prefix &mark; suffix</blob>
+  </record>
+  <record index="r002" flags="quoted">
+    <key>beta</key>
+    <value> <![CDATA[ angle < brackets > and ]]]]><![CDATA[> split ]]></value>
+  </record>
+  <record index="r003">
+    <key>gamma</key>
+    <value>last</value>
+  </record>
+</stream>
+```

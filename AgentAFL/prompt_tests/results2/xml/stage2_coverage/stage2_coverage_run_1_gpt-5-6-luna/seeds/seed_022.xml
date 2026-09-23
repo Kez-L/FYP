@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (header,record*,footer)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT record (#PCDATA|field|note|![CDATA[]])*>
+  <!ELEMENT field (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST record kind CDATA "ordinary">
+]>
+<stream>
+  <header>begin<!-- separator --><?mark ready?></header>
+  <record kind="quoted">
+    before
+    <![CDATA[<field name="x">raw</field>]]>
+    <field>one &lt; two &amp;&amp; three</field>
+    <![CDATA[]]><note>after</note>
+    <?instruction data?>
+    tail
+  </record>
+  <record kind="split"><![CDATA[left]]>middle<![CDATA[right]]></record>
+  <footer>done &apos; safely</footer>
+</stream>

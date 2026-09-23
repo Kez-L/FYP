@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ENTITY alpha "one">
+  <!ENTITY beta "&alpha; &gamma;">
+  <!ENTITY gamma "three">
+  <!ENTITY % ext SYSTEM "missing-subset.dtd">
+  <!ENTITY % conditional "<!ELEMENT injected (#PCDATA)>">
+  %conditional;
+  <![IGNORE[
+    <!ELEMENT ignored EMPTY>
+    <!ATTLIST ignored x CDATA "y">
+  ]]>
+]>
+<root a="1" b="2">
+  <injected>before &beta; after</injected>
+  <node>
+    <![CDATA[
+      ]]> is data only inside this section
+    ]]>
+  </node>
+  <node><![CDATA[x]]></node>
+</root>

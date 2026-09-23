@@ -1,0 +1,209 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE library [
+  <!ELEMENT library (shelf+)>
+  <!ATTLIST library xml:lang NMTOKEN "en">
+  <!ELEMENT shelf (book*)>
+  <!ATTLIST shelf name CDATA #REQUIRED>
+  <!ELEMENT book (title,author,summary?,keyword*)>
+  <!ATTLIST book code ID #REQUIRED genre (fiction|essay|poetry) "essay" xml:space (default|preserve) "default">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|strong|quote)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ENTITY imprint "North &amp; River">
+  <!ENTITY year "2026">
+]>
+<library xmlns="urn:archive:library" xmlns:meta="urn:archive:metadata" xml:lang="en-GB">
+  <shelf name="special-collections">
+    <book code="b001" genre="poetry" xml:space="preserve">
+      <title>Signals &amp; Silences</title>
+      <author xml:lang="fr">Élise Martin</author>
+      <summary>A record from &imprint; published in &year;.
+        <strong>Annotated</strong>
+        <quote>“Between lines”</quote>
+      </summary>
+      <keyword>epistolary</keyword>
+      <keyword>rare</keyword>
+    </book>
+  </shelf>
+  <shelf name="new-arrivals">
+    <book code="b002">
+      <title>Geometry of Rain</title>
+      <author><meta:name>R. Chen</meta:name></author>
+    </book>
+  </shelf>
+</library>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!ENTITY cover SYSTEM "cover.gif" NDATA gif>
+  <!ENTITY % include-meta "INCLUDE">
+  <![%include-meta;[
+    <!ELEMENT metadata (author, checksum)>
+    <!ELEMENT author (#PCDATA)>
+    <!ELEMENT checksum (#PCDATA)>
+  ]]>
+  <!ELEMENT package (manifest, metadata, payload)>
+  <!ATTLIST package release CDATA #IMPLIED>
+  <!ELEMENT manifest (item+)>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item ref ENTITY #REQUIRED role (cover|thumbnail|data) "data">
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|part)*>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!ELEMENT part (#PCDATA)>
+  <!ENTITY marker "A&amp;B">
+]>
+<package release="nightly">
+  <manifest>
+    <item ref="cover" role="cover"/>
+    <item ref="cover" role="thumbnail"/>
+  </manifest>
+  <metadata>
+    <author>system &marker;</author>
+    <checksum>sha256:00aa11bb22cc</checksum>
+  </metadata>
+  <payload>
+    <chunk index="01">begin<part><![CDATA[raw <payload> bytes]]></part>end</chunk>
+    <chunk index="02"><part>αβγ</part><part>tail</part></chunk>
+  </payload>
+</package>
+```
+
+```xml
+<?xml version="1.1" standalone="yes"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (account+)>
+  <!ATTLIST ledger currency (EUR|JPY|USD) "USD">
+  <!ELEMENT account (owner, note?, transaction*)>
+  <!ATTLIST account number ID #REQUIRED links IDREFS #IMPLIED>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT note (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT transaction EMPTY>
+  <!ATTLIST transaction id ID #REQUIRED
+            kind (credit|debit|transfer) #REQUIRED
+            amount NMTOKEN #REQUIRED
+            from IDREF #IMPLIED
+            to IDREF #IMPLIED>
+]>
+<ledger xmlns="urn:finance:ledger" currency="JPY">
+  <account number="acct-main" links="acct-savings acct-vault">
+    <owner>東京営業所</owner>
+    <note>Review&nbsp;<mark>quarterly</mark>&#x85; records.</note>
+    <transaction id="tx-1" kind="credit" amount="100000" to="acct-main"/>
+    <transaction id="tx-2" kind="transfer" amount="2500" from="acct-main" to="acct-savings"/>
+  </account>
+  <account number="acct-savings">
+    <owner>Zoë &amp; 李</owner>
+    <transaction id="tx-3" kind="debit" amount="700" from="acct-savings"/>
+  </account>
+  <account number="acct-vault">
+    <owner>vault</owner>
+  </account>
+</ledger>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (header, widget+, footer?)>
+  <!ELEMENT header (label,updated)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT updated (#PCDATA)>
+  <!ELEMENT widget (caption, value, details?)>
+  <!ATTLIST widget id ID #REQUIRED type (gauge|sparkline|alert) #REQUIRED>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT value (#PCDATA|unit|emphasis)*>
+  <!ELEMENT unit EMPTY>
+  <!ATTLIST unit code NMTOKEN #REQUIRED>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT details (line*)>
+  <!ELEMENT line (#PCDATA|link)*>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link href URI #IMPLIED rel CDATA #IMPLIED>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY product "Orion">
+  <!ENTITY status "nominal">
+]>
+<dashboard xmlns="urn:example:dashboard"
+           xmlns:x="urn:example:extra"
+           xml:base="https://example.invalid/telemetry/"
+           xml:lang="en">
+  <header>
+    <label>&product; control&nbsp;center</label>
+    <updated>2026-09-22T10:15:00Z</updated>
+  </header>
+  <widget id="w-temp" type="gauge">
+    <caption>ambient temperature</caption>
+    <value>21.5<unit code="C"/></value>
+    <details>
+      <line>steady <emphasis>&status;</emphasis></line>
+      <line><link href="sensors/temp" rel="source"/>calibrated</line>
+    </details>
+  </widget>
+  <widget id="w-load" type="sparkline">
+    <caption><x:label>CPU load</x:label></caption>
+    <value>0.42<unit code="ratio"/></value>
+  </widget>
+  <widget id="w-warning" type="alert">
+    <caption>maintenance window</caption>
+    <value><emphasis>scheduled</emphasis></value>
+  </widget>
+  <footer>© Orion / <x:contact>ops@example.invalid</x:contact></footer>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (routing, body)>
+  <!ATTLIST message priority NMTOKEN #IMPLIED>
+  <!ELEMENT routing (sender, recipient+, reply-to?)>
+  <!ELEMENT sender EMPTY>
+  <!ATTLIST sender address CDATA #REQUIRED>
+  <!ELEMENT recipient EMPTY>
+  <!ATTLIST recipient address CDATA #REQUIRED channel (mail|sms|pager) "mail">
+  <!ELEMENT reply-to EMPTY>
+  <!ATTLIST reply-to address CDATA #REQUIRED>
+  <!ELEMENT body (subject, paragraph+, attachment*)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|b|i|br|list)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|b|i)*>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment filename CDATA #REQUIRED
+             media NMTOKEN #REQUIRED
+             size NMTOKEN #IMPLIED>
+]>
+<message xmlns="urn:example:message" xmlns:m="urn:example:meta" priority="urgent">
+  <routing>
+    <sender address="alerts@example.invalid"/>
+    <recipient address="one@example.invalid" channel="mail"/>
+    <recipient address="+441234567890" channel="sms"/>
+    <reply-to address="noreply@example.invalid"/>
+  </routing>
+  <body>
+    <subject>Build result: <i>attention required</i></subject>
+    <paragraph>The parser reported <b>three</b> notices.<br/>Please inspect the attached report.</paragraph>
+    <paragraph>
+      <list>
+        <item>warning: unresolved symbol</item>
+        <item><b>error:</b> generated output is empty</item>
+        <item>status remains <i>pending</i></item>
+      </list>
+    </paragraph>
+    <attachment filename="report.xml" media="application/xml" size="4096"/>
+    <attachment filename="trace.json" media="application/json"/>
+  </body>
+</message>
+```

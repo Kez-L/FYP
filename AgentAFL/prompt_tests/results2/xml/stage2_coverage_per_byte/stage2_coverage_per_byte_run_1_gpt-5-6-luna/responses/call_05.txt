@@ -1,0 +1,125 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common "id ID #REQUIRED status (new|old|archived) 'new'">
+  <!ELEMENT catalog ANY>
+  <!ELEMENT entry (title, meta?, value*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT value (#PCDATA|emph|ref)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST entry %common;>
+  <!ATTLIST meta source CDATA #IMPLIED xml:space (default|preserve) "default">
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload "A &amp; B &#x1F; C">
+]>
+<catalog>
+  <entry id="e1" status="new">
+    <title>Boundary &lt;case&gt;</title>
+    <meta source="generated"/>
+    <value>left<emph>center</emph>right<ref target="e1"/></value>
+    <value>&payload;</value>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<ns0:envelope
+    xmlns:ns0="urn:outer"
+    xmlns:a="urn:a"
+    xmlns:b="urn:b"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xml:lang="fr">
+  <?audit stage="pre"?>
+  <ns0:header a:flag="yes" b:count="00000000000000000007">
+    <a:name xml:space="preserve">  spaced  </a:name>
+    <b:name>a&amp;b</b:name>
+  </ns0:header>
+  <ns0:body xlink:type="simple" xlink:href="#n-1">
+    <a:item id="n-1" xml:base="./relative/../path/">first</a:item>
+    <b:item xmlns:b="" value="&quot;&apos;">second</b:item>
+    <!-- comment with --? -->
+  </ns0:body>
+  <?audit stage="post"?>
+</ns0:envelope>
+```
+
+```xml
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder|record|empty)*>
+  <!ELEMENT folder (folder|record|empty)*>
+  <!ELEMENT record (#PCDATA)>
+  <!ELEMENT empty EMPTY>
+  <!ATTLIST archive version CDATA "0">
+  <!ATTLIST folder name CDATA #REQUIRED level NMTOKEN #IMPLIED>
+  <!ATTLIST record key ID #IMPLIED kind (text|binary|unknown) "unknown">
+  <!ENTITY quote "&#34;quoted&#34;">
+  <!ENTITY nested "&quote; &amp; &#x20;">
+]>
+<archive version="999999999999999999999999">
+  <folder name="root" level="0">
+    <folder name="branch-A" level="01">
+      <record key="r-a" kind="text">one &nested;</record>
+      <empty/>
+    </folder>
+    <folder name="branch-B">
+      <record kind="binary"><![CDATA[00 FF 7F 80]]></record>
+      <record>tail</record>
+    </folder>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (preamble?, payload, checksum?)>
+  <!ELEMENT preamble (#PCDATA|part)*>
+  <!ELEMENT payload (part+)>
+  <!ELEMENT part (#PCDATA|part)*>
+  <!ELEMENT checksum EMPTY>
+  <!ATTLIST packet mode (fast|safe) "safe" xmlns CDATA #IMPLIED>
+  <!ATTLIST part index NMTOKEN #REQUIRED compressed (yes|no) #IMPLIED>
+  <!ATTLIST checksum algorithm CDATA #REQUIRED value CDATA #REQUIRED>
+  <!ENTITY left "[[">
+  <!ENTITY right "]]">
+]>
+<packet mode="fast" xmlns="urn:packet">
+  <preamble>start<part index="p0">intro</part>end</preamble>
+  <payload>
+    <part index="1" compressed="no">alpha<part index="1.1"><![CDATA[&lt;raw&gt;]]></part>omega</part>
+    <part index="2" compressed="yes">&left;encoded&right;</part>
+  </payload>
+  <checksum algorithm="sha256" value=""/>
+</packet>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (layer+)>
+  <!ELEMENT layer (object|group|!ELEMENT)*>
+  <!ELEMENT group (object|group)*>
+  <!ELEMENT object EMPTY>
+  <!ATTLIST layer name CDATA #REQUIRED hidden (true|false) "false">
+  <!ATTLIST group name CDATA #IMPLIED transform CDATA #IMPLIED>
+  <!ATTLIST object x CDATA #REQUIRED y CDATA #REQUIRED label CDATA #IMPLIED>
+]>
+<scene>
+  <layer name="background" hidden="false">
+    <object x="-0" y="1e309" label="&lt;edge&gt;"/>
+  </layer>
+  <layer name="foreground" hidden="true">
+    <group name="nested" transform="translate(0,0) rotate(-360)">
+      <group transform="">
+        <object x="&#x0B;" y="&#xD;"/>
+      </group>
+      <object x="9223372036854775808" y="-9223372036854775809"
+              label="line1&#10;line2"/>
+    </group>
+  </layer>
+</scene>
+```

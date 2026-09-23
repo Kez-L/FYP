@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, metadata)>
+  <!ELEMENT item (name, description, link?, tags?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST catalog
+    version CDATA #REQUIRED
+    root ID #IMPLIED>
+  <!ATTLIST item
+    id ID #REQUIRED
+    related IDREFS #IMPLIED
+    state (new|used|archived) "new"
+    payload ENTITY #IMPLIED>
+  <!ATTLIST link
+    href CDATA #REQUIRED
+    kind (html|binary|other) "other">
+  <!ATTLIST metadata
+    format NOTATION #IMPLIED>
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY copyright "&#xA9; 2026">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY sample "A &amp; B &lt; C">
+  <!ENTITY blob SYSTEM "data.bin" NDATA binary>
+]>
+<catalog version="2" root="i-001">
+  <item id="i-001" state="new" related="i-002" payload="blob">
+    <name>&copyright; &nbsp; Toolkit</name>
+    <description>Text with <em>emphasis</em>, <code>&sample;</code>, and<br/>a break.</description>
+    <link href="https://example.invalid/a?x=1&amp;y=2" kind="html"/>
+    <tags><tag>xml</tag><tag>fuzz</tag></tags>
+  </item>
+  <item id="i-002" state="archived">
+    <name>Second item</name>
+    <description><![CDATA[raw ]]> content &amp; delimiters]]></description>
+  </item>
+  <metadata format="binary"/>
+</catalog>

@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ENTITY % feature "INCLUDE">
+  <![%feature;[
+    <!ELEMENT dashboard (control,stream)>
+    <!ELEMENT control (switch*,formula?)>
+    <!ELEMENT switch EMPTY>
+    <!ELEMENT formula (#PCDATA)>
+    <!ELEMENT stream (packet*)>
+    <!ELEMENT packet (value,stamp?,payload?)>
+    <!ELEMENT value (#PCDATA)>
+    <!ELEMENT stamp (#PCDATA)>
+    <!ELEMENT payload (#PCDATA|byte)*>
+    <!ELEMENT byte (#PCDATA)>
+    <!ATTLIST switch name NMTOKEN #REQUIRED state (on|off) "off">
+    <!ATTLIST packet seq NMTOKEN #REQUIRED channel NMTOKEN #IMPLIED>
+    <!ATTLIST byte hex NMTOKEN #IMPLIED>
+  ]]>
+  <!ENTITY % disabled "IGNORE">
+  <![%disabled;[
+    <!ELEMENT unreachable (#PCDATA)>
+    <!ATTLIST packet ignored CDATA #IMPLIED>
+  ]]>
+  <!ENTITY qmark "?">
+  <!ENTITY nested "value=&quot;&qmark;&quot;">
+]>
+<dashboard>
+  <control>
+    <switch name="alpha" state="on"/>
+    <switch name="beta"/>
+    <formula><![CDATA[x < y && y < z]]></formula>
+  </control>
+  <stream>
+    <packet seq="000" channel="A">
+      <value>42</value>
+      <stamp>2026-09-22T00:00:00Z</stamp>
+      <payload><byte hex="00">NUL</byte><byte hex="FF">&nested;</byte></payload>
+    </packet>
+    <packet seq="001">
+      <value>0x10 &amp; 0x20</value>
+      <payload><![CDATA[raw ]]><byte>tail</byte></payload>
+    </packet>
+  </stream>
+</dashboard>

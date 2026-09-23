@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<network xmlns="urn:net:core" xmlns:r="urn:net:route" xmlns:m="urn:net:meta">
+  <node id="n0">
+    <address family="ipv6">2001:db8::1</address>
+    <r:route priority="0">
+      <r:hop index="1">edge-a</r:hop>
+      <r:hop index="2">edge-b</r:hop>
+    </r:route>
+    <m:properties>
+      <m:property key="enabled"><m:value>true</m:value></m:property>
+      <m:property key="threshold"><m:value>0</m:value></m:property>
+    </m:properties>
+  </node>
+  <node id="n1" xmlns:r="urn:net:alternate">
+    <address family="unix">/var/run/service</address>
+    <r:route priority="high">
+      <r:hop index="0"/>
+    </r:route>
+    <link target="n0" xmlns="">
+      <label>fallback</label>
+    </link>
+  </node>
+  <group name="outer">
+    <member ref="n0"/>
+    <member ref="n1"/>
+  </group>
+</network>

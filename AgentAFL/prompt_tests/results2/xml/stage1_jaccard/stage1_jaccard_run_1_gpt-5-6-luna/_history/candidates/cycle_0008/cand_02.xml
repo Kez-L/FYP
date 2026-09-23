@@ -1,0 +1,39 @@
+<?xml version="1.1"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest,content,signature)>
+  <!ELEMENT manifest (item+)>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item path CDATA #REQUIRED kind (text|binary|link) #REQUIRED size NMTOKEN #IMPLIED>
+  <!ELEMENT content (section|line|ref)*>
+  <!ELEMENT section (line|section|ref)*>
+  <!ATTLIST section name CDATA #IMPLIED level NMTOKEN #IMPLIED>
+  <!ELEMENT line (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref id ID #REQUIRED>
+  <!ELEMENT signature (#PCDATA)>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+  <!ENTITY nested "&left;inside&right;" >
+]>
+<package xml:base="urn:archive:2026">
+  <manifest>
+    <item path="README" kind="text" size="0012"/>
+    <item path="bin/data" kind="binary" size="0000"/>
+    <item path="current" kind="link"/>
+  </manifest>
+  <content>
+    <section name="outer" level="1">
+      <line>one <mark>highlighted</mark> line</line>
+      <section name="inner" level="2">
+        <line>&nested; &#x85; &#x2028;</line>
+        <ref id="anchor"/>
+      </section>
+      <line>tail after nesting</line>
+    </section>
+    <ref id="second"/>
+  </content>
+  <signature><![CDATA[-----BEGIN SIGNATURE-----
+a+b/c==
+-----END SIGNATURE-----]]></signature>
+</package>

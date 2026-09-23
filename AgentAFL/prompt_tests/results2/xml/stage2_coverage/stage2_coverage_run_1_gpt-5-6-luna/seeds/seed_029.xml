@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (routing, body)>
+  <!ATTLIST message priority NMTOKEN #IMPLIED>
+  <!ELEMENT routing (sender, recipient+, reply-to?)>
+  <!ELEMENT sender EMPTY>
+  <!ATTLIST sender address CDATA #REQUIRED>
+  <!ELEMENT recipient EMPTY>
+  <!ATTLIST recipient address CDATA #REQUIRED channel (mail|sms|pager) "mail">
+  <!ELEMENT reply-to EMPTY>
+  <!ATTLIST reply-to address CDATA #REQUIRED>
+  <!ELEMENT body (subject, paragraph+, attachment*)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|b|i|br|list)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|b|i)*>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment filename CDATA #REQUIRED
+             media NMTOKEN #REQUIRED
+             size NMTOKEN #IMPLIED>
+]>
+<message xmlns="urn:example:message" xmlns:m="urn:example:meta" priority="urgent">
+  <routing>
+    <sender address="alerts@example.invalid"/>
+    <recipient address="one@example.invalid" channel="mail"/>
+    <recipient address="+441234567890" channel="sms"/>
+    <reply-to address="noreply@example.invalid"/>
+  </routing>
+  <body>
+    <subject>Build result: <i>attention required</i></subject>
+    <paragraph>The parser reported <b>three</b> notices.<br/>Please inspect the attached report.</paragraph>
+    <paragraph>
+      <list>
+        <item>warning: unresolved symbol</item>
+        <item><b>error:</b> generated output is empty</item>
+        <item>status remains <i>pending</i></item>
+      </list>
+    </paragraph>
+    <attachment filename="report.xml" media="application/xml" size="4096"/>
+    <attachment filename="trace.json" media="application/json"/>
+  </body>
+</message>

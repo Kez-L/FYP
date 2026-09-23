@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+, index)>
+  <!ELEMENT entry (title, data, tags?)>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    status (open|closed|held) "open"
+    ref IDREF #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT data (#PCDATA|chunk|br)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT index (pointer+)>
+  <!ELEMENT pointer EMPTY>
+  <!ATTLIST pointer target IDREF #REQUIRED>
+  <!ENTITY marker "&#x2063;">
+]>
+<archive>
+  <entry id="e1" status="held">
+    <title>alpha &marker; record</title>
+    <data>prefix<chunk><![CDATA[<& raw payload >]]></chunk><br/>suffix</data>
+    <tags><tag>one</tag><tag>two &amp; three</tag></tags>
+  </entry>
+  <entry id="e2" ref="e1" status="closed">
+    <title>second</title>
+    <data><![CDATA[line one
+line two
+]]></data>
+  </entry>
+  <index>
+    <pointer target="e1"/>
+    <pointer target="e2"/>
+  </index>
+</archive>

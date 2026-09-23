@@ -1,0 +1,36 @@
+<!DOCTYPE message [
+  <!ELEMENT message (sender,recipient,subject,body,attachment*)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|p|br|quote|list)*>
+  <!ELEMENT p (#PCDATA|b|i|br)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT quote (#PCDATA|p|br)*>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|p|br)*>
+  <!ELEMENT attachment (#PCDATA)>
+  <!ATTLIST message id ID #REQUIRED priority NMTOKEN "normal" reply-to IDREF #IMPLIED>
+  <!ATTLIST attachment name CDATA #REQUIRED content-type CDATA #IMPLIED encoding (base64|binary) "binary">
+  <!ENTITY euro "&#x20AC;">
+  <!ENTITY apos "&#39;">
+  <!ENTITY nested "&euro; &apos; &amp; &lt; &gt;">
+  <!ENTITY badref "&missing;">
+]>
+<message id="m-&#x30;01" priority="&#x00000001;" reply-to="m-001">
+  <sender>sender@example.invalid</sender>
+  <recipient>receiver@example.invalid</recipient>
+  <subject>&nested;</subject>
+  <body xml:space="preserve">
+    <p>First <b>bold</b> and <i>italic</i><br/>line.</p>
+    <quote><p>&lt;quoted&gt; &badref;</p><br/></quote>
+    <list>
+      <item>one</item>
+      <item>two &amp; a half</item>
+    </list>
+  </body>
+  <attachment name="empty.bin" content-type="application/octet-stream" encoding="base64"/>
+  <attachment name="weird&#x0A;name" content-type="text/plain">AAEC/f8=</attachment>
+</message>

@@ -1,0 +1,178 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+, index)>
+  <!ELEMENT entry (title, data, tags?)>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    status (open|closed|held) "open"
+    ref IDREF #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT data (#PCDATA|chunk|br)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT index (pointer+)>
+  <!ELEMENT pointer EMPTY>
+  <!ATTLIST pointer target IDREF #REQUIRED>
+  <!ENTITY marker "&#x2063;">
+]>
+<archive>
+  <entry id="e1" status="held">
+    <title>alpha &marker; record</title>
+    <data>prefix<chunk><![CDATA[<& raw payload >]]></chunk><br/>suffix</data>
+    <tags><tag>one</tag><tag>two &amp; three</tag></tags>
+  </entry>
+  <entry id="e2" ref="e1" status="closed">
+    <title>second</title>
+    <data><![CDATA[line one
+line two
+]]></data>
+  </entry>
+  <index>
+    <pointer target="e1"/>
+    <pointer target="e2"/>
+  </index>
+</archive>
+```
+
+```xml
+<?xml version="1.1" standalone="yes"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, payload, trailer)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header
+    version NMTOKEN #REQUIRED
+    flags NMTOKENS "none">
+  <!ELEMENT payload (field*)>
+  <!ELEMENT field (#PCDATA|value)*>
+  <!ATTLIST field name CDATA #REQUIRED kind (text|number|binary) "text">
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ENTITY nbsp "&#xA0;">
+]>
+<packet>
+  <header version="v2.07" flags="compressed encrypted"/>
+  <payload>
+    <field name="comment">left&#x85;middle<value>right</value></field>
+    <field name="count" kind="number"><value>00000042</value></field>
+    <field name="blob" kind="binary"><![CDATA[
+AAECAwQFBgcICQoLDA0ODw==
+]]></field>
+    <field name="empty">&nbsp;</field>
+  </payload>
+  <trailer>checksum:&#x2028;7f9a</trailer>
+</packet>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section*)>
+  <!ELEMENT section (item|section)*>
+  <!ATTLIST section
+    name CDATA #IMPLIED
+    xml:space (default|preserve) "default">
+  <!ELEMENT item (name, price?, note?)>
+  <!ATTLIST item
+    sku ID #REQUIRED
+    aliases IDREFS #IMPLIED
+    category (book|tool|other) #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA|em|code|link)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ENTITY open "<em>">
+  <!ENTITY close "</em>">
+]>
+<catalog>
+  <section name="hardware" xml:space="preserve">
+    <item sku="s-001" category="tool" aliases="s-legacy s-alt">
+      <name>Ratchet &amp; socket</name>
+      <price>19.95</price>
+      <note>Use &open;carefully&close;: <code>--torque</code> <link href="urn:item:s-001">manual</link>.</note>
+    </item>
+  </section>
+  <section name="reading">
+    <section name="fiction">
+      <item sku="b-002" category="book">
+        <name>潮汐边缘</name>
+        <note><![CDATA[paragraph <with> delimiters & symbols]]></note>
+      </item>
+    </section>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % common "(alpha|beta|gamma)">
+  <!ENTITY % attrs "<!ATTLIST root mode (strict|loose) 'strict'>">
+  %attrs;
+  <!ELEMENT root (%common;)+>
+  <!ELEMENT alpha (#PCDATA)>
+  <!ELEMENT beta (leaf*)>
+  <!ELEMENT gamma EMPTY>
+  <!ELEMENT leaf (#PCDATA)>
+  <!ENTITY quote "&#34;">
+  <![IGNORE[
+    <!ELEMENT discarded EMPTY>
+    <!ENTITY hidden "not expanded">
+  ]]>
+  <![INCLUDE[
+    <!ELEMENT included EMPTY>
+    <!ATTLIST included mark CDATA #IMPLIED>
+  ]]>
+]>
+<root mode="loose">
+  <alpha>A &quote;quoted&quote; value</alpha>
+  <beta>
+    <leaf>nested-1</leaf>
+    <leaf><![CDATA[nested-2]]></leaf>
+  </beta>
+  <gamma/>
+  <included mark="from-conditional-section"/>
+  <alpha>tail</alpha>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (meta, row*)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta
+    generated CDATA #IMPLIED
+    xmlns CDATA #IMPLIED>
+  <!ELEMENT row (cell+)>
+  <!ATTLIST row
+    key CDATA #REQUIRED
+    selected (yes|no) "no">
+  <!ELEMENT cell (#PCDATA|span|img)*>
+  <!ATTLIST cell
+    colspan NMTOKEN "1"
+    data-ref IDREF #IMPLIED>
+  <!ELEMENT span (#PCDATA)>
+  <!ATTLIST span class CDATA #IMPLIED>
+  <!ELEMENT img EMPTY>
+  <!ATTLIST img
+    src CDATA #REQUIRED
+    alt CDATA #IMPLIED>
+]>
+<dashboard xmlns="urn:dash:main" xmlns:u="urn:dash:ui">
+  <meta generated="2026-09-22T12:34:56Z"/>
+  <row key="r&amp;1" selected="yes">
+    <cell colspan="2" data-ref="r2">A<u:span class="accent">B</u:span>C</cell>
+    <cell><img src="data:image/svg+xml,%3Csvg%2F%3E" alt="tiny"/></cell>
+  </row>
+  <row key="r2">
+    <cell><![CDATA[unescaped ]]> marker]]></cell>
+    <cell>mixed&#x0B;vertical&#x0C;breaks</cell>
+  </row>
+</dashboard>
+```

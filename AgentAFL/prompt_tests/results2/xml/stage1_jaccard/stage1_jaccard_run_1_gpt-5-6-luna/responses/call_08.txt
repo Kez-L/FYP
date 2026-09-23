@@ -1,0 +1,182 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE museum [
+  <!ELEMENT museum (room+)>
+  <!ELEMENT room (label,artifact*,caption?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT artifact (#PCDATA|link|mark)*>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ATTLIST museum xml:base CDATA #IMPLIED>
+  <!ATTLIST room number NMTOKEN #REQUIRED climate (dry|humid|cold) "dry">
+  <!ATTLIST artifact ref ID #IMPLIED source ENTITY #IMPLIED>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!NOTATION sketch SYSTEM "application/x-sketch">
+  <!ENTITY plan SYSTEM "plans/wing-a.sketch" NDATA sketch>
+  <!ENTITY ampersand "&#38;">
+  <!ENTITY quoted "&quot;inside&quot;">
+]>
+<?museum mode="night"?>
+<museum xmlns="urn:archive:rooms" xml:base="https://example.invalid/archive/">
+  <room number="A-0" climate="humid">
+    <label>Flooded Gallery</label>
+    <artifact ref="item-1" source="plan">stone &amp; &quoted;</artifact>
+    <artifact ref="item-1"><mark><![CDATA[raw <angle> & symbols]]></mark><link href="urn:item:1"/></artifact>
+    <caption>Use &amp;ampersand; only in prose.</caption>
+  </room>
+  <room number="B-7">
+    <label>Uncatalogued</label>
+    <artifact ref="item-2">&amp; &lt; &gt; &#x41; &#65;</artifact>
+  </room>
+</museum>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE network [
+  <!ENTITY % declarations '
+    <!ELEMENT network (node|edge|annotation)*>
+    <!ELEMENT node EMPTY>
+    <!ELEMENT edge EMPTY>
+    <!ELEMENT annotation (#PCDATA|tag)*>
+    <!ELEMENT tag (#PCDATA)>
+    <!ATTLIST node key ID #REQUIRED role NMTOKEN #IMPLIED>
+    <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+    <!ATTLIST annotation xml:lang NMTOKEN #IMPLIED>
+    <!ATTLIST tag kind (note|warning|trace) "note">
+  '>
+  %declarations;
+  <!ENTITY % optional '
+    <!ATTLIST network mode (static|live) "static">
+  '>
+  %optional;
+  <!ENTITY left-bracket "&#91;">
+  <!ENTITY right-bracket "&#93;">
+]>
+<network mode="live" xmlns:g="urn:graph">
+  <node key="n.alpha" role="entry"/>
+  <node key="n.beta" role="exit"/>
+  <edge from="n.alpha" to="n.beta" weight="0.75"/>
+  <annotation xml:lang="en">route &left-bracket;<tag kind="trace">A-&gt;B</tag>&right-bracket;</annotation>
+  <g:foreign data="&lt;opaque&gt;"><![CDATA[<node key="not-real"/>]]></g:foreign>
+</network>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive SYSTEM "file:///tmp/nonexistent-subset.dtd" [
+  <!ELEMENT archive (header,record*,checksum)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT record (key,blob,meta?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT blob (#PCDATA|piece)*>
+  <!ELEMENT piece (#PCDATA)>
+  <!ELEMENT meta (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST header version CDATA #REQUIRED flags NMTOKENS #IMPLIED>
+  <!ATTLIST record uid ID #REQUIRED kind CDATA #IMPLIED>
+  <!ATTLIST piece n NMTOKEN #IMPLIED>
+  <!ENTITY one "alpha">
+  <!ENTITY two "&one;-beta">
+  <!ENTITY three "&two;-gamma">
+]>
+<archive>
+  <header version="0x00" flags="a&#x20;b&#x9;c"/>
+  <record uid="r-01" kind="fragment">
+    <key>&three;</key>
+    <blob><piece n="1">first</piece><piece n="2"><![CDATA[second & third]]></piece></blob>
+    <meta>before<!-- hidden -->after<?note value="x"/></meta>
+  </record>
+  <record uid="r-02">
+    <key>literal &amp; escaped</key>
+    <blob><![CDATA[]]><piece n="3">tail</piece></blob>
+  </record>
+  <checksum>deadbeef&#10;</checksum>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+)>
+  <!ELEMENT section (title,table|warning|empty)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell*)>
+  <!ELEMENT cell (#PCDATA|b|i|br)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT warning (#PCDATA)>
+  <!ELEMENT empty EMPTY>
+  <!ATTLIST report generated CDATA #IMPLIED>
+  <!ATTLIST section id ID #IMPLIED level NMTOKEN #IMPLIED>
+  <!ATTLIST table columns NMTOKEN #REQUIRED>
+  <!ATTLIST row index NMTOKEN #IMPLIED>
+  <!ATTLIST cell colspan NMTOKEN "1" rowspan NMTOKEN "1">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY percent "&#37;">
+  <!ENTITY markup "&lt;b&gt;not markup&lt;/b&gt;">
+]>
+<report generated="yes">
+  <section id="s1" level="0">
+    <title>Measurements &nbsp; &percent;</title>
+    <table columns="3">
+      <row index="1"><cell colspan="2">A<b>bold</b><br/>B</cell><cell>&markup;</cell></row>
+      <row index="2"><cell><![CDATA[<i>literal</i>]]></cell><cell rowspan="2">C</cell><cell/></row>
+    </table>
+  </section>
+  <section id="s2" level="1">
+    <title>Warnings</title>
+    <warning>unclosed-looking text: &lt;tag attr="x"&gt;</warning>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ENTITY % feature "INCLUDE">
+  <![%feature;[
+    <!ELEMENT dashboard (control,stream)>
+    <!ELEMENT control (switch*,formula?)>
+    <!ELEMENT switch EMPTY>
+    <!ELEMENT formula (#PCDATA)>
+    <!ELEMENT stream (packet*)>
+    <!ELEMENT packet (value,stamp?,payload?)>
+    <!ELEMENT value (#PCDATA)>
+    <!ELEMENT stamp (#PCDATA)>
+    <!ELEMENT payload (#PCDATA|byte)*>
+    <!ELEMENT byte (#PCDATA)>
+    <!ATTLIST switch name NMTOKEN #REQUIRED state (on|off) "off">
+    <!ATTLIST packet seq NMTOKEN #REQUIRED channel NMTOKEN #IMPLIED>
+    <!ATTLIST byte hex NMTOKEN #IMPLIED>
+  ]]>
+  <!ENTITY % disabled "IGNORE">
+  <![%disabled;[
+    <!ELEMENT unreachable (#PCDATA)>
+    <!ATTLIST packet ignored CDATA #IMPLIED>
+  ]]>
+  <!ENTITY qmark "?">
+  <!ENTITY nested "value=&quot;&qmark;&quot;">
+]>
+<dashboard>
+  <control>
+    <switch name="alpha" state="on"/>
+    <switch name="beta"/>
+    <formula><![CDATA[x < y && y < z]]></formula>
+  </control>
+  <stream>
+    <packet seq="000" channel="A">
+      <value>42</value>
+      <stamp>2026-09-22T00:00:00Z</stamp>
+      <payload><byte hex="00">NUL</byte><byte hex="FF">&nested;</byte></payload>
+    </packet>
+    <packet seq="001">
+      <value>0x10 &amp; 0x20</value>
+      <payload><![CDATA[raw ]]><byte>tail</byte></payload>
+    </packet>
+  </stream>
+</dashboard>
+```

@@ -1,0 +1,141 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta?, payload, trailer?)>
+  <!ELEMENT meta (created, flags*)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT flags EMPTY>
+  <!ATTLIST flags code NMTOKEN #REQUIRED>
+  <!ELEMENT payload (entry+)>
+  <!ELEMENT entry (#PCDATA|part|ref)*>
+  <!ATTLIST entry key ID #REQUIRED level NMTOKEN "low">
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #IMPLIED>
+  <!ELEMENT trailer EMPTY>
+  <!ENTITY mark "A &amp; B">
+]>
+<envelope>
+  <meta>
+    <created>2026-09-22T12:34:56Z</created>
+    <flags code="x1"/>
+    <flags code="urgent"/>
+  </meta>
+  <payload>
+    <entry key="e1" level="high">before<part>inside</part>&mark;<ref target="e1"/>after</entry>
+    <entry key="e2"><part><![CDATA[<raw> & data]]></part></entry>
+  </payload>
+  <trailer/>
+</envelope>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (warehouse+)>
+  <!ELEMENT warehouse (bin*)>
+  <!ATTLIST warehouse id ID #REQUIRED zone NMTOKEN #IMPLIED>
+  <!ELEMENT bin (label, item*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item sku CDATA #REQUIRED count CDATA "0" fragile (yes|no) "no">
+]>
+<inventory>
+  <warehouse id="west" zone="A-1">
+    <bin>
+      <label>Upper shelf</label>
+      <item sku="Q-7" count="0003" fragile="yes"/>
+      <item sku="R-8"/>
+    </bin>
+  </warehouse>
+  <warehouse id="east">
+    <bin><label>Floor &amp; rack</label></bin>
+    <bin><label>Ω</label><item sku="T-9" count="-1"/></bin>
+  </warehouse>
+</inventory>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE feed [
+  <!ELEMENT feed (channel)>
+  <!ELEMENT channel (title, link, description, record*)>
+  <!ATTLIST channel xml:base URI #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link href CDATA #REQUIRED rel CDATA "alternate">
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT record (guid, published?, body)>
+  <!ELEMENT guid (#PCDATA)>
+  <!ATTLIST guid isPermaLink (true|false) "false">
+  <!ELEMENT published (#PCDATA)>
+  <!ELEMENT body (#PCDATA|em|br|linkref)*>
+  <!ELEMENT linkref EMPTY>
+  <!ATTLIST linkref href CDATA #REQUIRED>
+]>
+<feed>
+  <channel xml:base="https://example.invalid/root/">
+    <title>Signals</title>
+    <link href="https://example.invalid/feed" rel="self"/>
+    <description>alpha<em>beta</em><br/>gamma</description>
+    <record>
+      <guid isPermaLink="true">https://example.invalid/items/1</guid>
+      <published>2026-01-01T00:00:00+00:00</published>
+      <body><![CDATA[start]]><linkref href="urn:x:y"/><em>end</em></body>
+    </record>
+  </channel>
+</feed>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ATTLIST matrix dimension CDATA #FIXED "2x3">
+  <!ELEMENT row (cell, cell, cell)>
+  <!ATTLIST row index CDATA #REQUIRED>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST cell kind (integer|decimal|empty) "integer">
+]>
+<matrix dimension="2x3">
+  <row index="0">
+    <cell kind="integer">-2147483648</cell>
+    <cell kind="decimal">3.1415926535897932384626</cell>
+    <cell kind="empty"/>
+  </row>
+  <row index="1">
+    <cell kind="integer">0</cell>
+    <cell kind="decimal">NaN</cell>
+    <cell kind="empty"></cell>
+  </row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file path CDATA #REQUIRED type CDATA #IMPLIED size CDATA #IMPLIED>
+  <!ELEMENT data (chunk*)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk file CDATA #REQUIRED offset CDATA "0">
+]>
+<package xmlns:x="urn:pkg:extra">
+  <!-- deliberately mixed metadata and processing instructions -->
+  <?build mode="incremental"?>
+  <manifest>
+    <file path="a/b.txt" type="text/plain" size="17"/>
+    <file path="images/π.png" type="image/png" size="0"/>
+    <file path="empty" type="application/octet-stream"/>
+  </manifest>
+  <data>
+    <chunk file="a/b.txt" offset="0">line one&#xA;line two</chunk>
+    <chunk file="a/b.txt" offset="11"><![CDATA[&lt;not-an-entity;]]></chunk>
+    <chunk file="images/π.png" offset="0">base64:////</chunk>
+  </data>
+</package>
+```

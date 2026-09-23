@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta, payload)>
+  <!ELEMENT meta (created, tag*)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT tag (#PCDATA|tag)*>
+  <!ELEMENT payload (record | note | blob)*>
+  <!ELEMENT record (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA|em|br)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT blob (#PCDATA)>
+  <!ATTLIST record priority NMTOKEN #IMPLIED>
+  <!ATTLIST blob encoding (base64|hex) #REQUIRED>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+  <!ENTITY mark "&left;quoted&right;" >
+]>
+<envelope>
+  <meta>
+    <created>2026-09-22T12:34:56Z</created>
+    <tag>alpha<tag>nested</tag>omega</tag>
+    <tag>&mark;</tag>
+  </meta>
+  <payload>
+    <record priority="P1">
+      <key>name</key>
+      <value>before<em>inside<br/>deep</em>after</value>
+    </record>
+    <note><![CDATA[<not-an-element> & still text]]></note>
+    <blob encoding="hex">00ff7f&#x0A;ab</blob>
+  </payload>
+</envelope>

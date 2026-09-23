@@ -1,0 +1,168 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry*, note?)>
+  <!ELEMENT entry (name,link,description?,meta*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT description (#PCDATA|em|code|ref)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT meta (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST catalog xmlns CDATA #IMPLIED xmlns:x CDATA #IMPLIED>
+  <!ATTLIST entry key ID #REQUIRED kind (book|film|other) "other">
+  <!ATTLIST link href CDATA #REQUIRED media NMTOKENS #IMPLIED>
+  <!ATTLIST ref target IDREF #IMPLIED>
+  <!ENTITY trademark "&#x2122;">
+  <!ENTITY quote "&#34;quoted&#34;">
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "urn:unavailable:payload" NDATA binary>
+]>
+<catalog xmlns="urn:catalog:main" xmlns:x="urn:catalog:extra">
+  <entry key="a1" kind="book">
+    <name>Namespaced &trademark; entry</name>
+    <link href="urn:item:a1" media="text/xml application/xhtml+xml"/>
+    <description>before <em>emphasis</em> &quote; <code>x&amp;y&lt;z</code><ref target="a1"/> after</description>
+    <meta x:flag="yes">αβγ&#x0A;line</meta>
+  </entry>
+  <entry key="b2">
+    <name x:lang="fr">Élément</name>
+    <link href="data:text/plain,%00%FF" media="binary octet-stream"/>
+    <meta><![CDATA[]]></meta>
+  </entry>
+  <note xml:space="preserve">  trailing  </note>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<packet xmlns="urn:wire" xmlns:q="urn:side" xml:lang="en">
+  <header q:type="control" q:mask="&#x1F; &#x7F; &#x85;">
+    <![CDATA[<not-an-element>&still-not-an-entity;</not-an-element>]]>
+    <?trace level="verbose?> 
+  </header>
+  <body>
+    <chunk id="c0" size="00000000000000000000000000000001">A&#x85;B&#x2028;C&#x1;&#x7F;</chunk>
+    <chunk id="c1" size="NaN"><![CDATA[x]]><![CDATA[y]]><![CDATA[]]></chunk>
+    <chunk id="c2" size="0">
+      mixed
+      <q:mark q:value="&quot;&apos;&amp;&lt;&gt;"/>
+      text<!--comment--><?pi data?>
+    </chunk>
+  </body>
+  <footer q:empty="" xml:base="urn:x:y:z"/>
+</packet>
+```
+
+```xml
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder|file|alias)*>
+  <!ELEMENT folder (folder|file|alias|#PCDATA)*>
+  <!ELEMENT file (#PCDATA)>
+  <!ELEMENT alias EMPTY>
+  <!ATTLIST archive version CDATA #FIXED "2">
+  <!ATTLIST folder path CDATA #REQUIRED opened (yes|no) "no">
+  <!ATTLIST file path CDATA #REQUIRED checksum CDATA #IMPLIED>
+  <!ATTLIST alias path CDATA #REQUIRED points-to IDREF #IMPLIED>
+  <!ENTITY lf "&#10;">
+  <!ENTITY amp "&#38;">
+  <!ENTITY % common ' id ID #IMPLIED owner NMTOKEN #IMPLIED '>
+  <!ATTLIST file %common;>
+  <!ENTITY % switch "INCLUDE">
+  <![%switch;[
+    <!ENTITY included "visible">
+  ]]>
+]>
+<archive version="2">
+  <folder path="/&amp;" opened="yes">
+    <folder path="/&amp;/odd&#x20;name" opened="no">
+      <file id="f1" owner="root" path="a&amp;b.txt" checksum=""/>
+      <alias path="latest" points-to="f1"/>
+      <file path="line&#10;break">&lt;raw&gt;&lf;included=&included;</file>
+    </folder>
+    <file id="f2" owner="nobody" path="&#x2F;tmp&#x2F;zero"/>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (layer+)>
+  <!ELEMENT layer (object*)>
+  <!ELEMENT object (transform?,shape,property*)>
+  <!ELEMENT transform EMPTY>
+  <!ELEMENT shape (point+)>
+  <!ELEMENT point EMPTY>
+  <!ELEMENT property (#PCDATA|value)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST layer name CDATA #REQUIRED z NMTOKEN "0">
+  <!ATTLIST object name CDATA #IMPLIED visible (true|false) "true">
+  <!ATTLIST transform matrix CDATA #REQUIRED>
+  <!ATTLIST shape type (polygon|polyline|path) #REQUIRED>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ATTLIST property key CDATA #REQUIRED>
+  <!ATTLIST value lang NMTOKEN #IMPLIED>
+]>
+<scene xmlns:xlink="http://www.w3.org/1999/xlink">
+  <layer name="background" z="-1">
+    <object name="gradient" visible="false">
+      <transform matrix="1 0 0 1 0 0"/>
+      <shape type="polygon">
+        <point x="-0.0000000000000000001" y="+INF"/>
+        <point x="NaN" y="-&#x221E;"/>
+      </shape>
+      <property key="description"><value lang="en">line one</value><value lang="und"/><value>tail</value></property>
+    </object>
+  </layer>
+  <layer name="foreground" z="0000000000000000000000000000000000007">
+    <object xlink:href="urn:object:7" name="&quot;quoted&quot;">
+      <shape type="path">
+        <point x="0" y="0"/><point x="1e309" y="-1e309"/>
+      </shape>
+      <property key="path"><![CDATA[M 0,0 L 1,1 Z]]></property>
+    </object>
+  </layer>
+</scene>
+```
+
+```xml
+<!DOCTYPE message [
+  <!ELEMENT message (sender,recipient,subject,body,attachment*)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|p|br|quote|list)*>
+  <!ELEMENT p (#PCDATA|b|i|br)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT quote (#PCDATA|p|br)*>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|p|br)*>
+  <!ELEMENT attachment (#PCDATA)>
+  <!ATTLIST message id ID #REQUIRED priority NMTOKEN "normal" reply-to IDREF #IMPLIED>
+  <!ATTLIST attachment name CDATA #REQUIRED content-type CDATA #IMPLIED encoding (base64|binary) "binary">
+  <!ENTITY euro "&#x20AC;">
+  <!ENTITY apos "&#39;">
+  <!ENTITY nested "&euro; &apos; &amp; &lt; &gt;">
+  <!ENTITY badref "&missing;">
+]>
+<message id="m-&#x30;01" priority="&#x00000001;" reply-to="m-001">
+  <sender>sender@example.invalid</sender>
+  <recipient>receiver@example.invalid</recipient>
+  <subject>&nested;</subject>
+  <body xml:space="preserve">
+    <p>First <b>bold</b> and <i>italic</i><br/>line.</p>
+    <quote><p>&lt;quoted&gt; &badref;</p><br/></quote>
+    <list>
+      <item>one</item>
+      <item>two &amp; a half</item>
+    </list>
+  </body>
+  <attachment name="empty.bin" content-type="application/octet-stream" encoding="base64"/>
+  <attachment name="weird&#x0A;name" content-type="text/plain">AAEC/f8=</attachment>
+</message>
+```

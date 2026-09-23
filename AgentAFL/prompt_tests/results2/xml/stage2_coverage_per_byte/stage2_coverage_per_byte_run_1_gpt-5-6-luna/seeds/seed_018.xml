@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, trailer?)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT payload ANY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY percent "%">
+  <!ENTITY recursive "A&amp;recursive;">
+]>
+<envelope xmlns:x="urn:x" xmlns:y="urn:y">
+  <header>
+    <field name="content-type" value="application/xml"/>
+    <field name="length" value="&percent;42"/>
+    <field name="quote" value="&quot;quoted&quot;"/>
+  </header>
+  <payload>
+    <x:data y:mode="compact" xmlns:y="urn:other">
+      <![CDATA[raw ]]> text <!-- embedded --> <?pi data?>
+    </x:data>
+    <x:data xmlns:x="">unbound-prefix</x:data>
+  </payload>
+  <trailer>recursive=&recursive;</trailer>
+</envelope>

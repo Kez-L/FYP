@@ -1,0 +1,129 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA | note | ref)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST section xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST item id ID #IMPLIED status (new|old|hold) "new">
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+]>
+<catalog xmlns="urn:archive" xmlns:x="urn:extra" xml:space="preserve">
+  <section xml:lang="en">
+    <title>Inventory &amp; &nbsp; records</title>
+    <item id="i1" status="hold">alpha<note x:flag="yes">embedded note</note>omega</item>
+    <item id="i2">linked <ref target="i1"/></item>
+  </section>
+  <x:section xml:lang="und">
+    <x:title><![CDATA[<literal> & data]]></x:title>
+    <x:item id="i3" x:kind="special">tail<?mark value='3'?></x:item>
+  </x:section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE shell [
+  <!ENTITY % common "<!ELEMENT shell (header, body, footer?)>">
+  %common;
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT body (entry | branch)*>
+  <!ELEMENT branch (entry*)>
+  <!ELEMENT entry EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST entry key CDATA #IMPLIED>
+  <![IGNORE[
+    <!ELEMENT never (anything)>
+    <!ENTITY hidden "not expanded">
+  ]]>
+  <![INCLUDE[
+    <!ENTITY visible "included">
+  ]]>
+]>
+<shell>
+  <header>&visible;</header>
+  <body>
+    <branch><entry key="a"/><branch><entry/><entry key="c"/></branch></branch>
+    <entry key="outside"/>
+  </body>
+  <footer>done</footer>
+</shell>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data.bin" NDATA binary>
+  <!ELEMENT map (origin, link+, payload)>
+  <!ELEMENT origin EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT payload (#PCDATA)>
+  <!ATTLIST origin type NOTATION (binary) #REQUIRED>
+  <!ATTLIST link href ENTITY #REQUIRED>
+  <!ENTITY local "local-value">
+]>
+<map>
+  <origin type="binary"/>
+  <link href="blob"/>
+  <link href="blob"/>
+  <payload><![CDATA[
+    payload begins
+    ]]&gt; remains text
+    <not-markup>&local;</not-markup>
+  ]]></payload>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE frame [
+  <!ELEMENT frame (meta?, stream)>
+  <!ELEMENT meta (kv*)>
+  <!ELEMENT kv EMPTY>
+  <!ELEMENT stream (packet*)>
+  <!ELEMENT packet (data | checksum | data)*>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST kv key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST packet seq NMTOKEN #REQUIRED>
+  <!ATTLIST data encoding (hex|raw) "raw">
+  <!ENTITY amp "&amp;">
+]>
+<frame>
+  <meta>
+    <kv key="mode" value="burst"/>
+    <kv key="window" value="0"/>
+  </meta>
+  <stream>
+    <packet seq="000">
+      <data encoding="hex">00ff7e</data>
+      <checksum>deadbeef</checksum>
+      <data>left &amp; right &amp; &amp;amp;</data>
+    </packet>
+    <packet seq="001"><data><![CDATA[abc]]></data><checksum/></packet>
+  </stream>
+</frame>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a)>
+  <!ELEMENT a (b)>
+  <!ELEMENT b (c)>
+  <!ELEMENT c (#PCDATA)>
+  <!ENTITY loop "&loop;">
+]>
+<root xmlns:p="urn:p" xmlns:q="urn:q">
+  <a p:x="1" q:y="2">
+    <b>
+      <c>text<?instruction weird?><![CDATA[more]]></c>
+    </b>
+  </a>
+</root>
+```

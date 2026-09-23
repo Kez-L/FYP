@@ -1,0 +1,28 @@
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder|file|alias)*>
+  <!ELEMENT folder (folder|file|alias|#PCDATA)*>
+  <!ELEMENT file (#PCDATA)>
+  <!ELEMENT alias EMPTY>
+  <!ATTLIST archive version CDATA #FIXED "2">
+  <!ATTLIST folder path CDATA #REQUIRED opened (yes|no) "no">
+  <!ATTLIST file path CDATA #REQUIRED checksum CDATA #IMPLIED>
+  <!ATTLIST alias path CDATA #REQUIRED points-to IDREF #IMPLIED>
+  <!ENTITY lf "&#10;">
+  <!ENTITY amp "&#38;">
+  <!ENTITY % common ' id ID #IMPLIED owner NMTOKEN #IMPLIED '>
+  <!ATTLIST file %common;>
+  <!ENTITY % switch "INCLUDE">
+  <![%switch;[
+    <!ENTITY included "visible">
+  ]]>
+]>
+<archive version="2">
+  <folder path="/&amp;" opened="yes">
+    <folder path="/&amp;/odd&#x20;name" opened="no">
+      <file id="f1" owner="root" path="a&amp;b.txt" checksum=""/>
+      <alias path="latest" points-to="f1"/>
+      <file path="line&#10;break">&lt;raw&gt;&lf;included=&included;</file>
+    </folder>
+    <file id="f2" owner="nobody" path="&#x2F;tmp&#x2F;zero"/>
+  </folder>
+</archive>

@@ -1,0 +1,163 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+, audit?)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (name, price, note?)>
+  <!ATTLIST item ref ID #REQUIRED related IDREFS #IMPLIED state (new|used|held) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT audit EMPTY>
+  <!ATTLIST audit when CDATA #IMPLIED by CDATA #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY logo SYSTEM "logo.bin" NDATA bin>
+]>
+<catalog>
+  <!-- inventory with typed identifiers -->
+  <section code="hardware">
+    <title>Devices &amp; Accessories</title>
+    <item ref="item-a" related="item-b item-c" state="used">
+      <name>Sensor &lt;A&gt;</name>
+      <price>19.95</price>
+      <note>calibrated <emph>twice</emph> before shipment</note>
+    </item>
+    <item ref="item-b">
+      <name>Adapter</name>
+      <price>4.00</price>
+    </item>
+  </section>
+  <section code="software">
+    <title>Utilities</title>
+    <item ref="item-c" state="held">
+      <name>Trace Viewer</name>
+      <price>0</price>
+      <note><![CDATA[requires <runtime> and "permissions"]]></note>
+    </item>
+  </section>
+  <audit when="2026-09-22T12:30:00Z" by="qa"/>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<world xmlns="urn:example:world" xmlns:g="urn:example:geo" xml:lang="fr">
+  <g:place g:code="Île-7" xml:base="./maps/">
+    <g:name>Réunion</g:name>
+    <g:coordinates>
+      <g:latitude sign="positive">−20.8789</g:latitude>
+      <g:longitude sign="positive">55.4481</g:longitude>
+    </g:coordinates>
+    <g:description>côte <b xmlns="">océanique</b> et sentiers</g:description>
+    <g:label xml:lang="ja">&#x65E5;&#x672C;&#x8A9E;</g:label>
+  </g:place>
+  <region xmlns="urn:example:world" xmlns:g="">
+    <name>local</name>
+    <item xmlns:p="urn:example:parts" p:id="p-1" p:type="fragment"/>
+  </region>
+  <?checkpoint value="after-region"?>
+</world>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ENTITY % declarations '
+    <!ELEMENT packet (header, payload, trailer)>
+    <!ATTLIST packet version CDATA #FIXED "2">
+    <!ELEMENT header (source, destination, flags?)>
+    <!ELEMENT source (#PCDATA)>
+    <!ELEMENT destination (#PCDATA)>
+    <!ELEMENT flags EMPTY>
+    <!ATTLIST flags urgent (yes|no) "no" compressed (yes|no) "no">
+    <!ELEMENT payload (chunk+)>
+    <!ELEMENT chunk (#PCDATA)>
+    <!ATTLIST chunk number NMTOKEN #REQUIRED checksum CDATA #IMPLIED>
+    <!ELEMENT trailer (#PCDATA)>
+  '>
+  %declarations;
+  <!ENTITY open "<![CDATA[">
+  <!ENTITY close "]]>">
+]>
+<packet version="2">
+  <header>
+    <source>node-A</source>
+    <destination>node-B</destination>
+    <flags urgent="yes" compressed="no"/>
+  </header>
+  <payload>
+    <chunk number="001" checksum="a9f">first segment</chunk>
+    <chunk number="002"><![CDATA[bytes: <FF><00>&not-an-entity;]]></chunk>
+    <chunk number="003">last segment&#x0A;with newline</chunk>
+  </payload>
+  <trailer>complete</trailer>
+</packet>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns="urn:example:grammar" xmlns:x="urn:example:lexicon">
+  <rule id="root" priority="10">
+    <match kind="sequence">
+      <token value="(" escaped="false"/>
+      <choice>
+        <token value="alpha"/>
+        <token value="beta"/>
+        <group repeat="0..3">
+          <token value="gamma"/>
+          <separator value=","/>
+        </group>
+      </choice>
+      <token value=")" escaped="true"/>
+    </match>
+    <action><![CDATA[
+      if (depth > 0) {
+        emit("<node/>");
+      }
+    ]]></action>
+  </rule>
+  <rule id="quoted" priority="2">
+    <match kind="regex" flags="ims">
+      <pattern><![CDATA[[A-Z_][A-Z0-9_]*]]></pattern>
+    </match>
+    <metadata xmlns:x="urn:example:lexicon">
+      <x:entry key="quote">" &amp; '</x:entry>
+      <x:entry key="slash">\\</x:entry>
+    </metadata>
+  </rule>
+  <include href="subgrammar.xml" parse="xml"/>
+  <include href="tokens.txt" parse="text"/>
+</grammar>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder|file|link)*>
+  <!ELEMENT folder (folder|file|link)*>
+  <!ATTLIST folder name CDATA #REQUIRED hidden (true|false) "false">
+  <!ELEMENT file (#PCDATA)>
+  <!ATTLIST file name CDATA #REQUIRED size NMTOKEN #IMPLIED mode NMTOKEN #IMPLIED>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link name CDATA #REQUIRED target CDATA #REQUIRED>
+  <!ENTITY amp "&amp;">
+  <!ENTITY quoted "&quot;quoted&quot;">
+]>
+<archive>
+  <folder name=".config" hidden="true">
+    <file name="settings.ini" size="00000042" mode="0644">key=value&amp;other=&quot;x&quot;</file>
+    <link name="current" target="../latest"/>
+  </folder>
+  <folder name="empty"/>
+  <file name="README&#x2E;txt" mode="0444">
+    line-one
+    line-two
+    &lt;literal&gt;
+    &amp;quoted;
+  </file>
+  <link name="root" target="folder/.config/../"/>
+</archive>
+```

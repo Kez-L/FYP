@@ -1,0 +1,20 @@
+{
+  "call": 2,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<!DOCTYPE  somedoc [\n  <!ENTITY a  NTITY b    \"something\">\n  <!ENTITY b   \"&a;\">\n]>\n\n<somedoc>\n\n<somebeacon s8672093846347259794686720938463omeattr bute=\"&b\u0000\u0000\u0000\u0000\n\n&a; sho~ld app version=\"1.0\n  ear after colon: &a;\n&b; should appear after colon: &a;\n&a; should appear after colon: &b;\n&b; shou47259794686720938463omeattributld appear after colon: &b\u001b\n\n</somedoc>\n\n\n--- example 2 ---\n<!DOCTYPE doc [\n    <!ENTITY % z '\n        &#37;z; &#37;z; &#37;z; &#37;z; &#37;z;\n        &#37;z; &#37;z; &#37;z; &#37;z; somebeacon someattribu;`&#37;z; &#37;z; &#37;z; &#37;z#37;z; &#37;z; &#37;z;\n        &#37;z; &#37;z; &#37;z; &#37;z; &#37;z;\n        &#37;z;`&#37;z; &#37;z; &#37;z; &#37;\n        &#37;z; &#37;z; &#37;z; &#37;z; &#37;z;\n        &#37;z; &lt;&gt;&quot;\">\n]>\n<root>\n ;z;\n    '>\n    %z;\n]>\n<doc/>\n\n\nTried before \u2014 no new coverage, avoid repeating:\n--- a seed you generated (cycle 2) added 0 new edges ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE package [\n  <!ELEMENT package (manifest, payload)>\n  <!ELEMENT manifest (file+)>\n  <!ELEMENT file EMPTY>\n  <!ATTLIST file name CDATA #REQUIRED type CDATA #REQUIRED>\n  <!ELEMENT payload ANY>\n  <!ENTITY quote \"He said &quot;ready&quot;\">\n]>\n<package>\n  <manifest>\n    <file name=\"alpha.bin\" type=\"application/octet-stream\"/>\n    <file name=\"\u03b2.txt\" type=\"text/plain\"/>\n  </manifest>\n  <payload>\n    <chunk><![CDATA[raw bytes: ]]>]]&gt;<![CDATA[ and a closing marker]]></chunk>\n    <chunk>&quote;</chunk>\n    <empty xmlns=\"urn:payload\"/>\n  </payload>\n</package>\n\n--- a seed you generated (cycle 2) added 0 new edges ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE report [\n  <!ELEMENT report (heading, table?)>\n  <!ELEMENT heading (#PCDATA)>\n  <!ELEMENT table (row*)>\n  <!ELEMENT row (cell+)>\n  <!ELEMENT cell (#PCDATA)>\n  <!ATTLIST row number CDATA #IMPLIED>\n  <!ENTITY left \"[\" >\n  <!ENTITY right \"]\" >\n]>\n<report>\n  <heading>Broken-but-parseable input</heading>\n  <table>\n    <row number=\"01\"><cell>&left;one&right;</cell><cell>two</cell></row>\n    <row number=\"02\"><cell>three</cell><cell>four</cell></row>\n  </table>\n</report>\n<trailing/>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "stage1-jaccard",
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-22T06:09:18.187498+00:00"
+}

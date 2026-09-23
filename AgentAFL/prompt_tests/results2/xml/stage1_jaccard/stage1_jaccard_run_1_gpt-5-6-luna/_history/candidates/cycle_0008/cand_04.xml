@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE exchange [
+  <!ELEMENT exchange (request,response?,fault?)>
+  <!ELEMENT request (header*,body)>
+  <!ELEMENT response (header*,body)>
+  <!ELEMENT fault (code,detail?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ATTLIST header name NMTOKEN #REQUIRED>
+  <!ELEMENT body (#PCDATA|part|binary)*>
+  <!ELEMENT part (body)>
+  <!ATTLIST part media CDATA #IMPLIED boundary NMTOKEN #IMPLIED>
+  <!ELEMENT binary (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|part)*>
+  <!ENTITY qmark "&#x3F;">
+  <!ENTITY ampersand "&amp;">
+  <!ENTITY recursive "&recursive;">
+]>
+<exchange version="2.0" xmlns:m="urn:message">
+  <request>
+    <header name="Content-Type">multipart/mixed; boundary="cut"</header>
+    <header name="X-Trace">a:b:c &qmark;</header>
+    <body>
+      preface
+      <part media="text/plain" boundary="cut">
+        <body>first &amp; second</body>
+      </part>
+      <part media="application/octet-stream">
+        <body><binary><![CDATA[AAECAwQFBgcICQ==]]></binary></body>
+      </part>
+      suffix
+    </body>
+  </request>
+  <response>
+    <header name="Status">207 Multi-Status</header>
+    <body><![CDATA[<not-an-element attr="&fake;">]]></body>
+  </response>
+  <fault>
+    <code>W-&#x1F;17</code>
+    <detail><part media="text/xml"><body>trailing detail</body></part></detail>
+  </fault>
+</exchange>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE bundle [
+  <!ELEMENT bundle (header, payload, checksum?)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST bundle version CDATA #FIXED "2">
+  <!ENTITY % extra "INTERNAL">
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data:application/octet-stream;base64,AAEC">
+]>
+<bundle version="2">
+  <header>
+    <field>alpha</field>
+    <field><![CDATA[beta < gamma && delta]]></field>
+    <field><![CDATA[]]></field>
+  </header>
+  <payload>
+    <binary encoding="base64"><![CDATA[AAECAwQFBgcICQ==]]></binary>
+    <text><![CDATA[
+      ]]> tricky <![CDATA[ boundary ]]>
+    </text>
+    <nested><x/><y a="1 &amp; 2"/></nested>
+  </payload>
+  <checksum>deadbeef&#x0A;</checksum>
+</bundle>

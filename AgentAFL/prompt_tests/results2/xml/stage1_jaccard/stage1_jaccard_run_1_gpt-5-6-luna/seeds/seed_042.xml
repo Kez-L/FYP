@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive SYSTEM "file:///tmp/nonexistent-subset.dtd" [
+  <!ELEMENT archive (header,record*,checksum)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT record (key,blob,meta?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT blob (#PCDATA|piece)*>
+  <!ELEMENT piece (#PCDATA)>
+  <!ELEMENT meta (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST header version CDATA #REQUIRED flags NMTOKENS #IMPLIED>
+  <!ATTLIST record uid ID #REQUIRED kind CDATA #IMPLIED>
+  <!ATTLIST piece n NMTOKEN #IMPLIED>
+  <!ENTITY one "alpha">
+  <!ENTITY two "&one;-beta">
+  <!ENTITY three "&two;-gamma">
+]>
+<archive>
+  <header version="0x00" flags="a&#x20;b&#x9;c"/>
+  <record uid="r-01" kind="fragment">
+    <key>&three;</key>
+    <blob><piece n="1">first</piece><piece n="2"><![CDATA[second & third]]></piece></blob>
+    <meta>before<!-- hidden -->after<?note value="x"/></meta>
+  </record>
+  <record uid="r-02">
+    <key>literal &amp; escaped</key>
+    <blob><![CDATA[]]><piece n="3">tail</piece></blob>
+  </record>
+  <checksum>deadbeef&#10;</checksum>
+</archive>

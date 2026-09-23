@@ -1,0 +1,171 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY logo SYSTEM "logo.jpg" NDATA jpeg>
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, entry*)>
+  <!ATTLIST section
+    id ID #REQUIRED
+    xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (name, price?, details)>
+  <!ATTLIST entry
+    sku ID #REQUIRED
+    featured (yes|no) "no">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+]>
+<catalog>
+  <section id="hardware" xml:lang="en">
+    <title>Tools &amp; Components</title>
+    <entry sku="A-17" featured="yes">
+      <name>Socket <em>Delta</em></name>
+      <price>19.95</price>
+      <details>Fits <code>RX-4</code><br/>Limited batch.</details>
+    </entry>
+    <entry sku="B-08">
+      <name>Washer</name>
+      <details>Plain steel</details>
+    </entry>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<network xmlns="urn:net:core" xmlns:r="urn:net:route" xmlns:m="urn:net:meta">
+  <node id="n0">
+    <address family="ipv6">2001:db8::1</address>
+    <r:route priority="0">
+      <r:hop index="1">edge-a</r:hop>
+      <r:hop index="2">edge-b</r:hop>
+    </r:route>
+    <m:properties>
+      <m:property key="enabled"><m:value>true</m:value></m:property>
+      <m:property key="threshold"><m:value>0</m:value></m:property>
+    </m:properties>
+  </node>
+  <node id="n1" xmlns:r="urn:net:alternate">
+    <address family="unix">/var/run/service</address>
+    <r:route priority="high">
+      <r:hop index="0"/>
+    </r:route>
+    <link target="n0" xmlns="">
+      <label>fallback</label>
+    </link>
+  </node>
+  <group name="outer">
+    <member ref="n0"/>
+    <member ref="n1"/>
+  </group>
+</network>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+  <!ELEMENT report (header, data, footer)>
+  <!ELEMENT header (field+)>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST field name CDATA #REQUIRED>
+  <!ELEMENT data (row*)>
+  <!ELEMENT row (cell+)>
+  <!ATTLIST row number NMTOKEN #REQUIRED>
+  <!ELEMENT cell (#PCDATA|value)*>
+  <!ATTLIST cell kind (text|number|empty) "text">
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<report>
+  <header>
+    <field name="source">sensor-7</field>
+    <field name="window">2026-09-22T00:00:00Z</field>
+  </header>
+  <data>
+    <row number="01">
+      <cell kind="text">alpha &lt; beta</cell>
+      <cell kind="number"><value>0042</value></cell>
+      <cell kind="empty"/>
+    </row>
+    <row number="02">
+      <cell>line one
+line two &#x0A; line three</cell>
+      <cell kind="text">&left;literal&right;</cell>
+    </row>
+  </data>
+  <footer>checksum: 7&amp;9</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<archive xmlns="urn:archive" xmlns:x="urn:archive:extra">
+  <bundle created="2026-09-22">
+    <manifest>
+      <item path="a/b.txt" bytes="0" digest=""/>
+      <item path="./unicode/é.txt" bytes="12" digest="abc"/>
+    </manifest>
+    <payload>
+      <![CDATA[
+        <not-an-element attr="&value;">
+          raw markup, ]] and punctuation
+        </not-an-element>
+      ]]>
+    </payload>
+  </bundle>
+  <bundle created="2026-09-23" xmlns="">
+    <manifest>
+      <item path="nested.xml" bytes="31" digest="deadbeef"/>
+    </manifest>
+    <payload>
+      <fragment xmlns="urn:fragment" x:mode="quoted">
+        <part><![CDATA[A&B]]></part>
+        <part>tail</part>
+      </fragment>
+    </payload>
+  </bundle>
+  <x:index>
+    <x:entry bundle="0" key="manifest"/>
+  </x:index>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE form [
+  <!ELEMENT form (intro?, choice+, note?)>
+  <!ELEMENT intro (#PCDATA|strong|i|br)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT choice (caption, option+)>
+  <!ATTLIST choice id ID #REQUIRED multiple (true|false) "false">
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT option (#PCDATA)>
+  <!ATTLIST option value CDATA #REQUIRED selected (yes|no) "no">
+  <!ELEMENT note (#PCDATA)>
+]>
+<form>
+  <intro>Please select <strong>one</strong><br/>or more items.</intro>
+  <choice id="colors" multiple="true">
+    <caption>Preferred colors</caption>
+    <option value="r" selected="yes">red</option>
+    <option value="g">green</option>
+    <option value="b" selected="yes">blue</option>
+  </choice>
+  <choice id="sizes">
+    <caption>Size</caption>
+    <option value="s">small</option>
+    <option value="m" selected="yes">medium</option>
+    <option value="l">large</option>
+  </choice>
+  <note>Use &lt;reset&gt; to clear the form.</note>
+</form>
+```

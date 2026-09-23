@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE network [
+  <!ENTITY % declarations '
+    <!ELEMENT network (node|edge|annotation)*>
+    <!ELEMENT node EMPTY>
+    <!ELEMENT edge EMPTY>
+    <!ELEMENT annotation (#PCDATA|tag)*>
+    <!ELEMENT tag (#PCDATA)>
+    <!ATTLIST node key ID #REQUIRED role NMTOKEN #IMPLIED>
+    <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+    <!ATTLIST annotation xml:lang NMTOKEN #IMPLIED>
+    <!ATTLIST tag kind (note|warning|trace) "note">
+  '>
+  %declarations;
+  <!ENTITY % optional '
+    <!ATTLIST network mode (static|live) "static">
+  '>
+  %optional;
+  <!ENTITY left-bracket "&#91;">
+  <!ENTITY right-bracket "&#93;">
+]>
+<network mode="live" xmlns:g="urn:graph">
+  <node key="n.alpha" role="entry"/>
+  <node key="n.beta" role="exit"/>
+  <edge from="n.alpha" to="n.beta" weight="0.75"/>
+  <annotation xml:lang="en">route &left-bracket;<tag kind="trace">A-&gt;B</tag>&right-bracket;</annotation>
+  <g:foreign data="&lt;opaque&gt;"><![CDATA[<node key="not-real"/>]]></g:foreign>
+</network>

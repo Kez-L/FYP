@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ENTITY % common "xml:lang CDATA #IMPLIED xml:base CDATA #IMPLIED">
+  <!ELEMENT archive (metadata, bundle+)>
+  <!ATTLIST archive xmlns CDATA #IMPLIED>
+  <!ELEMENT metadata (owner,created?,keyword*)>
+  <!ATTLIST metadata %common;>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ELEMENT bundle (label, payload, checksum?)>
+  <!ATTLIST bundle
+    id ID #REQUIRED
+    state (new|sealed|broken) "new"
+    depends IDREFS #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|fragment|escape)*>
+  <!ELEMENT fragment (#PCDATA|part)*>
+  <!ATTLIST fragment role CDATA #IMPLIED>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT escape EMPTY>
+  <!ATTLIST escape kind (amp|lt|quote) #REQUIRED>
+  <!ELEMENT checksum (#PCDATA)>
+]>
+<archive xmlns="urn:archive:v3">
+  <metadata xml:lang="en-GB" xml:base="https://invalid.example/root/">
+    <owner>R&amp;D &lt;night-shift&gt;</owner>
+    <created>2026-09-22T03:14:15Z</created>
+    <keyword>alpha</keyword>
+    <keyword>ümlaut</keyword>
+  </metadata>
+  <bundle id="b0" state="sealed">
+    <label>primary</label>
+    <payload>start<fragment role="embedded"><part>one</part><part><![CDATA[two & three]]></part></fragment><escape kind="amp"/>end</payload>
+    <checksum>7f:00:aa</checksum>
+  </bundle>
+  <bundle id="b1" state="broken" depends="b0">
+    <label>fallback</label>
+    <payload><![CDATA[<not-an-element/>]]></payload>
+  </bundle>
+</archive>

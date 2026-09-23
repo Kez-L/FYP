@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta?, payload, trailer?)>
+  <!ELEMENT meta (created, flags*)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT flags EMPTY>
+  <!ATTLIST flags code NMTOKEN #REQUIRED>
+  <!ELEMENT payload (entry+)>
+  <!ELEMENT entry (#PCDATA|part|ref)*>
+  <!ATTLIST entry key ID #REQUIRED level NMTOKEN "low">
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #IMPLIED>
+  <!ELEMENT trailer EMPTY>
+  <!ENTITY mark "A &amp; B">
+]>
+<envelope>
+  <meta>
+    <created>2026-09-22T12:34:56Z</created>
+    <flags code="x1"/>
+    <flags code="urgent"/>
+  </meta>
+  <payload>
+    <entry key="e1" level="high">before<part>inside</part>&mark;<ref target="e1"/>after</entry>
+    <entry key="e2"><part><![CDATA[<raw> & data]]></part></entry>
+  </payload>
+  <trailer/>
+</envelope>
