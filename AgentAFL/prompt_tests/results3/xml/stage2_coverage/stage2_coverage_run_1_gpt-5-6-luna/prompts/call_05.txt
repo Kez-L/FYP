@@ -1,0 +1,105 @@
+call: 5
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:40:29.351672+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<!DOCTYPE doc [
+<!ELEMENT doc EMPTY>
+<!ATTLIST doc
+ defatt  (0|1)   "0"
+     xmlns:tst CDATA #FIXED "http://exa_ple.org"  tst:att  (0|1)   "0"
+    att (0|1)   "1">
+]>
+<doc att="1Bcrontic.com - Warning: Breakdancing midget with tourette&apos;s syndrome o#16060;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#&#x">
+160;&#160;&#160;&#160;&#160;&#16<doc xmlns:a="urn:a" xmlns:b="u?@???Xrn:a">
+    <elem a:160;&#&#160;&#160;&#160;&#160;&#160;&#160;&#x">
+<!-- <!ENT0;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;" url="ht.icrontic.c/h12;&laugh12;&laugh12;&la>
+
+
+--- example 2 ---
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE  somedoc [
+  <!ENTITY a   "some
+
+<somKdoc>
+
+<somebeaconthing">
+  <!ENTITY b   "&a;">
+]>
+
+<somedoc>
+
+<somebeacon someattribute=":b;"/>
+
+&a; should appear after colon: &a;
+&b; should appear after colon: &a;
+&a; should appear after colon: &b;
+&b; shou37;MENTD&#3fter colon: &b;
+
+</somedoc>
+
+
+Tried before — no new coverage, avoid repeating:
+--- a seed you generated (cycle 5) added 0 new edges ---
+<?xml version="1.1"?>
+<!DOCTYPE envelope [
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+  <!ENTITY quote "'" >
+  <!ENTITY nested "&left;&quote;payload&quote;&right;" >
+  <!ELEMENT envelope (header, payload, trailer)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header stamp CDATA #REQUIRED>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|mark)*>
+  <!ATTLIST chunk kind CDATA #IMPLIED>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT trailer (#PCDATA)>
+]>
+<envelope>
+  <header stamp="&nested;"/>
+  <payload>
+    <chunk kind="alpha">one<mark>two &lt; three</mark>four</chunk>
+    <chunk kind="beta">&nested;</chunk>
+  </payload>
+  <trailer>done &apos; &quot; &amp; &#x41; &#65;</trailer>
+</envelope>
+
+--- a seed you generated (cycle 4) added 0 new edges ---
+<?xml version="1.0"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (system, exchange+)>
+  <!ELEMENT system (#PCDATA|instruction)*>
+  <!ELEMENT instruction (#PCDATA)>
+  <!ELEMENT exchange (request, response, tool-call?)>
+  <!ELEMENT request (#PCDATA|attachment)*>
+  <!ELEMENT response (#PCDATA|warning|result)*>
+  <!ELEMENT warning (#PCDATA)>
+  <!ELEMENT result (#PCDATA)>
+  <!ELEMENT tool-call (argument*)>
+  <!ELEMENT argument (#PCDATA)>
+  <!ATTLIST exchange turn CDATA #REQUIRED status (ok|error|pending) "ok">
+  <!ATTLIST attachment href URI #REQUIRED media CDATA #IMPLIED>
+  <!ATTLIST tool-call name NMTOKEN #REQUIRED>
+  <!ENTITY prompt "Use &quot;careful&quot; parsing &amp; report delimite...[truncated, 1441 chars total]
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

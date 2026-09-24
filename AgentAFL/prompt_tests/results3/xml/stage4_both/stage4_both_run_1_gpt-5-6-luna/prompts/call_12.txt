@@ -1,0 +1,143 @@
+call: 12
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:32:17.115176+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, metrics, findings, footer)>
+  <!ELEMENT header (title, generated, owner)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT metrics (metric+)>
+  <!ELEMENT metric EMPTY>
+  <!ATTLIST metric name NMTOKEN #REQUIRED
+                    value CDATA #REQUIRED
+                    unit CDATA #IMPLIED>
+  <!ELEMENT findings (finding*)>
+  <!ELEMENT finding (#PCDATA|evidence)*>
+  <!ATTLIST finding severity (low|medium|high|critical) "low"
+                    id ID #REQUIRED>
+  <!ELEMENT evidence (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY product "Telemetry Engine">
+]>
+<report>
+  <header>
+    <title>Nightly &product; Audit</title>
+    <generated>2026-09-23T02:14:09Z</generated>
+    <owner>operations@example.invalid</owner>
+  </header>
+  <metrics>
+    <metric name="requests" value="18429" unit="count"/>
+    <metric name="duration" value="913.7" unit="seconds"/>
+    <metric name="error-rate" value="0.0041"/>
+  </metrics>
+  <findings>
+    <finding id="f-001" severity="medium">Expired cache entry found <evidence>node-17</evidence> during rotation.</finding>
+    <finding id="f-002" severity="critical"><evidence>queue://alerts</evidence> exceeded its configured threshold.</finding>
+  </findings>
+  <footer>End of report.</footer>
+</report>
+
+--- example 2 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<session xmlns="urn:example:session"
+         xmlns:auth="urn:example:auth"
+         xmlns:evt="urn:example:event"
+         xml:lang="en-US">
+  <identity>
+    <auth:user uid="u-73">
+      <auth:name>Ada Lovelace</auth:name>
+      <auth:credential kind="token" expires="2027-01-01">redacted</auth:credential>
+    </auth:user>
+  </identity>
+  <timeline>
+    <evt:event id="e1" severity="notice" timestamp="2026-09-23T08:05:44Z">
+      <evt:message>Connection established</evt:message>
+      <evt:details><![CDATA[peer=<node>; latency=18ms; status=ok]]></evt:details>
+    </evt:event>
+    <evt:event id="e2" severity="warning" timestamp="2026-09-23T08:06:01Z">
+      <evt:message>Retry requested</evt:message>
+      <evt:tags>
+        <evt:tag>network</evt:tag>
+        <evt:tag>transient</evt:tag>
+      </evt:tags>
+    </evt:event>
+  </timeline>
+  <preferences xml:space="default">
+    <preference name="theme">dark</preference>
+    <preference name="notifications">false</preference>
+  </preferences>
+</session>
+
+Tried before — no new coverage, avoid repeating:
+--- 7 of your past seeds (cycles 8,9,10,12) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0"?>
+<envelope xmlns="urn:example:envelope"
+          xmlns:sec="urn:example:security"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:type="SignedEnvelope">
+  <header>
+    <transaction id="tx-2048" priority="high"/>
+    <sec:credentials>
+      <sec:principal>service-reader</sec:principal>
+      <sec:roles>
+        <sec:role>observer</sec:role>
+        <sec:role>auditor</sec:role>
+      </sec:roles>
+    </sec:credentials>
+  </header>
+  <body>
+    <request method="query">
+      <path>/objects/alpha</path>
+      <parameters>
+        <parameter name="limit">25</parameter>
+        <parameter name="cursor"/>
+      </parameters>
+    </request>
+    <re...[truncated, 806 chars total]
+
+--- 2 of your past seeds (cycles 5,9) drove the same already-covered path with 0 new edges ---
+<?xml version="1.1"?>
+<map xmlns="urn:cartography:map"
+     xmlns:p="urn:cartography:point"
+     xmlns:svg="http://www.w3.org/2000/svg"
+     xml:base="https://maps.example.invalid/tiles/"
+     xml:lang="ja">
+  <metadata>
+    <title>東京の歩道</title>
+    <keywords>歩道,駅,公園</keywords>
+  </metadata>
+  <viewport west="139.70" south="35.66" east="139.78" north="35.72">
+    <p:way id="w-17" p:closed="false">
+      <p:node lat="35.681" lon="139.767"/>
+      <p:node lat="35.689" lon="139.692"/>
+      <p:node lat="35.710" lon="139.810"/>
+    </p:way>
+    <svg:svg viewBox="0 0 100 40" width="200" height="80">
+      <svg:path d="M2,30 C20,4 44,36 70,10"/>
+      <svg:text x="4" y="38">駅</svg:text>
+    </svg:...[truncated, 817 chars total]
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

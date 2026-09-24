@@ -1,0 +1,127 @@
+call: 8
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:31:09.575119+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="view.xsl"?>
+<!-- A namespaced document with mixed content and xml:base. -->
+<r:report xmlns:r="urn:example:report" xmlns:m="urn:example:metrics"
+          xml:base="https://example.invalid/reports/">
+  <r:header>
+    <r:title>Quarterly <r:emphasis>signal</r:emphasis> review</r:title>
+    <r:generated>2026-09-23T12:30:00Z</r:generated>
+  </r:header>
+  <r:body>
+    <r:paragraph>Observed values are <r:strong>stable</r:strong> across the sample.</r:paragraph>
+    <m:measurement unit="ms" scale="10">
+      <m:value>14.25</m:value>
+      <m:confidence>0.997</m:confidence>
+    </m:measurement>
+    <r:paragraph xml:lang="fr">Résumé avec des caractères Unicode : café, naïve, €.</r:paragraph>
+  </r:body>
+</r:report>
+
+--- example 2 ---
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE catalog [
+  <!ENTITY company "Northwind &amp; Sons">
+  <!ENTITY note "Use &#x2192; for the next aisle.">
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (name, item*)>
+  <!ATTLIST section code ID #REQUIRED parent IDREF #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT item (label, price, details?)>
+  <!ATTLIST item sku ID #REQUIRED tags NMTOKENS #IMPLIED state (active|held|retired) "active">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|b|i|ref)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT ref (#PCDATA)>
+]>
+<catalog>
+  <section code="hardware">
+    <name>&company; Hardware</name>
+    <item sku="bolt-08" tags="steel metric" state="active">
+      <label>Hex bolt</label>
+      <price>0.18</price>
+      <details>Grade <b>8.8</b>; see <ref>&note;</ref>.</details>
+    </item>
+  </section>
+  <section code="clearance" parent="hardware">
+    <name>Clearance</name>
+    <item sku="washer-02" tags="steel flat" state="held">
+      <label>Washer</label>
+      <price>0.05</price>
+    </item>
+  </section>
+</catalog>
+
+Tried before — no new coverage, avoid repeating:
+--- 2 of your past seeds (cycle 8) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0" encoding="UTF-8"?>
+<conversation xmlns="urn:example:chat" xmlns:meta="urn:example:meta"
+              meta:format="threaded">
+  <participants>
+    <person uid="u1"><name>Alex</name><role>author</role></person>
+    <person uid="u2"><name>Bea</name><role>reviewer</role></person>
+  </participants>
+  <thread id="root">
+    <message from="u1" time="2026-09-23T08:00:00Z">
+      <text>Hello <mention ref="u2">@Bea</mention>, see the attached note.</text>
+      <attachment name="note.txt" type="text/plain">
+        <![CDATA[line one
+line two
+]]>
+      </attachment>
+    </message>
+    <reply to="root" from="u2" time="2026-09-23T08:04:11Z">
+      <text>Reviewed; <reaction code="ok"/...[truncated, 1012 chars total]
+
+--- a seed you generated (cycle 8) added 0 new edges ---
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (key, title, body, metadata?)>
+  <!ATTLIST record revision CDATA "0">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (#PCDATA|code|quote|br)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT metadata (author+, tag*)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ENTITY intro "Archived text: ">
+]>
+<archive>
+  <record revision="7">
+    <key>R-α-001</key>
+    <title>Parser notes</title>
+    <body>&intro;<quote>Keep boundaries explicit.</quote><br/>
+      <code>&lt;node attribute="value"/&gt;</code>
+    </body>
+    <metada...[truncated, 997 chars total]
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

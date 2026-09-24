@@ -1,0 +1,123 @@
+call: 9
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:31:28.334204+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.0"?>
+<!DOCTYPE library [
+  <!ELEMENT library (shelf*)>
+  <!ATTLIST library lang NMTOKEN #IMPLIED>
+  <!ELEMENT shelf (label, book*)>
+  <!ATTLIST shelf name CDATA #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT book (title, author+, summary?, link*)>
+  <!ATTLIST book isbn CDATA #IMPLIED format (paper|digital|audio) "paper">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link href CDATA #REQUIRED rel CDATA "related">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY mark "A &amp; B">
+]>
+<library lang="en">
+  <shelf name="fiction">
+    <label>Fiction &amp; &quot;stories&quot;</label>
+    <book isbn="978-0-00-000001-1" format="digital">
+      <title>The &lt;Hidden&gt; Door</title>
+      <author>R. Example</author>
+      <author>J. Sample</author>
+      <summary>Contains <em>nested</em> terms, &nbsp;spacing, and <code>&mark;</code>.</summary>
+      <link href="urn:isbn:9780000000011" rel="identifier"/>
+    </book>
+  </shelf>
+  <shelf name="reference">
+    <label>Reference</label>
+    <book format="audio">
+      <title>Signals</title>
+      <author>Q. Reader</author>
+    </book>
+  </shelf>
+</library>
+
+--- example 2 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="view.xsl"?>
+<!-- A namespaced document with mixed content and xml:base. -->
+<r:report xmlns:r="urn:example:report" xmlns:m="urn:example:metrics"
+          xml:base="https://example.invalid/reports/">
+  <r:header>
+    <r:title>Quarterly <r:emphasis>signal</r:emphasis> review</r:title>
+    <r:generated>2026-09-23T12:30:00Z</r:generated>
+  </r:header>
+  <r:body>
+    <r:paragraph>Observed values are <r:strong>stable</r:strong> across the sample.</r:paragraph>
+    <m:measurement unit="ms" scale="10">
+      <m:value>14.25</m:value>
+      <m:confidence>0.997</m:confidence>
+    </m:measurement>
+    <r:paragraph xml:lang="fr">Résumé avec des caractères Unicode : café, naïve, €.</r:paragraph>
+  </r:body>
+</r:report>
+
+Tried before — no new coverage, avoid repeating:
+--- 4 of your past seeds (cycles 8,9) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="320" height="180" viewBox="0 0 320 180">
+  <title>Coverage specimen</title>
+  <desc><![CDATA[An SVG fragment containing <literal> markup and entities & symbols.]]></desc>
+  <defs>
+    <linearGradient id="fade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#102030"/>
+      <stop offset="100%" stop-color="#e0f0ff"/>
+    </linearGradient>
+    <path id="curve" d="M10,140 C60,20 120,160 190,45 S280,80 310,20"/>
+  </defs>
+  <rect x="0" y="0" width="320" height="180" rx="12" fill="url(#fade)"/>
+  <g id="plot" transform="translate(3.5 1.25)" opacity...[truncated, 998 chars total]
+
+--- 2 of your past seeds (cycles 5,9) drove the same already-covered path with 0 new edges ---
+<?xml version="1.1"?>
+<map xmlns="urn:cartography:map"
+     xmlns:p="urn:cartography:point"
+     xmlns:svg="http://www.w3.org/2000/svg"
+     xml:base="https://maps.example.invalid/tiles/"
+     xml:lang="ja">
+  <metadata>
+    <title>東京の歩道</title>
+    <keywords>歩道,駅,公園</keywords>
+  </metadata>
+  <viewport west="139.70" south="35.66" east="139.78" north="35.72">
+    <p:way id="w-17" p:closed="false">
+      <p:node lat="35.681" lon="139.767"/>
+      <p:node lat="35.689" lon="139.692"/>
+      <p:node lat="35.710" lon="139.810"/>
+    </p:way>
+    <svg:svg viewBox="0 0 100 40" width="200" height="80">
+      <svg:path d="M2,30 C20,4 44,36 70,10"/>
+      <svg:text x="4" y="38">駅</svg:text>
+    </svg:...[truncated, 817 chars total]
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

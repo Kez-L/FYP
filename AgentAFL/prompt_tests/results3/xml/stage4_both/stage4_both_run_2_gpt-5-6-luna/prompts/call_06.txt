@@ -1,0 +1,139 @@
+call: 6
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:35:28.793907+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (profile, bundle+)>
+  <!ELEMENT profile (label, contact)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT contact EMPTY>
+  <!ELEMENT bundle (title, asset+, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT asset EMPTY>
+  <!ELEMENT note (#PCDATA|link|kbd)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT kbd (#PCDATA)>
+  <!ATTLIST manifest revision CDATA #REQUIRED>
+  <!ATTLIST profile role (owner|reviewer|guest) "guest">
+  <!ATTLIST bundle code ID #REQUIRED depends IDREFS #IMPLIED>
+  <!ATTLIST asset path CDATA #REQUIRED kind (file|directory) "file" blob ENTITY #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY manual SYSTEM "manual.bin" NDATA bin>
+  <!ENTITY product "Cedar &amp; Finch">
+  <!ENTITY shortcut "Ctrl+&lt;Enter&gt;">
+]>
+<manifest revision="r17">
+  <profile role="owner">
+    <label>&product;</label>
+    <contact/>
+  </profile>
+  <bundle code="core">
+    <title>Runtime files</title>
+    <asset path="bin/runner" kind="file" blob="manual"/>
+    <asset path="share" kind="directory"/>
+    <note>Use <kbd>&shortcut;</kbd> after reading the <link>release note</link>.</note>
+  </bundle>
+  <bundle code="docs" depends="core">
+    <title>Reference material</title>
+    <asset path="README.txt"/>
+  </bundle>
+</manifest>
+
+--- example 2 ---
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (collection*)>
+  <!ELEMENT collection (record+)>
+  <!ELEMENT record (headline, author+, binary?)>
+  <!ELEMENT headline (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT binary EMPTY>
+  <!ATTLIST collection name CDATA #REQUIRED>
+  <!ATTLIST record id ID #REQUIRED related IDREFS #IMPLIED format (text|image|audio) "text">
+  <!ATTLIST binary source ENTITY #REQUIRED>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY % optional "INCLUDE">
+  <![%optional;[
+    <!ELEMENT annotation (#PCDATA)>
+    <!ATTLIST record reviewed (yes|no) "no">
+  ]]>
+]>
+<archive>
+  <collection name="field-notes">
+    <record id="r001" format="text" reviewed="yes">
+      <headline>Observed nesting behavior</headline>
+      <author>Lin</author>
+      <author>Rao</author>
+    </record>
+    <record id="r002" related="r001" format="image" reviewed="no">
+      <headline>Microscope plate</headline>
+      <author>Lin</author>
+      <binary source="logo"/>
+    </record>
+  </collection>
+</archive>
+
+Tried before — no new coverage, avoid repeating:
+--- 3 of your past seeds (cycles 2,3,6) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0"?>
+<envelope xmlns="urn:example:envelope" xmlns:m="urn:example:meta" xmlns:x="urn:example:extra" xml:lang="fr">
+  <?route destination="local"?>
+  <header m:version="2.7" xml:base="https://example.invalid/feed/">
+    <m:source code="A-7">station &quot;Nord&quot;</m:source>
+    <m:flags>
+      <m:flag enabled="true">one</m:flag>
+      <m:flag enabled="false">two</m:flag>
+    </m:flags>
+  </header>
+  <payload>
+    <section name="intro">
+      <p>avant <x:term x:kind="quoted">texte</x:term> après</p>
+      <!-- a deliberately positioned comment -->
+      <p><![CDATA[accented <content> stays literal]]></p>
+    </section>
+    <section name="data" m:id="D9">
+      <entry index="0...[truncated, 818 chars total]
+
+--- a seed you generated (cycle 6) added 0 new edges ---
+<?xml version="1.0"?>
+<pipeline xmlns="urn:example:pipeline" xmlns:c="urn:example:config">
+  <?trace id="p-42"?>
+  <input c:format="csv" c:delimiter=";" c:empty="keep">
+    <source uri="file:///var/tmp/incoming.csv" checksum="sha256:abc123"/>
+    <mapping>
+      <field name="first" target="person.given" required="true"/>
+      <field name="last" target="person.family" required="false"/>
+      <field name="score" target="metrics.score" default="0">
+        <transform name="decimal" scale="3"/>
+      </field>
+    </mapping>
+  </input>
+  <stages>
+    <stage name="sanitize" enabled="true">
+      <rule pattern="[\x00-\x1f]" action="remove"/>
+      <rule pattern="&quot;" action="escape"/>
+    </st...[truncated, 1103 chars total]
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

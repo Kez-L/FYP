@@ -1,0 +1,108 @@
+call: 9
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:22:10.481627+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE observatory [
+  <!ELEMENT observatory (station, observation*)>
+  <!ATTLIST observatory opened CDATA #IMPLIED>
+  <!ELEMENT station (name, coordinates, instrument+)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT coordinates (latitude, longitude, elevation?)>
+  <!ELEMENT latitude (#PCDATA)>
+  <!ELEMENT longitude (#PCDATA)>
+  <!ELEMENT elevation (#PCDATA)>
+  <!ELEMENT instrument (model, calibration)>
+  <!ATTLIST instrument id ID #REQUIRED>
+  <!ELEMENT model (#PCDATA)>
+  <!ELEMENT calibration (#PCDATA)>
+  <!ELEMENT observation (target, timestamp, measurement+)>
+  <!ATTLIST observation instrument IDREF #IMPLIED status (complete|pending|invalid) "complete">
+  <!ELEMENT target (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT measurement (#PCDATA)>
+  <!ATTLIST measurement unit CDATA #REQUIRED>
+]>
+<observatory opened="1998-11-03">
+  <station>
+    <name>North Ridge Array</name>
+    <coordinates>
+      <latitude>64.1466</latitude>
+      <longitude>-21.9426</longitude>
+      <elevation>312</elevation>
+    </coordinates>
+    <instrument id="spectro-7">
+      <model>HelioScan Ω</model>
+      <calibration>2026-04-17T08:30:00Z</calibration>
+    </instrument>
+    <instrument id="radio-2">
+      <model><![CDATA[Long-baseline / Mk IV]]></model>
+      <calibration>2026-04-15T19:12:44Z</calibration>
+    </instrument>
+  </station>
+  <observation instrument="spectro-7" status="complete">
+    <target>NGC 2392</target>
+    <timestamp>2026-09-22T03:18:09.442Z</timestamp>
+    <measurement unit="nm">486.133</measurement>
+    <measurement unit="km/s">-18.7</measurement>
+  </observation>
+  <observation instrument="radio-2" status="pending">
+    <target>J0437−4715</target>
+    <timestamp>2026-09-22T03:21:10Z</timestamp>
+    <measurement unit="Jy">0.742</measurement>
+  </observation>
+</observatory>
+
+--- example 2 ---
+<?xml version="1.0"?>
+<package xmlns="urn:archive:bundle" xmlns:sec="urn:archive:security" xml:lang="fr">
+  <!-- An intentionally mixed-content manifest -->
+  <header generated="2026-09-23T00:00:00Z">
+    <creator>Équipe Delta</creator>
+    <description>Rapport &amp; données associées</description>
+  </header>
+  <entries>
+    <entry path="notes/readme.txt" media-type="text/plain">
+      <hash algorithm="sha256">e3b0c44298fc1c149afbf4c8996fb924</hash>
+      <permissions owner="analyst" group="research">0640</permissions>
+    </entry>
+    <entry path="data/mesures.csv" media-type="text/csv" compressed="true">
+      <hash algorithm="blake2b">9f86d081884c7d659a2feaa0c55ad015</hash>
+      <permissions owner="robot" group="research">0600</permissions>
+    </entry>
+  </entries>
+  <sec:signature method="urn:example:ed25519">
+    <sec:key-id>key:archive/2026/09</sec:key-id>
+    <sec:value><![CDATA[
+-----BEGIN SIGNATURE-----
+RHVtbXkgc2lnbmF0dXJlICsgPD4gJiA=
+-----END SIGNATURE-----
+]]></sec:value>
+  </sec:signature>
+  <trailers>
+    <note>Fin du manifeste.</note>
+    <note xml:space="preserve">  whitespace   remains  </note>
+  </trailers>
+</package>
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

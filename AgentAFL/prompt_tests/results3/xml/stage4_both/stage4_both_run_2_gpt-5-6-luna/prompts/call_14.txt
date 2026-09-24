@@ -1,0 +1,170 @@
+call: 14
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:37:59.148785+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE library [
+  <!ELEMENT library (shelf+)>
+  <!ELEMENT shelf (name, book*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT book (title, author+, published?, description)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT published (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST shelf id ID #REQUIRED>
+  <!ATTLIST book isbn CDATA #IMPLIED available (yes|no) "yes">
+  <!ENTITY library-name "Riverside &amp; Municipal Library">
+]>
+<library>
+  <shelf id="fiction">
+    <name>&library-name; — Fiction</name>
+    <book isbn="978-0-00-000001-1">
+      <title>The Glass Meridian</title>
+      <author>Amara Vale</author>
+      <author>Jon Bell</author>
+      <published>2019</published>
+      <description>A study of <em>memory</em> and <code>place</code>.<br/>Second edition.</description>
+    </book>
+    <book isbn="978-0-00-000002-8" available="no">
+      <title>Winter Signals</title>
+      <author>M. R. Chen</author>
+      <description>Short stories from the northern coast.</description>
+    </book>
+  </shelf>
+  <shelf id="reference">
+    <name>Reference</name>
+    <book isbn="978-0-00-000003-5">
+      <title>Atlas of Small Waters</title>
+      <author>Priya Nandakumar</author>
+      <published>2024</published>
+      <description>Maps, notes, and field observations.</description>
+    </book>
+  </shelf>
+</library>
+
+--- example 2 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE logbook [
+  <!ELEMENT logbook (entry+)>
+  <!ELEMENT entry (timestamp, operator, event, measurements?, attachment*)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT operator (name, badge)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT badge (#PCDATA)>
+  <!ELEMENT event (#PCDATA)>
+  <!ELEMENT measurements (measurement+)>
+  <!ELEMENT measurement EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST entry id ID #REQUIRED severity (info|notice|warning|critical) "info">
+  <!ATTLIST measurement key NMTOKEN #REQUIRED value CDATA #REQUIRED unit CDATA #IMPLIED>
+  <!ATTLIST attachment href URI #REQUIRED media CDATA #REQUIRED>
+  <!NOTATION csv SYSTEM "text/csv">
+  <!ENTITY % common "source CDATA #IMPLIED">
+  <!ATTLIST attachment %common;>
+]>
+<?audit source="instrument-panel"?>
+<logbook>
+  <entry id="e-100" severity="notice">
+    <timestamp>2026-09-23T06:14:09Z</timestamp>
+    <operator>
+      <name>Leila Grant</name>
+      <badge>BG-41</badge>
+    </operator>
+    <event>Calibration cycle completed</event>
+    <measurements>
+      <measurement key="temperature" value="21.7" unit="C"/>
+      <measurement key="humidity" value="43" unit="percent"/>
+      <measurement key="drift" value="0.003" unit="mm"/>
+    </measurements>
+    <attachment href="calibration-100.csv" media="text/csv" source="bench-4"/>
+  </entry>
+  <entry id="e-101" severity="warning">
+    <timestamp>2026-09-23T06:19:44Z</timestamp>
+    <operator>
+      <name>Leila Grant</name>
+      <badge>BG-41</badge>
+    </operator>
+    <event>Unexpected vibration detected</event>
+    <measurements>
+      <measurement key="amplitude" value="7.2" unit="milli-g"/>
+    </measurements>
+    <attachment href="vibration-101.dat" media="application/octet-stream"/>
+  </entry>
+  <entry id="e-102" severity="critical">
+    <timestamp>2026-09-23T06:27:00Z</timestamp>
+    <operator>
+      <name>Owen Mbaye</name>
+      <badge>OP-09</badge>
+    </operator>
+    <event>Automatic shutdown initiated</event>
+  </en...[truncated, 2015 chars total]
+
+Tried before — no new coverage, avoid repeating:
+--- 5 of your past seeds (cycles 10,12,13,14) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:acme:workflow" xmlns:sec="urn:acme:security">
+  <definition name="nightly-maintenance" revision="12">
+    <trigger type="calendar">
+      <schedule zone="UTC">0 3 * * *</schedule>
+      <exclude date="2026-12-25"/>
+    </trigger>
+    <pipeline>
+      <task id="snapshot" role="storage" sec:clearance="internal">
+        <command><![CDATA[/usr/bin/snapshot --all --quiet]]></command>
+        <retry limit="2" delay="PT30S"/>
+      </task>
+      <branch test="artifact-count > 0">
+        <when-true>
+          <task id="publish" role="release">
+            <input from="snapshot"/>
+            <output uri="urn:artifact:latest"/>
+          <...[truncated, 1196 chars total]
+
+--- 3 of your past seeds (cycles 2,3,13) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0"?>
+<!DOCTYPE dispatch [
+  <!ELEMENT dispatch (sender, subject, body, attachment?)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|linebreak)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT attachment (filename, checksum)>
+  <!ELEMENT filename (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST dispatch priority (low|normal|urgent) "normal">
+  <!ATTLIST attachment media CDATA #REQUIRED>
+  <!ENTITY organization "North &amp; South Research">
+  <!ENTITY greeting "Hello, &organization;!">
+  <!ENTITY less "&lt;">
+  <!ENTITY greater "&gt;">
+]>
+<dispatch priority="urgent">
+  <sender>&organization;</sender>
+  ...[truncated, 1057 chars total]
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

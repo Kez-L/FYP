@@ -1,0 +1,129 @@
+call: 4
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:30:08.092043+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "https://cdn.example.test/logo.png" NDATA png>
+  <!ENTITY product "Atlas &amp; Co.">
+  <!ELEMENT report (header, entry+, footer)>
+  <!ELEMENT header (title, generated)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT entry (summary, media?, link*)>
+  <!ATTLIST entry code ID #REQUIRED category NMTOKEN #IMPLIED>
+  <!ELEMENT summary (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT media EMPTY>
+  <!ATTLIST media src ENTITY #IMPLIED format NOTATION #IMPLIED>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link rel (self|related|download) "self" href CDATA #REQUIRED>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<report>
+  <header>
+    <title>&product; inventory</title>
+    <generated>2026-09-23T12:00:00Z</generated>
+  </header>
+  <entry code="item-a7" category="hardware">
+    <summary>Use <em>sealed</em> <code>ATLAS-7</code> components.</summary>
+    <media src="logo" format="png"/>
+    <link rel="self" href="/inventory/item-a7"/>
+    <link rel="related" href="/inventory/item-b2">alternate listing</link>
+  </entry>
+  <entry code="item-b2">
+    <summary>Replacement assembly</summary>
+    <link rel="download" href="/files/item-b2.bin"/>
+  </entry>
+  <footer>End of report.</footer>
+</report>
+
+--- example 2 ---
+<?xml version="1.1"?>
+<scene xmlns="urn:example:scene"
+       xmlns:g="urn:example:geometry"
+       xmlns:m="urn:example:metadata"
+       xml:space="preserve">
+  <?render profile="draft" antialias="false"?>
+  <layer id="background" visible="true">
+    <g:rectangle x="0" y="0" width="800" height="600">
+      <g:fill color="#102030" opacity="0.85"/>
+    </g:rectangle>
+  </layer>
+  <layer id="foreground">
+    <object m:kind="label" transform="translate(40 72)">
+      <text><![CDATA[Use <g:rectangle> literally; do not interpret.]]></text>
+      <font family="monospace" size="14"/>
+    </object>
+    <object xmlns="" data-role="raw">
+      <value>unqualified element in a cleared namespace</value>
+      <meta xmlns="urn:example:metadata" m:flag="experimental"/>
+    </object>
+  </layer>
+  <!-- preserve this processing instruction and the surrounding whitespace -->
+  <?checkpoint id="layer-2"?>
+</scene>
+
+Tried before — no new coverage, avoid repeating:
+--- a seed you generated (cycle 4) added 0 new edges ---
+<?xml version="1.0"?>
+<telemetry xmlns="urn:example:telemetry"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="telemetry.xsd">
+  <device serial="ZX-44-019" model="field-node">
+    <capabilities>
+      <capability name="temperature"/>
+      <capability name="pressure"/>
+      <capability name="gps"/>
+    </capabilities>
+    <sample sequence="0001" collected-at="2026-09-23T08:15:00+02:00">
+      <temperature unit="C">21.875</temperature>
+      <pressure unit="kPa" quality="estimated">101.32</pressure>
+      <location>
+        <latitude>51.0504</latitude>
+        <longitude>13.7373</longitude>
+        <altitude xsi:nil="true"/>
+      </...[truncated, 1168 chars total]
+
+--- a seed you generated (cycle 3) added 0 new edges ---
+<?xml version="1.0"?>
+<r:manifest
+    xmlns:r="urn:acme:release"
+    xmlns:d="urn:acme:data"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xml:base="https://assets.example.test/releases/">
+  <r:release xml:id="release-42" version="4.2.0" xml:lang="fr">
+    <r:summary><![CDATA[Correctifs <critiques> & améliorations]]></r:summary>
+    <d:artifact
+        d:type="bundle"
+        xlink:type="simple"
+        xlink:href="packages/core-4.2.tar"
+        xlink:title="Paquet principal">
+      <d:checksum algorithm="sha256">9f86d081884c7d659a2feaa0c55ad015</d:checksum>
+      <d:part name="binary" media="application/octet-stream"/>
+      <d:part name="documentation" media="text/plain">
+        <d:l...[truncated, 966 chars total]
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

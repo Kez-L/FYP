@@ -1,0 +1,142 @@
+call: 3
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:34:34.304402+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (name, price, description?, stock)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT stock EMPTY>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ATTLIST item sku NMTOKEN #REQUIRED status (new|used|archived) "new">
+  <!ATTLIST stock quantity CDATA "0">
+]>
+<catalog>
+  <section id="hardware">
+    <heading>Workshop equipment</heading>
+    <item sku="A_17">
+      <name>Adjustable wrench</name>
+      <price currency="USD">18.50</price>
+      <description>Forged steel with <em>rubberized</em> grip; size <code>8in</code>.</description>
+      <stock quantity="42"/>
+    </item>
+    <item sku="B-204" status="used">
+      <name>Bench vise</name>
+      <price currency="EUR">73.00</price>
+      <stock quantity="3"/>
+    </item>
+  </section>
+  <section id="supplies">
+    <heading>Consumables</heading>
+    <item sku="C9" status="archived">
+      <name>Abrasive paper</name>
+      <description><![CDATA[Grades: 80 < 120 < 240]]></description>
+      <stock/>
+    </item>
+  </section>
+</catalog>
+
+--- example 2 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<telemetry xmlns="urn:lab:telemetry" xmlns:x="urn:lab:extension"
+           xml:space="default">
+  <session id="s-20260923-01" started="2026-09-23T00:00:00Z">
+    <?sample interval="250ms" mode="burst"?>
+    <device x:model="quartz-3" x:firmware="7.0.1">
+      <channel name="temperature" unit="°C">
+        <sample t="0" quality="good">21.5</sample>
+        <sample t="250" quality="suspect">NaN</sample>
+        <sample t="500" quality="good">21.7</sample>
+      </channel>
+      <channel name="voltage" unit="mV">
+        <sample t="0">3301</sample>
+        <sample t="250">3298</sample>
+        <sample t="500"><![CDATA[3300]]></sample>
+      </channel>
+      <event level="warning">
+        <time>2026-09-23T00:00:00.500Z</time>
+        <message>Transient reading: &lt;threshold&gt;</message>
+        <details x:code="T-17">
+          <raw><![CDATA[{"expected":3300,"actual":3298}]]></raw>
+        </details>
+      </event>
+    </device>
+    <summary>
+      <count channels="2" samples="6"/>
+      <status>complete</status>
+    </summary>
+  </session>
+</telemetry>
+
+Tried before — no new coverage, avoid repeating:
+--- 2 of your past seeds (cycles 2,3) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0"?>
+<envelope xmlns="urn:example:envelope" xmlns:m="urn:example:meta" xmlns:x="urn:example:extra" xml:lang="fr">
+  <?route destination="local"?>
+  <header m:version="2.7" xml:base="https://example.invalid/feed/">
+    <m:source code="A-7">station &quot;Nord&quot;</m:source>
+    <m:flags>
+      <m:flag enabled="true">one</m:flag>
+      <m:flag enabled="false">two</m:flag>
+    </m:flags>
+  </header>
+  <payload>
+    <section name="intro">
+      <p>avant <x:term x:kind="quoted">texte</x:term> après</p>
+      <!-- a deliberately positioned comment -->
+      <p><![CDATA[accented <content> stays literal]]></p>
+    </section>
+    <section name="data" m:id="D9">
+      <entry index="0...[truncated, 818 chars total]
+
+--- 2 of your past seeds (cycles 2,3) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0"?>
+<!DOCTYPE dispatch [
+  <!ELEMENT dispatch (sender, subject, body, attachment?)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|linebreak)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT attachment (filename, checksum)>
+  <!ELEMENT filename (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST dispatch priority (low|normal|urgent) "normal">
+  <!ATTLIST attachment media CDATA #REQUIRED>
+  <!ENTITY organization "North &amp; South Research">
+  <!ENTITY greeting "Hello, &organization;!">
+  <!ENTITY less "&lt;">
+  <!ENTITY greater "&gt;">
+]>
+<dispatch priority="urgent">
+  <sender>&organization;</sender>
+  ...[truncated, 1057 chars total]
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

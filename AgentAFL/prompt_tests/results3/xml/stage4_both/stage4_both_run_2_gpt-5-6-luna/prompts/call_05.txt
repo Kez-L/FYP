@@ -1,0 +1,142 @@
+call: 5
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:35:08.385415+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (name, price, details?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST catalog generated CDATA #IMPLIED>
+  <!ATTLIST section id ID #REQUIRED tags NMTOKENS #IMPLIED>
+  <!ATTLIST item ref ID #REQUIRED status (new|used|archived) "new">
+  <!ATTLIST price currency CDATA "USD">
+  <!ENTITY company "A &amp; B Supply">
+  <!ENTITY mark "&#x2605;">
+]>
+<catalog generated="2026-09-23">
+  <section id="hardware" tags="tools clearance">
+    <heading>&company; &mark;</heading>
+    <item ref="item-a" status="used">
+      <name>Adjustable wrench</name>
+      <price currency="EUR">14.95</price>
+      <details>Steel body, <em>reversible</em> jaw, and <code>1/2</code> scale<br/>with grip.</details>
+    </item>
+  </section>
+  <section id="software" tags="licensed">
+    <heading>Utilities</heading>
+    <item ref="item-b">
+      <name>Parser toolkit</name>
+      <price>0.00</price>
+      <details><![CDATA[Use <configure> before invoking the build script.]]></details>
+    </item>
+  </section>
+</catalog>
+
+--- example 2 ---
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (collection*)>
+  <!ELEMENT collection (record+)>
+  <!ELEMENT record (headline, author+, binary?)>
+  <!ELEMENT headline (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT binary EMPTY>
+  <!ATTLIST collection name CDATA #REQUIRED>
+  <!ATTLIST record id ID #REQUIRED related IDREFS #IMPLIED format (text|image|audio) "text">
+  <!ATTLIST binary source ENTITY #REQUIRED>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY % optional "INCLUDE">
+  <![%optional;[
+    <!ELEMENT annotation (#PCDATA)>
+    <!ATTLIST record reviewed (yes|no) "no">
+  ]]>
+]>
+<archive>
+  <collection name="field-notes">
+    <record id="r001" format="text" reviewed="yes">
+      <headline>Observed nesting behavior</headline>
+      <author>Lin</author>
+      <author>Rao</author>
+    </record>
+    <record id="r002" related="r001" format="image" reviewed="no">
+      <headline>Microscope plate</headline>
+      <author>Lin</author>
+      <binary source="logo"/>
+    </record>
+  </collection>
+</archive>
+
+Tried before — no new coverage, avoid repeating:
+--- 2 of your past seeds (cycles 2,3) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0"?>
+<envelope xmlns="urn:example:envelope" xmlns:m="urn:example:meta" xmlns:x="urn:example:extra" xml:lang="fr">
+  <?route destination="local"?>
+  <header m:version="2.7" xml:base="https://example.invalid/feed/">
+    <m:source code="A-7">station &quot;Nord&quot;</m:source>
+    <m:flags>
+      <m:flag enabled="true">one</m:flag>
+      <m:flag enabled="false">two</m:flag>
+    </m:flags>
+  </header>
+  <payload>
+    <section name="intro">
+      <p>avant <x:term x:kind="quoted">texte</x:term> après</p>
+      <!-- a deliberately positioned comment -->
+      <p><![CDATA[accented <content> stays literal]]></p>
+    </section>
+    <section name="data" m:id="D9">
+      <entry index="0...[truncated, 818 chars total]
+
+--- 2 of your past seeds (cycles 2,3) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0"?>
+<!DOCTYPE dispatch [
+  <!ELEMENT dispatch (sender, subject, body, attachment?)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|linebreak)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT attachment (filename, checksum)>
+  <!ELEMENT filename (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST dispatch priority (low|normal|urgent) "normal">
+  <!ATTLIST attachment media CDATA #REQUIRED>
+  <!ENTITY organization "North &amp; South Research">
+  <!ENTITY greeting "Hello, &organization;!">
+  <!ENTITY less "&lt;">
+  <!ENTITY greater "&gt;">
+]>
+<dispatch priority="urgent">
+  <sender>&organization;</sender>
+  ...[truncated, 1057 chars total]
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

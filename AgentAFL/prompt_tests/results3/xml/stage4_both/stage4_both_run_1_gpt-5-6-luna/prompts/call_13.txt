@@ -1,0 +1,138 @@
+call: 13
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:32:37.352177+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (warehouse+, summary)>
+  <!ELEMENT warehouse (label, bin+)>
+  <!ATTLIST warehouse id ID #REQUIRED region NMTOKEN #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT bin (item*)>
+  <!ATTLIST bin code NMTOKEN #REQUIRED>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item sku ID #REQUIRED quantity CDATA #REQUIRED state (available|reserved|damaged) "available">
+  <!ELEMENT summary (#PCDATA)>
+]>
+<inventory>
+  <warehouse id="wh-north" region="eu-west">
+    <label>North distribution center</label>
+    <bin code="A-01">
+      <item sku="sku-100" quantity="24"/>
+      <item sku="sku-101" quantity="0" state="reserved"/>
+    </bin>
+    <bin code="B-07"/>
+  </warehouse>
+  <warehouse id="wh-south" region="us-east">
+    <label>South distribution center</label>
+    <bin code="C-03">
+      <item sku="sku-220" quantity="7" state="damaged"/>
+    </bin>
+  </warehouse>
+  <summary>Inventory snapshot: 3 bins inspected.</summary>
+</inventory>
+
+--- example 2 ---
+<?xml version="1.0"?>
+<article xmlns="urn:example:article"
+         xmlns:ref="urn:example:reference"
+         xml:lang="fr"
+         xml:space="preserve">
+  <!-- Mixed prose, inline elements, and a processing instruction. -->
+  <?review status="pending"?>
+  <header>
+    <title>Le langage des arbres</title>
+    <byline>Camille Renard</byline>
+  </header>
+  <body>
+    <section id="intro">
+      <heading>Introduction</heading>
+      <paragraph>Un arbre possède une <emphasis>racine</emphasis> et des branches.</paragraph>
+      <paragraph><![CDATA[
+        Cette zone conserve les espaces, les symboles < et >,
+        ainsi qu'une notation semi-structurée.
+      ]]></paragraph>
+    </section>
+    <section id="refs">
+      <heading>Références</heading>
+      <list>
+        <entry><ref:link target="book-1">Volume I</ref:link></entry>
+        <entry><ref:link target="book-2">Volume II</ref:link></entry>
+      </list>
+    </section>
+  </body>
+  <appendix>
+    <note>Dernière mise à jour : 23 septembre 2026.</note>
+  </appendix>
+</article>
+
+Tried before — no new coverage, avoid repeating:
+--- 8 of your past seeds (cycles 8,9,10,12,13) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0"?>
+<envelope xmlns="urn:example:envelope"
+          xmlns:sec="urn:example:security"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:type="SignedEnvelope">
+  <header>
+    <transaction id="tx-2048" priority="high"/>
+    <sec:credentials>
+      <sec:principal>service-reader</sec:principal>
+      <sec:roles>
+        <sec:role>observer</sec:role>
+        <sec:role>auditor</sec:role>
+      </sec:roles>
+    </sec:credentials>
+  </header>
+  <body>
+    <request method="query">
+      <path>/objects/alpha</path>
+      <parameters>
+        <parameter name="limit">25</parameter>
+        <parameter name="cursor"/>
+      </parameters>
+    </request>
+    <re...[truncated, 806 chars total]
+
+--- 2 of your past seeds (cycles 5,9) drove the same already-covered path with 0 new edges ---
+<?xml version="1.1"?>
+<map xmlns="urn:cartography:map"
+     xmlns:p="urn:cartography:point"
+     xmlns:svg="http://www.w3.org/2000/svg"
+     xml:base="https://maps.example.invalid/tiles/"
+     xml:lang="ja">
+  <metadata>
+    <title>東京の歩道</title>
+    <keywords>歩道,駅,公園</keywords>
+  </metadata>
+  <viewport west="139.70" south="35.66" east="139.78" north="35.72">
+    <p:way id="w-17" p:closed="false">
+      <p:node lat="35.681" lon="139.767"/>
+      <p:node lat="35.689" lon="139.692"/>
+      <p:node lat="35.710" lon="139.810"/>
+    </p:way>
+    <svg:svg viewBox="0 0 100 40" width="200" height="80">
+      <svg:path d="M2,30 C20,4 44,36 70,10"/>
+      <svg:text x="4" y="38">駅</svg:text>
+    </svg:...[truncated, 817 chars total]
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

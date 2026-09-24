@@ -1,0 +1,101 @@
+call: 1
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:33:55.946304+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, note?)>
+  <!ELEMENT item (name, price, details?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST item code ID #REQUIRED status (new|used|archived) "new">
+]>
+<catalog>
+  <item code="x1" status="used">
+    <name>α &amp; β</name>
+    <price><![CDATA[19.95 < taxable > 0]]></price>
+    <details>first <emph>important</emph> second</details>
+  </item>
+  <item code="x2">
+    <name>zero&#x0A;width</name>
+    <price>0</price>
+  </item>
+  <note><![CDATA[unterminated-looking ]]]]><![CDATA[ text]]></note>
+</catalog>
+
+--- example 2 ---
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ELEMENT child (sub|sub2)*>
+  <!ELEMENT sub EMPTY>
+  <!ELEMENT sub2 (#PCDATA)>
+  <!ATTLIST root ref ID #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY ext SYSTEM "relative/entity.xml">
+]>
+<root ref="r0">
+  <child>
+    <sub a="1" b="2"/>
+    <sub2>text &lt; nested &gt; text</sub2>
+    <sub/>
+  </child>
+  <data><![CDATA[
+    ]]>]]&gt;]]>
+  </data>
+</root>
+
+Tried before — no new coverage, avoid repeating:
+--- a seed you generated (cycle 1) added 0 new edges ---
+<?xml version="1.1"?>
+<r xmlns="urn:outer" xmlns:p="urn:p" xmlns:q="urn:q">
+  <p:branch q:k="v">
+    <leaf xmlns="urn:inner" p:x="&quot;">text</leaf>
+    <empty xmlns:p=""> </empty>
+  </p:branch>
+  <q:branch>
+    <p:item xmlns:p="urn:changed">A</p:item>
+    <item xmlns="">B</item>
+  </q:branch>
+</r>
+
+--- a seed you generated (cycle 1) added 0 new edges ---
+<!DOCTYPE log [
+  <!ENTITY open "<entry kind='generated'>">
+  <!ENTITY close "</entry>">
+  <!ENTITY pair "&open;payload&close;">
+]>
+<log>
+  &pair;
+  <entry kind="literal">
+    <![CDATA[<&amp;]]>
+    <field name="a"/>
+    <field name="b">line1&#13;&#10;line2</field>
+  </entry>
+  <mixed>before<!-- comment --><![CDATA[mid]]>after</mixed>
+</log>
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

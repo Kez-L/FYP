@@ -1,0 +1,119 @@
+call: 10
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:31:40.807235+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ATTLIST archive created CDATA #IMPLIED>
+  <!ELEMENT record (key, payload, checksum?)>
+  <!ATTLIST record id ID #REQUIRED state (new|sealed|void) "new">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+  <!ENTITY sample "&left;synthetic&right;">
+]>
+<archive created="2026-09-23">
+  <record id="r001" state="sealed">
+    <key>alpha</key>
+    <payload><![CDATA[raw text with <tags>, ]]> and ]]> markers]]></payload>
+    <checksum>9f2a</checksum>
+  </record>
+  <record id="r002">
+    <key>beta</key>
+    <payload>Entity expansion: &sample;</payload>
+  </record>
+</archive>
+
+--- example 2 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="view.xsl"?>
+<!-- A namespaced document with mixed content and xml:base. -->
+<r:report xmlns:r="urn:example:report" xmlns:m="urn:example:metrics"
+          xml:base="https://example.invalid/reports/">
+  <r:header>
+    <r:title>Quarterly <r:emphasis>signal</r:emphasis> review</r:title>
+    <r:generated>2026-09-23T12:30:00Z</r:generated>
+  </r:header>
+  <r:body>
+    <r:paragraph>Observed values are <r:strong>stable</r:strong> across the sample.</r:paragraph>
+    <m:measurement unit="ms" scale="10">
+      <m:value>14.25</m:value>
+      <m:confidence>0.997</m:confidence>
+    </m:measurement>
+    <r:paragraph xml:lang="fr">Résumé avec des caractères Unicode : café, naïve, €.</r:paragraph>
+  </r:body>
+</r:report>
+
+Tried before — no new coverage, avoid repeating:
+--- 6 of your past seeds (cycles 8,9,10) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0"?>
+<envelope xmlns="urn:example:envelope"
+          xmlns:sec="urn:example:security"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:type="SignedEnvelope">
+  <header>
+    <transaction id="tx-2048" priority="high"/>
+    <sec:credentials>
+      <sec:principal>service-reader</sec:principal>
+      <sec:roles>
+        <sec:role>observer</sec:role>
+        <sec:role>auditor</sec:role>
+      </sec:roles>
+    </sec:credentials>
+  </header>
+  <body>
+    <request method="query">
+      <path>/objects/alpha</path>
+      <parameters>
+        <parameter name="limit">25</parameter>
+        <parameter name="cursor"/>
+      </parameters>
+    </request>
+    <re...[truncated, 806 chars total]
+
+--- 2 of your past seeds (cycles 5,9) drove the same already-covered path with 0 new edges ---
+<?xml version="1.1"?>
+<map xmlns="urn:cartography:map"
+     xmlns:p="urn:cartography:point"
+     xmlns:svg="http://www.w3.org/2000/svg"
+     xml:base="https://maps.example.invalid/tiles/"
+     xml:lang="ja">
+  <metadata>
+    <title>東京の歩道</title>
+    <keywords>歩道,駅,公園</keywords>
+  </metadata>
+  <viewport west="139.70" south="35.66" east="139.78" north="35.72">
+    <p:way id="w-17" p:closed="false">
+      <p:node lat="35.681" lon="139.767"/>
+      <p:node lat="35.689" lon="139.692"/>
+      <p:node lat="35.710" lon="139.810"/>
+    </p:way>
+    <svg:svg viewBox="0 0 100 40" width="200" height="80">
+      <svg:path d="M2,30 C20,4 44,36 70,10"/>
+      <svg:text x="4" y="38">駅</svg:text>
+    </svg:...[truncated, 817 chars total]
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

@@ -1,0 +1,134 @@
+call: 9
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:36:20.985633+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (meta, item*)>
+  <!ELEMENT meta (created, owner)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT item (name, dependency*, artifact?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT dependency EMPTY>
+  <!ELEMENT artifact (#PCDATA)>
+  <!ATTLIST manifest version CDATA #REQUIRED>
+  <!ATTLIST item key ID #REQUIRED state (new|ready|retired) "new">
+  <!ATTLIST dependency ref IDREF #REQUIRED optional (yes|no) "no">
+  <!ATTLIST artifact encoding (plain|base64) "plain">
+  <!ENTITY product "parser &amp; analyzer">
+]>
+<manifest version="3.14">
+  <meta>
+    <created>2026-09-23T12:00:00Z</created>
+    <owner>&product;</owner>
+  </meta>
+  <item key="core" state="ready">
+    <name>Core runtime</name>
+    <artifact encoding="plain">libcore.so</artifact>
+  </item>
+  <item key="cli">
+    <name>Command line tools</name>
+    <dependency ref="core"/>
+    <dependency ref="docs" optional="yes"/>
+  </item>
+  <item key="docs" state="retired">
+    <name>Reference manuals</name>
+    <artifact>docs.tar</artifact>
+  </item>
+</manifest>
+
+--- example 2 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<records xmlns="urn:example:records" xmlns:r="urn:example:record-meta" xml:space="preserve">
+  <?index mode="sparse"?>
+  <batch r:token="B-17" xml:lang="en">
+    <record r:kind="measurement" timestamp="2026-09-23T08:15:00Z">
+      <subject code="A&amp;B">  thermal chamber  </subject>
+      <value unit="K">298.15</value>
+      <note><![CDATA[Calibration <passed> without adjustment.]]></note>
+    </record>
+    <!-- records may contain an empty observation -->
+    <record r:kind="event" timestamp="2026-09-23T08:16:02Z">
+      <subject code="C-9">valve</subject>
+      <value unit="state">open</value>
+      <details>
+        <cause>automatic</cause>
+        <operator xmlns="">system</operator>
+        <tags>
+          <tag priority="1">safety</tag>
+          <tag priority="2">remote</tag>
+        </tags>
+      </details>
+    </record>
+    <record r:kind="measurement">
+      <subject code="D-4">humidity</subject>
+      <value unit="%">43.7</value>
+    </record>
+  </batch>
+</records>
+
+Tried before — no new coverage, avoid repeating:
+--- 3 of your past seeds (cycles 2,3,6) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0"?>
+<envelope xmlns="urn:example:envelope" xmlns:m="urn:example:meta" xmlns:x="urn:example:extra" xml:lang="fr">
+  <?route destination="local"?>
+  <header m:version="2.7" xml:base="https://example.invalid/feed/">
+    <m:source code="A-7">station &quot;Nord&quot;</m:source>
+    <m:flags>
+      <m:flag enabled="true">one</m:flag>
+      <m:flag enabled="false">two</m:flag>
+    </m:flags>
+  </header>
+  <payload>
+    <section name="intro">
+      <p>avant <x:term x:kind="quoted">texte</x:term> après</p>
+      <!-- a deliberately positioned comment -->
+      <p><![CDATA[accented <content> stays literal]]></p>
+    </section>
+    <section name="data" m:id="D9">
+      <entry index="0...[truncated, 818 chars total]
+
+--- 2 of your past seeds (cycles 8,9) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (header, payload, signature?)>
+  <!ELEMENT header (field+)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT signature (algorithm, digest)>
+  <!ELEMENT algorithm (#PCDATA)>
+  <!ELEMENT digest (#PCDATA)>
+  <!ATTLIST package id ID #REQUIRED compression (none|gzip|zstd) "none">
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST chunk number CDATA #REQUIRED final (yes|no) "no">
+  <!ATTLIST link href URI #REQUIRED rel CDATA #IMPLIED>
+  <!ENTITY % crypto "IGNORE">
+  <![%crypto;[
+    <!ATTLIST signature verified (yes|no) "no">
+  ]]>
+  <...[truncated, 1304 chars total]
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

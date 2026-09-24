@@ -1,0 +1,113 @@
+call: 6
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:40:47.651790+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<!DOCTYPE doc [
+<!ELEMENT doc EMPTY>
+<!ATTLIST doc
+ defatt  (0|1)   "0"
+     xmlns:tst CDATA #FIXED "http://exa_ple.org"  tst:att  (0|1)   "0"
+    att (0|1)   "1">
+]>
+<doc att="1Bcrontic.com - Warning: Breakdancing midget with tourette&apos;s syndrome o#16060;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#&#x">
+160;&#160;&#160;&#160;&#160;&#16<doc xmlns:a="urn:a" xmlns:b="u?@???Xrn:a">
+    <elem a:160;&#&#160;&#160;&#160;&#160;&#160;&#160;&#x">
+<!-- <!ENT0;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;" url="ht.icrontic.c/h12;&laugh12;&laugh12;&la>
+
+
+--- example 2 ---
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE  somedoc [
+  <!ENTITY a   "some
+
+<somKdoc>
+
+<somebeaconthing">
+  <!ENTITY b   "&a;">
+]>
+
+<somedoc>
+
+<somebeacon someattribute=":b;"/>
+
+&a; should appear after colon: &a;
+&b; should appear after colon: &a;
+&a; should appear after colon: &b;
+&b; shou37;MENTD&#3fter colon: &b;
+
+</somedoc>
+
+
+Tried before — no new coverage, avoid repeating:
+--- a seed you generated (cycle 6) added 0 new edges ---
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % common '<!ELEMENT report (title,body)>
+    <!ELEMENT title (#PCDATA)>
+    <!ELEMENT body (section+)>
+    <!ELEMENT section (heading,para*)>
+    <!ELEMENT heading (#PCDATA)>
+    <!ELEMENT para (#PCDATA|code|br)*>
+    <!ELEMENT code (#PCDATA)>
+    <!ELEMENT br EMPTY>
+    <!ATTLIST section level (one|two|three) "one">'>
+  %common;
+  <!ENTITY % optional "<!ELEMENT appendix (#PCDATA)>">
+  <![INCLUDE[
+    %optional;
+    <!ATTLIST report appendix IDREF #IMPLIED>
+  ]]>
+  <!ENTITY amp "&amp;">
+  <!ENTITY word "left-&amp;-right">
+]>
+<report appendix="extra">
+  <title>Conditional sections &amp; parameter entities</title>
+  <body>
+    <section level=...[truncated, 1057 chars total]
+
+--- a seed you generated (cycle 5) added 0 new edges ---
+<?xml version="1.1"?>
+<!DOCTYPE envelope [
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+  <!ENTITY quote "'" >
+  <!ENTITY nested "&left;&quote;payload&quote;&right;" >
+  <!ELEMENT envelope (header, payload, trailer)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header stamp CDATA #REQUIRED>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|mark)*>
+  <!ATTLIST chunk kind CDATA #IMPLIED>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT trailer (#PCDATA)>
+]>
+<envelope>
+  <header stamp="&nested;"/>
+  <payload>
+    <chunk kind="alpha">one<mark>two &lt; three</mark>four</chunk>
+    <chunk kind="beta">&nested;</chunk>
+  </payload>
+  <trailer>done &apos; &quot; &amp; &#x41; &#65;</trailer>
+</envelope>
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

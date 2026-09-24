@@ -1,0 +1,140 @@
+call: 10
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:36:37.448405+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, entry*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (label, description?, price, availability)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emphasis|code)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT price EMPTY>
+  <!ELEMENT availability EMPTY>
+  <!ATTLIST catalog generated CDATA #IMPLIED>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ATTLIST entry sku ID #REQUIRED category CDATA #IMPLIED>
+  <!ATTLIST price currency (USD|EUR|JPY) "USD" amount CDATA #REQUIRED>
+  <!ATTLIST availability status (in-stock|backorder|discontinued) #REQUIRED>
+  <!ENTITY trademark "™">
+]>
+<catalog generated="2026-09-23">
+  <section id="hardware">
+    <title>Hardware &amp; accessories</title>
+    <entry sku="kbd-01" category="input">
+      <label>Compact keyboard</label>
+      <description>Low profile <emphasis>mechanical</emphasis> keys with <code>USB-C</code> connector&trademark;</description>
+      <price currency="EUR" amount="79.95"/>
+      <availability status="in-stock"/>
+    </entry>
+    <entry sku="cam-02">
+      <label>Inspection camera</label>
+      <description><![CDATA[Waterproof housing; lens angle < 90 degrees]]></description>
+      <price currency="USD" amount="129.00"/>
+      <availability status="backorder"/>
+    </entry>
+  </section>
+  <section id="software">
+    <title>Software</title>
+    <entry sku="pkg-17" category="tools">
+      <label>Build toolkit</label>
+      <price amount="0"/>
+      <availability status="in-stock"/>
+    </entry>
+  </section>
+</catalog>
+
+--- example 2 ---
+<?xml version="1.1"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder+)>
+  <!ELEMENT folder (folder|file|alias)*>
+  <!ELEMENT file (#PCDATA)>
+  <!ELEMENT alias EMPTY>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ATTLIST file name CDATA #REQUIRED digest CDATA #IMPLIED>
+  <!ATTLIST alias name CDATA #REQUIRED target IDREF #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ATTLIST file format NOTATION (bin) #IMPLIED>
+]>
+<archive>
+  <folder name="root">
+    <folder name="reports">
+      <file name="summary.txt" digest="sha256:abc123">Total: 42& nbsp;items</file>
+      <file name="raw.bin" format="bin"><![CDATA[00 FF 10 7E]]></file>
+    </folder>
+    <folder name="links">
+      <alias name="latest" target="summary.txt"/>
+    </folder>
+    <folder name="empty"/>
+  </folder>
+</archive>
+
+Tried before — no new coverage, avoid repeating:
+--- 3 of your past seeds (cycles 2,3,6) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0"?>
+<envelope xmlns="urn:example:envelope" xmlns:m="urn:example:meta" xmlns:x="urn:example:extra" xml:lang="fr">
+  <?route destination="local"?>
+  <header m:version="2.7" xml:base="https://example.invalid/feed/">
+    <m:source code="A-7">station &quot;Nord&quot;</m:source>
+    <m:flags>
+      <m:flag enabled="true">one</m:flag>
+      <m:flag enabled="false">two</m:flag>
+    </m:flags>
+  </header>
+  <payload>
+    <section name="intro">
+      <p>avant <x:term x:kind="quoted">texte</x:term> après</p>
+      <!-- a deliberately positioned comment -->
+      <p><![CDATA[accented <content> stays literal]]></p>
+    </section>
+    <section name="data" m:id="D9">
+      <entry index="0...[truncated, 818 chars total]
+
+--- 2 of your past seeds (cycles 8,9) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (header, payload, signature?)>
+  <!ELEMENT header (field+)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT signature (algorithm, digest)>
+  <!ELEMENT algorithm (#PCDATA)>
+  <!ELEMENT digest (#PCDATA)>
+  <!ATTLIST package id ID #REQUIRED compression (none|gzip|zstd) "none">
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST chunk number CDATA #REQUIRED final (yes|no) "no">
+  <!ATTLIST link href URI #REQUIRED rel CDATA #IMPLIED>
+  <!ENTITY % crypto "IGNORE">
+  <![%crypto;[
+    <!ATTLIST signature verified (yes|no) "no">
+  ]]>
+  <...[truncated, 1304 chars total]
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

@@ -1,0 +1,82 @@
+call: 8
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:21:48.759055+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE library [
+  <!ELEMENT library (shelf+)>
+  <!ELEMENT shelf (book*)>
+  <!ATTLIST shelf code NMTOKEN #REQUIRED>
+  <!ELEMENT book (title, author+, metadata?, summary)>
+  <!ATTLIST book isbn CDATA #IMPLIED available (yes|no) "yes">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT metadata (published, pages)>
+  <!ELEMENT published (#PCDATA)>
+  <!ELEMENT pages (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|emphasis|link)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+]>
+<library>
+  <shelf code="A-01">
+    <book isbn="978-0000000001" available="yes">
+      <title>The Glass Archive</title>
+      <author>R. Ilyan</author>
+      <author>M. Chen</author>
+      <metadata>
+        <published>2024-02-29</published>
+        <pages>417</pages>
+      </metadata>
+      <summary>A record of <emphasis>fragmented</emphasis> memories and <link>unreliable maps</link>.</summary>
+    </book>
+  </shelf>
+  <shelf code="rare">
+    <book isbn="X&amp;Y&lt;7">
+      <title><![CDATA[Signals & Symbols]]></title>
+      <author>Élodie Nør</author>
+      <summary>Stored below <emphasis>zero</emphasis> degrees.</summary>
+    </book>
+  </shelf>
+</library>
+
+--- example 2 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<scene xmlns="urn:graphics:scene" xmlns:svg="http://www.w3.org/2000/svg" version="2.7">
+  <svg:canvas width="640" height="480" viewBox="0 0 640 480">
+    <svg:group id="background" opacity="0.875">
+      <svg:rect x="0" y="0" width="640" height="480" fill="#101820"/>
+      <svg:circle cx="320" cy="240" r="180" fill="none" stroke="#f2aa4c" stroke-width="3"/>
+    </svg:group>
+    <layer name="foreground">
+      <svg:path id="wave" d="M 5,230 C 80,20 160,460 240,230 S 400,20 475,230 S 560,460 635,230"
+                fill="none" stroke="white"/>
+      <label anchor="middle" baseline="central">
+        <text>θ = 45°</text>
+        <text xml:space="preserve">   rendered   </text>
+      </label>
+    </layer>
+  </svg:canvas>
+</scene>
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

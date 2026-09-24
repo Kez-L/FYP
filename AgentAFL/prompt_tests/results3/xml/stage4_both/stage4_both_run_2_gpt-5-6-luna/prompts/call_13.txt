@@ -1,0 +1,167 @@
+call: 13
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:37:36.743605+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (metadata, collection+)>
+  <!ELEMENT metadata (title, generated, source)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT collection (label, item+)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT item (name, summary?, dimensions, tags?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT dimensions (width, height, unit)>
+  <!ELEMENT width (#PCDATA)>
+  <!ELEMENT height (#PCDATA)>
+  <!ELEMENT unit (#PCDATA)>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST collection code ID #REQUIRED>
+  <!ATTLIST item sku NMTOKEN #REQUIRED status (active|retired) "active">
+  <!ATTLIST tag key CDATA #IMPLIED>
+  <!ENTITY trademark "™">
+]>
+<catalog>
+  <metadata>
+    <title>Archive &amp; Field Objects</title>
+    <generated>2026-09-23</generated>
+    <source>North Annex &lt;registry&gt;</source>
+  </metadata>
+  <collection code="tools">
+    <label>Survey instruments</label>
+    <item sku="compass-01">
+      <name>Brass compass &trademark;</name>
+      <summary>A hand-calibrated &quot;direction finder&quot;.</summary>
+      <dimensions>
+        <width>6.2</width>
+        <height>1.8</height>
+        <unit>cm</unit>
+      </dimensions>
+      <tags>
+        <tag key="material">brass</tag>
+        <tag key="era">early-20c</tag>
+      </tags>
+    </item>
+  </collection>
+  <collection code="textiles">
+    <label>Recovered fabrics</label>
+    <item sku="cloth-77" status="retired">
+      <name>Indigo sample</name>
+      <dimensions>
+        <width>42</width>
+        <height>31</height>
+        <unit>cm</unit>
+      </dimensions>
+    </item>
+  </collection>
+</catalog>
+
+--- example 2 ---
+<?xml version="1.0" encoding="UTF-16"?>
+<survey xmlns="urn:example:survey" xmlns:q="urn:example:question" xmlns:answer="urn:example:answer" version="4">
+  <introduction xml:space="default">
+    <heading>Equipment readiness survey</heading>
+    <text>Please answer each question once.</text>
+  </introduction>
+  <respondent id="r-008" role="supervisor">
+    <identity>
+      <display-name>Élodie Martín</display-name>
+      <organization>Atelier &amp; Sons</organization>
+    </identity>
+    <responses>
+      <q:response q:id="power">
+        <q:prompt>Is backup power available?</q:prompt>
+        <answer:choice code="yes" selected="true">Yes</answer:choice>
+        <answer:comment><![CDATA[Generator tested during the last inspection.]]></answer:comment>
+      </q:response>
+      <q:response q:id="network">
+        <q:prompt>Which connection is preferred?</q:prompt>
+        <answer:choice code="fiber" selected="false">Fiber</answer:choice>
+        <answer:choice code="radio" selected="true">Radio</answer:choice>
+      </q:response>
+      <q:response q:id="hazards">
+        <q:prompt>List known hazards.</q:prompt>
+        <answer:list>
+          <answer:item severity="medium">Condensation</answer:item>
+          <answer:item severity="low">Loose packaging</answer:item>
+          <answer:item severity="high">Unshielded cable</answer:item>
+        </answer:list>
+      </q:response>
+    </responses>
+    <review>
+      <reviewer id="rv-2">K. Okafor</reviewer>
+      <status>pending</status>
+      <remark xml:lang="fr">Vérification requise avant l'installation.</remark>
+    </review>
+  </respondent>
+</survey>
+
+Tried before — no new coverage, avoid repeating:
+--- 4 of your past seeds (cycles 10,12,13) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:acme:workflow" xmlns:sec="urn:acme:security">
+  <definition name="nightly-maintenance" revision="12">
+    <trigger type="calendar">
+      <schedule zone="UTC">0 3 * * *</schedule>
+      <exclude date="2026-12-25"/>
+    </trigger>
+    <pipeline>
+      <task id="snapshot" role="storage" sec:clearance="internal">
+        <command><![CDATA[/usr/bin/snapshot --all --quiet]]></command>
+        <retry limit="2" delay="PT30S"/>
+      </task>
+      <branch test="artifact-count > 0">
+        <when-true>
+          <task id="publish" role="release">
+            <input from="snapshot"/>
+            <output uri="urn:artifact:latest"/>
+          <...[truncated, 1196 chars total]
+
+--- 3 of your past seeds (cycles 2,3,13) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0"?>
+<!DOCTYPE dispatch [
+  <!ELEMENT dispatch (sender, subject, body, attachment?)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|linebreak)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT attachment (filename, checksum)>
+  <!ELEMENT filename (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST dispatch priority (low|normal|urgent) "normal">
+  <!ATTLIST attachment media CDATA #REQUIRED>
+  <!ENTITY organization "North &amp; South Research">
+  <!ENTITY greeting "Hello, &organization;!">
+  <!ENTITY less "&lt;">
+  <!ENTITY greater "&gt;">
+]>
+<dispatch priority="urgent">
+  <sender>&organization;</sender>
+  ...[truncated, 1057 chars total]
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

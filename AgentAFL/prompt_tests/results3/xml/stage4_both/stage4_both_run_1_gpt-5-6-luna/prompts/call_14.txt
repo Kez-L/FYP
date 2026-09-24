@@ -1,0 +1,138 @@
+call: 14
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:32:54.294086+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (intro, product*)>
+  <!ELEMENT intro (#PCDATA)>
+  <!ELEMENT product (name, description, price, tags)>
+  <!ATTLIST product code ID #REQUIRED currency (EUR|USD|JPY) "EUR">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|strong|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ENTITY brand "Northwind &amp; Sons">
+  <!ENTITY trademark "™">
+]>
+<catalog>
+  <intro>Featured products from &brand; &trademark;.</intro>
+  <product code="p-001" currency="USD">
+    <name>Field notebook</name>
+    <description>Water-resistant <strong>recycled</strong> paper.<br/>Fits in an <em>ordinary</em> pocket.</description>
+    <price>14.95</price>
+    <tags><tag>stationery</tag><tag>outdoor</tag></tags>
+  </product>
+  <product code="p-002">
+    <name>Desk lamp</name>
+    <description>Adjustable arm with a warm light.</description>
+    <price>39.00</price>
+    <tags><tag>office</tag></tags>
+  </product>
+</catalog>
+
+--- example 2 ---
+<?xml version="1.0"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (participant+, message*)>
+  <!ELEMENT participant EMPTY>
+  <!ATTLIST participant id ID #REQUIRED role NMTOKEN #REQUIRED>
+  <!ELEMENT message (#PCDATA|mention|attachment|quote)*>
+  <!ATTLIST message from IDREF #REQUIRED timestamp CDATA #REQUIRED>
+  <!ELEMENT mention (#PCDATA)>
+  <!ATTLIST mention user IDREF #REQUIRED>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment href URI #REQUIRED media CDATA #IMPLIED>
+  <!ELEMENT quote (#PCDATA|message)*>
+]>
+<conversation>
+  <participant id="u-alex" role="moderator"/>
+  <participant id="u-bea" role="member"/>
+  <participant id="u-cai" role="member"/>
+  <message from="u-alex" timestamp="2026-09-23T09:15:00Z">
+    Welcome, <mention user="u-bea">@Bea</mention>.
+    <attachment href="https://example.invalid/files/agenda.pdf" media="application/pdf"/>
+  </message>
+  <message from="u-bea" timestamp="2026-09-23T09:17:41Z">
+    <quote><message from="u-alex" timestamp="earlier">Welcome everyone.</message></quote>
+    I have a question about the schedule.
+  </message>
+  <message from="u-cai" timestamp="2026-09-23T09:19:02Z">
+    The symbols <![CDATA[<slot/> & {placeholder}]]> are examples, not markup.
+  </message>
+</conversation>
+
+Tried before — no new coverage, avoid repeating:
+--- 10 of your past seeds (cycles 8,9,10,12,13,14) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0"?>
+<envelope xmlns="urn:example:envelope"
+          xmlns:sec="urn:example:security"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:type="SignedEnvelope">
+  <header>
+    <transaction id="tx-2048" priority="high"/>
+    <sec:credentials>
+      <sec:principal>service-reader</sec:principal>
+      <sec:roles>
+        <sec:role>observer</sec:role>
+        <sec:role>auditor</sec:role>
+      </sec:roles>
+    </sec:credentials>
+  </header>
+  <body>
+    <request method="query">
+      <path>/objects/alpha</path>
+      <parameters>
+        <parameter name="limit">25</parameter>
+        <parameter name="cursor"/>
+      </parameters>
+    </request>
+    <re...[truncated, 806 chars total]
+
+--- 2 of your past seeds (cycles 5,9) drove the same already-covered path with 0 new edges ---
+<?xml version="1.1"?>
+<map xmlns="urn:cartography:map"
+     xmlns:p="urn:cartography:point"
+     xmlns:svg="http://www.w3.org/2000/svg"
+     xml:base="https://maps.example.invalid/tiles/"
+     xml:lang="ja">
+  <metadata>
+    <title>東京の歩道</title>
+    <keywords>歩道,駅,公園</keywords>
+  </metadata>
+  <viewport west="139.70" south="35.66" east="139.78" north="35.72">
+    <p:way id="w-17" p:closed="false">
+      <p:node lat="35.681" lon="139.767"/>
+      <p:node lat="35.689" lon="139.692"/>
+      <p:node lat="35.710" lon="139.810"/>
+    </p:way>
+    <svg:svg viewBox="0 0 100 40" width="200" height="80">
+      <svg:path d="M2,30 C20,4 44,36 70,10"/>
+      <svg:text x="4" y="38">駅</svg:text>
+    </svg:...[truncated, 817 chars total]
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

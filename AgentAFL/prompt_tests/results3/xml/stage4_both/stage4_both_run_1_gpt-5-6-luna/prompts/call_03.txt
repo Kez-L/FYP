@@ -1,0 +1,131 @@
+call: 3
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:29:45.324753+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.1"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ATTLIST catalog xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section code NMTOKEN #REQUIRED>
+  <!ELEMENT title (#PCDATA|mark|br)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT item (name, price, note?)>
+  <!ATTLIST item id ID #REQUIRED status (new|used|reserved) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA|mark)*>
+  <!ENTITY currency "&#x20AC;">
+]>
+<catalog xml:lang="en">
+  <section code="tools">
+    <title>Hand<mark>crafted</mark><br/>tools</title>
+    <item id="i-101">
+      <name>Precision file</name>
+      <price>19.95 &currency;</price>
+      <note>Includes <mark>oak</mark> handle.</note>
+    </item>
+  </section>
+  <section code="parts">
+    <title>Replacement components</title>
+    <item id="i-202" status="reserved">
+      <name>Retaining ring</name>
+      <price>3.50 &currency;</price>
+    </item>
+  </section>
+</catalog>
+
+--- example 2 ---
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (defaults, profile+)>
+  <!ELEMENT defaults (timeout, endpoint)>
+  <!ELEMENT timeout (#PCDATA)>
+  <!ELEMENT endpoint (#PCDATA)>
+  <!ELEMENT profile (name, setting*)>
+  <!ATTLIST profile id ID #REQUIRED inherits IDREF #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT setting (#PCDATA)>
+  <!ATTLIST setting key NMTOKEN #REQUIRED enabled (true|false) "true">
+  <!ENTITY % commonAttrs "<!ATTLIST setting source CDATA 'local'>">
+  %commonAttrs;
+  <![INCLUDE[
+    <!ENTITY standard "production">
+  ]]>
+  <![IGNORE[
+    <!ELEMENT obsolete EMPTY>
+  ]]>
+]>
+<configuration>
+  <defaults>
+    <timeout>45</timeout>
+    <endpoint>https://config.example.test/api</endpoint>
+  </defaults>
+  <profile id="base">
+    <name>&standard;</name>
+    <setting key="cache" source="system">enabled</setting>
+    <setting key="tracing" enabled="false">disabled</setting>
+  </profile>
+  <profile id="operator" inherits="base">
+    <name>operator</name>
+    <setting key="theme">dark</setting>
+  </profile>
+</configuration>
+
+Tried before — no new coverage, avoid repeating:
+--- a seed you generated (cycle 3) added 0 new edges ---
+<?xml version="1.0"?>
+<r:manifest
+    xmlns:r="urn:acme:release"
+    xmlns:d="urn:acme:data"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xml:base="https://assets.example.test/releases/">
+  <r:release xml:id="release-42" version="4.2.0" xml:lang="fr">
+    <r:summary><![CDATA[Correctifs <critiques> & améliorations]]></r:summary>
+    <d:artifact
+        d:type="bundle"
+        xlink:type="simple"
+        xlink:href="packages/core-4.2.tar"
+        xlink:title="Paquet principal">
+      <d:checksum algorithm="sha256">9f86d081884c7d659a2feaa0c55ad015</d:checksum>
+      <d:part name="binary" media="application/octet-stream"/>
+      <d:part name="documentation" media="text/plain">
+        <d:l...[truncated, 966 chars total]
+
+--- a seed you generated (cycle 2) added 0 new edges ---
+<?xml version="1.0" encoding="UTF-8"?>
+<archive xmlns="urn:example:archive" xmlns:m="urn:example:media">
+  <!-- A record containing several namespace scopes -->
+  <collection xml:lang="ja" xml:base="https://example.test/archive/">
+    <m:cover format="image/svg+xml" m:width="640" m:height="480">
+      <![CDATA[<svg><text>not parsed as markup</text></svg>]]>
+    </m:cover>
+    <record key="R-α" revised="2026-09-23T10:20:30Z">
+      <heading>東京 <m:icon aria-label="map"/> collection</heading>
+      <summary>Text with &lt;escaped&gt; delimiters and a nonbreaking space.</summary>
+      <contributors>
+        <person role="editor">佐藤</person>
+        <person role="translator" xmlns="urn:example:pe...[truncated, 883 chars total]
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

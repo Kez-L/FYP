@@ -1,0 +1,122 @@
+call: 6
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:30:41.672799+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE gallery [
+  <!NOTATION png SYSTEM "image/png">
+  <!NOTATION jpeg PUBLIC "-//Example//NOTATION JPEG//EN" "image/jpeg">
+  <!ENTITY logo SYSTEM "assets/logo.png" NDATA png>
+  <!ELEMENT gallery (caption, image+, credits?)>
+  <!ATTLIST gallery xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT caption (#PCDATA|em)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT image EMPTY>
+  <!ATTLIST image
+    id ID #REQUIRED
+    src ENTITY #REQUIRED
+    format NOTATION (png|jpeg) #REQUIRED
+    alt CDATA #IMPLIED>
+  <!ELEMENT credits (#PCDATA)>
+]>
+<gallery xml:lang="en">
+  <caption>Seasonal <em>collection</em></caption>
+  <image id="cover" src="logo" format="png" alt="Company mark"/>
+  <image id="preview" src="logo" format="jpeg"/>
+  <credits>Images supplied by the archive.</credits>
+</gallery>
+
+--- example 2 ---
+<?xml version="1.0"?>
+<document xmlns="urn:example:document"
+          xmlns:a="urn:example:annotation"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xml:space="preserve">
+  <header a:revision="7" xlink:type="simple" xlink:href="#body">
+    <title>Namespace transitions</title>
+    <?audit actor="parser"?>
+  </header>
+  <body id="body">
+    <section a:role="intro">
+      <p>Default namespace content.</p>
+      <foreign xmlns="">
+        <raw data-kind="literal">unqualified element</raw>
+        <a:marker xmlns:a="urn:example:annotation" a:level="high"/>
+      </foreign>
+    </section>
+    <!-- A comment between namespace scopes -->
+    <section xmlns:b="urn:example:binding" b:mode="compact">
+      <item key="A&amp;B">left &lt; right</item>
+      <item key="C&#x2D;D"><![CDATA[embedded <markup> stays text]]></item>
+    </section>
+  </body>
+</document>
+
+Tried before — no new coverage, avoid repeating:
+--- a seed you generated (cycle 5) added 0 new edges ---
+<?xml version="1.1"?>
+<map xmlns="urn:cartography:map"
+     xmlns:p="urn:cartography:point"
+     xmlns:svg="http://www.w3.org/2000/svg"
+     xml:base="https://maps.example.invalid/tiles/"
+     xml:lang="ja">
+  <metadata>
+    <title>東京の歩道</title>
+    <keywords>歩道,駅,公園</keywords>
+  </metadata>
+  <viewport west="139.70" south="35.66" east="139.78" north="35.72">
+    <p:way id="w-17" p:closed="false">
+      <p:node lat="35.681" lon="139.767"/>
+      <p:node lat="35.689" lon="139.692"/>
+      <p:node lat="35.710" lon="139.810"/>
+    </p:way>
+    <svg:svg viewBox="0 0 100 40" width="200" height="80">
+      <svg:path d="M2,30 C20,4 44,36 70,10"/>
+      <svg:text x="4" y="38">駅</svg:text>
+    </svg:...[truncated, 817 chars total]
+
+--- a seed you generated (cycle 5) added 0 new edges ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (path, payload, checksum)>
+  <!ATTLIST entry status (new|changed|deleted) "new">
+  <!ELEMENT path (#PCDATA)>
+  <!ELEMENT payload (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+]>
+<archive>
+  <entry status="changed">
+    <path>src/parser &amp; tests/sample.xml</path>
+    <payload><![CDATA[
+      <record kind="literal">
+        <field name="a">1 &amp; 2</field>
+      </record>
+    ]]></payload>
+    <checksum>sha256:0000000000000000000000000000000000000000000000000000000000000000</checksum>
+  </entry>
+  <entry status="deleted">
+    <path>tmp/old.log</path>
+    <payload>line one&#x0A;line two&#...[truncated, 782 chars total]
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

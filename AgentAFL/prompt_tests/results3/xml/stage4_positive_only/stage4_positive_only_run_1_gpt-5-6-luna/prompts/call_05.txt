@@ -1,0 +1,73 @@
+call: 5
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:20:53.396046+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.0"?>
+<catalog xmlns="urn:store:catalog" xmlns:p="urn:store:price">
+  <product sku="A-001" available="true">
+    <name><![CDATA[Glass & Granite]]></name>
+    <dimensions unit="mm">
+      <width>12.5</width>
+      <height>0</height>
+      <depth>999999999999999999999</depth>
+    </dimensions>
+    <p:price currency="€">1.2e+03</p:price>
+    <tags>
+      <tag>fragile</tag>
+      <tag>石</tag>
+      <tag xml:space="preserve">  spaced  </tag>
+    </tags>
+  </product>
+  <product sku="B-002" available="false">
+    <name>R&amp;D &quot;prototype&quot;</name>
+    <notes>line one
+line two
+line three</notes>
+  </product>
+</catalog>
+
+--- example 2 ---
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ELEMENT node ANY>
+  <!ATTLIST node key ID #IMPLIED ref IDREF #IMPLIED>
+  <!ENTITY local "replacement">
+  <!ENTITY recursive "&local; &local;">
+]>
+<root xmlns:a="urn:a" xmlns:b="urn:b">
+  <node key="n0" ref="n2">
+    <node key="n1">
+      <value>&recursive;</value>
+      <value><![CDATA[]]></value>
+      <value><![CDATA[<not-an-element>&still-raw;</not-an-element>]]></value>
+    </node>
+    <a:item b:flag="yes" a:count="00000000000000000000000000042"/>
+    <node key="n2">
+      <mixed>left<![CDATA[middle]]>right</mixed>
+    </node>
+  </node>
+  <tail><!-- comment --><![CDATA[ x ]]></tail>
+</root>
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

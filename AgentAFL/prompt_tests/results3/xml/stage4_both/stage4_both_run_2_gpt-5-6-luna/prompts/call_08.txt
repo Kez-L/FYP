@@ -1,0 +1,141 @@
+call: 8
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:36:01.821682+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE library [
+  <!ELEMENT library (section+)>
+  <!ELEMENT section (title, book*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT book (title, author+, summary?, edition*)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|i|u|code)*>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT u (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT edition EMPTY>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ATTLIST book isbn CDATA #IMPLIED available (true|false) "true">
+  <!ATTLIST edition year CDATA #REQUIRED publisher CDATA #IMPLIED>
+]>
+<library>
+  <section id="fiction">
+    <title>Fiction</title>
+    <book isbn="978000000001" available="true">
+      <title>The Glass Orchard</title>
+      <author>Marin Vale</author>
+      <author>Oren Pike</author>
+      <summary>A story of <i>memory</i>, <u>weather</u>, and <code>return</code>.</summary>
+      <edition year="2018" publisher="North House"/>
+      <edition year="2024"/>
+    </book>
+  </section>
+  <section id="reference">
+    <title>Reference</title>
+    <book available="false">
+      <title>Atlas of Small Rivers</title>
+      <author>Kei Doran</author>
+    </book>
+  </section>
+</library>
+
+--- example 2 ---
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (collection*)>
+  <!ELEMENT collection (record+)>
+  <!ELEMENT record (headline, author+, binary?)>
+  <!ELEMENT headline (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT binary EMPTY>
+  <!ATTLIST collection name CDATA #REQUIRED>
+  <!ATTLIST record id ID #REQUIRED related IDREFS #IMPLIED format (text|image|audio) "text">
+  <!ATTLIST binary source ENTITY #REQUIRED>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY % optional "INCLUDE">
+  <![%optional;[
+    <!ELEMENT annotation (#PCDATA)>
+    <!ATTLIST record reviewed (yes|no) "no">
+  ]]>
+]>
+<archive>
+  <collection name="field-notes">
+    <record id="r001" format="text" reviewed="yes">
+      <headline>Observed nesting behavior</headline>
+      <author>Lin</author>
+      <author>Rao</author>
+    </record>
+    <record id="r002" related="r001" format="image" reviewed="no">
+      <headline>Microscope plate</headline>
+      <author>Lin</author>
+      <binary source="logo"/>
+    </record>
+  </collection>
+</archive>
+
+Tried before — no new coverage, avoid repeating:
+--- 3 of your past seeds (cycles 2,3,6) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0"?>
+<envelope xmlns="urn:example:envelope" xmlns:m="urn:example:meta" xmlns:x="urn:example:extra" xml:lang="fr">
+  <?route destination="local"?>
+  <header m:version="2.7" xml:base="https://example.invalid/feed/">
+    <m:source code="A-7">station &quot;Nord&quot;</m:source>
+    <m:flags>
+      <m:flag enabled="true">one</m:flag>
+      <m:flag enabled="false">two</m:flag>
+    </m:flags>
+  </header>
+  <payload>
+    <section name="intro">
+      <p>avant <x:term x:kind="quoted">texte</x:term> après</p>
+      <!-- a deliberately positioned comment -->
+      <p><![CDATA[accented <content> stays literal]]></p>
+    </section>
+    <section name="data" m:id="D9">
+      <entry index="0...[truncated, 818 chars total]
+
+--- 2 of your past seeds (cycles 2,3) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0"?>
+<!DOCTYPE dispatch [
+  <!ELEMENT dispatch (sender, subject, body, attachment?)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|linebreak)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT attachment (filename, checksum)>
+  <!ELEMENT filename (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST dispatch priority (low|normal|urgent) "normal">
+  <!ATTLIST attachment media CDATA #REQUIRED>
+  <!ENTITY organization "North &amp; South Research">
+  <!ENTITY greeting "Hello, &organization;!">
+  <!ENTITY less "&lt;">
+  <!ENTITY greater "&gt;">
+]>
+<dispatch priority="urgent">
+  <sender>&organization;</sender>
+  ...[truncated, 1057 chars total]
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

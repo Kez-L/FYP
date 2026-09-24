@@ -1,0 +1,167 @@
+call: 12
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:37:17.042765+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.0"?>
+<!DOCTYPE itinerary [
+  <!ELEMENT itinerary (traveler, journey)>
+  <!ELEMENT traveler (name, contacts)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT contacts (email, phone?)>
+  <!ELEMENT email (#PCDATA)>
+  <!ELEMENT phone (#PCDATA)>
+  <!ELEMENT journey (leg+)>
+  <!ELEMENT leg (departure, arrival, transport, lodging?)>
+  <!ELEMENT departure (place, time)>
+  <!ELEMENT arrival (place, time)>
+  <!ELEMENT place (#PCDATA)>
+  <!ELEMENT time (#PCDATA)>
+  <!ELEMENT transport (#PCDATA)>
+  <!ELEMENT lodging (hotel, nights)>
+  <!ELEMENT hotel (#PCDATA)>
+  <!ELEMENT nights (#PCDATA)>
+  <!ATTLIST itinerary currency CDATA #IMPLIED>
+  <!ATTLIST leg sequence NMTOKEN #REQUIRED>
+  <!ATTLIST transport mode (rail|air|road|sea) #REQUIRED>
+  <!ENTITY city "North Harbor">
+]>
+<itinerary currency="EUR">
+  <traveler>
+    <name>Lin &amp; Noor</name>
+    <contacts>
+      <email>dispatch@example.test</email>
+      <phone>+00 555 0102</phone>
+    </contacts>
+  </traveler>
+  <journey>
+    <leg sequence="A" >
+      <departure>
+        <place>Old Quay</place>
+        <time>2026-10-04T06:45:00+02:00</time>
+      </departure>
+      <arrival>
+        <place>&city;</place>
+        <time>2026-10-04T09:10:00+02:00</time>
+      </arrival>
+      <transport mode="rail">Night express</transport>
+      <lodging>
+        <hotel>Lantern House</hotel>
+        <nights>2</nights>
+      </lodging>
+    </leg>
+    <leg sequence="B">
+      <departure>
+        <place>&city;</place>
+        <time>2026-10-06T14:00:00+02:00</time>
+      </departure>
+      <arrival>
+        <place>Westmere</place>
+        <time>2026-10-06T17:25:00+02:00</time>
+      </arrival>
+      <transport mode="road">Shared coach</transport>
+    </leg>
+  </journey>
+</itinerary>
+
+--- example 2 ---
+<?xml version="1.0" encoding="UTF-16"?>
+<survey xmlns="urn:example:survey" xmlns:q="urn:example:question" xmlns:answer="urn:example:answer" version="4">
+  <introduction xml:space="default">
+    <heading>Equipment readiness survey</heading>
+    <text>Please answer each question once.</text>
+  </introduction>
+  <respondent id="r-008" role="supervisor">
+    <identity>
+      <display-name>Élodie Martín</display-name>
+      <organization>Atelier &amp; Sons</organization>
+    </identity>
+    <responses>
+      <q:response q:id="power">
+        <q:prompt>Is backup power available?</q:prompt>
+        <answer:choice code="yes" selected="true">Yes</answer:choice>
+        <answer:comment><![CDATA[Generator tested during the last inspection.]]></answer:comment>
+      </q:response>
+      <q:response q:id="network">
+        <q:prompt>Which connection is preferred?</q:prompt>
+        <answer:choice code="fiber" selected="false">Fiber</answer:choice>
+        <answer:choice code="radio" selected="true">Radio</answer:choice>
+      </q:response>
+      <q:response q:id="hazards">
+        <q:prompt>List known hazards.</q:prompt>
+        <answer:list>
+          <answer:item severity="medium">Condensation</answer:item>
+          <answer:item severity="low">Loose packaging</answer:item>
+          <answer:item severity="high">Unshielded cable</answer:item>
+        </answer:list>
+      </q:response>
+    </responses>
+    <review>
+      <reviewer id="rv-2">K. Okafor</reviewer>
+      <status>pending</status>
+      <remark xml:lang="fr">Vérification requise avant l'installation.</remark>
+    </review>
+  </respondent>
+</survey>
+
+Tried before — no new coverage, avoid repeating:
+--- 3 of your past seeds (cycles 10,12) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:acme:workflow" xmlns:sec="urn:acme:security">
+  <definition name="nightly-maintenance" revision="12">
+    <trigger type="calendar">
+      <schedule zone="UTC">0 3 * * *</schedule>
+      <exclude date="2026-12-25"/>
+    </trigger>
+    <pipeline>
+      <task id="snapshot" role="storage" sec:clearance="internal">
+        <command><![CDATA[/usr/bin/snapshot --all --quiet]]></command>
+        <retry limit="2" delay="PT30S"/>
+      </task>
+      <branch test="artifact-count > 0">
+        <when-true>
+          <task id="publish" role="release">
+            <input from="snapshot"/>
+            <output uri="urn:artifact:latest"/>
+          <...[truncated, 1196 chars total]
+
+--- 3 of your past seeds (cycles 2,3,6) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0"?>
+<envelope xmlns="urn:example:envelope" xmlns:m="urn:example:meta" xmlns:x="urn:example:extra" xml:lang="fr">
+  <?route destination="local"?>
+  <header m:version="2.7" xml:base="https://example.invalid/feed/">
+    <m:source code="A-7">station &quot;Nord&quot;</m:source>
+    <m:flags>
+      <m:flag enabled="true">one</m:flag>
+      <m:flag enabled="false">two</m:flag>
+    </m:flags>
+  </header>
+  <payload>
+    <section name="intro">
+      <p>avant <x:term x:kind="quoted">texte</x:term> après</p>
+      <!-- a deliberately positioned comment -->
+      <p><![CDATA[accented <content> stays literal]]></p>
+    </section>
+    <section name="data" m:id="D9">
+      <entry index="0...[truncated, 818 chars total]
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

@@ -8,11 +8,18 @@ long line. This script decodes those into real newlines and writes a sibling
 
 Bulk mode (default): point it at the results folder and it walks every
 sub-run, into each "prompts" directory, and creates a .txt for every prompt
-JSON that does not already have one.
+JSON that does not already have one. This assumes the old, flat layout —
+results/<run>/prompts/*.json — one fixed level between root and "prompts".
+
+--recursive: for the newer, deeper layout (e.g.
+results3/<format-dir>/<stage>/<run>/prompts/*.json, or any other nesting) —
+finds a "prompts" folder at ANY depth under root instead of exactly one
+level down. Use this for results3 and any other non-flat results tree.
 
 Usage:
     python3 prompts_to_text.py                 # process ./results (or nearby)
     python3 prompts_to_text.py path/to/results # process a specific folder
+    python3 prompts_to_text.py results3 --recursive  # deeper folder layout
     python3 prompts_to_text.py --force         # rewrite even if .txt exists
     python3 prompts_to_text.py a/prompts/call_00.json   # single file
 """
@@ -81,12 +88,16 @@ def convert_file(json_path: Path, force: bool) -> str:
     return f"wrote          {txt_path}"
 
 
-def find_json_files(root: Path) -> list[Path]:
+def find_json_files(root: Path, recursive: bool = False) -> list[Path]:
     """Collect prompt JSON files under root.
 
     - a single .json file  -> just that file
     - a "prompts" folder   -> every .json directly inside it
-    - any other folder     -> every */prompts/*.json below it (bulk mode)
+    - any other folder     -> bulk mode:
+        - recursive=False (old, flat layout): every */prompts/*.json
+          exactly one level below root, e.g. results/<run>/prompts/.
+        - recursive=True (newer, deeper layout): a "prompts" folder at ANY
+          depth below root, e.g. results3/<format-dir>/<stage>/<run>/prompts/.
     """
     if root.is_file():
         return [root] if root.suffix == ".json" else []
@@ -95,7 +106,8 @@ def find_json_files(root: Path) -> list[Path]:
         return sorted(root.glob("*.json"))
 
     found: list[Path] = []
-    for prompts_dir in sorted(root.glob("*/prompts")):
+    prompts_dirs = root.rglob("prompts") if recursive else root.glob("*/prompts")
+    for prompts_dir in sorted(prompts_dirs):
         if prompts_dir.is_dir():
             found.extend(sorted(prompts_dir.glob("*.json")))
     # Also handle being pointed directly at a run folder that has ./prompts.
@@ -121,6 +133,10 @@ def main(argv: list[str]) -> int:
                              "or a single .json file (default: ./results)")
     parser.add_argument("--force", action="store_true",
                         help="rewrite .txt files that already exist")
+    parser.add_argument("--recursive", action="store_true",
+                        help="find 'prompts' folders at any depth (for deeper "
+                             "layouts like results3/<format-dir>/<stage>/<run>/prompts, "
+                             "instead of the old fixed results/<run>/prompts depth)")
     args = parser.parse_args(argv)
 
     root = args.path if args.path is not None else default_root()
@@ -128,7 +144,7 @@ def main(argv: list[str]) -> int:
         print(f"path not found: {root}", file=sys.stderr)
         return 1
 
-    json_files = find_json_files(root)
+    json_files = find_json_files(root, recursive=args.recursive)
     if not json_files:
         print(f"no prompt JSON files found under {root}", file=sys.stderr)
         return 1

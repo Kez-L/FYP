@@ -1,0 +1,66 @@
+call: 14
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:13:49.988698+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Tried before — no new coverage, avoid repeating:
+--- 5 of your past seeds (cycles 1,7,9) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" generated="2026-09-23">
+  <section id="hardware">
+    <item sku="A-001" available="true">
+      <name>Compact Sensor</name>
+      <price currency="EUR">19.95</price>
+      <tags>
+        <tag>embedded</tag>
+        <tag>low-power</tag>
+      </tags>
+    </item>
+    <item sku="A-002" available="false">
+      <name>Signal Bridge</name>
+      <price currency="USD">74.00</price>
+      <tags/>
+    </item>
+  </section>
+</catalog>
+
+--- 2 of your past seeds (cycles 5,14) drove the same already-covered path with 0 new edges ---
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope
+    xmlns:soap="http://www.w3.org/2003/05/soap-envelope"
+    xmlns:auth="urn:example:auth"
+    xmlns:svc="urn:example:service">
+  <soap:Header>
+    <auth:Credentials soap:mustUnderstand="true">
+      <auth:Principal xml:lang="en">operator</auth:Principal>
+      <auth:Token type="opaque">A&amp;B&lt;C&gt;</auth:Token>
+    </auth:Credentials>
+    <svc:Trace id="trace-7" enabled="false"/>
+  </soap:Header>
+  <soap:Body>
+    <svc:SubmitRequest>
+      <svc:Payload format="text/xml"><![CDATA[
+        <inner value="&quot;quoted&quot;"/>
+      ]]></svc:Payload>
+      <svc:Options>
+        <svc:Option name="priority">high</svc:Option>
+        <svc:O...[truncated, 811 chars total]
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

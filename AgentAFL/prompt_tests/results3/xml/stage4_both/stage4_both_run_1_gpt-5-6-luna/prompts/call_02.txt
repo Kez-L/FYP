@@ -1,0 +1,131 @@
+call: 2
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:29:27.407580+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.0"?>
+<!DOCTYPE warehouse [
+  <!ELEMENT warehouse (aisle+)>
+  <!ATTLIST warehouse region NMTOKEN #REQUIRED>
+  <!ELEMENT aisle (label, bin+)>
+  <!ATTLIST aisle number NMTOKEN #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT bin (description, quantity, location?)>
+  <!ATTLIST bin uid ID #REQUIRED links IDREFS #IMPLIED emblem ENTITY #IMPLIED>
+  <!ELEMENT description (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT quantity (#PCDATA)>
+  <!ELEMENT location (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY logo SYSTEM "warehouse-logo.jpg" NDATA jpeg>
+]>
+<warehouse region="north">
+  <aisle number="A-7">
+    <label>Hardware&nbsp;&amp;&nbsp;Tools</label>
+    <bin uid="b17" emblem="logo">
+      <description>Metric <code>M8</code> fasteners&nbsp;and washers.</description>
+      <quantity>240</quantity>
+      <location>Rack 3, shelf 2</location>
+    </bin>
+    <bin uid="b18" links="b17">
+      <description>Replacement <code>HEX</code> keys</description>
+      <quantity>36</quantity>
+    </bin>
+  </aisle>
+</warehouse>
+
+--- example 2 ---
+<?xml version="1.0"?>
+<!DOCTYPE survey [
+  <!ELEMENT survey (introduction, question+)>
+  <!ATTLIST survey identifier ID #REQUIRED>
+  <!ELEMENT introduction (#PCDATA|emphasis|break)*>
+  <!ELEMENT question (prompt, option+, answer)>
+  <!ATTLIST question number NMTOKEN #REQUIRED depends IDREFS #IMPLIED>
+  <!ELEMENT prompt (#PCDATA|emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT option (#PCDATA)>
+  <!ATTLIST option key ID #REQUIRED selected (yes|no) "no">
+  <!ELEMENT answer (#PCDATA)>
+  <!ATTLIST answer options IDREFS #IMPLIED>
+  <!ENTITY survey-name "Field&nbsp;Survey">
+  <!ENTITY % annotations "<!ATTLIST question note CDATA #IMPLIED>">
+  %annotations;
+]>
+<survey identifier="s-2026">
+  <introduction>Welcome to the <emphasis>&survey-name;</emphasis>.<break/>Choose one response.</introduction>
+  <question number="1" note="single choice">
+    <prompt>Which medium do you prefer?</prompt>
+    <option key="opt-print">Printed material</option>
+    <option key="opt-digital" selected="yes">Digital material</option>
+    <answer options="opt-digital">digital</answer>
+  </question>
+  <question number="2" depends="opt-digital" note="free text">
+    <prompt>Describe your preference.</prompt>
+    <option key="opt-short">Brief</option>
+    <option key="opt-long">Detailed</option>
+    <answer options="opt-short opt-long">Flexible</answer>
+  </question>
+</survey>
+
+Tried before — no new coverage, avoid repeating:
+--- a seed you generated (cycle 2) added 0 new edges ---
+<?xml version="1.0" encoding="UTF-8"?>
+<archive xmlns="urn:example:archive" xmlns:m="urn:example:media">
+  <!-- A record containing several namespace scopes -->
+  <collection xml:lang="ja" xml:base="https://example.test/archive/">
+    <m:cover format="image/svg+xml" m:width="640" m:height="480">
+      <![CDATA[<svg><text>not parsed as markup</text></svg>]]>
+    </m:cover>
+    <record key="R-α" revised="2026-09-23T10:20:30Z">
+      <heading>東京 <m:icon aria-label="map"/> collection</heading>
+      <summary>Text with &lt;escaped&gt; delimiters and a nonbreaking space.</summary>
+      <contributors>
+        <person role="editor">佐藤</person>
+        <person role="translator" xmlns="urn:example:pe...[truncated, 883 chars total]
+
+--- a seed you generated (cycle 1) added 0 new edges ---
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ENTITY open "<part kind='open'>">
+  <!ENTITY close "</part>">
+  <!ENTITY amp "&#38;">
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header generated CDATA "yes" xml:space (default|preserve) "default">
+  <!ELEMENT payload (part+)>
+  <!ELEMENT part (#PCDATA|part|raw)*>
+  <!ATTLIST part kind CDATA #IMPLIED>
+  <!ENTITY % extra "<!ATTLIST part mark CDATA #IMPLIED>">
+  %extra;
+]>
+<envelope>
+  <header generated="&amp;ready;"/>
+  <payload>
+    &open;outer &amp; inner &amp; close;&close;
+    <part kind="nested" mark="x"><![CDATA[<not-an-element/>]]><part>leaf</part></part>
+  </payload>
+</envelope>
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================

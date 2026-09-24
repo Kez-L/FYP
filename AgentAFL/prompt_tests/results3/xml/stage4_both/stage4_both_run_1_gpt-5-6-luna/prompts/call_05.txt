@@ -1,0 +1,140 @@
+call: 5
+provider: openai
+model: gpt-5.6-luna
+temperature: 1.0
+instance: main
+ts: 2026-09-23T05:30:24.363076+00:00
+
+======================================================================
+
+===== SYSTEM =====
+
+Generate seed files for AFL++ fuzzing of a XML document parser.
+Target: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.
+Built with ASan — a memory-safety crash is as valuable as new coverage.
+Respond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.
+
+======================================================================
+
+===== USER =====
+
+Reached new coverage:
+--- example 1 ---
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common "category CDATA #IMPLIED xml:lang NMTOKEN #IMPLIED">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY left "&#x2039;">
+  <!ENTITY right "&#x203A;">
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (name, item*)>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT item (label, value, note?)>
+  <!ATTLIST item key ID #REQUIRED &common;>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA|unit)*>
+  <!ELEMENT unit EMPTY>
+  <!ATTLIST unit symbol CDATA #REQUIRED>
+  <!ELEMENT note (#PCDATA)>
+  <![IGNORE[
+    <!ELEMENT ignored ANY>
+  ]]>
+]>
+<catalog>
+  <section id="s-alpha" xml:lang="en">
+    <name>Measurements</name>
+    <item key="i-001" category="distance">
+      <label>Span</label>
+      <value>12<unit symbol="m"/> 45<unit symbol="cm"/></value>
+      <note>Approximate&nbsp;reading &left;manual&right;</note>
+    </item>
+    <item key="i-002" category="mass" xml:lang="de">
+      <label>Gewicht</label>
+      <value>8.75<unit symbol="kg"/></value>
+    </item>
+  </section>
+</catalog>
+
+--- example 2 ---
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ENTITY open "<step state='queued'>">
+  <!ENTITY close "</step>">
+  <!ELEMENT workflow (phase+)>
+  <!ELEMENT phase (title, step+)>
+  <!ATTLIST phase number NMTOKEN #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT step (#PCDATA|owner|command)*>
+  <!ATTLIST step state (queued|running|done|failed) #REQUIRED>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT command (#PCDATA)>
+]>
+<workflow>
+  <phase number="01">
+    <title>Bootstrap</title>
+    &open;
+      <owner>build-bot</owner>
+      <command>configure --with-debug</command>
+    &close;
+    <step state="done">environment verified</step>
+  </phase>
+  <phase number="02">
+    <title>Compile &amp; package</title>
+    <step state="running">
+      <owner>operator</owner>
+      <command><![CDATA[make -j2 && make install]]></command>
+    </step>
+  </phase>
+</workflow>
+
+Tried before — no new coverage, avoid repeating:
+--- a seed you generated (cycle 5) added 0 new edges ---
+<?xml version="1.1"?>
+<map xmlns="urn:cartography:map"
+     xmlns:p="urn:cartography:point"
+     xmlns:svg="http://www.w3.org/2000/svg"
+     xml:base="https://maps.example.invalid/tiles/"
+     xml:lang="ja">
+  <metadata>
+    <title>東京の歩道</title>
+    <keywords>歩道,駅,公園</keywords>
+  </metadata>
+  <viewport west="139.70" south="35.66" east="139.78" north="35.72">
+    <p:way id="w-17" p:closed="false">
+      <p:node lat="35.681" lon="139.767"/>
+      <p:node lat="35.689" lon="139.692"/>
+      <p:node lat="35.710" lon="139.810"/>
+    </p:way>
+    <svg:svg viewBox="0 0 100 40" width="200" height="80">
+      <svg:path d="M2,30 C20,4 44,36 70,10"/>
+      <svg:text x="4" y="38">駅</svg:text>
+    </svg:...[truncated, 817 chars total]
+
+--- a seed you generated (cycle 5) added 0 new edges ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (path, payload, checksum)>
+  <!ATTLIST entry status (new|changed|deleted) "new">
+  <!ELEMENT path (#PCDATA)>
+  <!ELEMENT payload (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+]>
+<archive>
+  <entry status="changed">
+    <path>src/parser &amp; tests/sample.xml</path>
+    <payload><![CDATA[
+      <record kind="literal">
+        <field name="a">1 &amp; 2</field>
+      </record>
+    ]]></payload>
+    <checksum>sha256:0000000000000000000000000000000000000000000000000000000000000000</checksum>
+  </entry>
+  <entry status="deleted">
+    <path>tmp/old.log</path>
+    <payload>line one&#x0A;line two&#...[truncated, 782 chars total]
+
+Generate 5 new XML document files, structurally different from all of the above.
+
+======================================================================
