@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE r:report [
+  <!ELEMENT r:report (r:run+, r:summary?)>
+  <!ATTLIST r:report xmlns:r CDATA #IMPLIED generated CDATA #IMPLIED>
+  <!ELEMENT r:run (r:input, r:result)>
+  <!ATTLIST r:run id ID #REQUIRED status (pass|fail|skip) #REQUIRED>
+  <!ELEMENT r:input (#PCDATA)>
+  <!ELEMENT r:result (r:metric*)>
+  <!ELEMENT r:metric EMPTY>
+  <!ATTLIST r:metric name NMTOKEN #REQUIRED value CDATA #IMPLIED unit CDATA #IMPLIED>
+  <!ELEMENT r:summary (#PCDATA)>
+  <!ENTITY bad "<r:metric name='injected'/>">
+]>
+<r:report xmlns:r="urn:reports:v2" generated="2026-09-24T00:00:00Z">
+  <r:run id="run-a" status="pass">
+    <r:input>alpha &lt; beta</r:input>
+    <r:result>
+      <r:metric name="time" value="0.001" unit="s"/>
+      <r:metric name="count" value="&#x30;"/>
+    </r:result>
+  </r:run>
+  <r:run id="run-b" status="fail">
+    <r:input><![CDATA[x]]></r:input>
+    <r:result>&bad;<r:metric name="message" value="&quot;unterminated"/></r:result>
+  </r:run>
+  <r:summary>mixed namespace text</r:summary>
+</r:report>

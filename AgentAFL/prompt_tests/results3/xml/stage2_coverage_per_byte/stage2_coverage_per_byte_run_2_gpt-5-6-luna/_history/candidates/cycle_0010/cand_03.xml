@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (entry*)>
+  <!ELEMENT entry (key, value, entry*)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|ref|raw)*>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT raw (#PCDATA)>
+  <!ATTLIST map xml:lang CDATA #IMPLIED>
+  <!ATTLIST entry id ID #IMPLIED kind (scalar|object|array) "scalar">
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ATTLIST raw encoding (none|base64) "none">
+  <!ENTITY open "{">
+  <!ENTITY close "}">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY fragment "<raw encoding='base64'>QUJDRA==</raw>">
+]>
+<map xml:lang="x-test">
+  <entry id="root" kind="object">
+    <key>&open;root&close;</key>
+    <value>
+      literal&nbsp;text
+      <ref target="item"/>
+      &fragment;
+    </value>
+    <entry id="item" kind="array">
+      <key>items</key>
+      <value><raw>one</raw><raw>two</raw></value>
+    </entry>
+  </entry>
+</map>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (node|alias|text)*>
+  <!ELEMENT node (node|alias|text)*>
+  <!ELEMENT alias EMPTY>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST map xmlns:m URI #IMPLIED root ID #IMPLIED>
+  <!ATTLIST node id ID #IMPLIED ref IDREF #IMPLIED xmlns:q CDATA #IMPLIED>
+  <!ATTLIST alias target IDREF #REQUIRED mode (hard|soft) #IMPLIED>
+  <!ATTLIST text xml:space (default|preserve) "default">
+  <!ENTITY snow "&#x2603;">
+  <!ENTITY quoted "&quot;quoted&quot;">
+]>
+<map xmlns:m="urn:map" root="n0">
+  <node id="n0" ref="n1" xmlns:q="urn:q">
+    <text xml:space="preserve">  leading &snow; &quoted;  </text>
+    <q:node id="n1" q:ref="missing">
+      <q:text>nested</q:text>
+      <alias target="n0" mode="soft"/>
+    </q:node>
+  </node>
+  <alias target="n0"/>
+  <m:node id="n2">
+    <m:text>prefix-local</m:text>
+  </m:node>
+</map>

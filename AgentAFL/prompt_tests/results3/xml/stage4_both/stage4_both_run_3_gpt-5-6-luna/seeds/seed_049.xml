@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, attachments?)>
+  <!ELEMENT header (sender, recipients, subject, timestamp)>
+  <!ELEMENT sender (address, display?)>
+  <!ELEMENT recipients (to+, cc*, bcc*)>
+  <!ELEMENT to (address, display?)>
+  <!ELEMENT cc (address, display?)>
+  <!ELEMENT bcc (address, display?)>
+  <!ELEMENT address (#PCDATA)>
+  <!ELEMENT display (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT body (paragraph|quote|list|pre|hr)*>
+  <!ELEMENT paragraph (#PCDATA|bold|italic|mention|url|line-break)*>
+  <!ELEMENT bold (#PCDATA|italic)*>
+  <!ELEMENT italic (#PCDATA)>
+  <!ELEMENT mention (#PCDATA)>
+  <!ATTLIST mention user CDATA #REQUIRED>
+  <!ELEMENT url (#PCDATA)>
+  <!ATTLIST url href CDATA #REQUIRED>
+  <!ELEMENT line-break EMPTY>
+  <!ELEMENT quote (#PCDATA|paragraph)*>
+  <!ATTLIST quote author CDATA #IMPLIED>
+  <!ELEMENT list (item+)>
+  <!ATTLIST list ordered (true|false) "false">
+  <!ELEMENT item (paragraph|list)*>
+  <!ELEMENT pre (#PCDATA)>
+  <!ELEMENT hr EMPTY>
+  <!ELEMENT attachments (attachment+)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment id ID #REQUIRED name CDATA #REQUIRED media-type CDATA #REQUIRED size CDATA #IMPLIED>
+]>
+<message xmlns="urn:example:mail" priority="high" xml:lang="en">
+  <header>
+    <sender>
+      <address>sender@example.invalid</address>
+      <display>Sender &lt;Primary&gt;</display>
+    </sender>
+    <recipients>
+      <to><address>one@example.invalid</address><display>One</display></to>
+      <to><address>two@example.invalid</address></to>
+      <cc><address>archive@example.invalid</address></cc>
+      <bcc><address>hidden@example.invalid</address></bcc>
+    </recipients>
+    <subject>Re: parser test — 100% complete</subject>
+    <timestamp>2026-09-24T23:59:59.999+05:30</timestamp>
+  </header>
+  <body>
+    <paragraph>Hello <bold>world</bold>, see <url href="https://example.invalid/?a=1&amp;b=2">the report</url>.</paragraph>
+    <quote author="sender@example.invalid">
+      <paragraph>Previous text with <italic>emphasis</italic>.</paragraph>
+    </quote>
+    <list ordered="true">
+      <item><paragraph>First step</paragraph></item>
+      <item><paragraph>Second step</paragraph><list><item><paragraph>Nested item</paragraph></item></list></item>
+    </list>
+    <pre> leading space
+	tabbed line
+trailing space </pre>
+    <hr/>
+    <paragraph><mention user="u-42">@user</mention><line-break/>Done.</paragraph>
+  </body>
+  <attachments>
+    <attachment id="att-1" name="résumé.pdf" media-type="application/pdf" size="0"/>
+    <attachment id="att-2" name="data&amp;notes.xml" media-type="application/xml" size="18446744073709551615"/>
+  </attachments>
+</message>

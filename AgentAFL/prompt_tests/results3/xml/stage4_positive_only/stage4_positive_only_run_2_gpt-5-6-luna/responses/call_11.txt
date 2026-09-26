@@ -1,0 +1,222 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, entry*)>
+  <!ELEMENT header (title, generated)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated EMPTY>
+  <!ELEMENT entry (path, checksum, payload)>
+  <!ATTLIST entry type (text|binary) "text" id ID #IMPLIED>
+  <!ELEMENT path (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|line|quote)*>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ENTITY separator " / ">
+]>
+<archive>
+  <header>
+    <title>Nightly snapshot</title>
+    <generated utc="2026-09-24T02:14:00Z"/>
+  </header>
+  <entry id="e-alpha" type="text">
+    <path>notes/readme.txt</path>
+    <checksum algorithm="sha256">7f83b1657ff1fc53b92dc18148a1d65dfa135b1c1f7f5a0e6f4d0c9a1b2e3f40</checksum>
+    <payload>
+      <line>First line &amp; second line</line>
+      <quote>Keep &quot;small&quot; things observable.</quote>
+      <line>alpha &separator; omega</line>
+    </payload>
+  </entry>
+  <entry id="e-beta" type="binary">
+    <path>data/blob.bin</path>
+    <checksum algorithm="sha256">0000000000000000000000000000000000000000000000000000000000000000</checksum>
+    <payload><![CDATA[AAECAwQFBgcICQoLDA0ODw==]]></payload>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<conversation xmlns="urn:example:chat" xmlns:m="urn:example:meta">
+  <!-- Messages may contain mixed content and nested references. -->
+  <m:session token="s-9f2e" started="2026-09-24T08:00:00Z">
+    <m:participants>
+      <m:user uid="u1" role="moderator">Ada</m:user>
+      <m:user uid="u2" role="guest">Béla</m:user>
+    </m:participants>
+  </m:session>
+  <thread subject="Parsing &amp; recovery">
+    <message from="u1" seq="1">Try the <emphasis>strict</emphasis> mode.</message>
+    <message from="u2" seq="2">
+      I used <link href="https://example.invalid/a?x=1&amp;y=2">that example</link>
+      and got <reaction kind="confused"/> results.
+    </message>
+    <message from="u1" seq="3">
+      <attachment media-type="text/plain" name="trace.txt">
+        <![CDATA[line one
+line two
+<not-an-element/>]]>
+      </attachment>
+    </message>
+  </thread>
+</conversation>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE invoice [
+  <!ELEMENT invoice (seller, buyer, lines, totals, note?)>
+  <!ELEMENT seller (company, address)>
+  <!ELEMENT buyer (company, address)>
+  <!ELEMENT company (#PCDATA)>
+  <!ELEMENT address (street, city, country)>
+  <!ELEMENT street (#PCDATA)>
+  <!ELEMENT city (#PCDATA)>
+  <!ELEMENT country (#PCDATA)>
+  <!ELEMENT lines (line+)>
+  <!ELEMENT line (item, quantity, unit-price, tax)>
+  <!ATTLIST line number NMTOKEN #REQUIRED>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT quantity (#PCDATA)>
+  <!ELEMENT unit-price (#PCDATA)>
+  <!ELEMENT tax (#PCDATA)>
+  <!ELEMENT totals (subtotal, tax-total, grand-total)>
+  <!ELEMENT subtotal (#PCDATA)>
+  <!ELEMENT tax-total (#PCDATA)>
+  <!ELEMENT grand-total (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+]>
+<invoice number="INV-2026-0007" issued="2026-09-24" currency="EUR">
+  <seller>
+    <company>Northwind Tools</company>
+    <address>
+      <street>7 River Road</street>
+      <city>Oxford</city>
+      <country>GB</country>
+    </address>
+  </seller>
+  <buyer>
+    <company>Atelier Méridien</company>
+    <address>
+      <street>18 Rue des Forges</street>
+      <city>Lyon</city>
+      <country>FR</country>
+    </address>
+  </buyer>
+  <lines>
+    <line number="10">
+      <item>Calibration wrench</item>
+      <quantity unit="pcs">4</quantity>
+      <unit-price>18.50</unit-price>
+      <tax rate="0.20">14.80</tax>
+    </line>
+    <line number="20">
+      <item>Protective case</item>
+      <quantity unit="pcs">1</quantity>
+      <unit-price>42.00</unit-price>
+      <tax rate="0.20">8.40</tax>
+    </line>
+  </lines>
+  <totals>
+    <subtotal>116.00</subtotal>
+    <tax-total>23.20</tax-total>
+    <grand-total>139.20&nbsp;EUR</grand-total>
+  </totals>
+  <note>Payment due within 30 days.</note>
+</invoice>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:example:config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="urn:example:config config.xsd">
+  <profile name="edge" enabled="true">
+    <inherits from="base"/>
+    <setting key="buffer-size" value="4096"/>
+    <setting key="retry-count">
+      <integer>3</integer>
+    </setting>
+    <setting key="endpoint">
+      <url scheme="https" host="example.invalid" port="443">
+        <path>/v2/ingest</path>
+      </url>
+    </setting>
+    <features>
+      <feature id="compression">
+        <option>gzip</option>
+        <option>zstd</option>
+      </feature>
+      <feature id="diagnostics">
+        <flag name="trace" value="false"/>
+        <flag name="metrics" value="true"/>
+      </feature>
+    </features>
+  </profile>
+  <profile name="base" enabled="false">
+    <setting key="buffer-size"><integer>512</integer></setting>
+    <setting key="endpoint">
+      <url scheme="http" host="localhost">
+        <path>/</path>
+      </url>
+    </setting>
+  </profile>
+  <environment>
+    <variable name="EMPTY" value=""/>
+    <variable name="QUOTED" value="&quot;left &amp; right&quot;"/>
+    <variable name="MULTILINE"><![CDATA[first
+second
+third]]></variable>
+  </environment>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?processing mode="incremental"?>
+<assessment xmlns="urn:example:assessment" xmlns:r="urn:example:rubric" xml:lang="en">
+  <candidate id="C-0042">
+    <name>Zoë Navarro</name>
+    <contact>
+      <email>zoe@example.invalid</email>
+      <phone extension="19">+44 20 7946 0958</phone>
+    </contact>
+  </candidate>
+  <sections>
+    <section code="logic" weight="0.40">
+      <heading>Logical reasoning</heading>
+      <question id="q1" points="5">
+        <prompt>Which sequence follows 2, 4, 8?</prompt>
+        <response selected="c">16</response>
+        <r:review status="accepted">
+          <r:comment>Correct doubling pattern.</r:comment>
+          <r:reviewer initials="LM"/>
+        </r:review>
+      </question>
+      <question id="q2" points="3">
+        <prompt><![CDATA[Evaluate x < 5 when x = 7.]]></prompt>
+        <response selected="a">true</response>
+        <r:review status="rejected">
+          <r:comment>Condition is false.</r:comment>
+        </r:review>
+      </question>
+    </section>
+    <section code="writing" weight="0.60">
+      <heading>Written response</heading>
+      <submission format="markdown">
+        <![CDATA[# Summary
+
+A short paragraph with **emphasis**, a list, and a literal <tag>.
+]]>
+      </submission>
+      <r:score maximum="10" awarded="8"/>
+    </section>
+  </sections>
+  <result>
+    <raw>8.8</raw>
+    <grade scale="A-F">B+</grade>
+    <remarks>Reviewed &amp; finalized.</remarks>
+  </result>
+</assessment>
+```

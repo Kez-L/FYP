@@ -1,0 +1,30 @@
+<?xml version="1.1"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ATTLIST matrix rows CDATA #IMPLIED cols CDATA #IMPLIED>
+  <!ELEMENT row (cell+)>
+  <!ATTLIST row index NMTOKEN #REQUIRED>
+  <!ELEMENT cell (#PCDATA|mark|formula)*>
+  <!ATTLIST cell col NMTOKEN #REQUIRED type (text|number|date|empty) "text">
+  <!ELEMENT mark (#PCDATA)>
+  <!ATTLIST mark color (red|green|blue) #IMPLIED>
+  <!ELEMENT formula (#PCDATA)>
+  <!ENTITY emptycell "<cell type='empty' col='?'/>">
+  <!ENTITY % declarations '
+    <!NOTATION csv SYSTEM "text/csv">
+    <!ATTLIST formula format CDATA #IMPLIED>
+  '>
+  %declarations;
+]>
+<matrix rows="2" cols="3">
+  <row index="01">
+    <cell col="A" type="text">Name<mark color="blue">?</mark></cell>
+    <cell col="B" type="number">42</cell>
+    <cell col="C" type="date">2026-09-24</cell>
+  </row>
+  <row index="02">
+    <cell col="A">R&amp;D</cell>
+    <cell col="B" type="number"><formula format="calc">=SUM(A1:B1)</formula></cell>
+    &emptycell;
+  </row>
+</matrix>

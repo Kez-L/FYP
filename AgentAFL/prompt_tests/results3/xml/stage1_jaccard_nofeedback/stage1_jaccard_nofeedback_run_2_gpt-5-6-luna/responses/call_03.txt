@@ -1,0 +1,153 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, description, metadata?)>
+  <!ATTLIST entry id ID #REQUIRED status (new|old|archived) "new">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT metadata (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ENTITY copyright "&#xA9; 2026">
+]>
+<catalog xmlns="urn:seed:catalog" xml:lang="en">
+  <!-- mixed content, namespaces, and defaulted attributes -->
+  <entry id="item-α">
+    <title>Boundary &amp; Signals</title>
+    <description><![CDATA[
+      text before <em>markup</em> and ]]> text after
+      <em>emphasis &lt;inside&gt;</em><br/>
+      &copyright;
+    </description>
+    <metadata>
+      <tag>one</tag>
+      <tag><![CDATA[two & three]]></tag>
+    </metadata>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % common '
+    <!ELEMENT report (header, section+)>
+    <!ELEMENT header (name, revision)>
+    <!ELEMENT name (#PCDATA)>
+    <!ELEMENT revision (#PCDATA)>
+    <!ELEMENT section (item*)>
+    <!ELEMENT item (#PCDATA|note)*>
+    <!ELEMENT note (#PCDATA)>
+  '>
+  %common;
+  <!ATTLIST section code NMTOKEN #IMPLIED>
+  <!ENTITY % extra '
+    <!ATTLIST item priority CDATA "normal">
+  '>
+  %extra;
+]>
+<report>
+  <header>
+    <name>parameterized schema</name>
+    <revision>r&amp;d-07</revision>
+  </header>
+  <section code="A_1">
+    <item priority="urgent">alpha<note>nested note</note>omega</item>
+    <item>beta</item>
+  </section>
+  <section code="B-2">
+    <item><![CDATA[x]]></item>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+    name CDATA #REQUIRED
+    kind NOTATION (text|binary) "text"
+    digest CDATA #IMPLIED>
+  <!ELEMENT payload ANY>
+  <!NOTATION text SYSTEM "text/plain">
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY sample SYSTEM "sample.dat" NDATA binary>
+]>
+<package xml:base="urn:example:bundle">
+  <manifest>
+    <file name="α.txt" digest="&#x1F4A5;"/>
+    <file name="blob.bin" kind="binary"/>
+  </manifest>
+  <payload>
+    <chunk index="0">first</chunk>
+    <chunk index="1"><![CDATA[raw <bytes> & markers]]></chunk>
+    <?payload-end?>
+  </payload>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<network xmlns="urn:seed:net"
+         xmlns:r="urn:seed:remote"
+         xmlns:x="urn:seed:extra"
+         xml:space="preserve">
+  <r:node id="n0" x:flag="&#x0A;">
+    <r:address family="ipv6">2001:db8::1</r:address>
+    <r:route>
+      <r:hop>gateway</r:hop>
+      <r:hop>
+        <r:hop>leaf</r:hop>
+      </r:hop>
+    </r:route>
+    <x:annotation><![CDATA[
+      ]] is text here only when split: ]]><!-- comment -->
+      <?trace value?>
+    </x:annotation>
+  </r:node>
+  <node id="n1">
+    <state enabled="true">ready</state>
+    <metrics>
+      <metric name="latency" value="0.000"/>
+      <metric name="loss" value="NaN"/>
+    </metrics>
+  </node>
+</network>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header?, body)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field (#PCDATA)>
+  <!ELEMENT body (message|group|empty)*>
+  <!ELEMENT message (#PCDATA|link|br)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT group (message|group)*>
+  <!ELEMENT empty EMPTY>
+  <!ATTLIST message id ID #IMPLIED>
+  <!ATTLIST link href CDATA #REQUIRED>
+]>
+<envelope>
+  <header>
+    <field>content-type: application/xml</field>
+    <field>checksum: &#xFFFFFFFF;</field>
+  </header>
+  <body>
+    <group>
+      <message id="m1">start<link href="urn:x">middle</link><br/>end</message>
+      <group>
+        <message>deep <![CDATA[section]]> value</message>
+        <empty/>
+      </group>
+    </group>
+    <message id="m2">tail &lt; escaped &gt; text</message>
+  </body>
+</envelope>
+```

@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (camera, lights, object*)>
+  <!ELEMENT camera EMPTY>
+  <!ATTLIST camera projection (ortho|perspective) "perspective" near NMTOKEN #IMPLIED far NMTOKEN #IMPLIED>
+  <!ELEMENT lights (light*)>
+  <!ELEMENT light EMPTY>
+  <!ATTLIST light id ID #REQUIRED type (point|spot|area) "point" intensity CDATA "1.0">
+  <!ELEMENT object (transform?, material?, mesh)>
+  <!ATTLIST object name CDATA #IMPLIED visible (true|false) "true">
+  <!ELEMENT transform (translate?, rotate?, scale?)>
+  <!ELEMENT translate EMPTY>
+  <!ATTLIST translate x CDATA "0" y CDATA "0" z CDATA "0">
+  <!ELEMENT rotate EMPTY>
+  <!ATTLIST rotate axis NMTOKENS #REQUIRED angle CDATA #REQUIRED>
+  <!ELEMENT scale EMPTY>
+  <!ATTLIST scale value NMTOKENS #REQUIRED>
+  <!ELEMENT material (color|texture?)>
+  <!ELEMENT color (#PCDATA)>
+  <!ELEMENT texture EMPTY>
+  <!ATTLIST texture src ENTITY #REQUIRED>
+  <!ELEMENT mesh (#PCDATA)>
+  <!ENTITY brick SYSTEM "brick.png" NDATA png>
+  <!NOTATION png SYSTEM "image/png">
+]>
+<scene>
+  <camera projection="ortho" near="0.1" far="1000"/>
+  <lights><light id="key" type="spot" intensity="2"/></lights>
+  <object name="cube">
+    <transform><translate x="-1" y="2" z="0"/><rotate axis="0 1 0" angle="45"/><scale value="1 2 1"/></transform>
+    <material><color>#ff00aa</color><texture src="brick"/></material>
+    <mesh><![CDATA[
+      v 0 0 0
+      f 1 2 3
+    ]]></mesh>
+  </object>
+</scene>

@@ -1,0 +1,168 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body, trailer)>
+  <!ELEMENT header (timestamp, source)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT source EMPTY>
+  <!ATTLIST source
+            xmlns:evt CDATA #FIXED "urn:example:event"
+            evt:id ID #REQUIRED
+            active (yes|no) "yes">
+  <!ELEMENT body (message | attachment | message)*>
+  <!ELEMENT message (#PCDATA|strong|span)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT span (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment
+            name CDATA #REQUIRED
+            type CDATA #IMPLIED
+            size CDATA "0">
+  <!ELEMENT trailer EMPTY>
+  <!ENTITY greeting "Hello, &quot;parser&quot;">
+  <!ENTITY mark "&#x2026;">
+]>
+<envelope>
+  <header>
+    <timestamp>2026-09-24T12:34:56Z</timestamp>
+    <source evt:id="source-main" active="no"/>
+  </header>
+  <body>
+    <message>&greeting; <strong>world</strong><span>&mark;</span></message>
+    <attachment name="résumé.xml" type="application/xml" size="18446744073709551615"/>
+    <message><![CDATA[<escaped><payload/></escaped>]]></message>
+  </body>
+  <trailer/>
+</envelope>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE map [
+  <!ELEMENT map (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section code NMTOKEN #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item key CDATA #IMPLIED ref IDREFS #IMPLIED>
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+  <!ENTITY quoted "&quot;&apos;">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data.bin" NDATA bin>
+]>
+<map>
+  <section code="A_01">
+    <title>&left;alpha&right; &quoted;</title>
+    <item key="one" ref="missing another">first</item>
+    <item key="two">line one
+line two&#x85;line three</item>
+  </section>
+  <section code="B-02">
+    <title>mixed <![CDATA[ ]]> content</title>
+    <item key="three">&blob;</item>
+    <item key="four"><![CDATA[&left; is not expanded]]></item>
+  </section>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (meta, data)>
+  <!ELEMENT meta (field*)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT data (row*)>
+  <!ELEMENT row (cell*)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST cell n CDATA #IMPLIED>
+  <!ENTITY % common '
+    <!ENTITY amp "&amp;">
+    <!ENTITY weird "x&#x0D;&#x0A;y">
+  '>
+  %common;
+  <!ENTITY recursive "&recursive;">
+  <!ENTITY nested "&amp;&amp;&amp;">
+  <![IGNORE[
+    <!ELEMENT never (parsed)>
+    <!ENTITY hidden "not expanded">
+  ]]>
+  <![INCLUDE[
+    <!ENTITY included "visible">
+  ]]>
+]>
+<report>
+  <meta>
+    <field name="format" value="&nested;"/>
+    <field name="note" value="&weird;"/>
+  </meta>
+  <data>
+    <row><cell n="1">&included;</cell><cell n="2">&amp;</cell></row>
+    <row><cell n="3"><![CDATA[raw ]]></cell><cell n="4">tail</cell></row>
+  </data>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16" standalone="no"?>
+<!DOCTYPE package [
+  <!ELEMENT package (part+, checksum?)>
+  <!ELEMENT part (name, content)>
+  <!ATTLIST part index NMTOKEN #REQUIRED xml:base CDATA #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT content (#PCDATA|chunk|empty)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT empty EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY euro "&#8364;">
+  <!ENTITY mixed "A&nbsp;B&euro;C">
+]>
+<package>
+  <part index="000" xml:base="">
+    <name>zero</name>
+    <content><empty/><chunk>&mixed;</chunk><![CDATA[]]></content>
+  </part>
+  <part index="999999999999999999999999" xml:base="urn:x:test">
+    <name>last&nbsp;part</name>
+    <content>prefix<chunk>middle &lt; &amp; &gt;</chunk>suffix</content>
+  </part>
+  <checksum>sha256:0000000000000000000000000000000000000000000000000000000000000000</checksum>
+</package>
+```
+
+```xml
+<!DOCTYPE stream [
+  <!ELEMENT stream (open, event*, close)>
+  <!ELEMENT open EMPTY>
+  <!ATTLIST open when CDATA #REQUIRED>
+  <!ELEMENT event (kind, value?, event*)>
+  <!ATTLIST event id ID #REQUIRED level CDATA "0">
+  <!ELEMENT kind (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT close EMPTY>
+  <!ENTITY q "&#34;">
+  <!ENTITY apos "&#39;">
+  <!ENTITY amp "&amp;">
+]>
+<stream>
+  <open when="1970-01-01T00:00:00+00:00"/>
+  <event id="e0" level="-1">
+    <kind>start</kind>
+    <value>{&q;name&q;:&q;root&q;}</value>
+    <event id="e0-child" level="9223372036854775808">
+      <kind>data</kind>
+      <value><![CDATA[{"text":"<&>"}]]></value>
+      <event id="e0-grandchild">
+        <kind>empty</kind>
+      </event>
+    </event>
+  </event>
+  <event id="e-last">
+    <kind>finish</kind>
+    <value>tail &apos; &amp; &#x0A; end</value>
+  </event>
+  <close/>
+</stream>
+```

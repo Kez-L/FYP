@@ -1,0 +1,154 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:meta="urn:example:metadata">
+  <meta:generated-at meta:format="iso8601">2026-09-24T12:34:56Z</meta:generated-at>
+  <product sku="A-001" available="true">
+    <name>Thermal mug</name>
+    <price currency="EUR">19.95</price>
+    <dimensions>
+      <width unit="mm">82</width>
+      <height unit="mm">174</height>
+      <depth unit="mm">82</depth>
+    </dimensions>
+    <tags>
+      <tag>insulated</tag>
+      <tag>reusable</tag>
+      <tag>dishwasher-safe</tag>
+    </tags>
+  </product>
+  <product sku="B-204" available="false">
+    <name>Foldable lamp</name>
+    <price currency="JPY">2400</price>
+    <dimensions/>
+    <tags/>
+  </product>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<message xmlns="urn:example:message" xmlns:x="urn:example:extension">
+  <header>
+    <sender address="alice@example.test">Alice &amp; Co.</sender>
+    <recipient address="bob@example.test">Bob</recipient>
+    <subject>Re: deployment — phase 2</subject>
+  </header>
+  <body>
+    <p>Move the service after the <code>health-check</code> passes.</p>
+    <p>Use the following sequence:</p>
+    <list>
+      <item index="1">Drain connections</item>
+      <item index="2">Replace the <x:component version="3.7">gateway</x:component></item>
+      <item index="3">Restore traffic</item>
+    </list>
+    <p>Expected result: <strong>no interruption</strong>.</p>
+  </body>
+  <footer>
+    <signature>
+      <line>Regards,</line>
+      <line>Alice</line>
+    </signature>
+  </footer>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<geometry xmlns="urn:example:geometry" unit="m">
+  <path id="spiral" closed="false">
+    <move x="0" y="0"/>
+    <line x="4.5" y="0"/>
+    <curve>
+      <control x="5.0" y="1.2"/>
+      <control x="3.2" y="3.8"/>
+      <end x="0" y="4"/>
+    </curve>
+    <arc center-x="0" center-y="0" radius="4" start="90" end="270"/>
+  </path>
+  <transform>
+    <matrix>
+      <row>1 0 0</row>
+      <row>0 -1 0</row>
+      <row>0 0 1</row>
+    </matrix>
+    <translate dx="12.75" dy="-0.5"/>
+  </transform>
+  <metadata>
+    <label>boundary &lt;experimental&gt;</label>
+    <note xml:lang="fr">essai géométrique</note>
+  </metadata>
+</geometry>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:example:config" xmlns:env="urn:example:environment">
+  <service name="indexer">
+    <enabled>true</enabled>
+    <workers min="1" max="16">4</workers>
+    <timeouts>
+      <connect milliseconds="250"/>
+      <request milliseconds="5000"/>
+      <idle milliseconds="0"/>
+    </timeouts>
+    <endpoints>
+      <endpoint scheme="https" host="search.example.test" port="443" path="/v1/index"/>
+      <endpoint scheme="unix" path="/run/indexer.sock"/>
+    </endpoints>
+  </service>
+  <environment env:name="staging">
+    <variable name="REGION">eu-west</variable>
+    <variable name="FEATURE_FLAGS">compact,delta</variable>
+    <secret name="token" redacted="true"/>
+  </environment>
+  <policies>
+    <policy effect="allow" operation="read">
+      <resource pattern="documents/*"/>
+      <condition field="owner" operator="equals">team-search</condition>
+    </policy>
+    <policy effect="deny" operation="delete">
+      <resource pattern="documents/archive/*"/>
+    </policy>
+  </policies>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<archive xmlns="urn:example:archive" xml:base="https://archive.example.test/records/">
+  <collection id="c-17" xml:lang="ja">
+    <title>記録と注釈</title>
+    <entry id="e-001" status="draft">
+      <timestamp>2026-01-02T03:04:05.006+09:00</timestamp>
+      <author>
+        <name>山田 花子</name>
+        <contact type="email">hanako@example.test</contact>
+      </author>
+      <content>
+        <heading>First observation</heading>
+        <paragraph>Snow fell quietly over the old station.</paragraph>
+        <quote>「記憶は地図ではない。」</quote>
+      </content>
+      <links>
+        <link rel="self" href="entry-001.xml"/>
+        <link rel="related" href="../notes/n-9.xml"/>
+      </links>
+    </entry>
+    <entry id="e-002" status="sealed">
+      <timestamp>2026-02-28T23:59:59Z</timestamp>
+      <author>
+        <name>Δelta Research</name>
+      </author>
+      <content>
+        <heading>Measurements</heading>
+        <table>
+          <row><cell>α</cell><cell>0.000</cell></row>
+          <row><cell>β</cell><cell>∞</cell></row>
+          <row><cell>γ</cell><cell>−1.25</cell></row>
+        </table>
+      </content>
+      <links/>
+    </entry>
+  </collection>
+</archive>
+```

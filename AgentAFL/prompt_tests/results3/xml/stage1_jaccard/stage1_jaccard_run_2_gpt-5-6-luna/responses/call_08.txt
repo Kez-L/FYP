@@ -1,0 +1,208 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (header, resources, relation*)>
+  <!ELEMENT header (label, timestamp, checksum)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT resources (resource+)>
+  <!ELEMENT resource (path, content)>
+  <!ELEMENT path (#PCDATA)>
+  <!ELEMENT content (#PCDATA|line|mark|empty)*>
+  <!ELEMENT line (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT empty EMPTY>
+  <!ELEMENT relation EMPTY>
+  <!ATTLIST manifest xmlns CDATA #IMPLIED version NMTOKEN #REQUIRED>
+  <!ATTLIST resource id ID #REQUIRED kind (text|binary|virtual) "text" ref IDREFS #IMPLIED>
+  <!ATTLIST relation from IDREF #REQUIRED to IDREF #REQUIRED type NMTOKEN #IMPLIED>
+  <!ENTITY ltmark "&lt;mark&gt;">
+  <!ENTITY snowman "&#x2603;">
+]>
+<manifest xmlns="urn:example:manifest" version="v2.7">
+  <header>
+    <label>release &lt;candidate&gt; &snowman;</label>
+    <timestamp>2026-09-24T12:34:56Z</timestamp>
+    <checksum algorithm="sha256">not-declared-attribute</checksum>
+  </header>
+  <resources>
+    <resource id="r0" kind="virtual" ref="r1 r2">
+      <path>memory://root</path>
+      <content><![CDATA[<not-an-element attr="&entity;">]]><line>alpha<mark>β</mark></line><empty/></content>
+    </resource>
+    <resource id="r1">
+      <path>./a/../b.txt</path>
+      <content>literal &lt;tag&gt; and &lt;mark&gt;</content>
+    </resource>
+    <resource id="r2" kind="binary">
+      <path>blob://00ff</path>
+      <content>&lt;![CDATA[&amp;]]&gt;</content>
+    </resource>
+  </resources>
+  <relation from="r0" to="r1" type="contains"/>
+  <relation from="r1" to="r2" type="derived"/>
+</manifest>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!NOTATION svg SYSTEM "image/svg+xml">
+  <!ENTITY logo SYSTEM "logo.svg" NDATA svg>
+  <!ELEMENT graph (node*, edge*)>
+  <!ELEMENT node (name, payload?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST node id ID #REQUIRED role NMTOKENS #IMPLIED>
+  <!ATTLIST edge source IDREF #REQUIRED target IDREF #REQUIRED weight CDATA "1.0" directed (yes|no) "yes">
+  <!ATTLIST payload format NOTATION (svg) #IMPLIED>
+  <!ENTITY quote "&#34;">
+  <!ENTITY pair "left &quote; right">
+]>
+<graph>
+  <node id="n-alpha" role="entry primary">
+    <name>alpha</name>
+    <payload format="svg"><chunk>&pair;</chunk><![CDATA[
+      <svg><path d="M0 0L1 1"/></svg>
+    ]]></payload>
+  </node>
+  <node id="n-beta" role="sink">
+    <name>beta &amp; gamma</name>
+    <payload>text <![CDATA[]]> tail</payload>
+  </node>
+  <node id="n-gamma">
+    <name>gamma</name>
+  </node>
+  <edge source="n-alpha" target="n-beta" weight="0" directed="no"/>
+  <edge source="n-beta" target="n-gamma"/>
+  <!ENTITY unused "this declaration is intentionally not referenced">
+</graph>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (prologue, body, trailer)>
+  <!ELEMENT prologue (field+)>
+  <!ELEMENT body (section+)>
+  <!ELEMENT section (field*, section?)>
+  <!ELEMENT trailer (field*)>
+  <!ELEMENT field (#PCDATA|value)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST packet xml:space (default|preserve) "default" mode (compact|verbose) "compact">
+  <!ATTLIST section name CDATA #IMPLIED depth NMTOKEN #IMPLIED>
+  <!ENTITY amp "&amp;">
+  <!ENTITY nested "A&amp;B&lt;C&gt;">
+  <!ENTITY hex "&#x41;&#65;&#x1F642;">
+]>
+<packet xml:space="preserve" mode="verbose">
+  <prologue>
+    <field key="version">1.0</field>
+    <field key="flags"><value>&nested;</value><value>&hex;</value></field>
+  </prologue>
+  <body>
+    <section name="outer" depth="0">
+      <field> leading   spaces &amp; tabs&#x9; </field>
+      <section name="inner" depth="1">
+        <field><![CDATA[raw ]]></field>
+        <field><![CDATA[ ]]>split<![CDATA[ text]]>&amp;</field>
+      </section>
+    </section>
+    <section name="empty" depth="2"/>
+  </body>
+  <trailer>
+    <field>after-entity-&amp;</field>
+    <field>&amp; &lt; &gt; &quot; &apos;</field>
+  </trailer>
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (account+)>
+  <!ELEMENT account (owner, balance, transaction*)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT balance (#PCDATA)>
+  <!ELEMENT transaction (date, amount, memo?)>
+  <!ELEMENT date (#PCDATA)>
+  <!ELEMENT amount (#PCDATA)>
+  <!ELEMENT memo (#PCDATA|code)*>
+  <!ELEMENT code EMPTY>
+  <!ATTLIST account number NMTOKEN #REQUIRED status (open|closed|frozen) "open">
+  <!ATTLIST transaction id ID #IMPLIED kind (credit|debit|adjustment) #REQUIRED>
+  <!ATTLIST code name CDATA #REQUIRED>
+  <!ENTITY currency "&#x20AC;">
+  <!ENTITY nbsp "&#160;">
+]>
+<ledger>
+  <account number="A-000" status="frozen">
+    <owner>R&amp;D &amp; QA</owner>
+    <balance>0 &currency;</balance>
+    <transaction id="tx-1" kind="adjustment">
+      <date>2026-02-29</date>
+      <amount>-0.00</amount>
+      <memo>reconciled<code name="auto"/> &nbsp;</memo>
+    </transaction>
+  </account>
+  <account number="B-17">
+    <owner>Zoë O'Neil</owner>
+    <balance>123456789.001 &currency;</balance>
+    <transaction kind="credit">
+      <date>2025-12-31</date>
+      <amount>+42</amount>
+      <memo><![CDATA[wire <REF> & pending]]></memo>
+    </transaction>
+    <transaction id="tx-duplicate" kind="debit">
+      <date>2026-01-01</date>
+      <amount>42</amount>
+      <memo>reversal<code name="bank"/></memo>
+    </transaction>
+  </account>
+</ledger>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body, signature?)>
+  <!ELEMENT header (sender, receiver, nonce)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT receiver (#PCDATA)>
+  <!ELEMENT nonce (#PCDATA)>
+  <!ELEMENT body ANY>
+  <!ELEMENT signature (algorithm, digest)>
+  <!ELEMENT algorithm (#PCDATA)>
+  <!ELEMENT digest (#PCDATA)>
+  <!ATTLIST envelope xmlns:sec CDATA #IMPLIED>
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+  <!ENTITY encoded "&#x3C;escaped&#x3E;">
+]>
+<envelope xmlns:sec="urn:security" sec:version="3">
+  <header>
+    <sender>urn:node:one</sender>
+    <receiver>urn:node:two</receiver>
+    <nonce>00:11:22:33:44:55</nonce>
+  </header>
+  <body>
+    <sec:command xmlns:sec="urn:security" sec:id="cmd-7">
+      <sec:name>rotate-key</sec:name>
+      <sec:arguments>
+        <sec:argument name="scope">global</sec:argument>
+        <sec:argument name="dry-run">false</sec:argument>
+        <sec:argument name="pattern"><![CDATA[(a|b)+?]]></sec:argument>
+      </sec:arguments>
+    </sec:command>
+    <data kind="mixed">prefix &left;literal&right; <item/><item><![CDATA[x]]></item> suffix</data>
+    <empty xmlns="urn:empty"/>
+  </body>
+  <signature>
+    <algorithm>urn:hash:sha512</algorithm>
+    <digest>&encoded; &amp; trailing</digest>
+  </signature>
+</envelope>
+```

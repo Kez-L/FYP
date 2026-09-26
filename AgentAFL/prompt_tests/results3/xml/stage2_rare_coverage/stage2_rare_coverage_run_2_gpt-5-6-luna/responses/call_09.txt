@@ -1,0 +1,140 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:catalog" xmlns:m="urn:meta">
+  <book id="b-17" available="yes">
+    <title xml:lang="fr">L'été &amp; la mer</title>
+    <authors>
+      <author><name>Élodie Martin</name><role>editor</role></author>
+      <author><name>李明</name><role>translator</role></author>
+    </authors>
+    <metadata m:created="2026-09-24" m:flags="a|b|c">
+      <m:tag>fiction</m:tag>
+      <m:tag>海</m:tag>
+    </metadata>
+    <description>Text before <emphasis>nested markup</emphasis>, then <link href="urn:x">a link</link>.</description>
+    <price currency="EUR">19.95</price>
+  </book>
+  <book id="b-18" available="no">
+    <title>Empty sections</title>
+    <authors/>
+    <metadata/>
+    <description/>
+    <price currency="USD">0</price>
+  </book>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (key, value, note?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY company "North &amp; South">
+  <!ENTITY marker "&#x1F4A5;">
+  <!ENTITY pair "&company; &marker;">
+]>
+<archive>
+  <record>
+    <key>alpha</key>
+    <value>&pair;</value>
+    <note>quoted: &quot;yes&quot; and apostrophe: &apos;ok&apos;</note>
+  </record>
+  <record>
+    <key>beta</key>
+    <value>before <![CDATA[<raw>&data;</raw>]]> after</value>
+  </record>
+  <record>
+    <key>gamma</key>
+    <value>&company;</value>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<envelope xmlns:x="urn:x" xmlns:y="urn:y" xmlns:z="urn:z">
+  <?route target="local"?>
+  <x:header>
+    <x:id>00000000000000000042</x:id>
+    <x:timestamp>2026-09-24T12:34:56.789Z</x:timestamp>
+    <x:attributes>
+      <x:item name="a" value="1"/>
+      <y:item name="b" value="2"/>
+      <z:item name="c" value="3"/>
+    </x:attributes>
+  </x:header>
+  <y:payload>
+    <y:chunk index="0"><![CDATA[
+      line-one
+      line-two ]]></y:chunk>
+    <y:chunk index="1">mixed <z:mark/> content</y:chunk>
+  </y:payload>
+  <!-- comment containing symbols: < &lt; > &gt; -->
+  <z:trailer checksum="0000"/>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (entry*)>
+  <!ELEMENT entry (key, data)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT data (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ATTLIST entry
+    kind (text|binary|empty) "text"
+    id ID #IMPLIED
+  >
+]>
+<map>
+  <entry id="first" kind="text">
+    <key> spaced key </key>
+    <data>prefix<part>middle</part>suffix</data>
+  </entry>
+  <entry id="second" kind="binary">
+    <key>blob</key>
+    <data><![CDATA[
+AAECAwQFBgcICQoLDA0ODw==
+]]></data>
+  </entry>
+  <entry kind="empty">
+    <key/>
+    <data><part/><part>tail</part></data>
+  </entry>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<workflow>
+  <start id="s0" next="s1"/>
+  <branch id="s1">
+    <case test="count(/workflow/result) = 0" next="s2">
+      <action name="create" args="&quot;temporary&quot;"/>
+    </case>
+    <case test="not(@missing)" next="s3">
+      <action name="inspect">
+        <argument><![CDATA[if (x < 4 && y > 2) return "ok";]]></argument>
+      </action>
+    </case>
+  </branch>
+  <loop id="s2" until="&apos;done&apos;">
+    <body>
+      <step ref="s1"/>
+      <step ref="s4" optional="true"/>
+    </body>
+  </loop>
+  <result code="0">
+    <message>finished</message>
+    <details>
+      <item key="empty"/>
+      <item key="quoted" value="&lt;&quot;&amp;&gt;"/>
+    </details>
+  </result>
+  <?audit level="verbose"?>
+</workflow>
+```

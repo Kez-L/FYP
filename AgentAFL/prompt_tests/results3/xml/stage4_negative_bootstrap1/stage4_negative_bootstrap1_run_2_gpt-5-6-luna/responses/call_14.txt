@@ -1,0 +1,67 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item id ID #REQUIRED ref IDREF #IMPLIED>
+  <!ENTITY company "A &amp; B">
+]>
+<catalog>
+  <item id="first">&company; supply</item>
+  <item id="second" ref="first">Replacement &#x1F4A1;</item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<scene xmlns="urn:example:scene" xmlns:svg="http://www.w3.org/2000/svg" xml:lang="fr" xml:space="preserve">
+  Text before
+  <layer xml:id="L-1" opacity="0.75">
+    <svg:path d="M0,0 L10,20"/>
+    <![CDATA[ raw <markup> & symbols ]]>
+    <label>été &amp; déjà</label>
+  </layer>
+  <!-- interleaved comment -->
+  <layer hidden="true"/>
+</scene>
+```
+
+```xml
+<?xml version="1.1"?>
+<packet xml:lang="x-klingon">
+  <metadata>
+    <created>2026-09-24T00:00:00Z</created>
+    <sequence value="00000000000000000042"/>
+  </metadata>
+  <payload kind="binary">&#x0B;&#x85;&#x2028;A&#xD800;</payload>
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ELEMENT archive (entry*, note?)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry name CDATA #REQUIRED image ENTITY #IMPLIED>
+  <!ELEMENT note (#PCDATA)>
+]>
+<archive>
+  <entry name="thumbnail" image="logo"/>
+  <entry name="blank"/>
+  <note>metadata-only record</note>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns:a="urn:alpha" xmlns:b="urn:beta" a:mode="mixed">
+  <a:branch>
+    <b:leaf b:rank="2">left<inner/>right</b:leaf>
+    <a:branch><![CDATA[nested content]]></a:branch>
+  </a:branch>
+  <?audit id="17"?>
+  <mixed>one<!--gap--><empty/><![CDATA[two & three]]>four</mixed>
+</root>
+```

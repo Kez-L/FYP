@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:example:config" xmlns:sec="urn:example:security">
+  <profile name="default" enabled="true">
+    <property key="timeout" type="integer">30</property>
+    <property key="verbose" type="boolean">false</property>
+    <property key="endpoint" type="uri">https://api.example.invalid/v2</property>
+    <paths>
+      <path role="cache">/var/cache/example</path>
+      <path role="data">/srv/example/data</path>
+      <path role="temporary"/>
+    </paths>
+  </profile>
+  <profile name="restricted" enabled="false">
+    <inherits from="default"/>
+    <property key="timeout" type="integer">5</property>
+    <sec:credentials method="token">
+      <sec:token expires="never">REDACTED</sec:token>
+    </sec:credentials>
+    <rules>
+      <rule effect="allow" resource="read"/>
+      <rule effect="deny" resource="write"/>
+      <rule effect="allow" resource="export">
+        <condition field="format" operator="equals">xml</condition>
+      </rule>
+    </rules>
+  </profile>
+  <defaults>
+    <locale language="en" region="GB"/>
+    <features>
+      <feature name="compression">gzip</feature>
+      <feature name="signing">disabled</feature>
+    </features>
+  </defaults>
+</configuration>

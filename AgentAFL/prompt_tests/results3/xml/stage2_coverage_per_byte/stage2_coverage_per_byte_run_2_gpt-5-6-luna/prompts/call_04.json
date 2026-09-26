@@ -1,0 +1,23 @@
+{
+  "call": 4,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ATTLIST koo xml:lang CDATA \"eng\">\n  <!ATTLIST foo bar CDATA \"&lt;&gt;)qrking Group (orisable oveuot;\">\n]>\n<root>\n  <foo xml:lang=\"ger\">Ja</fo\u0000\u0004\n</roos>\n\n\n--- example 2 ---\n<!DOCTYPE doc [\n<!ELEMENT doc EMPTY>\n<!ATTLIST doc\n defatt  (0|1)   \"0\"\n     xmlns:tst CDATA #FIXED \"http://example.org\"  tst:att  (0|1)   \"0\"\n    att (0|1)   \"1\">\n]>\n<doc att=\"1B/h12;&laugh12;&laugh12;&la>\n\n\nTried before \u2014 no new coverage, avoid repeating:\n--- a seed you generated (cycle 4) added 0 new edges ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (entry+, trailer?)>\n  <!ELEMENT entry (key, value, value*)>\n  <!ELEMENT key (#PCDATA)>\n  <!ELEMENT value (#PCDATA|br)*>\n  <!ELEMENT br EMPTY>\n  <!ELEMENT trailer (#PCDATA)>\n  <!ATTLIST archive mode (fast|safe|audit) \"safe\">\n  <!ATTLIST entry timestamp CDATA #IMPLIED>\n  <!ATTLIST br kind CDATA \"soft\">\n  <!ENTITY nbsp \"&#160;\">\n  <!ENTITY quoted \"&quot;quoted&quot;\">\n]>\n<archive mode=\"audit\">\n  <entry timestamp=\"2026-09-24\">\n    <key>alpha</key>\n    <value>one&nbsp;<br/>two</value>\n    <value>&quoted;</value>\n  </entry>\n  <entry>\n    <key>beta</key>\n    <value><![CDATA[raw ]]> data &amp; more</value>\n  </entry>\n  <t...[truncated, 732 chars total]\n\n--- a seed you generated (cycle 3) added 0 new edges ---\n<?xml version=\"1.0\" standalone=\"yes\"?>\n<!DOCTYPE catalog [\n  <!ENTITY % common \"<!ELEMENT catalog (item+)><!ELEMENT item (name,price)><!ATTLIST item sku ID #REQUIRED>\">\n  %common;\n  <!ENTITY % switch \"INCLUDE\">\n  <![%switch;[\n    <!ELEMENT name (#PCDATA)>\n    <!ELEMENT price (#PCDATA)>\n  ]]>\n  <!NOTATION csv SYSTEM \"text/csv\">\n]>\n<catalog>\n  <item sku=\"p001\">\n    <name>Widget &amp; Sample</name>\n    <price>19.95</price>\n  </item>\n  <item sku=\"p002\">\n    <name>Second Item</name>\n    <price>0</price>\n  </item>\n</catalog>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage-per-byte",
+  "positive_feedback": false,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T03:13:01.273888+00:00"
+}

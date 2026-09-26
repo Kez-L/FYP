@@ -1,0 +1,171 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (warehouse, note?, item*)>
+  <!ELEMENT warehouse (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT item (name, quantity, price, metadata?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT quantity (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT metadata (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST item sku ID #REQUIRED status (in-stock|backorder|retired) "in-stock">
+  <!ATTLIST tag key CDATA #REQUIRED>
+  <!ENTITY currency "&#x20AC;">
+  <!ENTITY warehouse-name "North &amp; South Depot">
+]>
+<inventory>
+  <warehouse>&warehouse-name;</warehouse>
+  <note><![CDATA[Handle fragile items: ]]]]><![CDATA[ use padding.]]></note>
+  <item sku="sku-001">
+    <name>Glass vessel</name>
+    <quantity>12</quantity>
+    <price>19.95 &currency;</price>
+    <metadata>
+      <tag key="color">amber</tag>
+      <tag key="size">medium</tag>
+    </metadata>
+  </item>
+  <item sku="sku-002" status="backorder">
+    <name>Replacement seal</name>
+    <quantity>0</quantity>
+    <price>3.50 &currency;</price>
+  </item>
+</inventory>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE records [
+  <!ELEMENT records (record+)>
+  <!ELEMENT record (header, payload, footer)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload (#PCDATA|chunk|ref)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST record id ID #REQUIRED kind NMTOKEN #IMPLIED>
+  <!ATTLIST header created CDATA #IMPLIED source CDATA #IMPLIED>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY alpha "first">
+  <!ENTITY beta "second &amp; &alpha;">
+]>
+<records>
+  <record id="r1" kind="alpha">
+    <header created="2026-09-24T12:34:56Z" source="sensor-A"/>
+    <payload>
+      prefix-&alpha;
+      <chunk><![CDATA[raw <bytes> & symbols]]></chunk>
+      middle
+      <ref target="r2"/>
+      suffix
+    </payload>
+    <footer>complete</footer>
+  </record>
+  <record id="r2" kind="beta">
+    <header created="unknown"/>
+    <payload>&beta;<chunk>tail</chunk></payload>
+    <footer><![CDATA[closed]]></footer>
+  </record>
+</records>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns="urn:main" xmlns:m="urn:meta" xmlns:q="urn:qualified" xml:lang="fr" xml:space="preserve">
+  <?audit level="verbose"?>
+  <!-- comment with -- prohibited only when doubled? -->
+  <m:manifest m:version="2.7" xml:base="https://example.invalid/archive/">
+    <m:entry q:type="document" m:key="A&amp;B">
+      <m:title>Résumé — été</m:title>
+      <m:location><![CDATA[folder/subfolder/file.xml]]></m:location>
+      <m:attributes>
+        <m:attribute name="empty"/>
+        <m:attribute name="quoted" value="&quot;double&quot;"/>
+        <m:attribute name="apostrophe" value="it's"/>
+      </m:attributes>
+    </m:entry>
+  </m:manifest>
+  <section id="main">
+    <item q:flag="yes">one</item>
+    <item q:flag="no"><![CDATA[two < three && four > zero]]></item>
+  </section>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE document [
+  <!ELEMENT document (title, paragraph*, table?, appendix?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|em|strong|link|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT appendix (#PCDATA|section)*>
+  <!ELEMENT section (#PCDATA|section)*>
+  <!ATTLIST link href URI #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY intro "This is an &quot;embedded&quot; fragment.">
+]>
+<document>
+  <title>Parser &amp; Markup Notes</title>
+  <paragraph>
+    &intro; Text with <em>emphasis</em>, <strong>weight</strong>,
+    a <link href="urn:example:reference">reference</link><br/>
+    and a non-breaking space&nbsp;before the end.
+  </paragraph>
+  <paragraph><![CDATA[
+    whitespace
+      is
+        intentionally
+          irregular
+  ]]></paragraph>
+  <table>
+    <row><cell>r1c1</cell><cell>r1c2</cell><cell>r1c3</cell></row>
+    <row><cell>r2c1</cell><cell><![CDATA[r2 < c2]]></cell><cell>r2c3</cell></row>
+  </table>
+  <appendix>
+    <section>outer <section>inner <section>deep</section></section></section>
+  </appendix>
+</document>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node*, edge*)>
+  <!ELEMENT node (label?, value*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST node id ID #REQUIRED type CDATA "generic">
+  <!ATTLIST value name CDATA #REQUIRED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+]>
+<graph>
+  <node id="n-root" type="container">
+    <label>Root</label>
+    <value name="enabled">true</value>
+    <value name="threshold">0.000001</value>
+  </node>
+  <node id="n-left">
+    <label><![CDATA[Left <branch>]]></label>
+    <value name="payload">A&#x0A;B&#x0D;C</value>
+  </node>
+  <node id="n-right" type="leaf">
+    <value name="payload">right</value>
+  </node>
+  <node id="n-unlinked">
+    <label>orphan</label>
+  </node>
+  <edge from="n-root" to="n-left" weight="0.5"/>
+  <edge from="n-root" to="n-right" weight="2e3"/>
+  <edge from="n-left" to="n-right" weight="NaN"/>
+</graph>
+```

@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (section+)>
+  <!ELEMENT section (label, record*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT record (value, link?, note?)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST section name NMTOKEN #REQUIRED>
+  <!ATTLIST record ident ID #REQUIRED target IDREFS #IMPLIED>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ENTITY open "(">
+  <!ENTITY close ")">
+  <!ENTITY quote "&#34;">
+  <!ENTITY markup "<note>generated &amp; note</note>">
+  <!ENTITY % recordAttrs
+    "<!ATTLIST record generated (yes|no) 'no'>">
+  %recordAttrs;
+]>
+<archive>
+  <section name="first">
+    <label>&open;primary&close;</label>
+    <record ident="r01" target="r02" generated="yes">
+      <value>one &quote;quoted&quote;</value>
+      <note>literal &lt;note&gt; text</note>
+    </record>
+    <record ident="r02" target="r01">
+      <value>two</value>
+      &markup;
+    </record>
+  </section>
+  <section name="second">
+    <label><![CDATA[section [two]]]></label>
+    <record ident="r03">
+      <value>&#x41;&#65;&#000066;</value>
+      <link href="urn:link:3"/>
+    </record>
+  </section>
+</archive>

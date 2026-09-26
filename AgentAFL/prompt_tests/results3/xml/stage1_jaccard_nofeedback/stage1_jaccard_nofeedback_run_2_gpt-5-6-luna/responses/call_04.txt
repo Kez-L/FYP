@@ -1,0 +1,110 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY company "A &amp; B Research">
+  <!ENTITY note "use &lt;carefully&gt;">
+]>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <!-- mixed content and CDATA -->
+  <entry id="A-001" status="active">
+    <title>Alpha &company;</title>
+    <x:metadata x:revision="7">
+      <x:description><![CDATA[raw <markup> & symbols ]]></x:description>
+      <x:value>&note;</x:value>
+    </x:metadata>
+    <summary>Text before <emphasis>inline</emphasis> text after.</summary>
+  </entry>
+  <?catalog-check mode="strict"?>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (warehouse+)>
+  <!ELEMENT warehouse (bin*)>
+  <!ATTLIST warehouse code ID #REQUIRED>
+  <!ELEMENT bin (item|empty)>
+  <!ATTLIST bin label CDATA #IMPLIED>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT empty EMPTY>
+]>
+<inventory>
+  <warehouse code="west">
+    <bin label="01"><item>bolt</item></bin>
+    <bin label="02"><empty/></bin>
+  </warehouse>
+  <warehouse code="east">
+    <bin><item>nut &amp; washer</item></bin>
+  </warehouse>
+</inventory>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE packet [
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+  <!ENTITY quotemark "&#x22;">
+]>
+<packet xml:lang="en" xml:space="preserve">
+  <header>
+    <sequence value="00000000000000000000000000000001"/>
+    <flags>&left;urgent&right;</flags>
+  </header>
+  <payload>
+    <![CDATA[
+      {"message":"line one\nline two","symbols":"<&>"}
+    ]]>
+  </payload>
+  <footer note="&quotemark;quoted&quotemark;"/>
+</packet>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ENTITY % declarations '
+    <!ELEMENT report (section+)>
+    <!ELEMENT section (heading, paragraph+, table?)>
+    <!ATTLIST section name CDATA #IMPLIED>
+    <!ELEMENT heading (#PCDATA)>
+    <!ELEMENT paragraph (#PCDATA|break|link)*>
+    <!ELEMENT break EMPTY>
+    <!ELEMENT link (#PCDATA)>
+    <!ATTLIST link href URI #REQUIRED>
+    <!ELEMENT table (row+)>
+    <!ELEMENT row (cell+)>
+    <!ELEMENT cell (#PCDATA)>
+  '>
+  %declarations;
+]>
+<report>
+  <section name="overview">
+    <heading>Overview</heading>
+    <paragraph>First <link href="urn:test:item">reference</link><break/>continues.</paragraph>
+    <paragraph>Second paragraph.</paragraph>
+    <table>
+      <row><cell>A</cell><cell>B</cell></row>
+      <row><cell>1</cell><cell>2</cell></row>
+    </table>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns="urn:default" xmlns:a="urn:a" xmlns:b="urn:b">
+  <a:branch a:key="value">
+    <b:leaf b:kind="x">text</b:leaf>
+    <a:branch>
+      <item xmlns="" id="plain">
+        <name>unqualified</name>
+        <value><![CDATA[<not-an-element/>]]></value>
+      </item>
+    </a:branch>
+  </a:branch>
+  <mixed>left<!-- hidden -->middle<?pi data?>right</mixed>
+  <empty xmlns:a="urn:shadow" a:key="shadow"/>
+</root>
+```

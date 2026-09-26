@@ -1,0 +1,246 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dossier [
+  <!ELEMENT dossier (header, records, appendix?)>
+  <!ELEMENT header (title, issued, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT issued (#PCDATA)>
+  <!ELEMENT note (#PCDATA|em|code)*>
+  <!ELEMENT records (record+)>
+  <!ELEMENT record (name, value, metadata*, payload?)>
+  <!ATTLIST record
+    key ID #REQUIRED
+    kind (alpha|numeric|mixed) "mixed"
+    refs IDREFS #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST metadata
+    name CDATA #REQUIRED
+    value CDATA #IMPLIED>
+  <!ELEMENT payload (#PCDATA|line|em)*>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT appendix (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ENTITY mark "&#x2605;">
+]>
+<dossier xml:lang="en">
+  <header>
+    <title>Signal &amp; Noise</title>
+    <issued>2026-09-24T12:30:00Z</issued>
+    <note>Use <em>carefully</em> and preserve <code>order</code>. &mark;</note>
+  </header>
+  <records>
+    <record key="r-a" kind="alpha">
+      <name>alpha</name>
+      <value>left<chunk><![CDATA[<raw>&not-an-entity;</raw>]]></chunk>right</value>
+      <metadata name="empty" value=""/>
+      <payload><line>one</line><em>two &lt; three</em></payload>
+    </record>
+    <record key="r-b" kind="numeric" refs="r-a">
+      <name>42</name>
+      <value>0<chunk>1</chunk>2</value>
+      <metadata name="quoted" value="a &quot;b&quot; c"/>
+    </record>
+  </records>
+  <appendix><![CDATA[
+  deliberately literal markup: <record key="x"/> & stuff
+  ]]><code>tail</code></appendix>
+</dossier>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE archive [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!NOTATION text SYSTEM "text/plain">
+  <!ENTITY cover SYSTEM "cover.jpg" NDATA jpeg>
+  <!ENTITY words SYSTEM "words.txt" NDATA text>
+  <!ELEMENT archive (folder*, link*)>
+  <!ATTLIST archive
+    label CDATA #IMPLIED
+    attachments ENTITIES #IMPLIED>
+  <!ELEMENT folder (folder|file|comment)*>
+  <!ATTLIST folder
+    id ID #IMPLIED
+    parent IDREF #IMPLIED>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+    id ID #REQUIRED
+    name NMTOKEN #REQUIRED
+    format NOTATION (jpeg|text) #IMPLIED
+    source ENTITY #IMPLIED>
+  <!ELEMENT comment (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link
+    target IDREF #REQUIRED
+    aliases NMTOKENS #IMPLIED>
+]>
+<archive label="media" attachments="cover words">
+  <folder id="root">
+    <folder id="pics" parent="root">
+      <file id="f1" name="cover.jpg" format="jpeg" source="cover"/>
+      <comment>binary files are represented by unparsed entities</comment>
+    </folder>
+    <folder id="docs" parent="root">
+      <file id="f2" name="words.txt" format="text" source="words"/>
+    </folder>
+  </folder>
+  <link target="f1" aliases="front cover-image"/>
+  <link target="f2" aliases="readme plain-text"/>
+</archive>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE world [
+  <!ELEMENT world (region+)>
+  <!ELEMENT region (label, boundary, item*)>
+  <!ATTLIST region
+    code NMTOKEN #REQUIRED
+    xml:space (default|preserve) "default">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT boundary EMPTY>
+  <!ATTLIST boundary
+    north CDATA #REQUIRED
+    south CDATA #REQUIRED
+    east CDATA #REQUIRED
+    west CDATA #REQUIRED>
+  <!ELEMENT item (name, coordinates?, description)>
+  <!ATTLIST item
+    id ID #REQUIRED
+    category (landmark|station|unknown) #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT coordinates EMPTY>
+  <!ATTLIST coordinates
+    lat CDATA #REQUIRED
+    lon CDATA #REQUIRED>
+  <!ELEMENT description (#PCDATA|strong|br|ref)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT ref (#PCDATA)>
+  <!ATTLIST ref href CDATA #REQUIRED>
+]>
+<world xmlns="urn:example:world" xmlns:g="urn:geo">
+  <region code="N-01" xml:space="preserve">
+    <label>North &amp; Upper</label>
+    <boundary north="+90" south="0" east="+180" west="-180"/>
+    <item id="peak" category="landmark">
+      <name g:type="mountain">Aconcagua</name>
+      <coordinates lat="-32.6532" lon="-70.0109"/>
+      <description><strong>high</strong><br/>A place with
+        <ref href="urn:map:peak">coordinates</ref>.
+      </description>
+    </item>
+  </region>
+  <region code="S-02">
+    <label>South</label>
+    <boundary north="0" south="-90" east="180" west="-180"/>
+    <item id="station" category="station">
+      <name>Terminus</name>
+      <description>line break<br/><br/>then text</description>
+    </item>
+  </region>
+</world>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE pipeline [
+  <!ENTITY % commonAttrs ' xml:id ID #IMPLIED xml:lang CDATA #IMPLIED '>
+  <!ENTITY % stages '
+    <!ELEMENT stage (input?, transform*, output?)>
+    <!ATTLIST stage
+      name NMTOKEN #REQUIRED
+      mode (strict|lenient) "strict">
+    <!ELEMENT input (#PCDATA|data)*>
+    <!ELEMENT transform (param*)>
+    <!ATTLIST transform type CDATA #REQUIRED>
+    <!ELEMENT param EMPTY>
+    <!ATTLIST param key CDATA #REQUIRED value CDATA #IMPLIED>
+    <!ELEMENT output (#PCDATA|data)*>
+    <!ELEMENT data (#PCDATA)>
+  '>
+  <!ELEMENT pipeline (description?, stage+, footer?)>
+  <!ATTLIST pipeline %commonAttrs; version CDATA #REQUIRED>
+  <!ELEMENT description (#PCDATA|b|i)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  %stages;
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY open "[" >
+  <!ENTITY close "]" >
+]>
+<pipeline xml:id="p0" xml:lang="x-test" version="3.14">
+  <description>A <b>small</b> <i>processing</i> graph.</description>
+  <stage name="decode" mode="lenient">
+    <input>header &amp; body<data><![CDATA[raw bytes: ]]>42</data></input>
+    <transform type="replace">
+      <param key="from" value="&open;"/>
+      <param key="to" value="&close;"/>
+    </transform>
+    <output><data>decoded</data></output>
+  </stage>
+  <stage name="emit">
+    <transform type="serialize"/>
+    <transform type="compress"><param key="level" value="0"/></transform>
+    <output>done</output>
+  </stage>
+  <footer>fin &lt; end</footer>
+</pipeline>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (from, to+, subject, body, attachment*)>
+  <!ATTLIST message priority (low|normal|high) "normal" route IDREF #IMPLIED>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (p|quote|list|table|raw)*>
+  <!ELEMENT p (#PCDATA|a|span|br)*>
+  <!ELEMENT a (#PCDATA)>
+  <!ATTLIST a href CDATA #REQUIRED>
+  <!ELEMENT span (#PCDATA)>
+  <!ATTLIST span class CDATA #IMPLIED>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT quote (#PCDATA|p)*>
+  <!ATTLIST quote by CDATA #IMPLIED>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|p)*>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA|span)*>
+  <!ELEMENT raw (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment
+    id ID #REQUIRED
+    media CDATA #REQUIRED
+    disposition (inline|download) "download"
+    checksum NMTOKEN #IMPLIED>
+]>
+<message priority="high" xml:space="preserve">
+  <from>sender@example.test</from>
+  <to>one@example.test</to>
+  <to>two@example.test</to>
+  <subject>Layered &amp; unusual content</subject>
+  <body>
+    <p>Hello <span class="accent">world</span>.<br/>See
+      <a href="urn:example:next">next</a>.</p>
+    <quote by="sender"><p>Text inside a quote.</p><p>Second paragraph.</p></quote>
+    <list>
+      <item>first</item>
+      <item><p>second with <span>markup</span></p></item>
+    </list>
+    <table>
+      <row><cell>left</cell><cell><span>right</span></cell></row>
+      <row><cell><![CDATA[x < y && y > z]]></cell><cell>tail</cell></row>
+    </table>
+    <raw><![CDATA[<?xml version="1.0"?><fake>literal</fake>]]></raw>
+  </body>
+  <attachment id="att1" media="application/octet-stream" disposition="inline" checksum="00ff11"/>
+</message>
+```

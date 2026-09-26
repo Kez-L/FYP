@@ -1,0 +1,107 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:seed:catalog" xmlns:m="urn:seed:meta">
+  <m:header generated="true"><?seed instruction="retain"?></m:header>
+  <entry id="α-01" status="draft">
+    <title><![CDATA[5 < 7 && 9 > 3]]></title>
+    <authors>
+      <author role="lead"><name>Zoë</name><contact email="z@example.test"/></author>
+      <author role="reviewer"/>
+    </authors>
+    <keywords>
+      <keyword xml:lang="en">markup</keyword>
+      <keyword xml:lang="ja">&#x6587;&#x66F8;</keyword>
+    </keywords>
+    <body>prefix<m:emphasis>middle</m:emphasis>suffix<!--split--></body>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (label, payload, checksum?)>
+  <!ATTLIST record code ID #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA|part)*>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<archive>
+  <record code="r1">
+    <label>&left;alpha&right;</label>
+    <payload>one<part>two<part>three</part></part>four</payload>
+    <checksum>abc&amp;123</checksum>
+  </record>
+  <record code="r2">
+    <label>empty</label>
+    <payload><![CDATA[raw &entity; text]]></payload>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:root xmlns:r="urn:root" xmlns:a="urn:alpha" xmlns:b="urn:beta" a:flag="yes">
+  <r:item b:type="mixed" a:count="0003">
+    <r:item b:type="leaf">A</r:item>
+    <a:item>
+      <b:value><![CDATA[]]></b:value>
+      <b:value>line1
+line2&#x0A;line3</b:value>
+    </a:item>
+  </r:item>
+  <r:container>
+    <r:empty/>
+    <r:empty attr="&quot;&apos;&amp;&lt;&gt;"/>
+  </r:container>
+</r:root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ENTITY hello "Hello">
+  <!ENTITY quoted "A &quot;quoted&quot; value">
+  <!ENTITY nested "&hello;, &quoted;!">
+]>
+<message>
+  <metadata>
+    <sender><![CDATA[<robot/>]]></sender>
+    <priority value="high"/>
+  </metadata>
+  <content>&nested;</content>
+  <attachments>
+    <attachment name="one.bin" media-type="application/octet-stream">
+      <![CDATA[
+        A0B1C2D3
+        --boundary--
+      ]]>
+    </attachment>
+  </attachments>
+  <?processing target data?>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <section id="s0">
+    <title>Boundary test</title>
+    <table rows="2" cols="2">
+      <row index="0"><cell/><cell>north</cell></row>
+      <row index="1"><cell>south</cell><cell><![CDATA[&broken;]]></cell></row>
+    </table>
+  </section>
+  <mixed>
+    text-before
+    <line break="false">inside</line>
+    text-after
+    <!-- comment with --? -->
+    <![CDATA[tail]]>
+  </mixed>
+</document>
+```

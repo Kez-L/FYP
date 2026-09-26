@@ -1,0 +1,182 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+, checksum)>
+  <!ELEMENT section (heading, entry*)>
+  <!ATTLIST section
+    name NMTOKEN #REQUIRED
+    mode (compact|expanded) "compact">
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT entry (key, description?, metadata)>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    state (draft|published|retired) "draft">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT description (#PCDATA|link|quote)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #IMPLIED>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT metadata (flag*)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST flag name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY marker "&#x5B;generated&#x5D;">
+]>
+<catalog>
+  <section name="alpha" mode="expanded">
+    <heading>Configuration &marker;</heading>
+    <entry id="e1" state="published">
+      <key>one</key>
+      <description>before <link href="urn:x?a=1&amp;b=2">jump</link>
+        <quote>nested quotation</quote> after</description>
+      <metadata>
+        <flag name="enabled" value="yes"/>
+        <flag name="empty"/>
+      </metadata>
+    </entry>
+  </section>
+  <section name="omega">
+    <heading>Final section</heading>
+  </section>
+  <checksum>0000-ffff</checksum>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<packet xmlns="urn:packet" xmlns:p="urn:payload" xmlns:meta="urn:metadata"
+        xml:lang="en" xml:space="preserve">
+  <?route channel="delta" priority="high"?>
+  <!-- comment containing brackets: ]]> is not present -->
+  <header>
+    <meta:source xml:base="https://example.invalid/root/">
+      <meta:name>sensor-7</meta:name>
+      <meta:labels>
+        <meta:label>north</meta:label>
+        <meta:label>night</meta:label>
+      </meta:labels>
+    </meta:source>
+    <sequence>00000000000000000001</sequence>
+  </header>
+  <p:payload p:format="mixed">
+    <![CDATA[raw <payload> text & symbols]]>
+    <p:chunk><![CDATA[first]]></p:chunk>
+    <p:chunk><![CDATA[second]]></p:chunk>
+    <p:chunk p:empty="true"></p:chunk>
+  </p:payload>
+  <trailer>
+    <status code="204" xmlns="">done</status>
+    <note xml:lang="fr">fin</note>
+  </trailer>
+</packet>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE report [
+  <!ELEMENT report (title, rows, totals)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT rows (row*)>
+  <!ELEMENT row (name, value, comment?)>
+  <!ATTLIST row
+    number NMTOKEN #REQUIRED
+    kind (integer|decimal|text) #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT comment (#PCDATA)>
+  <!ELEMENT totals (total+)>
+  <!ELEMENT total (#PCDATA)>
+  <!ATTLIST total for IDREF #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY nested "left-&nbsp;-middle-&nbsp;-right">
+]>
+<report>
+  <title>Values &nested;</title>
+  <rows>
+    <row number="A-01" kind="integer">
+      <name>count</name>
+      <value>00000000000000000000042</value>
+      <comment>line&#x85;break&#x2028;boundary</comment>
+    </row>
+    <row number="A-02" kind="decimal">
+      <name>ratio</name>
+      <value>-0.0000000000000000000007</value>
+    </row>
+    <row number="A-03" kind="text">
+      <name>literal</name>
+      <value>quotes: &quot;single&quot; and &apos;double&apos;</value>
+    </row>
+  </rows>
+  <totals>
+    <total for="A-01">42</total>
+    <total for="A-02">-7e-22</total>
+  </totals>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE vault [
+  <!ELEMENT vault (sealed, public)>
+  <!ELEMENT sealed (ciphertext, signature)>
+  <!ELEMENT ciphertext (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST signature algorithm CDATA "sha256">
+  <!ELEMENT public (key*, alias?)>
+  <!ELEMENT key EMPTY>
+  <!ATTLIST key
+    id ID #REQUIRED
+    usage (sign|encrypt|both) "encrypt"
+    revoked (yes|no) "no">
+  <!ELEMENT alias (#PCDATA)>
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data.bin" NDATA binary>
+  <!ENTITY token "A&amp;B&lt;C&gt;">
+]>
+<vault>
+  <sealed>
+    <ciphertext encoding="base64">AAECAwQFBgcICQoLDA0ODw==</ciphertext>
+    <signature algorithm="sha512">token-&token;</signature>
+  </sealed>
+  <public>
+    <key id="key-main" usage="both" revoked="no"/>
+    <key id="key-old" usage="sign" revoked="yes"/>
+    <alias>primary &quot;vault&quot;</alias>
+  </public>
+</vault>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns:x="urn:x" xmlns:y="urn:y">
+  <front>
+    <title>Mixed content sample</title>
+    <authors>
+      <author x:id="a1"><name>Ada</name><role>editor</role></author>
+      <author x:id="a2"><name>Lin</name><role>reviewer</role></author>
+    </authors>
+  </front>
+  <body>
+    <section y:key="intro">
+      text before
+      <paragraph>alpha <emphasis level="2">beta</emphasis> gamma</paragraph>
+      <list ordered="false">
+        <item><label>:</label><value>first</value></item>
+        <item><label>*</label><value>second</value></item>
+      </list>
+      <table columns="2">
+        <row><cell rowspan="2">A</cell><cell>B</cell></row>
+        <row><cell colspan="2">C&amp;D</cell></row>
+      </table>
+    </section>
+    <section y:key="empty">
+      <paragraph/>
+      <list ordered="true"/>
+    </section>
+  </body>
+  <appendix>
+    <ref target="a1" x:kind="cross-reference">author</ref>
+    <processing><?build mode="test"?></processing>
+  </appendix>
+</document>
+```

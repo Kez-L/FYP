@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (prologue, body, trailer)>
+  <!ELEMENT prologue (field+)>
+  <!ELEMENT body (section+)>
+  <!ELEMENT section (field*, section?)>
+  <!ELEMENT trailer (field*)>
+  <!ELEMENT field (#PCDATA|value)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST packet xml:space (default|preserve) "default" mode (compact|verbose) "compact">
+  <!ATTLIST section name CDATA #IMPLIED depth NMTOKEN #IMPLIED>
+  <!ENTITY amp "&amp;">
+  <!ENTITY nested "A&amp;B&lt;C&gt;">
+  <!ENTITY hex "&#x41;&#65;&#x1F642;">
+]>
+<packet xml:space="preserve" mode="verbose">
+  <prologue>
+    <field key="version">1.0</field>
+    <field key="flags"><value>&nested;</value><value>&hex;</value></field>
+  </prologue>
+  <body>
+    <section name="outer" depth="0">
+      <field> leading   spaces &amp; tabs&#x9; </field>
+      <section name="inner" depth="1">
+        <field><![CDATA[raw ]]></field>
+        <field><![CDATA[ ]]>split<![CDATA[ text]]>&amp;</field>
+      </section>
+    </section>
+    <section name="empty" depth="2"/>
+  </body>
+  <trailer>
+    <field>after-entity-&amp;</field>
+    <field>&amp; &lt; &gt; &quot; &apos;</field>
+  </trailer>
+</packet>

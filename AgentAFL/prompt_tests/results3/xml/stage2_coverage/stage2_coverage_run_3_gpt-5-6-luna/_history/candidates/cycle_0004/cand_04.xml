@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ENTITY % commonAttrs '
+    uid ID #REQUIRED
+    role (primary|secondary) "primary"
+  '>
+  <!ELEMENT archive (record*)>
+  <!ELEMENT record (key, value, metadata?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT metadata (flag*)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST record %commonAttrs; xml:space (default|preserve) "default">
+  <!ATTLIST metadata source CDATA #IMPLIED>
+  <!ATTLIST flag name CDATA #REQUIRED state (on|off) "on">
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+  <!ENTITY nested "&left;value&right;">
+]>
+<archive xmlns:a="urn:archive">
+  <record uid="r1" role="primary">
+    <key>a-001</key>
+    <value>alpha <part>one</part> &nested; <part>two</part></value>
+    <metadata source="import">
+      <flag name="verified" state="on"/>
+      <flag name="encrypted" state="off"/>
+    </metadata>
+  </record>
+  <record uid="r2" role="secondary" xml:space="preserve">
+    <key> b-002 </key>
+    <value><![CDATA[raw <payload> & untouched]]> tail</value>
+  </record>
+</archive>

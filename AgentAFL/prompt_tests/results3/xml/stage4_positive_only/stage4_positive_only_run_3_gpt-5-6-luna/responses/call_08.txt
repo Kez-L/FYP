@@ -1,0 +1,178 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:m="urn:example:meta">
+  <m:metadata generated="2026-09-24" xml:lang="en">
+    <m:title>Archive inventory</m:title>
+    <m:checksum algorithm="sha256">d41d8cd98f00b204e9800998ecf8427e</m:checksum>
+  </m:metadata>
+  <collection id="c-17" status="active">
+    <entry key="alpha">
+      <name xml:space="preserve">  Northern Lights  </name>
+      <tags>
+        <tag priority="high">science</tag>
+        <tag priority="low">photography</tag>
+      </tags>
+      <measurements>
+        <measurement unit="kelvin">6500</measurement>
+        <measurement unit="seconds">42</measurement>
+      </measurements>
+    </entry>
+    <entry key="beta">
+      <name>River Delta</name>
+      <tags/>
+      <measurements>
+        <measurement unit="meters">18.75</measurement>
+      </measurements>
+    </entry>
+  </collection>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<workflow xmlns="urn:example:workflow" xmlns:x="urn:example:extension">
+  <?pipeline mode="diagnostic"?>
+  <!-- An intentionally nested process description -->
+  <job id="J-2048" owner="ops@example.invalid">
+    <input>
+      <resource href="file:///var/tmp/input.dat" checksum="none"/>
+      <resource href="https://example.invalid/data?x=1&amp;y=2" checksum="pending"/>
+    </input>
+    <steps>
+      <step name="prepare" retry="0">
+        <command><![CDATA[printf '<payload/>']]></command>
+        <environment>
+          <variable name="LANG">C.UTF-8</variable>
+          <variable name="MODE">safe</variable>
+        </environment>
+      </step>
+      <step name="transform" retry="3">
+        <command>normalize --input="${INPUT}" --output="${OUTPUT}"</command>
+        <x:limits cpu="2" memory="512MiB"/>
+      </step>
+      <step name="publish" retry="1">
+        <targets>
+          <target channel="staging">https://example.invalid/upload</target>
+          <target channel="archive">s3://bucket.example/object</target>
+        </targets>
+      </step>
+    </steps>
+    <notifications>
+      <notification when="failure" format="json">alerts@example.invalid</notification>
+    </notifications>
+  </job>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory [
+  <!ENTITY company "Example &amp; Sons">
+  <!ELEMENT inventory (warehouse+)>
+  <!ELEMENT warehouse (location, bin*)>
+  <!ATTLIST warehouse code ID #REQUIRED>
+  <!ELEMENT location (#PCDATA)>
+  <!ELEMENT bin (item*)>
+  <!ATTLIST bin label NMTOKEN #REQUIRED>
+  <!ELEMENT item (description, quantity, price?)>
+  <!ATTLIST item sku ID #REQUIRED fragile (yes|no) "no">
+  <!ELEMENT description (#PCDATA)>
+  <!ELEMENT quantity (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+]>
+<inventory>
+  <warehouse code="wh-east">
+    <location>&company; — East Depot</location>
+    <bin label="A-01">
+      <item sku="sku-100" fragile="yes">
+        <description>Glass reagent bottle</description>
+        <quantity>12</quantity>
+        <price>19.95</price>
+      </item>
+      <item sku="sku-101">
+        <description>Fiber cable, 10m</description>
+        <quantity>7</quantity>
+      </item>
+    </bin>
+    <bin label="B-99"/>
+  </warehouse>
+  <warehouse code="wh-west">
+    <location>West Depot</location>
+    <bin label="overflow">
+      <item sku="sku-200" fragile="no">
+        <description><![CDATA[Replacement panel <prototype>]]></description>
+        <quantity>0</quantity>
+        <price>0.00</price>
+      </item>
+    </bin>
+  </warehouse>
+</inventory>
+```
+
+```xml
+<?xml version="1.0"?>
+<conversation xmlns="urn:example:chat" xml:lang="fr">
+  <thread subject="Migration &amp; validation" archived="false">
+    <message id="m1" from="alice" timestamp="2026-09-24T08:15:00Z">
+      <body>Bonjour, le transfert est-il terminé&nbsp;?</body>
+      <attachments>
+        <attachment name="résumé.txt" media-type="text/plain" size="128"/>
+      </attachments>
+    </message>
+    <message id="m2" from="bob" timestamp="2026-09-24T08:17:44+00:00">
+      <reply-to ref="m1"/>
+      <body>
+        <paragraph>Pas encore.</paragraph>
+        <quote author="alice">Vérification des index en cours.</quote>
+        <paragraph>Je confirmerai après le prochain contrôle.</paragraph>
+      </body>
+      <reactions>
+        <reaction user="carol">👍</reaction>
+        <reaction user="alice">ok</reaction>
+      </reactions>
+    </message>
+    <message id="m3" from="system" timestamp="2026-09-24T08:20:01Z">
+      <body><![CDATA[status = "complete"
+checksum = "00ff11"]]></body>
+      <attachments/>
+    </message>
+  </thread>
+</conversation>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:example:config" xmlns:sec="urn:example:security">
+  <profile name="default" enabled="true">
+    <property key="timeout" type="integer">30</property>
+    <property key="verbose" type="boolean">false</property>
+    <property key="endpoint" type="uri">https://api.example.invalid/v2</property>
+    <paths>
+      <path role="cache">/var/cache/example</path>
+      <path role="data">/srv/example/data</path>
+      <path role="temporary"/>
+    </paths>
+  </profile>
+  <profile name="restricted" enabled="false">
+    <inherits from="default"/>
+    <property key="timeout" type="integer">5</property>
+    <sec:credentials method="token">
+      <sec:token expires="never">REDACTED</sec:token>
+    </sec:credentials>
+    <rules>
+      <rule effect="allow" resource="read"/>
+      <rule effect="deny" resource="write"/>
+      <rule effect="allow" resource="export">
+        <condition field="format" operator="equals">xml</condition>
+      </rule>
+    </rules>
+  </profile>
+  <defaults>
+    <locale language="en" region="GB"/>
+    <features>
+      <feature name="compression">gzip</feature>
+      <feature name="signing">disabled</feature>
+    </features>
+  </defaults>
+</configuration>
+```

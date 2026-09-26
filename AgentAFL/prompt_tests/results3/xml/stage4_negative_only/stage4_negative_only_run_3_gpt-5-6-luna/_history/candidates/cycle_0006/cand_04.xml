@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<exchange xmlns="urn:exchange" xmlns:sec="urn:security" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <header>
+    <message-id>urn:uuid:00000000-0000-0000-0000-000000000001</message-id>
+    <route>
+      <hop ordinal="1" host="edge-a"/>
+      <hop ordinal="2" host="edge-b"/>
+      <hop ordinal="3" host="origin"/>
+    </route>
+    <flags>
+      <flag name="compressed" value="false"/>
+      <flag name="encrypted" value="true"/>
+    </flags>
+  </header>
+  <payload xsi:type="sec:SignedEnvelope">
+    <sec:signature algorithm="urn:hash:sha256">
+      <sec:key-info>
+        <sec:key-name>test-key</sec:key-name>
+        <sec:fingerprint encoding="hex">00:11:22:33:44:55</sec:fingerprint>
+      </sec:key-info>
+      <sec:value>AAECAwQFBgcICQ==</sec:value>
+    </sec:signature>
+    <records count="2">
+      <record ordinal="1" kind="text"><field name="subject">hello</field></record>
+      <record ordinal="2" kind="binary">
+        <field name="length">0</field>
+        <field name="data">AA==</field>
+      </record>
+    </records>
+  </payload>
+  <trailer checksum="none"/>
+</exchange>

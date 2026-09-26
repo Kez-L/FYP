@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (entry*)>
+  <!ELEMENT entry (key, value, meta*)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|ref|quote)*>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST entry id ID #REQUIRED kind (credit|debit|adjustment) #IMPLIED>
+  <!ATTLIST key xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST value currency CDATA #IMPLIED>
+  <!ATTLIST ref to IDREF #REQUIRED>
+  <!ATTLIST quote source CDATA #IMPLIED>
+  <!ATTLIST meta name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY euro "&#x20AC;">
+  <!ENTITY nested "&quot;quoted &amp; escaped&quot;">
+]>
+<ledger>
+  <entry id="e1" kind="credit">
+    <key xml:lang="en-US">A-01</key>
+    <value currency="EUR">100 &euro; <quote source="bank">approved</quote><ref to="e2"/></value>
+    <meta name="state" value="open"/>
+  </entry>
+  <entry id="e2" kind="adjustment">
+    <key>Δ-02</key>
+    <value currency="&quot;">&nested;&amp;tail</value>
+    <meta name="state"/>
+    <meta name="review" value="yes"/>
+  </entry>
+</ledger>

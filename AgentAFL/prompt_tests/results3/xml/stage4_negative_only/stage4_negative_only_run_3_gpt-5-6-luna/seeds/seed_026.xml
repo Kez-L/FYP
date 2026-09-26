@@ -1,0 +1,30 @@
+<!DOCTYPE transform [
+  <!ENTITY % common "CDATA">
+  <!ENTITY stamp "2026-09-24T00:00:00Z">
+  <!ELEMENT transform (source, pipeline, result)>
+  <!ELEMENT source EMPTY>
+  <!ELEMENT pipeline (step+, checkpoint?)>
+  <!ELEMENT step (input?, output*)>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT output (#PCDATA)>
+  <!ELEMENT checkpoint EMPTY>
+  <!ELEMENT result (#PCDATA)>
+  <!ATTLIST source uri %common; #IMPLIED format (json|csv|xml) "xml">
+  <!ATTLIST step name %common; required (yes|no) "no">
+  <!ATTLIST checkpoint at %common; #REQUIRED>
+]>
+<transform>
+  <source uri="urn:memory:sample" format="xml"/>
+  <pipeline>
+    <step name="normalize" required="yes">
+      <input> whitespace </input>
+      <output>trimmed</output>
+      <output>canonical</output>
+    </step>
+    <step name="annotate">
+      <output>&stamp;</output>
+    </step>
+    <checkpoint at="after-annotation"/>
+  </pipeline>
+  <result>complete</result>
+</transform>

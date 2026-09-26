@@ -1,0 +1,238 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:meta="urn:example:metadata" xml:lang="en">
+  <?catalog-mode compact?>
+  <meta:generated>2026-09-24T12:00:00Z</meta:generated>
+  <collection id="c-17" meta:visibility="internal">
+    <label><![CDATA[Tools & Components]]></label>
+    <item xml:id="item-alpha" status="active">
+      <name>Signal Lantern</name>
+      <aliases>
+        <alias>night-lamp</alias>
+        <alias><![CDATA[lantern<alpha>]]></alias>
+      </aliases>
+      <specification>
+        <property key="voltage" unit="V">12</property>
+        <property key="modes">
+          <value>steady</value>
+          <value>pulse</value>
+          <value>beacon</value>
+        </property>
+        <property key="sealed">true</property>
+      </specification>
+      <links>
+        <link rel="manual" href="docs/lantern.xml"/>
+        <link rel="replacement" href="#item-beta"/>
+      </links>
+      <!-- deliberately interleaved markup and character data -->
+      <description>Compact <emphasis>field equipment</emphasis> for <code>low-light</code> work.</description>
+    </item>
+    <item xml:id="item-beta" status="retired">
+      <name>Relay Capsule</name>
+      <specification>
+        <property key="ports">
+          <value>RX</value>
+          <value>TX</value>
+          <value>aux</value>
+        </property>
+      </specification>
+      <history>
+        <event date="2021-04-03"><actor>Q. Lin</actor><note>prototype</note></event>
+        <event date="2024-11-19"><actor>R. Silva</actor><note>archived</note></event>
+      </history>
+    </item>
+  </collection>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, record+)>
+  <!ATTLIST archive format (short|long) "long">
+  <!ELEMENT header (title, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT note (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT record (key, payload, tags?)>
+  <!ATTLIST record kind CDATA #REQUIRED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|line|mark|br)*>
+  <!ELEMENT line (#PCDATA|mark|br)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ENTITY archive-name "Northwind">
+  <!ENTITY separator " / ">
+]>
+<archive format="short">
+  <header>
+    <title>&archive-name; transfer log</title>
+    <note>Entries marked <mark>urgent</mark> require review.</note>
+  </header>
+  <record kind="binary">
+    <key>0001-A</key>
+    <payload><![CDATA[
+      00110011 10100100
+      <not-an-element>&still-not-an-entity;</not-an-element>
+    ]]></payload>
+    <tags><tag>raw</tag><tag>inbound</tag></tags>
+  </record>
+  <record kind="text">
+    <key>0002-B</key>
+    <payload>
+      <line>First line&separator;<mark>important</mark><br/></line>
+      <line>Second line with &amp; escaped punctuation.</line>
+      <line>Third line with a numeric character: &#x03A9;.</line>
+    </payload>
+  </record>
+  <record kind="empty">
+    <key>0003-C</key>
+    <payload/>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:example:config"
+               xmlns:sec="urn:example:security"
+               xmlns:env="urn:example:environment"
+               xml:base="https://config.example.invalid/root/">
+  <profile name="staging" enabled="true">
+    <include href="fragments/network.xml" parse="xml"/>
+    <parameters>
+      <parameter name="timeout" type="duration">
+        <default unit="ms">2500</default>
+        <override scope="region" value="eu-west">
+          <value>3100</value>
+        </override>
+      </parameter>
+      <parameter name="features" type="set">
+        <member>telemetry</member>
+        <member>compression</member>
+        <member>signed-events</member>
+      </parameter>
+    </parameters>
+    <sec:credentials>
+      <sec:principal id="svc-42">
+        <sec:role>reader</sec:role>
+        <sec:role>auditor</sec:role>
+        <sec:key algorithm="ed25519"><![CDATA[
+-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+-----END PUBLIC KEY-----
+        ]]></sec:key>
+      </sec:principal>
+    </sec:credentials>
+    <env:matrix>
+      <env:variable name="REGION">eu-west</env:variable>
+      <env:variable name="FLAGS" xml:space="preserve"> A:B::C </env:variable>
+      <env:variable name="EMPTY"/>
+    </env:matrix>
+    <rules>
+      <rule priority="10">
+        <when><all><equals left="env" right="staging"/><exists path="/parameters"/></all></when>
+        <then action="enable"><target>telemetry</target></then>
+      </rule>
+      <rule priority="20">
+        <when><not><exists path="/missing"/></not></when>
+        <then action="warn"><message>fallback &lt;path&gt; selected</message></then>
+      </rule>
+    </rules>
+  </profile>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="urn:example:package"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xml:id="pkg-9">
+  <manifest created="2026-09-24">
+    <entry path="images/mark.svg" media-type="image/svg+xml" xlink:href="data:image/svg+xml;base64,PHN2Zy8+">
+      <checksum algorithm="sha256">0000000000000000000000000000000000000000000000000000000000000000</checksum>
+    </entry>
+    <entry path="readme.txt" media-type="text/plain">
+      <checksum algorithm="none"/>
+    </entry>
+  </manifest>
+  <content>
+    <section id="intro">
+      <heading>Embedded resources</heading>
+      <paragraph>This package contains an inline <svg:svg width="24" height="24" viewBox="0 0 24 24">
+        <svg:title>dot</svg:title>
+        <svg:circle cx="12" cy="12" r="8" fill="none" stroke="black"/>
+      </svg:svg> illustration.</paragraph>
+      <paragraph><![CDATA[Literal markup: <section id="fake"> & data ]]></paragraph>
+    </section>
+    <section id="data">
+      <table border="1">
+        <row><cell role="header">Name</cell><cell role="header">Value</cell></row>
+        <row><cell>alpha</cell><cell>1</cell></row>
+        <row><cell colspan="2"><list><item>one</item><item>two</item></list></cell></row>
+      </table>
+    </section>
+  </content>
+  <!-- A comment containing delimiter-like text: -- not actually allowed here -->
+  <signature algorithm="none">
+    <signed-info>
+      <reference uri="#pkg-9"/>
+      <canonicalization method="urn:example:exclusive"/>
+    </signed-info>
+    <value>unverified</value>
+  </signature>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow" xmlns:task="urn:example:task">
+  <?engine version="3" strict="false"?>
+  <pipeline id="pipe-77">
+    <stage name="prepare">
+      <task:task id="t1" type="transform">
+        <task:input source="stream" encoding="base64"/>
+        <task:operation name="split">
+          <task:argument name="delimiter"><![CDATA[||]]></task:argument>
+          <task:argument name="limit">0</task:argument>
+        </task:operation>
+        <task:output channel="prepared"/>
+      </task:task>
+    </stage>
+    <stage name="dispatch" depends-on="prepare">
+      <branch expression="$.kind">
+        <case value="image">
+          <task:task id="t2" type="route">
+            <task:target priority="high">visual</task:target>
+            <task:retry count="3" delay="PT0S"/>
+          </task:task>
+        </case>
+        <case value="text">
+          <task:task id="t3" type="route">
+            <task:target priority="low">linguistic</task:target>
+            <task:retry count="0"/>
+          </task:task>
+        </case>
+        <default>
+          <task:task id="t4" type="discard">
+            <task:reason>unclassified &amp; incomplete</task:reason>
+          </task:task>
+        </default>
+      </branch>
+    </stage>
+    <stage name="finalize" depends-on="dispatch">
+      <guard>
+        <condition operator="or">
+          <condition operator="equals"><left>status</left><right>ok</right></condition>
+          <condition operator="exists"><left>warning</left></condition>
+        </condition>
+      </guard>
+      <result code="204">
+        <message xml:lang="ja">処理が完了しました</message>
+      </result>
+    </stage>
+  </pipeline>
+</workflow>
+```

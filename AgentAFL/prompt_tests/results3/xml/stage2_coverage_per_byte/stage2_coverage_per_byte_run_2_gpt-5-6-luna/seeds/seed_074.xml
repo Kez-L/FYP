@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (event*)>
+  <!ELEMENT event (time, payload?)>
+  <!ELEMENT time (#PCDATA)>
+  <!ELEMENT payload (chunk|![CDATA[not grammar]]>)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST stream mode (live|batch) #REQUIRED>
+  <!ATTLIST event id NMTOKEN #IMPLIED level (debug|info|warn|error) "info">
+  <!ATTLIST chunk seq NMTOKEN #IMPLIED encoding CDATA #IMPLIED>
+]>
+<stream mode="live">
+  <event id="α-01" level="debug">
+    <time>00:00:00</time>
+    <payload>
+      <chunk seq="0" encoding="base64">AAEC/f8=</chunk>
+      <![CDATA[
+        raw event text containing <angles> & ampersands
+      ]]>
+    </payload>
+  </event>
+  <event id="broken" level="error">
+    <time>23:59:60</time>
+    <payload><chunk seq="x">unterminated-ish &amp; text</chunk></payload>
+  </event>
+  <event>
+    <time/>
+    <payload/>
+  </event>
+</stream>

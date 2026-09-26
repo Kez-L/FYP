@@ -1,0 +1,132 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (title,record+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT record (heading,body,meta?)>
+  <!ATTLIST record id ID #REQUIRED status (open|closed|pending) "open">
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|br)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta source CDATA #IMPLIED>
+  <!ENTITY notice "confidential &amp; provisional">
+]>
+<archive>
+  <title xml:lang="en">Field Notes</title>
+  <record id="r-01" status="pending">
+    <heading>First entry</heading>
+    <body>Wind crossed the ridge<quote>without warning</quote><br/>and stopped.</body>
+    <meta source="sensor-A"/>
+  </record>
+  <record id="r-02">
+    <heading>Second entry</heading>
+    <body>&notice;: <quote>check again</quote>.</body>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<env:Envelope xmlns:env="http://example.org/envelope" xmlns:m="http://example.org/message">
+  <env:Header>
+    <?trace id="header-17"?>
+    <m:Token expires="2030-01-01T00:00:00Z">alpha&amp;beta</m:Token>
+    <m:Flags>
+      <m:Flag name="compressed">0</m:Flag>
+      <m:Flag name="signed">1</m:Flag>
+    </m:Flags>
+  </env:Header>
+  <env:Body>
+    <m:Batch count="2">
+      <m:Item key="A" enabled="true"><![CDATA[x < y && y > z]]></m:Item>
+      <m:Item key="B" enabled="false">
+        <m:Value type="decimal">-0.000</m:Value>
+        <m:Value type="text">line
+break</m:Value>
+      </m:Item>
+    </m:Batch>
+  </env:Body>
+</env:Envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xml:space="preserve">
+  <!-- deliberately mixed content with adjacent text nodes -->
+  <section name="αβγ">
+    Before<item rank="1">one</item>, between
+    <item rank="2"><label>two</label><details>second <b>part</b></details></item>
+    after.
+    <section name="nested">
+      <item rank="3">
+        <label>三</label>
+        <details><![CDATA[
+          brackets: ]]> and ampersands: &amp; &lt;
+        ]]></details>
+      </item>
+    </section>
+  </section>
+  <footer><empty/><empty/><note>終わり</note></footer>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (account*)>
+  <!ELEMENT account (owner,entry*)>
+  <!ATTLIST account number NMTOKEN #REQUIRED>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT entry (date,amount,description)>
+  <!ATTLIST entry kind CDATA #IMPLIED>
+  <!ELEMENT date (#PCDATA)>
+  <!ELEMENT amount (#PCDATA)>
+  <!ELEMENT description (#PCDATA|ref)*>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ATTLIST account alias ID #IMPLIED>
+]>
+<ledger>
+  <account number="0007" alias="acct-main">
+    <owner>R&amp;D</owner>
+    <entry kind="credit">
+      <date>2026-09-24</date>
+      <amount>1.25e+03</amount>
+      <description>initial <ref target="acct-main"/> allocation</description>
+    </entry>
+    <entry kind="debit">
+      <date>2026-09-25</date>
+      <amount>−12</amount>
+      <description>adjustment</description>
+    </entry>
+  </account>
+  <account number="X-9">
+    <owner>匿名</owner>
+  </account>
+</ledger>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<package xmlns="urn:example:package" xmlns:x="urn:example:extra" xml:base="file:///var/tmp/">
+  <?build profile="fuzz"?>
+  <manifest version="0">
+    <resource path="a/b/../c" media-type="application/octet-stream" size="0">
+      <x:checksum algorithm="none"/>
+    </resource>
+    <resource path="" media-type="text/plain">
+      <data encoding="base64"><![CDATA[AAEC
+/f8=]]></data>
+    </resource>
+  </manifest>
+  <relations>
+    <relation from="a" to="b" type="urn:rel:test"/>
+    <relation from="b" to="b" type="self"/>
+  </relations>
+  <x:metadata x:empty="" x:quote="&quot;apostrophe&apos;">
+    <x:value><![CDATA[]]></x:value>
+  </x:metadata>
+</package>
+```

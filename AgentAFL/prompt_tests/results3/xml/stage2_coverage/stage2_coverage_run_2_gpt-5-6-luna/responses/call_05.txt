@@ -1,0 +1,158 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ENTITY % common "<!ELEMENT archive (section+)><!ELEMENT section (title, record*)>">
+  %common;
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT record (#PCDATA|value|ref)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST section
+    id ID #REQUIRED
+    kind NMTOKENS "primary secondary">
+  <!ATTLIST record
+    rank NMTOKEN #IMPLIED
+    xml:space (default|preserve) "default">
+  <!ATTLIST ref
+    target IDREF #REQUIRED
+    external ENTITY #IMPLIED>
+  <!ENTITY greeting "alpha &lt; beta &amp; gamma">
+]>
+<archive>
+  <section id="s0" kind="primary">
+    <title>&greeting;</title>
+    <record rank="01">before<value>42</value>after<ref target="s0"/>tail</record>
+    <record xml:space="preserve">  padded
+text  </record>
+  </section>
+</archive>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA|br|formula)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT formula (#PCDATA)>
+  <!ATTLIST matrix xmlns CDATA #IMPLIED>
+  <!ATTLIST row index CDATA #REQUIRED>
+  <!ATTLIST cell colspan CDATA "1" rowspan CDATA "1">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quote "&quot;">
+]>
+<matrix xmlns="urn:tables:v2" xmlns:x="urn:extra">
+  <row index="A">
+    <cell colspan="2">left<br/>middle<formula>x &lt; y</formula>&nbsp;</cell>
+    <cell rowspan="3">right &quote;</cell>
+  </row>
+  <row index="B">
+    <cell x:flag="yes">one</cell>
+    <cell><![CDATA[raw ]]> text <![CDATA[ ]]> tail</cell>
+  </row>
+</matrix>
+```
+
+```xml
+<!DOCTYPE pipeline [
+  <!ELEMENT pipeline (step, (step|branch)*)>
+  <!ELEMENT step (input?, output*)>
+  <!ELEMENT branch (when, step+)>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT input EMPTY>
+  <!ELEMENT output (#PCDATA)>
+  <!ATTLIST pipeline version CDATA #FIXED "3">
+  <!ATTLIST step name CDATA #REQUIRED mode (safe|fast|dry-run) "safe">
+  <!ATTLIST input source CDATA #REQUIRED format (csv|json|xml) #IMPLIED>
+  <!ATTLIST output destination CDATA #IMPLIED>
+  <!ENTITY local "step-data">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "blob.bin" NDATA bin>
+]>
+<pipeline version="3">
+  <step name="load" mode="fast">
+    <input source="&local;" format="csv"/>
+    <output destination="memory">loaded</output>
+  </step>
+  <branch>
+    <when>count &gt; 0 &amp;&amp; ready</when>
+    <step name="transform">
+      <output>first</output>
+      <output>second</output>
+    </step>
+  </branch>
+  <step name="save" mode="dry-run">
+    <output destination="archive">&payload;</output>
+  </step>
+</pipeline>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (layer*)>
+  <!ELEMENT layer (node|edge|group)*>
+  <!ELEMENT group (node|edge|group)*>
+  <!ELEMENT node (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST layer name CDATA #REQUIRED>
+  <!ATTLIST group id ID #REQUIRED>
+  <!ATTLIST node id ID #REQUIRED class NMTOKENS #IMPLIED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1.0">
+  <!ENTITY open "[" >
+  <!ENTITY close "]" >
+]>
+<map xmlns="urn:graph" xmlns:g="urn:graph:meta">
+  <layer name="roads">
+    <node id="n1" class="road primary">Central &open;hub&close;</node>
+    <group id="cluster">
+      <node id="n2">North</node>
+      <node id="n3">South</node>
+      <edge from="n2" to="n3" weight="0"/>
+    </group>
+    <edge from="n1" to="n2" g:weight="9"/>
+  </layer>
+  <layer name="empty"/>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, attachment*)>
+  <!ELEMENT header (sender, recipient+, timestamp)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|list|item|code)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST message priority (low|normal|high) "normal" reply IDREF #IMPLIED>
+  <!ATTLIST recipient type (to|cc|bcc) "to">
+  <!ATTLIST attachment name CDATA #REQUIRED media CDATA #REQUIRED>
+  <!ENTITY sig "— automated notice —">
+  <!ENTITY nested "&sig; &amp; please review">
+]>
+<message priority="high">
+  <header>
+    <sender>robot@example.invalid</sender>
+    <recipient type="to">reader@example.invalid</recipient>
+    <recipient type="cc">audit@example.invalid</recipient>
+    <timestamp>2026-09-24T00:00:00Z</timestamp>
+  </header>
+  <body>
+    Intro <quote>quoted <quote>nested</quote> material</quote>
+    <list>
+      <item>one <emphasis>important</emphasis></item>
+      <item>two</item>
+    </list>
+    <code>&lt;sample&gt; &nested;</code>
+  </body>
+  <attachment name="report.dat" media="application/octet-stream"/>
+</message>
+```

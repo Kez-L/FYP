@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (meta, payload, signature?)>
+  <!ATTLIST packet xmlns:s CDATA #FIXED "urn:sign"
+                   xmlns:x CDATA #IMPLIED>
+  <!ELEMENT meta (origin, route*)>
+  <!ELEMENT origin EMPTY>
+  <!ATTLIST origin host CDATA #REQUIRED port NMTOKEN #REQUIRED>
+  <!ELEMENT route EMPTY>
+  <!ATTLIST route via CDATA #REQUIRED cost NMTOKEN "1">
+  <!ELEMENT payload (chunk+)>
+  <!ATTLIST payload encoding (plain|base64|hex) #REQUIRED>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!ELEMENT signature EMPTY>
+  <!ATTLIST signature s:algorithm CDATA #REQUIRED
+                      s:value CDATA #REQUIRED>
+]>
+<packet xmlns:s="urn:sign" xmlns:x="urn:extra">
+  <meta>
+    <origin host="relay.example" port="443"/>
+    <route via="north-gw" cost="2"/>
+    <route via="vault" cost="7"/>
+  </meta>
+  <payload encoding="base64">
+    <chunk index="0">QUJDREVGRw==</chunk>
+    <chunk index="1">AAECAwQFBgcI</chunk>
+  </payload>
+  <signature s:algorithm="sha256" s:value="deadbeefcafebabe"/>
+</packet>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-16"?>
+<configuration>
+  <?profile name="staging"?>
+  <property name="paths">
+    <entry key="home">/srv/app</entry>
+    <entry key="cache">/srv/app/cache</entry>
+    <entry key="empty"/>
+  </property>
+  <pipeline enabled="true" retries="03">
+    <stage id="fetch" timeout="PT0S">
+      <command><![CDATA[curl --retry 2 "https://example.invalid/a?x=1&y=2"]]></command>
+      <environment>
+        <variable name="LANG">C.UTF-8</variable>
+        <variable name="LC_ALL">en_US.UTF-8</variable>
+      </environment>
+    </stage>
+    <stage id="transform" timeout="PT1.250S">
+      <command>normalize &amp; validate</command>
+      <input ref="fetch"/>
+      <output format="application/xml">résultat.xml</output>
+    </stage>
+  </pipeline>
+  <limits>
+    <integer min="-9223372036854775808" max="9223372036854775807"/>
+    <text value="quotes: &quot;single&apos; and double&quot;"/>
+  </limits>
+</configuration>

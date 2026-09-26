@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (panel|separator)*>
+  <!ATTLIST dashboard xmlns CDATA #IMPLIED>
+  <!ELEMENT panel (header, widget+)>
+  <!ATTLIST panel key ID #REQUIRED collapsed (true|false) "false">
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT widget (label?, value, note?)>
+  <!ATTLIST widget kind (gauge|table|sparkline) #REQUIRED
+                   priority NMTOKENS #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA|unit)*>
+  <!ELEMENT unit EMPTY>
+  <!ATTLIST unit name CDATA #REQUIRED>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ATTLIST separator style CDATA "dashed">
+]>
+<dashboard xmlns="urn:example:dashboard">
+  <panel key="p-main" collapsed="false">
+    <header>System Health</header>
+    <widget kind="gauge" priority="high urgent">
+      <label>Load</label>
+      <value>0.73<unit name="ratio"/></value>
+      <note><![CDATA[updated < 1 minute ago]]></note>
+    </widget>
+    <widget kind="table" priority="normal">
+      <label>Workers</label>
+      <value>16<unit name="count"/></value>
+    </widget>
+  </panel>
+  <separator style="double"/>
+  <panel key="p-edge" collapsed="true">
+    <header>Edge Nodes</header>
+    <widget kind="sparkline" priority="low">
+      <value><![CDATA[3,5,4,8,13,8,5]]></value>
+    </widget>
+  </panel>
+</dashboard>

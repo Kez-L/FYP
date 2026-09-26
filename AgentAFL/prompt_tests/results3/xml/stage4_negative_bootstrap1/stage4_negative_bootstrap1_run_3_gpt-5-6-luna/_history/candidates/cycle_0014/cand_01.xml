@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:example:config" xmlns:sec="urn:example:security">
+  <profile id="staging" enabled="true">
+    <property key="timeout" type="integer">0030</property>
+    <property key="ratio" type="decimal">0.875</property>
+    <property key="empty" type="string"></property>
+    <sec:credentials>
+      <sec:method algorithm="scram-sha-256">
+        <sec:parameter name="iterations">4096</sec:parameter>
+        <sec:parameter name="salt">aGVsbG8=</sec:parameter>
+      </sec:method>
+    </sec:credentials>
+    <routes>
+      <route pattern="/api/v1/*" target="backend-a">
+        <header name="X-Trace">enabled</header>
+        <header name="X-Mode">staging</header>
+      </route>
+      <route pattern="/health" target="local" terminal="true"/>
+    </routes>
+  </profile>
+  <profile id="minimal" enabled="false">
+    <property key="timeout" type="integer">0</property>
+  </profile>
+</configuration>

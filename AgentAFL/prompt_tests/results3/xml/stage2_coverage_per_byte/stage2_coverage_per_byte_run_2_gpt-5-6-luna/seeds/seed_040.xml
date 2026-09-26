@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "blob.dat" NDATA bin>
+  <!ENTITY % feature "INCLUDE">
+  <![%feature;[
+    <!ELEMENT archive (header, item+, footer?)>
+    <!ELEMENT header (#PCDATA)>
+    <!ELEMENT item (label, data)>
+    <!ELEMENT label (#PCDATA)>
+    <!ELEMENT data (#PCDATA|br|ref)*>
+    <!ELEMENT br EMPTY>
+    <!ELEMENT ref EMPTY>
+  ]]>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST archive version CDATA #FIXED "2">
+  <!ATTLIST item id ID #REQUIRED source ENTITY #IMPLIED>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY marker "A&amp;B&lt;C&gt;">
+]>
+<archive version="2">
+  <?build nightly?>
+  <header><![CDATA[raw <header> & bytes]]></header>
+  <item id="i1" source="payload">
+    <label>first</label>
+    <data>left<br/>middle<ref target="i1"/>&marker;</data>
+  </item>
+  <footer>done</footer>
+</archive>

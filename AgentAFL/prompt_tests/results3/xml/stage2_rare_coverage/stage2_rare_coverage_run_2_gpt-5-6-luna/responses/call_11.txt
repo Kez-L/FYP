@@ -1,0 +1,155 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, record+)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header version CDATA #REQUIRED generated CDATA #IMPLIED>
+  <!ELEMENT record (title, payload, note?)>
+  <!ATTLIST record id ID #REQUIRED status (new|held|closed) "new">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|item|![CDATA[]])*>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY company "A &amp; B">
+  <!ENTITY fragment "<item>expanded</item>">
+]>
+<archive>
+  <header version="7" generated="false"/>
+  <record id="r-alpha" status="held">
+    <title>&company; &lt;sample&gt;</title>
+    <payload>prefix &fragment; suffix</payload>
+    <note><![CDATA[raw ]]> text ]]> and entities &amp; remain visible</note>
+  </record>
+  <record id="r-beta">
+    <title>Second record</title>
+    <payload><item>one</item><item><![CDATA[two < three & four]]></item></payload>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:catalog:v2" xmlns:m="urn:meta" xmlns:x="urn:extra" xml:lang="fr" xml:space="preserve">
+  <m:header m:created="2026-09-24T00:00:00Z" m:flags="a,b,c">
+    <m:field name="empty"></m:field>
+    <m:field name="quoted">a &quot;quoted&quot; value</m:field>
+  </m:header>
+  <section id="S&amp;1" x:mode="nested">
+    <item rank="001"><name>café</name><price currency="€">12.50</price></item>
+    <item rank="002" xmlns="urn:catalog:legacy" xmlns:m="">
+      <name>legacy-name</name>
+      <price currency="USD">0</price>
+      <detail xmlns:x="urn:extra:deep" x:code="A:B">mixed <b>bold</b> tail</detail>
+    </item>
+    <item rank="003">
+      <name><![CDATA[line
+break
+value]]></name>
+      <price currency="JPY">999999999999999999999999</price>
+    </item>
+  </section>
+  <?catalog instruction?>
+  <footer xmlns="urn:catalog:v2"><![CDATA[<section/> &amp; ]]></footer>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (routing, body, attachment*)>
+  <!ELEMENT routing (from, to, hops?)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT hops (hop+)>
+  <!ELEMENT hop EMPTY>
+  <!ATTLIST hop host CDATA #REQUIRED time CDATA #IMPLIED>
+  <!ELEMENT body (#PCDATA|quote|link|em)*>
+  <!ELEMENT quote (#PCDATA|quote|em)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT em (#PCDATA|link)*>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment name CDATA #REQUIRED type CDATA #IMPLIED>
+]>
+<message>
+  <routing>
+    <from>sender@example.test</from>
+    <to>receiver@example.test</to>
+    <hops>
+      <hop host="edge-1" time="0"/>
+      <hop host="edge-2" time="18446744073709551615"/>
+    </hops>
+  </routing>
+  <body>start<quote>outer <quote>inner <em>deep <link>https://example.test/a?x=1&amp;y=2</link></em></quote></quote> end<em>tail</em></body>
+  <attachment name="blob.bin" type="application/octet-stream"/>
+  <attachment name="no-type"/>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:p="urn:p" xmlns:q="urn:q" xmlns:r="urn:r">
+  <p:container p:id="c1">
+    <q:entry q:key="alpha" r:state="open">
+      <p:value>42</p:value>
+      <r:value p:unit="ms">0.000</r:value>
+    </q:entry>
+    <q:entry q:key="beta" r:state="closed">
+      <p:value>-9223372036854775808</p:value>
+      <r:value p:unit="ms">NaN</r:value>
+    </q:entry>
+  </p:container>
+  <wrapper xmlns:p="urn:p-alt" xmlns:r="urn:r-alt">
+    <p:container p:id="shadow">
+      <p:item p:flag="yes"/>
+      <item xmlns="urn:local" xmlns:p="">
+        <child attr="&lt;&amp;&quot;&apos;&gt;"/>
+      </item>
+    </p:container>
+  </wrapper>
+  <r:terminal xmlns:r="urn:r">
+    <r:empty/>
+    <?nested data?>
+  </r:terminal>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (meta, section*)>
+  <!ELEMENT meta (created, checksum)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT section (heading, paragraph+, table?)>
+  <!ATTLIST section key NMTOKEN #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|code|br|mark)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT mark (#PCDATA|code)*>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA|mark)*>
+  <!ATTLIST cell colspan NMTOKEN "1">
+  <!ENTITY euro "&#x20AC;">
+]>
+<report>
+  <meta>
+    <created>2026-09-24T12:34:56+14:00</created>
+    <checksum>0000000000000000000000000000000000000000</checksum>
+  </meta>
+  <section key="intro">
+    <heading>Résumé &euro;</heading>
+    <paragraph>first<br/>second <mark>highlighted <code>a&lt;b &amp;&amp; c&gt;d</code></mark> finish.</paragraph>
+    <paragraph><![CDATA[unescaped ]]> delimiter]]></paragraph>
+  </section>
+  <section key="data">
+    <heading>Values</heading>
+    <paragraph>before <code> x &quot; y </code> after</paragraph>
+    <table>
+      <row><cell colspan="2">A</cell><cell>1</cell></row>
+      <row><cell><mark>B</mark></cell><cell>2</cell><cell><![CDATA[three]]></cell></row>
+    </table>
+  </section>
+</report>
+```

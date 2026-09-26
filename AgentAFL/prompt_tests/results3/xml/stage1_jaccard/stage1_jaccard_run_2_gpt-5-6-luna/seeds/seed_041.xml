@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!NOTATION svg SYSTEM "image/svg+xml">
+  <!ENTITY logo SYSTEM "logo.svg" NDATA svg>
+  <!ELEMENT graph (node*, edge*)>
+  <!ELEMENT node (name, payload?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST node id ID #REQUIRED role NMTOKENS #IMPLIED>
+  <!ATTLIST edge source IDREF #REQUIRED target IDREF #REQUIRED weight CDATA "1.0" directed (yes|no) "yes">
+  <!ATTLIST payload format NOTATION (svg) #IMPLIED>
+  <!ENTITY quote "&#34;">
+  <!ENTITY pair "left &quote; right">
+]>
+<graph>
+  <node id="n-alpha" role="entry primary">
+    <name>alpha</name>
+    <payload format="svg"><chunk>&pair;</chunk><![CDATA[
+      <svg><path d="M0 0L1 1"/></svg>
+    ]]></payload>
+  </node>
+  <node id="n-beta" role="sink">
+    <name>beta &amp; gamma</name>
+    <payload>text <![CDATA[]]> tail</payload>
+  </node>
+  <node id="n-gamma">
+    <name>gamma</name>
+  </node>
+  <edge source="n-alpha" target="n-beta" weight="0" directed="no"/>
+  <edge source="n-beta" target="n-gamma"/>
+  <!ENTITY unused "this declaration is intentionally not referenced">
+</graph>

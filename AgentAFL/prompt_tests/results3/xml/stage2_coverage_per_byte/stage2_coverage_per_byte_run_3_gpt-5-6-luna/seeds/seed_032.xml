@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (open, record*, close)>
+  <!ELEMENT open EMPTY>
+  <!ATTLIST open version NMTOKEN #REQUIRED session CDATA #IMPLIED>
+  <!ELEMENT record (timestamp, actor, action, detail?)>
+  <!ATTLIST record level (debug|info|warn|error) "info">
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT actor (#PCDATA)>
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|code|linebreak)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT close EMPTY>
+  <!ATTLIST close status (ok|failed) #REQUIRED>
+  <!ENTITY apos "&#39;">
+  <!ENTITY % extra SYSTEM "missing-subset.ent">
+  %extra;
+]>
+<stream>
+  <open version="v1.2" session="s-&#x31;"/>
+  <record level="warn">
+    <timestamp>2026-09-24T12:34:56+00:00</timestamp>
+    <actor>operator</actor>
+    <action>rotate</action>
+    <detail>old<code>key</code><linebreak/>new &apos;key&apos;</detail>
+  </record>
+  <record level="error">
+    <timestamp>not-a-date</timestamp>
+    <actor>svc:parser</actor>
+    <action>flush &amp; close</action>
+    <detail><![CDATA[unterminated CDATA
+  </record>
+  <close status="failed"/>
+</stream>

@@ -1,0 +1,31 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:noNamespaceSchemaLocation="settings.xsd">
+  <?build profile="nightly"?>
+  <defaults>
+    <timeout unit="ms">2500</timeout>
+    <retries>2</retries>
+    <features>
+      <feature name="delta" enabled="yes"/>
+      <feature name="legacy" enabled="no"/>
+    </features>
+  </defaults>
+  <profiles>
+    <profile name="edge">
+      <inherits>defaults</inherits>
+      <limits>
+        <memory unit="MiB" hard="false">384</memory>
+        <workers>03</workers>
+      </limits>
+      <endpoints>
+        <endpoint scheme="https" host="edge.example.invalid" port="443">
+          <path>/v2/query?mode=compact&amp;raw=1</path>
+        </endpoint>
+        <endpoint scheme="unix" host="" port="0">
+          <path>/run/edge.sock</path>
+        </endpoint>
+      </endpoints>
+    </profile>
+  </profiles>
+  <!-- Configuration intentionally contains mixed text and empty elements. -->
+</configuration>

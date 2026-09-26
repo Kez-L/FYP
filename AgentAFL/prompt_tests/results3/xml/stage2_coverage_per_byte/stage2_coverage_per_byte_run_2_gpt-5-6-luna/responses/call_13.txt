@@ -1,0 +1,125 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ENTITY greeting "hello &amp; goodbye">
+  <!ENTITY nested "<item status='generated'>&greeting;</item>">
+  <!ELEMENT archive (meta, record*)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT record (title, body, marker?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (#PCDATA|emph|break|itemref)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT marker EMPTY>
+  <!ATTLIST archive xmlns:a CDATA #IMPLIED>
+  <!ATTLIST meta created CDATA "unknown" mode (cold|warm|hot) "cold">
+  <!ATTLIST record key ID #REQUIRED>
+  <!ATTLIST itemref ref IDREF #IMPLIED>
+]>
+<archive a:zone="west">
+  <meta created="2026-09-24" mode="warm"/>
+  <record key="r1">
+    <title>Entity test</title>
+    <body>before<emph>inside</emph><break/>&nested;<itemref ref="r1"/></body>
+    <marker/>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (widget+, footer)>
+  <!ELEMENT widget (caption?, data)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT data (#PCDATA|value|raw)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT raw ANY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST widget id ID #REQUIRED class NMTOKENS #IMPLIED enabled (yes|no) "yes">
+  <!ATTLIST value unit NMTOKEN #IMPLIED>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<dashboard>
+  <widget id="cpu" class="metric realtime" enabled="no">
+    <caption>CPU &left;avg&right;</caption>
+    <data><value unit="percent">87</value><![CDATA[<opaque>]]><raw><x/></raw></data>
+  </widget>
+  <widget id="disk">
+    <data>αβγ<value unit="GiB">12.5</value>tail</data>
+  </widget>
+  <footer><!-- preserved -->done</footer>
+</dashboard>
+```
+
+```xml
+<?xml version="1.1" standalone="yes"?>
+<!DOCTYPE π:packet [
+  <!ELEMENT π:packet (π:header, π:payload, π:payload?)>
+  <!ELEMENT π:header (#PCDATA)>
+  <!ELEMENT π:payload (π:part+)>
+  <!ELEMENT π:part (#PCDATA)>
+  <!ATTLIST π:packet xmlns:π CDATA #FIXED "urn:greek:packet" xml:space (default|preserve) "preserve">
+  <!ATTLIST π:part index NMTOKEN #REQUIRED>
+]>
+<π:packet xmlns:π="urn:greek:packet" xml:space="preserve">
+  <π:header>line one&#x85;line two</π:header>
+  <π:payload>
+    <π:part index="01"><![CDATA[<not-an-element/>]]></π:part>
+    <π:part index="02">text &amp; &#x1F600;</π:part>
+  </π:payload>
+</π:packet>
+```
+
+```xml
+<!DOCTYPE package [
+  <!ENTITY % common '
+    <!ELEMENT package (manifest, content)>
+    <!ELEMENT manifest (file*)>
+    <!ELEMENT file EMPTY>
+    <!ATTLIST file path CDATA #REQUIRED kind (text|binary) "text">
+    <!ELEMENT content (section|separator)*>
+    <!ELEMENT section (#PCDATA|line)*>
+    <!ELEMENT line EMPTY>
+    <!ELEMENT separator EMPTY>
+  '>
+  %common;
+  <!ENTITY % optional "INCLUDE">
+  <![%optional;[
+    <!ATTLIST package revision CDATA #IMPLIED>
+    <!ELEMENT note (#PCDATA)>
+  ]]>
+  <!NOTATION gif SYSTEM "image/gif">
+  <!ENTITY logo SYSTEM "logo.gif" NDATA gif>
+]>
+<package revision="r&amp;4">
+  <manifest>
+    <file path="readme.txt"/>
+    <file path="image.gif" kind="binary"/>
+  </manifest>
+  <content>
+    <section>first<line/>second<line/></section>
+    <separator/>
+    <section><![CDATA[a<b>c]]></section>
+  </content>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell*)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST matrix xmlns:m CDATA #IMPLIED dimensions CDATA #REQUIRED>
+  <!ATTLIST row index NMTOKEN #REQUIRED>
+  <!ATTLIST cell colspan NMTOKEN "1" rowspan NMTOKEN "1">
+  <!ENTITY quote "&quot;">
+]>
+<matrix xmlns:m="urn:matrix" dimensions="2x3">
+  <row index="0"><cell colspan="2">A</cell><cell rowspan="2">B</cell></row>
+  <row index="1"><cell>&quote;C&quote;</cell><cell><![CDATA[]]></cell></row>
+  <row index="2"><cell colspan="0">D</cell></row>
+</matrix>
+```

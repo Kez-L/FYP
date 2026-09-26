@@ -1,0 +1,98 @@
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common "<!ELEMENT catalog (item+)><!ELEMENT item (name,price)><!ATTLIST item sku ID #REQUIRED>">
+  %common;
+  <!ENTITY % switch "INCLUDE">
+  <![%switch;[
+    <!ELEMENT name (#PCDATA)>
+    <!ELEMENT price (#PCDATA)>
+  ]]>
+  <!NOTATION csv SYSTEM "text/csv">
+]>
+<catalog>
+  <item sku="p001">
+    <name>Widget &amp; Sample</name>
+    <price>19.95</price>
+  </item>
+  <item sku="p002">
+    <name>Second Item</name>
+    <price>0</price>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<site xmlns="urn:example:site" xmlns:x="urn:example:extra" xml:lang="fr">
+  <?build stage="fuzz"?>
+  <!-- comment with -- unusual? -->
+  <x:header x:role="navigation" xml:space="preserve">
+    <![CDATA[raw <header> data & symbols]]>
+  </x:header>
+  <section id="α" data-empty="">
+    <title>Résumé</title>
+    <p>Text before <br/> text after <x:emphasis>accented</x:emphasis>.</p>
+    <?instruction value='one"two'?>
+  </section>
+</site>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE loop [
+  <!ELEMENT loop (#PCDATA|node)*>
+  <!ELEMENT node (#PCDATA)>
+  <!ENTITY first "&second;">
+  <!ENTITY second "&first;">
+]>
+<loop>
+  <node>prefix</node>
+  &first;
+  <node>suffix</node>
+</loop>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!NOTATION bin PUBLIC "-//EXAMPLE//NOTATION Binary//EN" "application/octet-stream">
+  <!ENTITY logo SYSTEM "assets/logo.gif" NDATA gif>
+  <!ENTITY payload SYSTEM "payload.bin" NDATA bin>
+  <!ELEMENT package (manifest,asset*)>
+  <!ELEMENT manifest EMPTY>
+  <!ELEMENT asset EMPTY>
+  <!ATTLIST package kind NOTATION (gif|bin) "gif">
+  <!ATTLIST manifest main ENTITY #IMPLIED links IDREFS #IMPLIED>
+  <!ATTLIST asset id ID #REQUIRED file ENTITY #REQUIRED>
+]>
+<package kind="gif">
+  <manifest main="logo" links="logo data"/>
+  <asset id="logo" file="logo"/>
+  <asset id="data" file="payload"/>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA|value)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST matrix rows NMTOKEN #IMPLIED>
+  <!ATTLIST row index NMTOKEN #REQUIRED>
+  <!ATTLIST cell state (on|off|mixed) "mixed">
+]>
+<matrix rows="2">
+  <row index="01">
+    <cell state="on"><value>1</value></cell>
+    <cell state="off"><![CDATA[2 < 3 & 4]]></cell>
+  </row>
+  <row index="02">
+    <cell><value>NaN</value><?cell-note?></cell>
+    <cell state="mixed">tail</cell>
+  </row>
+</matrix>
+```

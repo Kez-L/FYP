@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, trailer)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header
+            version CDATA #REQUIRED
+            timestamp CDATA #IMPLIED>
+  <!ELEMENT payload ANY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST envelope xmlns:meta CDATA #IMPLIED>
+  <!ENTITY chunk "<part id='embedded'>A&amp;B</part>">
+]>
+<envelope xmlns="urn:outer:envelope" xmlns:meta="urn:metadata">
+  <header version="2.7" timestamp="2026-09-24T12:34:56Z"/>
+  <payload>
+    <meta:record meta:type="delta">
+      <![CDATA[<not-an-element>&still-literal;</not-an-element>]]>
+      &chunk;
+    </meta:record>
+  </payload>
+  <trailer>checksum=&quot;unknown&quot;</trailer>
+</envelope>

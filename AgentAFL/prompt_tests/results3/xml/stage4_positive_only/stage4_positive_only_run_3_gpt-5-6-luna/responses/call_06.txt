@@ -1,0 +1,181 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (metadata, entry+)>
+  <!ELEMENT metadata (title, generated, tags)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT entry (name, summary, price, availability)>
+  <!ATTLIST entry sku ID #REQUIRED category NMTOKEN #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT availability (#PCDATA)>
+]>
+<catalog>
+  <metadata>
+    <title>Seasonal &amp; Specialty Items</title>
+    <generated>2026-09-24T12:34:56Z</generated>
+    <tags>
+      <tag>limited</tag>
+      <tag>fragile</tag>
+      <tag>café</tag>
+    </tags>
+  </metadata>
+  <entry sku="item-001" category="beverage">
+    <name>Jasmine Tea</name>
+    <summary><![CDATA[Loose leaf tea with <notes> of citrus & cedar.]]></summary>
+    <price currency="EUR">12.50</price>
+    <availability>in-stock</availability>
+  </entry>
+  <entry sku="item-002" category="instrument">
+    <name>Glass Harmonica</name>
+    <summary>Handle with care: <emphasis>very fragile</emphasis>.</summary>
+    <price currency="USD">240.00</price>
+    <availability>back-order</availability>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<map xmlns="urn:example:map" xmlns:g="urn:geo:point" version="7">
+  <!-- Mixed content and namespace-qualified attributes -->
+  <layer id="terrain" visible="true">
+    <label xml:lang="en">Elevation &lt; 1000m</label>
+    <g:point g:lat="51.0504" g:lon="-1.3470">
+      <g:altitude unit="m">132.75</g:altitude>
+    </g:point>
+    <style>
+      <color>#7f9f4a</color>
+      <opacity>0.875</opacity>
+      <dash sequence="5,2,1,2"/>
+    </style>
+  </layer>
+  <layer id="water" visible="false">
+    <label xml:lang="fr">Rivières &amp; lacs</label>
+    <g:point g:lat="48.8566" g:lon="2.3522"/>
+    <style>
+      <color>#0044ff</color>
+      <opacity>0.125</opacity>
+    </style>
+  </layer>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY product "parser">
+  <!ENTITY stamp "2026-09-24">
+  <!ENTITY nested "&lt;escaped&gt; &amp; text">
+  <!ELEMENT report (header, section*, conclusion?)>
+  <!ELEMENT header (subject, author, date)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT date (#PCDATA)>
+  <!ELEMENT section (heading, paragraph+, list?)>
+  <!ATTLIST section level NMTOKEN #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|code|link|br)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href URI #IMPLIED>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT list (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT conclusion (#PCDATA)>
+]>
+<report>
+  <header>
+    <subject>Testing &product; behavior</subject>
+    <author>QA &lt;team&gt;</author>
+    <date>&stamp;</date>
+  </header>
+  <section level="1">
+    <heading>Input handling</heading>
+    <paragraph>Literal entity expansion: &nested; <br/> and inline <code>--noout</code>.</paragraph>
+    <paragraph>See <link href="https://example.invalid/a?b=1&amp;c=2">reference</link>.</paragraph>
+    <list>
+      <item>empty values</item>
+      <item>unicode: Ελληνικά / 日本語 / العربية</item>
+      <item>quotes: &quot;single&quot; and &apos;double&apos;</item>
+    </list>
+  </section>
+  <section level="2">
+    <heading>Boundary notes</heading>
+    <paragraph><![CDATA[Characters such as ]]> and & remain inside this section.</paragraph>
+  </section>
+  <conclusion>End of report.</conclusion>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<ledger>
+  <account number="0000000000000000000000000000000001" active="yes">
+    <owner>
+      <first>Zoë</first>
+      <last>O'Rourke</last>
+      <contact kind="email">zoe@example.invalid</contact>
+      <contact kind="phone">+00 (0) 123 456 789</contact>
+    </owner>
+    <balance currency="¤">0.00000000000000000001</balance>
+    <transactions>
+      <transaction timestamp="1970-01-01T00:00:00+00:00" type="credit">
+        <amount>999999999999999999999999999999999999</amount>
+        <memo>initial &amp; reserved</memo>
+      </transaction>
+      <transaction timestamp="2038-01-19T03:14:07Z" type="debit">
+        <amount>-0.00000000000000000000</amount>
+        <memo/>
+      </transaction>
+      <transaction timestamp="9999-12-31T23:59:59.999999Z" type="adjustment">
+        <amount>NaN</amount>
+        <memo><![CDATA[manual review: <pending>]]></memo>
+      </transaction>
+    </transactions>
+  </account>
+  <account number="A-B-C" active="no">
+    <owner>
+      <first>Δ</first>
+      <last>𐐷</last>
+    </owner>
+    <balance currency="USD">-42</balance>
+    <transactions/>
+  </account>
+</ledger>
+```
+
+```xml
+<?xml version="1.0"?>
+<?processing instruction-data?>
+<archive xmlns:xlink="http://www.w3.org/1999/xlink">
+  <folder name="root">
+    <folder name="empty"/>
+    <folder name="deep">
+      <folder name="level-1">
+        <folder name="level-2">
+          <folder name="level-3">
+            <file path="a/b/c.txt" size="0" checksum=""/>
+            <file path="././strange name" size="18446744073709551615">
+              <content encoding="base64">AAECAwQFBgcICQ==</content>
+            </file>
+          </folder>
+        </folder>
+      </folder>
+    </folder>
+  </folder>
+  <manifest created="2026-09-24">
+    <entry href="file:///tmp/a%20b" xlink:href="urn:xlink:test" role="data"/>
+    <entry href="#fragment" xlink:show="new" xlink:actuate="onRequest"/>
+    <entry href="http://[invalid.example]/path?x=%00"/>
+  </manifest>
+  <notes>
+    Before <mark>the end</mark>, there are
+    multiple lines, tabs	, and trailing spaces.
+  </notes>
+</archive>
+```

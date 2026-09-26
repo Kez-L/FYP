@@ -1,0 +1,169 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION png SYSTEM "image/png">
+  <!NOTATION svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY vector SYSTEM "vector.svg" NDATA svg>
+  <!ENTITY title "Inventory &amp; Archive">
+  <!ELEMENT catalog (entry+, footer?)>
+  <!ELEMENT entry (name, asset*, note?)>
+  <!ATTLIST entry key ID #REQUIRED state (new|old|missing) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT asset EMPTY>
+  <!ATTLIST asset href ENTITY #REQUIRED format NOTATION (png|svg) #IMPLIED>
+  <!ELEMENT note (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<catalog>
+  <entry key="e1" state="old">
+    <name>&title;</name>
+    <asset href="logo" format="png"/>
+    <note>retained <emph>for review</emph></note>
+  </entry>
+  <entry key="e2">
+    <name>Vector sample</name>
+    <asset href="vector" format="svg"/>
+  </entry>
+  <footer>End of catalog</footer>
+</catalog>
+```
+
+```xml
+<?xml version="1.1" standalone="no"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (header, record*, trailer)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT record (key, payload, flag?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST record number NMTOKEN #REQUIRED status CDATA "queued">
+  <!ATTLIST flag value (yes|no) "yes">
+  <!ENTITY tab "&#x9;">
+  <!ENTITY newline "&#xA;">
+  <!ENTITY controls "&#x85;&#x2028;">
+]>
+<stream>
+  <header/>
+  <record number="0007" status="ready">
+    <key>A&amp;B</key>
+    <payload><![CDATA[first section ]]> <part>middle</part> <![CDATA[ last section]]></payload>
+    <flag value="no"/>
+  </record>
+  <record number="0008">
+    <key>next</key>
+    <payload>one&tab;two&newline;three&controls;</payload>
+  </record>
+  <trailer xml:space="preserve">  finish  </trailer>
+</stream>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ENTITY open "<vertex>">
+  <!ENTITY close "</vertex>">
+  <!ENTITY label "generated &amp; node">
+  <!ELEMENT graph ANY>
+  <!ELEMENT vertex (label|edge|vertex)*>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST vertex uid ID #REQUIRED refs IDREFS #IMPLIED>
+  <!ATTLIST edge to IDREF #REQUIRED weight NMTOKEN "1">
+  <!ENTITY fragment "&open;&label;&close;">
+]>
+<graph>
+  <vertex uid="root" refs="v1 v2">
+    <label>root node</label>
+    <edge to="v1" weight="05"/>
+    <edge to="v2"/>
+    <vertex uid="v1">
+      <label>&fragment;</label>
+    </vertex>
+    <vertex uid="v2" refs="root">
+      <label>leaf</label>
+      <edge to="root" weight="0x10"/>
+    </vertex>
+  </vertex>
+</graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta, body)>
+  <!ELEMENT meta (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT body (section+)>
+  <!ELEMENT section (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (#PCDATA|link|br)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST section xml:lang NMTOKEN #IMPLIED level (low|mid|high) #REQUIRED>
+  <!ATTLIST link target CDATA #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY ampword "A&amp;B">
+]>
+<envelope>
+  <meta>
+    <tag>alpha</tag>
+    <tag>beta</tag>
+    <tag>&ampword;</tag>
+  </meta>
+  <body>
+    <section xml:lang="en-US" level="high">
+      <heading>Overview</heading>
+      <item>first&nbsp;item<br/>continued</item>
+      <item>visit <link target="urn:test:one">the reference</link> now</item>
+    </section>
+    <section xml:lang="x-private" level="low">
+      <heading><![CDATA[Raw ]]> heading</heading>
+      <item>mixed <br/> text &amp; symbols</item>
+    </section>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ENTITY % feature '
+    <!ELEMENT metric (name, value, annotation?)>
+    <!ELEMENT name (#PCDATA)>
+    <!ELEMENT value (#PCDATA)>
+    <!ELEMENT annotation (#PCDATA)>
+    <!ATTLIST metric kind CDATA #IMPLIED>
+  '>
+  %feature;
+  <!ENTITY % optionalSection "INCLUDE">
+  <![%optionalSection;[
+    <!ELEMENT diagnostics (warning|error)*>
+    <!ELEMENT warning (#PCDATA)>
+    <!ELEMENT error (#PCDATA)>
+  ]]>
+  <!ELEMENT dashboard (summary, metric*, diagnostics)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ENTITY note "state: &quot;nominal&quot;">
+]>
+<dashboard>
+  <summary>&note;</summary>
+  <metric kind="counter">
+    <name>requests</name>
+    <value>42</value>
+    <annotation>steady</annotation>
+  </metric>
+  <metric kind="ratio">
+    <name>success</name>
+    <value>99.5%</value>
+  </metric>
+  <diagnostics>
+    <warning>threshold &lt; configured minimum</warning>
+    <error><![CDATA[diagnostic payload: ]]> &amp; delayed</error>
+  </diagnostics>
+</dashboard>
+```

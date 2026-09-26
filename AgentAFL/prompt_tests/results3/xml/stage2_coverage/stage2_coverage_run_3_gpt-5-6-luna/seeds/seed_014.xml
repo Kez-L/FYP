@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta, body)>
+  <!ELEMENT meta (created, creator?)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT creator (#PCDATA)>
+  <!ELEMENT body (command|data|fault)>
+  <!ELEMENT command EMPTY>
+  <!ATTLIST command opcode CDATA #REQUIRED args CDATA #IMPLIED>
+  <!ELEMENT data (value*)>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST value name CDATA #REQUIRED type (string|number|boolean) "string">
+  <!ELEMENT fault (code, message)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT message (#PCDATA)>
+  <!ENTITY nl "&#10;">
+]>
+<envelope xmlns="urn:envelope" xmlns:p="urn:payload">
+  <meta><created>2026-09-24T00:00:00Z</created><creator p:id="agent-7">tester</creator></meta>
+  <body>
+    <command opcode="merge" args="x&amp;y"/>
+    <data>
+      <value name="a" type="number">-0</value>
+      <value name="b" type="boolean">true&nl;false</value>
+      <value name="c">a&lt;b&gt;c</value>
+    </data>
+  </body>
+  <?audit level="verbose"?>
+</envelope>

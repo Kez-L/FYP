@@ -1,0 +1,195 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE workspace [
+  <!ELEMENT workspace (folder+, link*)>
+  <!ELEMENT folder (name, folder*, document*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT document (title, content, tag*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT content (#PCDATA|section|break)*>
+  <!ELEMENT section (#PCDATA|section|break)*>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST folder id ID #REQUIRED>
+  <!ATTLIST document id ID #REQUIRED status (draft|published|deleted) "draft">
+  <!ATTLIST link from IDREF #REQUIRED to IDREF #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+]>
+<workspace>
+  <folder id="root">
+    <name>Archive &amp; Research</name>
+    <folder id="papers">
+      <name>Études</name>
+      <document id="d1" status="published">
+        <title>Parser notes</title>
+        <content>First&nbsp;paragraph<section>Nested <break/>section</section>last.</content>
+        <tag>xml</tag>
+        <tag>fuzzing</tag>
+      </document>
+    </folder>
+  </folder>
+  <link from="d1" to="root"/>
+</workspace>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (sender, recipients, subject, body, attachment*)>
+  <!ELEMENT sender EMPTY>
+  <!ELEMENT recipients (recipient+)>
+  <!ELEMENT recipient EMPTY>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|list|item|code)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST sender address CDATA #REQUIRED>
+  <!ATTLIST recipient address CDATA #REQUIRED kind (to|cc|bcc) "to">
+  <!ATTLIST attachment filename CDATA #REQUIRED content-type CDATA #IMPLIED>
+  <!ENTITY signature "— sent from the &amp; test system —">
+]>
+<message>
+  <sender address="ops@example.invalid"/>
+  <recipients>
+    <recipient address="a@example.invalid"/>
+    <recipient address="b@example.invalid" kind="cc"/>
+  </recipients>
+  <subject>Build result: &lt;warning&gt;</subject>
+  <body>
+    The parser reported:
+    <quote>an unexpected <code>token</code></quote>
+    <list>
+      <item>preserve whitespace</item>
+      <item>decode &amp; escape sequences</item>
+    </list>
+    &signature;
+  </body>
+  <attachment filename="trace.xml" content-type="application/xml"/>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (metadata, layers)>
+  <!ELEMENT metadata (property*)>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST property name CDATA #REQUIRED value CDATA #REQUIRED>
+  <!ELEMENT layers (layer+)>
+  <!ELEMENT layer (bounds, feature*)>
+  <!ELEMENT bounds EMPTY>
+  <!ELEMENT feature (point|line|polygon)>
+  <!ELEMENT point EMPTY>
+  <!ELEMENT line (point+)>
+  <!ELEMENT polygon (ring+)>
+  <!ELEMENT ring (point+)>
+  <!ATTLIST layer name CDATA #REQUIRED visible (true|false) "true">
+  <!ATTLIST feature id ID #REQUIRED type (landmark|route|area) #REQUIRED>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ATTLIST bounds minx CDATA #REQUIRED miny CDATA #REQUIRED maxx CDATA #REQUIRED maxy CDATA #REQUIRED>
+]>
+<map xmlns="urn:cartography:map" xmlns:g="urn:cartography:geometry">
+  <metadata>
+    <property name="projection" value="local-grid"/>
+    <property name="units" value="m"/>
+  </metadata>
+  <layers>
+    <layer name="places" visible="false">
+      <bounds minx="-10.5" miny="2" maxx="90" maxy="101.25"/>
+      <feature id="f-1" type="landmark">
+        <point x="12.0" y="44.5"/>
+      </feature>
+    </layer>
+    <layer name="routes">
+      <bounds minx="0" miny="0" maxx="8" maxy="8"/>
+      <feature id="f-2" type="route">
+        <line>
+          <point x="1" y="1"/>
+          <point x="4" y="7"/>
+          <point x="8" y="3"/>
+        </line>
+      </feature>
+    </layer>
+  </layers>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (defaults, profiles)>
+  <!ELEMENT defaults (setting+)>
+  <!ELEMENT profiles (profile+)>
+  <!ELEMENT profile (extends?, setting*, group*)>
+  <!ELEMENT extends EMPTY>
+  <!ELEMENT setting (#PCDATA)>
+  <!ELEMENT group (setting*)>
+  <!ATTLIST setting key NMTOKEN #REQUIRED type (string|integer|boolean|path) "string">
+  <!ATTLIST profile name ID #REQUIRED active (yes|no) "no">
+  <!ATTLIST extends profile IDREF #REQUIRED>
+  <!ATTLIST group name NMTOKEN #REQUIRED>
+  <!ENTITY root "/var/lib/app">
+  <!ENTITY nl "&#10;">
+]>
+<configuration xml:space="preserve">
+  <defaults>
+    <setting key="retries" type="integer">3</setting>
+    <setting key="enabled" type="boolean">true</setting>
+    <setting key="directory" type="path">&root;/cache</setting>
+  </defaults>
+  <profiles>
+    <profile name="base" active="no">
+      <group name="network">
+        <setting key="endpoint">https://host.invalid/api?x=1&amp;y=2</setting>
+        <setting key="timeout" type="integer">15</setting>
+      </group>
+    </profile>
+    <profile name="staging" active="yes">
+      <extends profile="base"/>
+      <setting key="directory" type="path">&root;/staging</setting>
+      <group name="network">
+        <setting key="verify_tls" type="boolean">false</setting>
+      </group>
+    </profile>
+  </profiles>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?pipeline mode="ตรวจสอบ"?>
+<!DOCTYPE transcript [
+  <!ELEMENT transcript (turn+)>
+  <!ELEMENT turn (speaker, utterance, annotation*)>
+  <!ELEMENT speaker EMPTY>
+  <!ELEMENT utterance (#PCDATA|pause|foreign|redacted)*>
+  <!ELEMENT pause EMPTY>
+  <!ELEMENT foreign (#PCDATA)>
+  <!ELEMENT redacted (#PCDATA)>
+  <!ELEMENT annotation (#PCDATA)>
+  <!ATTLIST turn number CDATA #REQUIRED>
+  <!ATTLIST speaker role (human|agent|system) #REQUIRED name CDATA #IMPLIED>
+  <!ATTLIST pause duration CDATA #REQUIRED>
+  <!ATTLIST foreign lang NMTOKEN #REQUIRED>
+  <!ENTITY mark "&#x2026;">
+]>
+<transcript xml:lang="en">
+  <turn number="1">
+    <speaker role="human" name="Zoë"/>
+    <utterance>Can you parse this <foreign lang="ja">XML</foreign> safely<pause duration="0.25s"/>?</utterance>
+    <annotation>Contains symbols: &lt; &gt; &amp; &quot; and &apos;.</annotation>
+  </turn>
+  <turn number="2">
+    <speaker role="agent"/>
+    <utterance>Yes<mark;/>—the token was <redacted>[removed]</redacted> from the input.</utterance>
+  </turn>
+  <turn number="3">
+    <speaker role="system" name="Δ"/>
+    <utterance><![CDATA[raw characters: <node attr="x"> & no expansion]]></utterance>
+  </turn>
+</transcript>
+```

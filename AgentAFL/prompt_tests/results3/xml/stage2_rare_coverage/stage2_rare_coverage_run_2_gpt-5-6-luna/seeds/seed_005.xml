@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common "<!ELEMENT catalog (section+)><!ELEMENT section (title, item*)><!ELEMENT title (#PCDATA)><!ELEMENT item (#PCDATA)>">
+  %common;
+  <!ENTITY amp "&#38;">
+  <!ENTITY left "&#60;">
+  <!ENTITY right "&#62;">
+  <!ENTITY greeting "North &amp; South">
+  <!ATTLIST section code ID #REQUIRED>
+  <!ATTLIST item ref IDREF #IMPLIED kind (plain|marked|quoted) "plain">
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "payload.bin" NDATA binary>
+]>
+<catalog>
+  <section code="s1">
+    <title>&greeting;</title>
+    <item kind="marked">A &amp; B &left; C &right;</item>
+    <item ref="s1" kind="quoted">before &#x2028; after</item>
+  </section>
+  <section code="s2">
+    <title><![CDATA[Literal ]]> bracket ]]></title>
+    <item>one<!--embedded--><?note value?>two</item>
+  </section>
+</catalog>

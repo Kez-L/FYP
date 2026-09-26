@@ -1,0 +1,82 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (item*)>
+  <!ATTLIST section name ID #REQUIRED>
+  <!ELEMENT item (#PCDATA|meta|value)*>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta key CDATA #IMPLIED>
+  <!ELEMENT value (#PCDATA)>
+  <!ENTITY label "inventory">
+]>
+<catalog>
+  <section name="s1">
+    <item>alpha <![CDATA[<escaped>&raw</escaped>]]><meta key="x"/><value>&label;</value></item>
+    <item><value>beta</value></item>
+  </section>
+  <section name="s2"/>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<r:root xmlns:r="urn:root" xmlns="urn:default" xmlns:q="urn:q">
+  <branch xmlns:r="">
+    <leaf q:id="42" data="&quot;&apos;&amp;&lt;&gt;">text</leaf>
+  </branch>
+  <q:branch xmlns:q="urn:other">
+    <q:leaf><![CDATA[]]></q:leaf>
+  </q:branch>
+</r:root>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ELEMENT report (header, body, footer?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT body (entry|note|entry)*>
+  <!ELEMENT entry (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY open "<entry>generated">
+  <!ENTITY close "</entry>">
+]>
+<report>
+  <header>daily</header>
+  <body>
+    &open; one &close;
+    <note><![CDATA[&open; is not expanded here]]></note>
+    <entry>two &amp; three</entry>
+  </body>
+  <footer/>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <mixed>before<one a="1"/>middle<two><![CDATA[x]]></two>after</mixed>
+  <empty/>
+  <attributes first="&apos;quoted&apos;" second="&#x20; &#32;" third="line
+break"/>
+  <!-- comment with --? -->
+  <?processing instruction?>
+</document>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ENTITY % extra "<!ELEMENT injected (#PCDATA)>">
+  %extra;
+  <!ENTITY external SYSTEM "missing-resource.ent">
+]>
+<root>
+  <injected>inside</injected>
+  <node><![CDATA[
+    <nested attr="&amp;">not markup</nested>
+  ]]></node>
+  &external;
+</root>
+```

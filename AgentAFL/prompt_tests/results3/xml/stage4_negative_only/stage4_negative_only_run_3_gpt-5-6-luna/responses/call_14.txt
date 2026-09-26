@@ -1,0 +1,133 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="view.xsl"?>
+<r:workspace xmlns:r="urn:example:workspace" xmlns:m="urn:example:meta" xml:base="urn:workspace/">
+  <!-- Mixed text and nested markup -->
+  <r:summary m:lang="en">A <r:emphasis level="strong">small</r:emphasis> workspace.</r:summary>
+  <r:tree>
+    <r:branch id="root">
+      <r:leaf/>
+      <r:branch id="nested">
+        <r:leaf m:kind="unicode">π &amp; λ</r:leaf>
+      </r:branch>
+    </r:branch>
+  </r:tree>
+  <r:metadata m:created="2026-09-24T12:34:56Z">
+    <m:tag>alpha</m:tag>
+    <m:tag>βeta</m:tag>
+  </r:metadata>
+</r:workspace>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, body, footer)>
+  <!ELEMENT header (title, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT body (paragraph+)>
+  <!ELEMENT paragraph (#PCDATA|link|break)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST link target CDATA #REQUIRED>
+  <!ENTITY company "Example &amp; Sons">
+]>
+<report>
+  <header>
+    <title>Quarterly &company; Report</title>
+    <note><![CDATA[Prepared for internal review]]></note>
+  </header>
+  <body>
+    <paragraph>First line<break/>Second line with <link target="urn:ref:42">a reference</link>.</paragraph>
+    <paragraph><![CDATA[Literal <tags> and ]]> characters]]></paragraph>
+  </body>
+  <footer>End of document.</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<measurements xmlns="urn:example:telemetry" xmlns:x="urn:example:ext">
+  <device x:serial="SN-α-001" status="active">
+    <location>
+      <latitude units="degree">51.5074</latitude>
+      <longitude units="degree">-0.1278</longitude>
+      <altitude units="m">11</altitude>
+    </location>
+    <samples>
+      <sample at="2026-09-24T00:00:00Z">
+        <value channel="temperature" units="°C">18.25</value>
+        <value channel="pressure" units="kPa">101.325</value>
+      </sample>
+      <sample at="2026-09-24T00:01:00Z">
+        <value channel="temperature" units="°C">18.31</value>
+        <value channel="pressure" units="kPa">101.301</value>
+      </sample>
+    </samples>
+  </device>
+</measurements>
+```
+
+```xml
+<?xml version="1.0"?>
+<configuration xmlns="urn:example:config">
+  <defaults>
+    <option name="retries">3</option>
+    <option name="timeout">PT5S</option>
+  </defaults>
+  <profiles>
+    <profile name="minimal">
+      <include ref="defaults"/>
+      <features>
+        <feature enabled="yes">logging</feature>
+        <feature enabled="no">metrics</feature>
+      </features>
+    </profile>
+    <profile name="extended">
+      <include ref="defaults"/>
+      <features>
+        <feature enabled="yes">logging</feature>
+        <feature enabled="yes">metrics</feature>
+        <feature enabled="yes">tracing</feature>
+      </features>
+      <overrides>
+        <option name="timeout">PT30S</option>
+      </overrides>
+    </profile>
+  </profiles>
+  <mapping>
+    <entry key="&quot;quoted&quot;" value="A&amp;B"/>
+    <entry key="path" value="/var/lib/example"/>
+  </mapping>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<message xmlns="urn:example:message" xmlns:sec="urn:example:security">
+  <envelope>
+    <routing>
+      <source>node://東京/ingress</source>
+      <destination>node://москва/archive</destination>
+      <hop count="2"/>
+    </routing>
+    <payload format="text/xml">
+      <event type="update" id="evt-0007">
+        <timestamp>2026-09-24T23:59:59.999Z</timestamp>
+        <data>
+          <![CDATA[
+            <embedded>
+              <value>not parsed as markup here</value>
+            </embedded>
+          ]]>
+        </data>
+      </event>
+    </payload>
+  </envelope>
+  <sec:signature algorithm="none">
+    <sec: digest>placeholder</sec: digest>
+  </sec:signature>
+</message>
+```

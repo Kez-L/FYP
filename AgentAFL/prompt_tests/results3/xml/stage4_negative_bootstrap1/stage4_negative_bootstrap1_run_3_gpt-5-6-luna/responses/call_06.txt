@@ -1,0 +1,184 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (book+,note?)>
+  <!ELEMENT book (title,author+,description)>
+  <!ATTLIST book
+    isbn ID #REQUIRED
+    category (fiction|reference|poetry) "fiction"
+    available (yes|no) "yes">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emphasis|quote)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY copyright "© 2026 Example Press">
+]>
+<catalog>
+  <book isbn="bk-001" category="reference">
+    <title>Parsing &amp; Representation</title>
+    <author>Ada Lovelace</author>
+    <author>Grace Hopper</author>
+    <description>
+      A guide to <emphasis>structured data</emphasis>
+      with a <quote>careful and curious</quote> approach.
+    </description>
+  </book>
+  <book isbn="bk-002" available="no">
+    <title>Symbols &amp; Stories</title>
+    <author>H. P. Example</author>
+    <description><![CDATA[Literal markup such as <tag> stays untouched.]]></description>
+  </book>
+  <note>&copyright;</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<envelope xmlns="urn:example:message"
+          xmlns:m="urn:example:meta"
+          xmlns:geo="urn:example:geo"
+          xml:lang="fr">
+  <header>
+    <m:request-id m:format="uuid">7f4a2c10-91de-4a7d-8ec2-77a6d1e2b330</m:request-id>
+    <m:created xml:space="preserve">2026-09-24T12:34:56Z</m:created>
+    <m:flags>
+      <m:flag enabled="true">urgent</m:flag>
+      <m:flag enabled="false">archived</m:flag>
+    </m:flags>
+  </header>
+  <body>
+    <message priority="high">
+      Bonjour,
+      <paragraph>Voici un texte avec des caractères accentués : été, façade, cœur.</paragraph>
+      <paragraph>Les données suivent dans une section littérale.</paragraph>
+      <payload><![CDATA[
+        {"kind":"sample","values":[null,true,3.14159],"text":"<not-an-element>"}
+      ]]></payload>
+    </message>
+    <geo:location geo:lat="48.8566" geo:lon="2.3522">
+      <geo:name>Paris</geo:name>
+    </geo:location>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<drawing xmlns="http://www.w3.org/2000/svg"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         viewBox="0 0 320 180">
+  <title>Layered composition</title>
+  <desc>A compact drawing containing groups, paths, and text.</desc>
+  <defs>
+    <linearGradient id="shade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#112233"/>
+      <stop offset="50%" stop-color="rgb(120,80,40)"/>
+      <stop offset="100%" stop-color="#ddeeff" stop-opacity="0.25"/>
+    </linearGradient>
+    <clipPath id="window">
+      <rect x="12" y="18" width="296" height="144" rx="9"/>
+    </clipPath>
+  </defs>
+  <g id="background" clip-path="url(#window)" opacity="0.92">
+    <rect width="320" height="180" fill="url(#shade)"/>
+    <circle cx="260" cy="42" r="24" fill="#fff" fill-opacity=".7"/>
+    <path d="M0 135 C40 95,80 168,120 126 S205 106,320 145"
+          fill="none" stroke="#123456" stroke-width="3"/>
+  </g>
+  <g id="labels" font-family="sans-serif">
+    <text x="24" y="48" font-size="19">A &amp; B</text>
+    <text x="24" y="75" rotate="3 6 9">vector <tspan dx="4" dy="8">text</tspan></text>
+  </g>
+  <use xlink:href="#window" x="0" y="0" fill="none" stroke="#000"/>
+</drawing>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE records [
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (key, value, tags, history)>
+  <!ATTLIST record id ID #REQUIRED state CDATA "new">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT history (event+)>
+  <!ELEMENT event (#PCDATA)>
+]>
+<records>
+  <record id="r17" state="active">
+    <key>temperature</key>
+    <value>18<linebreak/>.5 °C</value>
+    <tags>
+      <tag>sensor</tag>
+      <tag>outdoor</tag>
+      <tag priority="ignored">calibrated</tag>
+    </tags>
+    <history>
+      <event>installed</event>
+      <event>sampled at 06:00</event>
+      <event><![CDATA[maintenance <pending> & review]]></event>
+    </history>
+  </record>
+  <record id="r18">
+    <key>pressure</key>
+    <value>1013<linebreak/>.25 hPa</value>
+    <tags/>
+    <history>
+      <event>created</event>
+    </history>
+  </record>
+  <record id="r19" state="retired">
+    <key>comment</key>
+    <value>Use &quot;stable&quot; values only.</value>
+    <tags><tag>text</tag></tags>
+    <history>
+      <event>opened</event>
+      <event>closed</event>
+    </history>
+  </record>
+</records>
+```
+
+```xml
+<?xml version="1.0"?>
+<workspace xmlns:xi="http://www.w3.org/2001/XInclude"
+           xmlns:cfg="urn:workspace:config"
+           xml:base="file:///var/tmp/workspace/">
+  <!-- Deliberately mixed content and namespace transitions -->
+  <project name="delta" xml:lang="en">
+    <summary>Build notes: <strong>ready</strong> for review.</summary>
+    <cfg:options>
+      <cfg:option name="jobs" value="4"/>
+      <cfg:option name="cache" value="enabled"/>
+      <cfg:paths>
+        <cfg:path kind="source">src/main</cfg:path>
+        <cfg:path kind="test">tests/unit</cfg:path>
+      </cfg:paths>
+    </cfg:options>
+    <files>
+      <file path="README.md" checksum="00000000">
+        <metadata size="128" mode="0644"/>
+      </file>
+      <file path="assets/data.bin" checksum="deadbeef">
+        <metadata size="0" mode="0600"/>
+      </file>
+      <file path="generated.xml">
+        <xi:include href="fragments/generated.xml" parse="xml">
+          <xi:fallback>
+            <placeholder reason="missing">No generated fragment</placeholder>
+          </xi:fallback>
+        </xi:include>
+      </file>
+    </files>
+    <commands>
+      <command shell="sh"><![CDATA[printf '%s\n' "hello <world>"]]></command>
+      <command shell="python">print("é")</command>
+    </commands>
+  </project>
+</workspace>
+```

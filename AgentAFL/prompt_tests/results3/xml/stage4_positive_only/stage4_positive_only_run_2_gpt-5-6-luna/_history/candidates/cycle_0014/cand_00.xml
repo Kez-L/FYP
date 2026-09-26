@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (metadata, panel+)>
+  <!ELEMENT metadata (title, owner, updated)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT updated (#PCDATA)>
+  <!ELEMENT panel (label, widget+)>
+  <!ATTLIST panel name ID #REQUIRED visible (true|false) "true">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT widget (caption, value, note?)>
+  <!ATTLIST widget kind (gauge|sparkline|counter) #REQUIRED>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT note (#PCDATA|strong|code)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ENTITY product "Telemetry Console">
+]>
+<?build revision="17"?>
+<dashboard>
+  <metadata>
+    <title>&product;</title>
+    <owner>Operations</owner>
+    <updated>2026-09-24T08:30:00Z</updated>
+  </metadata>
+  <panel name="latency">
+    <label>Request latency</label>
+    <widget kind="gauge">
+      <caption>p95</caption>
+      <value>184 ms</value>
+      <note>Within <strong>normal</strong> range</note>
+    </widget>
+    <widget kind="sparkline">
+      <caption>Last hour</caption>
+      <value><![CDATA[120,135,131,170,162,184,179]]></value>
+    </widget>
+  </panel>
+  <panel name="workers" visible="false">
+    <label>Worker pool</label>
+    <widget kind="counter">
+      <caption>Active jobs</caption>
+      <value>7</value>
+      <note>See <code>queue.depth</code> for details.</note>
+    </widget>
+  </panel>
+</dashboard>

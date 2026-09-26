@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:config" xmlns:p="urn:plugin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="local.xsd">
+  <?profile name="stress"?>
+  <defaults>
+    <option key="mode" value="safe"/>
+    <option key="retries">0</option>
+  </defaults>
+  <pipeline enabled="true">
+    <stage id="parse" depends-on="">
+      <input path="./in/&quot;quoted&quot;.xml"/>
+      <output path="./out/parse.xml"/>
+    </stage>
+    <stage id="transform" depends-on="parse">
+      <p:plugin name="identity" version="1.0">
+        <p:parameter name="keep-comments">true</p:parameter>
+        <p:parameter name="expression">a &gt; b &amp;&amp; b &lt; c</p:parameter>
+      </p:plugin>
+    </stage>
+    <stage id="publish" depends-on="transform">
+      <environment>
+        <variable name="EMPTY"/>
+        <variable name="UNICODE">𐍈 café 中文</variable>
+      </environment>
+    </stage>
+  </pipeline>
+  <rules>
+    <rule match="//*" action="include"/>
+    <rule match="@*" action="exclude">
+      <reason>temporary</reason>
+    </rule>
+  </rules>
+</configuration>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE test-suite [
+  <!ELEMENT test-suite (case+)>
+  <!ELEMENT case (input, expect)>
+  <!ATTLIST case name CDATA #REQUIRED result (pass|fail|skip) "pass">
+  <!ELEMENT input (#PCDATA|value|pair)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT pair (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT expect (code, message?)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT message (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+]>
+<test-suite xml:base="https://tests.example.invalid/v4/">
+  <case name="empty-value">
+    <input><value/></input>
+    <expect><code>204</code><message>No content &nbsp; returned</message></expect>
+  </case>
+  <case name="nested-pairs" result="fail">
+    <input>
+      <pair><key>alpha</key><value>1</value></pair>
+      <pair><key>beta</key><value>two &amp; three</value></pair>
+    </input>
+    <expect>
+      <code>422</code>
+      <message>Invalid <emphasis xmlns="urn:test:annotation">pair</emphasis></message>
+    </expect>
+  </case>
+  <case name="unicode">
+    <input><![CDATA[{"text":"line\nbreak","value":"\u2603"}]]></input>
+    <expect><code>200</code></expect>
+  </case>
+  <?case-note owner="qa"?>
+</test-suite>

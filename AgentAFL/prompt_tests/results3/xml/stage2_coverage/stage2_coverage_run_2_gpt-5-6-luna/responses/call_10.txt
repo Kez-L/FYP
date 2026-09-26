@@ -1,0 +1,193 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE library [
+  <!ENTITY % common "xml:lang CDATA #IMPLIED xml:space (default|preserve) 'default'">
+  <!ELEMENT library (section+)>
+  <!ATTLIST library version CDATA #FIXED "2">
+  <!ELEMENT section (title, book*)>
+  <!ATTLIST section id ID #REQUIRED %common;>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT book (author+, synopsis?, keyword*)>
+  <!ATTLIST book isbn NMTOKEN #REQUIRED available (yes|no) "yes">
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT synopsis (#PCDATA|em|quote)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ENTITY copyright "&#169; archive">
+]>
+<library version="2">
+  <section id="fiction" xml:lang="en" xml:space="preserve">
+    <title>Fiction &amp; Folklore</title>
+    <book isbn="A-17" available="yes">
+      <author>R. Vale</author>
+      <author>M. Chen</author>
+      <synopsis>A tale of <em>quiet</em> roads and <quote>unmapped</quote> stars.</synopsis>
+      <keyword>journey</keyword>
+      <keyword>&copyright;</keyword>
+    </book>
+  </section>
+</library>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (panel|separator)*>
+  <!ATTLIST dashboard xmlns CDATA #IMPLIED>
+  <!ELEMENT panel (header, widget+)>
+  <!ATTLIST panel key ID #REQUIRED collapsed (true|false) "false">
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT widget (label?, value, note?)>
+  <!ATTLIST widget kind (gauge|table|sparkline) #REQUIRED
+                   priority NMTOKENS #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA|unit)*>
+  <!ELEMENT unit EMPTY>
+  <!ATTLIST unit name CDATA #REQUIRED>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ATTLIST separator style CDATA "dashed">
+]>
+<dashboard xmlns="urn:example:dashboard">
+  <panel key="p-main" collapsed="false">
+    <header>System Health</header>
+    <widget kind="gauge" priority="high urgent">
+      <label>Load</label>
+      <value>0.73<unit name="ratio"/></value>
+      <note><![CDATA[updated < 1 minute ago]]></note>
+    </widget>
+    <widget kind="table" priority="normal">
+      <label>Workers</label>
+      <value>16<unit name="count"/></value>
+    </widget>
+  </panel>
+  <separator style="double"/>
+  <panel key="p-edge" collapsed="true">
+    <header>Edge Nodes</header>
+    <widget kind="sparkline" priority="low">
+      <value><![CDATA[3,5,4,8,13,8,5]]></value>
+    </widget>
+  </panel>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (meta, payload, signature?)>
+  <!ATTLIST packet xmlns:s CDATA #FIXED "urn:sign"
+                   xmlns:x CDATA #IMPLIED>
+  <!ELEMENT meta (origin, route*)>
+  <!ELEMENT origin EMPTY>
+  <!ATTLIST origin host CDATA #REQUIRED port NMTOKEN #REQUIRED>
+  <!ELEMENT route EMPTY>
+  <!ATTLIST route via CDATA #REQUIRED cost NMTOKEN "1">
+  <!ELEMENT payload (chunk+)>
+  <!ATTLIST payload encoding (plain|base64|hex) #REQUIRED>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!ELEMENT signature EMPTY>
+  <!ATTLIST signature s:algorithm CDATA #REQUIRED
+                      s:value CDATA #REQUIRED>
+]>
+<packet xmlns:s="urn:sign" xmlns:x="urn:extra">
+  <meta>
+    <origin host="relay.example" port="443"/>
+    <route via="north-gw" cost="2"/>
+    <route via="vault" cost="7"/>
+  </meta>
+  <payload encoding="base64">
+    <chunk index="0">QUJDREVGRw==</chunk>
+    <chunk index="1">AAECAwQFBgcI</chunk>
+  </payload>
+  <signature s:algorithm="sha256" s:value="deadbeefcafebabe"/>
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (start, step+, finish)>
+  <!ATTLIST workflow id ID #REQUIRED>
+  <!ELEMENT start EMPTY>
+  <!ATTLIST start at CDATA #IMPLIED>
+  <!ELEMENT step (input*, action, output*)>
+  <!ATTLIST step name ID #REQUIRED depends IDREFS #IMPLIED>
+  <!ELEMENT input (#PCDATA)>
+  <!ATTLIST input key NMTOKEN #REQUIRED>
+  <!ELEMENT action (command, environment?)>
+  <!ELEMENT command (#PCDATA)>
+  <!ELEMENT environment (variable*)>
+  <!ELEMENT variable EMPTY>
+  <!ATTLIST variable name NMTOKEN #REQUIRED value CDATA #REQUIRED>
+  <!ELEMENT output (#PCDATA)>
+  <!ATTLIST output path CDATA #REQUIRED format (text|json|binary) "text">
+  <!ELEMENT finish EMPTY>
+  <!ATTLIST finish status (success|failure|cancelled) #REQUIRED>
+]>
+<workflow id="deploy-42">
+  <start at="2026-09-24T09:00:00Z"/>
+  <step name="compile">
+    <action>
+      <command>make all &amp;&amp; make check</command>
+      <environment>
+        <variable name="MODE" value="release"/>
+        <variable name="FLAGS" value="--quiet --jobs=4"/>
+      </environment>
+    </action>
+    <output path="build.log" format="text">completed</output>
+  </step>
+  <step name="publish" depends="compile">
+    <input key="artifact">dist/package.tar</input>
+    <action>
+      <command>upload --atomic</command>
+    </action>
+    <output path="receipt.json" format="json"><![CDATA[{"ok":true,"count":1}]]></output>
+  </step>
+  <finish status="success"/>
+</workflow>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE museum [
+  <!ELEMENT museum (room+)>
+  <!ELEMENT room (label, exhibit*)>
+  <!ATTLIST room number NMTOKEN #REQUIRED theme CDATA #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT exhibit (name, date?, material, description)>
+  <!ATTLIST exhibit id ID #REQUIRED featured (yes|no) "no">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT date (#PCDATA)>
+  <!ELEMENT material EMPTY>
+  <!ATTLIST material type CDATA #REQUIRED origin CDATA #IMPLIED>
+  <!ELEMENT description (#PCDATA|link|linebreak)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href URI #REQUIRED>
+  <!ELEMENT linebreak EMPTY>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY emblem SYSTEM "emblem.png" NDATA png>
+]>
+<museum xml:base="https://museum.example/archive/">
+  <room number="A-1" theme="Origins">
+    <label>Early Instruments</label>
+    <exhibit id="stone-1" featured="yes">
+      <name>Resonant Stone</name>
+      <date>circa 4000 BCE</date>
+      <material type="basalt" origin="river basin"/>
+      <description>Found near the eastern ridge.<linebreak/>
+        See <link href="notes/stone-1.html">field notes</link> for details.
+      </description>
+    </exhibit>
+  </room>
+  <room number="B-7" theme="Signals">
+    <label>Light and Sound</label>
+    <exhibit id="bell-9">
+      <name>Bronze Bell</name>
+      <material type="bronze"/>
+      <description><![CDATA[The inscription reads: <listen carefully>.]]></description>
+    </exhibit>
+  </room>
+</museum>
+```

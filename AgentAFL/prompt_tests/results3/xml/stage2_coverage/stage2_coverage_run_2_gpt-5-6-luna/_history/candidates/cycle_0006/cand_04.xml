@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, attachment*)>
+  <!ELEMENT header (sender, recipient+, timestamp)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|list|item|code)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST message priority (low|normal|high) "normal" reply IDREF #IMPLIED>
+  <!ATTLIST recipient type (to|cc|bcc) "to">
+  <!ATTLIST attachment name CDATA #REQUIRED media CDATA #REQUIRED>
+  <!ENTITY sig "— automated notice —">
+  <!ENTITY nested "&sig; &amp; please review">
+]>
+<message priority="high">
+  <header>
+    <sender>robot@example.invalid</sender>
+    <recipient type="to">reader@example.invalid</recipient>
+    <recipient type="cc">audit@example.invalid</recipient>
+    <timestamp>2026-09-24T00:00:00Z</timestamp>
+  </header>
+  <body>
+    Intro <quote>quoted <quote>nested</quote> material</quote>
+    <list>
+      <item>one <emphasis>important</emphasis></item>
+      <item>two</item>
+    </list>
+    <code>&lt;sample&gt; &nested;</code>
+  </body>
+  <attachment name="report.dat" media="application/octet-stream"/>
+</message>

@@ -1,0 +1,55 @@
+<?xml version="1.1"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (environment, modules, rules)>
+  <!ELEMENT environment (variable*)>
+  <!ELEMENT variable EMPTY>
+  <!ATTLIST variable name NMTOKEN #REQUIRED value CDATA #REQUIRED secret (yes|no) "no">
+  <!ELEMENT modules (module*)>
+  <!ELEMENT module (dependency*, setting*)>
+  <!ATTLIST module name NMTOKEN #REQUIRED enabled (true|false) "true">
+  <!ELEMENT dependency EMPTY>
+  <!ATTLIST dependency module IDREF #REQUIRED optional (true|false) "false">
+  <!ELEMENT setting (#PCDATA|fragment)*>
+  <!ATTLIST setting key NMTOKEN #REQUIRED>
+  <!ELEMENT fragment (#PCDATA)>
+  <!ELEMENT rules (rule+)>
+  <!ELEMENT rule (match, action+)>
+  <!ATTLIST rule id ID #REQUIRED priority CDATA "0">
+  <!ELEMENT match (#PCDATA)>
+  <!ELEMENT action (#PCDATA|parameter)*>
+  <!ATTLIST action type NMTOKEN #REQUIRED>
+  <!ELEMENT parameter (#PCDATA)>
+  <!ATTLIST parameter name NMTOKEN #REQUIRED>
+  <!ENTITY newline "&#10;">
+]>
+<configuration xml:space="default">
+  <environment>
+    <variable name="MODE" value="staging"/>
+    <variable name="EMPTY_VALUE" value="" secret="no"/>
+    <variable name="API_KEY" value="redacted" secret="yes"/>
+  </environment>
+  <modules>
+    <module name="core">
+      <setting key="banner">alpha&amp;beta</setting>
+    </module>
+    <module name="adapter" enabled="false">
+      <dependency module="core"/>
+      <dependency module="missing" optional="true"/>
+      <setting key="template"><fragment><![CDATA[<item>{value}</item>]]></fragment>&newline;</setting>
+    </module>
+  </modules>
+  <rules>
+    <rule id="rule-default" priority="-1">
+      <match>status = "unknown"</match>
+      <action type="emit">
+        <parameter name="channel">stderr</parameter>
+        <parameter name="message">fallback</parameter>
+      </action>
+    </rule>
+    <rule id="rule-main" priority="10">
+      <match><![CDATA[path ~= "^/api/"]]></match>
+      <action type="route"><parameter name="target">core</parameter></action>
+      <action type="log"><parameter name="level">debug</parameter></action>
+    </rule>
+  </rules>
+</configuration>

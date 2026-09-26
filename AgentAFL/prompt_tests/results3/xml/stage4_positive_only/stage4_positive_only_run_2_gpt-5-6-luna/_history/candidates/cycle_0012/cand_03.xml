@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:example:config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="urn:example:config config.xsd">
+  <profile name="edge" enabled="true">
+    <inherits from="base"/>
+    <setting key="buffer-size" value="4096"/>
+    <setting key="retry-count">
+      <integer>3</integer>
+    </setting>
+    <setting key="endpoint">
+      <url scheme="https" host="example.invalid" port="443">
+        <path>/v2/ingest</path>
+      </url>
+    </setting>
+    <features>
+      <feature id="compression">
+        <option>gzip</option>
+        <option>zstd</option>
+      </feature>
+      <feature id="diagnostics">
+        <flag name="trace" value="false"/>
+        <flag name="metrics" value="true"/>
+      </feature>
+    </features>
+  </profile>
+  <profile name="base" enabled="false">
+    <setting key="buffer-size"><integer>512</integer></setting>
+    <setting key="endpoint">
+      <url scheme="http" host="localhost">
+        <path>/</path>
+      </url>
+    </setting>
+  </profile>
+  <environment>
+    <variable name="EMPTY" value=""/>
+    <variable name="QUOTED" value="&quot;left &amp; right&quot;"/>
+    <variable name="MULTILINE"><![CDATA[first
+second
+third]]></variable>
+  </environment>
+</configuration>

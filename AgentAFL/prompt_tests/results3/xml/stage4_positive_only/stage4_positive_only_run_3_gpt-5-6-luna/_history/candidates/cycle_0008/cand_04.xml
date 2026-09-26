@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (variables, stages, audit)>
+  <!ELEMENT variables (var*)>
+  <!ELEMENT var EMPTY>
+  <!ATTLIST var name NMTOKEN #REQUIRED value CDATA #IMPLIED secret (yes|no) "no">
+  <!ELEMENT stages (stage+)>
+  <!ELEMENT stage (when?, task+, on-success?, on-failure?)>
+  <!ATTLIST stage id ID #REQUIRED depends-on IDREFS #IMPLIED>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT task (input*, output*)>
+  <!ATTLIST task id ID #REQUIRED executor NMTOKEN #REQUIRED>
+  <!ELEMENT input (#PCDATA)>
+  <!ATTLIST input name NMTOKEN #REQUIRED>
+  <!ELEMENT output (#PCDATA)>
+  <!ATTLIST output name NMTOKEN #REQUIRED>
+  <!ELEMENT on-success (#PCDATA)>
+  <!ELEMENT on-failure (#PCDATA)>
+  <!ELEMENT audit (event*)>
+  <!ELEMENT event (message, detail?)>
+  <!ATTLIST event at CDATA #REQUIRED level (info|warn|error) #REQUIRED>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT detail (#PCDATA)>
+]>
+<workflow xmlns="urn:example:workflow" id="nightly-archive" revision="18">
+  <variables>
+    <var name="REGION" value="eu-central" secret="no"/>
+    <var name="TOKEN" secret="yes"/>
+    <var name="RETAIN_DAYS" value="30"/>
+  </variables>
+  <stages>
+    <stage id="prepare">
+      <task id="scan" executor="filesystem">
+        <input name="root">/srv/data/${REGION}</input>
+        <input name="pattern">*.{json,xml}</input>
+        <output name="manifest">/tmp/manifest.json</output>
+      </task>
+      <on-success>package</on-success>
+      <on-failure>halt</on-failure>
+    </stage>
+    <stage id="package" depends-on="prepare">
+      <when>${RETAIN_DAYS} &gt; 0</when>
+      <task id="compress" executor="zstd">
+        <input name="manifest">/tmp/manifest.json</input>
+        <input name="level">19</input>
+        <output name="bundle">/var/archive/nightly.tar.zst</output>
+      </task>
+      <task id="sign" executor="cosign">
+        <input name="artifact">/var/archive/nightly.tar.zst</input>
+        <input name="key">env:TOKEN</input>
+        <output name="signature">/var/archive/nightly.tar.zst.sig</output>
+      </task>
+      <on-success>notify</on-success>
+      <on-failure>retry-package</on-failure>
+    </stage>
+  </stages>
+  <audit>
+    <event at="2026-09-24T01:00:00Z" level="info">
+      <message>Workflow accepted</message>
+      <detail><![CDATA[request-id=7f3a; actor=system; note=nightly window]]></detail>
+    </event>
+    <event at="2026-09-24T01:03:44Z" level="warn">
+      <message>One file skipped</message>
+      <detail>Path contained a non-UTF-8 byte sequence.</detail>
+    </event>
+  </audit>
+</workflow>

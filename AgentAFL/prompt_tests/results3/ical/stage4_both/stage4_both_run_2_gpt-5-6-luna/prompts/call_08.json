@@ -1,0 +1,23 @@
+{
+  "call": 8,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a iCalendar document parser.\nTarget: /home/user/Documents/1git-folder/AgentAFL/AFLPlus/libical-build/libical_fuzzer-afl.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 iCalendar document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\nBEGIN:VCALENDAR\nPRODID:-//AFLSeed//Binary Attachment//EN\nVERSION:2.0\nCALSCALE:GREGORIAN\nBEGIN:VEVENT\nUID:attachment-case-003\nDTSTAMP:20260924T182000Z\nDTSTART;VALUE=DATE:20261224\nDTEND;VALUE=DATE:20261227\nSUMMARY;ALTREP=\"data:text/plain,Holiday\":Encoded attachment test\nDESCRIPTION;ENCODING=QUOTED-PRINTABLE;CHARSET=UTF-8:Line=20one=0ALine=20two=E2=9C=93\nATTACH;ENCODING=BASE64;VALUE=BINARY;FMTTYPE=application/octet-stream:\nAAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwd\nATTACH;VALUE=URI;FMTTYPE=application/pdf:https://example.invalid/files/plan.pdf\nIMAGE;VALUE=URI;DISPLAY=BADGE:https://example.invalid/images/badge.png\nCONFERENCE;VALUE=URI;FEATURE=VIDEO:https://meet.example.invalid/room/003\nREQUEST-STATUS:2.0;Success\nBEGIN:VALARM\nACTION:AUDIO\nTRIGGER;VALUE=DURATION;RELATED=END:-P1D\nATTACH;VALUE=URI;FMTTYPE=audio/basic:https://example.invalid/audio/chime.au\nREPEAT:2\nDURATION:PT30S\nEND:VALARM\nEND:VEVENT\nEND:VCALENDAR\n\n--- example 2 ---\nBEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//AFLSeed//Multi Component Relations//EN\nCALSCALE:GREGORIAN\nMETHOD:REPLY\nX-PUBLISHED-TTL:PT1H\nBEGIN:VEVENT\nUID:relation-event-004\nDTSTAMP:20260924T183000Z\nDTSTART:20260930T100000-0430\nDTEND:20260930T113000-0430\nSUMMARY:Floating offset event\nSTATUS:TENTATIVE\nRELATED-TO;RELTYPE=SIBLING;X-REL=alpha:event-004-note\nCOLOR:teal\nX-MICROSOFT-CDO-BUSYSTATUS:TENTATIVE\nEND:VEVENT\nBEGIN:VTODO\nUID:event-004-note\nDTSTAMP:20260924T183001Z\nDTSTART;VALUE=DATE:20260929\nDUE;VALUE=DATE:20260930\nSUMMARY:Prepare event notes\nSTATUS:COMPLETED\nCOMPLETED:20260929T220000Z\nPERCENT-COMPLETE:100\nRELATED-TO;RELTYPE=PARENT:relation-event-004\nEND:VTODO\nBEGIN:VJOURNAL\nUID:journal-linked-004\nDTSTAMP:20260924T183002Z\nDTSTART:20260930T000000Z\nSTATUS:FINAL\nSUMMARY:Post-event record\nDESCRIPTION:First line\n second folded line\nRELATED-TO;RELTYPE=REFERENCE:relation-event-004\nEND:VJOURNAL\nEND:VCALENDAR\n\nTried before \u2014 no new coverage, avoid repeating:\n--- 3 of your past seeds (cycles 3,5) drove the same already-covered path with 0 new edges ---\nBEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//SeedLab//Timezone Transitions//EN\nCALSCALE:GREGORIAN\nMETHOD:REQUEST\nBEGIN:VTIMEZONE\nTZID:Custom/Fractured\nLAST-MODIFIED:19970101T000000Z\nTZURL:http://example.invalid/tz\nBEGIN:STANDARD\nDTSTART:19700101T020000\nTZOFFSETFROM:+0200\nTZOFFSETTO:+0100\nTZNAME:STD\nRRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU\nRDATE:20301027T020000,20311026T020000\nEND:STANDARD\nBEGIN:DAYLIGHT\nDTSTART:19700329T020000\nTZOFFSETFROM:+0100\nTZOFFSETTO:+0200\nTZNAME:DST\nRRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU\nCOMMENT:transition\\;with\\,delimiters\nEND:DAYLIGHT\nEND:VTIMEZONE\nBEGIN:VEVENT\nUID:tz-transition-1\nDTSTAMP:20260924T120000Z\nDTSTART;TZID=Custom/Fractured:20300331T013000\nDTEND;TZID=Custom/Fract...[truncated, 838 chars total]\n\n--- a seed you generated (cycle 8) added 0 new edges ---\nBEGIN:VCALENDAR\nPRODID:-//AFLSeed//Task Graph//EN\nVERSION:2.0\nCALSCALE:GREGORIAN\nMETHOD:REQUEST\nBEGIN:VTODO\nUID:todo-root-001\nDTSTAMP:20260924T180000Z\nCREATED:20250101T010203Z\nLAST-MODIFIED:20260924T180001Z\nSEQUENCE:7\nDTSTART:20261005T090000Z\nDUE;VALUE=DATE:20261012\nPERCENT-COMPLETE:42\nPRIORITY:1\nSTATUS:IN-PROCESS\nSUMMARY;LANGUAGE=en-US:Prepare release package\nDESCRIPTION:Collect artifacts\\, verify checksums\\; and publish.\nCATEGORIES:release,security\nCONTACT;VALUE=TEXT:build-team@example.invalid\nATTENDEE;CN=Build Bot;CUTYPE=RESOURCE;ROLE=NON-PARTICIPANT;PARTSTAT=ACCEPTED:mailto:bot@example.invalid\nRELATED-TO;RELTYPE=CHILD:todo-child-001\nURL:https://example.invalid/tasks/todo-root-001\nBEGIN:V...[truncated, 1211 chars total]\n\nGenerate 5 new iCalendar document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libical-20260915",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T05:13:35.498367+00:00"
+}

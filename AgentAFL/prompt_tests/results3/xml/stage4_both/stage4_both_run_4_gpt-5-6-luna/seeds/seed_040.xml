@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.gradle.org/5.0"
+         xmlns:build="urn:example:build"
+         name="aurora">
+  <description><![CDATA[
+    Cross-platform telemetry collector.
+    Build profiles are selected by environment.
+  ]]></description>
+  <properties>
+    <property name="group" value="invalid.example.aurora"/>
+    <property name="version" value="2.7.0"/>
+    <property name="language" value="rust"/>
+    <property name="edition" value="2024"/>
+    <property name="release" value="true"/>
+  </properties>
+  <repositories>
+    <repository id="central" url="https://repo.example.invalid/maven2"/>
+    <repository id="mirror" url="file:///opt/cache/mirror" layout="flat"/>
+  </repositories>
+  <dependencies>
+    <dependency group="org.example" name="wire-codec" version="[1.4,2.0)"/>
+    <dependency group="org.example" name="clock" version="latest.release" optional="true"/>
+    <dependency group="org.example" name="native-bridge" version="2.1.5">
+      <exclude group="org.legacy" name="unsafe-loader"/>
+    </dependency>
+  </dependencies>
+  <build>
+    <sourceSets>
+      <sourceSet name="main">
+        <srcDir>src/main</srcDir>
+        <srcDir>generated/main</srcDir>
+        <include pattern="**/*.rs"/>
+        <exclude pattern="**/fixtures/**"/>
+      </sourceSet>
+      <sourceSet name="test">
+        <srcDir>src/test</srcDir>
+        <include pattern="**/*_test.rs"/>
+      </sourceSet>
+    </sourceSets>
+    <tasks>
+      <task name="generateProtocol" type="codegen">
+        <input file="protocol/schema.json"/>
+        <output directory="generated/main"/>
+        <option key="nullable" value="strict"/>
+      </task>
+      <task name="test" depends-on="generateProtocol">
+        <environment name="RUST_BACKTRACE" value="1"/>
+        <environment name="AURORA_TEST_MODE" value="deterministic"/>
+        <timeout unit="seconds">90</timeout>
+      </task>
+      <task name="package" depends-on="test">
+        <archive classifier="linux-x86_64" reproducible="true">
+          <file path="target/release/aurora"/>
+          <file path="LICENSE"/>
+          <file path="README.md"/>
+          <file path="config/default.toml" mode="0644"/>
+        </archive>
+      </task>
+    </tasks>
+  </build>
+  <build:matrix>
+    <build:axis name="os">
+      <build:value>linux</build:value>
+      <build:value>freebsd</build:value>
+    </build:axis>
+    <build:axis name="feature">
+      <build:value>minimal</build:value>
+      <build:value>tls</build:value>
+      <build:value>all</build:value>
+    </build:axis>
+  </build:matrix>
+</project>

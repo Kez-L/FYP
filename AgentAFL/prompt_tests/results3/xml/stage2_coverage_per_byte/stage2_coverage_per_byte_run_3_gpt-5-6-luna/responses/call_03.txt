@@ -1,0 +1,137 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (region+)>
+  <!ELEMENT region (point|label|region)*>
+  <!ELEMENT point EMPTY>
+  <!ELEMENT label (#PCDATA)>
+  <!ATTLIST map projection CDATA #IMPLIED>
+  <!ATTLIST region name CDATA #REQUIRED bounds NMTOKENS #IMPLIED>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED kind (start|end|waypoint) "waypoint">
+]>
+<map projection="local">
+  <region name="outer" bounds="0 0 100 100">
+    <label>north &amp; east</label>
+    <point x="10" y="20" kind="start"/>
+    <region name="inner" bounds="4 8 16 32">
+      <point x="7" y="11"/>
+      <label><![CDATA[embedded <markup> and ]]> brackets]]></label>
+    </region>
+  </region>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, section*)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT section (section|item|text)*>
+  <!ELEMENT item EMPTY>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST report xmlns:r CDATA #FIXED "urn:report">
+  <!ATTLIST header created CDATA #REQUIRED author CDATA #IMPLIED>
+  <!ATTLIST section id ID #IMPLIED level NMTOKEN #IMPLIED>
+  <!ATTLIST item key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+]>
+<r:report xmlns:r="urn:report" xmlns:x="urn:extra">
+  <header created="2026-09-24T12:00:00Z" author="A &amp; B"/>
+  <section id="s1" level="1">
+    <text>alpha</text>
+    <item key="one" value="&quot;quoted&quot;"/>
+    <section id="s1a">
+      <x:note>unknown but namespace-qualified</x:note>
+      <item key="two"/>
+    </section>
+  </section>
+</r:report>
+```
+
+```xml
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (warehouse+)>
+  <!ELEMENT warehouse (bin*)>
+  <!ELEMENT bin (product*)>
+  <!ELEMENT product EMPTY>
+  <!ATTLIST warehouse code ID #REQUIRED>
+  <!ATTLIST bin number NMTOKEN #REQUIRED>
+  <!ATTLIST product sku CDATA #REQUIRED quantity NMTOKEN "0" fragile (yes|no) "no">
+  <!ENTITY euro "&#x20AC;">
+  <!ENTITY note "stock &euro; count">
+]>
+<inventory>
+  <warehouse code="north">
+    <bin number="A-01">
+      <product sku="X&amp;1" quantity="0007" fragile="yes"/>
+      <product sku="empty" quantity="0"/>
+    </bin>
+    <bin number="B-02">
+      <product sku="&note;" quantity="12"/>
+    </bin>
+  </warehouse>
+</inventory>
+```
+
+```xml
+<?xml version="1.1" standalone="yes"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (chunk*)>
+  <!ELEMENT chunk (#PCDATA|meta|escape)*>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT escape (#PCDATA)>
+  <!ATTLIST stream mode (raw|encoded) "raw">
+  <!ATTLIST chunk index CDATA #REQUIRED checksum CDATA #IMPLIED>
+  <!ATTLIST meta key CDATA #REQUIRED value CDATA #REQUIRED>
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+]>
+<stream mode="encoded">
+  <chunk index="0" checksum="00">
+    <meta key="codec" value="utf-8"/>
+    <![CDATA[abc<def]]>
+    <escape>&lt;![CDATA[&gt;</escape>
+  </chunk>
+  <chunk index="1">
+    data &left;inside&right; &amp; tail
+  </chunk>
+</stream>
+```
+
+```xml
+<!DOCTYPE query [
+  <!ELEMENT query (select, criteria?, order?)>
+  <!ELEMENT select (field+)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT criteria (and|or|not|condition)*>
+  <!ELEMENT and (condition|and|or|not)*>
+  <!ELEMENT or (condition|and|or|not)*>
+  <!ELEMENT not (condition)>
+  <!ELEMENT condition EMPTY>
+  <!ELEMENT order (by+)>
+  <!ELEMENT by EMPTY>
+  <!ATTLIST query distinct (true|false) "false">
+  <!ATTLIST field name NMTOKEN #REQUIRED alias NMTOKEN #IMPLIED>
+  <!ATTLIST condition field NMTOKEN #REQUIRED op (eq|ne|lt|gt|contains) #REQUIRED value CDATA #REQUIRED>
+  <!ATTLIST by field NMTOKEN #REQUIRED direction (asc|desc) "asc">
+]>
+<query distinct="true">
+  <select>
+    <field name="title" alias="t"/>
+    <field name="updated"/>
+  </select>
+  <criteria>
+    <and>
+      <condition field="state" op="eq" value="open"/>
+      <or>
+        <condition field="owner" op="contains" value="&amp;"/>
+        <not>
+          <condition field="priority" op="lt" value="3"/>
+        </not>
+      </or>
+    </and>
+  </criteria>
+  <order>
+    <by field="updated" direction="desc"/>
+  </order>
+</query>
+```

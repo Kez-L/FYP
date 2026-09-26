@@ -1,0 +1,100 @@
+```xml
+<?xml version="1.0"?>
+<message id="m-17" xml:lang="en">
+  <header>
+    <sender address="alice@example.test">Alice</sender>
+    <recipient address="bob@example.test">Bob</recipient>
+    <sent-at>2026-09-24T12:34:56Z</sent-at>
+  </header>
+  <body>Hello <emphasis>Bob</emphasis>,<br/>please review the attached <attachment href="file:///tmp/report.xml">report</attachment>.</body>
+  <!-- Deliberately includes mixed content and an empty element. -->
+  <signature><![CDATA[-----BEGIN SIGNATURE-----
+abc123<>&
+-----END SIGNATURE-----]]></signature>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 120 80">
+  <defs>
+    <linearGradient id="fade" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0" stop-color="#000000"/>
+      <stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(10,5) rotate(-7)">
+    <rect x="0" y="0" width="90" height="50" rx="4" fill="url(#fade)"/>
+    <path d="M5 40 C20 5, 45 65, 85 12" fill="none" stroke="red"/>
+    <text x="8" y="70"><tspan font-size="9">A &amp; B</tspan></text>
+  </g>
+</svg>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ENTITY app "fuzz-target">
+  <!ENTITY percent "%">
+  <!ENTITY greeting "Hello &app;">
+]>
+<configuration>
+  <environment name="test">
+    <variable key="PATH">/usr/bin:/bin</variable>
+    <variable key="LIMIT">&percent;100</variable>
+  </environment>
+  <modules>
+    <module enabled="yes">
+      <name>&app;</name>
+      <options>
+        <option name="greeting">&greeting;</option>
+        <option name="pattern"><![CDATA[[A-Z]+(?:_[0-9]+)?]]></option>
+      </options>
+    </module>
+  </modules>
+</configuration>
+```
+
+```xml
+<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:base="https://example.test/news/">
+  <title type="html">Daily &amp; Nightly</title>
+  <id>urn:uuid:12345678-1234-5678-9abc-def012345678</id>
+  <updated>2026-09-24T00:00:00Z</updated>
+  <link rel="self" href="index.xml" type="application/atom+xml"/>
+  <entry>
+    <title type="text">An entry with nested markup</title>
+    <id>tag:example.test,2026:entry/7</id>
+    <updated>2026-09-23T23:59:59+02:00</updated>
+    <author><name>Editor</name><email>editor@example.test</email></author>
+    <content type="xhtml">
+      <div xmlns="http://www.w3.org/1999/xhtml">
+        <p>One <strong>important</strong> paragraph.</p>
+        <ul><li>first</li><li>second</li></ul>
+      </div>
+    </content>
+  </entry>
+</feed>
+```
+
+```xml
+<?xml version="1.0"?>
+<workflow xmlns:ext="urn:workflow:extensions">
+  <step id="prepare">
+    <action kind="shell" timeout="PT5S">printf '&lt;ready/&gt;'</action>
+    <on-success goto="validate"/>
+    <on-failure>
+      <retry count="2" delay="PT0.25S"/>
+      <notify channel="stderr">Preparation failed</notify>
+    </on-failure>
+  </step>
+  <step id="validate" parallel="true">
+    <input name="payload" required="true"/>
+    <ext:assert expression="count(/workflow/step) &gt; 1"/>
+    <branch test="exists">
+      <case value="yes"><result code="0"/></case>
+      <default><result code="1"/></default>
+    </branch>
+  </step>
+</workflow>
+```

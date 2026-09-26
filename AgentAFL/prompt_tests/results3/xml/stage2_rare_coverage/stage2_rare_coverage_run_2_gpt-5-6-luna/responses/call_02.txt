@@ -1,0 +1,190 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ATTLIST catalog
+    generated CDATA #IMPLIED
+    xml:lang CDATA #IMPLIED
+  >
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section
+    id ID #REQUIRED
+    state (open|closed|archived) "open"
+  >
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (name, description?, price)>
+  <!ATTLIST item
+    code ID #REQUIRED
+    tags NMTOKENS #IMPLIED
+  >
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|strong)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ENTITY company "North &amp; South">
+  <!ENTITY mark "&#x2605;">
+]>
+<catalog generated="2026-09-24" xml:lang="en">
+  <section id="s-main" state="open">
+    <title>&company; &mark; inventory</title>
+    <item code="i-001" tags="featured seasonal">
+      <name>Harbor lantern</name>
+      <description>Brass housing with <strong>etched</strong> glass and <em>low-power</em> controls.</description>
+      <price>19.95</price>
+    </item>
+    <item code="i-002" tags="clearance">
+      <name>Folded map</name>
+      <description>Scale 1:25000 &amp; waterproof.</description>
+      <price>4.50</price>
+    </item>
+  </section>
+  <section id="s-archive" state="archived">
+    <title>Discontinued goods</title>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE ledger [
+  <!ENTITY % declarations
+    "<!ELEMENT ledger (opening, transaction*, closing)>
+     <!ELEMENT opening (#PCDATA)>
+     <!ELEMENT transaction (account, amount, memo?)>
+     <!ELEMENT account (#PCDATA)>
+     <!ELEMENT amount (#PCDATA)>
+     <!ELEMENT memo (#PCDATA)>
+     <!ELEMENT closing (#PCDATA)>">
+  %declarations;
+  <!ENTITY tab "&#x9;">
+  <!ENTITY linebreak "&#xA;">
+]>
+<ledger period="Q4&#x2028;2025">
+  <opening>1000.00</opening>
+  <transaction>
+    <account>cash&#x1F;</account>
+    <amount>+25.75</amount>
+    <memo>Deposit&tab;counter&linebreak;verified</memo>
+  </transaction>
+  <transaction>
+    <account>supplies</account>
+    <amount>-8.20</amount>
+    <memo><![CDATA[paper, ink, and labels]]></memo>
+  </transaction>
+  <closing>1017.55</closing>
+</ledger>
+```
+
+```xml
+<?xml version="1.0"?>
+<archive xmlns="urn:example:archive" xmlns:m="urn:example:meta" xmlns:x="urn:example:ext" xml:base="https://invalid.example/root/">
+  <collection m:key="alpha" xml:lang="fr">
+    <record m:id="r-7" x:rank="high">
+      <heading>Éléments anciens</heading>
+      <details>
+        <part>premier</part>
+        <part xml:space="preserve">  second  </part>
+        <part>
+          <subpart xmlns="">unqualified</subpart>
+          <subpart xmlns="urn:example:nested">nested-name</subpart>
+        </part>
+      </details>
+      <link xml:base="pieces/" href="scan-07.dat">scan</link>
+    </record>
+    <record m:id="r-8" m:empty="true">
+      <heading><![CDATA[raw <heading> text]]></heading>
+      <details>
+        <part>αβγ</part>
+        <part>𐐷</part>
+      </details>
+    </record>
+  </collection>
+  <m:provenance>
+    <m:agent role="scanner">unit-04</m:agent>
+    <m:timestamp>2025-12-31T23:59:59Z</m:timestamp>
+  </m:provenance>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, payload, checksum)>
+  <!ATTLIST packet format NOTATION (binary|text|mixed) "text">
+  <!ELEMENT header (source, destination, flags)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT destination (#PCDATA)>
+  <!ELEMENT flags EMPTY>
+  <!ATTLIST flags
+    urgent (yes|no) "no"
+    retry (yes|no) "no"
+  >
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk
+    number CDATA #REQUIRED
+    encoding (plain|base64|hex) "plain"
+  >
+  <!ELEMENT checksum (#PCDATA)>
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!NOTATION text SYSTEM "text/plain">
+  <!NOTATION mixed PUBLIC "-//Example//NOTATION Mixed//EN">
+]>
+<packet format="mixed">
+  <header>
+    <source>sensor/A-17</source>
+    <destination>relay/B-02</destination>
+    <flags urgent="yes" retry="no"/>
+  </header>
+  <payload>
+    <chunk number="1" encoding="plain">prefix: &lt;open&gt;</chunk>
+    <chunk number="2" encoding="base64">QWxwaGEvQmV0YQ==</chunk>
+    <chunk number="3" encoding="hex">00ff10aa</chunk>
+  </payload>
+  <checksum>sha256:7c3e9d0b</checksum>
+</packet>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:workflow:v2" xmlns:q="urn:workflow:query" xmlns:r="urn:workflow:result">
+  <?engine mode="diagnostic" level="3"?>
+  <!-- boundary: start -->
+  <stage id="prepare" enabled="true">
+    <input name="source"><![CDATA[/var/tmp/input & raw]]></input>
+    <operation kind="split">
+      <argument key="delimiter">::</argument>
+      <argument key="limit">0007</argument>
+    </operation>
+  </stage>
+  <stage id="execute" enabled="false">
+    <depends-on ref="prepare"/>
+    <operation kind="transform">
+      <q:expression q:language="xpath">/a/b[@x="1"]</q:expression>
+      <q:expression q:language="literal"><![CDATA[not-an-expression]]></q:expression>
+    </operation>
+    <r:result status="pending">
+      <r:item index="0" value=""/>
+      <r:item index="1">left &amp; right</r:item>
+      <r:item index="2">
+        <r:metadata>
+          <r:tag>Δ</r:tag>
+          <r:tag>東京</r:tag>
+        </r:metadata>
+      </r:item>
+    </r:result>
+  </stage>
+  <?engine checkpoint="after-execute"?>
+  <stage id="finalize" enabled="true">
+    <summary><![CDATA[
+      output remains intentionally unescaped: </summary>
+    ]]></summary>
+    <cleanup>
+      <path recursive="yes">./cache</path>
+      <path recursive="no">./temporary</path>
+    </cleanup>
+  </stage>
+  <!-- boundary: end -->
+</workflow>
+```

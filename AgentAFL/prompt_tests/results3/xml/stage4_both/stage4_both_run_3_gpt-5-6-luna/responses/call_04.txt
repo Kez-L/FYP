@@ -1,0 +1,222 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (metadata, vertices, edges)>
+  <!ELEMENT metadata (title, creator?, keyword*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT creator (#PCDATA)>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ELEMENT vertices (vertex+)>
+  <!ELEMENT vertex (name, property*)>
+  <!ATTLIST vertex id ID #REQUIRED kind (person|place|thing) "thing">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST property key NMTOKEN #REQUIRED>
+  <!ELEMENT edges (edge*)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED relation CDATA #REQUIRED>
+  <!ENTITY graphTitle "Topology &amp; Relations">
+]>
+<graph xmlns="urn:graph:2026" xml:base="https://example.invalid/data/">
+  <metadata>
+    <title>&graphTitle;</title>
+    <creator>Research Unit</creator>
+    <keyword>directed</keyword>
+    <keyword>weighted</keyword>
+  </metadata>
+  <vertices>
+    <vertex id="v1" kind="person">
+      <name>Ada</name>
+      <property key="role">engineer</property>
+      <property key="active">yes</property>
+    </vertex>
+    <vertex id="v2" kind="place">
+      <name>North Lab</name>
+      <property key="floor">3</property>
+    </vertex>
+    <vertex id="v3">
+      <name>Prototype</name>
+      <property key="status">archived</property>
+    </vertex>
+  </vertices>
+  <edges>
+    <edge from="v1" to="v2" relation="works-at"/>
+    <edge from="v2" to="v3" relation="contains"/>
+    <edge from="v1" to="v3" relation="created"/>
+  </edges>
+</graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<scene xmlns="http://www.w3.org/2000/svg"
+       xmlns:svg="http://www.w3.org/2000/svg"
+       xmlns:meta="urn:scene:metadata"
+       viewBox="0 0 640 480"
+       version="1.1">
+  <title>Layered diagram</title>
+  <desc><![CDATA[An SVG scene containing <escaped> markup and ampersands.]]></desc>
+  <defs>
+    <linearGradient id="fade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#336699"/>
+    </linearGradient>
+    <clipPath id="window">
+      <rect x="10" y="10" width="620" height="460" rx="12"/>
+    </clipPath>
+  </defs>
+  <g id="background" clip-path="url(#window)">
+    <rect x="0" y="0" width="640" height="480" fill="url(#fade)"/>
+    <svg:circle cx="320" cy="240" r="90" fill="none" stroke="#111111"/>
+  </g>
+  <g id="labels" meta:revision="7">
+    <text x="30" y="60" xml:space="preserve">  diagram  </text>
+    <text x="30" y="92"><tspan font-weight="bold">status:</tspan> ready</text>
+    <foreignObject x="40" y="120" width="240" height="80">
+      <div xmlns="http://www.w3.org/1999/xhtml" lang="en">
+        <p>Embedded <em>HTML</em> fragment.</p>
+      </div>
+    </foreignObject>
+  </g>
+  <?render quality="high" layers="background,labels"?>
+</scene>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (header, accounts, transactions)>
+  <!ELEMENT header (period, note)>
+  <!ELEMENT period (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT accounts (account+)>
+  <!ELEMENT account (owner, balance, flag*)>
+  <!ATTLIST account number ID #REQUIRED currency (EUR|USD|JPY) "EUR">
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT balance (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST flag name NMTOKEN #REQUIRED>
+  <!ELEMENT transactions (transaction+)>
+  <!ELEMENT transaction (debit, credit, memo?)>
+  <!ATTLIST transaction ref ID #REQUIRED date CDATA #REQUIRED>
+  <!ELEMENT debit EMPTY>
+  <!ATTLIST debit account IDREF #REQUIRED amount CDATA #REQUIRED>
+  <!ELEMENT credit EMPTY>
+  <!ATTLIST credit account IDREF #REQUIRED amount CDATA #REQUIRED>
+  <!ELEMENT memo (#PCDATA)>
+  <!ENTITY euro "&#x20AC;">
+]>
+<ledger xml:lang="en">
+  <header>
+    <period>2026-Q3</period>
+    <note>Reconciled&#x85;pending external confirmation.</note>
+  </header>
+  <accounts>
+    <account number="acct-01" currency="EUR">
+      <owner>R&amp;D</owner>
+      <balance>&euro;12500.50</balance>
+      <flag name="verified"/>
+      <flag name="restricted"/>
+    </account>
+    <account number="acct-02" currency="USD">
+      <owner>Operations</owner>
+      <balance>8400.00</balance>
+    </account>
+  </accounts>
+  <transactions>
+    <transaction ref="tx-100" date="2026-09-20">
+      <debit account="acct-01" amount="250.00"/>
+      <credit account="acct-02" amount="250.00"/>
+      <memo>Tooling allocation &#x1F4C8;</memo>
+    </transaction>
+    <transaction ref="tx-101" date="2026-09-21">
+      <debit account="acct-02" amount="75.25"/>
+      <credit account="acct-01" amount="75.25"/>
+    </transaction>
+  </transactions>
+</ledger>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!NOTATION png SYSTEM "image/png">
+  <!ELEMENT package (manifest, payload, signatures?)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file path CDATA #REQUIRED type (text|binary) "text" format NOTATION (jpeg|png) #IMPLIED>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk sequence NMTOKEN #REQUIRED>
+  <!ELEMENT signatures (signature+)>
+  <!ELEMENT signature (algorithm, value)>
+  <!ATTLIST signature signer CDATA #REQUIRED>
+  <!ELEMENT algorithm (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ENTITY header "PKG-2026">
+  <!ENTITY % audit "INTERNAL">
+]>
+<package xml:base="file:///var/tmp/import/">
+  <manifest>
+    <file path="readme.txt" type="text"/>
+    <file path="photo.jpeg" type="binary" format="jpeg"/>
+    <file path="icon.png" type="binary" format="png"/>
+  </manifest>
+  <payload>
+    <chunk sequence="001"><![CDATA[BEGIN
+alpha|beta|gamma
+END]]></chunk>
+    <chunk sequence="002">&header;: payload continuation</chunk>
+  </payload>
+  <signatures>
+    <signature signer="build-bot">
+      <algorithm>sha256</algorithm>
+      <value>9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08</value>
+    </signature>
+  </signatures>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<archive xmlns="urn:archive:v2"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:sec="urn:archive:security"
+         xml:lang="de">
+  <collection id="c-17">
+    <dc:title>Winterberichte</dc:title>
+    <dc:creator>Archivteam</dc:creator>
+    <record id="r-1" visibility="public">
+      <heading>Feldnotizen</heading>
+      <body>
+        <paragraph>Erster Abschnitt mit <term>lokalen</term> Begriffen.</paragraph>
+        <paragraph>Zeile zwei<break/>und danach ein Hinweis.</paragraph>
+        <attachment media-type="text/plain" href="notes.txt"/>
+      </body>
+      <keywords>
+        <keyword xml:lang="de">Wetter</keyword>
+        <keyword xml:lang="en">observation</keyword>
+      </keywords>
+      <sec:seal method="detached">
+        <sec:digest algorithm="sha256">abc123deadbeef</sec:digest>
+      </sec:seal>
+    </record>
+    <record id="r-2" visibility="restricted">
+      <heading>Messreihe</heading>
+      <body>
+        <paragraph><![CDATA[temperature = -4.5
+pressure < threshold
+operator: a&b]]></paragraph>
+      </body>
+      <keywords/>
+      <sec:access role="curator" expires="2027-01-01"/>
+    </record>
+  </collection>
+  <index generated="2026-09-24">
+    <entry ref="r-1" weight="0.75"/>
+    <entry ref="r-2" weight="1.00"/>
+  </index>
+  <?archive mode="incremental"?>
+</archive>
+```

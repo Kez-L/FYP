@@ -1,0 +1,123 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, note?)>
+  <!ATTLIST catalog version NMTOKEN #IMPLIED>
+  <!ELEMENT entry (title, meta?, description)>
+  <!ATTLIST entry id ID #REQUIRED status (draft|published|archived) "draft">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta author CDATA #IMPLIED tags NMTOKENS #IMPLIED>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY company "North &amp; South">
+  <!ENTITY mark "&#x2605;">
+]>
+<catalog version="v2">
+  <entry id="e-001" status="published">
+    <title>&company; &mark; release</title>
+    <meta author="A. Writer" tags="xml parser fuzzing"/>
+    <description>Text with <em>inline emphasis</em> and <code>markup</code>.</description>
+  </entry>
+  <entry id="e-002">
+    <title>Unfinished draft</title>
+    <description>Whitespace&#x9;and a numeric character reference.</description>
+  </entry>
+  <note>End of catalog.</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<q:message xmlns:q="urn:example:message"
+           xmlns:m="urn:example:meta"
+           xml:lang="fr"
+           xml:base="https://example.invalid/archive/">
+  <q:header>
+    <m:sender id="α-7">émetteur</m:sender>
+    <m:sequence>00000042</m:sequence>
+    <m:flag enabled="true"/>
+  </q:header>
+  <q:body priority="high">Bonjour, <q:emphasis>monde</q:emphasis> !</q:body>
+  <q:attachments count="2">
+    <q:item media-type="text/plain" checksum="sha256:abc123">one</q:item>
+    <q:item media-type="application/octet-stream" checksum="sha256:def456">two</q:item>
+  </q:attachments>
+  <?route channel="secondary"?>
+</q:message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY external-data SYSTEM "unused.bin" NDATA binary>
+  <!ENTITY greeting "hello">
+  <!ENTITY suffix "world">
+  <!ELEMENT packet EMPTY>
+  <!ATTLIST packet blob ENTITY #IMPLIED
+                    label CDATA #IMPLIED
+                    ready (yes|no) "no">
+]>
+<packet blob="external-data" label="&greeting;, &suffix;" ready="yes"/>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<dashboard>
+  <!-- values intentionally use mixed content -->
+  <panel id="summary" collapsed="0">
+    <heading>System <strong>status</strong></heading>
+    <meter min="-10.5" max="10.5" value="0">
+      <caption>neutral</caption>
+    </meter>
+    <links>
+      <link href="#details" rel="self">details</link>
+      <link href="mailto:test@example.invalid" rel="alternate"/>
+    </links>
+  </panel>
+  <panel id="details" collapsed="1">
+    <heading><![CDATA[Raw <heading> text]]></heading>
+    <table>
+      <row><cell>A</cell><cell>1</cell></row>
+      <row><cell>B</cell><cell>2</cell></row>
+      <row><cell>C</cell><cell>3</cell></row>
+    </table>
+  </panel>
+  <?refresh interval="30"?>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0"?>
+<workflow xmlns="urn:workflow:v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <stage name="prepare">
+    <task id="p1" kind="shell">
+      <command><![CDATA[printf '%s\n' "$INPUT"]]></command>
+      <environment>
+        <variable name="INPUT">alpha &amp; beta</variable>
+        <variable name="EMPTY"/>
+      </environment>
+    </task>
+  </stage>
+  <stage name="verify" depends-on="prepare">
+    <task id="v1" kind="assert">
+      <expression language="xpath">count(/workflow/stage) = 3</expression>
+    </task>
+    <on-failure>
+      <notify channel="log">verification failed</notify>
+      <retry limit="0"/>
+    </on-failure>
+  </stage>
+  <stage name="publish" depends-on="verify" xsi:nil="true"/>
+  <metadata>
+    <created>2026-09-24T00:00:00Z</created>
+    <labels>
+      <label key="owner" value="qa"/>
+      <label key="priority" value="low"/>
+    </labels>
+  </metadata>
+</workflow>
+```

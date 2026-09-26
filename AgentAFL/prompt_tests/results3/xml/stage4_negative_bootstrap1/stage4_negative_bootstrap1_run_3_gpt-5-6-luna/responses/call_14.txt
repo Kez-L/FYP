@@ -1,0 +1,134 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+)>
+  <!ELEMENT entry (title, summary?, payload)>
+  <!ATTLIST entry id ID #REQUIRED category (text|binary|mixed) "text">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk|br)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ENTITY copyright "© 2026">
+  <!ENTITY marker "A &amp; B &lt; C">
+]>
+<archive>
+  <entry id="e-001" category="mixed">
+    <title>Encoded &copyright; record</title>
+    <summary>Values such as &marker; remain entity-expanded.</summary>
+    <payload>prefix<chunk>alpha</chunk><br/><chunk>βeta</chunk>suffix</payload>
+  </entry>
+  <entry id="e-002">
+    <title>Empty payload</title>
+    <payload/>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xml:lang="und" xml:space="preserve">
+  <section name="irregular">
+    <item code="A&amp;1" status="draft">
+      leading
+      <emphasis level="strong">text</emphasis>
+      between
+      <list>
+        <item code="nested-1">one</item>
+        <item code="nested-2"><![CDATA[two < three && four]]></item>
+      </list>
+      trailing
+    </item>
+    <item code="empty"><value/></item>
+  </section>
+  <section name="attributes">
+    <record key="line&#x0A;break" quote="&quot;single&apos;double&quot;">
+      <value>-0.000e+12</value>
+      <value>NaN</value>
+      <value>0x10</value>
+    </record>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="urn:acme:package" xmlns:c="urn:acme:content" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <header>
+    <name xml:lang="ja">資料箱</name>
+    <version major="0" minor="0" patch="1"/>
+  </header>
+  <manifest>
+    <file path="./a/../readme.txt" media-type="text/plain" size="0">
+      <c:checksum algorithm="sha256">0000000000000000000000000000000000000000000000000000000000000000</c:checksum>
+    </file>
+    <file path="data.bin" media-type="application/octet-stream" size="3">
+      <c:link xlink:type="simple" xlink:href="#blob-1"/>
+    </file>
+  </manifest>
+  <blobs>
+    <c:blob id="blob-1" encoding="base64">AAEC</c:blob>
+  </blobs>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?processing instruction-data?>
+<!-- comment before the root -->
+<dialogue>
+  <speaker id="s1">A</speaker>
+  <utterance>
+    <![CDATA[
+      A ]]> B
+      <not-an-element>
+    ]]>
+  </utterance>
+  <!-- embedded punctuation: -- is avoided here -->
+  <choice>
+    <when test="x &gt; 0 and y &lt;= 9">
+      <text>quoted: &quot;yes&quot; and apostrophe: &apos;ok&apos;</text>
+    </when>
+    <otherwise>
+      <text xml:space="default">fallback</text>
+    </otherwise>
+  </choice>
+  <?note semi-structured content ?>
+</dialogue>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (account*)>
+  <!ELEMENT account (opening, transaction*, closing)>
+  <!ATTLIST account number NMTOKEN #REQUIRED currency CDATA "XXX">
+  <!ELEMENT opening (#PCDATA)>
+  <!ELEMENT transaction (date, debit?, credit?, note?)>
+  <!ATTLIST transaction kind (debit|credit|adjustment) "adjustment">
+  <!ELEMENT date (#PCDATA)>
+  <!ELEMENT debit (#PCDATA)>
+  <!ELEMENT credit (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT closing (#PCDATA)>
+]>
+<ledger>
+  <account number="000-α" currency="EUR">
+    <opening>12.50</opening>
+    <transaction kind="credit">
+      <date>2026-02-29</date>
+      <credit>1.00</credit>
+      <note>leap-day boundary</note>
+    </transaction>
+    <transaction kind="debit">
+      <date>2026-03-01</date>
+      <debit>0.001</debit>
+    </transaction>
+    <transaction>
+      <date>0000-00-00</date>
+      <note><![CDATA[adjustment with <raw> markers]]></note>
+    </transaction>
+    <closing>13.499</closing>
+  </account>
+</ledger>
+```

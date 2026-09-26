@@ -1,0 +1,23 @@
+{
+  "call": 8,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE map [\n  <!ELEMENT map (layer+, legend?)>\n  <!ELEMENT layer (label, bounds, feature*)>\n  <!ATTLIST layer name NMTOKEN #REQUIRED visible (true|false) \"true\">\n  <!ELEMENT label (#PCDATA)>\n  <!ELEMENT bounds (north, east, south, west)>\n  <!ELEMENT north (#PCDATA)>\n  <!ELEMENT east (#PCDATA)>\n  <!ELEMENT south (#PCDATA)>\n  <!ELEMENT west (#PCDATA)>\n  <!ELEMENT feature (point|line|area)>\n  <!ATTLIST feature id ID #REQUIRED kind NMTOKEN #REQUIRED>\n  <!ELEMENT point EMPTY>\n  <!ATTLIST point lat CDATA #REQUIRED lon CDATA #REQUIRED>\n  <!ELEMENT line (point, point+)>\n  <!ELEMENT area (ring+)>\n  <!ELEMENT ring (point, point+)>\n  <!ELEMENT legend (symbol+)>\n  <!ELEMENT symbol (#PCDATA)>\n  <!ATTLIST symbol code NMTOKEN #REQUIRED>\n]>\n<map xmlns=\"urn:example:cartography\" version=\"3.7\">\n  <layer name=\"coastline\" visible=\"true\">\n    <label>Atlantic survey</label>\n    <bounds>\n      <north>51.482</north>\n      <east>2.104</east>\n      <south>49.901</south>\n      <west>-5.721</west>\n    </bounds>\n    <feature id=\"pt-001\" kind=\"harbor\">\n      <point lat=\"50.8472\" lon=\"-1.0879\"/>\n    </feature>\n    <feature id=\"ln-014\" kind=\"route\">\n      <line>\n        <point lat=\"50.8472\" lon=\"-1.0879\"/>\n        <point lat=\"50.3714\" lon=\"-4.1427\"/>\n        <point lat=\"49.901\" lon=\"-5.721\"/>\n      </line>\n    </feature>\n    <feature id=\"ar-003\" kind=\"reserve\">\n      <area>\n        <ring>\n          <point lat=\"50.90\" lon=\"-1.10\"/>\n          <point lat=\"50.92\" lon=\"-1.04\"/>\n          <point lat=\"50.87\" lon=\"-1.01\"/>\n          <point lat=\"50.90\" lon=\"-1.10\"/>\n        </ring>\n      </area>\n    </feature>\n  </layer>\n  <legend>\n    <symbol code=\"harbor\">Anchorage</symbol>\n    <symbol code=\"route\">Survey route</symbol>\n    <symbol code=\"reserve\">Protected area</symbol>\n  </legend>\n</map>\n\n--- example 2 ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE report [\n  <!ENTITY product \"parser\">\n  <!ENTITY stamp \"2026-09-24\">\n  <!ENTITY nested \"&lt;escaped&gt; &amp; text\">\n  <!ELEMENT report (header, section*, conclusion?)>\n  <!ELEMENT header (subject, author, date)>\n  <!ELEMENT subject (#PCDATA)>\n  <!ELEMENT author (#PCDATA)>\n  <!ELEMENT date (#PCDATA)>\n  <!ELEMENT section (heading, paragraph+, list?)>\n  <!ATTLIST section level NMTOKEN #REQUIRED>\n  <!ELEMENT heading (#PCDATA)>\n  <!ELEMENT paragraph (#PCDATA|code|link|br)*>\n  <!ELEMENT code (#PCDATA)>\n  <!ELEMENT link (#PCDATA)>\n  <!ATTLIST link href URI #IMPLIED>\n  <!ELEMENT br EMPTY>\n  <!ELEMENT list (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ELEMENT conclusion (#PCDATA)>\n]>\n<report>\n  <header>\n    <subject>Testing &product; behavior</subject>\n    <author>QA &lt;team&gt;</author>\n    <date>&stamp;</date>\n  </header>\n  <section level=\"1\">\n    <heading>Input handling</heading>\n    <paragraph>Literal entity expansion: &nested; <br/> and inline <code>--noout</code>.</paragraph>\n    <paragraph>See <link href=\"https://example.invalid/a?b=1&amp;c=2\">reference</link>.</paragraph>\n    <list>\n      <item>empty values</item>\n      <item>unicode: \u0395\u03bb\u03bb\u03b7\u03bd\u03b9\u03ba\u03ac / \u65e5\u672c\u8a9e / \u0627\u0644\u0639\u0631\u0628\u064a\u0629</item>\n      <item>quotes: &quot;single&quot; and &apos;double&apos;</item>\n    </list>\n  </section>\n  <section level=\"2\">\n    <heading>Boundary notes</heading>\n    <paragraph><![CDATA[Characters such as ]]> and & remain inside this section.</paragraph>\n  </section>\n  <conclusion>End of report.</conclusion>\n</report>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T05:59:33.533935+00:00"
+}

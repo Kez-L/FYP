@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body, trailer?)>
+  <!ELEMENT header (field+)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT body (item|note|itemref)*>
+  <!ELEMENT item (#PCDATA|meta)*>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta k CDATA #REQUIRED v CDATA #IMPLIED>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT itemref EMPTY>
+  <!ATTLIST itemref target IDREF #REQUIRED>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST envelope id ID #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY text "A &nbsp; B &lt; C &gt; D">
+]>
+<envelope id="env-9">
+  <header>
+    <field name="mode" value="test"/>
+    <field name="empty"/>
+  </header>
+  <body>
+    <item id="it-1">&text;<meta k="quoted" v="&quot;x&quot;"/></item>
+    <itemref target="it-1"/>
+    <note><![CDATA[<item>raw markup</item>]]></note>
+  </body>
+  <trailer>done</trailer>
+</envelope>

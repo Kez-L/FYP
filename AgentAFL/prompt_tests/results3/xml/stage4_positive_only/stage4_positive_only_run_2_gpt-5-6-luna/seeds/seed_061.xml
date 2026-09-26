@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow" xmlns:task="urn:example:task" version="3">
+  <variables>
+    <variable name="workspace" value="/var/tmp/run"/>
+    <variable name="attempts" value="4" type="integer"/>
+    <variable name="verbose" value="true" type="boolean"/>
+  </variables>
+  <pipeline id="nightly">
+    <task:step id="prepare" action="create-directory">
+      <task:input key="path">${workspace}</task:input>
+      <task:output key="result" required="false"/>
+    </task:step>
+    <task:step id="scan" action="execute" depends-on="prepare">
+      <task:command><![CDATA[
+        /usr/local/bin/scan --input "${workspace}" --format json
+      ]]></task:command>
+      <task:environment>
+        <task:item key="LC_ALL">C</task:item>
+        <task:item key="MODE">strict</task:item>
+      </task:environment>
+      <task:retry limit="2" delay="PT5S"/>
+    </task:step>
+    <task:step id="publish" action="upload" depends-on="scan">
+      <task:artifact path="reports/latest.json" media-type="application/json"/>
+      <task:destination scheme="sftp" host="reports.example.invalid" port="2222">
+        <task:path>/incoming/nightly/</task:path>
+      </task:destination>
+    </task:step>
+  </pipeline>
+  <on-error>
+    <notify channel="email" address="ops@example.invalid">
+      Pipeline ${pipeline} failed.
+    </notify>
+  </on-error>
+</workflow>

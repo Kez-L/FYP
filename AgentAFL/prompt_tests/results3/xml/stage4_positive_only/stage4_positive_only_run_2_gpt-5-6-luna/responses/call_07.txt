@@ -1,0 +1,160 @@
+```xml
+<?xml version="1.0"?>
+<archive>
+  <header>
+    <created>2026-09-24T12:00:00Z</created>
+    <owner id="u-17">Mira Chen</owner>
+    <flags>
+      <flag>compressed</flag>
+      <flag>indexed</flag>
+      <flag>readonly</flag>
+    </flags>
+  </header>
+  <entries>
+    <entry key="alpha">
+      <path>/var/data/alpha.bin</path>
+      <size unit="bytes">4096</size>
+      <checksum algorithm="sha256">e3b0c44298fc1c149afbf4c8996fb924</checksum>
+    </entry>
+    <entry key="omega">
+      <path>/var/data/omega.bin</path>
+      <size unit="bytes">0</size>
+      <checksum algorithm="sha256"/>
+    </entry>
+  </entries>
+  <footer status="complete"/>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow>
+  <start ref="prepare"/>
+  <node id="prepare" kind="task">
+    <input name="source" type="file">input.dat</input>
+    <output name="normalized" type="file">normalized.dat</output>
+    <next ref="validate"/>
+  </node>
+  <node id="validate" kind="decision">
+    <condition expression="size &gt; 0"/>
+    <when value="true" next="publish"/>
+    <when value="false" next="reject"/>
+  </node>
+  <node id="publish" kind="task">
+    <command><![CDATA[install -m 0644 normalized.dat /srv/incoming/]]></command>
+    <next ref="finish"/>
+  </node>
+  <node id="reject" kind="terminal">
+    <reason>empty input</reason>
+  </node>
+  <node id="finish" kind="terminal">
+    <message>workflow complete</message>
+  </node>
+</workflow>
+```
+
+```xml
+<?xml version="1.0"?>
+<invoice>
+  <number>INV-2048</number>
+  <issued year="2026" month="09" day="24"/>
+  <customer>
+    <company>Harbor Works Ltd.</company>
+    <address>
+      <line>7 Quay Street</line>
+      <city>Brighton</city>
+      <postal-code>BN1 4AA</postal-code>
+    </address>
+  </customer>
+  <lines>
+    <line-item>
+      <sku>AX-4</sku>
+      <quantity>3</quantity>
+      <unit-price currency="GBP">12.50</unit-price>
+    </line-item>
+    <line-item>
+      <sku>BR-9</sku>
+      <quantity>1</quantity>
+      <unit-price currency="GBP">87.00</unit-price>
+      <discount percent="10"/>
+    </line-item>
+  </lines>
+  <totals>
+    <subtotal currency="GBP">124.50</subtotal>
+    <tax rate="0.20" currency="GBP">24.90</tax>
+    <grand-total currency="GBP">149.40</grand-total>
+  </totals>
+  <payment method="bank-transfer">
+    <reference>INV-2048</reference>
+  </payment>
+</invoice>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ENTITY sender "operations@example.test">
+  <!ENTITY notice "This message was generated automatically.">
+]>
+<message>
+  <envelope>
+    <from>&sender;</from>
+    <to>archive@example.test</to>
+    <subject>Nightly report</subject>
+  </envelope>
+  <body>
+    <section name="summary">
+      <heading>Summary</heading>
+      <paragraph>&notice;</paragraph>
+      <paragraph>Seven jobs completed successfully.</paragraph>
+    </section>
+    <section name="details">
+      <table>
+        <row><cell>job-01</cell><cell>success</cell></row>
+        <row><cell>job-02</cell><cell>success</cell></row>
+        <row><cell>job-03</cell><cell>success</cell></row>
+      </table>
+    </section>
+  </body>
+  <attachments>
+    <attachment media-type="text/plain" filename="report.txt">
+      <![CDATA[completed=7
+failed=0
+duration=00:18:42]]>
+    </attachment>
+  </attachments>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<configuration>
+  <service name="edge-cache" enabled="true">
+    <listen>
+      <socket protocol="tcp" address="127.0.0.1" port="8080"/>
+      <socket protocol="unix" path="/run/edge-cache.sock"/>
+    </listen>
+    <limits>
+      <memory unit="MiB">512</memory>
+      <connections soft="128" hard="256"/>
+      <timeout unit="ms">7500</timeout>
+    </limits>
+    <routes>
+      <route pattern="/assets/*" handler="static">
+        <cache max-age="86400" public="true"/>
+      </route>
+      <route pattern="/api/*" handler="proxy">
+        <upstream scheme="https" host="backend.internal" port="443"/>
+        <headers>
+          <add name="X-Forwarded-Proto" value="https"/>
+          <remove name="Server"/>
+        </headers>
+      </route>
+    </routes>
+  </service>
+  <logging format="json">
+    <sink type="stderr" level="warning"/>
+    <sink type="file" level="info" path="/var/log/edge-cache.log"/>
+  </logging>
+</configuration>
+```

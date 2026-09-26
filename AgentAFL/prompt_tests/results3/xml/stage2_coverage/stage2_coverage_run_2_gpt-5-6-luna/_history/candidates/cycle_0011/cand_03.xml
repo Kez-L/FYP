@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (start, step+, finish)>
+  <!ATTLIST workflow id ID #REQUIRED>
+  <!ELEMENT start EMPTY>
+  <!ATTLIST start at CDATA #IMPLIED>
+  <!ELEMENT step (input*, action, output*)>
+  <!ATTLIST step name ID #REQUIRED depends IDREFS #IMPLIED>
+  <!ELEMENT input (#PCDATA)>
+  <!ATTLIST input key NMTOKEN #REQUIRED>
+  <!ELEMENT action (command, environment?)>
+  <!ELEMENT command (#PCDATA)>
+  <!ELEMENT environment (variable*)>
+  <!ELEMENT variable EMPTY>
+  <!ATTLIST variable name NMTOKEN #REQUIRED value CDATA #REQUIRED>
+  <!ELEMENT output (#PCDATA)>
+  <!ATTLIST output path CDATA #REQUIRED format (text|json|binary) "text">
+  <!ELEMENT finish EMPTY>
+  <!ATTLIST finish status (success|failure|cancelled) #REQUIRED>
+]>
+<workflow id="deploy-42">
+  <start at="2026-09-24T09:00:00Z"/>
+  <step name="compile">
+    <action>
+      <command>make all &amp;&amp; make check</command>
+      <environment>
+        <variable name="MODE" value="release"/>
+        <variable name="FLAGS" value="--quiet --jobs=4"/>
+      </environment>
+    </action>
+    <output path="build.log" format="text">completed</output>
+  </step>
+  <step name="publish" depends="compile">
+    <input key="artifact">dist/package.tar</input>
+    <action>
+      <command>upload --atomic</command>
+    </action>
+    <output path="receipt.json" format="json"><![CDATA[{"ok":true,"count":1}]]></output>
+  </step>
+  <finish status="success"/>
+</workflow>

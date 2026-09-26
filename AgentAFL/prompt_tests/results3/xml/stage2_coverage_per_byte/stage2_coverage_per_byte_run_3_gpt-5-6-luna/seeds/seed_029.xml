@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE ledger PUBLIC "-//Example//DTD Ledger 2.0//EN" "ledger.dtd" [
+  <!ELEMENT ledger (account+, note?)>
+  <!ELEMENT account (owner, entry*)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT entry EMPTY>
+  <!ELEMENT note (#PCDATA|em)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ATTLIST ledger xmlns CDATA #IMPLIED revision CDATA #IMPLIED>
+  <!ATTLIST account number CDATA #REQUIRED type (asset|liability|memo) #IMPLIED>
+  <!ATTLIST entry date CDATA #REQUIRED amount CDATA #REQUIRED flags NMTOKENS #IMPLIED>
+  <!ATTLIST note xml:space (default|preserve) "preserve">
+  <!ENTITY euro "&#8364;">
+  <!ENTITY lt "<">
+  <!ENTITY text "opening &euro; balance">
+]>
+<?xml-stylesheet type="text/xsl" href="ledger-view.xsl"?>
+<ledger xmlns="urn:ledger" revision="v2">
+  <account number="A-17" type="asset">
+    <owner>R&amp;D &lt;west&gt;</owner>
+    <entry date="2026-09-24" amount="1250.50" flags="posted reviewed"/>
+    <entry date="2026-09-25" amount="-3.00" flags="pending"/>
+  </account>
+  <account number="L-3" type="liability">
+    <owner>&text;</owner>
+    <entry date="2026-09-26" amount="9" flags="memo"/>
+  </account>
+  <note>Use &lt;adjustment&gt; for <em>late</em> items.</note>
+</ledger>

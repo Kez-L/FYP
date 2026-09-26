@@ -1,0 +1,25 @@
+<?xml version="1.1"?>
+<workflow xmlns="urn:example:workflow" xmlns:x="urn:example:extra" xml:lang="fr">
+  <x:header priority="high" x:token="αβγ">
+    <x:owner id="42"/>
+    <x:checksum>00ff7e</x:checksum>
+  </x:header>
+  <steps>
+    <step id="prepare" next="execute">
+      <command><![CDATA[printf "%s\n" "<ready>"]]></command>
+      <environment>
+        <variable name="MODE">safe</variable>
+        <variable name="PATH">/tmp/bin:/usr/bin</variable>
+      </environment>
+    </step>
+    <step id="execute" next="finish">
+      <retry count="3">
+        <delay unit="ms">250</delay>
+      </retry>
+      <x:payload encoding="base64">AAECAwQFBgcICQ==</x:payload>
+    </step>
+    <step id="finish">
+      <result code="0"/>
+    </step>
+  </steps>
+</workflow>

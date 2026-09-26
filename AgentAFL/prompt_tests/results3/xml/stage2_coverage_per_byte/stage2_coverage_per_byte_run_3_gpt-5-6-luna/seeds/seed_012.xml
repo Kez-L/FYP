@@ -1,0 +1,43 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (section*)>
+  <!ELEMENT section (heading, item+, checksum?)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (key, value, metadata?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT metadata (created?, owner?, flag*)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST section name NMTOKEN #REQUIRED>
+  <!ATTLIST item keyref ID #REQUIRED priority (low|normal|high) "normal">
+  <!ATTLIST metadata format (short|long) #IMPLIED>
+  <!ATTLIST flag name NMTOKEN #REQUIRED enabled (yes|no) "yes">
+]>
+<archive>
+  <section name="alpha">
+    <heading>First section</heading>
+    <item keyref="k-a" priority="high">
+      <key>alpha</key>
+      <value>first<linebreak/>second<linebreak/>third</value>
+      <metadata format="long">
+        <created>2026-09-24</created>
+        <owner>ops</owner>
+        <flag name="indexed"/>
+        <flag name="hidden" enabled="no"/>
+      </metadata>
+    </item>
+    <checksum>sha256:0000000000000000</checksum>
+  </section>
+  <section name="empty-meta">
+    <heading>Another heading</heading>
+    <item keyref="k-b">
+      <key>beta</key>
+      <value><![CDATA[raw ]]> text <![CDATA[with ]]> boundaries</value>
+      <metadata/>
+    </item>
+  </section>
+</archive>

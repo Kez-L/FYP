@@ -1,0 +1,35 @@
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body)>
+  <!ELEMENT header (item*)>
+  <!ELEMENT item EMPTY>
+  <!ELEMENT body (section+)>
+  <!ELEMENT section (para|list|section)*>
+  <!ELEMENT para (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT list (li*)>
+  <!ELEMENT li (#PCDATA|link)*>
+  <!ATTLIST item name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST section id NMTOKEN #IMPLIED>
+  <!ATTLIST link href CDATA #REQUIRED>
+]>
+<envelope>
+  <header>
+    <item name="version" value="0"/>
+    <item name="flags" value="&quot;&amp;&lt;"/>
+    <item name="unicode" value="𐀀"/>
+  </header>
+  <body>
+    <section id="root">
+      <para>Before <link href="urn:x?y=1&amp;z=2">link text</link> after.</para>
+      <list>
+        <li>one</li>
+        <li>two <link href="">tail</link></li>
+        <li><![CDATA[raw ]]> brackets ]]&gt; remain</li>
+      </list>
+      <section id="nested">
+        <para>deep</para>
+        <section id="leaf"/>
+      </section>
+    </section>
+  </body>
+</envelope>

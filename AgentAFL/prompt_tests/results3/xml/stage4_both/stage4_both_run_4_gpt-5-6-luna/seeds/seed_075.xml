@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<message xmlns="urn:example:message" xmlns:meta="urn:example:metadata">
+  <meta:properties>
+    <meta:property name="priority">high</meta:property>
+    <meta:property name="classification">internal</meta:property>
+    <meta:property name="retention-days">30</meta:property>
+  </meta:properties>
+  <sender>
+    <display-name>Build Service</display-name>
+    <address scheme="mailto">build@example.invalid</address>
+  </sender>
+  <recipients>
+    <recipient role="to">
+      <display-name>Release Team</display-name>
+      <address scheme="mailto">release@example.invalid</address>
+    </recipient>
+    <recipient role="cc">
+      <display-name>Audit Queue</display-name>
+      <address scheme="mailto">audit@example.invalid</address>
+    </recipient>
+  </recipients>
+  <body format="markdown">
+    <subject>Deployment completed</subject>
+    <content><![CDATA[
+# Deployment completed
+
+Version **4.8.2** is available in the staging environment.
+
+- 17 checks passed
+- 0 checks failed
+- review window: 30 minutes
+    ]]></content>
+    <attachments>
+      <attachment id="log" filename="deploy.log" media-type="text/plain">
+        <checksum algorithm="sha256">3a7bd3e2360a3d29eea436fcfb7e44c7</checksum>
+      </attachment>
+    </attachments>
+  </body>
+  <delivery>
+    <attempt number="1" timestamp="2026-09-24T19:10:00Z"/>
+    <result code="accepted">queued for processing</result>
+  </delivery>
+</message>

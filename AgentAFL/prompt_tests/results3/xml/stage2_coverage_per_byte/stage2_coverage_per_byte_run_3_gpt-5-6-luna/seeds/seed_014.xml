@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (context, results, conclusion?)>
+  <!ELEMENT context (property*)>
+  <!ELEMENT property EMPTY>
+  <!ELEMENT results (result+)>
+  <!ELEMENT result (label, value, details?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT details (#PCDATA|list|item)*>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT conclusion (#PCDATA)>
+  <!ATTLIST report id ID #REQUIRED generated CDATA #IMPLIED>
+  <!ATTLIST context property CDATA #IMPLIED>
+  <!ATTLIST property name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST result code CDATA #REQUIRED severity (info|warning|error) "info">
+  <!ATTLIST list ordered (yes|no) "no">
+  <!ENTITY left "&lt;">
+  <!ENTITY right "&gt;">
+  <!ENTITY quote "&quot;">
+]>
+<report id="r-01" generated="2026-09-24T12:00:00Z">
+  <context property="runtime">
+    <property name="os" value="test"/>
+    <property name="locale" value="C"/>
+    <property name="features" value="&left;xml&right; &quote;namespaces&quote;"/>
+  </context>
+  <results>
+    <result code="R1" severity="warning">
+      <label>Whitespace</label>
+      <value>mixed&#x0A;lines</value>
+      <details>
+        leading text
+        <list ordered="yes">
+          <item>first</item>
+          <item>second &amp; final</item>
+        </list>
+        trailing text
+      </details>
+    </result>
+    <result code="R2" severity="error">
+      <label>Boundary</label>
+      <value><![CDATA[]]><![CDATA[adjacent sections]]></value>
+      <details><![CDATA[<not-an-element/>]]></details>
+    </result>
+  </results>
+  <conclusion>Review required.</conclusion>
+</report>

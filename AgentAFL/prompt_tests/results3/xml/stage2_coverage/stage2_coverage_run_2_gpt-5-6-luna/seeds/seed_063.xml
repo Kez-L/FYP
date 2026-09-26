@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE pipeline [
+  <!ENTITY % commonAttrs ' xml:id ID #IMPLIED xml:lang CDATA #IMPLIED '>
+  <!ENTITY % stages '
+    <!ELEMENT stage (input?, transform*, output?)>
+    <!ATTLIST stage
+      name NMTOKEN #REQUIRED
+      mode (strict|lenient) "strict">
+    <!ELEMENT input (#PCDATA|data)*>
+    <!ELEMENT transform (param*)>
+    <!ATTLIST transform type CDATA #REQUIRED>
+    <!ELEMENT param EMPTY>
+    <!ATTLIST param key CDATA #REQUIRED value CDATA #IMPLIED>
+    <!ELEMENT output (#PCDATA|data)*>
+    <!ELEMENT data (#PCDATA)>
+  '>
+  <!ELEMENT pipeline (description?, stage+, footer?)>
+  <!ATTLIST pipeline %commonAttrs; version CDATA #REQUIRED>
+  <!ELEMENT description (#PCDATA|b|i)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  %stages;
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY open "[" >
+  <!ENTITY close "]" >
+]>
+<pipeline xml:id="p0" xml:lang="x-test" version="3.14">
+  <description>A <b>small</b> <i>processing</i> graph.</description>
+  <stage name="decode" mode="lenient">
+    <input>header &amp; body<data><![CDATA[raw bytes: ]]>42</data></input>
+    <transform type="replace">
+      <param key="from" value="&open;"/>
+      <param key="to" value="&close;"/>
+    </transform>
+    <output><data>decoded</data></output>
+  </stage>
+  <stage name="emit">
+    <transform type="serialize"/>
+    <transform type="compress"><param key="level" value="0"/></transform>
+    <output>done</output>
+  </stage>
+  <footer>fin &lt; end</footer>
+</pipeline>

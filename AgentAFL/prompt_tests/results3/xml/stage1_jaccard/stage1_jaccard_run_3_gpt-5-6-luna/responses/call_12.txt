@@ -1,0 +1,127 @@
+```xml
+<?xml version="1.1" standalone="yes"?>
+<!DOCTYPE archive [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "payload.bin" NDATA bin>
+  <!ENTITY title "A &amp; B">
+  <!ENTITY nbsp "&#160;">
+  <!ELEMENT archive (record*, trailer)>
+  <!ELEMENT record (key, data, note?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST record
+    kind (alpha|beta) "alpha"
+    blob ENTITY #IMPLIED
+    ref ID #IMPLIED>
+  <!ATTLIST note importance NMTOKEN "normal">
+]>
+<archive>
+  <record kind="beta" blob="payload" ref="r1">
+    <key>r1</key>
+    <data>&title; &nbsp; &#x41;</data>
+    <note importance="high">A <emph>marked</emph> fragment.</note>
+  </record>
+  <record ref="r2">
+    <key>r2</key>
+    <data><![CDATA[raw <data> & symbols]]></data>
+  </record>
+  <trailer>done<?archive-pi value?></trailer>
+</archive>
+```
+
+```xml
+<?xml version="1.1"?>
+<envelope xmlns="urn:outer" xmlns:m="urn:message" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <m:header m:id="h-17" xml:lang="fr">
+    <m:route>
+      <m:hop order="1">edge-a</m:hop>
+      <m:hop order="2">edge-b</m:hop>
+    </m:route>
+  </m:header>
+  <payload xmlns="" xml:space="preserve">
+    <entry xmlns:p="urn:payload" p:type="binary" p:checksum="00ff">
+      <key>alpha</key>
+      <value xsi:nil="true"/>
+    </entry>
+    <entry xmlns:q="urn:alternate">
+      <q:key>beta</q:key>
+      <q:value><![CDATA[<not-an-element/>]]></q:value>
+    </entry>
+  </payload>
+  <m:footer xmlns:m="urn:message">
+    <m:status code="204">empty</m:status>
+  </m:footer>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE r [
+  <!ENTITY open "<item>">
+  <!ENTITY close "</item>">
+  <!ENTITY % shape "<!ELEMENT r ANY>">
+  %shape;
+  <!ELEMENT item (#PCDATA|item)*>
+  <!ATTLIST item level NMTOKEN #IMPLIED>
+]>
+<r a="one" a="two">
+  &open;unfinished &unknown; <![CDATA[unterminated text
+  <item level="x">nested</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % declarations
+    "<!ELEMENT catalog (entry|gap)*>
+     <!ELEMENT entry (#PCDATA)>
+     <!ELEMENT gap EMPTY>
+     <!ATTLIST entry code ID #IMPLIED>">
+  %declarations;
+  <!ENTITY % mode "IGNORE">
+  <![ %mode; [
+    <!ELEMENT secret (#PCDATA)>
+    <!ATTLIST secret hidden CDATA "yes">
+  ]]>
+  <![INCLUDE[
+    <!ENTITY marker "included">
+  ]]>
+]>
+<catalog>
+  <entry code="first">one &marker;</entry>
+  <gap/>
+  <entry>two</entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+)>
+  <!ELEMENT section (heading, para+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT para (#PCDATA|link|break)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ATTLIST link target IDREF #IMPLIED>
+  <!ENTITY quote "&#34;">
+  <!ENTITY amp "&amp;">
+  <!ENTITY newline "first&#x0A;second">
+  <!ENTITY fragment "left&quote;mid&quote;right">
+  <!ENTITY repeated "&newline; / &newline;">
+]>
+<report>
+  <section id="intro">
+    <heading>&fragment;</heading>
+    <para>&repeated;<break/>tail <link target="details">read &amp; continue</link>.</para>
+  </section>
+  <section id="details">
+    <heading>More</heading>
+    <para><![CDATA[<escaped> text]]> &amp; &quote;</para>
+  </section>
+</report>
+```

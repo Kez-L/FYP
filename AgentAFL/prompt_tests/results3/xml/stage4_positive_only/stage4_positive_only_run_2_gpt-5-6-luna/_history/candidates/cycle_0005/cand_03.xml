@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-16"?>
+<workflow id="wf-77" version="3">
+  <trigger kind="schedule">
+    <calendar>
+      <day-of-week>Monday</day-of-week>
+      <time zone="UTC">00:00:00</time>
+    </calendar>
+  </trigger>
+  <branch test="result = 'ok'">
+    <task name="collect" retry="0">
+      <input source="stdin"/>
+      <output format="json"/>
+    </task>
+    <parallel>
+      <task name="compress">
+        <depends-on ref="collect"/>
+      </task>
+      <task name="notify">
+        <depends-on ref="collect"/>
+        <recipients>
+          <recipient channel="email">nobody@example.invalid</recipient>
+          <recipient channel="sms"></recipient>
+        </recipients>
+      </task>
+    </parallel>
+  </branch>
+  <on-error>
+    <action type="rollback"/>
+    <action type="log">failure &gt; threshold</action>
+  </on-error>
+</workflow>

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (title, tags?, payload)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ATTLIST record key ID #REQUIRED ref IDREF #IMPLIED>
+  <!ATTLIST payload kind (text|binary|mixed) "mixed">
+  <!ENTITY greeting "hello &amp; welcome">
+  <!ENTITY open "<marker>">
+  <!ENTITY close "</marker>">
+]>
+<archive>
+  <record key="r1" ref="r2">
+    <title>&greeting;</title>
+    <tags><tag>one</tag><tag>two</tag><tag>three</tag></tags>
+    <payload kind="mixed">prefix &open;inside&close;<chunk>nested</chunk>suffix</payload>
+  </record>
+  <record key="r2">
+    <title>second &#65; &#x20AC;</title>
+    <payload><chunk><![CDATA[raw ]]> characters]]></chunk></payload>
+  </record>
+</archive>

@@ -1,0 +1,31 @@
+<?xml version="1.1"?>
+<configuration>
+  <profile name="edge">
+    <option key="retries" value="0"/>
+    <option key="timeout" value="PT0S"/>
+    <option key="features">
+      <list>
+        <value>parser</value>
+        <value>serializer</value>
+        <value>diagnostics</value>
+      </list>
+    </option>
+  </profile>
+  <routing>
+    <route match="^/api/[0-9]+$">
+      <destination scheme="unix" address="/tmp/service.sock"/>
+      <headers>
+        <header name="X-Trace" value="enabled"/>
+        <header name="Accept" value="application/xml"/>
+      </headers>
+    </route>
+    <route match="fallback">
+      <destination scheme="https" address="https://invalid.example/"/>
+      <headers/>
+    </route>
+  </routing>
+  <diagnostics enabled="true">
+    <message severity="warning">queue is empty</message>
+    <message severity="info">configuration loaded</message>
+  </diagnostics>
+</configuration>

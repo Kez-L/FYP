@@ -1,0 +1,38 @@
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (index, record*)>
+  <!ELEMENT index (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry ref ID #REQUIRED kind CDATA #IMPLIED>
+  <!ELEMENT record (key, payload, checksum?)>
+  <!ATTLIST record source IDREF #REQUIRED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY left-bracket "[">
+  <!ENTITY right-bracket "]">
+]>
+<archive>
+  <index>
+    <entry ref="r-a" kind="text"/>
+    <entry ref="r-b" kind="binary"/>
+    <entry ref="r-c" kind="text"/>
+  </index>
+  <record source="r-a">
+    <key>alpha</key>
+    <payload>first &left-bracket;segment&right-bracket;<chunk>one</chunk>middle<chunk>two</chunk>end</payload>
+    <checksum>sha256:0000000000000000</checksum>
+  </record>
+  <record source="r-b">
+    <key>beta</key>
+    <payload><![CDATA[
+      00 ff 10 7e 00
+      bytes-looking text with <angles> and ampersands & intact
+    ]]></payload>
+  </record>
+  <record source="r-c">
+    <key>gamma</key>
+    <payload>single value</payload>
+  </record>
+</archive>

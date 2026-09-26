@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ENTITY % optional "INCLUDE">
+  <!ENTITY % featureDecl
+    "<!ELEMENT experimental (flag*)>
+     <!ELEMENT flag EMPTY>
+     <!ATTLIST flag name NMTOKEN #REQUIRED value CDATA #REQUIRED>">
+  %featureDecl;
+  <!ELEMENT configuration (defaults,profile+,experimental?)>
+  <!ELEMENT defaults (setting+)>
+  <!ELEMENT profile (inherits?,setting+,path*)>
+  <!ATTLIST profile name NMTOKEN #REQUIRED active (yes|no) "no">
+  <!ELEMENT inherits EMPTY>
+  <!ATTLIST inherits profile NMTOKEN #REQUIRED>
+  <!ELEMENT setting EMPTY>
+  <!ATTLIST setting
+    key NMTOKEN #REQUIRED
+    value CDATA #REQUIRED
+    locked (true|false) "false">
+  <!ELEMENT path (#PCDATA)>
+  <!ATTLIST path kind (input|output|cache) #REQUIRED>
+  <![%optional;[
+    <!ATTLIST configuration environment CDATA "test">
+  ]]>
+]>
+<configuration environment="staging">
+  <defaults>
+    <setting key="threads" value="04" locked="true"/>
+    <setting key="verbose" value="false"/>
+  </defaults>
+  <profile name="minimal" active="no">
+    <inherits profile="base"/>
+    <setting key="threads" value="1"/>
+    <path kind="cache">./cache/../cache</path>
+  </profile>
+  <profile name="base" active="yes">
+    <setting key="threads" value="8"/>
+    <setting key="locale" value="en-US"/>
+    <path kind="input">data/in</path>
+    <path kind="output">data/out</path>
+  </profile>
+  <experimental>
+    <flag name="streaming" value="on"/>
+    <flag name="diagnostics" value="&quot;full&quot;"/>
+  </experimental>
+</configuration>

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, records, footer?)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header created CDATA #IMPLIED>
+  <!ELEMENT records (record+)>
+  <!ELEMENT record (name, tags?, payload)>
+  <!ATTLIST record uid ID #REQUIRED state (open|closed) "open">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk|note)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk encoding CDATA #IMPLIED>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY marker "A &lt; B &amp;&amp; B &gt; C">
+]>
+<archive>
+  <header created="2026-09-24"/>
+  <records>
+    <record uid="r1">
+      <name>first</name>
+      <tags><tag>one</tag><tag>two</tag></tags>
+      <payload>start<chunk encoding="raw"><![CDATA[a]]></chunk><note>middle</note>&marker;</payload>
+    </record>
+    <record uid="r2" state="closed">
+      <name>second</name>
+      <payload><chunk>left</chunk><!-- boundary --><chunk>right</chunk></payload>
+    </record>
+  </records>
+  <footer>done</footer>
+</archive>

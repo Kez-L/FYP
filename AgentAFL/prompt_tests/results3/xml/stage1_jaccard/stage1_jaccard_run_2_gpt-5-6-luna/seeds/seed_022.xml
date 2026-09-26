@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (meta, data)>
+  <!ELEMENT meta (field*)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT data (row*)>
+  <!ELEMENT row (cell*)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST cell n CDATA #IMPLIED>
+  <!ENTITY % common '
+    <!ENTITY amp "&amp;">
+    <!ENTITY weird "x&#x0D;&#x0A;y">
+  '>
+  %common;
+  <!ENTITY recursive "&recursive;">
+  <!ENTITY nested "&amp;&amp;&amp;">
+  <![IGNORE[
+    <!ELEMENT never (parsed)>
+    <!ENTITY hidden "not expanded">
+  ]]>
+  <![INCLUDE[
+    <!ENTITY included "visible">
+  ]]>
+]>
+<report>
+  <meta>
+    <field name="format" value="&nested;"/>
+    <field name="note" value="&weird;"/>
+  </meta>
+  <data>
+    <row><cell n="1">&included;</cell><cell n="2">&amp;</cell></row>
+    <row><cell n="3"><![CDATA[raw ]]></cell><cell n="4">tail</cell></row>
+  </data>
+</report>

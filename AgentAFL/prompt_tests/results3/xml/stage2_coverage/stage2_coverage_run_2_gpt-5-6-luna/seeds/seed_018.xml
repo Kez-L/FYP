@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE vault [
+  <!ELEMENT vault (sealed, public)>
+  <!ELEMENT sealed (ciphertext, signature)>
+  <!ELEMENT ciphertext (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST signature algorithm CDATA "sha256">
+  <!ELEMENT public (key*, alias?)>
+  <!ELEMENT key EMPTY>
+  <!ATTLIST key
+    id ID #REQUIRED
+    usage (sign|encrypt|both) "encrypt"
+    revoked (yes|no) "no">
+  <!ELEMENT alias (#PCDATA)>
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data.bin" NDATA binary>
+  <!ENTITY token "A&amp;B&lt;C&gt;">
+]>
+<vault>
+  <sealed>
+    <ciphertext encoding="base64">AAECAwQFBgcICQoLDA0ODw==</ciphertext>
+    <signature algorithm="sha512">token-&token;</signature>
+  </sealed>
+  <public>
+    <key id="key-main" usage="both" revoked="no"/>
+    <key id="key-old" usage="sign" revoked="yes"/>
+    <alias>primary &quot;vault&quot;</alias>
+  </public>
+</vault>

@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE records [
+  <!ENTITY % fields "(stamp, payload, checksum?)">
+  <!ENTITY % extras " <!ELEMENT note (#PCDATA)> <!ELEMENT warning (#PCDATA)> ">
+  %extras;
+  <!ELEMENT records (header, record+)>
+  <!ELEMENT header (source, note?)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT record %fields;>
+  <!ELEMENT stamp (#PCDATA)>
+  <!ELEMENT payload (line+)>
+  <!ELEMENT line (#PCDATA|token)*>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT warning (#PCDATA)>
+  <!ATTLIST records version NMTOKEN #FIXED "3">
+  <!ATTLIST header source CDATA #REQUIRED>
+  <!ATTLIST record key ID #REQUIRED class (alpha|beta|gamma) "alpha">
+  <!ATTLIST line index CDATA #REQUIRED>
+  <!ENTITY arrow "&#x2192;">
+]>
+<records version="3">
+  <header>
+    <source>stream-Δ</source>
+    <note>Generated &arrow; retained for replay.</note>
+  </header>
+  <record key="r001" class="beta">
+    <stamp>2026-09-24T00:00:00Z</stamp>
+    <payload>
+      <line index="1">left <token>middle</token> right</line>
+      <line index="2"><token>quoted</token> and plain</line>
+    </payload>
+    <checksum>sha256:unknown</checksum>
+  </record>
+  <record key="r002">
+    <stamp>2026-09-24T00:00:01Z</stamp>
+    <payload>
+      <line index="1">single line</line>
+    </payload>
+    <warning>Partial source record</warning>
+  </record>
+</records>

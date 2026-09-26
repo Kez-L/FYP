@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (defaults,profile+)>
+  <!ELEMENT defaults EMPTY>
+  <!ATTLIST defaults retries NMTOKEN "3" timeout CDATA "30s" enabled (true|false) "true">
+  <!ELEMENT profile (inherits?,setting*,path*)>
+  <!ATTLIST profile name NMTOKEN #REQUIRED>
+  <!ELEMENT inherits EMPTY>
+  <!ATTLIST inherits from NMTOKEN #IMPLIED>
+  <!ELEMENT setting (#PCDATA)>
+  <!ATTLIST setting key NMTOKEN #REQUIRED type (string|integer|boolean|list) "string">
+  <!ELEMENT path (#PCDATA)>
+  <!ATTLIST path name NMTOKEN #REQUIRED mode (read|write|execute) "read">
+]>
+<configuration>
+  <defaults retries="0" timeout="PT0S" enabled="false"/>
+  <profile name="base">
+    <setting key="message">A &lt; B &amp;&amp; C &gt; D</setting>
+    <setting key="workers" type="integer">0008</setting>
+    <path name="cache" mode="write">/var/tmp/cache/</path>
+  </profile>
+  <profile name="child">
+    <inherits from="base"/>
+    <setting key="flags" type="list">alpha,beta,,gamma</setting>
+    <setting key="enabled" type="boolean">TRUE</setting>
+    <path name="logs" mode="execute">relative/../logs</path>
+  </profile>
+</configuration>

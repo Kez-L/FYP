@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE response [
+  <!ELEMENT response (status, headers?, body)>
+  <!ELEMENT status (#PCDATA)>
+  <!ELEMENT headers (header*)>
+  <!ELEMENT header (#PCDATA)>
+  <!ATTLIST header name NMTOKEN #REQUIRED>
+  <!ELEMENT body (json|html|binary|empty)>
+  <!ELEMENT json (#PCDATA)>
+  <!ELEMENT html ANY>
+  <!ELEMENT binary (#PCDATA)>
+  <!ELEMENT empty EMPTY>
+  <!ATTLIST body encoding (plain|base64|escaped) #IMPLIED>
+  <!ENTITY lt "<">
+  <!ENTITY gt ">">
+  <!ENTITY quote "&quot;">
+  <!ENTITY % bodyKinds "json|html|binary|empty">
+  <!ATTLIST response request-id CDATA #IMPLIED>
+]>
+<response request-id="req-9&amp;7">
+  <status>206 Partial Content</status>
+  <headers>
+    <header name="Content-Type">application/xml</header>
+    <header name="X-Test">a&#x9;b&#xA;c</header>
+    <header name="Odd_Name">value with &quot;quotes&quot;</header>
+  </headers>
+  <body encoding="escaped">
+    <html><div class="x">fragment &lt;not closed</div></html>
+  </body>
+</response>

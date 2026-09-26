@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<configuration>
+  <profiles>
+    <profile name="default">
+      <setting key="cache">
+        <value type="boolean">false</value>
+      </setting>
+      <setting key="limits">
+        <value type="list">
+          <item type="integer">0</item>
+          <item type="integer">2147483647</item>
+          <item type="string">unbounded</item>
+        </value>
+      </setting>
+    </profile>
+    <profile name="staging" inherits="default">
+      <setting key="endpoint">
+        <value type="uri">https://staging.example.invalid/api?v=2&amp;mode=test</value>
+      </setting>
+    </profile>
+  </profiles>
+  <routes>
+    <route method="GET" path="/">
+      <handler class="LandingHandler"/>
+    </route>
+    <route method="POST" path="/submit">
+      <middleware name="csrf"/>
+      <middleware name="audit"/>
+      <handler class="SubmitHandler"/>
+    </route>
+  </routes>
+  <fallback>
+    <redirect code="307" target="/maintenance"/>
+  </fallback>
+</configuration>

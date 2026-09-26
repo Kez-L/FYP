@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!NOTATION png SYSTEM "image/png">
+  <!ELEMENT package (manifest, payload, signatures?)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file path CDATA #REQUIRED type (text|binary) "text" format NOTATION (jpeg|png) #IMPLIED>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk sequence NMTOKEN #REQUIRED>
+  <!ELEMENT signatures (signature+)>
+  <!ELEMENT signature (algorithm, value)>
+  <!ATTLIST signature signer CDATA #REQUIRED>
+  <!ELEMENT algorithm (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ENTITY header "PKG-2026">
+  <!ENTITY % audit "INTERNAL">
+]>
+<package xml:base="file:///var/tmp/import/">
+  <manifest>
+    <file path="readme.txt" type="text"/>
+    <file path="photo.jpeg" type="binary" format="jpeg"/>
+    <file path="icon.png" type="binary" format="png"/>
+  </manifest>
+  <payload>
+    <chunk sequence="001"><![CDATA[BEGIN
+alpha|beta|gamma
+END]]></chunk>
+    <chunk sequence="002">&header;: payload continuation</chunk>
+  </payload>
+  <signatures>
+    <signature signer="build-bot">
+      <algorithm>sha256</algorithm>
+      <value>9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08</value>
+    </signature>
+  </signatures>
+</package>

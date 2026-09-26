@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE r [
+  <!ELEMENT r (a|b|c)*>
+  <!ELEMENT a (#PCDATA|x)*>
+  <!ELEMENT b EMPTY>
+  <!ELEMENT c (x?, y+)>
+  <!ELEMENT x (#PCDATA)>
+  <!ELEMENT y (#PCDATA|x)*>
+  <!ATTLIST r xmlns CDATA #IMPLIED xmlns:q CDATA #IMPLIED>
+  <!ATTLIST a q:flag (on|off) "on" xml:base CDATA #IMPLIED>
+  <!ATTLIST b q:kind CDATA #REQUIRED>
+  <!ENTITY amp "&amp;">
+  <!ENTITY nested "L&amp;R">
+]>
+<r xmlns="urn:outer" xmlns:q="urn:aux">
+  <?phase data?>
+  <a q:flag="off" xml:base="sub/"><x>one</x>two&lt;three&gt;&nested;</a>
+  <b q:kind="marker"/>
+  <c><x><![CDATA[embedded <x/> text]]></x><y>Y1<x>Y2</x></y></c>
+  <!-- trailing comment -->
+</r>

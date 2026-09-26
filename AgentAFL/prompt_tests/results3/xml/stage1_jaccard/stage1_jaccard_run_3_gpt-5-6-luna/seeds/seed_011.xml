@@ -1,0 +1,29 @@
+<?xml version="1.1" standalone="no"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (header, record*, trailer)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT record (key, payload, flag?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST record number NMTOKEN #REQUIRED status CDATA "queued">
+  <!ATTLIST flag value (yes|no) "yes">
+  <!ENTITY tab "&#x9;">
+  <!ENTITY newline "&#xA;">
+  <!ENTITY controls "&#x85;&#x2028;">
+]>
+<stream>
+  <header/>
+  <record number="0007" status="ready">
+    <key>A&amp;B</key>
+    <payload><![CDATA[first section ]]> <part>middle</part> <![CDATA[ last section]]></payload>
+    <flag value="no"/>
+  </record>
+  <record number="0008">
+    <key>next</key>
+    <payload>one&tab;two&newline;three&controls;</payload>
+  </record>
+  <trailer xml:space="preserve">  finish  </trailer>
+</stream>

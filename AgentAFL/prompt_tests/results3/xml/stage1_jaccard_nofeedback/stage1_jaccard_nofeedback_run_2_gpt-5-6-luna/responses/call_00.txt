@@ -1,0 +1,77 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <x:section id="α-01">
+    <item code="A&amp;B" active="true">
+      <name><![CDATA[<unescaped> & not an entity]]></name>
+      <price currency="€">12.50</price>
+      <metadata>
+        <entry key="line">first&#x0A;second</entry>
+        <entry key="quote">&quot;quoted&quot;</entry>
+      </metadata>
+    </item>
+  </x:section>
+</catalog>
+```
+
+```xml
+<!DOCTYPE library [
+  <!ELEMENT library (book+)>
+  <!ELEMENT book (title, author?, note*)>
+  <!ATTLIST book isbn ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ENTITY copyright "&#xA9; 2026">
+]>
+<library>
+  <book isbn="b-001">
+    <title>Parsing &amp; Validation</title>
+    <author>R &amp; D</author>
+    <note>Edition <emph>experimental</emph> &copyright;</note>
+  </book>
+</library>
+```
+
+```xml
+<?xml version="1.1"?>
+<root xmlns:a="urn:a" xmlns:b="urn:b" a:flag="yes">
+  <a:child b:value="1">
+    <![CDATA[
+      ]]>]]><![CDATA[><&]]>
+    </a:child>
+  </root>
+```
+
+```xml
+<stream>
+  <chunk index="0"><data>alpha</data></chunk>
+  <chunk index="1">
+    <data><![CDATA[beta]]></data>
+    <empty/>
+  </chunk>
+  <chunk index="2" status="closed">
+    <data>gamma &amp; delta</data>
+  </chunk>
+</stream>
+```
+
+```xml
+<!DOCTYPE r [
+  <!ENTITY ext SYSTEM "missing-resource.ent">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ELEMENT r ANY>
+  <!ATTLIST r
+    ref ENTITY #IMPLIED
+    mode (fast|slow|unknown) "slow"
+    payload NOTATION (bin) #IMPLIED>
+]>
+<r ref="external" mode="fast" payload="bin">
+  <group>
+    <value><![CDATA[x]]></value>
+    <value>y</value>
+  </group>
+  &ext;
+</r>
+```

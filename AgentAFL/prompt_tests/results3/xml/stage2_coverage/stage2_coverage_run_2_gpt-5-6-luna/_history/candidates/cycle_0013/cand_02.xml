@@ -1,0 +1,50 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE world [
+  <!ELEMENT world (region+)>
+  <!ELEMENT region (label, boundary, item*)>
+  <!ATTLIST region
+    code NMTOKEN #REQUIRED
+    xml:space (default|preserve) "default">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT boundary EMPTY>
+  <!ATTLIST boundary
+    north CDATA #REQUIRED
+    south CDATA #REQUIRED
+    east CDATA #REQUIRED
+    west CDATA #REQUIRED>
+  <!ELEMENT item (name, coordinates?, description)>
+  <!ATTLIST item
+    id ID #REQUIRED
+    category (landmark|station|unknown) #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT coordinates EMPTY>
+  <!ATTLIST coordinates
+    lat CDATA #REQUIRED
+    lon CDATA #REQUIRED>
+  <!ELEMENT description (#PCDATA|strong|br|ref)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT ref (#PCDATA)>
+  <!ATTLIST ref href CDATA #REQUIRED>
+]>
+<world xmlns="urn:example:world" xmlns:g="urn:geo">
+  <region code="N-01" xml:space="preserve">
+    <label>North &amp; Upper</label>
+    <boundary north="+90" south="0" east="+180" west="-180"/>
+    <item id="peak" category="landmark">
+      <name g:type="mountain">Aconcagua</name>
+      <coordinates lat="-32.6532" lon="-70.0109"/>
+      <description><strong>high</strong><br/>A place with
+        <ref href="urn:map:peak">coordinates</ref>.
+      </description>
+    </item>
+  </region>
+  <region code="S-02">
+    <label>South</label>
+    <boundary north="0" south="-90" east="180" west="-180"/>
+    <item id="station" category="station">
+      <name>Terminus</name>
+      <description>line break<br/><br/>then text</description>
+    </item>
+  </region>
+</world>

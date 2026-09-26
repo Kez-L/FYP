@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ENTITY % mode "INCLUDE">
+  <![%mode;[
+    <!ELEMENT report (title, item+, tail?)>
+    <!ELEMENT title (#PCDATA)>
+    <!ELEMENT item (#PCDATA|emph|br)*>
+    <!ELEMENT emph (#PCDATA)>
+    <!ELEMENT br EMPTY>
+    <!ELEMENT tail (#PCDATA)>
+  ]]>
+  <!NOTATION raw SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "file:///tmp/fuzz.bin" NDATA raw>
+  <!ATTLIST report
+    xmlns CDATA #IMPLIED
+    xml:lang NMTOKEN #IMPLIED
+  >
+  <!ATTLIST item
+    kind (alpha|beta) "alpha"
+    payload ENTITY #IMPLIED
+  >
+]>
+<report xmlns="urn:example:report" xml:lang="en-Latn">
+  <title>mixed <emph>content</emph> and <br/> boundaries</title>
+  <item kind="beta" payload="blob">one &amp; two</item>
+  <item>before<br/>after<emph>inside</emph></item>
+  <tail><![CDATA[characters ]]> and markup-looking text</tail>
+</report>

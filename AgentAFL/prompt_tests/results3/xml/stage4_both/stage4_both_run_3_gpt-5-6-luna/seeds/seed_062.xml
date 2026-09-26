@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE labyrinth [
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+  <!ENTITY arrow "&#x2192;">
+  <!ELEMENT labyrinth ANY>
+  <!ELEMENT node (name, link*, payload?)>
+  <!ATTLIST node ident ID #REQUIRED kind (entry|branch|terminal) "entry">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target IDREF #REQUIRED weight CDATA "1">
+  <!ELEMENT payload (#PCDATA)>
+  <!ENTITY % optional "INCLUDE">
+  <![%optional;[
+    <!ELEMENT annotation (#PCDATA)>
+  ]]>
+]>
+<labyrinth>
+  <node ident="n0" kind="branch">
+    <name>root &left;start&right;</name>
+    <link target="n1" weight="0"/>
+    <link target="n2" weight="1.5"/>
+    <payload>route &arrow; east</payload>
+  </node>
+  <node ident="n1" kind="terminal">
+    <name>leaf-one</name>
+    <annotation>conditionally declared</annotation>
+  </node>
+  <node ident="n2">
+    <name>leaf-two</name>
+    <link target="n1"/>
+  </node>
+</labyrinth>

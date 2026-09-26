@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (item*)>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item name CDATA #REQUIRED kind CDATA #IMPLIED>
+  <!ELEMENT payload ANY>
+  <!ENTITY % conditional '
+    <![IGNORE[
+      <!ELEMENT ignored (never)>
+      <!ATTLIST ignored phantom CDATA #IMPLIED>
+    ]]>
+  '>
+  %conditional;
+  <!ENTITY amp "&amp;">
+  <!ENTITY quote "&quot;">
+]>
+<?processing instruction?>
+<package>
+  <manifest>
+    <item name="alpha" kind="text"/>
+    <item name="beta" kind="binary"/>
+  </manifest>
+  <payload>
+    <chunk index="0">&amp; &amp; &amp;</chunk>
+    <chunk index="1"><![CDATA[]]></chunk>
+    <chunk index="2">before<!-- comment --><![CDATA[inside]]>after</chunk>
+    &quote;&amp;
+  </payload>
+</package>

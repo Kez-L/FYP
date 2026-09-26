@@ -1,0 +1,23 @@
+{
+  "call": 13,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!NOTATION jpeg SYSTEM \"image/jpeg\">\n  <!ENTITY nbsp \"&#160;\">\n  <!ENTITY mark \"A &amp; B\">\n  <!ELEMENT catalog (record*)>\n  <!ELEMENT record (key, data, note?)>\n  <!ATTLIST record rid ID #REQUIRED format NOTATION (jpeg) #IMPLIED>\n  <!ELEMENT key (#PCDATA)>\n  <!ELEMENT data (#PCDATA|part)*>\n  <!ELEMENT part (#PCDATA)>\n  <!ELEMENT note (#PCDATA)>\n]>\n<catalog>\n  <record rid=\"r-001\" format=\"jpeg\">\n    <key>alpha&nbsp;01</key>\n    <data>prefix <part>one</part> middle <part>two &mark;</part> suffix</data>\n    <note><![CDATA[raw <markup> and ]]> brackets]]></note>\n  </record>\n  <record rid=\"r-002\">\n    <key>&#x03A9;-\u03b2</key>\n    <data><part>\u5b64\u7acb</part><part>\ud83d\ude42</part></data>\n  </record>\n</catalog>\n\n--- example 2 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<workspace xmlns=\"urn:example:workspace\"\n           xmlns:a=\"urn:example:asset\"\n           xmlns:b=\"urn:example:build\"\n           xml:lang=\"fr\">\n  <a:asset xml:id=\"asset-7\" xml:base=\"../media/\">\n    <a:name>Caf\u00e9 / r\u00e9sum\u00e9</a:name>\n    <a:variants>\n      <a:variant kind=\"thumbnail\" href=\"thumb.png\"/>\n      <a:variant kind=\"original\" href=\"./full%20size.png\"/>\n      <a:variant kind=\"missing\" href=\"\"/>\n    </a:variants>\n  </a:asset>\n  <b:build xml:lang=\"en\" xml:space=\"default\">\n    <!-- whitespace around the following instruction is significant to some consumers -->\n    <?make target=\"all\" flags=\"--clean --verbose\"?>\n    <b:input>src/&amp;generated</b:input>\n    <b:output><![CDATA[dist/<name attr=\"x\"/>]]></b:output>\n  </b:build>\n  <section xmlns=\"\" xml:lang=\"zh\">\n    <heading>\u72ec\u7acb\u547d\u540d\u7a7a\u95f4</heading>\n    <item data-value=\"&quot;&apos;&amp;&lt;&gt;\">\u5185\u5bb9</item>\n  </section>\n</workspace>\n\nTried before \u2014 no new coverage, avoid repeating:\n--- 7 of your past seeds (cycles 3,6,7) drove the same already-covered path with 0 new edges ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<package xmlns=\"urn:package:manifest\"\n         xmlns:xi=\"http://www.w3.org/2001/XInclude\"\n         xmlns:checksum=\"urn:package:checksum\"\n         xml:base=\"file:///var/tmp/bundle/\">\n  <manifest checksum:algorithm=\"sha256\">\n    <component path=\"bin/tool\" mode=\"0755\">\n      <checksum:value>9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08</checksum:value>\n    </component>\n    <component path=\"share/readme.txt\" mode=\"0644\">\n      <checksum:value>e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</checksum:value>\n    </component>\n  </manifest>\n  <resources>\n    <xi:include href=\"fragments/config.xml\" parse=\"xml\">\n      <xi:fallb...[truncated, 1129 chars total]\n\n--- 3 of your past seeds (cycles 5,8,11) drove the same already-covered path with 0 new edges ---\n<?xml version=\"1.0\"?>\n<envelope xmlns=\"urn:example:message\"\n          xmlns:h=\"urn:example:header\"\n          xmlns:p=\"urn:example:payload\"\n          xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <h:metadata>\n    <h:request-id>7f3e2a9c</h:request-id>\n    <h:timestamp>2026-09-24T18:42:11.004Z</h:timestamp>\n    <h:flags urgent=\"false\" retryable=\"true\"/>\n  </h:metadata>\n  <p:request method=\"PATCH\" target=\"/records/42\">\n    <p:fields>\n      <p:field name=\"label\" xsi:type=\"string\"\n               xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\u0394elta</p:field>\n      <p:field name=\"enabled\" xsi:type=\"boolean\"\n               xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">true</p:field>\n  ...[truncated, 1090 chars total]\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T03:31:12.290255+00:00"
+}

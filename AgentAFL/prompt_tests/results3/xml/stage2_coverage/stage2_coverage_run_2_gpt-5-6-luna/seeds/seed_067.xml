@@ -1,0 +1,23 @@
+<?xml version="1.1"?>
+<!DOCTYPE vault [
+  <!ELEMENT vault (folder*)>
+  <!ELEMENT folder (folder|secret|note)*>
+  <!ATTLIST folder name CDATA #IMPLIED locked (true|false) "false">
+  <!ELEMENT secret (#PCDATA)>
+  <!ATTLIST secret id ID #REQUIRED algorithm (plain|rot13|sealed) "plain">
+  <!ELEMENT note (#PCDATA|ref)*>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY first "open">
+  <!ENTITY second "&first; sesame">
+  <!ENTITY third "&second; &amp; more">
+]>
+<vault>
+  <folder name="outer" locked="true">
+    <secret id="s1" algorithm="sealed">&third;</secret>
+    <note>hint <ref target="s1"/> after reference</note>
+    <folder name="">
+      <secret id="s2">&first; &#x85; door</secret>
+    </folder>
+  </folder>
+</vault>

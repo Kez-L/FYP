@@ -1,0 +1,228 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % commonAttrs ' xml:lang CDATA #IMPLIED xml:space (default|preserve) "default"'>
+  <!ELEMENT report (meta,section+)>
+  <!ATTLIST report
+    id ID #REQUIRED
+    version NMTOKEN "1"
+    %commonAttrs;
+  >
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta generated CDATA #IMPLIED source CDATA #IMPLIED>
+  <!ELEMENT section (title?,p|list|table)*>
+  <!ATTLIST section name NMTOKEN #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT p (#PCDATA|em|strong|link|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link target IDREF #REQUIRED>
+  <!ELEMENT code (#PCDATA|charref)*>
+  <!ELEMENT charref EMPTY>
+  <!ATTLIST charref value NMTOKEN #REQUIRED>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|p)*>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!NOTATION gif SYSTEM "image/gif">
+  <!NOTATION svg SYSTEM "image/svg+xml">
+  <!ENTITY banner "Quarterly &amp; Operational &lt;Report&gt;">
+  <!ENTITY image SYSTEM "banner.gif" NDATA gif>
+]>
+<report id="r-17" version="02" xml:lang="en-GB" xml:space="preserve">
+  <meta generated="2026-09-24" source="batch&amp;7"/>
+  <section name="overview">
+    <title>&banner;</title>
+    <p>Use <em>careful</em> <strong>validation</strong> with <link target="r-17">linked records</link>.</p>
+    <code>alpha<![CDATA[<beta>&gamma;]]><charref value="x09"/></code>
+  </section>
+  <section name="details">
+    <list>
+      <item>first</item>
+      <item><p>second with <em>nested emphasis</em></p></item>
+    </list>
+    <table>
+      <row><cell>A</cell><cell>B</cell></row>
+      <row><cell>1</cell><cell>2</cell></row>
+    </table>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (header,part+)>
+  <!ATTLIST package ident ID #REQUIRED refs IDREFS #IMPLIED>
+  <!ELEMENT header (property*)>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST property key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT part (label?,payload,checksum?)>
+  <!ATTLIST part kind (text|binary|encoded) #REQUIRED
+                token ID #IMPLIED
+                flags ENTITIES #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk|quote|mark)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT mark EMPTY>
+  <!ATTLIST mark ref IDREF #REQUIRED>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY open "[[">
+  <!ENTITY close "]]">
+  <!ENTITY ampersand "&amp;">
+  <!ENTITY sample "&open;payload&close;">
+]>
+<package ident="pkg-main" refs="p-alpha p-beta">
+  <header>
+    <property key="owner" value="ops"/>
+    <property key="mode" value="delta"/>
+  </header>
+  <part kind="text" token="p-alpha" flags="flagA flagB">
+    <label>intro</label>
+    <payload>Before &sample; after <chunk index="0">A&amp;B</chunk><quote>&quot;quoted&quot;</quote></payload>
+    <checksum>e7f1</checksum>
+  </part>
+  <part kind="encoded" token="p-beta">
+    <payload><![CDATA[raw <bytes> & untouched]]><mark ref="p-alpha"/></payload>
+  </part>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header,body,trailers?)>
+  <!ATTLIST envelope xmlns CDATA #IMPLIED>
+  <!ELEMENT header (route,credential?,option*)>
+  <!ELEMENT route EMPTY>
+  <!ATTLIST route from CDATA #REQUIRED to CDATA #REQUIRED>
+  <!ELEMENT credential (user,secret)>
+  <!ELEMENT user (#PCDATA)>
+  <!ELEMENT secret (#PCDATA)>
+  <!ELEMENT option EMPTY>
+  <!ATTLIST option name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT body (request|response|fault)>
+  <!ELEMENT request (method,argument*)>
+  <!ELEMENT response (status,result?)>
+  <!ELEMENT fault (code,message,detail?)>
+  <!ELEMENT method (#PCDATA)>
+  <!ELEMENT argument (#PCDATA|value)*>
+  <!ELEMENT value (#PCDATA|value)*>
+  <!ELEMENT status (#PCDATA)>
+  <!ELEMENT result ANY>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT detail ANY>
+  <!ELEMENT trailers (signature?,note*)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY apostrophe "&apos;">
+]>
+<envelope xmlns="urn:example:rpc" xmlns:x="urn:example:ext" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <header>
+    <route from="client/α" to="service://node-4"/>
+    <credential><user>guest</user><secret>p&amp;ss&apos;word</secret></credential>
+    <option name="trace" value="true"/>
+    <option name="retries" value="0"/>
+  </header>
+  <body>
+    <request>
+      <method>compile</method>
+      <argument name="unused">ignored</argument>
+      <argument><value>one<value>nested</value></value></argument>
+    </request>
+  </body>
+  <trailers>
+    <signature><![CDATA[-----BEGIN SIGNATURE-----
+aGVsbG8=
+-----END SIGNATURE-----]]></signature>
+    <note x:level="debug">end &amp; done</note>
+  </trailers>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder+)>
+  <!ATTLIST archive created CDATA #IMPLIED format (flat|tree) "tree">
+  <!ELEMENT folder (folder|file|alias)*>
+  <!ATTLIST folder name NMTOKEN #REQUIRED hidden (yes|no) "no">
+  <!ELEMENT file (data?,metadata?)>
+  <!ATTLIST file id ID #REQUIRED name CDATA #REQUIRED type NOTATION #IMPLIED mode NMTOKEN "0644">
+  <!ELEMENT data (#PCDATA|line|escape)*>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT escape EMPTY>
+  <!ATTLIST escape code NMTOKEN #REQUIRED>
+  <!ELEMENT metadata (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST tag key NMTOKEN #REQUIRED>
+  <!ELEMENT alias EMPTY>
+  <!ATTLIST alias target IDREF #REQUIRED>
+  <!NOTATION plain SYSTEM "text/plain">
+  <!NOTATION json SYSTEM "application/json">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY path "var&slash;cache">
+  <!ENTITY slash "/">
+]>
+<archive created="2026-09-24T20:26:00Z" format="tree">
+  <folder name="var">
+    <folder name="cache" hidden="yes">
+      <file id="f-1" name="state.json" type="json" mode="0600">
+        <data><line>{&quot;ready&quot;:true,</line><line>&quot;count&quot;:3}</line></data>
+        <metadata><tag key="owner">daemon</tag><tag key="location">&path;</tag></metadata>
+      </file>
+      <alias target="f-1"/>
+    </folder>
+  </folder>
+  <folder name="share">
+    <file id="f-2" name="readme.txt" type="plain">
+      <data><line>first&nbsp;line</line><escape code="0A"/><line>second line</line></data>
+    </file>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+,edge*)>
+  <!ATTLIST graph directed (true|false) "true" label CDATA #IMPLIED>
+  <!ELEMENT node (caption?,property*)>
+  <!ATTLIST node id ID #REQUIRED class (root|leaf|internal) #REQUIRED>
+  <!ELEMENT caption (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST property key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT edge (annotation?)>
+  <!ATTLIST edge id ID #IMPLIED from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+  <!ELEMENT annotation (#PCDATA|math)*>
+  <!ELEMENT math (#PCDATA|op|arg)*>
+  <!ELEMENT op EMPTY>
+  <!ATTLIST op name NMTOKEN #REQUIRED>
+  <!ELEMENT arg (#PCDATA|math)*>
+  <!ENTITY pi "3.14159">
+  <!ENTITY quote "&quot;">
+]>
+<graph directed="false" label="dependency &amp; topology">
+  <node id="n0" class="root">
+    <caption>Build <mark>root</mark></caption>
+    <property key="owner" value="team-a"/>
+  </node>
+  <node id="n1" class="internal">
+    <caption>Parser &quote;core&quote;</caption>
+    <property key="stage">compile</property>
+  </node>
+  <node id="n2" class="leaf">
+    <caption>Artifact</caption>
+  </node>
+  <edge id="e0" from="n0" to="n1" weight="0.5">
+    <annotation>cost = <math><op name="add"/><arg>&pi;</arg><arg><math><op name="mul"/><arg>2</arg><arg>4</arg></math></arg></math></annotation>
+  </edge>
+  <edge from="n1" to="n2"/>
+</graph>
+```

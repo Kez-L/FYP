@@ -1,0 +1,96 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ENTITY % decls '
+    <!ELEMENT root (item|q:note|empty)*>
+    <!ATTLIST root mode (one|two|three) "two">
+    <!ELEMENT item (#PCDATA|q:em)*>
+    <!ATTLIST item code CDATA #IMPLIED>
+    <!ELEMENT q:note (#PCDATA)>
+    <!ELEMENT empty EMPTY>
+  '>
+  %decls;
+  <![IGNORE[
+    <!ELEMENT ignored ANY>
+    <!ENTITY hidden "not-expanded">
+  ]]>
+  <!ENTITY ampword "A &amp; B">
+  <!ENTITY nested "left-&ampword;-right">
+]>
+<root xmlns:q="urn:seed:notes" mode="three">
+  <item code="α">text <q:em xmlns:q="urn:seed:em">nested</q:em> &nested;</item>
+  <q:note>annotation &#x2028; with spaces</q:note>
+  <empty/>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE ledger SYSTEM "file:///tmp/afl-missing-external-subset.dtd" [
+  <!ELEMENT ledger ANY>
+  <!ATTLIST ledger revision CDATA #IMPLIED>
+]>
+<?ledger instruction="before-root"?>
+<!-- comment containing <fake attr='x'> and -- tricky -->
+<ledger revision="0007">
+  <![CDATA[
+    <record not-really-parsed="yes">&unexpanded;</record>
+    ]]> 
+  <?inner data?>
+  <entry><![CDATA[first ]]]]><![CDATA[> second]]></entry>
+</ledger>
+```
+
+```xml
+<?xml version="1.0"?>
+<r xmlns="urn:default:one"
+   xmlns:p="urn:shared"
+   xmlns:q="urn:shared"
+   xmlns:empty=""
+   xml:lang="und"
+   p:value="left"
+   q:value="right">
+  <p:child xmlns="urn:default:two" p:a="1" q:b="2">
+    <q:leaf xmlns:p="urn:other" p:value="shadowed"/>
+  </p:child>
+  <plain xmlns="">text</plain>
+</r>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE package [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!NOTATION text PUBLIC "-//EXAMPLE//NOTATION Plain Text//EN">
+  <!ENTITY logo SYSTEM "assets/logo.gif" NDATA gif>
+  <!ENTITY manual SYSTEM "manual.txt" NDATA text>
+  <!ELEMENT package (title, picture?, attachment?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT picture EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST picture source ENTITY #REQUIRED format NOTATION (gif|text) "gif">
+  <!ATTLIST attachment source ENTITY #REQUIRED>
+]>
+<package>
+  <title>Binary references &amp; notation declarations</title>
+  <picture source="logo" format="gif"/>
+  <attachment source="manual"/>
+</package>
+```
+
+```xml
+<?xml version="1.1"?>
+<?xml-stylesheet type="text/xsl" href="view.xsl" alternate="yes"?>
+<world xmlns="urn:world" xml:base="urn:base/" xml:id="w0">
+  <region id="north" xml:space="preserve">
+    <label><![CDATA[North <sector>]]></label>
+    <point lat="+90" lon="-180"/>
+    <point lat="0" lon="0">&#x1F642;&#x85;&#x1F;</point>
+  </region>
+  <region id="south">
+    <label>South &lt;sector&gt;</label>
+    <empty/>
+    <mixed>one<mark/>two<mark>three</mark>four</mixed>
+  </region>
+</world>
+```

@@ -1,0 +1,99 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (book+)>
+  <!ELEMENT book (title, author+, metadata?)>
+  <!ATTLIST book isbn ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT metadata (year, tags)>
+  <!ELEMENT year (#PCDATA)>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+]>
+<catalog>
+  <book isbn="bk-001">
+    <title>Parsing &amp; Validation</title>
+    <author>J. Doe</author>
+    <author>A. Roe</author>
+    <metadata>
+      <year>2026</year>
+      <tags><tag>xml</tag><tag>fuzzing</tag></tags>
+    </metadata>
+  </book>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<document xml:lang="fr" xml:space="preserve">
+  <!-- mixed content with entity references -->
+  <section id="intro">Avant <emphasis>le test</emphasis>, voici
+    <link href="https://example.invalid/a?x=1&amp;y=2">un lien</link>.
+  </section>
+  <section id="empty"/>
+  <footer><![CDATA[raw <markup> & characters]]></footer>
+</document>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY greeting "hello">
+  <!ENTITY nested "&greeting;, world">
+]>
+<root>
+  <branch name="left">
+    <leaf>&nested;</leaf>
+    <leaf><![CDATA[line 1
+line 2
+line 3]]></leaf>
+  </branch>
+  <branch name="right">
+    <item key="a" value="1"/>
+    <item key="b" value="2"/>
+    <item key="c" value="3"/>
+  </branch>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:report xmlns:r="urn:test:report" xmlns:m="urn:test:metrics" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="m:Snapshot">
+  <r:meta>
+    <r:created>2026-09-24T12:34:56Z</r:created>
+    <r:labels>
+      <r:label>alpha</r:label>
+      <r:label>βeta</r:label>
+    </r:labels>
+  </r:meta>
+  <m:measurements>
+    <m:measurement name="latency" unit="ms">0.000</m:measurement>
+    <m:measurement name="count" unit="items">18446744073709551615</m:measurement>
+  </m:measurements>
+</r:report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (entry*)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry path CDATA #REQUIRED size NMTOKEN #IMPLIED>
+  <!ELEMENT payload ANY>
+]>
+<package>
+  <manifest>
+    <entry path="a/b.txt" size="0"/>
+    <entry path="unicodé/名.dat" size="00042"/>
+    <entry path="space name.bin"/>
+  </manifest>
+  <payload>
+    <chunk index="0"><![CDATA[AAAA
+BBBB
+CCCC]]></chunk>
+    <chunk index="1">R0lGODlhAQABAIA=</chunk>
+  </payload>
+</package>
+```

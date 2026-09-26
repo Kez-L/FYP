@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, payload, checksum)>
+  <!ATTLIST packet format NOTATION (binary|text|mixed) "text">
+  <!ELEMENT header (source, destination, flags)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT destination (#PCDATA)>
+  <!ELEMENT flags EMPTY>
+  <!ATTLIST flags
+    urgent (yes|no) "no"
+    retry (yes|no) "no"
+  >
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk
+    number CDATA #REQUIRED
+    encoding (plain|base64|hex) "plain"
+  >
+  <!ELEMENT checksum (#PCDATA)>
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!NOTATION text SYSTEM "text/plain">
+  <!NOTATION mixed PUBLIC "-//Example//NOTATION Mixed//EN">
+]>
+<packet format="mixed">
+  <header>
+    <source>sensor/A-17</source>
+    <destination>relay/B-02</destination>
+    <flags urgent="yes" retry="no"/>
+  </header>
+  <payload>
+    <chunk number="1" encoding="plain">prefix: &lt;open&gt;</chunk>
+    <chunk number="2" encoding="base64">QWxwaGEvQmV0YQ==</chunk>
+    <chunk number="3" encoding="hex">00ff10aa</chunk>
+  </payload>
+  <checksum>sha256:7c3e9d0b</checksum>
+</packet>

@@ -1,0 +1,100 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY logo SYSTEM "logo.bin" NDATA bin>
+  <!ENTITY % entries "<!ELEMENT item (title,meta?,blob?)><!ATTLIST item id ID #REQUIRED>">
+  %entries;
+  <!ELEMENT catalog (item+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta ANY>
+  <!ELEMENT blob EMPTY>
+  <!ATTLIST catalog generated CDATA "yes">
+]>
+<catalog generated="no">
+  <item id="i-1">
+    <title><![CDATA[alpha < beta && gamma > delta]]></title>
+    <meta><owner>nobody</owner><flag/></meta>
+    <blob/>
+  </item>
+  <item id="i-2">
+    <title>second item</title>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="urn:pkg" xmlns:m="urn:meta" xml:lang="fr" xml:base="../assets/">
+  <?build mode="debug"?>
+  <!-- deliberately mixed content around namespaced children -->
+  Intro <m:header m:version="0">préface</m:header>
+  <entry key="a&amp;b" m:state="open">
+    <![CDATA[raw ]]> text
+    <link href="./one.xml" xml:space="preserve"> one </link>
+    <link href="#frag"/>
+  </entry>
+  <entry key="two">
+    <data xmlns="" id="x"><![CDATA[]]></data>
+    <?local instruction?>
+  </entry>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section*)>
+  <!ELEMENT section (message|section)*>
+  <!ELEMENT message (#PCDATA)>
+  <!ATTLIST section level NMTOKEN "root">
+  <!ENTITY first "one">
+  <!ENTITY second "&first;:two">
+  <!ENTITY quoted "a&quot;b&apos;c">
+]>
+<report>
+  <section level="1">
+    <message>&second;</message>
+    <section level="1.1">
+      <message><![CDATA[<not-an-element>&still-text;]]></message>
+      <message>&quoted;</message>
+    </section>
+  </section>
+  <section level="2"><message>tail &amp; end</message></section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (p:payload)>
+  <!ATTLIST envelope xmlns:p CDATA #IMPLIED>
+  <!ELEMENT p:payload ANY>
+]>
+<envelope xmlns:p="urn:payload" xmlns:q="urn:other" q:mode="test">
+  <p:payload p:id="7" q:flag="yes">
+    <q:item xmlns:q="urn:changed" q:name="x"/>
+    <p:empty/>
+  </p:payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE switch [
+  <!ENTITY % enabled "INCLUDE">
+  <![%enabled;[
+    <!ELEMENT switch (on|off)>
+    <!ELEMENT on (#PCDATA)>
+    <!ELEMENT off EMPTY>
+  ]]>
+  <!ENTITY % ignored "IGNORE">
+  <![%ignored;[
+    <!ELEMENT unreachable (bad)>
+    <!ATTLIST unreachable value CDATA #REQUIRED>
+  ]]>
+]>
+<switch>
+  <on>café &#169; <![CDATA[x]]></on>
+</switch>
+```

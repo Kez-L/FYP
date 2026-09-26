@@ -1,0 +1,158 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry*)>
+  <!ELEMENT entry (name,price?,description|image)>
+  <!ATTLIST entry code ID #REQUIRED status (new|used|archived) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT description (#PCDATA|b|i|br)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT image EMPTY>
+  <!ATTLIST image src CDATA #REQUIRED alt CDATA #IMPLIED>
+  <!ENTITY currency "€">
+  <!ENTITY stamp "A &amp; B &lt; C">
+]>
+<catalog>
+  <entry code="p1" status="new">
+    <name>Widget &amp; Gear</name>
+    <price>&currency; 19.95</price>
+    <description>Small <b>blue</b> <i>part</i><br/>with &stamp;.</description>
+  </entry>
+  <entry code="p2">
+    <name>Replacement</name>
+    <image src="img?id=2&amp;v=7" alt="replacement"/>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+)>
+  <!ELEMENT section (heading,para+)>
+  <!ATTLIST section xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT para (#PCDATA|ref|quote|list)*>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item id ID #IMPLIED>
+  <!NOTATION gif SYSTEM "image/gif">
+  <!ENTITY logo SYSTEM "logo.gif" NDATA gif>
+  <!ENTITY % optional "INCLUDE">
+  <![%optional;[
+    <!ELEMENT appendix (#PCDATA)>
+  ]]>
+]>
+<report>
+  <section xml:lang="en">
+    <heading>Overview</heading>
+    <para>See <ref target="x1"/> and <quote>quoted text</quote>.</para>
+    <para>
+      <list>
+        <item id="x1">first</item>
+        <item>second</item>
+      </list>
+    </para>
+  </section>
+  <section xml:lang="fr">
+    <heading>Résumé</heading>
+    <para>élève — café — naïve</para>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, signature?)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header version CDATA #FIXED "2"
+                   xmlns:sec CDATA #FIXED "urn:security"
+                   sec:mode (plain|sealed) "plain">
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA|data)*>
+  <!ATTLIST chunk n NMTOKEN #REQUIRED>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+  <!ENTITY amp "&amp;">
+]>
+<envelope xmlns="urn:message">
+  <header xmlns:sec="urn:security" sec:mode="sealed"/>
+  <payload>
+    prefix &left; chunk &right; &amp; <![CDATA[ ]]> suffix
+    <chunk n="01"><data><![CDATA[<opaque>&stuff;</opaque>]]></data></chunk>
+    <chunk n="02">line
+      <data>nested &amp; escaped</data>
+    </chunk>
+  </payload>
+  <signature>sha256:abc123==</signature>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (node*)>
+  <!ELEMENT node (label, node*)>
+  <!ATTLIST node id ID #IMPLIED
+                parent IDREF #IMPLIED
+                flags NMTOKENS #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY weird "&#x41;&#65;&#x3f;">
+]>
+<map>
+  <node id="root" flags="top visible">
+    <label>Root&nbsp;&weird;</label>
+    <node id="n1" parent="root" flags="leaf">
+      <label>One</label>
+    </node>
+    <node id="n2" parent="root">
+      <label>Two &lt; two</label>
+      <node id="n2a" parent="n2" flags="leaf">
+        <label><![CDATA[unescaped ]]> text <![CDATA[ ]]></label>
+      </node>
+    </node>
+  </node>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (event*)>
+  <!ELEMENT event (time, actor?, value?)>
+  <!ATTLIST event type (start|stop|data|error) #REQUIRED
+                code CDATA #IMPLIED>
+  <!ELEMENT time (#PCDATA)>
+  <!ELEMENT actor EMPTY>
+  <!ATTLIST actor name CDATA #REQUIRED role CDATA #IMPLIED>
+  <!ELEMENT value (#PCDATA|hex|raw)*>
+  <!ELEMENT hex (#PCDATA)>
+  <!ELEMENT raw (#PCDATA)>
+  <!ENTITY nl "&#10;">
+]>
+<stream>
+  <event type="start" code="0">
+    <time>2026-09-24T12:00:00Z</time>
+    <actor name="svc/core" role="writer"/>
+  </event>
+  <event type="data">
+    <time>2026-09-24T12:00:01Z</time>
+    <value>alpha&nl;beta<hex>00ff7E</hex><raw><![CDATA[<&quot;not markup&quot;>]]></raw></value>
+  </event>
+  <event type="error" code="E&amp;1">
+    <time>invalid</time>
+    <value>unterminated-looking &lt; token</value>
+  </event>
+  <event type="stop"><time>done</time></event>
+</stream>
+```

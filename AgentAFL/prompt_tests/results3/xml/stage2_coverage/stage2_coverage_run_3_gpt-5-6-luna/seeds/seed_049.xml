@@ -1,0 +1,25 @@
+<?xml version="1.1"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (item*)>
+  <!ELEMENT item EMPTY>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST package version NMTOKEN #REQUIRED>
+  <!ATTLIST item path CDATA #REQUIRED size NMTOKEN #IMPLIED>
+  <!ATTLIST chunk number NMTOKEN #REQUIRED encoding (text|base64) "text">
+  <!ENTITY open "[" >
+  <!ENTITY close "]" >
+  <!ENTITY recursive "&recursive;">
+]>
+<package version="v1">
+  <manifest>
+    <item path="alpha.txt" size="17"/>
+    <item path="nested/beta.bin" size="4"/>
+  </manifest>
+  <payload>
+    <chunk number="1">first&#x85;line&#x2028;next</chunk>
+    <chunk number="2" encoding="base64">QUJDRA==</chunk>
+    <chunk number="3">&open;payload&close;</chunk>
+  </payload>
+</package>

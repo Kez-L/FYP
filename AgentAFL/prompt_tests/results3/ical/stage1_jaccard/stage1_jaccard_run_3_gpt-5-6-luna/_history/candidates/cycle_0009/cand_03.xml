@@ -1,0 +1,28 @@
+BEGIN:VCALENDAR
+PRODID:-//Component Fuzzer//Nested//EN
+VERSION:2.0
+CALSCALE:GREGORIAN
+BEGIN:VFREEBUSY
+UID:outer@example.invalid
+DTSTAMP:20260924T130000Z
+BEGIN:VTODO
+UID:illegal-nested@example.invalid
+SUMMARY:nested component
+END:VTODO
+END:VFREEBUSY
+BEGIN:VEVENT
+UID:folded@example.invalid
+DTSTAMP:20260924T130001Z
+DTSTART;TZID=:20260924T130000
+DTEND;VALUE=DATE-TIME;TZID=No/Such_Zone:20260924T140000
+SUMMARY:This value is deliberately folded across
+ multiple physical lines and contains \, commas
+X-CUSTOM;P1=a;b;P2="x;y":value
+END:VEVENT
+BEGIN:VJOURNAL
+UID:journal-two@example.invalid
+DTSTAMP:20260924T130002Z
+STATUS:FINAL
+DESCRIPTION;CHARSET=UTF-8:binary-like \x00 text and UTF-8: café ☃
+END:VJOURNAL
+END:VCALENDAR

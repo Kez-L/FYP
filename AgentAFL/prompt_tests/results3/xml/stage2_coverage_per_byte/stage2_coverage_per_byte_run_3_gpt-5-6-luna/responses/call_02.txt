@@ -1,0 +1,215 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, note?)>
+  <!ELEMENT entry (title, description, link)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emph|code)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST entry id ID #REQUIRED status (new|old|archived) "new">
+  <!ATTLIST link href URI #REQUIRED rel NMTOKEN "related">
+  <!ATTLIST note kind CDATA #IMPLIED xml:lang CDATA #IMPLIED>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY % shared "xml:lang CDATA #IMPLIED">
+  <!ATTLIST description %shared;>
+]>
+<catalog>
+  <entry id="e1">
+    <title>Notation sample</title>
+    <description>A <emph>small</emph> <code>catalog</code>&nbsp;entry.</description>
+    <link href="urn:item:one" rel="primary"/>
+  </entry>
+  <entry id="e2" status="old">
+    <title>Second item</title>
+    <description>Text with &amp; escaped markup.</description>
+    <link href="https://example.invalid/item/2"/>
+  </entry>
+  <note xml:lang="fr" kind="footer">Fin de la liste.</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (header, message+)>
+  <!ELEMENT header (subject, participants)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT participants (person*)>
+  <!ELEMENT person EMPTY>
+  <!ELEMENT message (#PCDATA|mention|quote|br)*>
+  <!ELEMENT mention (#PCDATA)>
+  <!ELEMENT quote (#PCDATA|br)*>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST conversation xmlns CDATA #IMPLIED>
+  <!ATTLIST person uid ID #REQUIRED role (sender|receiver|observer) "observer">
+  <!ATTLIST message id ID #REQUIRED reply-to IDREF #IMPLIED>
+  <!ENTITY dash "&#x2014;">
+  <!ENTITY mark "<mention>system</mention>">
+]>
+<conversation xmlns="urn:chat">
+  <?trace id="alpha-7"?>
+  <header>
+    <subject>Parsing &amp; entities</subject>
+    <participants>
+      <person uid="u1" role="sender"/>
+      <person uid="u2" role="receiver"/>
+    </participants>
+  </header>
+  <message id="m1">Hello< br="ignored"/><!-- comment --></message>
+  <message id="m2" reply-to="m1">The result &dash; <mention>@u2</mention><br/>is ready.</message>
+  <message id="m3">A quoted fragment: <quote>one<br/>two</quote> and a literal &lt;tag&gt;.</message>
+</conversation>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (section*)>
+  <!ELEMENT section (heading, item+, checksum?)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (key, value, metadata?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT metadata (created?, owner?, flag*)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST section name NMTOKEN #REQUIRED>
+  <!ATTLIST item keyref ID #REQUIRED priority (low|normal|high) "normal">
+  <!ATTLIST metadata format (short|long) #IMPLIED>
+  <!ATTLIST flag name NMTOKEN #REQUIRED enabled (yes|no) "yes">
+]>
+<archive>
+  <section name="alpha">
+    <heading>First section</heading>
+    <item keyref="k-a" priority="high">
+      <key>alpha</key>
+      <value>first<linebreak/>second<linebreak/>third</value>
+      <metadata format="long">
+        <created>2026-09-24</created>
+        <owner>ops</owner>
+        <flag name="indexed"/>
+        <flag name="hidden" enabled="no"/>
+      </metadata>
+    </item>
+    <checksum>sha256:0000000000000000</checksum>
+  </section>
+  <section name="empty-meta">
+    <heading>Another heading</heading>
+    <item keyref="k-b">
+      <key>beta</key>
+      <value><![CDATA[raw ]]> text <![CDATA[with ]]> boundaries</value>
+      <metadata/>
+    </item>
+  </section>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload, signatures)>
+  <!ELEMENT manifest (file*)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT payload (data|folder|data)*>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT folder (data|folder)*>
+  <!ELEMENT signatures (signature+)>
+  <!ELEMENT signature (algorithm, digest)>
+  <!ELEMENT algorithm (#PCDATA)>
+  <!ELEMENT digest (#PCDATA)>
+  <!ATTLIST package version CDATA "0">
+  <!ATTLIST file path CDATA #REQUIRED size CDATA #IMPLIED compressed (true|false) "false">
+  <!ATTLIST data encoding (plain|base64|hex) "plain">
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ATTLIST signature signer CDATA #REQUIRED valid (yes|no) "yes">
+  <!ENTITY hex "3C3F786D6C3E">
+  <!ENTITY amp "&amp;">
+]>
+<package version="2">
+  <manifest>
+    <file path="readme.txt" size="17"/>
+    <file path="bin/app" size="2048" compressed="true"/>
+    <file path="dir/empty" size="0"/>
+  </manifest>
+  <payload>
+    <data encoding="plain">header &amp; metadata</data>
+    <folder name="nested">
+      <data encoding="base64">QUJDRA==</data>
+      <folder name="deeper">
+        <data encoding="hex">&hex;</data>
+      </folder>
+    </folder>
+    <data encoding="plain">tail &amp; &amp; end</data>
+  </payload>
+  <signatures>
+    <signature signer="alice" valid="yes">
+      <algorithm>urn:hash:sha256</algorithm>
+      <digest>abcdef0123456789</digest>
+    </signature>
+    <signature signer="bob" valid="no">
+      <algorithm>urn:hash:sha1</algorithm>
+      <digest></digest>
+    </signature>
+  </signatures>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (context, results, conclusion?)>
+  <!ELEMENT context (property*)>
+  <!ELEMENT property EMPTY>
+  <!ELEMENT results (result+)>
+  <!ELEMENT result (label, value, details?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT details (#PCDATA|list|item)*>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT conclusion (#PCDATA)>
+  <!ATTLIST report id ID #REQUIRED generated CDATA #IMPLIED>
+  <!ATTLIST context property CDATA #IMPLIED>
+  <!ATTLIST property name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST result code CDATA #REQUIRED severity (info|warning|error) "info">
+  <!ATTLIST list ordered (yes|no) "no">
+  <!ENTITY left "&lt;">
+  <!ENTITY right "&gt;">
+  <!ENTITY quote "&quot;">
+]>
+<report id="r-01" generated="2026-09-24T12:00:00Z">
+  <context property="runtime">
+    <property name="os" value="test"/>
+    <property name="locale" value="C"/>
+    <property name="features" value="&left;xml&right; &quote;namespaces&quote;"/>
+  </context>
+  <results>
+    <result code="R1" severity="warning">
+      <label>Whitespace</label>
+      <value>mixed&#x0A;lines</value>
+      <details>
+        leading text
+        <list ordered="yes">
+          <item>first</item>
+          <item>second &amp; final</item>
+        </list>
+        trailing text
+      </details>
+    </result>
+    <result code="R2" severity="error">
+      <label>Boundary</label>
+      <value><![CDATA[]]><![CDATA[adjacent sections]]></value>
+      <details><![CDATA[<not-an-element/>]]></details>
+    </result>
+  </results>
+  <conclusion>Review required.</conclusion>
+</report>
+```

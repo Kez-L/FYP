@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE network [
+  <!ELEMENT network (host+)>
+  <!ELEMENT host (address, service*)>
+  <!ATTLIST host
+    name CDATA #REQUIRED
+    enabled (yes|no) "yes"
+  >
+  <!ELEMENT address (#PCDATA)>
+  <!ELEMENT service (port, protocol, banner?)>
+  <!ATTLIST service
+    name CDATA #REQUIRED
+    state (open|closed|filtered) "open"
+  >
+  <!ELEMENT port (#PCDATA)>
+  <!ELEMENT protocol (#PCDATA)>
+  <!ELEMENT banner (#PCDATA)>
+  <!ENTITY amp "&amp;">
+  <!ENTITY newline "&#xA;">
+]>
+<network>
+  <host name="edge-01" enabled="yes">
+    <address>2001:db8::42</address>
+    <service name="http" state="open">
+      <port>8080</port>
+      <protocol>tcp</protocol>
+      <banner>GET / HTTP/1.1&newline;Host: edge-01&newline;</banner>
+    </service>
+    <service name="ssh" state="filtered">
+      <port>22</port>
+      <protocol>tcp</protocol>
+    </service>
+  </host>
+  <host name="legacy&amp;lab" enabled="no">
+    <address>192.0.2.7</address>
+    <service name="echo">
+      <port>7</port>
+      <protocol>udp</protocol>
+      <banner>reply &amp; status</banner>
+    </service>
+  </host>
+</network>

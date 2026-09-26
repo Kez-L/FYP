@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (metadata, collection+)>
+  <!ELEMENT metadata (title, generated, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT collection (label, record*)>
+  <!ATTLIST collection key ID #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT record (heading, synopsis?, field+, relation*)>
+  <!ATTLIST record id ID #REQUIRED status (draft|published|retired) "draft">
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT synopsis (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST field name CDATA #REQUIRED type (text|number|date|flag) "text">
+  <!ELEMENT relation EMPTY>
+  <!ATTLIST relation target IDREF #REQUIRED kind CDATA #IMPLIED>
+]>
+<catalog xmlns="urn:example:catalog" xmlns:meta="urn:example:metadata">
+  <metadata>
+    <title>Field Notes &amp; Index</title>
+    <generated>2026-09-24T12:00:00Z</generated>
+    <note xml:lang="en">Values may contain <em>escaped</em> markup.</note>
+  </metadata>
+  <collection key="observations">
+    <label>Observations</label>
+    <record id="obs-1" status="published">
+      <heading>Low-light response</heading>
+      <synopsis>Sensor response below <code>0.05</code><br/>was excluded.</synopsis>
+      <field name="sample" type="text">A-17</field>
+      <field name="reading" type="number">0.0042</field>
+      <field name="verified" type="flag">true</field>
+    </record>
+    <record id="obs-2" status="draft">
+      <heading>Pending calibration</heading>
+      <field name="sample">B-03</field>
+      <field name="date" type="date">2026-09-23</field>
+      <relation target="obs-1" kind="derived-from"/>
+    </record>
+  </collection>
+</catalog>

@@ -1,0 +1,143 @@
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item code ID #REQUIRED>
+  <!ENTITY company "Example &amp; Sons">
+  <!ENTITY notice "Prices include &company; handling.">
+]>
+<catalog>
+  <section>
+    <title>Hardware</title>
+    <item code="cpu">Central processor</item>
+    <item code="ram">Memory module</item>
+    <item code="disk">&notice;</item>
+  </section>
+  <section>
+    <title>Accessories</title>
+    <item code="cable">USB-C &lt;-&gt; HDMI</item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<drawing xmlns="http://www.w3.org/2000/svg"
+         xmlns:ink="http://www.inkscape.org/namespaces/inkscape"
+         viewBox="0 0 320 180">
+  <metadata>
+    <ink:export dpi="96" format="svg"/>
+    <!-- dimensions are intentionally fractional -->
+    <creator role="artist">A. &quot;Vector&quot; Smith</creator>
+  </metadata>
+  <defs>
+    <linearGradient id="fade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"/>
+      <stop offset="100%"/>
+    </linearGradient>
+    <path id="curve" d="M 5,80 C 40,10 90,150 140,70"/>
+  </defs>
+  <g id="scene" transform="translate(12.5,-3.25) rotate(2)">
+    <rect x="0" y="0" width="300" height="160" rx="7.75" fill="url(#fade)"/>
+    <use href="#curve" stroke-width="0.5" fill="none"/>
+    <text x="18" y="142">A &amp; B — résumé</text>
+  </g>
+</drawing>
+```
+
+```xml
+<?xml version="1.0"?>
+<records xmlns:r="urn:records" xmlns:m="urn:meta">
+  <r:record r:key="alpha" m:state="new">
+    <r:header>
+      <r:name>Northwind</r:name>
+      <r:tags>
+        <r:tag priority="1">cold</r:tag>
+        <r:tag priority="0">seasonal</r:tag>
+      </r:tags>
+    </r:header>
+    <r:payload><![CDATA[
+      {"items":[{"id":1,"active":true},{"id":2,"active":false}],
+       "note":"<escaped-looking text>"}
+    ]]></r:payload>
+    <r:links>
+      <r:link rel="self" href="/records/alpha"/>
+      <r:link rel="alternate" href="/records/alpha?format=raw"/>
+    </r:links>
+  </r:record>
+  <r:record r:key="beta" m:state="archived">
+    <r:header>
+      <r:name>南方仓库</r:name>
+    </r:header>
+    <r:payload>line one
+line two&#xA;line three</r:payload>
+  </r:record>
+</records>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE library [
+  <!ELEMENT library (shelf*)>
+  <!ELEMENT shelf (book+)>
+  <!ATTLIST shelf name CDATA #IMPLIED>
+  <!ELEMENT book (title, author+, summary?, review*)>
+  <!ATTLIST book isbn NMTOKEN #REQUIRED available (yes|no) "yes">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|emph|quote)*>
+  <!ELEMENT review (#PCDATA)>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ENTITY copyright "&#xA9;">
+]>
+<library>
+  <shelf name="fiction">
+    <book isbn="9780000000001">
+      <title>The Folding Map</title>
+      <author>R. Example</author>
+      <author>M. Example</author>
+      <summary>A journey through <emph>unfamiliar</emph> roads and <quote>borrowed time</quote>.</summary>
+      <review>&copyright; A quiet, intricate story.</review>
+      <review>Second opinion: 4/5</review>
+    </book>
+  </shelf>
+  <shelf name="reference">
+    <book isbn="REF-42" available="no">
+      <title>Tables &amp; Transformations</title>
+      <author>J. Analyst</author>
+    </book>
+  </shelf>
+</library>
+```
+
+```xml
+<?xml version="1.0"?>
+<workflow xmlns="urn:workflow:v2" xmlns:ext="urn:workflow:extensions">
+  <definition id="nightly" enabled="0">
+    <variables>
+      <variable name="input" type="path">/var/data/in</variable>
+      <variable name="retries" type="integer">0000000007</variable>
+      <variable name="pattern" type="regex"><![CDATA[[A-Z]{2,4}\s+\d+]]></variable>
+    </variables>
+    <parallel limit="3">
+      <task id="scan" depends-on="">
+        <exec shell="/bin/sh">find "${input}" -type f</exec>
+        <on-success>
+          <emit channel="audit">scan complete</emit>
+        </on-success>
+      </task>
+      <task id="archive" depends-on="scan">
+        <exec shell="/bin/sh">tar -czf archive.tar.gz "${input}"</exec>
+        <on-failure retry-after="PT0.500S">
+          <emit channel="error">archive &lt;failed&gt;</emit>
+        </on-failure>
+      </task>
+    </parallel>
+    <ext:annotation xml:lang="fr" xml:space="preserve">  prêt  </ext:annotation>
+  </definition>
+</workflow>
+```

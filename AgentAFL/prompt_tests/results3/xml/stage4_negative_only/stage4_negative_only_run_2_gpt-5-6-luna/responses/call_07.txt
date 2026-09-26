@@ -1,0 +1,106 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE library [
+  <!ELEMENT library (book+)>
+  <!ELEMENT book (title, author+, summary?)>
+  <!ATTLIST book isbn ID #REQUIRED year CDATA #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ENTITY publisher "Open Shelf Press">
+]>
+<library>
+  <book isbn="b001" year="2024">
+    <title>Parsing &amp; Practice</title>
+    <author>Ada Rowan</author>
+    <author>Lin Mercer</author>
+    <summary>Published by &publisher;.</summary>
+  </book>
+  <book isbn="b002">
+    <title>Small Machines</title>
+    <author>Niko Vale</author>
+  </book>
+</library>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:catalog:v2" xmlns:meta="urn:metadata">
+  <?catalog-mode compact?>
+  <item meta:revision="7" meta:active="true">
+    <name xml:lang="fr">Crème brûlée</name>
+    <price currency="EUR">6.50</price>
+    <tags>
+      <tag>dessert</tag>
+      <tag seasonal="yes">winter</tag>
+    </tags>
+    <meta:notes xml:space="preserve">  served chilled  </meta:notes>
+  </item>
+  <!-- The second item intentionally has a different child order. -->
+  <item meta:revision="8">
+    <price currency="JPY">900</price>
+    <name xml:lang="ja">茶菓子</name>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<conversation xml:lang="en">
+  <message from="alice" to="bob">
+    <header priority="high">
+      <subject>Re: shipment</subject>
+      <timestamp>2026-09-24T12:30:45Z</timestamp>
+    </header>
+    <body>
+      Please check the <link href="urn:order:42">order</link>
+      before <mention user="carol">@carol</mention> arrives.
+    </body>
+    <attachments count="2">
+      <attachment media-type="text/plain" name="readme.txt"/>
+      <attachment media-type="image/svg+xml" name="label.svg"/>
+    </attachments>
+  </message>
+  <message from="bob" to="alice" deleted="false">
+    <body>Confirmed.</body>
+  </message>
+</conversation>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder*)>
+  <!ELEMENT folder (folder|file)*>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file name CDATA #REQUIRED size NMTOKEN #IMPLIED>
+]>
+<archive>
+  <folder name="root">
+    <file name="manifest.json" size="128"/>
+    <folder name="assets">
+      <file name="icon.svg" size="2048"/>
+      <folder name="nested">
+        <file name="data.bin" size="65536"/>
+      </folder>
+    </folder>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns:w="urn:workflow" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <w:start id="boot" next="prepare"/>
+  <w:step id="prepare" retries="3">
+    <w:input name="source" type="path"/>
+    <w:transform language="xpath" expression="/document/record[@enabled='1']"/>
+    <w:branch test="count(result) &gt; 0" yes="publish" no="halt"/>
+  </w:step>
+  <w:step id="publish">
+    <w:resource xlink:type="simple" xlink:href="urn:queue:outbound"/>
+  </w:step>
+  <w:end id="halt" status="skipped"/>
+</workflow>
+```

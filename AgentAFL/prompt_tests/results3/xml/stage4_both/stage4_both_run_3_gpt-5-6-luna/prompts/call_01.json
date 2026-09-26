@@ -1,0 +1,23 @@
+{
+  "call": 1,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (section+)>\n  <!ELEMENT section (title, item*)>\n  <!ATTLIST section id ID #REQUIRED xml:lang NMTOKEN \"en\">\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT item (name, price, details?)>\n  <!ATTLIST item code ID #REQUIRED status (new|used|archived) \"new\">\n  <!ELEMENT name (#PCDATA)>\n  <!ELEMENT price (#PCDATA)>\n  <!ELEMENT details (#PCDATA|emph|link)*>\n  <!ELEMENT emph (#PCDATA)>\n  <!ELEMENT link (#PCDATA)>\n]>\n<catalog>\n  <section id=\"hardware\" xml:lang=\"en\">\n    <title>Devices &amp; Accessories</title>\n    <item code=\"p-001\">\n      <name>Sensor &lt;A&gt;</name>\n      <price>19.95</price>\n      <details>Compact <emph>weather</emph> sensor with <link>USB</link> support.</details>\n    </item>\n    <item code=\"p-002\" status=\"used\">\n      <name>Control Unit</name>\n      <price>7.50</price>\n    </item>\n  </section>\n</catalog>\n\n--- example 2 ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE configuration [\n  <!ENTITY % switches \"enabled (yes|no) 'yes'\">\n  <!ELEMENT configuration (module+, defaults?)>\n  <!ELEMENT module (option*, endpoint?)>\n  <!ATTLIST module name NMTOKEN #REQUIRED %switches;>\n  <!ELEMENT option EMPTY>\n  <!ATTLIST option key NMTOKEN #REQUIRED value CDATA #IMPLIED>\n  <!ELEMENT endpoint (header*)>\n  <!ATTLIST endpoint scheme (http|https|unix) #REQUIRED address CDATA #REQUIRED>\n  <!ELEMENT header EMPTY>\n  <!ATTLIST header name CDATA #REQUIRED value CDATA #REQUIRED>\n  <!ELEMENT defaults (option*)>\n  <!ATTLIST defaults scope CDATA \"global\">\n]>\n<configuration>\n  <module name=\"cache\" enabled=\"yes\">\n    <option key=\"size\" value=\"256\"/>\n    <option key=\"policy\" value=\"lru\"/>\n  </module>\n  <module name=\"gateway\" enabled=\"no\">\n    <endpoint scheme=\"https\" address=\"api.example.test/v1\">\n      <header name=\"Accept\" value=\"application/xml\"/>\n      <header name=\"X-Trace\" value=\"a&amp;b\"/>\n    </endpoint>\n  </module>\n  <defaults scope=\"global\">\n    <option key=\"timeout\" value=\"30\"/>\n  </defaults>\n</configuration>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T03:27:27.412949+00:00"
+}

@@ -1,0 +1,134 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, note?)>
+  <!ELEMENT item (name, price, details?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST item
+    sku ID #REQUIRED
+    category NMTOKENS #IMPLIED
+    active (yes|no) "yes">
+  <!ENTITY currency "€">
+  <!ENTITY quote "&quot;quoted&quot;">
+]>
+<catalog>
+  <item sku="A17" category="tools hardware">
+    <name>Adjustable &quote;wrench</name>
+    <price>19.95 &currency;</price>
+    <details>steel <emph>forged</emph> handle</details>
+  </item>
+  <item sku="B04" active="no">
+    <name>Glass &amp; ceramic cutter</name>
+    <price>7.50 &currency;</price>
+  </item>
+  <note>Use only with protective equipment.</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section*)>
+  <!ELEMENT section (title, entry*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST section xml:lang NMTOKEN "und">
+  <!ATTLIST entry
+    key CDATA #REQUIRED
+    value CDATA #IMPLIED
+    ref IDREF #IMPLIED>
+]>
+<report>
+  <section xml:lang="fr">
+    <title>Résumé</title>
+    <entry key="empty" value=""/>
+    <entry key="symbols" value="&lt;=&gt;&amp;&quot;&apos;"/>
+  </section>
+  <section xml:lang="x-private">
+    <title>Second section</title>
+    <entry key="linked" ref="missing"/>
+  </section>
+</report>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta, body, trailer)>
+  <!ELEMENT meta (stamp?, flag*)>
+  <!ELEMENT stamp (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ELEMENT body ANY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST flag code CDATA #REQUIRED>
+  <!ENTITY open "<chunk>">
+  <!ENTITY close "</chunk>">
+  <!ENTITY data "left &amp; right">
+]>
+<envelope>
+  <meta>
+    <stamp>2026-09-24T00:00:00Z</stamp>
+    <flag code="A"/>
+    <flag code="B&amp;C"/>
+  </meta>
+  <body>
+    &open;
+      &data;
+      <![CDATA[ raw ]]> <nested level="2"/>
+    &close;
+  </body>
+  <trailer>done</trailer>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell*)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST matrix xmlns CDATA #IMPLIED>
+  <!ATTLIST row index CDATA #REQUIRED>
+  <!ATTLIST cell
+    column CDATA #REQUIRED
+    type (text|number|formula) "text">
+]>
+<matrix xmlns="urn:test:matrix">
+  <row index="0">
+    <cell column="0" type="number">001</cell>
+    <cell column="1">alpha</cell>
+    <cell column="2" type="formula"><![CDATA[=SUM(A1:B1)]]></cell>
+  </row>
+  <row index="1">
+    <cell column="0" type="number">-3.14</cell>
+    <cell column="1">line
+break</cell>
+  </row>
+</matrix>
+```
+
+```xml
+<!DOCTYPE stream [
+  <!ELEMENT stream (record*)>
+  <!ELEMENT record (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ATTLIST record seq CDATA #IMPLIED>
+  <!ENTITY e1 "one">
+  <!ENTITY e2 "&e1;-two">
+]>
+<stream>
+  <record seq="1">
+    <key>first</key>
+    <value>&e2;<part><![CDATA[three]]></part>tail</value>
+  </record>
+  <record seq="2">
+    <key>second</key>
+    <value><part>nested-ish</part>&#x41;&#65;&#13;&#10;</value>
+  </record>
+</stream>
+```

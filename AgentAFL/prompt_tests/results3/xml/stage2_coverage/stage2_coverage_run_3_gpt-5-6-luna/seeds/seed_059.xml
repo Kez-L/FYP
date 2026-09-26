@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (record*)>
+  <!ELEMENT record (key, value, metadata?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|item)*>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT metadata (created?, tag*)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST record uid ID #REQUIRED state (new|old|deleted) #REQUIRED>
+  <!ATTLIST key type (string|number|binary) "string">
+  <!ATTLIST item index NMTOKEN #IMPLIED>
+  <!ENTITY empty "">
+  <!ENTITY amp "&amp;">
+]>
+<registry>
+  <record uid="r1" state="new">
+    <key type="binary"><![CDATA[00ff00]]></key>
+    <value>prefix<item index="000">zero</item><item index="1">&empty;</item>suffix</value>
+    <metadata>
+      <created>2026-09-24T00:00:00Z</created>
+      <tag>one</tag>
+      <tag>two &amp; three</tag>
+    </metadata>
+  </record>
+  <record uid="r2" state="deleted">
+    <key>missing</key>
+    <value>&amp; &lt; &gt; &quot; &apos; &amp;</value>
+  </record>
+</registry>

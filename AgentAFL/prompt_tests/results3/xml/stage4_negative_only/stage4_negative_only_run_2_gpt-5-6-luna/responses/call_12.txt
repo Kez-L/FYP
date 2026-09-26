@@ -1,0 +1,106 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (title,body,tag*)>
+  <!ATTLIST record code ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (#PCDATA|note)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT tag EMPTY>
+  <!ATTLIST tag name CDATA #REQUIRED>
+  <!ENTITY greeting "Catalogued entry">
+]>
+<archive>
+  <record code="r-001">
+    <title>&greeting;: winter glass</title>
+    <body>
+      The pane reflected <note>three lamps</note> before dawn.
+      <note>Measured at 04:17.</note>
+    </body>
+    <tag name="observed"/>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:acme:catalog" xmlns:meta="urn:acme:metadata">
+  <item sku="K-77" available="true">
+    <name xml:lang="fr">Éclat d'été</name>
+    <meta:details>
+      <meta:weight unit="g">42.5</meta:weight>
+      <meta:origin country="CA"/>
+    </meta:details>
+    <price currency="EUR">19.95</price>
+    <variants>
+      <variant id="small"/>
+      <variant id="large" discontinued="false"/>
+    </variants>
+  </item>
+  <item sku="Q-12" available="false">
+    <name xml:lang="ja">紙の舟</name>
+    <price currency="JPY">1200</price>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<?pipeline mode="audit"?>
+<transcript xml:space="preserve">
+  <!-- Deliberately mixed text and markup -->
+  <line speaker="a">Wait... <pause duration="250ms"/> what was that?</line>
+  <line speaker="b"><![CDATA[Use the literal sequence <&> here.]]></line>
+  <line speaker="a">I said <quote>turn left</quote>, not <quote>turn back</quote>.</line>
+  <metadata>
+    <flag enabled="yes"/>
+    <checksum algorithm="none"></checksum>
+  </metadata>
+</transcript>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE network [
+  <!ELEMENT network (node+, link*)>
+  <!ELEMENT node EMPTY>
+  <!ATTLIST node id ID #REQUIRED label CDATA #IMPLIED>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+]>
+<network>
+  <node id="n-alpha" label="入口"/>
+  <node id="n-beta" label="出口"/>
+  <node id="n-gamma"/>
+  <link from="n-alpha" to="n-beta" weight="0.75"/>
+  <link from="n-beta" to="n-gamma"/>
+  <link from="n-alpha" to="n-gamma" weight="2"/>
+</network>
+```
+
+```xml
+<?xml version="1.0"?>
+<experiment>
+  <run id="R9">
+    <input type="binary" size="0"/>
+    <result status="unknown">
+      <metrics>
+        <metric name="latency">0</metric>
+        <metric name="retries">0003</metric>
+        <metric name="ratio">-0.125</metric>
+      </metrics>
+      <errors>
+        <error code="E-ø">Δ threshold exceeded</error>
+        <error code="E-2"><![CDATA[line 1
+line 2
+line 3]]></error>
+      </errors>
+    </result>
+  </run>
+  <run id="R10">
+    <input type="text"><![CDATA[<&;]]></input>
+    <result status="ok"/>
+  </run>
+</experiment>
+```

@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ENTITY % switches "<!ELEMENT switches (switch*)>
+    <!ELEMENT switch EMPTY>
+    <!ATTLIST switch name NMTOKEN #REQUIRED enabled (yes|no) 'no'>">
+  %switches;
+  <!ELEMENT configuration (defaults, profiles, switches)>
+  <!ELEMENT defaults (path, limits)>
+  <!ELEMENT path (#PCDATA)>
+  <!ELEMENT limits EMPTY>
+  <!ATTLIST limits workers NMTOKEN "1" memory NMTOKEN "256M">
+  <!ELEMENT profiles (profile*)>
+  <!ELEMENT profile (include*, exclude*)>
+  <!ATTLIST profile name NMTOKEN #REQUIRED inherits NMTOKEN #IMPLIED>
+  <!ELEMENT include (#PCDATA)>
+  <!ELEMENT exclude (#PCDATA)>
+]>
+<configuration>
+  <defaults>
+    <path>/srv/app/data</path>
+    <limits workers="4" memory="1G"/>
+  </defaults>
+  <profiles>
+    <profile name="safe">
+      <include>*.json</include>
+      <exclude>*.tmp</exclude>
+    </profile>
+    <profile name="fast" inherits="safe">
+      <include>cache/**</include>
+    </profile>
+  </profiles>
+  <switches>
+    <switch name="watch" enabled="yes"/>
+    <switch name="trace"/>
+  </switches>
+</configuration>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, record+)>
+  <!ATTLIST archive format (short|long) "long">
+  <!ELEMENT header (title, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT note (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT record (key, payload, tags?)>
+  <!ATTLIST record kind CDATA #REQUIRED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|line|mark|br)*>
+  <!ELEMENT line (#PCDATA|mark|br)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ENTITY archive-name "Northwind">
+  <!ENTITY separator " / ">
+]>
+<archive format="short">
+  <header>
+    <title>&archive-name; transfer log</title>
+    <note>Entries marked <mark>urgent</mark> require review.</note>
+  </header>
+  <record kind="binary">
+    <key>0001-A</key>
+    <payload><![CDATA[
+      00110011 10100100
+      <not-an-element>&still-not-an-entity;</not-an-element>
+    ]]></payload>
+    <tags><tag>raw</tag><tag>inbound</tag></tags>
+  </record>
+  <record kind="text">
+    <key>0002-B</key>
+    <payload>
+      <line>First line&separator;<mark>important</mark><br/></line>
+      <line>Second line with &amp; escaped punctuation.</line>
+      <line>Third line with a numeric character: &#x03A9;.</line>
+    </payload>
+  </record>
+  <record kind="empty">
+    <key>0003-C</key>
+    <payload/>
+  </record>
+</archive>

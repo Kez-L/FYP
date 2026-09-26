@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (route, payload, attachment*)>
+  <!ATTLIST message priority (low|normal|high) "normal">
+  <!ELEMENT route (sender, destination+)>
+  <!ELEMENT sender EMPTY>
+  <!ATTLIST sender address CDATA #REQUIRED>
+  <!ELEMENT destination EMPTY>
+  <!ATTLIST destination address CDATA #REQUIRED>
+  <!ELEMENT payload (#PCDATA)>
+  <!ELEMENT attachment (name, content)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT content (#PCDATA)>
+]>
+<message priority="high">
+  <route>
+    <sender address="service@example.invalid"/>
+    <destination address="ops@example.invalid"/>
+    <destination address="audit@example.invalid"/>
+  </route>
+  <payload><![CDATA[
+    {
+      "event": "threshold-crossed",
+      "value": 91.7,
+      "flags": ["delayed", "review"]
+    }
+  ]]></payload>
+  <attachment>
+    <name>details.txt</name>
+    <content>Voltage &lt; nominal; inspect channel 4.</content>
+  </attachment>
+</message>

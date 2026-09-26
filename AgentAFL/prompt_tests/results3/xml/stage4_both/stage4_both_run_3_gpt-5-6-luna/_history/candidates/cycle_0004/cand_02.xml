@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (routing, payload, audit?)>
+  <!ELEMENT routing (sender, recipients, reply-to?)>
+  <!ELEMENT sender EMPTY>
+  <!ATTLIST sender address CDATA #REQUIRED>
+  <!ELEMENT recipients (recipient+)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT reply-to EMPTY>
+  <!ATTLIST reply-to address CDATA #REQUIRED>
+  <!ELEMENT payload (subject, content, binary?)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT content (#PCDATA|emphasis|break)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT binary (#PCDATA)>
+  <!ATTLIST binary encoding (base64|hex) "base64">
+  <!ELEMENT audit (stamp, actor)>
+  <!ELEMENT stamp (#PCDATA)>
+  <!ELEMENT actor (#PCDATA)>
+]>
+<message>
+  <routing>
+    <sender address="noreply@example.invalid"/>
+    <recipients>
+      <recipient>team@example.invalid</recipient>
+      <recipient>archive@example.invalid</recipient>
+    </recipients>
+    <reply-to address="support@example.invalid"/>
+  </routing>
+  <payload>
+    <subject>Deployment &amp; verification</subject>
+    <content>Read the <emphasis>attached</emphasis> report.<break/>Do not alter it.</content>
+    <binary encoding="hex">89504E470D0A1A0A0000</binary>
+  </payload>
+  <audit>
+    <stamp>2026-09-24T10:11:12+00:00</stamp>
+    <actor>automaton</actor>
+  </audit>
+</message>

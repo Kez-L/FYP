@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (start, task*, finish)>
+  <!ELEMENT start EMPTY>
+  <!ELEMENT task (input*, action, output*)>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT output (#PCDATA)>
+  <!ELEMENT finish (#PCDATA)>
+  <!ATTLIST task id ID #REQUIRED depends IDREFS #IMPLIED priority NMTOKEN "normal">
+]>
+<workflow>
+  <start/>
+  <task id="fetch" priority="high">
+    <input>https://example.invalid/resource?x=1&amp;y=2</input>
+    <input><![CDATA[header: X-Test: <value>]]></input>
+    <action>download</action>
+    <output>/tmp/resource</output>
+  </task>
+  <task id="parse" depends="fetch">
+    <input>/tmp/resource</input>
+    <action>parse --mode="strict" --limit=0</action>
+    <output>records</output>
+    <output>diagnostics</output>
+  </task>
+  <task id="publish" depends="parse fetch" priority="low">
+    <action>publish &lt;records&gt;</action>
+  </task>
+  <task id="orphan" depends="missing">
+    <action>noop</action>
+  </task>
+  <finish>status: <result code="0"/> complete</finish>
+</workflow>

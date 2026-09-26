@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!ENTITY logo SYSTEM "logo.gif" NDATA gif>
+  <!ENTITY open "[OPEN]">
+  <!ENTITY close "[CLOSE]">
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (name, payload, link*)>
+  <!ATTLIST record
+    key ID #REQUIRED
+    state (new|old|held) "new"
+    asset ENTITY #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target IDREF #REQUIRED>
+]>
+<archive>
+  <record key="r1" state="held" asset="logo">
+    <name>&open;primary&close;</name>
+    <payload>before<chunk><![CDATA[x < y && y > z]]></chunk>after</payload>
+    <link target="r2"/>
+  </record>
+  <record key="r2">
+    <name>secondary</name>
+    <payload>&#x09;line&#x0A;break</payload>
+  </record>
+</archive>

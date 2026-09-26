@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (event*)>
+  <!ELEMENT event (time, actor?, value?)>
+  <!ATTLIST event type (start|stop|data|error) #REQUIRED
+                code CDATA #IMPLIED>
+  <!ELEMENT time (#PCDATA)>
+  <!ELEMENT actor EMPTY>
+  <!ATTLIST actor name CDATA #REQUIRED role CDATA #IMPLIED>
+  <!ELEMENT value (#PCDATA|hex|raw)*>
+  <!ELEMENT hex (#PCDATA)>
+  <!ELEMENT raw (#PCDATA)>
+  <!ENTITY nl "&#10;">
+]>
+<stream>
+  <event type="start" code="0">
+    <time>2026-09-24T12:00:00Z</time>
+    <actor name="svc/core" role="writer"/>
+  </event>
+  <event type="data">
+    <time>2026-09-24T12:00:01Z</time>
+    <value>alpha&nl;beta<hex>00ff7E</hex><raw><![CDATA[<&quot;not markup&quot;>]]></raw></value>
+  </event>
+  <event type="error" code="E&amp;1">
+    <time>invalid</time>
+    <value>unterminated-looking &lt; token</value>
+  </event>
+  <event type="stop"><time>done</time></event>
+</stream>

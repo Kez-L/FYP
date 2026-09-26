@@ -1,0 +1,35 @@
+<?xml version="1.1" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (header, record*, trailer)>
+  <!ELEMENT header (source, sequence)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT sequence (#PCDATA)>
+  <!ELEMENT record (key, value, annotation?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|CDATA|token)*>
+  <!ELEMENT annotation (#PCDATA)>
+  <!ELEMENT trailer EMPTY>
+  <!ELEMENT token (#PCDATA)>
+  <!ATTLIST stream channel CDATA #REQUIRED>
+  <!ATTLIST record id ID #REQUIRED level (trace|info|warn|error) "info">
+  <!ATTLIST trailer count NMTOKEN #REQUIRED>
+  <!ENTITY nl "&#xA;">
+  <!ENTITY sep "&#x1F;">
+]>
+<stream channel="ingest">
+  <header>
+    <source>edge-node-&#x1F;-west</source>
+    <sequence>00000042</sequence>
+  </header>
+  <record id="r1" level="warn">
+    <key>threshold</key>
+    <value><![CDATA[raw <payload> && delimiters]]></value>
+    <value><token>retry</token>&nl;backoff&sep;exponential</value>
+    <annotation>boundary &#x7F; retained</annotation>
+  </record>
+  <record id="r2">
+    <key>mode</key>
+    <value>safe</value>
+  </record>
+  <trailer count="2"/>
+</stream>

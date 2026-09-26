@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<configuration>
+  <service name="edge-cache" enabled="true">
+    <listen>
+      <socket protocol="tcp" address="127.0.0.1" port="8080"/>
+      <socket protocol="unix" path="/run/edge-cache.sock"/>
+    </listen>
+    <limits>
+      <memory unit="MiB">512</memory>
+      <connections soft="128" hard="256"/>
+      <timeout unit="ms">7500</timeout>
+    </limits>
+    <routes>
+      <route pattern="/assets/*" handler="static">
+        <cache max-age="86400" public="true"/>
+      </route>
+      <route pattern="/api/*" handler="proxy">
+        <upstream scheme="https" host="backend.internal" port="443"/>
+        <headers>
+          <add name="X-Forwarded-Proto" value="https"/>
+          <remove name="Server"/>
+        </headers>
+      </route>
+    </routes>
+  </service>
+  <logging format="json">
+    <sink type="stderr" level="warning"/>
+    <sink type="file" level="info" path="/var/log/edge-cache.log"/>
+  </logging>
+</configuration>

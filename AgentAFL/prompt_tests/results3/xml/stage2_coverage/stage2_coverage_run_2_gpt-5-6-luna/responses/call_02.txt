@@ -1,0 +1,127 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ENTITY % attrs 'status (new|held|closed) "new"'>
+  <!ENTITY % itemdecl '<!ELEMENT item (title, note?, value*)>
+                         <!ATTLIST item id ID #REQUIRED %attrs;>'>
+  %itemdecl;
+  <!ELEMENT archive (item+, footer)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emph|br)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY open "[open]">
+  <!ENTITY close "[close]">
+]>
+<archive>
+  <item id="i-1" status="new">
+    <title>First &open; record &close;</title>
+    <note>plain <emph>marked</emph><br/>tail</note>
+    <value>0</value>
+    <value>18446744073709551615</value>
+  </item>
+  <item id="i-2" status="closed">
+    <title><![CDATA[<unparsed> & entities ]]> </title>
+    <value></value>
+  </item>
+  <footer>done</footer>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<warehouse xml:lang="fr" xml:base="https://example.invalid/root/">
+  <section id="A" xml:space="preserve">
+    <rack>
+      <bin code="001"><label>é</label><count>000</count></bin>
+      <bin code="002">
+        <label><![CDATA[line one
+line two ]]]]><![CDATA[> line three]]></label>
+        <count>+00042</count>
+      </bin>
+    </rack>
+    <section id="A.1">
+      <rack>
+        <bin code="nested"><label>Ω</label><count>NaN</count></bin>
+      </rack>
+    </section>
+  </section>
+  <!-- comment with -- invalid-looking separators: - - -->
+  <?inventory phase="scan &quot;late&quot;"?>
+  <section id="B" xml:space="default">
+    <rack/>
+  </section>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE media [
+  <!NOTATION png SYSTEM "image/png">
+  <!NOTATION txt PUBLIC "-//EXAMPLE//TEXT Plain//EN" "text/plain">
+  <!ENTITY cover SYSTEM "cover.png" NDATA png>
+  <!ENTITY readme SYSTEM "readme.txt" NDATA txt>
+  <!ELEMENT media (asset*, reference*)>
+  <!ELEMENT asset EMPTY>
+  <!ATTLIST asset
+    name CDATA #REQUIRED
+    kind NOTATION (png|txt) #IMPLIED
+    source ENTITY #IMPLIED>
+  <!ELEMENT reference (#PCDATA)>
+  <!ATTLIST reference target IDREF #IMPLIED>
+]>
+<media>
+  <asset name="cover.png" kind="png" source="cover"/>
+  <asset name="readme.txt" kind="txt" source="readme"/>
+  <reference target="missing">external resources are not loaded</reference>
+</media>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:matrix xmlns:r="urn:matrix" xmlns:c="urn:cell" xmlns:x="urn:extra">
+  <r:row index="0">
+    <c:cell x:kind="integer" c:value="0">zero</c:cell>
+    <c:cell x:kind="fraction" c:value="1/3">⅓</c:cell>
+  </r:row>
+  <r:row index="1" xmlns:c="urn:alternate-cell">
+    <c:cell c:value="&amp;">&lt;one&gt;</c:cell>
+    <x:annotation xml:lang="zh-Hant">漢字</x:annotation>
+  </r:row>
+  <r:row index="2">
+    <r:empty/>
+    <c:cell><![CDATA[]]></c:cell>
+    <c:cell><![CDATA[ ]]>tail</c:cell>
+  </r:row>
+</r:matrix>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (meta, body, checksum?)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta
+    version CDATA #REQUIRED
+    flags NMTOKENS #IMPLIED>
+  <!ELEMENT body (chunk|gap)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT gap EMPTY>
+  <!ATTLIST gap width NMTOKEN "0">
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY amp "&#38;">
+]>
+<packet>
+  <meta version="0x00" flags="a  b c"/>
+  <body>
+    <chunk>prefix &amp; middle</chunk>
+    <gap width="000000000000000000000000000000000000000000000000000001"/>
+    <chunk><![CDATA[raw ]]>&amp;<![CDATA[ text]]></chunk>
+    <gap/>
+    <chunk>suffix</chunk>
+  </body>
+  <checksum>&amp;ENTITY; &amp; &#x1F600;</checksum>
+</packet>
+```

@@ -1,0 +1,77 @@
+```xml
+<?xml version="1.0"?>
+<root xmlns="urn:default" xmlns:x="urn:x">
+  <x:item x:id="001">
+    <x:value>alpha</x:value>
+    <x:value>beta</x:value>
+  </x:item>
+  <group>
+    <member role="first"/>
+    <member role="second">
+      <nested><![CDATA[a]]></nested>
+    </member>
+  </group>
+</root>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (data)>
+  <!ELEMENT data (#PCDATA)>
+  <!ENTITY local "left &amp; right">
+]>
+<envelope>
+  <data>before &local; after</data>
+</envelope>
+```
+
+```xml
+<?xml version="1.1"?>
+<messages>
+  <message>
+    <from><![CDATA[user@example.org]]></from>
+    <to>service@example.org</to>
+    <body><![CDATA[
+      line one
+      ]]>middle<![CDATA[
+      line two ]]> end
+    </body>
+  </message>
+  <message priority="high">
+    <from>robot</from>
+    <body>empty <br/> tail</body>
+  </message>
+</messages>
+```
+
+```xml
+<!DOCTYPE map [
+  <!ELEMENT map (pair*)>
+  <!ELEMENT pair (key,value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|pair)*>
+]>
+<map>
+  <pair>
+    <key>outer</key>
+    <value>
+      text
+      <pair>
+        <key>inner</key>
+        <value>42</value>
+      </pair>
+    </value>
+  </pair>
+</map>
+```
+
+```xml
+<stream xmlns:p="urn:payload" xml:lang="fr">
+  <chunk index="0"><p:data>une &amp; deux</p:data></chunk>
+  <chunk index="1">
+    <![CDATA[<not-a-tag attr="&fake;"/>]]>
+    <?processing instruction?>
+  </chunk>
+  <chunk index="2"><![CDATA[]]></chunk>
+</stream>
+```

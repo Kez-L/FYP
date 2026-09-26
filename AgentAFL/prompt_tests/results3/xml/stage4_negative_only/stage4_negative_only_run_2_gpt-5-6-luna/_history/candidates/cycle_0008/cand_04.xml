@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns:w="urn:workflow" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <w:start id="boot" next="prepare"/>
+  <w:step id="prepare" retries="3">
+    <w:input name="source" type="path"/>
+    <w:transform language="xpath" expression="/document/record[@enabled='1']"/>
+    <w:branch test="count(result) &gt; 0" yes="publish" no="halt"/>
+  </w:step>
+  <w:step id="publish">
+    <w:resource xlink:type="simple" xlink:href="urn:queue:outbound"/>
+  </w:step>
+  <w:end id="halt" status="skipped"/>
+</workflow>

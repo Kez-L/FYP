@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<workflow xmlns="urn:workflow:v2" xmlns:ext="urn:workflow:extensions">
+  <definition id="nightly" enabled="0">
+    <variables>
+      <variable name="input" type="path">/var/data/in</variable>
+      <variable name="retries" type="integer">0000000007</variable>
+      <variable name="pattern" type="regex"><![CDATA[[A-Z]{2,4}\s+\d+]]></variable>
+    </variables>
+    <parallel limit="3">
+      <task id="scan" depends-on="">
+        <exec shell="/bin/sh">find "${input}" -type f</exec>
+        <on-success>
+          <emit channel="audit">scan complete</emit>
+        </on-success>
+      </task>
+      <task id="archive" depends-on="scan">
+        <exec shell="/bin/sh">tar -czf archive.tar.gz "${input}"</exec>
+        <on-failure retry-after="PT0.500S">
+          <emit channel="error">archive &lt;failed&gt;</emit>
+        </on-failure>
+      </task>
+    </parallel>
+    <ext:annotation xml:lang="fr" xml:space="preserve">  prêt  </ext:annotation>
+  </definition>
+</workflow>

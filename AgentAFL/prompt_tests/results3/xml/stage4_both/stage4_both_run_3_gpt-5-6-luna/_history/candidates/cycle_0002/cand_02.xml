@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE project [
+  <!ELEMENT project (name, phase+, notes?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT phase (label, task*)>
+  <!ATTLIST phase number NMTOKEN #REQUIRED closed (true|false) "false">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT task (summary, owner?, dependency*)>
+  <!ATTLIST task key ID #REQUIRED priority (low|medium|high) "medium">
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT dependency EMPTY>
+  <!ATTLIST dependency ref IDREF #REQUIRED optional (yes|no) "no">
+  <!ELEMENT notes (#PCDATA|line)*>
+  <!ELEMENT line EMPTY>
+]>
+<project>
+  <name>Orchid Deployment</name>
+  <phase number="1" closed="true">
+    <label>Preparation</label>
+    <task key="t-a" priority="high">
+      <summary>Validate the environment</summary>
+      <owner>Team Alpha</owner>
+    </task>
+  </phase>
+  <phase number="2">
+    <label>Rollout</label>
+    <task key="t-b">
+      <summary>Publish the application</summary>
+      <dependency ref="t-a"/>
+      <dependency ref="t-missing" optional="yes"/>
+    </task>
+    <task key="t-c" priority="low">
+      <summary>Notify observers</summary>
+      <owner><![CDATA[ops@example.invalid]]></owner>
+      <dependency ref="t-b"/>
+    </task>
+  </phase>
+  <notes>
+    <line/>Deployment uses a staged process.
+    <line/>Rollback remains available.
+  </notes>
+</project>

@@ -1,0 +1,95 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <!-- metadata with mixed content -->
+  <x:entry id="α-01" enabled="true">
+    <x:title><![CDATA[3 < 5 && 7 > 2]]></x:title>
+    <x:value>42&#x2A;π</x:value>
+    <?audit level="verbose"?>
+    <x:tags>
+      <x:tag>one</x:tag>
+      <x:tag>two</x:tag>
+    </x:tags>
+  </x:entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+, footer?)>
+  <!ELEMENT section (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+]>
+<report>
+  <section code="s1">
+    <heading>Alpha</heading>
+    <item>left <emph>center</emph> right&nbsp;</item>
+    <item><![CDATA[raw ]]> text</item>
+  </section>
+  <section code="s2">
+    <heading>Beta</heading>
+  </section>
+  <footer>End</footer>
+</report>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<日本語 xmlns="urn:例">
+  <枝 属性="é &amp; &#x1F642;">
+    <![CDATA[
+      line one
+      ]]> 
+    <葉>空白	改行
+      <値>0x00&#0;</値>
+    </葉>
+    <?処理 命令="値"?>
+  </枝>
+</日本語>
+```
+
+```xml
+<root xmlns:a="urn:a" xmlns:b="urn:b" a:flag="yes">
+  <a:item b:k="v" a:k="1" k="unqualified">
+    <nested>
+      <empty/>
+      <empty></empty>
+      <mixed>before<a:mark/>after<!-- comment --></mixed>
+    </nested>
+  </a:item>
+  <broken attr='unterminated>
+    <child a:x="&quot;">payload</child>
+  </broken>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT body (block+)>
+  <!ELEMENT block (line*)>
+  <!ELEMENT line (#PCDATA)>
+  <!ATTLIST header stamp CDATA #IMPLIED>
+]>
+<envelope>
+  <header stamp="2026-09-24T00:00:00Z"/>
+  <body>
+    <block>
+      <line>one</line>
+      <line>two &lt; three</line>
+    </block>
+    <block>
+      <line><![CDATA[]]></line>
+      <line>tail</line>
+    </block>
+  </body>
+</envelope>
+```

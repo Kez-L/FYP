@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (warehouse+)>
+  <!ELEMENT warehouse (location, bin+)>
+  <!ELEMENT location (name, coordinates?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT coordinates EMPTY>
+  <!ATTLIST coordinates lat CDATA #REQUIRED lon CDATA #REQUIRED>
+  <!ELEMENT bin (item*)>
+  <!ATTLIST bin code ID #REQUIRED temperature (ambient|chilled|frozen) "ambient">
+  <!ELEMENT item (sku, description?, quantity, dimensions?, tags?)>
+  <!ATTLIST item serial ID #IMPLIED fragile (yes|no) "no">
+  <!ELEMENT sku (#PCDATA)>
+  <!ELEMENT description (#PCDATA|br)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT quantity (#PCDATA)>
+  <!ELEMENT dimensions EMPTY>
+  <!ATTLIST dimensions unit CDATA #REQUIRED width CDATA #REQUIRED height CDATA #REQUIRED depth CDATA #REQUIRED>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+]>
+<inventory>
+  <warehouse>
+    <location>
+      <name>North Annex</name>
+      <coordinates lat="51.5074" lon="-0.1278"/>
+    </location>
+    <bin code="A-01" temperature="ambient">
+      <item serial="S-0007" fragile="yes">
+        <sku>GLASS-04</sku>
+        <description>Hand-blown<br/>sample vessel</description>
+        <quantity>12</quantity>
+        <dimensions unit="cm" width="8.5" height="19" depth="8.5"/>
+        <tags><tag>sample</tag><tag>display</tag></tags>
+      </item>
+      <item>
+        <sku>WIRE-200</sku>
+        <quantity>2048</quantity>
+      </item>
+    </bin>
+    <bin code="C-09" temperature="frozen">
+      <item serial="S-991">
+        <sku>ICE-CRYSTAL</sku>
+        <description><![CDATA[Temperature-sensitive & sealed]]></description>
+        <quantity>3</quantity>
+        <dimensions unit="mm" width="40" height="40" depth="40"/>
+        <tags><tag>cold</tag><tag>priority</tag></tags>
+      </item>
+    </bin>
+  </warehouse>
+</inventory>

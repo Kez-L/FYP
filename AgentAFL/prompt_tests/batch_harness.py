@@ -68,6 +68,28 @@ def _env_candidates(explicit):
     return [explicit] if explicit else DEFAULT_ENV_FILES
 
 
+# Exit code used when a call fails because the account is out of credits /
+# quota — run_all_stages.sh stops the whole sweep on it. Retrying or moving on
+# to the next call is pointless: every later call fails the same way, and the
+# run would otherwise finish "successfully" with a 0-seed summary.
+OUT_OF_CREDITS_EXIT = 3
+_OUT_OF_CREDITS_CODES = ("insufficient_quota", "credit_balance_exhausted", "billing_hard_limit_reached")
+_OUT_OF_CREDITS_MARKERS = _OUT_OF_CREDITS_CODES + (
+    "no credits remaining",               # OpenAI 429: "You have no credits remaining. ..."
+    "exceeded your current quota",        # older OpenAI message
+    "credit balance is too low",          # Anthropic message
+)
+
+
+def is_out_of_credits(err: BaseException) -> bool:
+    # OpenAI 429 shape: type='insufficient_quota', code='credit_balance_exhausted'
+    for attr in ("code", "type"):
+        if getattr(err, attr, None) in _OUT_OF_CREDITS_CODES:
+            return True
+    msg = str(err).lower()
+    return any(m in msg for m in _OUT_OF_CREDITS_MARKERS)
+
+
 def model_tag(provider: str, model: str) -> str:
     """Short slug for output-folder names: 'haiku', 'opus', 'gpt-5.4-mini', ..."""
     m = model.lower()
@@ -422,6 +444,9 @@ def run_batch(cfg: BatchConfig) -> dict:
                 cf.write(json.dumps({"call": i, "error": str(e),
                                      "ts": datetime.now(timezone.utc).isoformat()}) + "\n")
                 cf.flush()
+                if is_out_of_credits(e):
+                    print(f"[call {i:02d}] OUT OF CREDITS — aborting run (no summary written): {cfg.out_dir}")
+                    sys.exit(OUT_OF_CREDITS_EXIT)
                 continue
             latency = time.monotonic() - t0
 

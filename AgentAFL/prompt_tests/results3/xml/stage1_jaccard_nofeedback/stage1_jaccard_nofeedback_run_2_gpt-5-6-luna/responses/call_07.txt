@@ -1,0 +1,103 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:sample:catalog" xmlns:x="urn:sample:extra">
+  <item id="A-001" quantity="0">
+    <name><![CDATA[alpha < beta & gamma]]></name>
+    <x:metadata>
+      <x:flag enabled="true"/>
+      <x:value>0</x:value>
+    </x:metadata>
+  </item>
+  <item id="A-002" quantity="-1">
+    <name>line one
+line two&#10;line three</name>
+    <empty/>
+  </item>
+</catalog>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, trailer)>
+  <!ELEMENT header (version, token?)>
+  <!ELEMENT version (#PCDATA)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST envelope mode (strict|loose) "strict">
+  <!ENTITY left "<part>">
+  <!ENTITY right "</part>">
+]>
+<envelope mode="loose">
+  <header>
+    <version>1&amp;2</version>
+    <token><![CDATA[&left;not-expanded&right;]]></token>
+  </header>
+  <payload>&left;content&right;</payload>
+  <trailer/>
+</envelope>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<r:request xmlns:r="urn:req" xmlns:q="urn:query" q:type="batch">
+  <r:body>
+    <r:query><![CDATA[
+      SELECT * FROM records
+      WHERE value LIKE ']]>' OR value IS NULL
+    ]]></r:query>
+    <r:parameters>
+      <r:parameter name="limit">00000000000000000001</r:parameter>
+      <r:parameter name="offset">-9223372036854775808</r:parameter>
+      <r:parameter name="pattern">&lt;![CDATA[?]]&gt;</r:parameter>
+    </r:parameters>
+  </r:body>
+  <r:body/>
+</r:request>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ELEMENT root (section+)>
+  <!ELEMENT section (title, entry*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (#PCDATA|note|entry)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST section key ID #IMPLIED>
+  <!ATTLIST entry ref IDREF #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+]>
+<root>
+  <section key="s1">
+    <title>First&nbsp;section</title>
+    <entry ref="s1">outer <note>nested note</note> tail</entry>
+    <entry>mixed <![CDATA[ data ]]> text</entry>
+  </section>
+  <section key="s2">
+    <title>Second</title>
+  </section>
+</root>
+```
+
+```xml
+<world>
+  <continent name="x">
+    <country code="ZZ">
+      <city>
+        <name>broken &amp; repaired</name>
+        <coordinates lat="+90.000000" lon="-180.000000">
+          <lat/>
+          <lon/>
+        </coordinates>
+      </city>
+    </country>
+  </continent>
+  <extensions>
+    <extension name="a:b" value="&quot;&apos;&lt;&gt;&amp;"/>
+    <extension name="empty"><![CDATA[]]></extension>
+    <extension name="deep">
+      <level n="1"><level n="2"><level n="3"><value>terminal</value></level></level></level>
+    </extension>
+  </extensions>
+</world>
+```

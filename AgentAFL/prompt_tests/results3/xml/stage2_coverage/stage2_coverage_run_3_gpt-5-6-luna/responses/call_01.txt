@@ -1,0 +1,115 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!ENTITY logo SYSTEM "logo.gif" NDATA gif>
+  <!ENTITY open "[OPEN]">
+  <!ENTITY close "[CLOSE]">
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (name, payload, link*)>
+  <!ATTLIST record
+    key ID #REQUIRED
+    state (new|old|held) "new"
+    asset ENTITY #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target IDREF #REQUIRED>
+]>
+<archive>
+  <record key="r1" state="held" asset="logo">
+    <name>&open;primary&close;</name>
+    <payload>before<chunk><![CDATA[x < y && y > z]]></chunk>after</payload>
+    <link target="r2"/>
+  </record>
+  <record key="r2">
+    <name>secondary</name>
+    <payload>&#x09;line&#x0A;break</payload>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workspace xmlns="urn:workspace:v2" xmlns:p="urn:panel:v1" xmlns:q="urn:query:v1"
+           xml:lang="fr" xml:space="preserve">
+  <p:panel id="main" xml:base="./panels/">
+    <title>Résumé &amp; contrôle</title>
+    <p:tab q:filter="a|b|c">
+      <q:query><![CDATA[
+        select * from nodes
+        where value < 10 and value > 2
+      ]]></q:query>
+      <result xmlns="">
+        <value type="integer">0007</value>
+        <value type="boolean">TRUE</value>
+      </result>
+    </p:tab>
+    <p:tab id="empty" xmlns:q="urn:query:alternate">
+      <q:query/>
+    </p:tab>
+  </p:panel>
+  <?workspace checksum="0x00FF"?>
+</workspace>
+```
+
+```xml
+<?xml version="1.1"?>
+<packet>
+  <header>
+    <version>1&#x2E;1</version>
+    <flags>alpha&#x85;beta&#x2028;gamma</flags>
+  </header>
+  <body>
+    <section name="A">
+      <![CDATA[raw ]]]]><![CDATA[> delimiter and ]]><![CDATA[ brackets]]>
+    </section>
+    <section name="B">
+      <item><![CDATA[line one
+line two]]></item>
+      <item>tab&#x9;next&#xD;end</item>
+    </section>
+  </body>
+  <?emit value="&#x1F642;"?>
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE form [
+  <!ENTITY label "User &amp; Token">
+  <!ELEMENT form (field+, note?)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field
+    name NMTOKEN #REQUIRED
+    value CDATA ""
+    refs IDREFS #IMPLIED
+    enabled (yes|no) "yes">
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST note xml:space (default|preserve) "default">
+]>
+<form>
+  <field name="user" value="alice" enabled="yes"/>
+  <field name="token" value="&label;" refs="user"/>
+  <field name="multi_name" value="a&#x20;b&#x9;c" enabled="no"/>
+  <note xml:space="preserve">  leading
+    whitespace &amp; entities  </note>
+</form>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:x="urn:x">
+  <outer a="1" a="2">
+    <x:item x:k="v">text</x:item>
+    <middle>
+      <![CDATA[unterminated-looking ]]> fragment]]>
+      <inner xmlns:x="">
+        <x:broken/>
+      </inner>
+    </middle>
+  </outer>
+  <tail>after</tail>
+</root>
+```

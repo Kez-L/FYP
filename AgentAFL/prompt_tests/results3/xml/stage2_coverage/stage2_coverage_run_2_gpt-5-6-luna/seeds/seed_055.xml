@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE spacecraft [
+  <!ELEMENT spacecraft (mission, crew, payload?, log)>
+  <!ATTLIST spacecraft
+    xmlns CDATA #FIXED "urn:orbit"
+    registry ID #REQUIRED
+    phase (prelaunch|active|complete) "prelaunch">
+  <!ELEMENT mission (name, window)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT window EMPTY>
+  <!ATTLIST window
+    opens CDATA #REQUIRED
+    closes CDATA #IMPLIED>
+  <!ELEMENT crew (member+)>
+  <!ELEMENT member (#PCDATA)>
+  <!ATTLIST member role (pilot|engineer|scientist) #REQUIRED>
+  <!ELEMENT payload (sample*, note?)>
+  <!ELEMENT sample (#PCDATA)>
+  <!ATTLIST sample code NMTOKEN #REQUIRED sealed (yes|no) "yes">
+  <!ELEMENT note (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT log (entry+)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ATTLIST entry at CDATA #REQUIRED level (info|warn|error) "info">
+  <!ENTITY mission-name "Aurora-7">
+]>
+<spacecraft registry="orb-17" phase="active">
+  <mission>
+    <name>&mission-name;</name>
+    <window opens="2042-03-01T04:00:00Z" closes="2042-03-01T05:15:00Z"/>
+  </mission>
+  <crew>
+    <member role="pilot">Iris</member>
+    <member role="scientist">Nadir</member>
+  </crew>
+  <payload>
+    <sample code="ice-A1" sealed="no"><![CDATA[H2O < trace:argon > 0.04%]]></sample>
+    <note>Handle with <emph>gloves</emph> &amp; shielding.</note>
+  </payload>
+  <log>
+    <entry at="04:02:11Z">Systems nominal</entry>
+    <entry at="04:07:09Z" level="warn">Pressure fluctuation &lt; threshold</entry>
+  </log>
+</spacecraft>

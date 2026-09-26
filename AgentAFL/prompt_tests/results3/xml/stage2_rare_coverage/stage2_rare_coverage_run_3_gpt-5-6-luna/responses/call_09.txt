@@ -1,0 +1,127 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, note?)>
+  <!ELEMENT entry (title, meta, body)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT body (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    kind (book|media|other) "other">
+  <!ATTLIST meta
+    lang CDATA #IMPLIED
+    rating NMTOKEN "unrated">
+  <!ENTITY publisher "North &amp; South">
+  <!ENTITY marker "&#x2603;">
+]>
+<catalog>
+  <entry id="e1" kind="book">
+    <title>Entities and declarations</title>
+    <meta lang="en" rating="safe"/>
+    <body>Published by &publisher;. <em>&marker;</em><br/>Mixed text.</body>
+  </entry>
+  <entry id="e2">
+    <title>Second entry</title>
+    <meta/>
+    <body><![CDATA[raw <markup> and ]]> characters</body>
+  </entry>
+  <note>End of catalog</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<scene xmlns="urn:scene" xmlns:v="urn:vehicle" xmlns:geo="urn:geo"
+       xml:lang="fr" xml:space="preserve">
+  <?render profile="draft"?>
+  <!-- A comment containing -- is intentionally avoided. -->
+  <stage id="s-01">
+    <label><![CDATA[entrée & sortie <non-element>]]></label>
+    <v:vehicle v:type="tram" v:capacity="0007">
+      <v:wheel position="front-left"/>
+      <v:wheel position="front-right"/>
+      <v:wheel position="rear-left"/>
+      <v:wheel position="rear-right"/>
+    </v:vehicle>
+    <location xmlns="" xml:base="../places/">
+      <name>Depot</name>
+      <geo:point xmlns:geo="urn:geo" geo:lat="+48.8566" geo:lon="2.3522"/>
+      <details>Line &amp; route &#x2192; terminus</details>
+    </location>
+    <empty xmlns="urn:scene"/>
+  </stage>
+  <?extension?>
+</scene>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node EMPTY>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST node
+    id ID #REQUIRED
+    refs IDREFS #IMPLIED
+    label CDATA "unlabeled">
+  <!ATTLIST edge
+    from IDREF #REQUIRED
+    to IDREF #REQUIRED
+    weight NMTOKEN "1">
+  <!ENTITY ampersand "&amp;">
+  <!ENTITY greeting "hello &ampersand; world">
+]>
+<graph>
+  <node id="n0" label="root"/>
+  <node id="n1" refs="n0" label="&greeting;"/>
+  <node id="n2" refs="n0 n1"/>
+  <edge from="n0" to="n1" weight="0"/>
+  <edge from="n1" to="n2" weight="00000000000000000042"/>
+  <edge from="n2" to="n0" weight="&#x2B;7"/>
+</graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE broken [
+  <!ELEMENT broken (section*)>
+  <!ELEMENT section (item|![CDATA[not a declaration]])*>
+  <!ELEMENT item (#PCDATA)>
+]>
+<broken>
+  <section>
+    <item>before <![CDATA[embedded <text> & symbols]]></item>
+    <item key="one" key="two">duplicate attribute</item>
+    <item>unfinished
+  </section>
+  <!-- comment starts and never ends
+</broken>
+```
+
+```xml
+<?xml version="1.1"?>
+<registry xmlns="urn:registry" xmlns:m="urn:meta" xml:lang="und">
+  <record xml:id="rα" m:state="new" m:flags="a&#x20;b&#x9;c">
+    <key><![CDATA[001/α/Ω]]></key>
+    <value type="list">
+      <entry index="0">zero</entry>
+      <entry index="1"><![CDATA[]]></entry>
+      <entry index="2">line
+break&#xA;next</entry>
+    </value>
+    <history>
+      <event when="2024-02-29T23:59:60Z" actor="Δ">created</event>
+      <event when="0000-01-01" actor="ø"><detail>revised &lt;once&gt;</detail></event>
+    </history>
+  </record>
+  <record xml:id="rβ" m:state="closed">
+    <value type="scalar">☃ &#x1F642;</value>
+    <link target="#rα" xmlns:xlink="http://www.w3.org/1999/xlink"
+          xlink:href="urn:registry:rα"/>
+  </record>
+</registry>
+```

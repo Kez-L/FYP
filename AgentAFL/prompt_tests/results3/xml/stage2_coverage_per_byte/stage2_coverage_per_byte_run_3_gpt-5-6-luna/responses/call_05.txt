@@ -1,0 +1,152 @@
+```xml
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE warehouse [
+  <!ELEMENT warehouse (bin|audit)*>
+  <!ELEMENT bin (item+, seal?)>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT seal EMPTY>
+  <!ELEMENT audit ANY>
+  <!ATTLIST warehouse zone CDATA #IMPLIED>
+  <!ATTLIST bin code ID #REQUIRED refs IDREFS #IMPLIED>
+  <!ATTLIST item state (raw|packed|lost) "raw" xml:space (default|preserve) "default">
+  <!ENTITY amp "&#38;">
+  <!ENTITY nest "A&amp;B">
+]>
+<warehouse xmlns="urn:warehouse" xmlns:w="urn:warehouse:meta" zone="north">
+  <bin code="b1" refs="b1">
+    <item state="packed">crate &amp; seal &nest;</item>
+    <item xml:space="preserve"><![CDATA[  literal <markup> and ]]> ]]> </item>
+    <seal/>
+  </bin>
+  <audit><w:stamp when="2026-09-24"/><!-- checkpoint -->text<?audit ok?></audit>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dossier [
+  <!ELEMENT dossier (header, payload, trail?)>
+  <!ELEMENT header (title, tag*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT tag EMPTY>
+  <!ELEMENT payload (#PCDATA|left|right|mark)*>
+  <!ELEMENT left (#PCDATA|mark)*>
+  <!ELEMENT right (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT trail (#PCDATA)>
+  <!ATTLIST header generated CDATA #IMPLIED>
+  <!ATTLIST tag key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY quote "&#34;">
+  <!ENTITY pair "<left>L&quote;</left><right>R</right>">
+  <!ENTITY % payloadattrs ' mode (plain|rich) "rich"'>
+  <!ATTLIST payload %payloadattrs;>
+  <!ENTITY % optional 'INCLUDE'>
+  <![%optional;[
+    <!ENTITY marker "&#x2026;">
+  ]]>
+]>
+<?dossier phase="ingest"?>
+<dossier>
+  <header generated="yes">
+    <title>R&amp;D &quot;intake&quot;</title>
+    <tag key="alpha" value="one"/>
+    <tag key="beta"/>
+  </header>
+  <payload mode="rich">start &pair; middle <mark>&marker;</mark><![CDATA[<raw/>]]> end</payload>
+  <trail><!-- retained -->final</trail>
+</dossier>
+```
+
+```xml
+<?xml version="1.1" standalone="yes"?>
+<!DOCTYPE signal [
+  <!ELEMENT signal (channel+, checksum?)>
+  <!ELEMENT channel (name, sample*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT sample (#PCDATA)>
+  <!ELEMENT checksum EMPTY>
+  <!ATTLIST signal level (low|medium|high) "medium" xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST channel id ID #REQUIRED links IDREFS #IMPLIED>
+  <!ATTLIST sample units NMTOKEN #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "capture.bin" NDATA bin>
+  <!ENTITY lf "&#xA;">
+  <!ENTITY control "&#x1F;">
+]>
+<signal xmlns:s="urn:signals" level="high" xml:lang="en">
+  <channel id="ch0" links="ch0">
+    <name>s:primary</name>
+    <sample units="Hz">440&lf;880&#x0D;1320</sample>
+    <sample units="raw"><![CDATA[bytes: \x00 \xFF <not-an-element>]]></sample>
+  </channel>
+  <channel id="ch1">
+    <name>aux</name>
+    <sample units="count">1 &control; 2</sample>
+  </channel>
+  <checksum/>
+</signal>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE labyrinth [
+  <!ELEMENT labyrinth (gate, corridor*)>
+  <!ELEMENT gate EMPTY>
+  <!ELEMENT corridor (turn|wall|exit)*>
+  <!ELEMENT turn (#PCDATA)>
+  <!ELEMENT wall (#PCDATA)>
+  <!ELEMENT exit EMPTY>
+  <!ATTLIST labyrinth route ID #IMPLIED>
+  <!ATTLIST gate open (true|false) "false" key IDREF #IMPLIED>
+  <!ATTLIST corridor number NMTOKEN #REQUIRED>
+  <!ATTLIST turn dir (N|E|S|W) #REQUIRED>
+  <!ENTITY % hidden 'IGNORE'>
+  <![%hidden;[
+    <!ELEMENT secret (#PCDATA)>
+    <!ENTITY forbidden "should-not-expand">
+  ]]>
+  <!ENTITY edge "left&amp;right">
+]>
+<labyrinth route="r9">
+  <gate open="true" key="r9"/>
+  <corridor number="01">
+    <turn dir="N">forward &edge;</turn>
+    <wall><![CDATA[ ]]]]><![CDATA[> tricky boundary ]]></wall>
+    <turn dir="E">right</turn>
+    <exit/>
+  </corridor>
+  <corridor number="02"><turn dir="S">down</turn><!-- unclosed-looking text --></corridor>
+</labyrinth>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE ledger PUBLIC "-//Example//DTD Ledger 2.0//EN" "ledger.dtd" [
+  <!ELEMENT ledger (account+, note?)>
+  <!ELEMENT account (owner, entry*)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT entry EMPTY>
+  <!ELEMENT note (#PCDATA|em)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ATTLIST ledger xmlns CDATA #IMPLIED revision CDATA #IMPLIED>
+  <!ATTLIST account number CDATA #REQUIRED type (asset|liability|memo) #IMPLIED>
+  <!ATTLIST entry date CDATA #REQUIRED amount CDATA #REQUIRED flags NMTOKENS #IMPLIED>
+  <!ATTLIST note xml:space (default|preserve) "preserve">
+  <!ENTITY euro "&#8364;">
+  <!ENTITY lt "<">
+  <!ENTITY text "opening &euro; balance">
+]>
+<?xml-stylesheet type="text/xsl" href="ledger-view.xsl"?>
+<ledger xmlns="urn:ledger" revision="v2">
+  <account number="A-17" type="asset">
+    <owner>R&amp;D &lt;west&gt;</owner>
+    <entry date="2026-09-24" amount="1250.50" flags="posted reviewed"/>
+    <entry date="2026-09-25" amount="-3.00" flags="pending"/>
+  </account>
+  <account number="L-3" type="liability">
+    <owner>&text;</owner>
+    <entry date="2026-09-26" amount="9" flags="memo"/>
+  </account>
+  <note>Use &lt;adjustment&gt; for <em>late</em> items.</note>
+</ledger>
+```

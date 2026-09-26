@@ -1,0 +1,30 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header?, payload, trailer?)>
+  <!ELEMENT header (token, option*)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT option EMPTY>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|part|break)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST option name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!ENTITY greeting "hello">
+  <!ENTITY amp "&#x26;">
+  <!ENTITY open "&lt;chunk&gt;">
+]>
+<envelope>
+  <header>
+    <token>&greeting; &amp; ready</token>
+    <option name="mode" value="compact"/>
+    <option name="flags" value="a&#x20;b&#x9;c"/>
+  </header>
+  <payload>
+    <chunk index="0"><![CDATA[first <raw> block]]><part>middle</part><break/>last</chunk>
+    <chunk index="1">&open; &amp; &amp; &amp;</chunk>
+    <chunk index="2"><part>π</part><part>漢字</part>&amp;</chunk>
+  </payload>
+  <trailer>終端 &#x2028; Ω</trailer>
+</envelope>

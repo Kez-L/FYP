@@ -1,0 +1,124 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, metadata?, description)>
+  <!ATTLIST entry id ID #REQUIRED status (new|archived) "new">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST metadata created CDATA #IMPLIED source CDATA #IMPLIED>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ENTITY notice "Catalog entry">
+]>
+<catalog>
+  <entry id="item-a" status="new">
+    <title>&notice; α</title>
+    <metadata created="2026-09-24" source="import"/>
+    <description>First <em>mixed</em> record<br/>with entities &amp; text.</description>
+  </entry>
+  <entry id="item-b">
+    <title>Archived item</title>
+    <description><![CDATA[raw <markup> and ]]]]><![CDATA[> delimiters]]></description>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns="urn:example:root" xmlns:a="urn:example:a" xmlns:b="urn:example:b" xml:space="preserve">
+  <!-- interleaved namespace scopes -->
+  <a:section a:key="one">
+    <a:item> leading whitespace </a:item>
+    <b:item b:kind="numeric">00000000000000000042</b:item>
+    <nested xmlns="" xml:lang="fr">
+      <label>élément indépendant</label>
+      <value><![CDATA[
+        line one
+        line two
+      ]]></value>
+    </nested>
+  </a:section>
+  <b:section>
+    <b:item xmlns:a="urn:shadowed" a:ref="x:y">content</b:item>
+    <empty/>
+  </b:section>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (sender, recipients, payload)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipients (recipient+)>
+  <!ELEMENT recipient EMPTY>
+  <!ATTLIST recipient address CDATA #REQUIRED>
+  <!ELEMENT payload (#PCDATA)>
+]>
+<message>
+  <sender>robot@example.test</sender>
+  <recipients>
+    <recipient address="one@example.test"/>
+    <recipient address="two@example.test"/>
+    <recipient address="weird&amp;quoted&quot;value"/>
+  </recipients>
+  <payload>Use &lt;tag&gt; literally; preserve &#x1F642;.</payload>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<package xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:meta="urn:metadata">
+  <manifest>
+    <file path="./alpha.bin" size="0" checksum=""/>
+    <file path="../β/data" size="18446744073709551615">
+      <meta:attribute name="mode" value="0644"/>
+    </file>
+  </manifest>
+  <xi:include href="missing-fragment.xml" parse="xml">
+    <xi:fallback>
+      <notice>fallback <strong>content</strong></notice>
+    </xi:fallback>
+  </xi:include>
+  <metadata xml:base="https://invalid.example/archive/">
+    <link rel="self" href="#package"/>
+  </metadata>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE document [
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY left "&#x27E6;">
+  <!ENTITY right "&#x27E7;">
+  <!ELEMENT document (section*)>
+  <!ELEMENT section (heading, block*)>
+  <!ATTLIST section xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT block (#PCDATA|quote|code|list)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT list (item*)>
+  <!ELEMENT item (#PCDATA)>
+]>
+<document>
+  <section xml:lang="en-US">
+    <heading>&left;A&nbsp;B&right;</heading>
+    <block>Text before <quote>nested quotation</quote> and <code>&lt;x/&gt;</code>.</block>
+    <block>
+      <list>
+        <item>one</item>
+        <item>two &amp; three</item>
+        <item>four&#10;five</item>
+      </list>
+    </block>
+  </section>
+  <section xml:lang="zh-Hant">
+    <heading>終端</heading>
+    <block><![CDATA[<not-an-element attr="&fake;">]]></block>
+  </section>
+</document>
+```

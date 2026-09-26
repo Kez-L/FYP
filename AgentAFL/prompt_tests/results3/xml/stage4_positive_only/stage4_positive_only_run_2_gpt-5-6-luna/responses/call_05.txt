@@ -1,0 +1,175 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:meta="urn:example:metadata">
+  <meta:generated-by version="2.4">archive-import</meta:generated-by>
+  <collection code="C-19">
+    <item sku="BK-0042" available="true">
+      <title><![CDATA[The <Hidden> Interval]]></title>
+      <authors>
+        <author id="a1">
+          <given>Leena</given>
+          <family>Voss</family>
+        </author>
+        <author id="a2">
+          <given>Tom</given>
+          <family>Rhee</family>
+        </author>
+      </authors>
+      <pricing currency="EUR">
+        <list>18.95</list>
+        <discount kind="seasonal">0.15</discount>
+      </pricing>
+      <tags>
+        <tag>experimental</tag>
+        <tag>field-notes</tag>
+      </tags>
+    </item>
+    <item sku="BK-0099" available="false">
+      <title>Stone &amp; Signal</title>
+      <authors>
+        <author id="a3">
+          <given>Omar</given>
+          <family>Vale</family>
+        </author>
+      </authors>
+      <pricing currency="USD">
+        <list>7.00</list>
+      </pricing>
+    </item>
+  </collection>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (route, payload, attachment*)>
+  <!ATTLIST message priority (low|normal|high) "normal">
+  <!ELEMENT route (sender, destination+)>
+  <!ELEMENT sender EMPTY>
+  <!ATTLIST sender address CDATA #REQUIRED>
+  <!ELEMENT destination EMPTY>
+  <!ATTLIST destination address CDATA #REQUIRED>
+  <!ELEMENT payload (#PCDATA)>
+  <!ELEMENT attachment (name, content)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT content (#PCDATA)>
+]>
+<message priority="high">
+  <route>
+    <sender address="service@example.invalid"/>
+    <destination address="ops@example.invalid"/>
+    <destination address="audit@example.invalid"/>
+  </route>
+  <payload><![CDATA[
+    {
+      "event": "threshold-crossed",
+      "value": 91.7,
+      "flags": ["delayed", "review"]
+    }
+  ]]></payload>
+  <attachment>
+    <name>details.txt</name>
+    <content>Voltage &lt; nominal; inspect channel 4.</content>
+  </attachment>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<map xmlns="http://example.invalid/map" xmlns:g="http://example.invalid/geometry">
+  <metadata>
+    <title>Southern transect</title>
+    <bounds west="-12.5" east="18.75" north="64.0" south="41.25"/>
+  </metadata>
+  <layer name="terrain" opacity="0.85">
+    <g:feature id="ridge-7" class="landform">
+      <g:point lat="52.010" lon="-1.440"/>
+      <g:point lat="52.081" lon="-1.103"/>
+      <g:point lat="51.932" lon="-0.887"/>
+      <g:label xml:space="preserve">North &amp; West Ridge</g:label>
+    </g:feature>
+    <g:feature id="lake-2" class="water">
+      <g:polygon>
+        <g:vertex x="14.2" y="8.1"/>
+        <g:vertex x="16.9" y="8.7"/>
+        <g:vertex x="17.4" y="6.4"/>
+        <g:vertex x="14.8" y="5.8"/>
+      </g:polygon>
+    </g:feature>
+  </layer>
+  <layer name="labels">
+    <label ref="ridge-7"><![CDATA[RIDGE / 07]]></label>
+    <label ref="lake-2">Lake Meridian</label>
+  </layer>
+</map>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:noNamespaceSchemaLocation="settings.xsd">
+  <?build profile="nightly"?>
+  <defaults>
+    <timeout unit="ms">2500</timeout>
+    <retries>2</retries>
+    <features>
+      <feature name="delta" enabled="yes"/>
+      <feature name="legacy" enabled="no"/>
+    </features>
+  </defaults>
+  <profiles>
+    <profile name="edge">
+      <inherits>defaults</inherits>
+      <limits>
+        <memory unit="MiB" hard="false">384</memory>
+        <workers>03</workers>
+      </limits>
+      <endpoints>
+        <endpoint scheme="https" host="edge.example.invalid" port="443">
+          <path>/v2/query?mode=compact&amp;raw=1</path>
+        </endpoint>
+        <endpoint scheme="unix" host="" port="0">
+          <path>/run/edge.sock</path>
+        </endpoint>
+      </endpoints>
+    </profile>
+  </profiles>
+  <!-- Configuration intentionally contains mixed text and empty elements. -->
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<ledger xmlns="urn:example:ledger">
+  <account number="0007" opened="2024-02-29">
+    <owner>
+      <name>J. &quot;Quill&quot; Sato</name>
+      <contact preferred="phone">+00 555 0102</contact>
+    </owner>
+    <balance currency="GBP">-14.07</balance>
+    <transaction ref="tx-α" type="debit">
+      <timestamp>2026-09-24T23:59:60Z</timestamp>
+      <amount>14.07</amount>
+      <description>Adjustment <![CDATA[for damaged goods]]></description>
+      <status>posted</status>
+    </transaction>
+    <transaction ref="tx-β" type="credit">
+      <timestamp>2026-09-25T00:00:00+00:00</timestamp>
+      <amount>0.00</amount>
+      <description>Reconciliation &amp; carry-forward</description>
+      <status>pending</status>
+      <metadata>
+        <property key="source">batch-17</property>
+        <property key="note"></property>
+      </metadata>
+    </transaction>
+  </account>
+  <account number="A-8" opened="not-a-date">
+    <owner>
+      <name>Unnamed</name>
+    </owner>
+    <balance currency="JPY">NaN</balance>
+  </account>
+</ledger>
+```

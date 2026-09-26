@@ -1,0 +1,43 @@
+<!DOCTYPE report [
+  <!ELEMENT report (header, body, footer)>
+  <!ELEMENT header (title, stamp)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT stamp EMPTY>
+  <!ELEMENT body (paragraph|table|separator)*>
+  <!ELEMENT paragraph (#PCDATA|strong|quote)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT table (tr+)>
+  <!ELEMENT tr (td+)>
+  <!ELEMENT td (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST stamp when CDATA #IMPLIED>
+  <!ENTITY % optional "INCLUDE">
+  <![%optional;[
+    <!ENTITY marker "included-section">
+    <!ELEMENT annotation (#PCDATA)>
+  ]]>
+  <![IGNORE[
+    <!ELEMENT discarded (anything)>
+    <!ATTLIST discarded obsolete CDATA #IMPLIED>
+  ]]>
+  <!NOTATION plain SYSTEM "text/plain">
+  <!ENTITY attachment SYSTEM "payload.bin" NDATA plain>
+]>
+<report>
+  <header>
+    <title>Conditional sections</title>
+    <stamp when="2026-09-24T00:00:00Z"/>
+  </header>
+  <body>
+    <paragraph>Before <strong>bold</strong> <quote>quoted</quote> after.</paragraph>
+    <separator/>
+    <table>
+      <tr><td>A&amp;B</td><td>1</td></tr>
+      <tr><td>line&#10;break</td><td>2</td></tr>
+    </table>
+    <annotation>&marker;</annotation>
+  </body>
+  <footer>done</footer>
+</report>

@@ -1,0 +1,26 @@
+<configuration xmlns="urn:cfg" xmlns:sec="urn:security" version="3.14">
+  <!-- Mixed content around processing instructions and CDATA. -->
+  <pipeline enabled="1">
+    <stage name="ingest">
+      <input path="/var/tmp/incoming" pattern="*.dat"/>
+      <?plugin name="decoder" options="fast&amp;safe"?>
+      <transform><![CDATA[
+        if (value && value[0] == '<') {
+          return normalize(value);
+        }
+      ]]></transform>
+    </stage>
+    <stage name="publish" retries="0">
+      <destination protocol="https">
+        https://example.test/api/v1/items?expand=a%20b&amp;limit=0
+      </destination>
+      <sec:credentials>
+        <sec:token expires="never">redacted</sec:token>
+      </sec:credentials>
+    </stage>
+  </pipeline>
+  <limits>
+    <memory unit="MiB">0</memory>
+    <timeout unit="ms">-1</timeout>
+  </limits>
+</configuration>

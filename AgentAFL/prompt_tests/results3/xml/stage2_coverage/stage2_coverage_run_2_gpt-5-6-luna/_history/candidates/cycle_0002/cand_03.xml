@@ -1,0 +1,23 @@
+<!DOCTYPE package [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ELEMENT data (chunk*)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST package format CDATA #FIXED "archive">
+  <!ATTLIST entry name CDATA #REQUIRED type NOTATION (bin) #IMPLIED>
+  <!ATTLIST data checksum CDATA #IMPLIED>
+  <!ENTITY marker "&#x41;&#65;">
+]>
+<package format="archive">
+  <manifest>
+    <entry name="readme.txt"/>
+    <entry name="blob.bin" type="bin"/>
+  </manifest>
+  <data checksum="&marker;">
+    <chunk>first</chunk>
+    <chunk><![CDATA[second]]></chunk>
+    <chunk>third &amp; final</chunk>
+  </data>
+</package>

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (name, description, link?, payload)>
+  <!ATTLIST entry
+    xml:lang NMTOKEN #IMPLIED
+    status (draft|published|retired) "draft"
+    ref ID #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link rel NMTOKEN #IMPLIED>
+  <!ELEMENT payload (#PCDATA)>
+]>
+<catalog xmlns="urn:catalog:v2" xmlns:p="urn:catalog:private" xml:base="https://example.invalid/root/">
+  <entry ref="first" status="published" xml:lang="en">
+    <name>Nested &amp; encoded</name>
+    <description>Text with <em>emphasis</em><br/>and a <![CDATA[raw <fragment>]]>.</description>
+    <link rel="alternate">https://example.invalid/a?x=1&amp;y=2</link>
+    <payload p:format="opaque">A&#x2028;B&#x1F642;</payload>
+  </entry>
+  <entry ref="second" status="retired" xmlns="urn:catalog:archive">
+    <name>Archived item</name>
+    <description>Mixed <em>content</em> with <!-- a comment --> markers.</description>
+    <payload xml:space="preserve">
+      leading
+      whitespace
+    </payload>
+  </entry>
+</catalog>

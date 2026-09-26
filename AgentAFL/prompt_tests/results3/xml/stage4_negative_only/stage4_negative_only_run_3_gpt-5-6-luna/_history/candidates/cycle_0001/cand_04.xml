@@ -1,0 +1,17 @@
+<workflow id="wf-42">
+  <start ref="collect"/>
+  <steps>
+    <step id="collect" kind="input">
+      <input name="source" required="true"/>
+      <transition to="validate" condition="received"/>
+    </step>
+    <step id="validate" kind="decision">
+      <branch expression="count &gt; 0" to="publish"/>
+      <branch expression="count = 0" to="discard"/>
+    </step>
+    <step id="publish" kind="output">
+      <result format="json">completed</result>
+    </step>
+    <step id="discard" kind="terminal"/>
+  </steps>
+</workflow>

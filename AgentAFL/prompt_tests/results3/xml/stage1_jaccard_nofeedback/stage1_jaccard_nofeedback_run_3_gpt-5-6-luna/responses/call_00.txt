@@ -1,0 +1,86 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <x:item id="001" enabled="true">
+    <x:name><![CDATA[alpha < beta & gamma]]></x:name>
+    <x:price currency="EUR">12.50</x:price>
+    <x:tags>
+      <x:tag>one</x:tag>
+      <x:tag><![CDATA[two]]></x:tag>
+    </x:tags>
+  </x:item>
+  <item id="002" enabled="false"/>
+</catalog>
+```
+
+```xml
+<!DOCTYPE warehouse [
+  <!ELEMENT warehouse (section+)>
+  <!ELEMENT section (bin*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT bin (#PCDATA|label)*>
+  <!ELEMENT label (#PCDATA)>
+  <!ENTITY marker "stored-value">
+]>
+<warehouse>
+  <section code="A&amp;1">
+    <bin>left<label>&marker;</label>right</bin>
+    <bin><![CDATA[raw ]]> text</bin>
+  </section>
+  <section code="B2">
+    <bin/>
+  </section>
+</warehouse>
+```
+
+```xml
+<?xml version="1.1"?>
+<message>
+  <header>
+    <from>sender@example.test</from>
+    <to><![CDATA[receiver@example.test]]></to>
+    <subject>line one&#xA;line two</subject>
+  </header>
+  <body xml:space="preserve">
+    <![CDATA[
+      <not-an-element attr="&amp;">
+      ]]>
+  </body>
+  <attachments>
+    <attachment name="a&amp;b.bin" size="0"/>
+    <attachment name="empty" size="18446744073709551615"></attachment>
+  </attachments>
+</message>
+```
+
+```xml
+<!DOCTYPE map [
+  <!ENTITY open "<entry key='generated'>">
+  <!ENTITY close "</entry>">
+]>
+<map version="3" xmlns:p="urn:payload">
+  <entry key="literal">
+    <value type="string">A &lt; B &amp;&amp; C &gt; D</value>
+    <value type="number">-0.00000000000000000001</value>
+  </entry>
+  &open;
+    <p:data><![CDATA[&open; &close;]]></p:data>
+  &close;
+  <entry key="nested">
+    <entry key="child"/>
+  </entry>
+</map>
+```
+
+```xml
+<root>
+  <matrix rows="2" cols="2">
+    <row index="0"><cell>1</cell><cell>2</cell></row>
+    <row index="1"><cell>3</cell><cell>4</cell></row>
+  </matrix>
+  <mixed>before<emphasis level="0">inside</emphasis>after<!-- comment --></mixed>
+  <processing><?custom data="&quot;quoted&quot;"?></processing>
+  <unicode lang="und"> café — 漢字 &#x1F600; </unicode>
+  <empty><![CDATA[]]></empty>
+</root>
+```

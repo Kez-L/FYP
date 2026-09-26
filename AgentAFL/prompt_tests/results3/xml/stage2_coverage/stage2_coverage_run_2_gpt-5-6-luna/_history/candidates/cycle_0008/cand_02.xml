@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, signature?)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header version CDATA #FIXED "2"
+                   xmlns:sec CDATA #FIXED "urn:security"
+                   sec:mode (plain|sealed) "plain">
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA|data)*>
+  <!ATTLIST chunk n NMTOKEN #REQUIRED>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+  <!ENTITY amp "&amp;">
+]>
+<envelope xmlns="urn:message">
+  <header xmlns:sec="urn:security" sec:mode="sealed"/>
+  <payload>
+    prefix &left; chunk &right; &amp; <![CDATA[ ]]> suffix
+    <chunk n="01"><data><![CDATA[<opaque>&stuff;</opaque>]]></data></chunk>
+    <chunk n="02">line
+      <data>nested &amp; escaped</data>
+    </chunk>
+  </payload>
+  <signature>sha256:abc123==</signature>
+</envelope>

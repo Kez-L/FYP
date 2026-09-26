@@ -1,0 +1,206 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (heading, product*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT product (name, price, availability, description?)>
+  <!ATTLIST product sku ID #REQUIRED category CDATA #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT availability EMPTY>
+  <!ATTLIST availability status (in-stock|backorder|discontinued) "in-stock">
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ENTITY currency "€">
+]>
+<catalog>
+  <section code="hardware">
+    <heading>Field equipment</heading>
+    <product sku="p-001" category="sensor">
+      <name>Thermal probe</name>
+      <price>&currency; 48.50</price>
+      <availability status="in-stock"/>
+      <description>Compact <em>weatherproof</em> probe<br/>with replaceable tip.</description>
+    </product>
+    <product sku="p-002">
+      <name>Signal meter</name>
+      <price>&currency; 112.00</price>
+      <availability status="backorder"/>
+    </product>
+  </section>
+  <section code="software">
+    <heading>Utilities</heading>
+    <product sku="p-010" category="analysis">
+      <name>Trace viewer</name>
+      <price>&currency; 19.95</price>
+      <availability status="discontinued"/>
+      <description><![CDATA[Legacy viewer: <open> -> inspect -> close]]></description>
+    </product>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow" xmlns:task="urn:example:task" version="3">
+  <variables>
+    <variable name="workspace" value="/var/tmp/run"/>
+    <variable name="attempts" value="4" type="integer"/>
+    <variable name="verbose" value="true" type="boolean"/>
+  </variables>
+  <pipeline id="nightly">
+    <task:step id="prepare" action="create-directory">
+      <task:input key="path">${workspace}</task:input>
+      <task:output key="result" required="false"/>
+    </task:step>
+    <task:step id="scan" action="execute" depends-on="prepare">
+      <task:command><![CDATA[
+        /usr/local/bin/scan --input "${workspace}" --format json
+      ]]></task:command>
+      <task:environment>
+        <task:item key="LC_ALL">C</task:item>
+        <task:item key="MODE">strict</task:item>
+      </task:environment>
+      <task:retry limit="2" delay="PT5S"/>
+    </task:step>
+    <task:step id="publish" action="upload" depends-on="scan">
+      <task:artifact path="reports/latest.json" media-type="application/json"/>
+      <task:destination scheme="sftp" host="reports.example.invalid" port="2222">
+        <task:path>/incoming/nightly/</task:path>
+      </task:destination>
+    </task:step>
+  </pipeline>
+  <on-error>
+    <notify channel="email" address="ops@example.invalid">
+      Pipeline ${pipeline} failed.
+    </notify>
+  </on-error>
+</workflow>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (participants, message+)>
+  <!ELEMENT participants (person+)>
+  <!ELEMENT person EMPTY>
+  <!ATTLIST person id ID #REQUIRED role CDATA #IMPLIED>
+  <!ELEMENT message (sender, timestamp, body, attachment*)>
+  <!ATTLIST message id ID #REQUIRED reply-to IDREF #IMPLIED>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT body (#PCDATA|mention|link|newline)*>
+  <!ELEMENT mention (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href URI #REQUIRED>
+  <!ELEMENT newline EMPTY>
+  <!ELEMENT attachment (filename, bytes)>
+  <!ELEMENT filename (#PCDATA)>
+  <!ELEMENT bytes (#PCDATA)>
+]>
+<conversation>
+  <participants>
+    <person id="u1" role="editor"/>
+    <person id="u2" role="reviewer"/>
+    <person id="u3"/>
+  </participants>
+  <message id="m1">
+    <sender>u1</sender>
+    <timestamp>2026-09-24T06:10:03+00:00</timestamp>
+    <body>
+      Hello <mention>@u2</mention><newline/>
+      Please review the <link href="https://example.invalid/spec?id=17&amp;view=full">updated draft</link>.
+    </body>
+    <attachment>
+      <filename>draft-v3.txt</filename>
+      <bytes>2048</bytes>
+    </attachment>
+  </message>
+  <message id="m2" reply-to="m1">
+    <sender>u2</sender>
+    <timestamp>2026-09-24T06:42:19+00:00</timestamp>
+    <body>Looks good; I added one note.</body>
+  </message>
+</conversation>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="urn:example:package" xmlns:m="urn:example:manifest" xml:base="https://packages.example.invalid/releases/">
+  <?build profile="reproducible"?>
+  <identity name="orbit-tools" release="5.4.1">
+    <license spdx="Apache-2.0"/>
+    <maintainer email="builds@example.invalid">Release Team</maintainer>
+  </identity>
+  <manifest>
+    <m:file path="bin/orbit" mode="0755" digest="sha256:abc123"/>
+    <m:file path="lib/orbit/core.so" mode="0644" digest="sha256:def456"/>
+    <m:file path="share/doc/orbit/README" mode="0644" digest="sha256:789abc"/>
+  </manifest>
+  <dependencies>
+    <dependency name="runtime" constraint="&gt;=2.8,&lt;3.0">
+      <alternative name="runtime-lite" platform="embedded"/>
+    </dependency>
+    <dependency name="codec" optional="true">
+      <feature name="zstd"/>
+      <feature name="lz4"/>
+    </dependency>
+  </dependencies>
+  <checks>
+    <check id="files" result="pass">
+      <detail><![CDATA[3 files verified
+2 shared objects discovered]]></detail>
+    </check>
+    <check id="signature" result="unknown">
+      <key fingerprint="A1:B2:C3:D4:E5:F6"/>
+    </check>
+  </checks>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE survey [
+  <!ELEMENT survey (intro, response*)>
+  <!ATTLIST survey id ID #REQUIRED locale CDATA "en">
+  <!ELEMENT intro (question+)>
+  <!ELEMENT question (prompt, choice+)>
+  <!ATTLIST question id ID #REQUIRED required (yes|no) "no">
+  <!ELEMENT prompt (#PCDATA)>
+  <!ELEMENT choice (#PCDATA)>
+  <!ATTLIST choice value CDATA #REQUIRED>
+  <!ELEMENT response (answer+, comment?)>
+  <!ATTLIST response respondent ID #REQUIRED submitted CDATA #IMPLIED>
+  <!ELEMENT answer EMPTY>
+  <!ATTLIST answer question IDREF #REQUIRED value CDATA #REQUIRED>
+  <!ELEMENT comment (#PCDATA)>
+]>
+<survey id="climate-pulse" locale="en-GB">
+  <intro>
+    <question id="q-region" required="yes">
+      <prompt>Which region do you represent?</prompt>
+      <choice value="coastal">Coastal</choice>
+      <choice value="inland">Inland</choice>
+      <choice value="highland">Highland</choice>
+    </question>
+    <question id="q-frequency">
+      <prompt>How often are measurements collected?</prompt>
+      <choice value="daily">Daily</choice>
+      <choice value="weekly">Weekly</choice>
+      <choice value="manual">Only when needed</choice>
+    </question>
+  </intro>
+  <response respondent="team-a" submitted="2026-09-23T17:00:00Z">
+    <answer question="q-region" value="coastal"/>
+    <answer question="q-frequency" value="daily"/>
+    <comment>Automated stations report at 06:00 and 18:00.</comment>
+  </response>
+  <response respondent="team-b">
+    <answer question="q-region" value="highland"/>
+    <answer question="q-frequency" value="weekly"/>
+  </response>
+</survey>
+```

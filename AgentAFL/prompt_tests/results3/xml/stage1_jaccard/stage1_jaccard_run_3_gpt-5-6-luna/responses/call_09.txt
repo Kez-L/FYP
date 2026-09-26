@@ -1,0 +1,155 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|em|ref)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST catalog
+    generated ID #REQUIRED
+    format (compact|expanded) "expanded">
+  <!ATTLIST section code ID #REQUIRED>
+  <!ATTLIST item
+    id ID #IMPLIED
+    links IDREFS #IMPLIED
+    kind NMTOKEN "ordinary">
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY mark "&#x2603;">
+]>
+<catalog generated="c0" format="compact">
+  <section code="s1">
+    <title>Inventory &amp; status</title>
+    <item id="i1" kind="special">alpha <em>bold</em> &mark;</item>
+    <item id="i2" links="i1" kind="ordinary">beta <ref target="i1"/></item>
+  </section>
+  <section code="s2">
+    <title>References</title>
+    <item links="i1 i2">gamma</item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (header, panel*)>
+  <!ELEMENT header (caption, owner?)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT panel (label, metric*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT metric EMPTY>
+  <!ATTLIST dashboard xmlns CDATA #FIXED "urn:dash">
+  <!ATTLIST panel name CDATA #REQUIRED state (open|closed) "open">
+  <!ATTLIST metric key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+]>
+<dashboard xmlns="urn:dash" xmlns:x="urn:extra" xml:lang="en">
+  <!-- a comment between document-level children -->
+  <header>
+    <caption><![CDATA[Quarterly <summary>]]></caption>
+    <owner x:role="reviewer">A &amp; B</owner>
+  </header>
+  <panel name="north" state="open">
+    <label>North &lt; region</label>
+    <metric key="latency" value="12.5"/>
+    <metric key="load"/>
+  </panel>
+  <panel xmlns="" name="raw" state="closed">
+    <label>unqualified panel</label>
+    <metric key="bytes" value="&#x31;&#x32;&#x33;"/>
+  </panel>
+  <?refresh interval="30"?>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE message [
+  <!ENTITY % declarations '
+    <!ELEMENT message (from, to, subject, body)>
+    <!ELEMENT from (#PCDATA)>
+    <!ELEMENT to (#PCDATA)>
+    <!ELEMENT subject (#PCDATA)>
+    <!ELEMENT body (paragraph+)>
+    <!ELEMENT paragraph (#PCDATA|quote|code)*>
+    <!ELEMENT quote (#PCDATA)>
+    <!ELEMENT code (#PCDATA)>
+  '>
+  %declarations;
+  <!ENTITY openq "&#x201C;">
+  <!ENTITY closeq "&#x201D;">
+]>
+<message>
+  <from>sender@example.test</from>
+  <to>receiver@example.test</to>
+  <subject>Markup &amp; entities</subject>
+  <body>
+    <paragraph>Before <quote>&openq;quoted text&closeq;</quote> after.</paragraph>
+    <paragraph><code>if (x &lt; y) return &amp;value;</code> and more.</paragraph>
+  </body>
+</message>
+```
+
+```xml
+<?xml version="1.1"?>
+<network xmlns="urn:network" xmlns:n="urn:node" xmlns:m="urn:meta">
+  <n:node id="root" m:priority="high">
+    <n:address scheme="urn" value="urn:node:root"/>
+    <n:children count="2">
+      <n:node id="left">
+        <n:address scheme="ipv6" value="2001:db8::1"/>
+        <n:property name="mode">active</n:property>
+      </n:node>
+      <n:node id="right">
+        <n:address scheme="dns" value="host.example.test"/>
+        <n:property name="mode">standby</n:property>
+        <n:property name="note"><![CDATA[x]]></n:property>
+      </n:node>
+    </n:children>
+  </n:node>
+  <m:annotation xml:space="preserve">
+    line one
+    line two&#x85;line three
+  </m:annotation>
+</network>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE transaction [
+  <!ELEMENT transaction (context?, operation+, result?)>
+  <!ELEMENT context (token, hint*)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT hint (#PCDATA)>
+  <!ELEMENT operation (argument*)>
+  <!ELEMENT argument (#PCDATA|fragment)*>
+  <!ELEMENT fragment (#PCDATA)>
+  <!ELEMENT result (status, detail?)>
+  <!ELEMENT status (#PCDATA)>
+  <!ELEMENT detail (#PCDATA)>
+  <!ATTLIST transaction id CDATA #REQUIRED>
+  <!ATTLIST operation name NMTOKEN #REQUIRED ordinal CDATA #IMPLIED>
+  <!ENTITY amp "&#38;">
+  <!ENTITY ltmark "&lt;">
+]>
+<transaction id="tx-47">
+  <context>
+    <token>opaque&amp;token</token>
+    <hint>preserve &amp; delimiters</hint>
+  </context>
+  <operation name="compare" ordinal="1">
+    <argument>left</argument>
+    <argument><fragment>&lt;embedded&gt;</fragment> right</argument>
+  </operation>
+  <operation name="compose" ordinal="2">
+    <argument>one &amp; two &lt; three</argument>
+    <argument><![CDATA[raw ]]> content]]></argument>
+  </operation>
+  <result>
+    <status>ok</status>
+    <detail>completed &amp; verified &lt;twice&gt;</detail>
+  </result>
+</transaction>
+```

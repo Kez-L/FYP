@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<configuration xmlns="urn:acme:config"
+               xmlns:sec="urn:acme:security"
+               xml:base="https://example.invalid/config/">
+  <profile name="staging" enabled="true">
+    <include href="defaults.xml"/>
+    <parameters>
+      <parameter name="timeout" type="duration">PT30S</parameter>
+      <parameter name="retries" type="integer">03</parameter>
+      <parameter name="features">
+        <value>cache</value>
+        <value>telemetry</value>
+        <value>signed-requests</value>
+      </parameter>
+    </parameters>
+    <sec:credentials>
+      <sec:token expires="2027-01-01T00:00:00Z">
+        <![CDATA[opaque-token-with-&-brackets]]>
+      </sec:token>
+      <sec:permissions>
+        <sec:grant resource="reports/*" action="read"/>
+        <sec:grant resource="admin" action="deny"/>
+      </sec:permissions>
+    </sec:credentials>
+  </profile>
+  <?reload immediate?>
+</configuration>

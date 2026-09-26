@@ -1,0 +1,237 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE library [
+  <!ELEMENT library (branch, branch*)>
+  <!ELEMENT branch (address, collection)>
+  <!ATTLIST branch code ID #REQUIRED>
+  <!ELEMENT address (street, city, region?, postal)>
+  <!ELEMENT street (#PCDATA)>
+  <!ELEMENT city (#PCDATA)>
+  <!ELEMENT region (#PCDATA)>
+  <!ELEMENT postal (#PCDATA)>
+  <!ELEMENT collection (book*)>
+  <!ELEMENT book (title, author+, published?, summary?)>
+  <!ATTLIST book isbn CDATA #REQUIRED format (paper|ebook|audio) "paper">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT published (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+]>
+<library>
+  <branch code="central">
+    <address>
+      <street>42 Archive Lane</street>
+      <city>Northbridge</city>
+      <region>West</region>
+      <postal>NB4 7QZ</postal>
+    </address>
+    <collection>
+      <book isbn="978-0000000001" format="ebook">
+        <title>The Shape of Data</title>
+        <author>Rina Vale</author>
+        <author>Marcus Holt</author>
+        <published>2024</published>
+        <summary>A guide to <em>structured</em> information.<br/>Includes practical examples.</summary>
+      </book>
+      <book isbn="978-0000000002" format="audio">
+        <title>Night Signals</title>
+        <author>Jo Arlen</author>
+      </book>
+    </collection>
+  </branch>
+</library>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:acme:catalog" xmlns:p="urn:acme:pricing" xml:lang="en">
+  <category key="hardware">
+    <entry sku="AX-17" status="active">
+      <name>Adaptive Sensor</name>
+      <tags>
+        <tag>outdoor</tag>
+        <tag>low-power</tag>
+      </tags>
+      <p:price currency="EUR" scale="net">19.95</p:price>
+      <media>
+        <image src="images/ax17.svg" width="320" height="200"/>
+        <manual href="docs/ax17.pdf" type="application/pdf"/>
+      </media>
+    </entry>
+    <entry sku="BX-04" status="retired">
+      <name>Bridge Module</name>
+      <tags>
+        <tag>serial</tag>
+        <tag>legacy</tag>
+      </tags>
+      <p:price currency="EUR" scale="gross">7.50</p:price>
+      <media/>
+    </entry>
+  </category>
+  <category key="software">
+    <entry sku="SDK-9" status="preview">
+      <name>Integration Kit</name>
+      <tags>
+        <tag>developer</tag>
+      </tags>
+      <p:price currency="USD" scale="net">0</p:price>
+      <media>
+        <release-notes><![CDATA[Features:
+- asynchronous transport
+- schema validation
+]]></release-notes>
+      </media>
+    </entry>
+  </category>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, attachments?)>
+  <!ELEMENT header (from, to+, subject, sent)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT sent (#PCDATA)>
+  <!ELEMENT body (p|quote|list|table)+>
+  <!ELEMENT p (#PCDATA|b|i|link|br)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT quote (#PCDATA|p)*>
+  <!ATTLIST quote author CDATA #IMPLIED>
+  <!ELEMENT list (item+)>
+  <!ATTLIST list ordered (yes|no) "no">
+  <!ELEMENT item (#PCDATA|p)*>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT attachments (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file name CDATA #REQUIRED media CDATA #REQUIRED size NMTOKEN #IMPLIED>
+]>
+<message>
+  <header>
+    <from>planner@example.invalid</from>
+    <to>team@example.invalid</to>
+    <to>archive@example.invalid</to>
+    <subject>Review &amp; approval</subject>
+    <sent>2026-09-24T09:15:42+00:00</sent>
+  </header>
+  <body>
+    <p>Please review the <b>revised</b> schedule before <i>Friday</i>.<br/>Comments are welcome.</p>
+    <quote author="release-coordinator">
+      <p>The deployment window remains unchanged.</p>
+    </quote>
+    <list ordered="yes">
+      <item>Validate manifests</item>
+      <item>Confirm rollback contact</item>
+      <item><p>Publish the final notice</p></item>
+    </list>
+    <table>
+      <row><cell>Region</cell><cell>Window</cell></row>
+      <row><cell>East</cell><cell>02:00 UTC</cell></row>
+      <row><cell>West</cell><cell>04:00 UTC</cell></row>
+    </table>
+  </body>
+  <attachments>
+    <file name="schedule.csv" media="text/csv" size="418"/>
+    <file name="diagram.png" media="image/png"/>
+  </attachments>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<scene xmlns="urn:demo:scene" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <metadata>
+    <creator xml:lang="fr">Équipe graphique</creator>
+    <created>2026-09-24</created>
+    <keywords>fog, bridge, water</keywords>
+  </metadata>
+  <canvas width="800" height="450" units="px" background="#14202b">
+    <group id="horizon" opacity="0.8">
+      <rect x="0" y="280" width="800" height="170" fill="#203c50"/>
+      <path id="mountains" d="M0 280 L120 155 L240 270 L390 95 L530 260 L660 140 L800 280 Z"/>
+    </group>
+    <group id="foreground" transform="translate(12,8)">
+      <circle cx="680" cy="82" r="44" fill="#f5d58a"/>
+      <polyline points="40,360 180,300 320,340 470,260 760,355" stroke="#d1edf0" fill="none"/>
+      <use xlink:href="#mountains" x="0" y="55" opacity="0.22"/>
+      <label x="28" y="420" rotate="-2">Evening crossing</label>
+    </group>
+  </canvas>
+  <annotations>
+    <marker ref="horizon" note="distant ridge"/>
+    <marker ref="foreground" note="composite layer"/>
+  </annotations>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record*)>
+  <!ELEMENT record (key, value, history)>
+  <!ATTLIST record id ID #REQUIRED locked (true|false) "false">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (text|number|flag|object|array)>
+  <!ELEMENT text (#PCDATA)>
+  <!ELEMENT number (#PCDATA)>
+  <!ELEMENT flag (#PCDATA)>
+  <!ELEMENT object (field*)>
+  <!ELEMENT field (key, value)>
+  <!ELEMENT array (item*)>
+  <!ELEMENT item (text|number|flag|object|array)>
+  <!ELEMENT history (change*)>
+  <!ELEMENT change EMPTY>
+  <!ATTLIST change by CDATA #REQUIRED at CDATA #REQUIRED action (create|update|delete) #REQUIRED>
+]>
+<archive>
+  <record id="r-001" locked="true">
+    <key>account</key>
+    <value>
+      <object>
+        <field>
+          <key>name</key>
+          <value><text>Delta Cooperative</text></value>
+        </field>
+        <field>
+          <key>members</key>
+          <value>
+            <array>
+              <item><text>ada</text></item>
+              <item><text>beau</text></item>
+              <item>
+                <object>
+                  <field><key>name</key><value><text>cy</text></value></field>
+                  <field><key>active</key><value><flag>true</flag></value></field>
+                </object>
+              </item>
+            </array>
+          </value>
+        </field>
+        <field>
+          <key>quota</key>
+          <value><number>1048576</number></value>
+        </field>
+      </object>
+    </value>
+    <history>
+      <change by="importer" at="2026-01-02T11:00:00Z" action="create"/>
+      <change by="auditor" at="2026-08-19T16:21:09Z" action="update"/>
+    </history>
+  </record>
+  <record id="r-002">
+    <key>obsolete</key>
+    <value><value-placeholder/></value>
+    <history/>
+  </record>
+</archive>
+```

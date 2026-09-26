@@ -1,0 +1,121 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY cover SYSTEM "cover.jpg" NDATA jpeg>
+  <!ENTITY writer "Ada &amp; Lovelace">
+  <!ELEMENT catalog (entry+, note?)>
+  <!ELEMENT entry (title, author, summary)>
+  <!ATTLIST entry id ID #REQUIRED cover ENTITY #IMPLIED xml:space (default|preserve) "default">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|emph|br)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT note (#PCDATA)>
+]>
+<catalog>
+  <entry id="e1" cover="cover" xml:space="preserve">
+    <title>Algorithms</title>
+    <author>&writer;</author>
+    <summary>Foundations <emph>and</emph> <br/> machines</summary>
+  </entry>
+  <note><![CDATA[unparsed text <with> delimiters]]></note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section|section-ref)*>
+  <!ELEMENT section (heading, paragraph+)>
+  <!ELEMENT section-ref EMPTY>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|link|code)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ATTLIST section key NMTOKEN #REQUIRED>
+  <!ATTLIST section-ref target IDREF #REQUIRED>
+  <!ATTLIST link href CDATA #IMPLIED>
+  <!ATTLIST code xml:space (default|preserve) "preserve">
+]>
+<report>
+  <section key="intro">
+    <heading>Overview</heading>
+    <paragraph>Use <code>&lt;report&gt;</code> with <link href="urn:x">care</link>.</paragraph>
+  </section>
+  <section-ref target="missing"/>
+</report>
+```
+
+```xml
+<!DOCTYPE archive [
+  <!ENTITY % common "<!ELEMENT metadata (created, tags?)><!ELEMENT created (#PCDATA)><!ELEMENT tags (tag*)><!ELEMENT tag (#PCDATA)>">
+  %common;
+  <!ELEMENT archive (metadata, payload)>
+  <!ELEMENT payload ANY>
+  <!ATTLIST archive format (tar|zip|raw) "raw">
+  <![INCLUDE[
+    <!ENTITY status "ready">
+  ]]>
+]>
+<archive format="zip">
+  <metadata>
+    <created>2026-09-24T00:00:00Z</created>
+    <tags><tag>one</tag><tag>two &amp; three</tag></tags>
+  </metadata>
+  <payload>
+    <?transform mode="compact"?>
+    <!-- embedded fragment -->
+    <chunk index="0"><![CDATA[alpha]]></chunk>
+    <chunk index="1">beta &status;</chunk>
+  </payload>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (item*)>
+  <!ELEMENT item (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|item)*>
+  <!ATTLIST item id ID #IMPLIED parent IDREF #IMPLIED>
+]>
+<map>
+  <item id="root">
+    <key>outer</key>
+    <value>
+      <item id="child" parent="root">
+        <key>inner</key>
+        <value>text &amp; <![CDATA[raw <markup>]]></value>
+      </item>
+    </value>
+  </item>
+  <item parent="child"><key>tail</key><value/></item>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, body)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT body (#PCDATA|data|![CDATA[not-a-name]])*>
+  <!ELEMENT data EMPTY>
+  <!ATTLIST header
+    xmlns CDATA #IMPLIED
+    xmlns:a CDATA #IMPLIED
+    a:kind CDATA #IMPLIED
+    count NMTOKEN #IMPLIED>
+]>
+<packet xmlns="urn:packet" xmlns:a="urn:attributes">
+  <header a:kind="binary" count="07"/>
+  <body>
+    prefix
+    <data value="&quot;broken"/>
+    <![CDATA[split ]]]]><![CDATA[> marker]]>
+    suffix
+  </body>
+</packet>
+```

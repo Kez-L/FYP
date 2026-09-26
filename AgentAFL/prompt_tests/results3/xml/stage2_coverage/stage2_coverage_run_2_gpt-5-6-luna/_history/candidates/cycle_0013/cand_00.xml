@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dossier [
+  <!ELEMENT dossier (header, records, appendix?)>
+  <!ELEMENT header (title, issued, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT issued (#PCDATA)>
+  <!ELEMENT note (#PCDATA|em|code)*>
+  <!ELEMENT records (record+)>
+  <!ELEMENT record (name, value, metadata*, payload?)>
+  <!ATTLIST record
+    key ID #REQUIRED
+    kind (alpha|numeric|mixed) "mixed"
+    refs IDREFS #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST metadata
+    name CDATA #REQUIRED
+    value CDATA #IMPLIED>
+  <!ELEMENT payload (#PCDATA|line|em)*>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT appendix (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ENTITY mark "&#x2605;">
+]>
+<dossier xml:lang="en">
+  <header>
+    <title>Signal &amp; Noise</title>
+    <issued>2026-09-24T12:30:00Z</issued>
+    <note>Use <em>carefully</em> and preserve <code>order</code>. &mark;</note>
+  </header>
+  <records>
+    <record key="r-a" kind="alpha">
+      <name>alpha</name>
+      <value>left<chunk><![CDATA[<raw>&not-an-entity;</raw>]]></chunk>right</value>
+      <metadata name="empty" value=""/>
+      <payload><line>one</line><em>two &lt; three</em></payload>
+    </record>
+    <record key="r-b" kind="numeric" refs="r-a">
+      <name>42</name>
+      <value>0<chunk>1</chunk>2</value>
+      <metadata name="quoted" value="a &quot;b&quot; c"/>
+    </record>
+  </records>
+  <appendix><![CDATA[
+  deliberately literal markup: <record key="x"/> & stuff
+  ]]><code>tail</code></appendix>
+</dossier>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:workflow:v2" xmlns:q="urn:workflow:query" xmlns:r="urn:workflow:result">
+  <?engine mode="diagnostic" level="3"?>
+  <!-- boundary: start -->
+  <stage id="prepare" enabled="true">
+    <input name="source"><![CDATA[/var/tmp/input & raw]]></input>
+    <operation kind="split">
+      <argument key="delimiter">::</argument>
+      <argument key="limit">0007</argument>
+    </operation>
+  </stage>
+  <stage id="execute" enabled="false">
+    <depends-on ref="prepare"/>
+    <operation kind="transform">
+      <q:expression q:language="xpath">/a/b[@x="1"]</q:expression>
+      <q:expression q:language="literal"><![CDATA[not-an-expression]]></q:expression>
+    </operation>
+    <r:result status="pending">
+      <r:item index="0" value=""/>
+      <r:item index="1">left &amp; right</r:item>
+      <r:item index="2">
+        <r:metadata>
+          <r:tag>Δ</r:tag>
+          <r:tag>東京</r:tag>
+        </r:metadata>
+      </r:item>
+    </r:result>
+  </stage>
+  <?engine checkpoint="after-execute"?>
+  <stage id="finalize" enabled="true">
+    <summary><![CDATA[
+      output remains intentionally unescaped: </summary>
+    ]]></summary>
+    <cleanup>
+      <path recursive="yes">./cache</path>
+      <path recursive="no">./temporary</path>
+    </cleanup>
+  </stage>
+  <!-- boundary: end -->
+</workflow>

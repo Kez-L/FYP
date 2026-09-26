@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:inv="urn:example:inventory"
+  exclude-result-prefixes="inv">
+  <xsl:output method="html" encoding="UTF-8" doctype-system="about:legacy-compat"/>
+  <xsl:param name="currency" select="'USD'"/>
+  <xsl:variable name="tax-rate" select="0.0825"/>
+  <xsl:key name="by-sku" match="inv:item" use="@sku"/>
+
+  <xsl:template match="/">
+    <html lang="en">
+      <head>
+        <meta charset="utf-8"/>
+        <title><xsl:value-of select="inv:warehouse/@name"/></title>
+      </head>
+      <body>
+        <h1><xsl:value-of select="inv:warehouse/@name"/></h1>
+        <xsl:apply-templates select="inv:warehouse/inv:aisle">
+          <xsl:sort select="@code" data-type="text"/>
+        </xsl:apply-templates>
+        <p class="summary">
+          <xsl:text>Total units: </xsl:text>
+          <xsl:value-of select="sum(inv:warehouse/inv:aisle/inv:item/@quantity)"/>
+        </p>
+      </body>
+    </html>
+  </xsl:template>
+
+  <xsl:template match="inv:aisle">
+    <section data-code="{@code}">
+      <h2><xsl:value-of select="inv:label"/></h2>
+      <ul>
+        <xsl:for-each select="inv:item[@quantity &gt; 0]">
+          <li>
+            <xsl:value-of select="@sku"/>
+            <xsl:text> — </xsl:text>
+            <xsl:value-of select="inv:name"/>
+            <xsl:text> (</xsl:text>
+            <xsl:value-of select="format-number(@quantity * @price * (1 + $tax-rate), '0.00')"/>
+            <xsl:text> </xsl:text>
+            <xsl:value-of select="$currency"/>
+            <xsl:text>)</xsl:text>
+          </li>
+        </xsl:for-each>
+      </ul>
+    </section>
+  </xsl:template>
+</xsl:stylesheet>

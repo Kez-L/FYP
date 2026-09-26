@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (header, payload, signature?)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|meta)*>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT signature EMPTY>
+  <!ATTLIST manifest xmlns:m CDATA #IMPLIED version NMTOKEN #FIXED "2">
+  <!ATTLIST header timestamp CDATA #REQUIRED>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding (raw|base64|hex) "raw">
+  <!ATTLIST meta key CDATA #REQUIRED value CDATA #REQUIRED>
+  <!ATTLIST signature algorithm NOTATION (rsa|ed25519) #REQUIRED digest CDATA #REQUIRED>
+  <!NOTATION rsa SYSTEM "application/rsa">
+  <!NOTATION ed25519 SYSTEM "application/ed25519">
+]>
+<manifest xmlns:m="urn:manifest" version="2">
+  <header timestamp="2026-09-24T12:00:00Z">
+    <field name="owner" value="parser"/>
+    <field name="empty"/>
+  </header>
+  <payload>
+    <chunk index="0" encoding="base64">AAEC<meta key="split" value="yes"/></chunk>
+    <chunk index="1" encoding="hex">DEADBEEF</chunk>
+  </payload>
+  <signature algorithm="ed25519" digest="sha256:00ff"/>
+</manifest>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node|edge)*>
+  <!ELEMENT node (property*)>
+  <!ATTLIST node id ID #REQUIRED type CDATA #IMPLIED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+  <!ELEMENT property (#PCDATA|value)*>
+  <!ATTLIST property name CDATA #REQUIRED>
+  <!ELEMENT value (#PCDATA)>
+]>
+<graph xmlns="urn:topology:2026" xmlns:meta="urn:topology:meta">
+  <node id="n-root" type="router">
+    <property name="hostname"><value>edge-α</value></property>
+    <property name="roles"><value>gateway</value><value>metrics</value></property>
+  </node>
+  <node id="n-leaf" type="worker">
+    <property name="hostname"><value>worker-07</value></property>
+    <meta:property name="rack">R-12</meta:property>
+  </node>
+  <node id="n-cache">
+    <property name="hostname"><value>cache.internal</value></property>
+  </node>
+  <edge from="n-root" to="n-leaf" weight="0.75"/>
+  <edge from="n-root" to="n-cache" weight="1.25"/>
+  <!-- topology snapshot: deliberately preserves insertion order -->
+</graph>

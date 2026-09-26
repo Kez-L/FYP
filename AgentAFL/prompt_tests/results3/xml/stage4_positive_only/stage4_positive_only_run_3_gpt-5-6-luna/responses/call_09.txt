@@ -1,0 +1,160 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<research xmlns="urn:lab:research" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <?processing mode="survey"?>
+  <!-- Mixed content with links and escaped markup -->
+  <experiment id="exp-204">
+    <summary xml:lang="fr">Étude <emphasis>préliminaire</emphasis> sur les flux.</summary>
+    <reference xlink:type="simple" xlink:href="urn:paper:77">rapport principal</reference>
+    <samples>
+      <sample code="S&amp;01" collected="2026-01-05T09:30:00Z">
+        <label>α-lysine</label>
+        <result>3.14</result>
+        <notes><![CDATA[Observed <drift> during calibration.]]></notes>
+      </sample>
+      <sample code="S-02" collected="2026-01-05T09:45:00Z">
+        <label>β-carotene</label>
+        <result status="estimated">1.0e-3</result>
+      </sample>
+    </samples>
+  </experiment>
+</research>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, attachment*)>
+  <!ELEMENT header (sender, recipients, subject)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipients (recipient+)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|list)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment name CDATA #REQUIRED media CDATA #IMPLIED>
+  <!ENTITY product "XML parser">
+]>
+<message priority="urgent">
+  <header>
+    <sender>ops@example.test</sender>
+    <recipients>
+      <recipient>alice@example.test</recipient>
+      <recipient>bob@example.test</recipient>
+    </recipients>
+    <subject>Review of the &product; report</subject>
+  </header>
+  <body>
+    Please review the following material.
+    <quote>All systems nominal.</quote>
+    <list>
+      <item>Check logs</item>
+      <item>Verify backups</item>
+      <item>Close ticket</item>
+    </list>
+  </body>
+  <attachment name="summary.txt" media="text/plain"/>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:example:config" xml:base="https://config.example.test/v3/">
+  <service name="gateway" enabled="true">
+    <endpoint>
+      <host>edge.example.test</host>
+      <port>443</port>
+      <protocol>https</protocol>
+      <tls>
+        <certificate path="certs/gateway.pem"/>
+        <ciphers>
+          <cipher>TLS_AES_128_GCM_SHA256</cipher>
+          <cipher>TLS_CHACHA20_POLY1305_SHA256</cipher>
+        </ciphers>
+      </tls>
+    </endpoint>
+    <limits>
+      <request unit="bytes">1048576</request>
+      <timeout unit="milliseconds">2500</timeout>
+    </limits>
+  </service>
+  <service name="metrics" enabled="false">
+    <endpoint>
+      <host>127.0.0.1</host>
+      <port>9090</port>
+      <protocol>http</protocol>
+    </endpoint>
+  </service>
+  <feature-flags>
+    <flag name="compression">true</flag>
+    <flag name="trace">false</flag>
+  </feature-flags>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title type="html">Updates &amp; Notices</title>
+  <id>urn:uuid:7f8d6a2e-5e2b-4d17-9a4d-0c5f6b8c1a20</id>
+  <updated>2026-09-24T12:00:00Z</updated>
+  <author>
+    <name>Editorial Desk</name>
+    <email>desk@example.test</email>
+  </author>
+  <link rel="self" href="https://example.test/feed.xml" type="application/atom+xml"/>
+  <entry>
+    <title>Release &lt;2.0&gt;</title>
+    <id>tag:example.test,2026:release-2</id>
+    <updated>2026-09-23T18:20:00+02:00</updated>
+    <category term="release" label="Software"/>
+    <content type="xhtml">
+      <div xmlns="http://www.w3.org/1999/xhtml">
+        <p>New parser behavior:</p>
+        <ul>
+          <li>Improved namespace handling</li>
+          <li>Additional diagnostics</li>
+        </ul>
+      </div>
+    </content>
+  </entry>
+</feed>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<map xmlns="urn:example:geo" xmlns:g="urn:example:geometry">
+  <g:metadata>
+    <g:coordinate-system>WGS84</g:coordinate-system>
+    <g:created>2026-09-24</g:created>
+  </g:metadata>
+  <g:layer name="routes">
+    <g:feature id="route-α" type="LineString">
+      <g:geometry>
+        <g:point lat="51.0504" lon="13.7373"/>
+        <g:point lat="51.0481" lon="13.7442"/>
+        <g:point lat="51.0439" lon="13.7518"/>
+      </g:geometry>
+      <g:properties>
+        <g:property name="name">River path</g:property>
+        <g:property name="surface">asphalt</g:property>
+        <g:property name="accessible">yes</g:property>
+      </g:properties>
+    </g:feature>
+    <g:feature id="area-7" type="Polygon">
+      <g:geometry>
+        <g:ring>
+          <g:point lat="51.1" lon="13.7"/>
+          <g:point lat="51.1" lon="13.8"/>
+          <g:point lat="51.0" lon="13.8"/>
+          <g:point lat="51.0" lon="13.7"/>
+          <g:point lat="51.1" lon="13.7"/>
+        </g:ring>
+      </g:geometry>
+    </g:feature>
+  </g:layer>
+</map>
+```

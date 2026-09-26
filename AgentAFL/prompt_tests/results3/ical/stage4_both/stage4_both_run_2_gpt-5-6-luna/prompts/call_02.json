@@ -1,0 +1,23 @@
+{
+  "call": 2,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a iCalendar document parser.\nTarget: /home/user/Documents/1git-folder/AgentAFL/AFLPlus/libical-build/libical_fuzzer-afl.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 iCalendar document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\nBEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Fuzzing Consortium//Boundary Probe//EN\nBEGIN:VFREEBUSY\nUID:freebusy-\u03b1\nDTSTAMP:19700101T000000Z\nDTSTART:00000101T000000Z\nDTEND:99991231T235959Z\nFREEBUSY;FBTYPE=BUSY-TENTATIVE;X-EMPTY=:,\nFREEBUSY;FBTYPE=BUSY:19700101T000000Z/19700101T000001Z,99991231T235959Z/00000101T000000Z\nCONTACT;LANGUAGE=\"\":\\,\nORGANIZER;CN=\"A:B;C\":mailto:busy@example.invalid\nX-LONG;ONE=1;TWO=\"2,3\";THREE=\"a;b\":first\n second\nEND:VFREEBUSY\nEND:VCALENDAR\n\n--- example 2 ---\nBEGIN:VCALENDAR\nPRODID:-//Malformed//Availability//EN\nVERSION:2.0\nCALSCALE:julian\nBEGIN:VAVAILABILITY\nUID:availability-000\nDTSTAMP:20261231T235959-2359\nBUSYTYPE:custom-type-with-\u00fcmlaut\nDTSTART;VALUE=DATE:20261340\nDTEND;VALUE=DATE:00000000\nBEGIN:AVAILABLE\nUID:slot-1\nDTSTART:20260101T000000\nDURATION:P\nRRULE:FREQ=SECONDLY;INTERVAL=000;COUNT=-1;BYSECOND=60,61,-1\nEND:AVAILABLE\nBEGIN:AVAILABLE\nDTSTART;TZID=:20260230T256199\nDTEND;TZID=No/Such_Zone:20250101T000000\nSUMMARY;ALTREP=\"unterminated;LANGUAGE=en:broken\nEND:AVAILABLE\nEND:VAVAILABILITY\nEND:VCALENDAR\n\nTried before \u2014 no new coverage, avoid repeating:\n--- a seed you generated (cycle 2) added 0 new edges ---\nBEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Edge Cases//Nested Alarm//EN\nBEGIN:VEVENT\nUID:outer\nDTSTAMP:20260924T000000Z\nDTSTART:20260924T000000Z\nDURATION:PT0S\nBEGIN:VALARM\nACTION:DISPLAY\nTRIGGER;RELATED=START;VALUE=DURATION:-P999999999DT999H999M999S\nDESCRIPTION:\nEND:VALARM\nBEGIN:VALARM\nACTION:PROCEDURE\nATTACH;FMTTYPE=\"application/octet-stream\";ENCODING=BASE64:\nQUJDRA==\nEND:VALARM\nBEGIN:VTODO\nUID:illegal-child\nSTATUS:COMPLETED\nCOMPLETED:20260924T000000Z\nEND:VEVENT\nBEGIN:VTODO\nUID:after-unclosed-component\nSUMMARY:This component follows a mismatched close\nEND:VALARM\nEND:VCALENDAR\n\n--- a seed you generated (cycle 2) added 0 new edges ---\nBEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Parser Stress//Property Grammar//EN\nMETHOD:PUBLISH\nX-NULL:\nX-BARE;:\nX-DUP;A=1;A=2;A=;A=\"\":value\nX-QUOTE;P=\"a\\\"b\\\\c\":one\\ntwo\nATTENDEE;CN=\"Doe, Jane\";MEMBER=\"mailto:x@example.invalid\",\"mailto:y@example.invalid\";DELEGATED-FROM=mailto:z@example.invalid:mailto:attendee@example.invalid\nGEO:91.000000;-181.000000\nRDATE;VALUE=PERIOD:20260101T000000Z/PT0S,20260101T000000Z/20260101T000000Z\nEXDATE;VALUE=DATE-TIME;TZID=UTC:\nRRULE:FREQ=YEARLY;UNTIL=not-a-date;BYMONTH=0,13;BYMONTHDAY=-32,32;BYDAY=MO,8XX\nSEQUENCE:+00000000000000000000000000000000000000000000000000000000000001\nEND:VCALENDAR\n\nGenerate 5 new iCalendar document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libical-20260915",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T05:12:02.465730+00:00"
+}

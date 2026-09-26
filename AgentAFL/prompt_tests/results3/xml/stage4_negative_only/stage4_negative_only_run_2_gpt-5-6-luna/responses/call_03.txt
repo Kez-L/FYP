@@ -1,0 +1,102 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (timestamp, payload)>
+  <!ATTLIST record key ID #REQUIRED>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT payload (#PCDATA)>
+]>
+<archive>
+  <record key="r1">
+    <timestamp>2026-09-24T12:34:56Z</timestamp>
+    <payload>alpha &amp; omega &#x1F680;</payload>
+  </record>
+  <record key="r2">
+    <timestamp>2026-09-25T00:00:00+05:30</timestamp>
+    <payload>boundary--value--with--separators</payload>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="urn:primary" xmlns:a="urn:auxiliary" xmlns:b="urn:binary">
+  <a:item a:id="A-7" b:flag="0">
+    <a:name>naïve café</a:name>
+    <a:values>
+      <a:value>0</a:value>
+      <a:value>-9223372036854775808</a:value>
+      <a:value>18446744073709551615</a:value>
+    </a:values>
+  </a:item>
+  <empty a:kind="nil"/>
+  <a:item a:id="A-8">
+    <a:name xml:space="preserve">  padded
+text
+    </a:name>
+  </a:item>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<?processing instruction-data?>
+<!DOCTYPE messages [
+  <!ENTITY greeting "hello">
+  <!ENTITY mark "&#x2603;">
+]>
+<messages>
+  <!-- comment containing punctuation: < > & -- -->
+  <message id="m-0">&greeting;, world &mark;!</message>
+  <message id="m-1"><![CDATA[x < y && y > z]]></message>
+  <message id="m-2">line one
+line two&#10;line three</message>
+</messages>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<graph>
+  <node id="n0">
+    <edge to="n1">
+      <weight unit="ms">0.0000000001</weight>
+      <metadata>
+        <entry key="empty"></entry>
+        <entry key="quoted">"'&lt;&amp;&gt;"</entry>
+      </metadata>
+    </edge>
+  </node>
+  <node id="n1">
+    <edge to="n0" directed="false"/>
+    <edge to="n2">
+      <weight unit="ms">NaN</weight>
+    </edge>
+  </node>
+  <node id="n2">
+    <edge to="n2" self-loop="true"/>
+  </node>
+</graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST cell r CDATA #IMPLIED c CDATA #IMPLIED>
+]>
+<matrix>
+  <row r="0">
+    <cell r="0" c="0">𐀀</cell>
+    <cell r="0" c="1">zero&#x00A0;width</cell>
+    <cell r="0" c="2"><![CDATA[]]></cell>
+  </row>
+  <row r="1">
+    <cell r="1" c="0">left<sup>2</sup>right</cell>
+    <cell r="1" c="1">∞</cell>
+    <cell r="1" c="2">end</cell>
+  </row>
+</matrix>
+```

@@ -1,0 +1,192 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (name, price, description?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ATTLIST catalog version CDATA #REQUIRED>
+  <!ATTLIST section id ID #REQUIRED kind (books|tools|misc) "misc">
+  <!ATTLIST item sku NMTOKEN #REQUIRED available (yes|no) "yes">
+  <!ENTITY company "A &amp; B Trading">
+  <!ENTITY mark "&#x2122;">
+  <!ENTITY nested "&company; &mark;">
+]>
+<catalog version="2">
+  <section id="s1" kind="books">
+    <title>&company; catalog</title>
+    <item sku="BK-001" available="yes">
+      <name>Parsing &mark;</name>
+      <price>19.95</price>
+      <description>Useful <em>XML</em> and <code>DTD</code> notes.</description>
+    </item>
+  </section>
+  <section id="s2">
+    <title>Miscellaneous</title>
+    <item sku="X_2" available="no">
+      <name>Empty description</name>
+      <price>0</price>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (meta, panel+, footer)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT panel (heading, widget*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT widget (value|table|note)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT note (#PCDATA|b|i)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST dashboard generated CDATA #IMPLIED>
+  <!ATTLIST meta charset CDATA #FIXED "UTF-8" timestamp CDATA #IMPLIED>
+  <!ATTLIST panel name NMTOKEN #REQUIRED collapsed (true|false) "false">
+  <!ATTLIST widget key ID #IMPLIED>
+  <!ATTLIST value unit (ms|bytes|count) #IMPLIED>
+  <!ATTLIST cell span NMTOKEN "1">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY warning "Use &lt;safe&gt; values &amp; escape quotes">
+]>
+<dashboard generated="2026-09-24T00:00:00Z">
+  <meta charset="UTF-8" timestamp="&quot;now&quot;"/>
+  <panel name="latency" collapsed="false">
+    <heading>Request &nbsp; latency</heading>
+    <widget key="w0"><value unit="ms">12.5</value></widget>
+    <widget key="w1">
+      <table>
+        <row><cell span="2">route</cell><cell>p50</cell><cell>p99</cell></row>
+        <row><cell>/api</cell><cell>3</cell><cell>47</cell></row>
+      </table>
+    </widget>
+    <widget><note><b>Notice:</b> <i>&warning;</i></note></widget>
+  </panel>
+  <panel name="empty" collapsed="true"/>
+  <footer>End &amp; checksum: &#x0D;&#x0A;</footer>
+</dashboard>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record*)>
+  <!ELEMENT record (key, payload, link*)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk|escape)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT escape (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST archive mode (full|delta) "full">
+  <!ATTLIST record uid ID #REQUIRED type CDATA #IMPLIED>
+  <!ATTLIST link rel (next|previous|related) #REQUIRED target IDREF #IMPLIED>
+  <!ENTITY alpha "one">
+  <!ENTITY beta "&alpha;-two">
+  <!ENTITY gamma "&beta;-three">
+]>
+<archive mode="delta">
+  <record uid="rA" type="text">
+    <key>first</key>
+    <payload><![CDATA[
+      raw <markup> and ]]> characters
+    ]]><chunk>&gamma;</chunk><escape>&lt;tag attr=&quot;x&quot;&gt;</escape></payload>
+    <link rel="next" target="rB"/>
+  </record>
+  <record uid="rB" type="binary">
+    <key>second&#x85;entry</key>
+    <payload><chunk><![CDATA[AA<<BB&&CC]]></chunk></payload>
+    <link rel="previous" target="rA"/>
+    <link rel="related" target="unknown"/>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (envelope, attachment*, signature)>
+  <!ELEMENT envelope (sender, recipient, subject, body)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|list)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT list (entry+)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST message id ID #REQUIRED priority (low|normal|urgent) "normal">
+  <!ATTLIST envelope format (plain|rich) "plain">
+  <!ATTLIST attachment name CDATA #REQUIRED media CDATA #IMPLIED size NMTOKEN #IMPLIED>
+  <!ATTLIST signature algorithm CDATA #REQUIRED valid (true|false) #REQUIRED>
+  <!ENTITY opener "Hello &amp; welcome">
+  <!ENTITY quoteStart "&lt;quoted&gt;">
+]>
+<message id="m-17" priority="urgent">
+  <envelope format="rich">
+    <sender>alpha@example.test</sender>
+    <recipient>beta@example.test</recipient>
+    <subject>&opener;</subject>
+    <body>
+      &quoteStart;
+      <quote>Nested <quote>inner &amp; escaped</quote> content</quote>
+      <list>
+        <entry>one</entry>
+        <entry>two&#x09;with tab</entry>
+        <entry><![CDATA[three ]]> and more</entry>
+      </list>
+    </body>
+  </envelope>
+  <attachment name="data.bin" media="application/octet-stream" size="0042"/>
+  <attachment name="note.txt" media="text/plain"/>
+  <signature algorithm="sha256" valid="true">a1b2c3&#x0A;</signature>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (branch|leaf|mixed)*>
+  <!ELEMENT branch (branch|leaf|mixed|empty)*>
+  <!ELEMENT leaf (#PCDATA)>
+  <!ELEMENT mixed (#PCDATA|leaf|empty)*>
+  <!ELEMENT empty EMPTY>
+  <!ATTLIST root xmlns CDATA #IMPLIED xmlns:x CDATA #IMPLIED>
+  <!ATTLIST branch id ID #IMPLIED level NMTOKEN #IMPLIED>
+  <!ATTLIST leaf role (key|value|other) #IMPLIED>
+  <!ATTLIST empty flag (on|off) "off">
+  <!ENTITY amp "&amp;">
+  <!ENTITY lt "&lt;">
+]>
+<root xmlns="urn:default" xmlns:x="urn:x">
+  <branch id="b0" level="0">
+    <leaf role="key">name</leaf>
+    <leaf role="value">A&amp;B</leaf>
+    <mixed>prefix<x:item xmlns:x="urn:item" x:code="7">inside</x:item><empty flag="on"/>suffix</mixed>
+    <branch id="b1" level="1">
+      <leaf role="other"><![CDATA[<not-an-element/>]]></leaf>
+      <empty/>
+    </branch>
+  </branch>
+  <mixed>
+    text &lt; &amp; text
+    <leaf>line&#x0A;break</leaf>
+    <x:empty xmlns:x="urn:x" flag="off"/>
+  </mixed>
+  <branch xmlns="" id="b2">
+    <leaf role="key">unqualified</leaf>
+  </branch>
+</root>
+```

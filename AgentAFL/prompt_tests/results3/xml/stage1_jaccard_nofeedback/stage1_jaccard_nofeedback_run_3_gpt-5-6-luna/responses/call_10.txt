@@ -1,0 +1,96 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:test:catalog" xmlns:x="urn:test:extra">
+  <entry id="A-001" active="true">
+    <title><![CDATA[alpha < beta && gamma]]></title>
+    <x:metadata>
+      <x:value><![CDATA[]]></x:value>
+      <x:value><![CDATA[unterminated-looking ]]]]></x:value>
+    </x:metadata>
+  </entry>
+  <!-- nested content with mixed text -->
+  <entry id="A-002">
+    text-before
+    <details><item key="k1">one</item><item key="k2"/></details>
+    text-after
+  </entry>
+</catalog>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body)>
+  <!ELEMENT header (token?)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT body ANY>
+  <!ENTITY local "replacement">
+]>
+<envelope>
+  <header><token>&local;</token></header>
+  <body>
+    <section name="one">
+      <![CDATA[raw ]]> content &amp; more
+      <![CDATA[<tag attr="x">]]>
+    </section>
+    <section name="two"><![CDATA[abc]]></section>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.1"?>
+<root>
+  <a>
+    <b>
+      <c>
+        <d attr="&quot;&#x41;&#65;">value</d>
+        <e><![CDATA[line one
+line two
+]]></e>
+      </c>
+    </b>
+  </a>
+  <empty x="" y="&#0;"/>
+  <?inside data?>
+</root>
+```
+
+```xml
+<records>
+  <record>
+    <name>first</name>
+    <values>
+      <value><![CDATA[x]]></value>
+      <value>y &lt; z</value>
+    </values>
+  </record>
+  <record status="pending">
+    <name><![CDATA[second]]></name>
+    <values/>
+    <note>
+      <line number="1">one</line>
+      <line number="2"><![CDATA[two]]></line>
+    </note>
+  </record>
+  <trailer><!-- comment --><![CDATA[end]]></trailer>
+</records>
+```
+
+```xml
+<!DOCTYPE report [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY file SYSTEM "data.bin" NDATA bin>
+]>
+<report version="2">
+  <header timestamp="2026-09-24T00:00:00Z"/>
+  <payload>
+    <chunk index="0">A&amp;B</chunk>
+    <chunk index="1"><![CDATA[<binary-like>\x00\xff]]></chunk>
+    <chunk index="2">
+      <part><![CDATA[]]></part>
+      <part><![CDATA[closing ]]]> marker]]></part>
+    </chunk>
+  </payload>
+  <footer ref="file">&file;</footer>
+</report>
+```

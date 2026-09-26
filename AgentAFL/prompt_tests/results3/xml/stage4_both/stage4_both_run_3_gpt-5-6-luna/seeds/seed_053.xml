@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:fn="urn:example:functions"
+  exclude-result-prefixes="fn">
+  <xsl:output method="xml" omit-xml-declaration="yes" indent="yes"/>
+  <xsl:param name="minimum" select="0"/>
+  <xsl:variable name="separator"> | </xsl:variable>
+
+  <xsl:template match="/">
+    <report generated="2026-09-24">
+      <xsl:apply-templates select="inventory/item[number(@quantity) &gt;= $minimum]">
+        <xsl:sort select="@category" data-type="text"/>
+        <xsl:sort select="@quantity" data-type="number" order="descending"/>
+      </xsl:apply-templates>
+    </report>
+  </xsl:template>
+
+  <xsl:template match="item">
+    <entry>
+      <xsl:attribute name="code"><xsl:value-of select="@sku"/></xsl:attribute>
+      <name><xsl:value-of select="name"/></name>
+      <summary>
+        <xsl:value-of select="@category"/>
+        <xsl:value-of select="$separator"/>
+        <xsl:choose>
+          <xsl:when test="@quantity = 0">out of stock</xsl:when>
+          <xsl:when test="@quantity &lt; 10">low stock</xsl:when>
+          <xsl:otherwise>available</xsl:otherwise>
+        </xsl:choose>
+      </summary>
+      <xsl:if test="notes">
+        <notes><xsl:copy-of select="notes/node()"/></notes>
+      </xsl:if>
+    </entry>
+  </xsl:template>
+
+  <xsl:template match="text()"/>
+</xsl:stylesheet>

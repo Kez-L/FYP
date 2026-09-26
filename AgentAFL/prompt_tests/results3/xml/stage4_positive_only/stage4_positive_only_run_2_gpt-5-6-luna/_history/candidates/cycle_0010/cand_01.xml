@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow" xmlns:x="urn:example:extra" version="3.2">
+  <trigger kind="schedule">
+    <calendar timezone="Europe/Oslo">
+      <day>Monday</day>
+      <time>07:30:00</time>
+      <exclude date="2026-12-24"/>
+    </calendar>
+  </trigger>
+  <steps>
+    <step name="extract" retry="2">
+      <input href="data/source.csv" format="text/csv"/>
+      <command><![CDATA[awk -F, '{ print $2 }' source.csv]]></command>
+    </step>
+    <step name="transform" retry="0">
+      <depends-on ref="extract"/>
+      <x:script language="lua"><![CDATA[
+        return normalize(records)
+      ]]></x:script>
+    </step>
+    <step name="publish" retry="5">
+      <depends-on ref="transform"/>
+      <destination scheme="sftp" host="files.example.invalid" path="/out/report.xml"/>
+    </step>
+  </steps>
+  <?audit generated-by="seed"?>
+</workflow>

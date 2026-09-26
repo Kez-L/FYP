@@ -1,0 +1,23 @@
+{
+  "call": 12,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a iCalendar document parser.\nTarget: /home/user/Documents/1git-folder/AgentAFL/AFLPlus/libical-build/libical_fuzzer-afl.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 iCalendar document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\nBEGIN:VCALENDAR\nPRODID:-//AFLSeed//Free Busy Exchange//EN\nVERSION:2.0\nCALSCALE:GREGORIAN\nMETHOD:REPLY\nBEGIN:VFREEBUSY\nUID:freebusy-20260924-01@example.invalid\nDTSTAMP:20260924T220000Z\nDTSTART:20261001T000000Z\nDTEND:20261008T000000Z\nORGANIZER;CN=Scheduling Service:mailto:schedule@example.invalid\nATTENDEE;CN=Analyst;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:mailto:analyst@example.invalid\nURL:https://example.invalid/freebusy/01\nCOMMENT:Availability report for the first week of October\nFREEBUSY;FBTYPE=BUSY:20261001T090000Z/20261001T103000Z,20261002T130000Z/PT90M\nFREEBUSY;FBTYPE=BUSY-TENTATIVE:20261003T150000Z/20261003T170000Z\nFREEBUSY;FBTYPE=BUSY-UNAVAILABLE:20261005T000000Z/20261006T000000Z\nREQUEST-STATUS:2.0;Success\nEND:VFREEBUSY\nEND:VCALENDAR\n\n--- example 2 ---\nBEGIN:VCALENDAR\nPRODID:-//AFLSeed//Availability Grid//EN\nVERSION:2.0\nCALSCALE:GREGORIAN\nMETHOD:PUBLISH\nBEGIN:VAVAILABILITY\nUID:availability-20260924@example.invalid\nDTSTAMP:20260924T211000Z\nDTSTART:20261001T000000Z\nDTEND:20261031T235959Z\nBUSYTYPE:BUSY-UNAVAILABLE\nCLASS:PUBLIC\nSUMMARY:October support availability\nORGANIZER;CN=Support Desk:mailto:support@example.invalid\nLOCATION;ALTREP=\"https://example.invalid/locations/desk\":Remote support desk\nBEGIN:AVAILABLE\nUID:available-20260924-1@example.invalid\nDTSTAMP:20260924T211001Z\nDTSTART:20261001T090000Z\nDTEND:20261001T170000Z\nSUMMARY:Weekday support hours\nRRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR;UNTIL=20261030T235959Z\nCATEGORIES:SUPPORT\\,REMOTE\nEND:AVAILABLE\nBEGIN:AVAILABLE\nUID:available-20260924-2@example.invalid\nDTSTAMP:20260924T211002Z\nDTSTART:20261003T100000Z\nDTEND:20261003T130000Z\nSUMMARY:Weekend escalation window\nRRULE:FREQ=WEEKLY;BYDAY=SA;COUNT=4\nCOMMENT:Limited emergency coverage\nEND:AVAILABLE\nEND:VAVAILABILITY\nEND:VCALENDAR\n\nTried before \u2014 no new coverage, avoid repeating:\n--- 3 of your past seeds (cycles 3,5) drove the same already-covered path with 0 new edges ---\nBEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//SeedLab//Timezone Transitions//EN\nCALSCALE:GREGORIAN\nMETHOD:REQUEST\nBEGIN:VTIMEZONE\nTZID:Custom/Fractured\nLAST-MODIFIED:19970101T000000Z\nTZURL:http://example.invalid/tz\nBEGIN:STANDARD\nDTSTART:19700101T020000\nTZOFFSETFROM:+0200\nTZOFFSETTO:+0100\nTZNAME:STD\nRRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU\nRDATE:20301027T020000,20311026T020000\nEND:STANDARD\nBEGIN:DAYLIGHT\nDTSTART:19700329T020000\nTZOFFSETFROM:+0100\nTZOFFSETTO:+0200\nTZNAME:DST\nRRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU\nCOMMENT:transition\\;with\\,delimiters\nEND:DAYLIGHT\nEND:VTIMEZONE\nBEGIN:VEVENT\nUID:tz-transition-1\nDTSTAMP:20260924T120000Z\nDTSTART;TZID=Custom/Fractured:20300331T013000\nDTEND;TZID=Custom/Fract...[truncated, 838 chars total]\n\n--- a seed you generated (cycle 12) added 0 new edges ---\nBEGIN:VCALENDAR\nPRODID:-//AFLSeed//Recurrence Boundary Cases//EN\nVERSION:2.0\nCALSCALE:GREGORIAN\nBEGIN:VEVENT\nUID:recurrence-boundary-20260924@example.invalid\nDTSTAMP:20260924T220200Z\nDTSTART:20261101T235500Z\nDTEND:20261102T001000Z\nSUMMARY:Month boundary batch\nRRULE:FREQ=MONTHLY;INTERVAL=2;BYMONTHDAY=1,15,-1;BYHOUR=0,23;BYMINUTE=0,30;BYSECOND=0;BYSETPOS=1,-1;COUNT=12\nRDATE;VALUE=DATE-TIME:20261231T235500Z,20270101T000000Z\nRDATE;VALUE=PERIOD:20270115T230000Z/PT45M,20270331T234500Z/20270401T001500Z\nEXDATE:20270101T000000Z,20270301T235500Z\nEXRULE:FREQ=MONTHLY;BYDAY=SU\nCATEGORIES:BATCH\\,NIGHTLY\nCOMMENT:Includes an intentionally tight transition across midnight\nEND:VEVENT\nEND:VCALENDAR\n\nGenerate 5 new iCalendar document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libical-20260915",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T05:14:45.013898+00:00"
+}

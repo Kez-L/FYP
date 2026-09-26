@@ -1,0 +1,228 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY logo SYSTEM "logo.jpg" NDATA jpeg>
+  <!ENTITY % commonAttrs '
+    xml:lang NMTOKEN #IMPLIED
+    xml:base CDATA #IMPLIED
+  '>
+  <!ELEMENT catalog (section+, note?)>
+  <!ATTLIST catalog
+    version NMTOKEN #REQUIRED
+    %commonAttrs;
+  >
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT title (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT item (name, price, description?)>
+  <!ATTLIST item
+    sku ID #REQUIRED
+    image ENTITY #IMPLIED
+    status (new|used|retired) "new"
+  >
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emph|br)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY company "A &amp; B Supply">
+  <!ENTITY legal "All prices include &company;.">
+]>
+<catalog version="2" xml:lang="en">
+  <?audit source="seed"?>
+  <section code="hardware">
+    <title>Tools <emph>and</emph> parts</title>
+    <item sku="sku-17" image="logo" status="used">
+      <name>Adjustable wrench</name>
+      <price>19.95</price>
+      <description>Forged steel<br/>minor surface wear</description>
+    </item>
+    <item sku="sku-18">
+      <name>Hex key set</name>
+      <price>7.50</price>
+    </item>
+  </section>
+  <note>&legal;</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE screenplay [
+  <!ELEMENT screenplay (act+)>
+  <!ELEMENT act (heading, scene+)>
+  <!ATTLIST act number NMTOKEN #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT scene (setting, cue*)>
+  <!ATTLIST scene id ID #REQUIRED>
+  <!ELEMENT setting (#PCDATA)>
+  <!ELEMENT cue (speaker, line+)>
+  <!ATTLIST cue ref IDREF #IMPLIED>
+  <!ELEMENT speaker (#PCDATA)>
+  <!ELEMENT line (#PCDATA|pause|aside)*>
+  <!ELEMENT pause EMPTY>
+  <!ATTLIST pause seconds CDATA "1">
+  <!ELEMENT aside (#PCDATA)>
+  <!ENTITY dash "&#x2014;">
+  <!ENTITY quote "&quot;">
+]>
+<screenplay>
+  <act number="I">
+    <heading>Arrival</heading>
+    <scene id="s1">
+      <setting>Interior, late evening</setting>
+      <cue ref="s1">
+        <speaker>MARA</speaker>
+        <line>I thought you said &quote;never again&quote;.</line>
+        <line>There was a pause<pause seconds="0"/>then silence.</line>
+        <line><aside>whispered</aside>We have until midnight &dash; no longer.</line>
+      </cue>
+    </scene>
+  </act>
+  <act number="II">
+    <heading>Departure</heading>
+    <scene id="s2">
+      <setting>Exterior, dawn</setting>
+      <cue>
+        <speaker>ION</speaker>
+        <line>Open the gate.</line>
+      </cue>
+    </scene>
+  </act>
+</screenplay>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record*)>
+  <!ATTLIST archive xmlns:r CDATA #FIXED "urn:records">
+  <!ELEMENT record (r:key, r:value, metadata?)>
+  <!ATTLIST record
+    uid CDATA #REQUIRED
+    kind (text|binary|link) #REQUIRED
+  >
+  <!ELEMENT metadata (tag*)>
+  <!ELEMENT tag EMPTY>
+  <!ATTLIST tag
+    name CDATA #REQUIRED
+    value CDATA #IMPLIED
+  >
+  <!ELEMENT r:key (#PCDATA)>
+  <!ELEMENT r:value (#PCDATA|r:fragment)*>
+  <!ELEMENT r:fragment (#PCDATA)>
+  <!ENTITY open "&#x3C;">
+  <!ENTITY close "&#x3E;">
+]>
+<archive xmlns:r="urn:records">
+  <record uid="a-001" kind="text">
+    <r:key>alpha</r:key>
+    <r:value>literal delimiters: &open;not markup&close;
+      <r:fragment><![CDATA[raw ]]> content &amp; brackets]]></r:fragment>
+    <metadata>
+      <tag name="owner" value="ops"/>
+      <tag name="empty"/>
+    </metadata>
+  </record>
+  <record uid="a-002" kind="link">
+    <r:key>beta</r:key>
+    <r:value><r:fragment>one</r:fragment><r:fragment>two</r:fragment></r:value>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE network [
+  <!ELEMENT network (host+)>
+  <!ELEMENT host (address, service*)>
+  <!ATTLIST host
+    name CDATA #REQUIRED
+    enabled (yes|no) "yes"
+  >
+  <!ELEMENT address (#PCDATA)>
+  <!ELEMENT service (port, protocol, banner?)>
+  <!ATTLIST service
+    name CDATA #REQUIRED
+    state (open|closed|filtered) "open"
+  >
+  <!ELEMENT port (#PCDATA)>
+  <!ELEMENT protocol (#PCDATA)>
+  <!ELEMENT banner (#PCDATA)>
+  <!ENTITY amp "&amp;">
+  <!ENTITY newline "&#xA;">
+]>
+<network>
+  <host name="edge-01" enabled="yes">
+    <address>2001:db8::42</address>
+    <service name="http" state="open">
+      <port>8080</port>
+      <protocol>tcp</protocol>
+      <banner>GET / HTTP/1.1&newline;Host: edge-01&newline;</banner>
+    </service>
+    <service name="ssh" state="filtered">
+      <port>22</port>
+      <protocol>tcp</protocol>
+    </service>
+  </host>
+  <host name="legacy&amp;lab" enabled="no">
+    <address>192.0.2.7</address>
+    <service name="echo">
+      <port>7</port>
+      <protocol>udp</protocol>
+      <banner>reply &amp; status</banner>
+    </service>
+  </host>
+</network>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form [
+  <!ELEMENT form (field|group|submit)*>
+  <!ELEMENT group (label, field+)>
+  <!ATTLIST group
+    key ID #REQUIRED
+    collapsed (true|false) "false"
+  >
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT field (label?, help?)>
+  <!ATTLIST field
+    name NMTOKEN #REQUIRED
+    type (text|number|choice|check) "text"
+    required (true|false) "false"
+    depends IDREF #IMPLIED
+  >
+  <!ELEMENT help (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT submit EMPTY>
+  <!ATTLIST submit
+    action CDATA #REQUIRED
+    method (get|post) "post"
+  >
+  <!ENTITY star "&#x2605;">
+  <!ENTITY nbsp "&#xA0;">
+]>
+<form>
+  <group key="identity" collapsed="false">
+    <label>Identity &star;</label>
+    <field name="display_name" required="true">
+      <label>Display name</label>
+      <help>Use a short name; spaces are allowed.</help>
+    </field>
+    <field name="age" type="number" depends="identity">
+      <help>Enter digits only<code>[0-9]+</code>.</help>
+    </field>
+  </group>
+  <field name="newsletter" type="check">
+    <label>Send updates</label>
+    <help>Optional&nbsp;subscription.</help>
+  </field>
+  <field name="color" type="choice">
+    <label>Preferred color</label>
+  </field>
+  <submit action="/account/save" method="post"/>
+</form>
+```

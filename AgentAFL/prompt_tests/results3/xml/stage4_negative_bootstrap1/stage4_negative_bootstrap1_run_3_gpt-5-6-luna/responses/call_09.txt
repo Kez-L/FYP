@@ -1,0 +1,145 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE library [
+  <!ELEMENT library (book+)>
+  <!ELEMENT book (title, author+, summary?, metadata)>
+  <!ATTLIST book id ID #REQUIRED category (fiction|reference|history) "reference">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (name, affiliation?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT affiliation (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|emph|quote)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT metadata (published, pages)>
+  <!ELEMENT published (#PCDATA)>
+  <!ELEMENT pages (#PCDATA)>
+  <!ENTITY copyright "© Archive Press">
+]>
+<library>
+  <book id="b-17" category="history">
+    <title>Maps of the Forgotten Coast</title>
+    <author>
+      <name>Rhea Solano</name>
+      <affiliation>Institute of Cartographic Memory</affiliation>
+    </author>
+    <author>
+      <name>Jon Bell</name>
+    </author>
+    <summary>A study of <emph>vanished</emph> harbors and <quote>roads that ended at the sea</quote>.</summary>
+    <metadata>
+      <published>1842</published>
+      <pages>512</pages>
+    </metadata>
+  </book>
+  <book id="b-18">
+    <title>Collected Field Notes</title>
+    <author><name>M. K. Ibarra</name></author>
+    <metadata><published>&copyright;</published><pages>96</pages></metadata>
+  </book>
+</library>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<workspace xmlns="urn:example:workspace"
+           xmlns:x="urn:example:extension"
+           xml:base="https://example.invalid/projects/alpha/">
+  <!-- Namespace scope changes and qualified attributes -->
+  <x:manifest x:revision="7">
+    <x:item xml:id="root" href="index.xml" media-type="application/xml"/>
+    <x:item href="assets/icon.svg" media-type="image/svg+xml">
+      <x:checksum algorithm="sha512">000000000000000000000000000000000000000000000000</x:checksum>
+    </x:item>
+  </x:manifest>
+  <folder name="reports" xml:lang="fr">
+    <file name="été.txt" size="0"/>
+    <file name="résumé.xml" size="18446744073709551615">
+      <![CDATA[raw <markup> & characters ]]>
+    </file>
+  </folder>
+  <folder xmlns="" name="unqualified">
+    <entry key="a&amp;b">line one
+line two
+line three</entry>
+  </folder>
+</workspace>
+```
+
+```xml
+<?xml version="1.0"?>
+<?pipeline mode="diagnostic" target="parser"?>
+<packet xmlns="urn:net:packet" xmlns:diag="urn:net:diagnostic">
+  <header>
+    <version major="0" minor="0" patch="0"/>
+    <flags urgent="true" compressed="false" encrypted="unknown"/>
+    <route>
+      <hop address="::1" port="0"/>
+      <hop address="2001:db8::ffff" port="65535"/>
+    </route>
+  </header>
+  <payload encoding="none" length="19"><![CDATA[
+      <not-an-element>&still-data;</not-an-element>
+  ]]></payload>
+  <diagnostics>
+    <diag:message severity="warning" code="W000">
+      <diag:text>Unexpected delimiter: ]]> appears near boundary</diag:text>
+      <diag:location line="00000000000000000001" column="00000000000000000001"/>
+    </diag:message>
+    <diag:message severity="error" code="E999">
+      <diag:text xml:space="preserve">   </diag:text>
+    </diag:message>
+  </diagnostics>
+</packet>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog">
+  <record key="α-β-γ">
+    <value><![CDATA[]]></value>
+    <value><![CDATA[<]]></value>
+    <value><![CDATA[&]]></value>
+    <value><![CDATA[
+]]></value>
+    <value> leading&#x0A;trailing &#x1F642; </value>
+  </record>
+  <record key="empty">
+    <nested>
+      <a><b><c><d><e>depth</e></d></c></b></a>
+    </nested>
+    <mixed>before <span>inside</span> after <span><i>twice</i></span>.</mixed>
+  </record>
+  <record key="quotes" note="&quot;&apos;&lt;&gt;&amp;">
+    <line first="yes" second="no"/>
+    <line first="no" second="yes"></line>
+  </record>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (item*)>
+  <!ELEMENT item (name, data?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+  <!ATTLIST item ref IDREF #IMPLIED>
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+  <!ENTITY nested "A &left; B &right;">
+]>
+<root>
+  <item ref="missing-id">
+    <name>first &nested;</name>
+    <data>alpha &amp; beta</data>
+  </item>
+  <item>
+    <name><![CDATA[second]]></name>
+    <data>contains &#13; carriage and &#x9; tab</data>
+  </item>
+  <item ref="">
+    <name>third</name>
+  </item>
+</root>
+```

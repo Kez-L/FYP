@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:acme:workflow" xmlns:sec="urn:acme:security">
+  <trigger type="schedule">
+    <schedule timezone="UTC">
+      <day>Monday</day>
+      <day>Thursday</day>
+      <at hour="06" minute="30"/>
+    </schedule>
+  </trigger>
+  <steps>
+    <step id="fetch" retries="2">
+      <action name="download">
+        <endpoint scheme="https" host="data.example.invalid" path="/daily"/>
+        <header name="Accept">application/xml</header>
+      </action>
+      <on-error>
+        <sec:alert severity="warning" channel="mail">Fetch failed</sec:alert>
+      </on-error>
+    </step>
+    <step id="transform" depends-on="fetch">
+      <action name="normalize">
+        <input format="xml"/>
+        <output format="json"/>
+      </action>
+    </step>
+    <step id="publish" depends-on="transform">
+      <condition language="xpath"><![CDATA[count(/records/record) > 0]]></condition>
+      <action name="store">
+        <destination bucket="reports" prefix="current/"/>
+      </action>
+    </step>
+  </steps>
+  <finally>
+    <sec:audit actor="scheduler" result="recorded"/>
+  </finally>
+</workflow>

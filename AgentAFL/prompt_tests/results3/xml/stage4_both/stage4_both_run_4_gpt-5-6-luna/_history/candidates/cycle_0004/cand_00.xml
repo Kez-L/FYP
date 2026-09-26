@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (context, step+, result?)>
+  <!ELEMENT context (property*)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST property name NMTOKEN #REQUIRED>
+  <!ELEMENT step (label, action, when?, step*)>
+  <!ATTLIST step id ID #REQUIRED
+                depends IDREFS #IMPLIED
+                status (pending|running|done|skipped) "pending">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT action (#PCDATA|arg|literal)*>
+  <!ELEMENT arg EMPTY>
+  <!ATTLIST arg name NMTOKEN #REQUIRED value CDATA #REQUIRED>
+  <!ELEMENT literal (#PCDATA)>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT result (summary, artifact*)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT artifact (#PCDATA)>
+  <!ATTLIST artifact media CDATA #IMPLIED>
+  <!ENTITY command "compile">
+  <!ENTITY nbsp "&#160;">
+]>
+<workflow>
+  <context>
+    <property name="branch">release/&nbsp;candidate</property>
+    <property name="owner">build-bot</property>
+  </context>
+  <step id="prepare" status="done">
+    <label>Prepare workspace</label>
+    <action>
+      <literal>mkdir</literal>
+      <arg name="directory" value="/tmp/build"/>
+    </action>
+  </step>
+  <step id="execute" depends="prepare" status="running">
+    <label>Run &command;</label>
+    <action>
+      <arg name="profile" value="asan"/>
+      <literal>--verbose</literal>
+    </action>
+    <when>environment = "linux"</when>
+    <step id="verify" depends="execute">
+      <label>Verify output</label>
+      <action><literal>checksum &amp; signature</literal></action>
+    </step>
+  </step>
+  <result>
+    <summary>Artifacts are ready.</summary>
+    <artifact media="application/octet-stream">bundle.bin</artifact>
+  </result>
+</workflow>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "data:text/plain,external" NDATA bin>
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT data (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST package version CDATA #FIXED "1">
+  <!ATTLIST file name CDATA #REQUIRED size NMTOKEN #IMPLIED>
+  <!ATTLIST data encoding (plain|base64|hex) "plain">
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+]>
+<package version="1">
+  <manifest>
+    <file name="a&amp;b.bin" size="000"/>
+    <file name="newline&#xA;name" size="not-a-number"/>
+    <file name="external" size="12"/>
+  </manifest>
+  <data encoding="base64">
+    prefix
+    <chunk index="0">AAEC/f8=</chunk>
+    middle &amp; <![CDATA[characters]]>
+    <chunk index="1"></chunk>
+    suffix
+  </data>
+</package>

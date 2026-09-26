@@ -1,0 +1,172 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ENTITY % common "CDATA">
+  <!ENTITY % itemdecl "<!ELEMENT item (title,author?,body)>">
+  %itemdecl;
+  <!ELEMENT archive (header,section+,footer)>
+  <!ELEMENT header (#PCDATA|meta)*>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta key %common; #REQUIRED value %common; #IMPLIED>
+  <!ELEMENT section (item+)>
+  <!ATTLIST section id ID #REQUIRED kind (news|note|alert) "note">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT body (#PCDATA|link|em|code)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href URI #IMPLIED>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY mark "R&amp;D &lt;lab&gt;">
+]>
+<archive>
+  <header>release <meta key="version" value="7"/> &mark;</header>
+  <section id="s-alpha" kind="news">
+    <item><title>First</title><author>Élodie</author><body>text <link href="urn:x">ref</link><em>hot</em><code>x&gt;y</code></body></item>
+  </section>
+  <section id="s-beta">
+    <item><title>Second</title><body><![CDATA[raw <payload> & bytes]]></body></item>
+  </section>
+  <footer>done</footer>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, signature?)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT payload (record|batch)+>
+  <!ELEMENT record EMPTY>
+  <!ATTLIST record key ID #REQUIRED status (new|old|void) #IMPLIED data CDATA #REQUIRED>
+  <!ELEMENT batch (record+)>
+  <!ATTLIST batch label CDATA #FIXED "group">
+  <!ELEMENT signature (#PCDATA)>
+  <!ENTITY euro "&#x20AC;">
+]>
+<envelope xmlns="urn:wire:v1" xmlns:s="urn:sig">
+  <header>
+    <field name="mode" value="delta"/>
+    <field name="empty"/>
+  </header>
+  <payload>
+    <record key="r1" status="new" data="a&amp;b"/>
+    <batch label="group">
+      <record key="r2" data="line&#x0A;two"/>
+      <record key="r3" status="void" data="&euro;"/>
+    </batch>
+  </payload>
+  <signature xmlns:s="urn:sig"><s:value>abc==</s:value></signature>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (camera, lights, object*)>
+  <!ELEMENT camera EMPTY>
+  <!ATTLIST camera projection (ortho|perspective) "perspective" near NMTOKEN #IMPLIED far NMTOKEN #IMPLIED>
+  <!ELEMENT lights (light*)>
+  <!ELEMENT light EMPTY>
+  <!ATTLIST light id ID #REQUIRED type (point|spot|area) "point" intensity CDATA "1.0">
+  <!ELEMENT object (transform?, material?, mesh)>
+  <!ATTLIST object name CDATA #IMPLIED visible (true|false) "true">
+  <!ELEMENT transform (translate?, rotate?, scale?)>
+  <!ELEMENT translate EMPTY>
+  <!ATTLIST translate x CDATA "0" y CDATA "0" z CDATA "0">
+  <!ELEMENT rotate EMPTY>
+  <!ATTLIST rotate axis NMTOKENS #REQUIRED angle CDATA #REQUIRED>
+  <!ELEMENT scale EMPTY>
+  <!ATTLIST scale value NMTOKENS #REQUIRED>
+  <!ELEMENT material (color|texture?)>
+  <!ELEMENT color (#PCDATA)>
+  <!ELEMENT texture EMPTY>
+  <!ATTLIST texture src ENTITY #REQUIRED>
+  <!ELEMENT mesh (#PCDATA)>
+  <!ENTITY brick SYSTEM "brick.png" NDATA png>
+  <!NOTATION png SYSTEM "image/png">
+]>
+<scene>
+  <camera projection="ortho" near="0.1" far="1000"/>
+  <lights><light id="key" type="spot" intensity="2"/></lights>
+  <object name="cube">
+    <transform><translate x="-1" y="2" z="0"/><rotate axis="0 1 0" angle="45"/><scale value="1 2 1"/></transform>
+    <material><color>#ff00aa</color><texture src="brick"/></material>
+    <mesh><![CDATA[
+      v 0 0 0
+      f 1 2 3
+    ]]></mesh>
+  </object>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (package, package*, checksum)>
+  <!ELEMENT package (name, dependency*, files)>
+  <!ATTLIST package id ID #REQUIRED platform NMTOKENS #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT dependency EMPTY>
+  <!ATTLIST dependency ref IDREF #REQUIRED optional (yes|no) "no">
+  <!ELEMENT files (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file path CDATA #REQUIRED size NMTOKEN #REQUIRED mode NMTOKEN "0644">
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY apos "'">
+  <!ENTITY banner "Package &apos;core&apos;: &quot;stable&quot;">
+]>
+<manifest>
+  <package id="core" platform="linux x86_64">
+    <name>&banner;</name>
+    <files>
+      <file path="/usr/bin/tool" size="4096" mode="0755"/>
+      <file path="share/doc/a&amp;b.txt" size="0"/>
+    </files>
+  </package>
+  <package id="extras" platform="win32">
+    <name>extras &apos; edition</name>
+    <dependency ref="core" optional="yes"/>
+    <files><file path="lib\addon.dll" size="65535"/></files>
+  </package>
+  <checksum><![CDATA[sha256:0000000000000000000000000000000000000000000000000000000000000000]]></checksum>
+</manifest>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE questionnaire [
+  <!ELEMENT questionnaire (intro, question+)>
+  <!ELEMENT intro (#PCDATA|strong|br)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT question (prompt, choice*, answer?)>
+  <!ATTLIST question id ID #REQUIRED required (true|false) "false">
+  <!ELEMENT prompt (#PCDATA|code|math)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT math ANY>
+  <!ELEMENT choice (#PCDATA|hint)*>
+  <!ATTLIST choice value NMTOKEN #REQUIRED score CDATA "0">
+  <!ELEMENT hint (#PCDATA)>
+  <!ELEMENT answer (#PCDATA)>
+  <!ENTITY le "&#60;=">
+  <!ENTITY rarr "&#x2192;">
+]>
+<questionnaire xmlns:q="urn:quiz">
+  <intro>Choose carefully<strong>—some fields are required.</strong><br/>Use &lt; and &gt; as text.</intro>
+  <question id="q-one" required="true">
+    <prompt>What is <code>2 &amp; 2</code> <math><mi>x</mi><mo>&le;</mo><mn>4</mn></math>?</prompt>
+    <choice value="a" score="1">four<hint>basic arithmetic</hint></choice>
+    <choice value="b">five</choice>
+    <answer> a &rarr; correct </answer>
+  </question>
+  <question id="q-two">
+    <prompt><![CDATA[Which token looks like </prompt> ]]></prompt>
+    <choice value="xml" score="2">markup</choice>
+    <choice value="text" score="-1">plain</choice>
+  </question>
+</questionnaire>
+```

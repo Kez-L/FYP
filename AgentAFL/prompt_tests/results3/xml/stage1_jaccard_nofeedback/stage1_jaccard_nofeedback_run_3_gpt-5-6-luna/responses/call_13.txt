@@ -1,0 +1,127 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+)>
+  <!ELEMENT item (name, details, price)>
+  <!ATTLIST item id ID #REQUIRED status (new|used|archived) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT details (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT price (#PCDATA)>
+  <!ENTITY currency "&#x20AC;">
+]>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <!-- mixed content with empty elements and entity expansion -->
+  <item id="i1" status="used">
+    <name>Widget &amp; Cable</name>
+    <details>Lightly <em>used</em><br/>with a &lt;replacement&gt; part.</details>
+    <price>19.95 &currency;</price>
+  </item>
+  <item id="i2" x:flag="true">
+    <name><![CDATA[Unusual ]]></name>
+    <details><![CDATA[raw ]]> text <em>after</em></details>
+    <price>0</price>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE message [
+  <!NOTATION jpg SYSTEM "image/jpeg">
+  <!ENTITY logo SYSTEM "logo.jpg" NDATA jpg>
+  <!ENTITY local "line&#x0A;break">
+]>
+<message xml:lang="en-US" xml:space="preserve">
+  <header><![CDATA[Status: ready]]></header>
+  <body>
+    <line number="001">&local;</line>
+    <line number="002"><?process mode="safe"?></line>
+    <attachment href="logo.jpg" type="image/jpeg"/>
+  </body>
+</message>
+```
+
+```xml
+<!DOCTYPE document [
+  <!ELEMENT document (section*)>
+  <!ELEMENT section (title, paragraph+, section*)>
+  <!ATTLIST section level NMTOKEN #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|link|code)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link target URI #REQUIRED>
+  <!ELEMENT code (#PCDATA)>
+  <!ENTITY quote "&#34;">
+  <!ENTITY amp "&#38;">
+]>
+<document>
+  <section level="1">
+    <title>Nested outline</title>
+    <paragraph>Use <code>&lt;tag&gt;</code> and say &quote;hello&quote;.</paragraph>
+    <section level="1.1">
+      <title>Links</title>
+      <paragraph>A <link target="https://example.invalid/a?x=1&amp;y=2">reference</link>
+        followed by &amp; more text.</paragraph>
+    </section>
+  </section>
+  <section level="2">
+    <title><![CDATA[Another section]]></title>
+    <paragraph>Trailing text</paragraph>
+  </section>
+</document>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE feed [
+  <!ELEMENT feed (entry*)>
+  <!ELEMENT entry (id, updated, content?)>
+  <!ATTLIST entry xml:base CDATA #IMPLIED>
+  <!ELEMENT id (#PCDATA)>
+  <!ELEMENT updated (#PCDATA)>
+  <!ELEMENT content ANY>
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+]>
+<feed xml:base="urn:feed:root">
+  <entry xml:base="urn:feed:item/">
+    <id>urn:item:001</id>
+    <updated>2026-09-24T12:34:56Z</updated>
+    <content type="application/xml">
+      <payload>
+        <value>&left;alpha&right;</value>
+        <empty/>
+        <nested><a><b><c>deep</c></b></a></nested>
+      </payload>
+    </content>
+  </entry>
+  <entry>
+    <id>urn:item:002</id>
+    <updated>not-a-date</updated>
+  </entry>
+</feed>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a|b|c)*>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c EMPTY>
+  <!ATTLIST a one CDATA #IMPLIED two CDATA #IMPLIED>
+  <!ENTITY text "alpha &amp; beta">
+]>
+<root>
+  <a one="1" two="2">before<!-- comment --><![CDATA[inside]]>&text;after</a>
+  <b one="&quot;quoted&quot;">line
+    <c/>
+    tail
+  </b>
+  <a two="&#x09;&#x0A;&#x0D;">&#xD800;</a>
+  <c></c>
+  <?unusual data?>
+</root>
+```

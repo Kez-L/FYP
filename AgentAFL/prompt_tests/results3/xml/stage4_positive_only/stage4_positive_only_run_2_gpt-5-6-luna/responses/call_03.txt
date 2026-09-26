@@ -1,0 +1,202 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE journal [
+  <!ELEMENT journal (header, entry+)>
+  <!ELEMENT header (publication, issue, editor)>
+  <!ELEMENT publication (#PCDATA)>
+  <!ELEMENT issue (#PCDATA)>
+  <!ELEMENT editor (#PCDATA)>
+  <!ELEMENT entry (date, headline, byline, paragraph+, note*)>
+  <!ATTLIST entry id ID #REQUIRED status (draft|published|archived) "published">
+  <!ELEMENT date (#PCDATA)>
+  <!ELEMENT headline (#PCDATA)>
+  <!ELEMENT byline (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|strong|code|quote|break)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST note ref IDREF #IMPLIED>
+  <!ENTITY copyright "© 2026">
+]>
+<journal xml:lang="en">
+  <header>
+    <publication>Observatory Review</publication>
+    <issue>42</issue>
+    <editor>R. A. Kline</editor>
+  </header>
+  <entry id="entry-alpha" status="published">
+    <date>2026-09-24</date>
+    <headline>Signals beneath the ordinary</headline>
+    <byline>By Mira &amp; Sol</byline>
+    <paragraph>At dawn, the instruments recorded a <strong>quiet anomaly</strong>.<break/>The operator wrote <quote>check the northern channel</quote> in the margin.</paragraph>
+    <paragraph>Calibration used <code>phase&lt;threshold</code> before the final sweep.</paragraph>
+    <note ref="entry-alpha">Filed with &copyright; and retained for comparison.</note>
+  </entry>
+</journal>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<message xmlns="urn:example:message" xmlns:m="urn:example:meta" xmlns:xlink="http://www.w3.org/1999/xlink" xml:base="https://example.invalid/archive/">
+  <!-- Deliberately mixed metadata and payload structure -->
+  <m:header>
+    <m:sender id="node-7">relay.example</m:sender>
+    <m:recipients>
+      <m:recipient priority="high">ops@example.invalid</m:recipient>
+      <m:recipient priority="normal">audit@example.invalid</m:recipient>
+    </m:recipients>
+    <m:timestamp>2026-09-24T12:34:56.789+00:00</m:timestamp>
+    <m:token><![CDATA[abc]]></m:token>
+  </m:header>
+  <payload type="multipart">
+    <part name="description" xml:space="preserve">  line one
+  line two &amp; a literal &lt;marker&gt;  </part>
+    <part name="binary" encoding="base64">AAECAwQFBgcICQ==</part>
+    <part name="link">
+      <reference xlink:type="simple" xlink:href="objects/item-17.xml">item-17</reference>
+    </part>
+    <part name="empty"/>
+  </payload>
+  <?audit level="verbose"?>
+  <signature algorithm="sha256" key="k-3">dGVzdC1zaWduYXR1cmU=</signature>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (description?, node+, edge*)>
+  <!ATTLIST graph directed (true|false) "true">
+  <!ELEMENT description (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT node (label, property*)>
+  <!ATTLIST node id ID #REQUIRED kind NMTOKEN #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA|value)*>
+  <!ATTLIST property name NMTOKEN #REQUIRED>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT edge (annotation*)>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA #IMPLIED>
+  <!ELEMENT annotation (#PCDATA)>
+  <!ATTLIST annotation key NMTOKEN #REQUIRED>
+]>
+<graph xmlns="urn:example:graph" xmlns:meta="urn:example:metadata" directed="false">
+  <description>A small dependency graph<linebreak/>with labels and references.</description>
+  <node id="n-root" kind="service">
+    <label>gateway</label>
+    <property name="region"><value>eu-west</value><value>backup</value></property>
+    <property name="owner">platform-team</property>
+  </node>
+  <node id="n-cache" kind="storage">
+    <label>cache</label>
+    <property name="capacity">512MiB</property>
+  </node>
+  <node id="n-worker" kind="process">
+    <label>worker</label>
+    <property name="queue"><value>events</value></property>
+  </node>
+  <edge from="n-root" to="n-cache" weight="0.25">
+    <annotation key="mode">read-through</annotation>
+  </edge>
+  <edge from="n-root" to="n-worker" weight="1">
+    <annotation key="protocol">internal</annotation>
+    <annotation key="retry">3</annotation>
+  </edge>
+  <meta:classification meta:confidence="0.98">operational</meta:classification>
+</graph>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<envelope xmlns="http://schemas.example.invalid/rpc" xmlns:x="urn:example:types">
+  <header>
+    <request-id>req-00000017</request-id>
+    <auth>
+      <method>token</method>
+      <credential><![CDATA[opaque<credential>&value]]></credential>
+    </auth>
+    <capabilities>
+      <capability name="streaming">true</capability>
+      <capability name="compression">none</capability>
+    </capabilities>
+  </header>
+  <body>
+    <call name="inventory.lookup" version="2">
+      <arguments>
+        <argument name="warehouse" type="x:string">north</argument>
+        <argument name="sku" type="x:string">A-17</argument>
+        <argument name="limit" type="x:integer">00025</argument>
+        <argument name="include-history" type="x:boolean">false</argument>
+      </arguments>
+      <options>
+        <option key="timeout-ms">1500</option>
+        <option key="trace">client,server</option>
+      </options>
+    </call>
+  </body>
+  <fault code="0" xmlns:f="urn:example:fault">
+    <f:message>No fault</f:message>
+    <f:details/>
+  </fault>
+</envelope>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (environment, modules, rules)>
+  <!ELEMENT environment (variable*)>
+  <!ELEMENT variable EMPTY>
+  <!ATTLIST variable name NMTOKEN #REQUIRED value CDATA #REQUIRED secret (yes|no) "no">
+  <!ELEMENT modules (module*)>
+  <!ELEMENT module (dependency*, setting*)>
+  <!ATTLIST module name NMTOKEN #REQUIRED enabled (true|false) "true">
+  <!ELEMENT dependency EMPTY>
+  <!ATTLIST dependency module IDREF #REQUIRED optional (true|false) "false">
+  <!ELEMENT setting (#PCDATA|fragment)*>
+  <!ATTLIST setting key NMTOKEN #REQUIRED>
+  <!ELEMENT fragment (#PCDATA)>
+  <!ELEMENT rules (rule+)>
+  <!ELEMENT rule (match, action+)>
+  <!ATTLIST rule id ID #REQUIRED priority CDATA "0">
+  <!ELEMENT match (#PCDATA)>
+  <!ELEMENT action (#PCDATA|parameter)*>
+  <!ATTLIST action type NMTOKEN #REQUIRED>
+  <!ELEMENT parameter (#PCDATA)>
+  <!ATTLIST parameter name NMTOKEN #REQUIRED>
+  <!ENTITY newline "&#10;">
+]>
+<configuration xml:space="default">
+  <environment>
+    <variable name="MODE" value="staging"/>
+    <variable name="EMPTY_VALUE" value="" secret="no"/>
+    <variable name="API_KEY" value="redacted" secret="yes"/>
+  </environment>
+  <modules>
+    <module name="core">
+      <setting key="banner">alpha&amp;beta</setting>
+    </module>
+    <module name="adapter" enabled="false">
+      <dependency module="core"/>
+      <dependency module="missing" optional="true"/>
+      <setting key="template"><fragment><![CDATA[<item>{value}</item>]]></fragment>&newline;</setting>
+    </module>
+  </modules>
+  <rules>
+    <rule id="rule-default" priority="-1">
+      <match>status = "unknown"</match>
+      <action type="emit">
+        <parameter name="channel">stderr</parameter>
+        <parameter name="message">fallback</parameter>
+      </action>
+    </rule>
+    <rule id="rule-main" priority="10">
+      <match><![CDATA[path ~= "^/api/"]]></match>
+      <action type="route"><parameter name="target">core</parameter></action>
+      <action type="log"><parameter name="level">debug</parameter></action>
+    </rule>
+  </rules>
+</configuration>
+```

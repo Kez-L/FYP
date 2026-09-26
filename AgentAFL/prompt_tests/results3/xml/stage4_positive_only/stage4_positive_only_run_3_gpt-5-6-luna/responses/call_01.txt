@@ -1,0 +1,151 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (section*)>
+  <!ELEMENT section (title, record*)>
+  <!ATTLIST section name CDATA #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT record (key, value, note?)>
+  <!ATTLIST record status (open|closed) "open">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|emph|break)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT note (#PCDATA)>
+]>
+<archive>
+  <section name="north">
+    <title>First &amp; foremost</title>
+    <record status="closed">
+      <key>R-01</key>
+      <value>plain <emph>bold</emph><break/> text</value>
+      <note>archived</note>
+    </record>
+  </section>
+  <section name="south">
+    <title>Second</title>
+  </section>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (sender, recipients, body, attachment*)>
+  <!ELEMENT sender EMPTY>
+  <!ATTLIST sender address CDATA #REQUIRED>
+  <!ELEMENT recipients (recipient+)>
+  <!ELEMENT recipient EMPTY>
+  <!ATTLIST recipient address CDATA #REQUIRED role CDATA #IMPLIED>
+  <!ELEMENT body (#PCDATA|quote|list)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment name CDATA #REQUIRED encoding CDATA #IMPLIED>
+]>
+<message>
+  <sender address="robot@example.test"/>
+  <recipients>
+    <recipient address="a@example.test" role="to"/>
+    <recipient address="b@example.test" role="cc"/>
+  </recipients>
+  <body>Hello <quote>nested text</quote><list><item>one</item><item>two</item></list></body>
+  <attachment name="data.bin" encoding="base64"/>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (layer+)>
+  <!ELEMENT layer (cell*)>
+  <!ATTLIST layer index NMTOKEN #REQUIRED>
+  <!ELEMENT cell EMPTY>
+  <!ATTLIST cell x NMTOKEN #REQUIRED y NMTOKEN #REQUIRED value CDATA #IMPLIED>
+]>
+<map>
+  <layer index="0">
+    <cell x="0" y="0" value="start"/>
+    <cell x="1" y="0"/>
+  </layer>
+  <layer index="1">
+    <cell x="0" y="1" value="&quot;quoted&quot;"/>
+    <cell x="1" y="1" value="line&#10;break"/>
+    <cell x="2" y="1" value="&#x1F600;"/>
+  </layer>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (defaults, environments)>
+  <!ELEMENT defaults (option*)>
+  <!ELEMENT environments (environment+)>
+  <!ELEMENT environment (inherits?, option*, secret?)>
+  <!ATTLIST environment name ID #REQUIRED>
+  <!ELEMENT inherits EMPTY>
+  <!ATTLIST inherits from IDREF #REQUIRED>
+  <!ELEMENT option EMPTY>
+  <!ATTLIST option key NMTOKEN #REQUIRED value CDATA #REQUIRED>
+  <!ELEMENT secret (#PCDATA)>
+]>
+<configuration xmlns="urn:config">
+  <defaults>
+    <option key="timeout" value="30"/>
+    <option key="retries" value="3"/>
+  </defaults>
+  <environments>
+    <environment name="development">
+      <option key="debug" value="true"/>
+    </environment>
+    <environment name="production">
+      <inherits from="development"/>
+      <option key="debug" value="false"/>
+      <secret><![CDATA[do-not-log]]></secret>
+    </environment>
+  </environments>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (warehouse+)>
+  <!ELEMENT warehouse (address, bin+)>
+  <!ATTLIST warehouse code ID #REQUIRED>
+  <!ELEMENT address (line, city, country)>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT city (#PCDATA)>
+  <!ELEMENT country (#PCDATA)>
+  <!ELEMENT bin (product*)>
+  <!ATTLIST bin label NMTOKEN #REQUIRED>
+  <!ELEMENT product EMPTY>
+  <!ATTLIST product sku ID #REQUIRED quantity NMTOKEN #REQUIRED fragile (yes|no) "no">
+]>
+<inventory>
+  <warehouse code="wh-main">
+    <address>
+      <line>7 &lt;Market&gt; Road</line>
+      <city>Exampleville</city>
+      <country>XZ</country>
+    </address>
+    <bin label="A-01">
+      <product sku="sku-100" quantity="12" fragile="yes"/>
+      <product sku="sku-101" quantity="0"/>
+    </bin>
+    <bin label="B-02"/>
+  </warehouse>
+  <warehouse code="wh-remote">
+    <address>
+      <line>Harbor Lane</line>
+      <city>Porttown</city>
+      <country>YY</country>
+    </address>
+    <bin label="C-09">
+      <product sku="sku-200" quantity="5"/>
+    </bin>
+  </warehouse>
+</inventory>
+```

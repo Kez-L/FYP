@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, signature?)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT payload (record|batch)+>
+  <!ELEMENT record EMPTY>
+  <!ATTLIST record key ID #REQUIRED status (new|old|void) #IMPLIED data CDATA #REQUIRED>
+  <!ELEMENT batch (record+)>
+  <!ATTLIST batch label CDATA #FIXED "group">
+  <!ELEMENT signature (#PCDATA)>
+  <!ENTITY euro "&#x20AC;">
+]>
+<envelope xmlns="urn:wire:v1" xmlns:s="urn:sig">
+  <header>
+    <field name="mode" value="delta"/>
+    <field name="empty"/>
+  </header>
+  <payload>
+    <record key="r1" status="new" data="a&amp;b"/>
+    <batch label="group">
+      <record key="r2" data="line&#x0A;two"/>
+      <record key="r3" status="void" data="&euro;"/>
+    </batch>
+  </payload>
+  <signature xmlns:s="urn:sig"><s:value>abc==</s:value></signature>
+</envelope>

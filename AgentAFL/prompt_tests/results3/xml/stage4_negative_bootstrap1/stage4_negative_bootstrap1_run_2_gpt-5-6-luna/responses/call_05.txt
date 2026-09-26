@@ -1,0 +1,95 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="urn:example:tree" xmlns:m="urn:example:meta" xml:lang="fr">
+  <branch id="b1">
+    <leaf rank="1">alpha</leaf>
+    <leaf rank="2"><![CDATA[beta < gamma]]></leaf>
+  </branch>
+  <branch id="b2">
+    <m:annotation m:kind="note">élément</m:annotation>
+    <!-- preserved comment -->
+    <leaf rank="3">delta &amp; epsilon</leaf>
+  </branch>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE library [
+  <!ELEMENT library (book+)>
+  <!ELEMENT book (title, author+, summary?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ATTLIST book isbn ID #REQUIRED>
+  <!ENTITY copyright "© 2026">
+]>
+<library>
+  <book isbn="bk-001">
+    <title>North Wind</title>
+    <author>A. Rivera</author>
+    <author>M. Chen</author>
+    <summary>&copyright; <emphasis>revised</emphasis> edition.</summary>
+  </book>
+</library>
+```
+
+```xml
+<?xml version="1.0"?>
+<envelope xmlns="urn:acme:message" xmlns:x="urn:acme:extra">
+  <?processing mode="diagnostic"?>
+  <header>
+    <x:correlation-id>7f3c-91aa</x:correlation-id>
+    <x:flags urgent="yes" compressed="no"/>
+  </header>
+  <body>
+    <request method="sync">
+      <argument name="query">select * from records</argument>
+      <argument name="limit">25</argument>
+    </request>
+    <response status="pending"/>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.1"?>
+<manifest xml:base="https://example.invalid/assets/" xml:space="preserve">
+  <entry path="images/logo.svg" media-type="image/svg+xml">
+    <checksum algorithm="sha256">d41d8cd98f00b204e9800998ecf8427e</checksum>
+    <link rel="alternate" href="images/logo-dark.svg"/>
+  </entry>
+  <entry path="data&#x0A;set.bin" media-type="application/octet-stream">
+    <metadata>
+      <created>2026-09-24T12:34:56Z</created>
+      <owner xml:lang="en-US">ops</owner>
+    </metadata>
+  </entry>
+</manifest>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (section*)>
+  <!ELEMENT section (heading, widget+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT widget (label?, value)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA|code|br)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST section key NMTOKEN #REQUIRED>
+  <!ATTLIST widget type (text|number|status) "text">
+]>
+<dashboard>
+  <section key="overview">
+    <heading>System <code>status</code></heading>
+    <widget type="status">
+      <label>state</label>
+      <value>ready<br/>for inspection</value>
+    </widget>
+  </section>
+</dashboard>
+```

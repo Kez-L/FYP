@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ENTITY % common '
+    <!ELEMENT package (manifest, content)>
+    <!ELEMENT manifest (file*)>
+    <!ELEMENT file EMPTY>
+    <!ATTLIST file path CDATA #REQUIRED kind (text|binary) "text">
+  '>
+  %common;
+  <!ENTITY % optional ' <!ELEMENT content (text|chunk|section)*> '>
+  %optional;
+  <![IGNORE[
+    <!ELEMENT ignored (anything)>
+    <!ENTITY hidden "not expanded">
+  ]]>
+  <!ELEMENT text (#PCDATA)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT section (text|chunk)*>
+  <!ATTLIST package mode CDATA #IMPLIED>
+  <!ENTITY open "<![CDATA[">
+  <!ENTITY close "]]>">
+]>
+<package mode="mixed">
+  <manifest>
+    <file path="a.txt"/>
+    <file path="blob.dat" kind="binary"/>
+  </manifest>
+  <content>
+    <text>plain &lt;markup&gt;</text>
+    <chunk><![CDATA[raw ]]> data</chunk>
+    <section><text>nested</text><chunk>&open;still characters&close;</chunk></section>
+  </content>
+</package>

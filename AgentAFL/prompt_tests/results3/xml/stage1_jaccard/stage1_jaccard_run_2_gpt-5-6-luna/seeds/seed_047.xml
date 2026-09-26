@@ -1,0 +1,22 @@
+<!DOCTYPE packet [
+  <!ELEMENT packet (meta, payload, trail)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT payload (#PCDATA|chunk|![CDATA[not allowed here]])*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT trail (event*)>
+  <!ELEMENT event EMPTY>
+  <!ATTLIST meta xmlns CDATA #IMPLIED timestamp CDATA #REQUIRED>
+  <!ATTLIST chunk n ID #IMPLIED ref IDREF #IMPLIED>
+  <!ATTLIST event kind (open|close|fault) "open" at CDATA #IMPLIED>
+  <!ENTITY open "<chunk n='c1'>">
+  <!ENTITY close "</chunk>">
+]>
+<packet>
+  <meta xmlns="urn:meta" timestamp="2026-09-24T12:34:56Z"/>
+  <payload>
+    &open;fragment &amp; residue&close;
+    <chunk n="c2" ref="c1"><![CDATA[]]></chunk>
+    <chunk n="c3"><![CDATA[abc]]><![CDATA[def]]></chunk>
+  </payload>
+  <trail><event kind="open"/><event kind="fault" at="line:7"/></trail>
+</packet>

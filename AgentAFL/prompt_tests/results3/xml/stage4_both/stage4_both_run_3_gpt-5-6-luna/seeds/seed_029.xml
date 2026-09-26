@@ -1,0 +1,41 @@
+<?xml version="1.1" standalone="yes"?>
+<configuration xmlns="urn:config:runtime"
+               xmlns:sec="urn:config:security"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:type="RuntimeConfiguration"
+               xml:space="preserve">
+  <environment name="staging">
+    <variable key="PATH">/opt/bin:/usr/bin</variable>
+    <variable key="EMPTY"></variable>
+    <variable key="QUOTED">a &quot;quoted&quot; value</variable>
+  </environment>
+  <pipeline>
+    <step id="load" class="io">
+      <input format="json" optional="false"/>
+      <output channel="memory"/>
+    </step>
+    <step id="transform" class="compute">
+      <depends-on ref="load"/>
+      <parameter name="threshold" type="decimal">0.000001</parameter>
+      <parameter name="pattern" type="regex"><![CDATA[(?:^|\s)[A-Z]{2,}\s+\d+$]]></parameter>
+    </step>
+    <step id="emit" class="io">
+      <depends-on ref="transform"/>
+      <retry count="3" delay="PT0.250S"/>
+      <destination>
+        <uri scheme="https" host="example.invalid" path="/sink"/>
+        <headers>
+          <header name="X-Trace">αβγ</header>
+          <header name="X-Mode">dry-run</header>
+        </headers>
+      </destination>
+    </step>
+  </pipeline>
+  <sec:policy>
+    <sec:principal name="operator">
+      <sec:allow action="read" resource="*"/>
+      <sec:deny action="write" resource="/system"/>
+    </sec:principal>
+  </sec:policy>
+  <?configuration checksum="pending"?>
+</configuration>

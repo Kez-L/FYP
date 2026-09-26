@@ -1,0 +1,104 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION png SYSTEM "image/png">
+  <!NOTATION jpeg PUBLIC "-//IETF//NOTATION JPEG//EN" "image/jpeg">
+  <!ENTITY cover SYSTEM "cover.png" NDATA png>
+  <!ENTITY intro "A &amp; B &lt; C">
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, description?, asset*)>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    state (new|old|archived) "new"
+  >
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emph|link)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ELEMENT asset EMPTY>
+  <!ATTLIST asset source ENTITY #REQUIRED>
+]>
+<catalog>
+  <entry id="e0" state="archived">
+    <title>&intro;</title>
+    <description>text <emph>with emphasis</emph> and <link href="urn:x"/>.</description>
+    <asset source="cover"/>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:root xmlns:r="urn:root" xmlns:a="urn:alpha" xmlns:b="urn:beta">
+  <a:item a:key="1" xml:lang="en">
+    <b:part xmlns:b="urn:alternate" b:key="2">
+      <r:leaf xmlns="urn:default" xmlns:r="">
+        value &amp; &#x1F642;
+      </r:leaf>
+    </b:part>
+  </a:item>
+  <empty xmlns:a="urn:shadow" a:x=""/>
+  <a:item xmlns:r="urn:rebound">
+    <r:child><![CDATA[namespace boundary]]></r:child>
+  </a:item>
+</r:root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE vault [
+  <!ENTITY % switch "<!ENTITY enabled 'yes'>">
+  <![INCLUDE[
+    <!ELEMENT vault (open, sealed)>
+    <!ELEMENT open (#PCDATA)>
+  ]]>
+  <![IGNORE[
+    <!ELEMENT discarded (never)>
+    <!ATTLIST discarded ghost CDATA #IMPLIED>
+  ]]>
+  %switch;
+  <!ELEMENT sealed (#PCDATA)>
+  <!ENTITY left "L">
+  <!ENTITY right "&left;R">
+]>
+<vault>
+  <open>&enabled;:&right;</open>
+  <sealed>[%switch;] &left;&right;</sealed>
+</vault>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream ANY>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ENTITY one "alpha">
+]>
+<stream>
+  <?pi?>
+  <!-- comment with --? -->
+  <chunk>before &one; after</chunk>
+  <![CDATA[raw ]]> tail]]>
+  <chunk attr="&quot;unterminated-ish">x</chunk>
+  <?data a='b" c?>
+  <chunk>last</stream>
+```
+
+```xml
+<?xml version="1.1" standalone="yes"?>
+<message xml:base="urn:例え/%E2%98%83" xml:space="preserve">
+  <header>
+    <from>user@example.invalid</from>
+    <to>dest@example.invalid</to>
+  </header>
+  <body>
+    line-one&#x85;line-two&#x2028;line-three
+    <mark data="&#0;"/>
+    <![CDATA[ brackets ]]]]><![CDATA[> remain literal ]]>
+  </body>
+  <tail xmlns="urn:t">
+    <x xmlns:p="urn:p" p:y="&#xD800;"/>
+  </tail>
+</message>
+```

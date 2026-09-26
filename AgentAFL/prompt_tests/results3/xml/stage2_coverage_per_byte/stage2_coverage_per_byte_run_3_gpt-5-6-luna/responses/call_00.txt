@@ -1,0 +1,94 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|price|note)*>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ENTITY currency "€">
+]>
+<catalog>
+  <section code="s1">
+    <title>Tools &amp; Parts</title>
+    <item>Hammer<price>12 &currency;</price><note><![CDATA[heavy-duty]]></note></item>
+    <item>Clamp</item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<message xmlns="urn:example:message" xmlns:m="urn:example:meta" m:id="42">
+  <header>
+    <m:sender role="system">alpha</m:sender>
+    <m:recipient>beta</m:recipient>
+  </header>
+  <payload><![CDATA[
+    <embedded><value>&not-an-entity;</value></embedded>
+  ]]></payload>
+  <footer status="ok"/>
+</message>
+```
+
+```xml
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (name, data, checksum?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST entry key NMTOKEN #IMPLIED compressed (yes|no) "no">
+]>
+<archive>
+  <entry key="a-1" compressed="yes">
+    <name>alpha.bin</name>
+    <data>AAECAwQFBgcICQ==</data>
+    <checksum>deadbeef</checksum>
+  </entry>
+  <entry key="b_2">
+    <name>empty</name>
+    <data/>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<?processing instruction-data?>
+<!-- leading comment -->
+<configuration>
+  <path><![CDATA[/tmp/a]]></path>
+  <options>
+    <option name="quoted" value="&quot;&apos;&amp;&lt;&gt;"/>
+    <option name="multiline">
+      first
+      second
+      <suboption enabled="true"/>
+    </option>
+  </options>
+  <!-- comment with -- no -->
+</configuration>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ELEMENT report (metadata, records)>
+  <!ELEMENT metadata EMPTY>
+  <!ELEMENT records (record+)>
+  <!ELEMENT record (key, value, value?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST metadata generated CDATA #IMPLIED>
+  <!ATTLIST record id ID #REQUIRED>
+]>
+<report>
+  <metadata generated="2026-09-24T00:00:00Z"/>
+  <records>
+    <record id="r001"><key>one</key><value>alpha</value><value>βeta</value></record>
+    <record id="r002"><key>two</key><value><![CDATA[x<y && y>z]]></value></record>
+  </records>
+</report>
+```

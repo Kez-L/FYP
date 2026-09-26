@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (defaults, profiles)>
+  <!ELEMENT defaults (setting+)>
+  <!ELEMENT profiles (profile+)>
+  <!ELEMENT profile (extends?, setting*, group*)>
+  <!ELEMENT extends EMPTY>
+  <!ELEMENT setting (#PCDATA)>
+  <!ELEMENT group (setting*)>
+  <!ATTLIST setting key NMTOKEN #REQUIRED type (string|integer|boolean|path) "string">
+  <!ATTLIST profile name ID #REQUIRED active (yes|no) "no">
+  <!ATTLIST extends profile IDREF #REQUIRED>
+  <!ATTLIST group name NMTOKEN #REQUIRED>
+  <!ENTITY root "/var/lib/app">
+  <!ENTITY nl "&#10;">
+]>
+<configuration xml:space="preserve">
+  <defaults>
+    <setting key="retries" type="integer">3</setting>
+    <setting key="enabled" type="boolean">true</setting>
+    <setting key="directory" type="path">&root;/cache</setting>
+  </defaults>
+  <profiles>
+    <profile name="base" active="no">
+      <group name="network">
+        <setting key="endpoint">https://host.invalid/api?x=1&amp;y=2</setting>
+        <setting key="timeout" type="integer">15</setting>
+      </group>
+    </profile>
+    <profile name="staging" active="yes">
+      <extends profile="base"/>
+      <setting key="directory" type="path">&root;/staging</setting>
+      <group name="network">
+        <setting key="verify_tls" type="boolean">false</setting>
+      </group>
+    </profile>
+  </profiles>
+</configuration>

@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (step, step*, on-error?)>
+  <!ATTLIST workflow name CDATA #REQUIRED>
+  <!ELEMENT step (command, environment?, result?)>
+  <!ATTLIST step number CDATA #REQUIRED>
+  <!ELEMENT command (#PCDATA)>
+  <!ELEMENT environment (variable*)>
+  <!ELEMENT variable EMPTY>
+  <!ATTLIST variable name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT result (stdout?, stderr?, code)>
+  <!ELEMENT stdout (#PCDATA)>
+  <!ELEMENT stderr (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT on-error (retry|abort)>
+  <!ELEMENT retry EMPTY>
+  <!ATTLIST retry count CDATA #REQUIRED>
+  <!ELEMENT abort (#PCDATA)>
+]>
+<workflow name="build">
+  <step number="1">
+    <command><![CDATA[./configure --with-feature="x"]]></command>
+    <environment>
+      <variable name="CC" value="clang"/>
+      <variable name="FLAGS" value="-O1 -g"/>
+    </environment>
+    <result>
+      <stdout>checking dependencies...</stdout>
+      <stderr><![CDATA[warning: optional module missing]]></stderr>
+      <code>0</code>
+    </result>
+  </step>
+  <step number="2">
+    <command>make &amp;&amp; make test</command>
+    <result><stdout>pass</stdout><code>0</code></result>
+  </step>
+  <on-error><retry count="3"/></on-error>
+</workflow>

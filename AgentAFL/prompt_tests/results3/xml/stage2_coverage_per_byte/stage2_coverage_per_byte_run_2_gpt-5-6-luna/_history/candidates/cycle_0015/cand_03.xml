@@ -1,0 +1,27 @@
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder|record|empty)*>
+  <!ELEMENT folder (folder|record|alias)*>
+  <!ELEMENT record (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT alias EMPTY>
+  <!ELEMENT empty EMPTY>
+  <!ATTLIST archive created CDATA #IMPLIED>
+  <!ATTLIST folder name CDATA #REQUIRED depth NMTOKEN #IMPLIED>
+  <!ATTLIST record key ID #REQUIRED format (bin|txt|xml) "txt">
+  <!ATTLIST alias target IDREF #REQUIRED>
+  <!ATTLIST part kind CDATA #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<archive created="2026-09-24T12:34:56Z">
+  <folder name="root" depth="0">
+    <record key="r0" format="txt">literal &left;payload&right;<part kind="tail">尾</part></record>
+    <folder name="nested" depth="1">
+      <record key="r1" format="xml"><![CDATA[<not-an-element attr="&bad;">]]></record>
+      <alias target="r0"/>
+    </folder>
+    <empty/>
+  </folder>
+</archive>

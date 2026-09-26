@@ -1,0 +1,132 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, metadata?)>
+  <!ELEMENT item (name, description, price, tags)>
+  <!ATTLIST item id ID #REQUIRED status (new|used|archived) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST metadata source CDATA "generated">
+]>
+<catalog xmlns="urn:example:catalog" xml:lang="en">
+  <item id="i001" status="new">
+    <name>R&amp;D toolkit</name>
+    <description>Compact <em>parser</em><br/>with edge cases.</description>
+    <price>19.95</price>
+    <tags>
+      <tag>xml</tag>
+      <tag>fuzzing</tag>
+    </tags>
+  </item>
+  <metadata source="seed"/>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<message xmlns="urn:msg" xmlns:x="urn:extra" xml:space="preserve">
+  <!-- comment containing markup-like text: <fake a="&amp;"/> -->
+  <?instruction value="a &quot;quoted&quot; value"?>
+  <header>
+    <x:sender id="42">alice</x:sender>
+    <x:recipient>bob</x:recipient>
+  </header>
+  <body><![CDATA[
+    <not-an-element attr="]]>]]&gt;<![CDATA[">
+    line two &amp; remains literal here
+  ]]></body>
+  <attachments>
+    <attachment x:type="binary" x:checksum="0x00FF">
+      <![CDATA[AAECAwQFBgcICQ==]]>
+    </attachment>
+  </attachments>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+)>
+  <!ELEMENT section (title, entry*)>
+  <!ATTLIST section key ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (value, link?)>
+  <!ATTLIST entry ref IDREF #IMPLIED kind CDATA #IMPLIED>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link href URI #REQUIRED>
+  <!NOTATION binary SYSTEM "application/octet-stream">
+]>
+<report>
+  <section key="s-main">
+    <title>Primary</title>
+    <entry ref="s-main" kind="number">
+      <value>00000000000000000001</value>
+      <link href="urn:test:one"/>
+    </entry>
+    <entry kind="mixed">
+      <value>left &lt; middle &gt; right</value>
+    </entry>
+  </section>
+  <section key="s-empty">
+    <title/>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (payload)>
+  <!ELEMENT payload ANY>
+  <!ENTITY left "L">
+  <!ENTITY right "R">
+  <!ENTITY quote "&quot; &apos;">
+  <!ATTLIST payload mode CDATA "&quote;">
+]>
+<envelope>
+  <payload mode="&left;|&right;">
+    <record><![CDATA[]]></record>
+    <record a="1" b="2" c="3">
+      &left;<![CDATA[<raw/>]]>&right;
+    </record>
+    <record>
+      <?pi?>
+      <!-- adjacent -->
+      text&#x0A;more&#x09;end
+    </record>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a|b|c)*>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b (x?, y*)>
+  <!ELEMENT c EMPTY>
+  <!ELEMENT x (#PCDATA)>
+  <!ELEMENT y (#PCDATA)>
+  <!ATTLIST a xmlns CDATA #IMPLIED>
+  <!ATTLIST c flag (yes|no) "no">
+]>
+<root xmlns:p="urn:p" xmlns:q="urn:q" xml:base="https://example.invalid/a/">
+  <a xmlns="urn:local" p:k="v">alpha&#x20;beta</a>
+  <b>
+    <x>one</x>
+    <y q:id="y1">two</y>
+    <y>three &apos; four</y>
+  </b>
+  <c flag="yes"/>
+  <p:container>
+    <q:item q:name="x"/>
+  </p:container>
+</root>
+```

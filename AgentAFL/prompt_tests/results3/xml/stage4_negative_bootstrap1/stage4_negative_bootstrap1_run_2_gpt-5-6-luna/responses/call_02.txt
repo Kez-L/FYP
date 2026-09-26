@@ -1,0 +1,118 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, detail?, tags)>
+  <!ATTLIST entry id ID #REQUIRED status (draft|published|archived) "draft">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ENTITY project "A &amp; B Research">
+]>
+<catalog>
+  <entry id="e1" status="published">
+    <title>&project; handbook</title>
+    <detail>Use <emph>careful</emph> validation &amp; logging.</detail>
+    <tags><tag>xml</tag><tag>parser</tag></tags>
+  </entry>
+  <entry id="e2">
+    <title>Untitled</title>
+    <tags/>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:archive xmlns:r="urn:example:records" xmlns:m="urn:example:meta"
+           xml:base="https://example.invalid/root/">
+  <r:record m:class="alpha" m:rank="007">
+    <r:key><![CDATA[a:b/c?d=e&f]]></r:key>
+    <r:value xml:space="preserve">  leading
+      <r:part>inside</r:part>
+    trailing  </r:value>
+    <r:links>
+      <r:link rel="self" href="#r1"/>
+      <r:link rel="related" href="sub/item.xml#fragment"/>
+    </r:links>
+  </r:record>
+  <r:record m:class="β" id="r2">
+    <r:key>&#x1F642;</r:key>
+    <r:value><![CDATA[]]></r:value>
+    <r:links/>
+  </r:record>
+</r:archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section|note)*>
+  <!ELEMENT section (heading, item*)>
+  <!ATTLIST section code CDATA #IMPLIED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+]>
+<report>
+  <section code="A&amp;B">
+    <heading>Boundary tests</heading>
+    <item>plain text</item>
+    <item>before<link>embedded</link>after</item>
+  </section>
+  <note><![CDATA[<not-an-element attr="x">]]></note>
+  <section>
+    <heading>Empty section</heading>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <name>sample.pkg</name>
+    <version major="0" minor="0" patch="0"/>
+  </metadata>
+  <payload>
+    <directory path="/">
+      <directory path="a">
+        <file path="a.txt" mode="0644"/>
+        <file path="b.txt" mode="0000"/>
+      </directory>
+      <directory path="empty"/>
+    </directory>
+    <checksum algorithm="sha256">0000000000000000000000000000000000000000000000000000000000000000</checksum>
+  </payload>
+  <signature type="detached">
+    <![CDATA[
+-----BEGIN SIGNATURE-----
+not a real signature
+-----END SIGNATURE-----
+]]>
+  </signature>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<configuration>
+  <option name="threshold" value="-0"/>
+  <option name="enabled" value="TRUE"/>
+  <option name="path" value="C:\tmp\&quot;cache&quot;"/>
+  <sequence>
+    <item index="3">third</item>
+    <item index="1"/>
+    <item index="2">two &lt; three &amp;&amp; four &gt; one</item>
+  </sequence>
+  <fallback>
+    <primary/>
+    <secondary>
+      <message><![CDATA[unterminated-looking ]]]]><![CDATA[> text]]></message>
+    </secondary>
+  </fallback>
+</configuration>
+```

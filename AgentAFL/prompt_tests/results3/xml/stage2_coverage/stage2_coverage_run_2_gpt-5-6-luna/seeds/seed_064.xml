@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (from, to+, subject, body, attachment*)>
+  <!ATTLIST message priority (low|normal|high) "normal" route IDREF #IMPLIED>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (p|quote|list|table|raw)*>
+  <!ELEMENT p (#PCDATA|a|span|br)*>
+  <!ELEMENT a (#PCDATA)>
+  <!ATTLIST a href CDATA #REQUIRED>
+  <!ELEMENT span (#PCDATA)>
+  <!ATTLIST span class CDATA #IMPLIED>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT quote (#PCDATA|p)*>
+  <!ATTLIST quote by CDATA #IMPLIED>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|p)*>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA|span)*>
+  <!ELEMENT raw (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment
+    id ID #REQUIRED
+    media CDATA #REQUIRED
+    disposition (inline|download) "download"
+    checksum NMTOKEN #IMPLIED>
+]>
+<message priority="high" xml:space="preserve">
+  <from>sender@example.test</from>
+  <to>one@example.test</to>
+  <to>two@example.test</to>
+  <subject>Layered &amp; unusual content</subject>
+  <body>
+    <p>Hello <span class="accent">world</span>.<br/>See
+      <a href="urn:example:next">next</a>.</p>
+    <quote by="sender"><p>Text inside a quote.</p><p>Second paragraph.</p></quote>
+    <list>
+      <item>first</item>
+      <item><p>second with <span>markup</span></p></item>
+    </list>
+    <table>
+      <row><cell>left</cell><cell><span>right</span></cell></row>
+      <row><cell><![CDATA[x < y && y > z]]></cell><cell>tail</cell></row>
+    </table>
+    <raw><![CDATA[<?xml version="1.0"?><fake>literal</fake>]]></raw>
+  </body>
+  <attachment id="att1" media="application/octet-stream" disposition="inline" checksum="00ff11"/>
+</message>

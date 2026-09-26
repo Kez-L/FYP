@@ -1,0 +1,115 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY amp "&#38;">
+  <!ENTITY greeting "こんにちは &amp; café">
+  <!ENTITY nested "&greeting; — &amp; — &#x1F600;">
+]>
+<catalog xmlns="urn:example:catalog" xmlns:m="urn:example:meta">
+  <m:metadata xml:lang="en">
+    <m:title><![CDATA[Catalog <preview> & raw text]]></m:title>
+    <m:note>&nested;</m:note>
+  </m:metadata>
+  <item id="α-01" enabled="true">
+    <name><![CDATA[Tea & Coffee]]></name>
+    <description>Fresh &amp; bright &amp; &greeting;</description>
+    <tags>
+      <tag priority="0"/>
+      <tag priority="-1">βeta</tag>
+    </tags>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ENTITY left  "&#x3C;">
+  <!ENTITY right "&#x3E;">
+  <!ENTITY quote "&#34;">
+  <!ENTITY payload "&left;![CDATA[not markup &amp;]]&right;">
+]>
+<message xml:space="preserve">
+  <header>
+    <from address="sender@example.test"/>
+    <to address="receiver@example.test"/>
+    <subject>&quote;encoded&quote;</subject>
+  </header>
+  <body>
+    <line>&payload;</line>
+    <line><![CDATA[
+      <embedded attr="1 & 2">literal</embedded>
+    ]]></line>
+    <attachments count="2">
+      <attachment name="a.bin" type="application/octet-stream"/>
+      <attachment name="b&amp;c.txt" type="text/plain"/>
+    </attachments>
+  </body>
+</message>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (section+)>
+  <!ELEMENT section (entry*, section?)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ATTLIST entry key ID #IMPLIED ref IDREF #IMPLIED>
+]>
+<root xmlns="urn:tree" xmlns:x="urn:aux" xml:base="https://example.test/a/">
+  <section id="outer">
+    <entry key="first">one&#x85;two&#x2028;three</entry>
+    <section id="inner" xml:lang="fr">
+      <entry key="second" ref="first">deux</entry>
+      <entry x:flag="yes"><![CDATA[x < y && y < z]]></entry>
+    </section>
+  </section>
+  <section id="empty">
+    <entry key="last" xml:space="default">tail</entry>
+  </section>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % common "<!ELEMENT report (summary, data)>">
+  <!ENTITY % fields "<!ELEMENT data (field*)>">
+  %common;
+  %fields;
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST field name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+]>
+<report>
+  <summary>parameter entities in the internal subset</summary>
+  <data>
+    <field name="alpha" value="1">A</field>
+    <field name="beta">B &amp; C</field>
+    <field name="gamma" value="&#x0A;&#x09;">&#x3C;raw&#x3E;</field>
+  </data>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY text "line-one&#xA;line-two">
+  <!ATTLIST asset format NOTATION (png) #IMPLIED>
+]>
+<package xmlns:p="urn:package" version="2.0">
+  <p:manifest>
+    <p:asset id="logo" format="png"/>
+    <p:asset id="readme" format="text">
+      <p:content>&text;</p:content>
+    </p:asset>
+  </p:manifest>
+  <p:metadata>
+    <p:entry key="quoted" value="&quot;value&quot;"/>
+    <p:entry key="apostrophe" value="&apos;value&apos;"/>
+  </p:metadata>
+  <p:binary ref="logo"/>
+</package>
+```

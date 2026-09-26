@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (routing, body, attachment*)>
+  <!ELEMENT routing (from, to, hops?)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT hops (hop+)>
+  <!ELEMENT hop EMPTY>
+  <!ATTLIST hop host CDATA #REQUIRED time CDATA #IMPLIED>
+  <!ELEMENT body (#PCDATA|quote|link|em)*>
+  <!ELEMENT quote (#PCDATA|quote|em)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT em (#PCDATA|link)*>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment name CDATA #REQUIRED type CDATA #IMPLIED>
+]>
+<message>
+  <routing>
+    <from>sender@example.test</from>
+    <to>receiver@example.test</to>
+    <hops>
+      <hop host="edge-1" time="0"/>
+      <hop host="edge-2" time="18446744073709551615"/>
+    </hops>
+  </routing>
+  <body>start<quote>outer <quote>inner <em>deep <link>https://example.test/a?x=1&amp;y=2</link></em></quote></quote> end<em>tail</em></body>
+  <attachment name="blob.bin" type="application/octet-stream"/>
+  <attachment name="no-type"/>
+</message>

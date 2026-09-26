@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header (from, to, stamp)>
+  <!ELEMENT from EMPTY>
+  <!ELEMENT to EMPTY>
+  <!ELEMENT stamp (#PCDATA)>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA|part)*>
+  <!ATTLIST from address CDATA #REQUIRED>
+  <!ATTLIST to address CDATA #REQUIRED>
+  <!ENTITY left "L">
+  <!ENTITY right "R">
+  <!ENTITY middle "&left;&#x20;&right;">
+]>
+<envelope xmlns="urn:example:envelope" xmlns:x="urn:example:extra">
+  <header>
+    <from address="sender@example.invalid"/>
+    <to address="receiver@example.invalid"/>
+    <stamp>2026-09-24T00:00:00Z</stamp>
+  </header>
+  <payload>
+    <chunk id="a">&middle;<part>x<part>y</part>z</part></chunk>
+    <chunk id="b"><x:part xmlns:x="urn:example:extra">opaque</x:part>&left;</chunk>
+  </payload>
+</envelope>

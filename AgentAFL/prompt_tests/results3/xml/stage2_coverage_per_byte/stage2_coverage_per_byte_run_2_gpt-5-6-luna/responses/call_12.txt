@@ -1,0 +1,163 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY % feature "INCLUDE">
+  <![%feature;[
+    <!ELEMENT catalog (section+, note?)>
+    <!ELEMENT section (entry*)>
+    <!ELEMENT entry (#PCDATA|em|ref)*>
+    <!ELEMENT em (#PCDATA)>
+    <!ELEMENT ref EMPTY>
+    <!ELEMENT note (#PCDATA)>
+  ]]>
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "blob.dat" NDATA binary>
+  <!ATTLIST catalog
+    xmlns CDATA #FIXED "urn:catalog"
+    edition CDATA #IMPLIED>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ATTLIST entry kind (text|link|binary) "text" target ENTITY #IMPLIED>
+  <!ATTLIST ref href URI #REQUIRED>
+]>
+<catalog xmlns="urn:catalog" edition="Δ-7">
+  <section id="s1">
+    <entry kind="text">alpha<em>mixed</em>omega</entry>
+    <entry kind="link"><ref href="urn:item:42"/></entry>
+  </section>
+  <section id="s2">
+    <entry kind="binary" target="payload">opaque</entry>
+  </section>
+  <note>line one&#x0A;line two</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (metric*, panel)>
+  <!ELEMENT metric EMPTY>
+  <!ELEMENT panel (title, graph?, table?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT graph (#PCDATA|point)*>
+  <!ELEMENT point EMPTY>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST dashboard xmlns:d CDATA #FIXED "urn:dash"
+                       generated CDATA #IMPLIED>
+  <!ATTLIST metric name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ATTLIST row key ID #IMPLIED>
+  <!ATTLIST cell span NMTOKEN "1">
+  <!ENTITY tick "&#x2713;">
+  <!ENTITY quoted "&quot;quoted&quot;">
+]>
+<dashboard xmlns:d="urn:dash" generated="now">
+  <metric name="load" value="0.75"/>
+  <metric name="&quot;latency&quot;" value="12&amp;3"/>
+  <panel>
+    <title>Status &tick; &quoted;</title>
+    <graph>
+      <point x="0" y="1"/>
+      <point x="1" y="&#x1F;"/>
+      <![CDATA[<not-an-element>&still-not-one;</not-an-element>]]>
+    </graph>
+    <table>
+      <row key="r1"><cell>left</cell><cell span="2">right</cell></row>
+    </table>
+  </panel>
+</dashboard>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, body, trailer?)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT body (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST packet xml:space (default|preserve) "default"
+                  xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST field name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY mark "&#x85;">
+]>
+<packet xml:space="preserve" xml:lang="fr">
+  <header>
+    <field name="mode" value="raw"/>
+    <field name="flags" value="A&amp;B"/>
+  </header>
+  <body>prefix&#x1F;&mark;<chunk><![CDATA[]]></chunk>suffix</body>
+  <trailer xml:space="default">&#x2028;end</trailer>
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (item+)>
+  <!ELEMENT item (name, data, checksum?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST archive format (tar|zip|raw) #REQUIRED>
+  <!ATTLIST item id ID #REQUIRED ref IDREF #IMPLIED>
+  <!ENTITY left "[[">
+  <!ENTITY right "]]">
+]>
+<archive format="raw">
+  <item id="a1">
+    <name>broken-cdata</name>
+    <data><![CDATA[one]]]]><![CDATA[>two & three]]></data>
+    <checksum>&left;9f00&right;</checksum>
+  </item>
+  <item id="a2" ref="a1">
+    <name>unterminated</name>
+    <data>before &unknown; after</data>
+  </item>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (step+, variables?)>
+  <!ELEMENT step (command, on-success?, on-failure?)>
+  <!ELEMENT command (#PCDATA)>
+  <!ELEMENT on-success (step-ref*)>
+  <!ELEMENT on-failure (step-ref*)>
+  <!ELEMENT step-ref EMPTY>
+  <!ELEMENT variables (var*)>
+  <!ELEMENT var EMPTY>
+  <!ATTLIST workflow id ID #REQUIRED xmlns:w CDATA #IMPLIED>
+  <!ATTLIST step id ID #REQUIRED state (queued|running|done|failed) "queued">
+  <!ATTLIST step-ref use IDREF #REQUIRED>
+  <!ATTLIST var name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY amp "&amp;">
+  <!ENTITY path "/srv/&amp;data">
+  <!ENTITY % common "CDATA #IMPLIED">
+  <!ATTLIST command shell %common;>
+]>
+<workflow id="wf-9" xmlns:w="urn:workflow">
+  <step id="prepare" state="done">
+    <command shell="sh">echo &path;</command>
+    <on-success>
+      <step-ref use="execute"/>
+    </on-success>
+  </step>
+  <step id="execute">
+    <command><![CDATA[
+      printf '%s' "A < B && C > D"
+    ]]></command>
+    <on-success><step-ref use="finish"/></on-success>
+    <on-failure><step-ref use="rollback"/></on-failure>
+  </step>
+  <step id="finish"><command>echo done &amp; log</command></step>
+  <step id="rollback"><command>echo rollback</command></step>
+  <variables>
+    <var name="A" value="1"/>
+    <var name="B" value="&quot;two&quot;"/>
+  </variables>
+</workflow>
+```

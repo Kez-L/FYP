@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ENTITY % commonAttrs '<!ATTLIST packet stamp CDATA #IMPLIED origin NMTOKEN #IMPLIED>'>
+  %commonAttrs;
+  <!ELEMENT envelope (header, payload, trailer?)>
+  <!ELEMENT header (source, destination, flags?)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT destination (#PCDATA)>
+  <!ELEMENT flags EMPTY>
+  <!ATTLIST flags urgent (yes|no) "no" encrypted (yes|no) "no">
+  <!ELEMENT payload (packet+)>
+  <!ELEMENT packet (key, value, checksum?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|fragment)*>
+  <!ELEMENT fragment (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ENTITY ampersand "&#38;">
+  <!ENTITY quoted "&quot;inside&quot;">
+]>
+<envelope>
+  <header>
+    <source>node-A</source>
+    <destination>node-B</destination>
+    <flags urgent="yes" encrypted="no"/>
+  </header>
+  <payload>
+    <packet stamp="2026-09-24T12:00:00Z" origin="relay">
+      <key>alpha</key>
+      <value>left<fragment>&quoted;</fragment>right &amp; &ampersand;</value>
+      <checksum>7f:00</checksum>
+    </packet>
+    <packet stamp="broken&#x0D;stamp" origin="r_2">
+      <key>beta</key>
+      <value><![CDATA[raw ]]> tail]]&gt;</value>
+    </packet>
+  </payload>
+  <trailer>done</trailer>
+</envelope>

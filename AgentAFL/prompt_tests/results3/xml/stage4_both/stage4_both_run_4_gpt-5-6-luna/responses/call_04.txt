@@ -1,0 +1,302 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE canvas [
+  <!ENTITY % geometry "width CDATA #IMPLIED height CDATA #IMPLIED">
+  <!ELEMENT canvas (defs?, layer+)>
+  <!ATTLIST canvas viewBox CDATA #IMPLIED>
+  <!ELEMENT defs (gradient|symbol)*>
+  <!ELEMENT gradient (stop+)>
+  <!ATTLIST gradient id ID #REQUIRED>
+  <!ELEMENT stop EMPTY>
+  <!ATTLIST stop offset CDATA #REQUIRED color CDATA #REQUIRED>
+  <!ELEMENT symbol (path|circle|text)*>
+  <!ATTLIST symbol id ID #REQUIRED>
+  <!ELEMENT layer (use|path|group|text)*>
+  <!ATTLIST layer name CDATA #IMPLIED %geometry;>
+  <!ELEMENT use EMPTY>
+  <!ATTLIST use href IDREF #REQUIRED x CDATA #IMPLIED y CDATA #IMPLIED>
+  <!ELEMENT path EMPTY>
+  <!ATTLIST path d CDATA #REQUIRED fill CDATA #IMPLIED %geometry;>
+  <!ELEMENT circle EMPTY>
+  <!ATTLIST circle cx CDATA #REQUIRED cy CDATA #REQUIRED r CDATA #REQUIRED>
+  <!ELEMENT group (path|circle|text)*>
+  <!ATTLIST group transform CDATA #IMPLIED>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST text x CDATA #REQUIRED y CDATA #REQUIRED>
+]>
+<canvas xmlns="urn:graphics:canvas" viewBox="0 0 800 600">
+  <defs>
+    <gradient id="sunset">
+      <stop offset="0%" color="#ffcc66"/>
+      <stop offset="100%" color="#663399"/>
+    </gradient>
+    <symbol id="marker">
+      <circle cx="0" cy="0" r="6"/>
+      <text x="10" y="4">origin</text>
+    </symbol>
+  </defs>
+  <layer name="background" width="800" height="600">
+    <path d="M0,0 L800,0 L800,600 L0,600 Z" fill="url(#sunset)"/>
+  </layer>
+  <layer name="foreground">
+    <group transform="translate(240 180) rotate(-12)">
+      <use href="marker" x="12" y="8"/>
+      <path d="M10,20 C80,5 150,45 220,18" fill="none"/>
+      <text x="32" y="96">rendered &amp; measured</text>
+    </group>
+  </layer>
+</canvas>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<envelope xmlns="http://www.w3.org/2003/05/soap-envelope"
+          xmlns:m="urn:example:inventory"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xml:lang="fr">
+  <header>
+    <trace id="7f3a" sampled="true"/>
+    <credentials>
+      <token><![CDATA[abc<def>&ghi]]></token>
+      <expires>2026-12-31T23:59:59Z</expires>
+    </credentials>
+    <?audit event="accepted"?>
+  </header>
+  <body>
+    <m:reserveRequest requestId="R-0042">
+      <m:warehouse code="EU-3"/>
+      <m:customer>
+        <m:name>Élodie Martin</m:name>
+        <m:contact preferred="email">elodie@example.invalid</m:contact>
+      </m:customer>
+      <m:items>
+        <m:item sku="A-17" quantity="2">
+          <m:description xml:space="preserve"> steel bracket </m:description>
+          <m:unitPrice currency="EUR">19.95</m:unitPrice>
+        </m:item>
+        <m:item sku="B-09" quantity="1" xsi:nil="true"/>
+      </m:items>
+      <m:notes>Livrer après 18:00; confirmer par SMS.</m:notes>
+    </m:reserveRequest>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE article [
+  <!ELEMENT article (metadata, content, references?)>
+  <!ELEMENT metadata (title, author+, published, keywords?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (name, affiliation?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT affiliation (#PCDATA)>
+  <!ELEMENT published (#PCDATA)>
+  <!ELEMENT keywords (keyword+)>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ELEMENT content (section+)>
+  <!ELEMENT section (heading, (paragraph|list|quote|code|section)*)>
+  <!ATTLIST section id ID #IMPLIED level NMTOKEN #IMPLIED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|emphasis|link|term|break)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ELEMENT term (#PCDATA)>
+  <!ATTLIST term id ID #IMPLIED>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT list (item+)>
+  <!ATTLIST list ordered (yes|no) "no">
+  <!ELEMENT item (#PCDATA|emphasis|link)*>
+  <!ELEMENT quote (#PCDATA|paragraph)*>
+  <!ATTLIST quote source CDATA #IMPLIED>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT references (reference+)>
+  <!ELEMENT reference (#PCDATA)>
+  <!ATTLIST reference key ID #REQUIRED>
+  <!ENTITY product "Atlas">
+  <!ENTITY copy "&#169;">
+]>
+<article xml:lang="en">
+  <metadata>
+    <title>Building reliable &product; pipelines</title>
+    <author>
+      <name>Samira Chen</name>
+      <affiliation>Systems Laboratory</affiliation>
+    </author>
+    <author><name>Owen Price</name></author>
+    <published>2026-04-18</published>
+    <keywords>
+      <keyword>testing</keyword>
+      <keyword>reproducibility</keyword>
+      <keyword>observability</keyword>
+    </keywords>
+  </metadata>
+  <content>
+    <section id="intro" level="1">
+      <heading>Why small failures matter</heading>
+      <paragraph>A useful report connects <emphasis>signals</emphasis> to action.
+        See <link href="urn:doc:methods">the methods note</link><break/>before deployment.
+      </paragraph>
+      <quote source="field-notes">Every artifact should explain itself.</quote>
+      <list ordered="yes">
+        <item>Capture the input</item>
+        <item>Record the environment</item>
+        <item>Compare the result</item>
+      </list>
+    </section>
+    <section id="details" level="1">
+      <heading>Example</heading>
+      <code><![CDATA[for (const sample of corpus) { inspect(sample); }]]></code>
+      <section id="terms" level="2">
+        <heading>Vocabulary</heading>
+        <paragraph>The <term id="coverage">coverage</term> measure is directional.</paragraph>
+      </section>
+    </section>
+  </content>
+  <references>
+    <reference key="r1">Internal review memorandum, &copy; 2026.</reference>
+  </references>
+</article>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:ex="urn:example:records"
+  exclude-result-prefixes="ex">
+  <xsl:output method="xml" encoding="UTF-8" indent="yes"/>
+  <xsl:param name="minimum" select="0"/>
+  <xsl:variable name="stamp">generated-report</xsl:variable>
+
+  <xsl:template match="/">
+    <report created-by="{$stamp}">
+      <xsl:attribute name="count">
+        <xsl:value-of select="count(ex:registry/ex:record)"/>
+      </xsl:attribute>
+      <xsl:apply-templates select="ex:registry/ex:record[number(ex:score) &gt;= $minimum]">
+        <xsl:sort select="ex:score" data-type="number" order="descending"/>
+      </xsl:apply-templates>
+    </report>
+  </xsl:template>
+
+  <xsl:template match="ex:record">
+    <entry code="{@code}">
+      <name><xsl:value-of select="ex:name"/></name>
+      <score><xsl:value-of select="format-number(ex:score, '0.00')"/></score>
+      <status>
+        <xsl:choose>
+          <xsl:when test="ex:score &gt;= 90">excellent</xsl:when>
+          <xsl:when test="ex:score &gt;= 70">good</xsl:when>
+          <xsl:otherwise>review</xsl:otherwise>
+        </xsl:choose>
+      </status>
+      <tags>
+        <xsl:for-each select="ex:tags/ex:tag">
+          <tag><xsl:value-of select="."/></tag>
+        </xsl:for-each>
+      </tags>
+    </entry>
+  </xsl:template>
+
+  <xsl:template match="ex:unused">
+    <ignored><xsl:comment>not selected</xsl:comment></ignored>
+  </xsl:template>
+</xsl:stylesheet>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (record+)>
+  <!ATTLIST registry generated CDATA #IMPLIED>
+  <!ELEMENT record (name, score, tags, detail?)>
+  <!ATTLIST record code ID #REQUIRED category NMTOKEN #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT score (#PCDATA)>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT detail (summary, metric*)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT metric (#PCDATA)>
+  <!ATTLIST metric key NMTOKEN #REQUIRED unit CDATA #IMPLIED>
+]>
+<registry xmlns="urn:example:records" generated="2026-09-24T12:00:00Z">
+  <!-- Records intentionally use different optional branches. -->
+  <record code="alpha" category="batch">
+    <name>Nightly import</name>
+    <score>93.5</score>
+    <tags>
+      <tag>stable</tag>
+      <tag>automated</tag>
+    </tags>
+    <detail>
+      <summary><![CDATA[No warnings; all partitions committed.]]></summary>
+      <metric key="duration" unit="seconds">48</metric>
+      <metric key="rows">18420</metric>
+    </detail>
+  </record>
+  <record code="beta" category="interactive">
+    <name>Query console</name>
+    <score>71</score>
+    <tags>
+      <tag>user-facing</tag>
+    </tags>
+  </record>
+  <record code="gamma" category="migration">
+    <name>Legacy → archive</name>
+    <score>58.25</score>
+    <tags/>
+    <detail>
+      <summary>Requires manual confirmation before finalization.</summary>
+      <metric key="conflicts">3</metric>
+    </detail>
+  </record>
+</registry>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="urn:example:package"
+         xmlns:meta="urn:example:metadata"
+         xml:base="https://packages.example.invalid/releases/">
+  <meta:manifest>
+    <meta:identifier scheme="urn">pkg:delta-17</meta:identifier>
+    <meta:created>2026-09-24T08:14:00Z</meta:created>
+    <meta:creator role="builder">ci-agent-04</meta:creator>
+    <meta:license>MIT</meta:license>
+  </meta:manifest>
+  <payload compression="none" checksum-algorithm="sha256">
+    <file path="bin/runner" executable="true">
+      <hash>8d7c1f6e0b9a</hash>
+      <data encoding="base64"><![CDATA[AAECAwQFBgcICQ==]]></data>
+    </file>
+    <file path="config/defaults.xml" executable="false">
+      <hash>1190aabbccdd</hash>
+      <data encoding="utf-8">&lt;defaults&gt;&lt;mode&gt;safe&lt;/mode&gt;&lt;/defaults&gt;</data>
+    </file>
+    <directory path="share/templates">
+      <file path="welcome.txt" executable="false">
+        <hash>ffee1122</hash>
+        <data encoding="utf-8">Welcome, <strong>operator</strong>.</data>
+      </file>
+    </directory>
+  </payload>
+  <signatures>
+    <signature algorithm="ed25519" key-id="release-2026">
+      <signed-info>
+        <reference uri="#manifest" digest="abc123"/>
+        <reference uri="bin/runner" digest="8d7c1f6e0b9a"/>
+      </signed-info>
+      <value><![CDATA[
+        MEUCIQDkY2hhbmdlLWZha2Utc2lnbmF0dXJl
+      ]]></value>
+    </signature>
+  </signatures>
+  <meta:notes xml:space="preserve">
+    Package includes trailing spaces   
+    and a deliberate line break.
+  </meta:notes>
+</package>
+```

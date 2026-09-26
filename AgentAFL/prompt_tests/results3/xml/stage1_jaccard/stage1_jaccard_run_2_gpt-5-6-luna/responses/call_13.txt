@@ -1,0 +1,102 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder|record|alias)*>
+  <!ELEMENT folder (folder|record|alias)*>
+  <!ELEMENT record (#PCDATA|part|![CDATA[]])*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT alias EMPTY>
+  <!ATTLIST record key ID #REQUIRED>
+  <!ATTLIST alias target IDREF #IMPLIED>
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+  <!ENTITY wrapped "&left;node&right;">
+]>
+<archive>
+  <folder>
+    <record key="r0">before <part><![CDATA[<not-an-element/>]]></part> after</record>
+    <alias target="r0"/>
+    <folder>
+      <record key="r1">&wrapped;</record>
+    </folder>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell*)>
+  <!ELEMENT cell (#PCDATA|cell)*>
+  <!ATTLIST row n NMTOKEN #IMPLIED>
+  <!ATTLIST cell axis (x|y|z) "x">
+  <!ENTITY % cells "<!ELEMENT generated EMPTY><!ATTLIST generated value CDATA #IMPLIED>">
+  %cells;
+  <!ENTITY tab "&#x9;">
+  <!ENTITY line "&#xA;">
+]>
+<matrix>
+  <row n="A"><cell axis="x">one&tab;two</cell><cell><cell>deep</cell></cell></row>
+  <row n="B"><cell axis="z">&line;tail</cell><generated value="ok"/></row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE media [
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ELEMENT media (caption, blob, ref?)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT blob EMPTY>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST blob source ENTITY #REQUIRED>
+  <!ATTLIST ref points ENTITIES #IMPLIED>
+]>
+<media>
+  <caption><![CDATA[brackets ]]> and <angles>]]></caption>
+  <blob source="logo"/>
+  <ref points="logo logo"/>
+</media>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE labyrinth [
+  <!ELEMENT labyrinth (gate)>
+  <!ELEMENT gate (inside|outside)>
+  <!ELEMENT inside (gate|token)*>
+  <!ELEMENT outside EMPTY>
+  <!ELEMENT token (#PCDATA)>
+  <!ENTITY crack "A&amp;B&lt;C&gt;">
+]>
+<labyrinth>
+  <gate>
+    <inside>
+      <token xml:space="preserve">  &crack;  </token>
+      <gate><outside/></gate>
+      <gate><inside><token>nested</token></inside></gate>
+    </inside>
+  </gate>
+</labyrinth>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY one "first">
+  <!ENTITY two "&one;:second">
+]>
+<root xmlns="urn:outer" xmlns:p="urn:prefix" xml:lang="en">
+  <p:item p:id="α" xmlns:q="urn:inner">
+    <![CDATA[raw ]]> <q:part q:flag="yes">&two;</q:part>
+  </p:item>
+  <item xmlns="">
+    <empty xmlns:p="urn:changed" p:value="&quot;"/>
+  </item>
+  <mixed><!-- comment --><![CDATA[]]><?pi data?><![CDATA[x]]></mixed>
+</root>
+```

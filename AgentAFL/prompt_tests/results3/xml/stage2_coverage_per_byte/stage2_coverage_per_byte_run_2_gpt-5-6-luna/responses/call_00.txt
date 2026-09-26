@@ -1,0 +1,99 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|note)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ENTITY mark "&#x26;mdash;">
+]>
+<catalog>
+  <section id="s-1">
+    <title><![CDATA[Alpha <Beta>]]></title>
+    <item>one<note>nested &mark; text</note>two</item>
+    <item><![CDATA[raw ]]> brackets ]]></item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<ns:envelope xmlns:ns="urn:outer" xmlns:x="urn:inner" x:mode="strict">
+  <ns:header>
+    <?trace level="verbose"?>
+    <ns:value>42</ns:value>
+  </ns:header>
+  <ns:payload>
+    <x:entry key="a&amp;b" enabled="true"/>
+    <x:entry key="c&lt;d"><![CDATA[unparsed ]]> content</x:entry>
+  </ns:payload>
+  <!-- trailing comment -->
+</ns:envelope>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ENTITY % common "<!ELEMENT report (meta,body)">
+  %common;
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT body (line|break)*>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ATTLIST meta version NMTOKEN "v1">
+  <!ENTITY tab "&#9;">
+]>
+<report>
+  <meta version="v2"/>
+  <body>
+    <line>first&tab;column</line>
+    <break/>
+    <line>second</line>
+    <break></break>
+  </body>
+</report>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE image [
+  <!ELEMENT image (caption?, pixels)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT pixels (row+)>
+  <!ELEMENT row (#PCDATA)>
+  <!ATTLIST image width CDATA #REQUIRED height CDATA #IMPLIED>
+]>
+<image width="3" height="2">
+  <caption>gradient &amp; noise</caption>
+  <pixels>
+    <row>001</row>
+    <row>10&#x0A;01</row>
+  </pixels>
+</image>
+```
+
+```xml
+<!DOCTYPE warehouse [
+  <!ELEMENT warehouse (zone*)>
+  <!ELEMENT zone (bin+)>
+  <!ELEMENT bin (item*)>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST zone code ID #IMPLIED>
+  <!ATTLIST bin locked (yes|no) "no">
+  <!ATTLIST item sku CDATA #REQUIRED qty NMTOKEN #IMPLIED>
+]>
+<warehouse>
+  <zone code="north">
+    <bin locked="yes">
+      <item sku="A-1" qty="000"/>
+      <item sku="A-2"/>
+    </bin>
+  </zone>
+  <zone>
+    <bin>
+      <item sku="B&amp;C" qty="9"/>
+    </bin>
+  </zone>
+</warehouse>
+```

@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (participants, message+)>
+  <!ELEMENT participants (person+)>
+  <!ELEMENT person EMPTY>
+  <!ATTLIST person id ID #REQUIRED role CDATA #IMPLIED>
+  <!ELEMENT message (sender, timestamp, body, attachment*)>
+  <!ATTLIST message id ID #REQUIRED reply-to IDREF #IMPLIED>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT body (#PCDATA|mention|link|newline)*>
+  <!ELEMENT mention (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href URI #REQUIRED>
+  <!ELEMENT newline EMPTY>
+  <!ELEMENT attachment (filename, bytes)>
+  <!ELEMENT filename (#PCDATA)>
+  <!ELEMENT bytes (#PCDATA)>
+]>
+<conversation>
+  <participants>
+    <person id="u1" role="editor"/>
+    <person id="u2" role="reviewer"/>
+    <person id="u3"/>
+  </participants>
+  <message id="m1">
+    <sender>u1</sender>
+    <timestamp>2026-09-24T06:10:03+00:00</timestamp>
+    <body>
+      Hello <mention>@u2</mention><newline/>
+      Please review the <link href="https://example.invalid/spec?id=17&amp;view=full">updated draft</link>.
+    </body>
+    <attachment>
+      <filename>draft-v3.txt</filename>
+      <bytes>2048</bytes>
+    </attachment>
+  </message>
+  <message id="m2" reply-to="m1">
+    <sender>u2</sender>
+    <timestamp>2026-09-24T06:42:19+00:00</timestamp>
+    <body>Looks good; I added one note.</body>
+  </message>
+</conversation>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ext="urn:example:workflow:extension" version="2.1">
+  <variables>
+    <variable name="attempts" value="3"/>
+    <variable name="message"><![CDATA[retry <later> & inspect]]></variable>
+  </variables>
+  <pipeline name="ingest">
+    <step id="fetch" type="source">
+      <endpoint protocol="https" host="example.invalid" port="443"/>
+    </step>
+    <step id="validate" type="transform" depends-on="fetch">
+      <rule field="status" operator="in">
+        <option>ready</option>
+        <option>queued</option>
+      </rule>
+      <ext:annotation xlink:href="#fetch">linked source</ext:annotation>
+    </step>
+    <branch condition="${attempts} &gt; 0">
+      <on-success ref="publish"/>
+      <on-failure>
+        <step id="retry" type="delay">
+          <duration unit="seconds">5</duration>
+        </step>
+      </on-failure>
+    </branch>
+    <step id="publish" type="sink" depends-on="validate">
+      <format media-type="application/xml" pretty="false"/>
+    </step>
+  </pipeline>
+</workflow>

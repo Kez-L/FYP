@@ -1,0 +1,152 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="320" height="180" viewBox="0 0 320 180">
+  <title>Layered shapes — café</title>
+  <desc>Nested vector content with gradients, paths, and foreign markup.</desc>
+  <defs>
+    <linearGradient id="shade" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0" stop-color="#102030"/>
+      <stop offset="0.5" stop-color="rgb(120,80,40)" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#f0e0c0"/>
+    </linearGradient>
+    <clipPath id="window">
+      <circle cx="160" cy="90" r="72"/>
+    </clipPath>
+  </defs>
+  <g id="scene" transform="translate(12 8) rotate(-2 160 90)">
+    <rect x="0" y="0" width="296" height="164" rx="14" fill="url(#shade)"/>
+    <g clip-path="url(#window)" opacity="0.9">
+      <path d="M24 132 C70 48, 112 164, 160 72 S248 42, 300 120"
+            fill="none" stroke="#fff" stroke-width="7"/>
+      <circle cx="160" cy="90" r="38" fill="#d9485f"/>
+    </g>
+    <text x="20" y="152" font-family="sans-serif" font-size="16">λ / café / 東京</text>
+    <a xlink:href="urn:example:vector">
+      <text x="230" y="28" text-anchor="middle">link</text>
+    </a>
+  </g>
+</svg>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE article [
+  <!ENTITY company "North &amp; South">
+  <!ENTITY % inline "emph | code | br">
+  <!ELEMENT article (header, section+)>
+  <!ELEMENT header (title, byline?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT byline (#PCDATA)>
+  <!ELEMENT section (title?, (#PCDATA|%inline;)*)>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+]>
+<article>
+  <header>
+    <title>Notes on &company;</title>
+    <byline>Élodie Martin</byline>
+  </header>
+  <section>
+    <title>First observation</title>
+    Text before <emph>emphasis</emph>, then <code>r = x &lt; y</code>
+    and a break<br/>followed by an entity: &company;.
+  </section>
+  <section>
+    <title>Second observation</title>
+    <code>for (i = 0; i &lt; 4; i++) { }</code>
+    <!-- A comment between mixed-content nodes -->
+    <emph>終わりではない</emph>
+  </section>
+</article>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<configuration>
+  <?profile name="staging"?>
+  <property name="paths">
+    <entry key="home">/srv/app</entry>
+    <entry key="cache">/srv/app/cache</entry>
+    <entry key="empty"/>
+  </property>
+  <pipeline enabled="true" retries="03">
+    <stage id="fetch" timeout="PT0S">
+      <command><![CDATA[curl --retry 2 "https://example.invalid/a?x=1&y=2"]]></command>
+      <environment>
+        <variable name="LANG">C.UTF-8</variable>
+        <variable name="LC_ALL">en_US.UTF-8</variable>
+      </environment>
+    </stage>
+    <stage id="transform" timeout="PT1.250S">
+      <command>normalize &amp; validate</command>
+      <input ref="fetch"/>
+      <output format="application/xml">résultat.xml</output>
+    </stage>
+  </pipeline>
+  <limits>
+    <integer min="-9223372036854775808" max="9223372036854775807"/>
+    <text value="quotes: &quot;single&apos; and double&quot;"/>
+  </limits>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<graph>
+  <!-- Nodes deliberately appear in an order different from their references. -->
+  <edge from="n3" to="n1" weight="0.0"/>
+  <edge from="n1" to="n2" weight="1.7976931348623157E+308"/>
+  <edge from="n2" to="n4" weight="-4.2e-19"/>
+  <node id="n1" label="root">
+    <metadata key="description">line one
+line two&#x0A;line three</metadata>
+  </node>
+  <node id="n2" label="quote &quot; mark &apos;"/>
+  <node id="n3" label="emoji 🚀" hidden="false"/>
+  <node id="n4">
+    <metadata key="empty"></metadata>
+    <metadata key="symbols">∑ ∂ ∞ ≠ ≤ ≥</metadata>
+  </node>
+  <?render engine="plain" color="monochrome"?>
+</graph>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE form [
+  <!ELEMENT form (fieldset+)>
+  <!ELEMENT fieldset (legend?, field*)>
+  <!ELEMENT legend (#PCDATA)>
+  <!ELEMENT field (label?, value, hint?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT hint (#PCDATA)>
+  <!ATTLIST form version CDATA "1">
+  <!ATTLIST field name ID #REQUIRED type (text|number|date) "text">
+]>
+<form version="2">
+  <fieldset>
+    <legend>Contact</legend>
+    <field name="first" type="text">
+      <label>Prénom</label>
+      <value>Zoë</value>
+      <hint>Use the preferred name.</hint>
+    </field>
+    <field name="count" type="number">
+      <label>Éléments</label>
+      <value>00042</value>
+    </field>
+  </fieldset>
+  <fieldset>
+    <legend>Additional data</legend>
+    <field name="comment">
+      <label>Comment</label>
+      <value><![CDATA[<not-an-element> & still text]]></value>
+      <hint>Characters such as &lt; and &amp; are preserved.</hint>
+    </field>
+  </fieldset>
+</form>
+```

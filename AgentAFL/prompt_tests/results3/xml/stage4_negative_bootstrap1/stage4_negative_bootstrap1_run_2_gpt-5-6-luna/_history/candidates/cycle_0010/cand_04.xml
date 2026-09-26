@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<workflow xmlns="urn:workflow:v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <stage name="prepare">
+    <task id="p1" kind="shell">
+      <command><![CDATA[printf '%s\n' "$INPUT"]]></command>
+      <environment>
+        <variable name="INPUT">alpha &amp; beta</variable>
+        <variable name="EMPTY"/>
+      </environment>
+    </task>
+  </stage>
+  <stage name="verify" depends-on="prepare">
+    <task id="v1" kind="assert">
+      <expression language="xpath">count(/workflow/stage) = 3</expression>
+    </task>
+    <on-failure>
+      <notify channel="log">verification failed</notify>
+      <retry limit="0"/>
+    </on-failure>
+  </stage>
+  <stage name="publish" depends-on="verify" xsi:nil="true"/>
+  <metadata>
+    <created>2026-09-24T00:00:00Z</created>
+    <labels>
+      <label key="owner" value="qa"/>
+      <label key="priority" value="low"/>
+    </labels>
+  </metadata>
+</workflow>

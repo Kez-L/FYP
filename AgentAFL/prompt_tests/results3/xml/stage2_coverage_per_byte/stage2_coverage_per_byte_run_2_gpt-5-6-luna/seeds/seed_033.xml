@@ -1,0 +1,21 @@
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder|file|alias)*>
+  <!ELEMENT folder (folder|file|alias)*>
+  <!ELEMENT file (#PCDATA)>
+  <!ELEMENT alias EMPTY>
+  <!ATTLIST folder path NMTOKEN #REQUIRED>
+  <!ATTLIST file path CDATA #REQUIRED compressed (yes|no) "no">
+  <!ATTLIST alias target IDREF #REQUIRED>
+  <!ATTLIST file id ID #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data.bin" NDATA bin>
+]>
+<archive>
+  <folder path="root">
+    <file id="f1" path="a&amp;b.bin" compressed="yes">&blob;</file>
+    <alias target="f1"/>
+    <folder path="nested">
+      <file path="empty"></file>
+    </folder>
+  </folder>
+</archive>

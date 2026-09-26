@@ -1,0 +1,160 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE galaxy [
+  <!ELEMENT galaxy (cluster|void)*>
+  <!ELEMENT cluster (star+, note?)>
+  <!ELEMENT void EMPTY>
+  <!ELEMENT star EMPTY>
+  <!ELEMENT note (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST star id ID #IMPLIED
+                 kind (red|blue|white) "white"
+                 coords CDATA #IMPLIED>
+  <!ENTITY stellar "Sol &amp; Luna">
+  <!ENTITY mark "&#x2605;">
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY picture SYSTEM "nebula.jpg" NDATA jpeg>
+]>
+<galaxy xmlns="urn:astro:map" xmlns:x="urn:astro:extra" xml:base="https://example.invalid/sky/">
+  <cluster x:label="&stellar;">
+    <star id="sirius" kind="white" coords="06:45:09,-16:42:58"/>
+    <star id="rigel" kind="blue" coords="05:14:32,-08:12:06"/>
+    <note>Bright <em>&mark; objects</em><br/>catalogued in <x:band>visible</x:band>.</note>
+  </cluster>
+  <void x:source="&picture;"/>
+  <cluster>
+    <star id="antares" kind="red"/>
+  </cluster>
+</galaxy>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE envelope [
+  <!ENTITY % declarations '
+    <!ELEMENT envelope (header, payload)>
+    <!ELEMENT header (stamp, sender, recipient)>
+    <!ELEMENT stamp (#PCDATA)>
+    <!ELEMENT sender (#PCDATA)>
+    <!ELEMENT recipient (#PCDATA)>
+    <!ELEMENT payload (#PCDATA|section|token)*>
+    <!ELEMENT section (#PCDATA|token)*>
+    <!ELEMENT token EMPTY>
+    <!ATTLIST token value CDATA #IMPLIED>
+  '>
+  %declarations;
+  <!ENTITY quote "&#x22; &#x27; &lt;tag&gt;">
+  <!ENTITY controls "&#x85;&#x2028;&#x2029;">
+]>
+<envelope>
+  <header>
+    <stamp>2026-09-24T12:34:56Z</stamp>
+    <sender>alpha@example.invalid</sender>
+    <recipient>beta@example.invalid</recipient>
+  </header>
+  <payload>
+    Prefix &quote; <section>nested <token value="&quote;"/> text</section>
+    <section><![CDATA[ raw ]]> and &#x1F642; &controls;</section>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (node+)>
+  <!ELEMENT node (label?, node*)>
+  <!ELEMENT label (#PCDATA|code|fragment)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT fragment (#PCDATA)>
+  <!ATTLIST node key NMTOKEN #REQUIRED depth NMTOKEN "0">
+  <!ENTITY arrow "&#x2192;">
+  <!ENTITY nbsp "&#160;">
+]>
+<?map-processing instruction?>
+<map xmlns:m="urn:map" xmlns:q="urn:aux">
+  <node key="root" depth="0">
+    <label>Start <code><![CDATA[<node key="literal"/>]]></code> &arrow;</label>
+    <node key="left" depth="1">
+      <label q:kind="branch">A&nbsp;<fragment>left</fragment></label>
+      <node key="leaf-a" depth="2"/>
+      <node key="leaf-b" depth="2">
+        <label>text<!-- embedded comment --><code>x &lt; y</code></label>
+      </node>
+    </node>
+    <node key="right" depth="1" m:flag="yes">
+      <label>Branch <fragment>R</fragment></label>
+    </node>
+  </node>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE ledger SYSTEM "unavailable-external-subset.dtd" [
+  <!ELEMENT ledger (account*, audit?)>
+  <!ELEMENT account (owner, balance, transaction*)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT balance (#PCDATA)>
+  <!ELEMENT transaction EMPTY>
+  <!ELEMENT audit (#PCDATA|entry)*>
+  <!ELEMENT entry (#PCDATA)>
+  <!ATTLIST account number NMTOKEN #REQUIRED status (open|closed|frozen) "open">
+  <!ATTLIST transaction id CDATA #IMPLIED amount CDATA #REQUIRED currency CDATA "EUR">
+  <!ENTITY currency "€">
+  <!ENTITY % auditdecl '<!ATTLIST entry severity (low|high) "low">'>
+  %auditdecl;
+  <![IGNORE[
+    <!ELEMENT discarded ANY>
+    <!ENTITY ignored "shadow">
+  ]]>
+]>
+<ledger xmlns:fin="urn:finance">
+  <account number="A-0007" status="frozen">
+    <owner>Zoë &amp; Co.</owner>
+    <balance>0 &currency;</balance>
+    <transaction id="t1" amount="-12.50"/>
+    <transaction id="t2" amount="12.50" currency="GBP"/>
+  </account>
+  <account number="B-991" status="open">
+    <owner><![CDATA[&not-an-entity;]]></owner>
+    <balance>1042.00 EUR</balance>
+  </account>
+  <audit><entry severity="high">reconciled</entry><entry>signed</entry></audit>
+</ledger>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE canvas [
+  <!ELEMENT canvas (layer+)>
+  <!ELEMENT layer (shape|group|text)*>
+  <!ELEMENT group (shape|group|text)*>
+  <!ELEMENT shape EMPTY>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST layer name CDATA #REQUIRED visible (true|false) "true">
+  <!ATTLIST group id ID #IMPLIED transform CDATA #IMPLIED>
+  <!ATTLIST shape type (rect|circle|path) #REQUIRED data CDATA #IMPLIED>
+  <!ATTLIST text x CDATA #IMPLIED y CDATA #IMPLIED>
+  <!ENTITY amp "&amp;">
+  <!ENTITY path "M0,0 L10,10 &amp; Z">
+]>
+<canvas xmlns="urn:drawing" xmlns:ink="urn:inkscape">
+  <layer name="background" visible="false">
+    <shape type="rect" data="0,0 800,600"/>
+  </layer>
+  <layer name="foreground">
+    <group id="g-main" transform="rotate(15)">
+      <shape type="circle" data="cx=40 cy=40 r=12"/>
+      <text x="12.5" y="88">A &amp; B &amp; &lt;C&gt;</text>
+      <group ink:label="nested">
+        <shape type="path" data="&path;"/>
+        <![CDATA[
+          <shape type="fake" data="not parsed"/>
+          ]]>
+      </group>
+    </group>
+  </layer>
+</canvas>
+```

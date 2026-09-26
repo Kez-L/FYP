@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (entry+)>
+  <!ELEMENT entry (label, location?, note*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT location EMPTY>
+  <!ELEMENT note (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ATTLIST entry
+    key ID #REQUIRED
+    parent IDREF #IMPLIED
+    state (new|held|closed) "new">
+  <!ATTLIST location
+    zone CDATA #IMPLIED
+    coordinates NMTOKENS #IMPLIED>
+  <!ENTITY thinsp "&#x2009;">
+  <!ENTITY badge SYSTEM "badge.dat" NDATA image>
+  <!NOTATION image SYSTEM "application/octet-stream">
+]>
+<inventory>
+  <entry key="root" state="new">
+    <label>root&thinsp;entry</label>
+    <location zone="north" coordinates="12.5 -8.25"/>
+    <note>first <mark>record</mark></note>
+  </entry>
+  <entry key="child" parent="root" state="held">
+    <label>secondary</label>
+    <note><![CDATA[raw [brackets] and asterisks ** remain intact]]></note>
+  </entry>
+</inventory>

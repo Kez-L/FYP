@@ -1,0 +1,154 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (layer+, legend?)>
+  <!ELEMENT layer (point|path|label)*>
+  <!ATTLIST layer name NMTOKEN #REQUIRED opacity CDATA "1.0">
+  <!ELEMENT point EMPTY>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED color (red|green|blue) "red">
+  <!ELEMENT path (point+)>
+  <!ATTLIST path closed (yes|no) "no">
+  <!ELEMENT label (#PCDATA|b|i)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT legend (entry+)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ATTLIST entry key ID #REQUIRED>
+  <!ENTITY arrow "&#x2192;">
+]>
+<map>
+  <layer name="roads" opacity="0.75">
+    <path closed="yes">
+      <point x="0" y="0" color="blue"/>
+      <point x="12.5" y="-4" color="green"/>
+      <point x="12.5" y="18" color="red"/>
+    </path>
+    <label>Main &arrow; route</label>
+  </layer>
+  <layer name="markers">
+    <point x="-1" y="3"/>
+    <label><b>north</b> and <i>west</i></label>
+  </layer>
+  <legend>
+    <entry key="r1">roads</entry>
+    <entry key="m1">markers &amp; signs</entry>
+  </legend>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, payload, checksum)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header version NMTOKEN #REQUIRED source CDATA #IMPLIED>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|byte)*>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding (hex|base64|raw) "raw">
+  <!ELEMENT byte EMPTY>
+  <!ATTLIST byte value CDATA #REQUIRED>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY lf "&#10;">
+  <!ENTITY amp "&amp;">
+]>
+<packet>
+  <header version="2.7" source="sensor/α"/>
+  <payload>
+    <chunk index="00" encoding="hex">7F <byte value="00"/><byte value="FF"/></chunk>
+    <chunk index="01" encoding="base64">QmFk&#x0A;RGF0YQ==</chunk>
+    <chunk index="02" encoding="raw"><![CDATA[<& not markup ]]><byte value="&amp;"/></chunk>
+    <chunk index="03">&amp;raw;&unknown;&lf;</chunk>
+  </payload>
+  <checksum>sha256:&amp;&amp;&amp;</checksum>
+</packet>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE vault [
+  <!ELEMENT vault (folder*)>
+  <!ELEMENT folder (folder|secret|note)*>
+  <!ATTLIST folder name CDATA #IMPLIED locked (true|false) "false">
+  <!ELEMENT secret (#PCDATA)>
+  <!ATTLIST secret id ID #REQUIRED algorithm (plain|rot13|sealed) "plain">
+  <!ELEMENT note (#PCDATA|ref)*>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY first "open">
+  <!ENTITY second "&first; sesame">
+  <!ENTITY third "&second; &amp; more">
+]>
+<vault>
+  <folder name="outer" locked="true">
+    <secret id="s1" algorithm="sealed">&third;</secret>
+    <note>hint <ref target="s1"/> after reference</note>
+    <folder name="">
+      <secret id="s2">&first; &#x85; door</secret>
+    </folder>
+  </folder>
+</vault>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE r:report [
+  <!ELEMENT r:report (r:run+, r:summary?)>
+  <!ATTLIST r:report xmlns:r CDATA #IMPLIED generated CDATA #IMPLIED>
+  <!ELEMENT r:run (r:input, r:result)>
+  <!ATTLIST r:run id ID #REQUIRED status (pass|fail|skip) #REQUIRED>
+  <!ELEMENT r:input (#PCDATA)>
+  <!ELEMENT r:result (r:metric*)>
+  <!ELEMENT r:metric EMPTY>
+  <!ATTLIST r:metric name NMTOKEN #REQUIRED value CDATA #IMPLIED unit CDATA #IMPLIED>
+  <!ELEMENT r:summary (#PCDATA)>
+  <!ENTITY bad "<r:metric name='injected'/>">
+]>
+<r:report xmlns:r="urn:reports:v2" generated="2026-09-24T00:00:00Z">
+  <r:run id="run-a" status="pass">
+    <r:input>alpha &lt; beta</r:input>
+    <r:result>
+      <r:metric name="time" value="0.001" unit="s"/>
+      <r:metric name="count" value="&#x30;"/>
+    </r:result>
+  </r:run>
+  <r:run id="run-b" status="fail">
+    <r:input><![CDATA[x]]></r:input>
+    <r:result>&bad;<r:metric name="message" value="&quot;unterminated"/></r:result>
+  </r:run>
+  <r:summary>mixed namespace text</r:summary>
+</r:report>
+```
+
+```xml
+<!DOCTYPE stream [
+  <!ELEMENT stream (open, record*, close)>
+  <!ELEMENT open EMPTY>
+  <!ATTLIST open time CDATA #REQUIRED>
+  <!ELEMENT record (key, value?, tag*)>
+  <!ATTLIST record seq ID #REQUIRED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|![CDATA[not-a-child]] )*>
+  <!ELEMENT tag EMPTY>
+  <!ATTLIST tag name CDATA #REQUIRED>
+  <!ELEMENT close (#PCDATA)>
+  <!ENTITY % optional "<!ELEMENT trailer (record*)>">
+  %optional;
+  <!ENTITY quote "&quot;">
+]>
+<stream>
+  <open time="23:59:60"/>
+  <record seq="a">
+    <key>first</key>
+    <value>one &quote; two</value>
+    <tag name="x"/>
+  </record>
+  <record seq="b">
+    <key>second</key>
+    <value>line one
+line two &amp; <![CDATA[raw <value>]]></value>
+    <tag name="broken"></tag>
+  </record>
+  <record seq="c"><key/></record>
+  <close>done</close>
+</stream>
+```

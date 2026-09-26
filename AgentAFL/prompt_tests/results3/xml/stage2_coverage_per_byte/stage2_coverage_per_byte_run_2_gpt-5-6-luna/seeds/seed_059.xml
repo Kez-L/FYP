@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload, signature)>
+  <!ELEMENT manifest (part+)>
+  <!ELEMENT part (path, size, digest)>
+  <!ELEMENT path (#PCDATA)>
+  <!ELEMENT size (#PCDATA)>
+  <!ELEMENT digest (#PCDATA)>
+  <!ELEMENT payload (chunk*)>
+  <!ELEMENT chunk (#PCDATA|segment)*>
+  <!ELEMENT segment (#PCDATA)>
+  <!ELEMENT signature (algorithm, value)>
+  <!ELEMENT algorithm (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST package xmlns:p CDATA #FIXED "urn:pkg"
+                    id ID #REQUIRED>
+  <!ATTLIST part number NMTOKEN #REQUIRED type CDATA #IMPLIED>
+  <!ATTLIST chunk offset CDATA #REQUIRED>
+  <!ENTITY external SYSTEM "file:///tmp/nonexistent-package-fragment.xml">
+  <!ENTITY quote "He said &quot;keep&amp;verify&quot;">
+]>
+<package xmlns:p="urn:pkg" id="pkg-17">
+  <manifest>
+    <part number="1" type="text/plain">
+      <path>docs/readme.txt</path>
+      <size>27</size>
+      <digest>aa00bb11</digest>
+    </part>
+    <part number="2" type="application/octet-stream">
+      <path>bin/data</path>
+      <size>2048</size>
+      <digest>cc22dd33</digest>
+    </part>
+  </manifest>
+  <payload>
+    <chunk offset="0">alpha<segment>beta</segment>gamma</chunk>
+    <chunk offset="3">delta&quote;</chunk>
+    <chunk offset="9">&external;</chunk>
+  </payload>
+  <signature>
+    <algorithm>urn:example:sha512</algorithm>
+    <value><![CDATA[-----BEGIN SIGNATURE-----
+ab+/=9x
+-----END SIGNATURE-----]]></value>
+  </signature>
+</package>

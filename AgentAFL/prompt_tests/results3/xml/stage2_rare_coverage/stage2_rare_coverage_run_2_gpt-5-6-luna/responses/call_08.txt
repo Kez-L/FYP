@@ -1,0 +1,170 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (name, price, note?)>
+  <!ATTLIST item sku ID #REQUIRED state (new|used|archived) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emph|break)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ENTITY currency "€">
+]>
+<catalog>
+  <section code="s-main">
+    <title>Seasonal &currency; collection</title>
+    <item sku="x-17" state="new">
+      <name>Lantern</name>
+      <price>19.95 &currency;</price>
+      <note>compact <emph>brass</emph><break/> finish</note>
+    </item>
+    <item sku="x-18" state="used">
+      <name>Compass</name>
+      <price>7.50 &currency;</price>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<ledger>
+  <record>
+    <key>0001</key>
+    <amount units="cents" sign="+">1250</amount>
+    <tags>
+      <tag priority="high">alpha</tag>
+      <tag priority="low">beta</tag>
+    </tags>
+    <history>
+      <event at="2024-01-01T00:00:00Z" by="system"/>
+      <event at="2024-01-02T12:30:05Z" by="operator">
+        <change field="amount" from="1200" to="1250"/>
+        <change field="status" from="pending" to="posted"/>
+      </event>
+    </history>
+  </record>
+  <record>
+    <key>0002</key>
+    <amount units="items" sign="-">3</amount>
+    <tags/>
+    <history>
+      <event at="2024-02-29T23:59:59Z" by="batch">
+        <comment>leap-day adjustment</comment>
+      </event>
+    </history>
+  </record>
+</ledger>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (setting, actor+, action*)>
+  <!ELEMENT setting (location, time)>
+  <!ELEMENT location (#PCDATA)>
+  <!ELEMENT time (#PCDATA)>
+  <!ELEMENT actor (name, role?, prop*)>
+  <!ATTLIST actor ref ID #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT role (#PCDATA)>
+  <!ELEMENT prop EMPTY>
+  <!ATTLIST prop kind CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT action (actor-ref, line?, direction*)>
+  <!ELEMENT actor-ref EMPTY>
+  <!ATTLIST actor-ref ref IDREF #REQUIRED>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT direction (#PCDATA)>
+]>
+<scene>
+  <setting>
+    <location>Platform 9</location>
+    <time>after midnight</time>
+  </setting>
+  <actor ref="a1">
+    <name>Mira</name>
+    <role>watcher</role>
+    <prop kind="lamp" value="blue"/>
+  </actor>
+  <actor ref="a2">
+    <name>Jon</name>
+    <prop kind="ticket"/>
+  </actor>
+  <action>
+    <actor-ref ref="a1"/>
+    <line>Wait for the signal.</line>
+    <direction>She turns toward the tunnel.</direction>
+  </action>
+  <action>
+    <actor-ref ref="a2"/>
+    <line>It is already here.</line>
+  </action>
+</scene>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<archive xmlns:r="urn:record" xmlns:m="urn:meta">
+  <r:bundle m:version="3" m:sealed="false">
+    <r:header>
+      <r:identifier>urn:example:bundle:42</r:identifier>
+      <r:created m:zone="UTC">2025-03-08T14:22:01Z</r:created>
+      <m:checksum algorithm="sha256">deadbeef</m:checksum>
+    </r:header>
+    <r:entries>
+      <r:entry r:type="binary" r:length="0">
+        <r:name>empty.dat</r:name>
+        <r:content encoding="base64"/>
+      </r:entry>
+      <r:entry r:type="text" r:length="29">
+        <r:name>message.txt</r:name>
+        <r:content xml:space="preserve">  first line
+second line  </r:content>
+      </r:entry>
+    </r:entries>
+    <m:signatures>
+      <m:signature m:key="k-01">
+        <m:value>AAECAwQFBgcICQ==</m:value>
+      </m:signature>
+    </m:signatures>
+  </r:bundle>
+</archive>
+```
+
+```xml
+<?xml version="1.1"?>
+<configuration>
+  <profile name="edge">
+    <option key="retries" value="0"/>
+    <option key="timeout" value="PT0S"/>
+    <option key="features">
+      <list>
+        <value>parser</value>
+        <value>serializer</value>
+        <value>diagnostics</value>
+      </list>
+    </option>
+  </profile>
+  <routing>
+    <route match="^/api/[0-9]+$">
+      <destination scheme="unix" address="/tmp/service.sock"/>
+      <headers>
+        <header name="X-Trace" value="enabled"/>
+        <header name="Accept" value="application/xml"/>
+      </headers>
+    </route>
+    <route match="fallback">
+      <destination scheme="https" address="https://invalid.example/"/>
+      <headers/>
+    </route>
+  </routing>
+  <diagnostics enabled="true">
+    <message severity="warning">queue is empty</message>
+    <message severity="info">configuration loaded</message>
+  </diagnostics>
+</configuration>
+```

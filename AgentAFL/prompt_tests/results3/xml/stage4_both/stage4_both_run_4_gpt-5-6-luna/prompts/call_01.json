@@ -1,0 +1,23 @@
+{
+  "call": 1,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (section+)>\n  <!ELEMENT section (title, item*)>\n  <!ATTLIST section\n            code ID #REQUIRED\n            xml:lang NMTOKEN \"en\">\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT item (#PCDATA|note|emph)*>\n  <!ATTLIST item\n            key CDATA #IMPLIED\n            state (new|used|archived) \"new\">\n  <!ELEMENT note (#PCDATA)>\n  <!ELEMENT emph (#PCDATA)>\n  <!ENTITY notice \"Use &lt;care&gt; when &amp; parsing.\">\n]>\n<catalog>\n  <section code=\"s-01\" xml:lang=\"en-US\">\n    <title>Inventory</title>\n    <item key=\"\u03b1-1\" state=\"new\">plain <emph>text</emph><note>&notice;</note></item>\n    <item key=\"q&amp;r\">line one\nline two</item>\n  </section>\n</catalog>\n\n--- example 2 ---\n<!DOCTYPE doc [\n<!ELEMENT doc EMPTY>\n<!ATTLIST doc\n defatt  (0|1)   \"0\"\n     xmlns:tst CDATA #FIXED \"http://exa_ple.org\"  tst:att  (0|1)   \"0\"\n    att (0|1)   \"1\">\n]>\n<doc att=\"1Bcrontic.com - Warning: Breakdancing midget with tourette&apos;s syndrome o#16060;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#&#x\">\n160;&#160;&#160;&#160;&#160;&#16<doc xmlns:a=\"urn:a\" xmlns:b=\"u?@???Xrn:a\">\n    <elem a:160;&#&#160;&#160;&#160;&#160;&#160;&#160;&#x\">\n<!-- <!ENT0;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\" url=\"ht.icrontic.c/h12;&laugh12;&laugh12;&la>\n\n\nTried before \u2014 no new coverage, avoid repeating:\n--- a seed you generated (cycle 1) added 0 new edges ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE envelope [\n  <!ELEMENT envelope (header, payload, trailer)>\n  <!ELEMENT header EMPTY>\n  <!ATTLIST header\n            version CDATA #REQUIRED\n            timestamp CDATA #IMPLIED>\n  <!ELEMENT payload ANY>\n  <!ELEMENT trailer (#PCDATA)>\n  <!ATTLIST envelope xmlns:meta CDATA #IMPLIED>\n  <!ENTITY chunk \"<part id='embedded'>A&amp;B</part>\">\n]>\n<envelope xmlns=\"urn:outer:envelope\" xmlns:meta=\"urn:metadata\">\n  <header version=\"2.7\" timestamp=\"2026-09-24T12:34:56Z\"/>\n  <payload>\n    <meta:record meta:type=\"delta\">\n      <![CDATA[<not-an-element>&still-literal;</not-an-element>]]>\n      &chunk;\n    </meta:record>\n  </payload>\n  <trailer>checksum=&quot;unknown&quot;</tr...[truncated, 718 chars total]\n\n--- a seed you generated (cycle 1) added 0 new edges ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE report [\n  <!ELEMENT report (metadata, body)>\n  <!ELEMENT metadata (field*)>\n  <!ELEMENT field EMPTY>\n  <!ATTLIST field\n            name CDATA #REQUIRED\n            value CDATA #IMPLIED>\n  <!ELEMENT body (paragraph|table|break)*>\n  <!ELEMENT paragraph (#PCDATA|code|br)*>\n  <!ELEMENT code (#PCDATA)>\n  <!ELEMENT br EMPTY>\n  <!ELEMENT table (row+)>\n  <!ELEMENT row (cell+)>\n  <!ELEMENT cell (#PCDATA)>\n  <!ENTITY quote \"&#x22;\">\n]>\n<report xml:lang=\"fr\" xml:base=\"urn:example:reports/\">\n  <metadata>\n    <field name=\"owner\" value=\"A/B\"/>\n    <field name=\"empty\"/>\n  </metadata>\n  <body>\n    <paragraph>Avant<code>&lt;tag attr=&quot;x&quot;&gt;</code><br/>Apr\u00e8s</paragra...[truncated, 916 chars total]\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T06:02:55.187757+00:00"
+}

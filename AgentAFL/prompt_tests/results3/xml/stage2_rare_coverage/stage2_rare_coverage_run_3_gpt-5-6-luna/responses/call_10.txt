@@ -1,0 +1,134 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY product "hand-crafted">
+  <!ENTITY company "Example &amp; Sons">
+  <!ENTITY % commonAttrs '<!ATTLIST item sku ID #REQUIRED status (new|used|archived) "new">'>
+  %commonAttrs;
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*, note?)>
+  <!ATTLIST section code NMTOKEN #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|detail|link)*>
+  <!ELEMENT detail (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link href URI #REQUIRED>
+  <!ELEMENT note (#PCDATA)>
+]>
+<catalog>
+  <section code="tools">
+    <title>&company; &product; tools</title>
+    <item sku="item-001">Hammer<detail>steel head</detail><link href="urn:item:001"/></item>
+    <note>Available &amp; documented.</note>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:envelope xmlns:r="urn:envelope" xmlns:m="urn:meta" xmlns="urn:payload">
+  <r:header m:id="h-7" xml:lang="fr">
+    <m:created>2026-09-24T12:34:56Z</m:created>
+    <m:flags m:urgent="true" m:retry="0"/>
+  </r:header>
+  <r:body>
+    <record xmlns="">
+      <key>αβγ</key>
+      <value xml:space="preserve">  padded
+text  </value>
+      <empty/>
+    </record>
+    <payload xmlns="urn:payload" xmlns:q="urn:quoted">
+      <q:item q:name="x:y">
+        <q:part><![CDATA[<not-an-element>&still-data;</not-an-element>]]></q:part>
+      </q:item>
+    </payload>
+  </r:body>
+  <r:trailer xmlns:unused="urn:unused" m:checksum=""/>
+</r:envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (metadata, data)>
+  <!ELEMENT metadata (author, revision)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT revision (#PCDATA)>
+  <!ELEMENT data (row+)>
+  <!ELEMENT row (cell+)>
+  <!ATTLIST row number NMTOKEN #REQUIRED>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST cell type (text|integer|decimal|date) "text">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quote "&#34;">
+]>
+<report>
+  <metadata>
+    <author>parser-test</author>
+    <revision>r&amp;d &quote;</revision>
+  </metadata>
+  <data>
+    <row number="001">
+      <cell type="text">left&nbsp;side</cell>
+      <cell type="integer">00000000000000000042</cell>
+      <cell type="decimal">-0.0000000000000001</cell>
+    </row>
+    <row number="002">
+      <cell type="date">2026-02-29</cell>
+      <cell><![CDATA[line one
+line two
+]]></cell>
+    </row>
+  </data>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (subject, body, attachment*)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT attachment (#PCDATA)>
+  <!ATTLIST attachment media NMTOKEN #IMPLIED transfer (base64|plain) "plain">
+]>
+<?processing instruction-data?>
+<message xml:lang="ja">
+  <subject>Résumé — 東京 — 🧪</subject>
+  <body>Before <em>important</em><br/>after &lt;escaped&gt; and <![CDATA[ raw ]]> text.</body>
+  <attachment media="application_octet_stream" transfer="base64">
+    QkFTRTY0LURBVEEKAAEC/w==
+  </attachment>
+  <attachment transfer="plain">a&amp;b&lt;c&gt;d</attachment>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node (label?, property*)>
+  <!ATTLIST node id ID #REQUIRED kind CDATA "generic">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST property name NMTOKEN #REQUIRED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA #IMPLIED>
+]>
+<graph>
+  <node id="n-root" kind="container">
+    <label>root</label>
+    <property name="depth">0</property>
+    <property name="empty"/>
+  </node>
+  <node id="n-leaf">
+    <property name="depth">1</property>
+  </node>
+  <node id="n-special"><label>brackets [] &amp; braces {}</label></node>
+  <edge from="n-root" to="n-leaf" weight="1.0"/>
+  <edge from="n-root" to="n-special"/>
+</graph>
+```

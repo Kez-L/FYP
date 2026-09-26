@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow" xmlns:ext="urn:example:extension">
+  <definition name="nightly" version="2.0">
+    <trigger type="schedule">
+      <cron>0 0 * * *</cron>
+      <timezone>UTC</timezone>
+    </trigger>
+    <steps>
+      <step id="fetch" retries="3">
+        <command><![CDATA[curl --fail "https://example.invalid/data?a=1&b=2"]]></command>
+        <on-success goto="validate"/>
+        <on-failure>
+          <notify channel="ops">fetch failed</notify>
+        </on-failure>
+      </step>
+      <step id="validate">
+        <condition language="xpath">count(/workflow/definition/steps/step) &gt; 1</condition>
+        <ext:assert severity="warning">result-set-not-empty</ext:assert>
+      </step>
+    </steps>
+  </definition>
+</workflow>

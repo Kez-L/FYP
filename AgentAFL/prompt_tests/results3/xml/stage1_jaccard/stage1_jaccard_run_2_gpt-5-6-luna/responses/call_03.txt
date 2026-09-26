@@ -1,0 +1,132 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE universe [
+  <!ELEMENT universe (sector+)>
+  <!ELEMENT sector (planet|wormhole|artifact)*>
+  <!ELEMENT planet (#PCDATA|moon|ring)*>
+  <!ELEMENT moon EMPTY>
+  <!ELEMENT ring (#PCDATA)>
+  <!ELEMENT wormhole EMPTY>
+  <!ELEMENT artifact (#PCDATA)>
+  <!ATTLIST universe xmlns:astro CDATA #IMPLIED>
+  <!ATTLIST sector code NMTOKEN #REQUIRED>
+  <!ATTLIST planet class (rocky|gas|ice) "rocky">
+  <!ATTLIST moon orbit ID #IMPLIED>
+  <!ENTITY star "Sol &amp; Proxima">
+  <!ENTITY fractured "left &lt; right &amp;&amp; right &gt; left">
+]>
+<universe xmlns:astro="urn:example:astro">
+  <sector code="A-01">
+    <planet class="gas" astro:type="giant">Jupiter<moon orbit="m1"/><ring>dust</ring></planet>
+    <artifact>&star;</artifact>
+  </sector>
+  <sector code="B_02">
+    <wormhole/>
+    <planet><![CDATA[ice & stone < vapor]]></planet>
+    <artifact>&fractured;</artifact>
+  </sector>
+</universe>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE media [
+  <!ELEMENT media (clip+, poster?)>
+  <!ELEMENT clip (caption|data)*>
+  <!ELEMENT caption (#PCDATA|b|i)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT data EMPTY>
+  <!ELEMENT poster EMPTY>
+  <!ATTLIST clip src ENTITY #REQUIRED mode NMTOKENS #IMPLIED>
+  <!ATTLIST data format NOTATION #REQUIRED>
+  <!ATTLIST poster src ENTITY #REQUIRED>
+  <!NOTATION png SYSTEM "image/png">
+  <!NOTATION ogg PUBLIC "-//Example//NOTATION Ogg//EN" "audio/ogg">
+  <!ENTITY cover SYSTEM "cover.png" NDATA png>
+  <!ENTITY soundtrack SYSTEM "track.ogg" NDATA ogg>
+  <!ENTITY local "A&lt;B&gt;C">
+]>
+<media>
+  <clip src="soundtrack" mode="audio compressed">
+    <caption>Intro <b>&local;</b><!-- hidden --><i><![CDATA[ / raw ]]></i></caption>
+    <data format="ogg"/>
+  </clip>
+  <clip src="cover" mode="still">
+    <caption>Frame <?marker value?> end</caption>
+    <data format="png"/>
+  </clip>
+  <poster src="cover"/>
+</media>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE labyrinth [
+  <!ELEMENT labyrinth (node)>
+  <!ELEMENT node (branch*)>
+  <!ELEMENT branch (node|leaf)>
+  <!ELEMENT leaf (#PCDATA)>
+  <!ENTITY seed "alpha">
+  <!ENTITY pair "&seed;-&seed;">
+  <!ENTITY quartet "&pair;&pair;">
+  <!ENTITY payload "&quartet;&quartet;">
+]>
+<labyrinth>
+  <node>
+    <branch><leaf>&payload;</leaf></branch>
+    <branch>
+      <node>
+        <branch><leaf><![CDATA[&payload; remains literal]]></leaf></branch>
+        <branch><node><branch><leaf>&pair;</leaf></branch></node></branch>
+      </node>
+    </branch>
+    <branch><leaf>before<!-- comment --><![CDATA[<not-an-element>]]><?probe x="&seed;"?>after</leaf></branch>
+  </node>
+</labyrinth>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, payload, checksum)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST header length CDATA #REQUIRED flags NMTOKENS #IMPLIED>
+  <!ATTLIST payload encoding (base64|hex|raw) #IMPLIED>
+  <!ENTITY amp "&amp;">
+]>
+<packet>
+  <header length="0x10" flags="urgent retry"/>
+  <payload encoding="base64">QUJD
+    &amp;
+    <![CDATA[==<>&]]>
+  </payload>
+  <checksum>deadbeef</checksum>
+  <unexpected/>
+</packet>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE map [
+  <!ELEMENT map (entry*)>
+  <!ELEMENT entry (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|ref)*>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST entry id ID #IMPLIED>
+  <!ATTLIST ref target IDREF #REQUIRED>
+]>
+<map>
+  <entry id="first">
+    <key>line&#x85;break</key>
+    <value>one<ref target="missing"/>two</value>
+  </entry>
+  <entry id="second">
+    <key><![CDATA[ ]]>zero</key>
+    <value>high&#x2028;low<!--unterminated?</value>
+  </entry>
+</map>
+```

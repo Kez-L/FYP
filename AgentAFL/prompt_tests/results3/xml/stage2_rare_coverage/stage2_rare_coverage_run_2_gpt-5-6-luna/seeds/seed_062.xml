@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<workflow xmlns:w="urn:workflow" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <w:parallel>
+    <w:branch id="left">
+      <w:step name="fetch">
+        <w:input><![CDATA[a<b && c>d]]></w:input>
+        <w:retry count="0"/>
+      </w:step>
+    </w:branch>
+    <w:branch id="right">
+      <w:step name="transform" xlink:href="#missing">
+        <w:map from="one" to="1"/>
+        <w:map from="two" to="2"/>
+      </w:step>
+    </w:branch>
+  </w:parallel>
+  <?checkpoint phase="after-parallel"?>
+  <w:join when="all">
+    <w:result status="pending"/>
+  </w:join>
+</workflow>

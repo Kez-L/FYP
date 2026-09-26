@@ -1,0 +1,97 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title,meta?,description)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta
+    key CDATA #REQUIRED
+    value CDATA #IMPLIED>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+]>
+<catalog>
+  <entry>
+    <title>alpha &amp; omega</title>
+    <meta key="priority" value="high"/>
+    <description><![CDATA[raw ]]> text <em>inside</em><br/>tail</description>
+  </entry>
+  <entry>
+    <title>second</title>
+    <description>unclosed-ish &lt; markup and &#x1F; character</description>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<r xmlns="urn:default" xmlns:x="urn:x" xml:lang="en">
+  <x:item x:id="a&amp;b" xmlns:y="urn:y">
+    <y:value><![CDATA[<nested attr="1"/>]]></y:value>
+    <x:item xmlns="urn:shadow" xml:space="preserve">
+      mixed
+      <leaf/>
+      &lt;escaped&gt;
+    </x:item>
+  </x:item>
+  <empty xmlns:x="urn:other" x:k="&#x0;"/>
+</r>
+```
+
+```xml
+<!DOCTYPE root [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY logo SYSTEM "image.bin" NDATA bin>
+  <!ENTITY local "line1&#10;line2&#x9;line3">
+  <!ELEMENT root (header, payload, footer?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT payload EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST payload
+    source ENTITY #IMPLIED
+    mode (fast|safe|debug) "safe">
+]>
+<root>
+  <header>&local;</header>
+  <payload source="logo" mode="debug"/>
+  <footer>after &amp; before</footer>
+</root>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE message [
+  <!ELEMENT message (part|group)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT group (part+)>
+  <!ATTLIST group id ID #IMPLIED ref IDREF #IMPLIED>
+]>
+<message>
+  <group id="g1">
+    <part>one</part>
+    <part><![CDATA[
+      ]]> split ]]]]><![CDATA[ sequence
+    ]]></part>
+  </group>
+  <part ref="g1">orphan attribute</part>
+  <group ref="missing"><part>late</part></group>
+</message>
+```
+
+```xml
+<root>
+  <a>
+    <b attr="&quot;&apos;&amp;&lt;&gt;">text</b>
+    <c><![CDATA[unterminated-looking content ]]></c>
+  </a>
+  <mixed>before<!-- comment --><inside><?pi data?><![CDATA[x<y]]></inside>after</mixed>
+  <?instruction   value?>
+  <!-- malformed -- comment -->
+  <tail>
+    <item xmlns:p="urn:p" p:v="1">A</item>
+    <item xmlns:p="urn:q" p:v="2">B</item>
+  </tail>
+</root>
+```

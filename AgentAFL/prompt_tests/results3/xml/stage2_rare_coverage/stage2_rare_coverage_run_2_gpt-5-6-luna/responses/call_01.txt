@@ -1,0 +1,148 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common "<!ELEMENT catalog (section+)><!ELEMENT section (title, item*)><!ELEMENT title (#PCDATA)><!ELEMENT item (#PCDATA)>">
+  %common;
+  <!ENTITY amp "&#38;">
+  <!ENTITY left "&#60;">
+  <!ENTITY right "&#62;">
+  <!ENTITY greeting "North &amp; South">
+  <!ATTLIST section code ID #REQUIRED>
+  <!ATTLIST item ref IDREF #IMPLIED kind (plain|marked|quoted) "plain">
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "payload.bin" NDATA binary>
+]>
+<catalog>
+  <section code="s1">
+    <title>&greeting;</title>
+    <item kind="marked">A &amp; B &left; C &right;</item>
+    <item ref="s1" kind="quoted">before &#x2028; after</item>
+  </section>
+  <section code="s2">
+    <title><![CDATA[Literal ]]> bracket ]]></title>
+    <item>one<!--embedded--><?note value?>two</item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<world xmlns="urn:outer" xmlns:p="urn:primary" xml:lang="fr" xml:space="preserve">
+  <p:branch id="b-01">
+    <leaf xmlns="" name="unqualified" xml:lang="ja">
+      <text>  leading
+        whitespace
+      </text>
+      <p:shadow xmlns:p="urn:alternate" p:code="alt-7"/>
+    </leaf>
+    <p:branch xmlns:p="" data="reset">
+      <node xmlns="urn:inner" xmlns:q="urn:quaternary">
+        <q:value q:kind="mixed">alpha&amp;beta</q:value>
+        <q:value><![CDATA[<not-an-element attr="x"/>]]></q:value>
+      </node>
+    </p:branch>
+  </p:branch>
+  <?processing instruction?>
+  <!-- comment containing -- spaces -->
+</world>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (meta, payload, checksum)>
+  <!ELEMENT meta (field+)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field
+    name CDATA #REQUIRED
+    value CDATA #IMPLIED
+    enabled (yes|no) "yes">
+  <!ELEMENT payload (#PCDATA|chunk|break)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quoted "&#34;quoted&#34;">
+]>
+<packet>
+  <meta>
+    <field name="version" value="2.7"/>
+    <field name="mode" value="&quoted;" enabled="no"/>
+    <field name="empty" value=""/>
+  </meta>
+  <payload>start<chunk>one</chunk><break/>middle
+    <![CDATA[
+      raw ]]> text ]]>
+    <chunk>two &nbsp; three</chunk>end</payload>
+  <checksum><?sum algorithm="xor"?>9f2a</checksum>
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (directory)>
+  <!ELEMENT directory (folder|file|link)*>
+  <!ELEMENT folder (folder|file|link)*>
+  <!ELEMENT file (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ATTLIST file name CDATA #REQUIRED size NMTOKEN #IMPLIED>
+  <!ATTLIST link name CDATA #REQUIRED target CDATA #REQUIRED>
+  <!ENTITY a "A">
+  <!ENTITY b "&a;&a;">
+  <!ENTITY c "&b;&b;">
+  <!ENTITY d "&c;&c;">
+  <!ENTITY e "&d;&d;">
+  <!ENTITY f "&e;&e;">
+]>
+<archive>
+  <directory>
+    <folder name="root">
+      <folder name="nested">
+        <file name="alpha.txt" size="001">&f;</file>
+        <link name="current" target="../alpha.txt"/>
+      </folder>
+      <file name="empty.bin" size="0"/>
+      <folder name="unicode">
+        <file name="notes.txt">line one&#x0A;line two&#x0A;終わり</file>
+      </folder>
+    </folder>
+    <file name="outside" size="42">tail</file>
+  </directory>
+</archive>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (record*)>
+  <!ELEMENT record (key, value, raw?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT raw ANY>
+  <!ATTLIST record
+    sequence NMTOKEN #REQUIRED
+    status (new|open|closed) "new">
+]>
+<stream xmlns:m="urn:message" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <record sequence="0001" status="open">
+    <key>α-1</key>
+    <value><part>A</part><part>B</part>&#x85;<part>C</part></value>
+    <raw><![CDATA[
+      <m:embedded xsi:type="m:fragment">
+        not parsed as markup
+      </m:embedded>
+    ]]></raw>
+  </record>
+  <record sequence="0002">
+    <key>k&amp;v</key>
+    <value>left<?mark data?>right<!--gap--><part><![CDATA[]]></part></value>
+  </record>
+  <record sequence="0003" status="closed">
+    <key>final</key>
+    <value>done</value>
+  </record>
+</stream>
+```

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE deployment [
+  <!ELEMENT deployment (service+, policy, secrets, hooks?)>
+  <!ATTLIST deployment environment (dev|stage|prod) "stage">
+  <!ELEMENT service (image, ports?, environment?, healthcheck?)>
+  <!ATTLIST service name ID #REQUIRED replicas NMTOKEN "1">
+  <!ELEMENT image (#PCDATA)>
+  <!ELEMENT ports (port+)>
+  <!ELEMENT port EMPTY>
+  <!ATTLIST port container NMTOKEN #REQUIRED host NMTOKEN #IMPLIED protocol (tcp|udp) "tcp">
+  <!ELEMENT environment (variable+)>
+  <!ELEMENT variable EMPTY>
+  <!ATTLIST variable name NMTOKEN #REQUIRED value CDATA #IMPLIED from IDREF #IMPLIED>
+  <!ELEMENT healthcheck (command, interval, retries)>
+  <!ELEMENT command (#PCDATA)>
+  <!ELEMENT interval (#PCDATA)>
+  <!ELEMENT retries (#PCDATA)>
+  <!ELEMENT policy (network, retention)>
+  <!ELEMENT network (#PCDATA)>
+  <!ELEMENT retention (#PCDATA)>
+  <!ELEMENT secrets (secret+)>
+  <!ELEMENT secret EMPTY>
+  <!ATTLIST secret name ID #REQUIRED provider CDATA #REQUIRED>
+  <!ELEMENT hooks (before?, after?)>
+  <!ELEMENT before (#PCDATA)>
+  <!ELEMENT after (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+]>
+<deployment environment="prod">
+  <service name="telemetry" replicas="3">
+    <image>registry.example.invalid/telemetry:2026.09</image>
+    <ports>
+      <port container="8080" host="18080"/>
+      <port container="8125" protocol="udp"/>
+    </ports>
+    <environment>
+      <variable name="LOG_LEVEL" value="notice"/>
+      <variable name="DATABASE_URL" from="db-password"/>
+      <variable name="GREETING" value="ready &amp; monitored"/>
+    </environment>
+    <healthcheck>
+      <command><![CDATA[curl --fail http://127.0.0.1:8080/healthz]]></command>
+      <interval>30s</interval>
+      <retries>4</retries>
+    </healthcheck>
+  </service>
+  <service name="collector" replicas="1">
+    <image>registry.example.invalid/collector@sha256:0123456789abcdef</image>
+    <environment><variable name="TZ" value="UTC"/></environment>
+  </service>
+  <policy>
+    <network>isolated-egress</network>
+    <retention>30 days &nbsp; encrypted</retention>
+  </policy>
+  <secrets>
+    <secret name="db-password" provider="vault://prod/data/telemetry"/>
+    <secret name="signing-key" provider="kms://region/key/42"/>
+  </secrets>
+  <hooks>
+    <before>schema-check --strict</before>
+    <after>emit-event deployment.complete</after>
+  </hooks>
+</deployment>

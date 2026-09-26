@@ -1,0 +1,174 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (name, description?, link*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST catalog xml:lang NMTOKEN "en">
+  <!ATTLIST entry id ID #REQUIRED status (draft|published|archived) "draft">
+  <!ATTLIST link target IDREF #IMPLIED rel CDATA "related">
+  <!ENTITY mark "&#x2603;">
+]>
+<catalog xml:lang="fr">
+  <entry id="e1" status="published">
+    <name>Résumé &mark;</name>
+    <description>Text with <em>emphasis</em> and <code>a&lt;b</code>.</description>
+    <link target="e2" rel="next"/>
+  </entry>
+  <entry id="e2">
+    <name>Second entry</name>
+    <description><![CDATA[raw <![CDATA[ marker-like text ]] here]]></description>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % declarations "
+    <!ELEMENT report (metadata, body)>
+    <!ELEMENT metadata (author, created, tag*)>
+    <!ELEMENT body (paragraph|table|figure)+>
+    <!ELEMENT author (#PCDATA)>
+    <!ELEMENT created (#PCDATA)>
+    <!ELEMENT tag (#PCDATA)>
+    <!ELEMENT paragraph (#PCDATA|strong|br)*>
+    <!ELEMENT strong (#PCDATA)>
+    <!ELEMENT br EMPTY>
+    <!ELEMENT table (row+)>
+    <!ELEMENT row (cell+)>
+    <!ELEMENT cell (#PCDATA)>
+    <!ELEMENT figure EMPTY>
+  ">
+  %declarations;
+  <!ATTLIST report revision CDATA #IMPLIED>
+  <!ATTLIST table columns NMTOKEN #REQUIRED>
+  <!ATTLIST figure src ENTITY #REQUIRED>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+]>
+<report revision="7">
+  <metadata>
+    <author>Someone</author>
+    <created>2026-09-24</created>
+    <tag>xml</tag>
+  </metadata>
+  <body>
+    <paragraph>Before <strong>bold</strong><br/>after.</paragraph>
+    <table columns="2">
+      <row><cell>A</cell><cell>B</cell></row>
+      <row><cell>1</cell><cell>2</cell></row>
+    </table>
+    <figure src="logo"/>
+  </body>
+</report>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE network [
+  <!ELEMENT network (node*, edge*)>
+  <!ELEMENT node (label?, property*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property EMPTY>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST node key ID #REQUIRED kind CDATA #IMPLIED>
+  <!ATTLIST property name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+]>
+<network>
+  <node key="n0" kind="hub">
+    <label>Root &amp; branch</label>
+    <property name="empty" value=""/>
+    <property name="quoted" value="&quot;value&quot;"/>
+  </node>
+  <node key="n1"><property name="flag"/></node>
+  <node key="n2">
+    <label><![CDATA[line one
+line two
+line three]]></label>
+  </node>
+  <edge from="n0" to="n1" weight="0.0"/>
+  <edge from="n1" to="n2"/>
+  <edge from="n2" to="n0" weight="-4"/>
+</network>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (module|bundle|empty)+>
+  <!ELEMENT module (file*, dependency*)>
+  <!ELEMENT bundle (module+, checksum?)>
+  <!ELEMENT empty EMPTY>
+  <!ELEMENT file (#PCDATA)>
+  <!ELEMENT dependency (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST manifest generated CDATA #IMPLIED>
+  <!ATTLIST module name CDATA #REQUIRED version CDATA #IMPLIED>
+  <!ATTLIST file path CDATA #REQUIRED mode NMTOKENS #IMPLIED>
+  <!ATTLIST dependency module IDREF #REQUIRED>
+  <!ATTLIST bundle id ID #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+]>
+<manifest generated="yes">
+  <bundle id="core">
+    <module name="alpha" version="1.0">
+      <file path="bin/alpha" mode="read execute"/>
+      <file path="share/&nbsp;data" mode="read"/>
+      <dependency module="missing"/>
+    </module>
+    <module name="beta">
+      <file path="lib/beta.so" mode="read write"/>
+    </module>
+    <checksum>sha256:abc&amp;def</checksum>
+  </bundle>
+  <empty/>
+  <module name="standalone">
+    <dependency module="core"/>
+  </module>
+</manifest>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (header, records, trailer)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (key, value, annotation?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|item)*>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT annotation (#PCDATA)>
+  <!ATTLIST header timestamp CDATA #REQUIRED source CDATA #IMPLIED>
+  <!ATTLIST records count NMTOKEN #IMPLIED>
+  <!ATTLIST record uid ID #REQUIRED type (text|number|mixed) #IMPLIED>
+  <!ATTLIST annotation xml:space (default|preserve) "default">
+  <!ENTITY amp "&amp;">
+  <!ENTITY recursive "&amp;recursive;">
+]>
+<stream>
+  <header timestamp="2026-09-24T12:34:56Z" source="sensor-7"/>
+  <records count="3">
+    <record uid="r1" type="text">
+      <key>alpha</key>
+      <value>left<item>middle</item>right</value>
+      <annotation xml:space="preserve">  padded  </annotation>
+    </record>
+    <record uid="r2" type="number">
+      <key>42</key>
+      <value>1&lt;2 &amp; 3&gt;2</value>
+    </record>
+    <record uid="r3" type="mixed">
+      <key>delta</key>
+      <value><![CDATA[one]]><item><![CDATA[two]]></item>&amp;</value>
+    </record>
+  </records>
+  <trailer/>
+</stream>
+```

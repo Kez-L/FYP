@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:ex="urn:example:records"
+  exclude-result-prefixes="ex">
+  <xsl:output method="xml" encoding="UTF-8" indent="yes"/>
+  <xsl:param name="minimum" select="0"/>
+  <xsl:variable name="stamp">generated-report</xsl:variable>
+
+  <xsl:template match="/">
+    <report created-by="{$stamp}">
+      <xsl:attribute name="count">
+        <xsl:value-of select="count(ex:registry/ex:record)"/>
+      </xsl:attribute>
+      <xsl:apply-templates select="ex:registry/ex:record[number(ex:score) &gt;= $minimum]">
+        <xsl:sort select="ex:score" data-type="number" order="descending"/>
+      </xsl:apply-templates>
+    </report>
+  </xsl:template>
+
+  <xsl:template match="ex:record">
+    <entry code="{@code}">
+      <name><xsl:value-of select="ex:name"/></name>
+      <score><xsl:value-of select="format-number(ex:score, '0.00')"/></score>
+      <status>
+        <xsl:choose>
+          <xsl:when test="ex:score &gt;= 90">excellent</xsl:when>
+          <xsl:when test="ex:score &gt;= 70">good</xsl:when>
+          <xsl:otherwise>review</xsl:otherwise>
+        </xsl:choose>
+      </status>
+      <tags>
+        <xsl:for-each select="ex:tags/ex:tag">
+          <tag><xsl:value-of select="."/></tag>
+        </xsl:for-each>
+      </tags>
+    </entry>
+  </xsl:template>
+
+  <xsl:template match="ex:unused">
+    <ignored><xsl:comment>not selected</xsl:comment></ignored>
+  </xsl:template>
+</xsl:stylesheet>

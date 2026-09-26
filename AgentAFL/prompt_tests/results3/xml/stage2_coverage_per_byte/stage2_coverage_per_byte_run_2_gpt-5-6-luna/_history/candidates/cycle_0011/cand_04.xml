@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE database [
+  <!ELEMENT database (schema, transaction*)>
+  <!ELEMENT schema (table+)>
+  <!ELEMENT table (column+, index*)>
+  <!ELEMENT column EMPTY>
+  <!ELEMENT index EMPTY>
+  <!ELEMENT transaction (insert|delete|update)+>
+  <!ELEMENT insert EMPTY>
+  <!ELEMENT delete EMPTY>
+  <!ELEMENT update EMPTY>
+  <!ATTLIST table name ID #REQUIRED owner CDATA #IMPLIED>
+  <!ATTLIST column name NMTOKEN #REQUIRED nullable (true|false) "true" default CDATA #IMPLIED>
+  <!ATTLIST index on IDREFS #REQUIRED unique (true|false) "false">
+  <!ATTLIST transaction id ID #REQUIRED tables IDREFS #IMPLIED>
+  <!ATTLIST insert table IDREF #REQUIRED values CDATA #IMPLIED>
+  <!ATTLIST delete table IDREF #REQUIRED where CDATA #IMPLIED>
+  <!ATTLIST update table IDREF #REQUIRED set CDATA #REQUIRED where CDATA #IMPLIED>
+]>
+<database>
+  <schema>
+    <table name="users" owner="admin">
+      <column name="id" nullable="false"/>
+      <column name="note" default="&quot;none&quot;"/>
+      <index on="id" unique="true"/>
+    </table>
+    <table name="events">
+      <column name="payload" nullable="true"/>
+      <index on="payload"/>
+    </table>
+  </schema>
+  <transaction id="t1" tables="users events">
+    <insert table="users" values="id=1;note='x&amp;y'"/>
+    <update table="users" set="note='changed'" where="id=1"/>
+  </transaction>
+  <transaction id="t2">
+    <delete table="events" where="payload &lt; 0"/>
+  </transaction>
+</database>

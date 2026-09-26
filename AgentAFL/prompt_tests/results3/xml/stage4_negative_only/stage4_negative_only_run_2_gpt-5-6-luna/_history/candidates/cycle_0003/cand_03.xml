@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:example:config" xmlns:env="urn:example:environment">
+  <service name="indexer">
+    <enabled>true</enabled>
+    <workers min="1" max="16">4</workers>
+    <timeouts>
+      <connect milliseconds="250"/>
+      <request milliseconds="5000"/>
+      <idle milliseconds="0"/>
+    </timeouts>
+    <endpoints>
+      <endpoint scheme="https" host="search.example.test" port="443" path="/v1/index"/>
+      <endpoint scheme="unix" path="/run/indexer.sock"/>
+    </endpoints>
+  </service>
+  <environment env:name="staging">
+    <variable name="REGION">eu-west</variable>
+    <variable name="FEATURE_FLAGS">compact,delta</variable>
+    <secret name="token" redacted="true"/>
+  </environment>
+  <policies>
+    <policy effect="allow" operation="read">
+      <resource pattern="documents/*"/>
+      <condition field="owner" operator="equals">team-search</condition>
+    </policy>
+    <policy effect="deny" operation="delete">
+      <resource pattern="documents/archive/*"/>
+    </policy>
+  </policies>
+</configuration>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % declarations '
+    <!ELEMENT warning (#PCDATA)>
+    <!ATTLIST warning level (low|medium|high) "medium">
+  '>
+  %declarations;
+  <!ELEMENT report (context, warning*, data)>
+  <!ELEMENT context (source, timestamp)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT data ANY>
+  <!ENTITY amp "&amp;">
+  <!ENTITY nested "one &amp; two &amp; three">
+]>
+<report>
+  <context>
+    <source><![CDATA[scanner/core]]></source>
+    <timestamp>2026-09-24T12:34:56Z</timestamp>
+  </context>
+  <warning level="high">A &amp; B</warning>
+  <warning>line one
+line two</warning>
+  <data>
+    <unknown attr="&nested;">&amp; &lt; &gt; &quot; &apos;</unknown>
+    <warning level="low">inside ANY</warning>
+  </data>
+</report>

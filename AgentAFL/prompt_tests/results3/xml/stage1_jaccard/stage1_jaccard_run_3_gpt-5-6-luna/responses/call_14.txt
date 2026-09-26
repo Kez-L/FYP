@@ -1,0 +1,168 @@
+```xml
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE ns:root [
+  <!ELEMENT ns:root (ns:header, ns:body, ns:tail?)>
+  <!ELEMENT ns:header (#PCDATA)>
+  <!ELEMENT ns:body (ns:item+)>
+  <!ELEMENT ns:item (#PCDATA|ns:mark)*>
+  <!ELEMENT ns:mark EMPTY>
+  <!ELEMENT ns:tail (#PCDATA)>
+  <!ATTLIST ns:item
+    key ID #REQUIRED
+    ref IDREF #IMPLIED
+    xml:lang NMTOKEN #IMPLIED>
+  <!ENTITY ampersand "&#38;">
+  <!ENTITY decorated "left &amp; right">
+  <!ENTITY % extra
+    "<!ATTLIST ns:mark role CDATA #IMPLIED>">
+  %extra;
+]>
+<ns:root xmlns:ns="urn:seed:one" xmlns:alt="urn:seed:two" xml:base="urn:base/">
+  <ns:header xml:lang="en-GB">&decorated; &#x1F642; <?header value="x"?></ns:header>
+  <ns:body>
+    <ns:item key="i1" ref="i2">alpha<ns:mark role="a"/>beta</ns:item>
+    <ns:item key="i2" xml:lang="fr">line one<![CDATA[line <two> & three]]>&amp;gamma</ns:item>
+    <ns:item key="i3" ref="i1"><alt:mark xmlns:alt="urn:seed:two"/>tail</ns:item>
+  </ns:body>
+  <ns:tail>&amp; &quot; &apos; &lt; &gt; &amp;ersatz;</ns:tail>
+</ns:root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE media [
+  <!NOTATION png SYSTEM "image/png">
+  <!NOTATION text PUBLIC "-//example//NOTATION Plain Text//EN" "text/plain">
+  <!ENTITY banner "A &quot;quoted&quot; banner">
+  <!ENTITY fragment "<caption>embedded &amp; marked</caption>">
+  <!ENTITY binary SYSTEM "missing-image.bin" NDATA png>
+  <!ELEMENT media (title, caption, payload, attachment?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT caption (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT payload (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment
+    source ENTITY #REQUIRED
+    format NOTATION #IMPLIED>
+]>
+<media>
+  <title>&banner;</title>
+  <caption>before <emph>inside</emph> after &fragment;</caption>
+  <payload><![CDATA[
+    <not-an-element attr='x'/> ]]> &lt;end&gt;
+  </payload>
+  <attachment source="binary" format="png"/>
+</media>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (section+)>
+  <!ELEMENT section (label, record*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT record (value, link?, note?)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST section name NMTOKEN #REQUIRED>
+  <!ATTLIST record ident ID #REQUIRED target IDREFS #IMPLIED>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ENTITY open "(">
+  <!ENTITY close ")">
+  <!ENTITY quote "&#34;">
+  <!ENTITY markup "<note>generated &amp; note</note>">
+  <!ENTITY % recordAttrs
+    "<!ATTLIST record generated (yes|no) 'no'>">
+  %recordAttrs;
+]>
+<archive>
+  <section name="first">
+    <label>&open;primary&close;</label>
+    <record ident="r01" target="r02" generated="yes">
+      <value>one &quote;quoted&quote;</value>
+      <note>literal &lt;note&gt; text</note>
+    </record>
+    <record ident="r02" target="r01">
+      <value>two</value>
+      &markup;
+    </record>
+  </section>
+  <section name="second">
+    <label><![CDATA[section [two]]]></label>
+    <record ident="r03">
+      <value>&#x41;&#65;&#000066;</value>
+      <link href="urn:link:3"/>
+    </record>
+  </section>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta, payload)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT payload (chunk|empty|chunked)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT empty EMPTY>
+  <!ELEMENT chunked (#PCDATA)>
+  <!ATTLIST meta
+    stamp CDATA #IMPLIED
+    flags CDATA #IMPLIED>
+  <!ATTLIST chunk id CDATA #IMPLIED>
+  <!ENTITY word "delta">
+  <!ENTITY pair "&word;-&word;">
+]>
+<envelope>
+  <meta stamp="2026-09-24T00:00:00Z" flags="a&#x20;b&#x9;c"/>
+  <payload>
+    <chunk id="c0">start &pair; middle</chunk>
+    <empty/>
+    <chunked><![CDATA[raw ]]>]]&gt; boundary]]></chunked>
+    <chunk id="c1">end<?inside data?>tail</chunk>
+    <empty></empty>
+    <chunk id="c2">&unknown;</chunk>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (entry, entry?, trailer)>
+  <!ELEMENT entry (name, value, details?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT details (line*)>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST entry category CDATA #IMPLIED>
+  <!ATTLIST trailer checksum CDATA #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY leftmark "&#x27;">
+  <!ENTITY rightmark "&#x27;">
+  <!ENTITY phrase "&leftmark;inside&rightmark;">
+]>
+<registry xmlns="urn:registry:v3" xmlns:x="urn:extra">
+  <entry category="α">
+    <name>first&nbsp;</name>
+    <value>&phrase; &lt;value&gt;</value>
+    <details>
+      <line><![CDATA[one]]></line>
+      <line>two &x; three</line>
+      <line>four<!--comment--><?pi?></line>
+    </details>
+  </entry>
+  <entry category="mixed">
+    <name>x:name</name>
+    <value xml:space="preserve">  padded
+value  </value>
+    <details>
+      <line>x:raw</line>
+    </details>
+  </entry>
+  <trailer checksum="&quot;bad?&quot;"/>
+</registry>
+```

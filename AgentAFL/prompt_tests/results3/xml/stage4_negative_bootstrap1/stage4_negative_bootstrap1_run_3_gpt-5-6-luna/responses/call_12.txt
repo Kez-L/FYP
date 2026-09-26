@@ -1,0 +1,151 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY company "Northwind &amp; Co.">
+  <!ENTITY note "Seasonal inventory">
+  <!ELEMENT catalog (metadata, product+)>
+  <!ELEMENT metadata (#PCDATA)>
+  <!ELEMENT product (name, description, price, tags)>
+  <!ATTLIST product id ID #REQUIRED status (active|retired) "active" related IDREFS #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+]>
+<catalog>
+  <metadata>&company; — &note;<!-- inventory snapshot --></metadata>
+  <product id="p-001" related="p-002">
+    <name>Crème brûlée torch</name>
+    <description>Compact tool with <em>adjustable</em> flame and <code>piezo</code> ignition.</description>
+    <price currency="EUR">19.95</price>
+    <tags><tag>kitchen</tag><tag>steel</tag></tags>
+  </product>
+  <product id="p-002" status="retired">
+    <name>Glass ramekin</name>
+    <description><![CDATA[Heat-resistant bowl: diameter < 100 mm.]]></description>
+    <price currency="EUR">4.50</price>
+    <tags><tag>ceramic</tag></tags>
+  </product>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<?processing instruction-data?>
+<envelope xmlns="urn:example:message" xmlns:sec="urn:example:security" xml:lang="fr">
+  <!-- A mixed namespace message with repeated headers -->
+  <header>
+    <sec:token scheme="opaque">a&amp;b&lt;c</sec:token>
+    <sec:attributes>
+      <sec:item name="priority">high</sec:item>
+      <sec:item name="retry">3</sec:item>
+    </sec:attributes>
+  </header>
+  <body xml:space="preserve">
+    <request id="r-17" method="PATCH">
+      <path>/records/α/17</path>
+      <payload media-type="application/xml"><![CDATA[
+        <fragment><value key="x">42</value><value key="y"/></fragment>
+      ]]></payload>
+    </request>
+    <response status="pending">
+      <message>Réponse en attente — vérification nécessaire.</message>
+    </response>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<scene xmlns="urn:example:scene" xmlns:g="urn:example:geometry" xmlns:meta="urn:example:metadata">
+  <meta:info created="2026-09-24T12:34:56Z" author="Δ">
+    <meta:keywords>folded, reflective, nocturnal</meta:keywords>
+  </meta:info>
+  <layer name="background" visible="true">
+    <g:rectangle x="-4.5" y="0" width="128" height="64">
+      <g:fill>#101820</g:fill>
+    </g:rectangle>
+    <g:polyline closed="false" points="0,0 8,13 21,8 34,34 55,21"/>
+  </layer>
+  <layer name="objects" visible="false">
+    <object kind="label" transform="rotate(17.25)">
+      <label><![CDATA[Use <angle> & "quoted" text]]></label>
+      <anchor ref="background"/>
+    </object>
+    <object kind="marker">
+      <g:circle center="64,32" radius="7.5"/>
+      <meta:color space="display-p3">#ff7a00</meta:color>
+    </object>
+  </layer>
+</scene>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ENTITY % common "date, checksum">
+  <!ELEMENT archive (header, entry+)>
+  <!ELEMENT header (title, owner, %common;)>
+  <!ELEMENT entry (name, data, %common;)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT date (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST entry kind CDATA "binary" compressed (yes|no) "no">
+]>
+<archive>
+  <header>
+    <title>résumé / backup</title>
+    <owner>ops@example.invalid</owner>
+    <date>2026-09-24</date>
+    <checksum algorithm="sha256">0000000000000000000000000000000000000000000000000000000000000000</checksum>
+  </header>
+  <entry kind="text" compressed="yes">
+    <name>notes/çafé.txt</name>
+    <data>first <chunk index="0">segment</chunk>, second <chunk index="1">segment</chunk>.</data>
+    <date>2026-09-23T08:01:02Z</date>
+    <checksum algorithm="crc32">deadbeef</checksum>
+  </entry>
+  <entry kind="empty">
+    <name>images/empty.bin</name>
+    <data/>
+    <date>2026-09-24T00:00:00+00:00</date>
+    <checksum algorithm="sha256">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</checksum>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="view.xsl" media="screen"?>
+<survey xmlns="urn:example:survey" xmlns:x="urn:example:extensions">
+  <form code="Q-β" revision="3">
+    <question id="q1" required="true">
+      <prompt>Which symbols are meaningful to you?</prompt>
+      <options>
+        <option value="amp">&amp;</option>
+        <option value="less">&lt;</option>
+        <option value="quotes">“smart” and 'straight'</option>
+      </options>
+    </question>
+    <question id="q2" required="false" x:experimental="yes">
+      <prompt>Describe a boundary condition.</prompt>
+      <answer format="plain">Line one&#10;Line two&#10;&#x2028;Line three</answer>
+      <hint><![CDATA[Try an expression such as a < b && b < c.]]></hint>
+    </question>
+  </form>
+  <submission submitted="2026-09-24T12:34:56.000+05:30">
+    <respondent anonymous="true"/>
+    <answers>
+      <answer ref="q1" selected="amp less"/>
+      <answer ref="q2"><![CDATA[Whitespace    is preserved here.]]></answer>
+    </answers>
+  </submission>
+</survey>
+```

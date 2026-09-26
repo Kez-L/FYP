@@ -1,0 +1,136 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, section*, footer)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT section (title, item+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|strong|code|br)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST section rank NMTOKEN #IMPLIED>
+  <!ENTITY mark "&#x2022;">
+  <!ENTITY open "<">
+]>
+<report>
+  <header>Inventory &amp; status</header>
+  <section rank="01">
+    <title>Symbols</title>
+    <item>&mark; <strong>bold</strong> and <code>&lt;tag&gt;</code><br/>next</item>
+  </section>
+  <section rank="02">
+    <title>Empty content</title>
+    <item></item>
+    <item>left<![CDATA[ raw ]]>&open;right</item>
+  </section>
+  <footer>done</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (to, from, subject, body)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|list)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT list (entry*)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ATTLIST message priority (low|normal|high) "normal">
+  <!ENTITY % common "xml:lang NMTOKEN #IMPLIED">
+  <!ATTLIST message %common;>
+]>
+<message priority="high" xml:lang="en">
+  <to>alpha@example.test</to>
+  <from>beta@example.test</from>
+  <subject>Re: &quot;boundary&quot;</subject>
+  <body>
+    Intro
+    <quote>Nested &amp; quoted text</quote>
+    <list>
+      <entry>first</entry>
+      <entry><![CDATA[second <entry>]]></entry>
+      <entry>third</entry>
+    </list>
+    outro
+  </body>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node|edge)*>
+  <!ELEMENT node EMPTY>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST node id ID #REQUIRED label CDATA #IMPLIED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight NMTOKEN "1">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "data.bin" NDATA bin>
+]>
+<graph>
+  <node id="n0" label="root"/>
+  <node id="n1" label="A &amp; B"/>
+  <node id="n2" label="line&#x0A;break"/>
+  <edge from="n0" to="n1" weight="0"/>
+  <edge from="n1" to="n2" weight="001"/>
+  <edge from="n2" to="n0"/>
+</graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE switch [
+  <!ELEMENT switch (on|off|unknown)>
+  <!ELEMENT on EMPTY>
+  <!ELEMENT off EMPTY>
+  <!ELEMENT unknown (#PCDATA)>
+  <!ENTITY % modes "(on|off|unknown)">
+  <!ELEMENT state %modes;>
+  <![IGNORE[
+    <!ELEMENT ignored (never)>
+    <!ATTLIST ignored value CDATA #REQUIRED>
+  ]]>
+]>
+<switch>
+  <on/>
+  <off/>
+  <unknown><![CDATA[ maybe ]]> &lt;undecided&gt;</unknown>
+</switch>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (meta, record*)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT record (key, value, note?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST archive version CDATA #FIXED "7">
+  <!ATTLIST meta created CDATA #IMPLIED checksum CDATA #IMPLIED>
+  <!ATTLIST record state (new|old|x) "new">
+  <!ENTITY tab "&#x9;">
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+]>
+<archive version="7">
+  <meta created="2026-09-24T00:00:00Z" checksum="sha256:abc"/>
+  <record state="x">
+    <key> spaced-key </key>
+    <value>&left;<part>one</part>&tab;<part>two</part>&right;</value>
+    <note>line one
+line two &amp; three</note>
+  </record>
+  <record>
+    <key><![CDATA[key]]></key>
+    <value></value>
+  </record>
+</archive>
+```

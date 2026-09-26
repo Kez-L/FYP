@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:example:runtime"
+               xmlns:sec="urn:example:security"
+               xmlns:net="urn:example:network"
+               id="runtime-main">
+  <environment name="staging" immutable="false">
+    <property key="region">eu-central</property>
+    <property key="labels">alpha,beta,gamma</property>
+    <property key="empty"/>
+    <property key="quoted">A &quot;quoted&quot; value &amp; a delimiter: &lt;=&gt;</property>
+  </environment>
+  <pipeline parallelism="4" fail-fast="true">
+    <stage name="decode" enabled="true">
+      <handler class="example.DecodeHandler">
+        <argument name="format">delta</argument>
+        <argument name="strict">yes</argument>
+      </handler>
+    </stage>
+    <stage name="transform" enabled="true">
+      <handler class="example.TransformHandler">
+        <argument name="expression"><![CDATA[
+          value := value * 1.25;
+          if value < 0 then value := 0;
+        ]]></argument>
+      </handler>
+      <checkpoint interval="00:05:00" storage="memory"/>
+    </stage>
+    <stage name="publish" enabled="false"/>
+  </pipeline>
+  <sec:credentials rotation="P30D">
+    <sec:token algorithm="HS512" expires="2027-01-01T00:00:00Z">
+      masked-credential-value
+    </sec:token>
+    <sec:permissions>
+      <sec:allow resource="metrics/*" action="read"/>
+      <sec:allow resource="events/*" action="write"/>
+      <sec:deny resource="secrets/*" action="read"/>
+    </sec:permissions>
+  </sec:credentials>
+  <net:endpoints>
+    <net:endpoint name="primary" protocol="https" host="api.example.invalid" port="443">
+      <net:path>/v2/ingest</net:path>
+      <net:header name="X-Client" value="runtime-main"/>
+    </net:endpoint>
+    <net:endpoint name="fallback" protocol="unix" path="/run/example.sock"/>
+  </net:endpoints>
+</configuration>

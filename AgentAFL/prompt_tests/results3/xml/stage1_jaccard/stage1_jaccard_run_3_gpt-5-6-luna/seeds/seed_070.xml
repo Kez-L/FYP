@@ -1,0 +1,27 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE ns:root [
+  <!ELEMENT ns:root (ns:header, ns:body, ns:tail?)>
+  <!ELEMENT ns:header (#PCDATA)>
+  <!ELEMENT ns:body (ns:item+)>
+  <!ELEMENT ns:item (#PCDATA|ns:mark)*>
+  <!ELEMENT ns:mark EMPTY>
+  <!ELEMENT ns:tail (#PCDATA)>
+  <!ATTLIST ns:item
+    key ID #REQUIRED
+    ref IDREF #IMPLIED
+    xml:lang NMTOKEN #IMPLIED>
+  <!ENTITY ampersand "&#38;">
+  <!ENTITY decorated "left &amp; right">
+  <!ENTITY % extra
+    "<!ATTLIST ns:mark role CDATA #IMPLIED>">
+  %extra;
+]>
+<ns:root xmlns:ns="urn:seed:one" xmlns:alt="urn:seed:two" xml:base="urn:base/">
+  <ns:header xml:lang="en-GB">&decorated; &#x1F642; <?header value="x"?></ns:header>
+  <ns:body>
+    <ns:item key="i1" ref="i2">alpha<ns:mark role="a"/>beta</ns:item>
+    <ns:item key="i2" xml:lang="fr">line one<![CDATA[line <two> & three]]>&amp;gamma</ns:item>
+    <ns:item key="i3" ref="i1"><alt:mark xmlns:alt="urn:seed:two"/>tail</ns:item>
+  </ns:body>
+  <ns:tail>&amp; &quot; &apos; &lt; &gt; &amp;ersatz;</ns:tail>
+</ns:root>

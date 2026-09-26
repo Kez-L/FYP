@@ -1,0 +1,142 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "blob.dat" NDATA bin>
+  <!ENTITY % feature "INCLUDE">
+  <![%feature;[
+    <!ELEMENT archive (header, item+, footer?)>
+    <!ELEMENT header (#PCDATA)>
+    <!ELEMENT item (label, data)>
+    <!ELEMENT label (#PCDATA)>
+    <!ELEMENT data (#PCDATA|br|ref)*>
+    <!ELEMENT br EMPTY>
+    <!ELEMENT ref EMPTY>
+  ]]>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST archive version CDATA #FIXED "2">
+  <!ATTLIST item id ID #REQUIRED source ENTITY #IMPLIED>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY marker "A&amp;B&lt;C&gt;">
+]>
+<archive version="2">
+  <?build nightly?>
+  <header><![CDATA[raw <header> & bytes]]></header>
+  <item id="i1" source="payload">
+    <label>first</label>
+    <data>left<br/>middle<ref target="i1"/>&marker;</data>
+  </item>
+  <footer>done</footer>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<scene xmlns="urn:scene" xmlns:svg="http://www.w3.org/2000/svg"
+       xmlns:xlink="http://www.w3.org/1999/xlink"
+       xml:lang="ja" xml:space="preserve">
+  <layer name="background" visible="true">
+    <svg:svg width="640" height="480" viewBox="0 0 640 480">
+      <svg:g id="frame" transform="translate(4.5,-2)">
+        <svg:path d="M0,0 L10,20 Q30,40 50,5 Z"
+                  fill="none" stroke="#00ff7f"/>
+        <svg:text x="12" y="34">A &amp; B</svg:text>
+      </svg:g>
+    </svg:svg>
+  </layer>
+  <layer name="links" visible="false">
+    <asset xlink:type="simple" xlink:href="urn:asset:7"
+           xlink:actuate="onLoad">外部</asset>
+    <empty xmlns=""/>
+  </layer>
+  <?render quality="high"?>
+</scene>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (meta, chunk*, checksum)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT chunk (#PCDATA|part|separator)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST packet channel (alpha|beta|gamma) "beta"
+                  retry NMTOKEN #IMPLIED>
+  <!ATTLIST meta created CDATA #REQUIRED>
+  <!ATTLIST part role NMTOKENS #IMPLIED>
+  <!ENTITY left "&#x41;&#x42;">
+  <!ENTITY right "&#x1F600;">
+]>
+<packet channel="gamma" retry="r_7">
+  <meta created="2026-09-24"/>
+  <chunk role="ignored"><part role="one two">A&#x85;B</part>
+    <separator/><![CDATA[x]]>&left;</chunk>
+  <chunk><part>line
+break</part><part role="tail">end</part></chunk>
+  <checksum>&right;</checksum>
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE form [
+  <!ELEMENT form (field+, submit)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT submit (#PCDATA)>
+  <!ATTLIST form id ID #REQUIRED mode (compact|expanded) "compact">
+  <!ATTLIST field name CDATA #REQUIRED
+                  type (text|number|date) "text"
+                  value CDATA #IMPLIED
+                  disabled (yes|no) "no">
+  <!ATTLIST submit action CDATA #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quote "&quot;">
+]>
+<form id="login" mode="expanded">
+  <field name="user" type="text" value="a&amp;b" disabled="no"/>
+  <field name="count" type="number" value="007"/>
+  <field name="when" type="date" value="2026-09-24"/>
+  <submit action="/submit?next=%2Fhome">Send&nbsp;&quote;</submit>
+</form>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (title, section+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT section (heading?, paragraph+, table?)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|em|link|break)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST section number NMTOKEN #REQUIRED collapsed (true|false) "false">
+  <!ATTLIST link href CDATA #REQUIRED rel (next|prev|source) #IMPLIED>
+  <!ATTLIST cell colspan NMTOKEN "1">
+  <!ENTITY intro "This &amp; that">
+  <!ENTITY % extras "<!ATTLIST report edition CDATA 'draft'>">
+  %extras;
+]>
+<report edition="final">
+  <title>Inspection &amp; Results</title>
+  <section number="1">
+    <heading>Overview</heading>
+    <paragraph>&intro;<em>important</em><break/>continued
+      <link href="urn:doc:2" rel="next">read more</link>
+    </paragraph>
+    <table>
+      <row><cell colspan="2">A</cell><cell>B</cell></row>
+      <row><cell><![CDATA[<not-markup>]]></cell><cell>C</cell></row>
+    </table>
+  </section>
+  <section number="2" collapsed="true">
+    <paragraph>Only a short note.</paragraph>
+  </section>
+</report>
+```

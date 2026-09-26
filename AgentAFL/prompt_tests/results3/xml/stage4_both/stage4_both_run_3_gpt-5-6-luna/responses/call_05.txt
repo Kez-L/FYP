@@ -1,0 +1,194 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (header, item+)>
+  <!ELEMENT header (label, generated)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT item (name, summary, link*, note?)>
+  <!ATTLIST item code ID #REQUIRED status (draft|published|retired) "draft">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link rel NMTOKEN #REQUIRED href CDATA #REQUIRED>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY trademark "™">
+]>
+<catalog xmlns="urn:catalog:2026" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <header>
+    <label>Reference &amp; Methods &trademark;</label>
+    <generated>2026-09-24T12:00:00Z</generated>
+  </header>
+  <item code="a-001" status="published">
+    <name>Recursive descent</name>
+    <summary>Parsing notes with <emphasis xmlns="">inline markup</emphasis>.</summary>
+    <link rel="documentation" href="https://example.invalid/rd"/>
+    <link rel="source" href="urn:source:alpha" xlink:actuate="onRequest"/>
+  </item>
+  <item code="b-002">
+    <name>Token stream</name>
+    <summary><![CDATA[Characters such as < and > remain literal here.]]></summary>
+    <note>Includes a non-ASCII sample: λ, 漢字, and 🧩.</note>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="urn:package:manifest"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:checksum="urn:package:checksum"
+         xml:base="file:///var/tmp/bundle/">
+  <manifest checksum:algorithm="sha256">
+    <component path="bin/tool" mode="0755">
+      <checksum:value>9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08</checksum:value>
+    </component>
+    <component path="share/readme.txt" mode="0644">
+      <checksum:value>e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</checksum:value>
+    </component>
+  </manifest>
+  <resources>
+    <xi:include href="fragments/config.xml" parse="xml">
+      <xi:fallback>
+        <default-config xmlns="">unavailable</default-config>
+      </xi:fallback>
+    </xi:include>
+    <xi:include href="LICENSE.txt" parse="text"/>
+  </resources>
+  <signatures>
+    <signature xmlns="urn:package:signature" algorithm="rsa-sha256">
+      <key-id>key-17</key-id>
+      <value><![CDATA[
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+AA7u1f9w8hJ5m0s8v3c0xY2Q==
+      ]]></value>
+    </signature>
+  </signatures>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"
+      xmlns:app="http://www.w3.org/2007/app"
+      xmlns:media="urn:example:media"
+      xml:lang="en">
+  <title type="html">Signals &amp; Streams</title>
+  <subtitle type="text">A mixed-content publication feed</subtitle>
+  <updated>2026-09-24T08:15:30Z</updated>
+  <id>urn:uuid:7c9e6679-7425-40de-944b-e07fc1f90ae7</id>
+  <link rel="self" type="application/atom+xml" href="/feed.xml"/>
+  <author>
+    <name>Example Laboratory</name>
+    <uri>https://example.invalid/lab</uri>
+    <email>feed@example.invalid</email>
+  </author>
+  <entry xml:base="https://example.invalid/articles/">
+    <title type="xhtml">
+      <div xmlns="http://www.w3.org/1999/xhtml"><b>Boundary</b> conditions</div>
+    </title>
+    <id>tag:example.invalid,2026:article-41</id>
+    <published>2026-09-20T10:00:00Z</published>
+    <updated>2026-09-23T18:45:00Z</updated>
+    <category term="research" label="Research &amp; Development"/>
+    <content type="xhtml">
+      <div xmlns="http://www.w3.org/1999/xhtml">
+        <p>First line<br/>second line.</p>
+        <table>
+          <tr><th>Key</th><th>Value</th></tr>
+          <tr><td>α</td><td>42</td></tr>
+        </table>
+      </div>
+    </content>
+    <media:transcript format="text/vtt">00:00:01.000 --&gt; 00:00:02.000</media:transcript>
+    <app:edited>2026-09-23T18:45:00Z</app:edited>
+  </entry>
+</feed>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ENTITY % common "status CDATA #IMPLIED version NMTOKEN #IMPLIED">
+  <!ELEMENT report (section+, appendix?)>
+  <!ELEMENT section (heading, block+)>
+  <!ATTLIST section id ID #REQUIRED %common;>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT block (#PCDATA | code | list)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT list (entry+)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ELEMENT appendix (entry+)>
+]>
+<report xmlns="urn:report:technical" version="2.0">
+  <section id="intro" status="final" version="2.0">
+    <heading>Parser behavior</heading>
+    <block>Text before <code>tokenize()</code> and after it.</block>
+    <block>
+      A paragraph containing
+      <list>
+        <entry>leading whitespace</entry>
+        <entry>nested &lt; delimiters &gt;</entry>
+        <entry><![CDATA[raw ]]> content]]></entry>
+      </list>
+      followed by prose.
+    </block>
+  </section>
+  <section id="results" status="draft">
+    <heading>Observed results</heading>
+    <block><![CDATA[
+      The sequence "]]>" cannot occur unescaped in a CDATA section.
+      Multiline payload follows.
+    ]]></block>
+    <block>Mixed <code>ASCII</code>, кириллица, 日本語, and combining é.</block>
+  </section>
+  <appendix>
+    <entry>Appendix A: symbols ∀ ∃ ∑</entry>
+    <entry>Appendix B: <em xmlns="">foreign element</em> transition</entry>
+  </appendix>
+</report>
+```
+
+```xml
+<?xml version="1.1" standalone="yes"?>
+<configuration xmlns="urn:config:runtime"
+               xmlns:sec="urn:config:security"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:type="RuntimeConfiguration"
+               xml:space="preserve">
+  <environment name="staging">
+    <variable key="PATH">/opt/bin:/usr/bin</variable>
+    <variable key="EMPTY"></variable>
+    <variable key="QUOTED">a &quot;quoted&quot; value</variable>
+  </environment>
+  <pipeline>
+    <step id="load" class="io">
+      <input format="json" optional="false"/>
+      <output channel="memory"/>
+    </step>
+    <step id="transform" class="compute">
+      <depends-on ref="load"/>
+      <parameter name="threshold" type="decimal">0.000001</parameter>
+      <parameter name="pattern" type="regex"><![CDATA[(?:^|\s)[A-Z]{2,}\s+\d+$]]></parameter>
+    </step>
+    <step id="emit" class="io">
+      <depends-on ref="transform"/>
+      <retry count="3" delay="PT0.250S"/>
+      <destination>
+        <uri scheme="https" host="example.invalid" path="/sink"/>
+        <headers>
+          <header name="X-Trace">αβγ</header>
+          <header name="X-Mode">dry-run</header>
+        </headers>
+      </destination>
+    </step>
+  </pipeline>
+  <sec:policy>
+    <sec:principal name="operator">
+      <sec:allow action="read" resource="*"/>
+      <sec:deny action="write" resource="/system"/>
+    </sec:principal>
+  </sec:policy>
+  <?configuration checksum="pending"?>
+</configuration>
+```

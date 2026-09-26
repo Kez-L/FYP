@@ -1,0 +1,129 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workspace xmlns="urn:acme:workspace" xmlns:meta="urn:acme:metadata" xml:lang="fr" xml:base="https://example.invalid/root/">
+  <!-- mixed content with adjacent text and nested inline elements -->
+  <meta:header>
+    <meta:label><![CDATA[Résumé & index]]></meta:label>
+    <meta:revision value="0x0000002A"/>
+  </meta:header>
+  <document id="r:17" status="draft">
+    Intro <emphasis level="high">non final</emphasis>,
+    followed by <link href="chapter/2.xml">the next section</link>.
+    <empty/>
+  </document>
+  <attachments>
+    <attachment href="data:text/plain,%CE%BB" media-type="text/plain"/>
+    <attachment href="../archive.bin" media-type="application/octet-stream"/>
+  </attachments>
+</workspace>
+```
+
+```xml
+<?xml version="1.0"?>
+<scene xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 60">
+  <defs>
+    <linearGradient id="g">
+      <stop offset="0%"><![CDATA[not markup <inside>]]></stop>
+      <stop offset="100%" stop-color="#ff00aa"/>
+    </linearGradient>
+    <path id="curve" d="M0,0 C10,20 30,20 40,0"/>
+  </defs>
+  <g transform="translate(4.5,-2)" opacity=".875">
+    <use xlink:href="#curve" fill="none"/>
+    <rect x="1" y="2" width="33.333" height="12" rx="2.25" fill="url(#g)"/>
+    <text x="5" y="28" rotate="0 15 30">A &amp; B — π</text>
+  </g>
+</scene>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (header, payload, signature?)>
+  <!ATTLIST manifest xmlns:sec CDATA #IMPLIED>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding (plain|base64) "plain">
+  <!ELEMENT signature (#PCDATA)>
+  <!ENTITY % common "CDATA">
+  <!ENTITY nbsp "&#160;">
+]>
+<manifest xmlns:sec="urn:security">
+  <header>
+    <field name="created" value="2026-09-24T00:00:00Z"/>
+    <field name="owner" value="&quot;build-bot&quot;"/>
+    <field name="empty"/>
+  </header>
+  <payload>
+    <chunk index="00" encoding="plain">left &amp; right&nbsp;</chunk>
+    <chunk index="01" encoding="base64">AAECAwQFBgcICQ==</chunk>
+    <chunk index="02">line one
+line two&#x0A;line three</chunk>
+  </payload>
+  <signature>sha256:0000000000000000000000000000000000000000000000000000000000000000</signature>
+</manifest>
+```
+
+```xml
+<?xml version="1.1"?>
+<network xmlns="urn:example:network" xmlns:x="urn:example:extension">
+  <node id="n0" kind="router">
+    <address family="ipv6">2001:db8::1</address>
+    <ports>
+      <port number="0" protocol="tcp">
+        <state>LISTEN</state>
+        <peer ref="n2"/>
+      </port>
+      <port number="65535" protocol="udp">
+        <state><![CDATA[UNKNOWN <state>]]></state>
+      </port>
+    </ports>
+    <x:annotation>
+      <x:tag key="latency" unit="ms">0.001</x:tag>
+      <x:tag key="labels">edge,core,temporary</x:tag>
+    </x:annotation>
+  </node>
+  <node id="n2" kind="sensor">
+    <address family="mac">00:00:5e:00:53:af</address>
+    <metrics>
+      <sample at="2026-09-24T12:34:56.789+05:30" value="-0.0"/>
+      <sample at="2026-09-24T12:34:57Z" value="1E+309"/>
+    </metrics>
+  </node>
+</network>
+```
+
+```xml
+<report xmlns="urn:example:report" xmlns:a="urn:example:analytics">
+  <section name="mixed">
+    Text before
+    <table border="0">
+      <row>
+        <cell rowspan="2">A</cell>
+        <cell colspan="3">B &lt; C</cell>
+      </row>
+      <row>
+        <cell><![CDATA[ raw ]]> </cell>
+        <cell/>
+        <cell>Ω</cell>
+      </row>
+    </table>
+    Text after.
+  </section>
+  <a:events>
+    <a:event id="evt-00000000000000000000000000000001" type="☃">
+      <a:time>2026-09-24T23:59:60Z</a:time>
+      <a:data encoding="hex">deadBEEF0000</a:data>
+    </a:event>
+    <a:event id="" type="null">
+      <a:time/>
+      <a:data encoding="none"/>
+    </a:event>
+  </a:events>
+  <?processing instruction?>
+  <!-- comment containing --? no -->
+</report>
+```

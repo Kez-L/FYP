@@ -1,0 +1,23 @@
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file path CDATA #REQUIRED size NMTOKEN #IMPLIED>
+  <!ELEMENT payload (section*)>
+  <!ELEMENT section (#PCDATA|blob)*>
+  <!ATTLIST section name CDATA #IMPLIED>
+  <!ELEMENT blob (#PCDATA)>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY percent "100%">
+]>
+<package>
+  <manifest>
+    <file path="a&amp;b.txt" size="0"/>
+    <file path="space name.dat" size="0000000007"/>
+  </manifest>
+  <payload>
+    <section name="empty"></section>
+    <section name="mixed">start<blob>AAECAwQF</blob>middle &percent; end</section>
+    <section><![CDATA[]]></section>
+  </payload>
+</package>

@@ -1,0 +1,164 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (name, price, details?)>
+  <!ATTLIST item sku ID #REQUIRED status (active|archived) "active">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ENTITY currency "€">
+]>
+<catalog>
+  <section code="hardware">
+    <title>Tools &amp; Components</title>
+    <item sku="sku-001">
+      <name>Precision driver</name>
+      <price>19.95 &currency;</price>
+      <details>Small <em>magnetic</em> tip<br/>with case.</details>
+    </item>
+    <item sku="sku-002" status="archived">
+      <name>Caliper</name>
+      <price>42.00 &currency;</price>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<configuration xmlns="urn:acme:config"
+               xmlns:sec="urn:acme:security"
+               xml:base="https://example.invalid/config/">
+  <profile name="staging" enabled="true">
+    <include href="defaults.xml"/>
+    <parameters>
+      <parameter name="timeout" type="duration">PT30S</parameter>
+      <parameter name="retries" type="integer">03</parameter>
+      <parameter name="features">
+        <value>cache</value>
+        <value>telemetry</value>
+        <value>signed-requests</value>
+      </parameter>
+    </parameters>
+    <sec:credentials>
+      <sec:token expires="2027-01-01T00:00:00Z">
+        <![CDATA[opaque-token-with-&-brackets]]>
+      </sec:token>
+      <sec:permissions>
+        <sec:grant resource="reports/*" action="read"/>
+        <sec:grant resource="admin" action="deny"/>
+      </sec:permissions>
+    </sec:credentials>
+  </profile>
+  <?reload immediate?>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log [
+  <!ELEMENT log (header, event*)>
+  <!ELEMENT header (source, generated)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT event (timestamp, level, message, context?)>
+  <!ATTLIST event id ID #REQUIRED level (debug|info|warning|error) "info">
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT level (#PCDATA)>
+  <!ELEMENT message (#PCDATA|code|link)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT context (field*)>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST field name NMTOKEN #REQUIRED>
+]>
+<log>
+  <header>
+    <source>worker-07</source>
+    <generated>2026-09-24T12:34:56.789+05:30</generated>
+  </header>
+  <event id="evt-a1" level="warning">
+    <timestamp>2026-09-24T12:35:01Z</timestamp>
+    <level>warning</level>
+    <message>Retrying <code>PUT /v1/items</code> after <link>gateway timeout</link>.</message>
+    <context>
+      <field name="attempt">2</field>
+      <field name="latency-ms">1840</field>
+      <field name="empty"/>
+    </context>
+  </event>
+  <event id="evt-a2" level="error">
+    <timestamp>2026-09-24T12:35:04Z</timestamp>
+    <level>error</level>
+    <message><![CDATA[response contained ]]>]]><![CDATA[ unexpected delimiters]]></message>
+  </event>
+</log>
+```
+
+```xml
+<?xml version="1.0"?>
+<package xmlns="urn:example:package"
+         xmlns:m="urn:example:manifest"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="urn:example:package package.xsd">
+  <manifest m:version="2.7" m:checksum="sha256:abc123">
+    <m:file path="bin/run" mode="0755" size="128"/>
+    <m:file path="share/data &amp; notes.txt" mode="0644" size="0"/>
+  </manifest>
+  <payload>
+    <chunk index="0" compression="none">AAECAwQF</chunk>
+    <chunk index="1" compression="gzip" encoding="base64">
+      H4sIAAAAAAACA8tIzcnJBwCGphA2BQAAAA==
+    </chunk>
+    <chunk index="2" compression="none"><![CDATA[
+      line-one
+      line-two
+      line-three
+    ]]></chunk>
+  </payload>
+  <signature algorithm="ed25519">
+    <key-id>release-2026</key-id>
+    <value>MEUCIQDh+placeholder+/signature==</value>
+  </signature>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE survey [
+  <!ELEMENT survey (intro, question+)>
+  <!ELEMENT intro (#PCDATA|strong|br)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT question (prompt, choice+, answer?)>
+  <!ATTLIST question id NMTOKEN #REQUIRED multi (yes|no) "no">
+  <!ELEMENT prompt (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT choice (#PCDATA)>
+  <!ATTLIST choice key NMTOKEN #REQUIRED selected (true|false) "false">
+  <!ELEMENT answer (#PCDATA)>
+]>
+<survey xml:lang="en" xml:space="preserve">
+  <intro>Choose the best answer.<br/>Some prompts contain <strong>formatted</strong> text.</intro>
+  <question id="q-α" multi="no">
+    <prompt>Which symbol means <code>&lt;=</code>?</prompt>
+    <choice key="a">Less than</choice>
+    <choice key="b" selected="true">Less than or equal to</choice>
+    <choice key="c">Not equal to</choice>
+    <answer>b</answer>
+  </question>
+  <question id="q-2" multi="yes">
+    <prompt>Select all <em>safe</em> transport options.</prompt>
+    <choice key="tls" selected="true">TLS</choice>
+    <choice key="plain">Plain text</choice>
+    <choice key="local" selected="true">Local socket</choice>
+  </question>
+</survey>
+```

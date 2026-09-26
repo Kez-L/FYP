@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ENTITY % switches "enabled (yes|no) 'yes'">
+  <!ELEMENT configuration (module+, defaults?)>
+  <!ELEMENT module (option*, endpoint?)>
+  <!ATTLIST module name NMTOKEN #REQUIRED %switches;>
+  <!ELEMENT option EMPTY>
+  <!ATTLIST option key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT endpoint (header*)>
+  <!ATTLIST endpoint scheme (http|https|unix) #REQUIRED address CDATA #REQUIRED>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header name CDATA #REQUIRED value CDATA #REQUIRED>
+  <!ELEMENT defaults (option*)>
+  <!ATTLIST defaults scope CDATA "global">
+]>
+<configuration>
+  <module name="cache" enabled="yes">
+    <option key="size" value="256"/>
+    <option key="policy" value="lru"/>
+  </module>
+  <module name="gateway" enabled="no">
+    <endpoint scheme="https" address="api.example.test/v1">
+      <header name="Accept" value="application/xml"/>
+      <header name="X-Trace" value="a&amp;b"/>
+    </endpoint>
+  </module>
+  <defaults scope="global">
+    <option key="timeout" value="30"/>
+  </defaults>
+</configuration>

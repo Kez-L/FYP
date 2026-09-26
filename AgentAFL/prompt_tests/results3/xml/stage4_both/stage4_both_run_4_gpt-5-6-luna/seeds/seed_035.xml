@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow" xmlns:task="urn:example:task">
+  <?engine version="3" strict="false"?>
+  <pipeline id="pipe-77">
+    <stage name="prepare">
+      <task:task id="t1" type="transform">
+        <task:input source="stream" encoding="base64"/>
+        <task:operation name="split">
+          <task:argument name="delimiter"><![CDATA[||]]></task:argument>
+          <task:argument name="limit">0</task:argument>
+        </task:operation>
+        <task:output channel="prepared"/>
+      </task:task>
+    </stage>
+    <stage name="dispatch" depends-on="prepare">
+      <branch expression="$.kind">
+        <case value="image">
+          <task:task id="t2" type="route">
+            <task:target priority="high">visual</task:target>
+            <task:retry count="3" delay="PT0S"/>
+          </task:task>
+        </case>
+        <case value="text">
+          <task:task id="t3" type="route">
+            <task:target priority="low">linguistic</task:target>
+            <task:retry count="0"/>
+          </task:task>
+        </case>
+        <default>
+          <task:task id="t4" type="discard">
+            <task:reason>unclassified &amp; incomplete</task:reason>
+          </task:task>
+        </default>
+      </branch>
+    </stage>
+    <stage name="finalize" depends-on="dispatch">
+      <guard>
+        <condition operator="or">
+          <condition operator="equals"><left>status</left><right>ok</right></condition>
+          <condition operator="exists"><left>warning</left></condition>
+        </condition>
+      </guard>
+      <result code="204">
+        <message xml:lang="ja">処理が完了しました</message>
+      </result>
+    </stage>
+  </pipeline>
+</workflow>

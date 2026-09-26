@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (name, version, dependency*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT version (#PCDATA)>
+  <!ELEMENT dependency EMPTY>
+  <!ATTLIST dependency
+    name CDATA #REQUIRED
+    range CDATA #IMPLIED
+    optional (true|false) "false">
+  <!ELEMENT payload (section*)>
+  <!ELEMENT section (title?, content)>
+  <!ATTLIST section id ID #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT content (#PCDATA|item|separator)*>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ENTITY % common 'xml:space (default|preserve) "default"'>
+  <!ATTLIST content %common;>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data.bin" NDATA bin>
+]>
+<package>
+  <manifest>
+    <name>sample&amp;bundle</name>
+    <version>0.0.0-alpha+7</version>
+    <dependency name="core" range="&gt;=1.0" optional="false"/>
+    <dependency name="extras" range="*" optional="true"/>
+  </manifest>
+  <payload>
+    <section id="s-a">
+      <title>First</title>
+      <content xml:space="preserve">
+        leading
+        <item>one</item><separator/>
+        trailing
+      </content>
+    </section>
+    <section id="s-b">
+      <content><item><![CDATA[x]]></item><item>y</item></content>
+    </section>
+  </payload>
+</package>

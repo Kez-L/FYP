@@ -1,0 +1,122 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+)>
+  <!ELEMENT entry (key, value, checksum?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST entry priority (low|normal|high) "normal">
+  <!ENTITY nbsp "&#160;">
+]>
+<archive>
+  <entry priority="high">
+    <key>alpha</key>
+    <value>First&nbsp;record</value>
+    <checksum><![CDATA[sha256:0000<invalid-looking>]]></checksum>
+  </entry>
+  <entry priority="low">
+    <key>omega</key>
+    <value>Trailing whitespace&#x20;</value>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.1"?>
+<r:report xmlns:r="urn:report" xmlns:m="urn:metrics" xml:lang="fr">
+  <r:header>
+    <r:title>Résumé &amp; contrôle</r:title>
+    <?build id="nightly" mode="strict"?>
+  </r:header>
+  <m:measure name="latency" unit="ms">
+    <m:value>0.0000001</m:value>
+    <m:value>INF</m:value>
+    <m:value>-0</m:value>
+  </m:measure>
+  <r:body xml:space="preserve">
+    
+    <r:line>avant<r:emphasis>après</r:emphasis>fin</r:line>
+    <r:line><![CDATA[line with ]]> and <r:emphasis>markup</r:emphasis></r:line>
+  </r:body>
+</r:report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (pair*)>
+  <!ELEMENT pair (key, value)>
+  <!ELEMENT key EMPTY>
+  <!ELEMENT value ANY>
+  <!ATTLIST key name CDATA #REQUIRED>
+  <!ATTLIST value type CDATA "text">
+]>
+<map>
+  <pair>
+    <key name="empty"/>
+    <value type="null"/>
+  </pair>
+  <pair>
+    <key name="quote&quot;apos&apos;"/>
+    <value type="mixed">a<part/>b<!-- gap -->c</value>
+  </pair>
+  <pair>
+    <key name="unicode">ignored text</key>
+    <value type="binary">☃ 😀 café</value>
+  </pair>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<package xmlns="urn:pkg" xmlns:rel="urn:relationship" xml:base="https://example.invalid/root/">
+  <manifest>
+    <file href="./a/../payload.bin" media-type="application/octet-stream"/>
+    <file href="data:text/plain;charset=utf-8,hello%20world" media-type="text/plain"/>
+  </manifest>
+  <relationships>
+    <rel:relationship id="r1" type="urn:link" target="../other.xml"/>
+    <rel:relationship id="r2" type="urn:link">
+      <rel:target>fragment.xml#part-1</rel:target>
+    </rel:relationship>
+  </relationships>
+  <content><![CDATA[
+    <not-parsed>
+      & still text
+    </not-parsed>
+  ]]></content>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (layer+)>
+  <!ELEMENT layer (object*)>
+  <!ELEMENT object (transform?, shape)>
+  <!ELEMENT transform EMPTY>
+  <!ELEMENT shape (#PCDATA)>
+  <!ATTLIST layer index NMTOKEN #REQUIRED>
+  <!ATTLIST object id ID #IMPLIED>
+  <!ATTLIST transform matrix CDATA #IMPLIED>
+]>
+<scene>
+  <layer index="00">
+    <object id="obj_a">
+      <transform matrix="1 0 0 1 0 0"/>
+      <shape>rect</shape>
+    </object>
+    <object id="obj_b">
+      <shape>circle</shape>
+    </object>
+  </layer>
+  <layer index="0x10">
+    <!-- nested text, entities, and unusual numeric forms -->
+    <object id="obj_c">
+      <transform matrix="nan inf -inf 1e-309"/>
+      <shape><![CDATA[polygon]]></shape>
+    </object>
+  </layer>
+</scene>
+```

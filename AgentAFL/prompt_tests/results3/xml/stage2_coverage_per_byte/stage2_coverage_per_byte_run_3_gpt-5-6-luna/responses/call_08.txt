@@ -1,0 +1,113 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder|file|alias)*>
+  <!ELEMENT folder (folder|file|alias)*>
+  <!ELEMENT file (#PCDATA)>
+  <!ELEMENT alias EMPTY>
+  <!ATTLIST archive xmlns:meta CDATA #IMPLIED>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ATTLIST file path CDATA #REQUIRED checksum ID #IMPLIED>
+  <!ATTLIST alias target IDREF #REQUIRED>
+  <!ENTITY sep "/">
+  <!ENTITY label "backup &amp; vault">
+]>
+<archive xmlns:meta="urn:metadata" meta:created="today">
+  <folder name="&label;">
+    <file path="&sep;var&sep;data" checksum="f1">payload <![CDATA[<raw/>]]></file>
+    <alias target="f1"/>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="urn:default" xmlns:a="urn:a" xmlns:b="urn:b" xml:lang="fr">
+  <?stage prepare?>
+  <!-- comment with -- no -->
+  <a:item a:key="x" b:key="y" xmlns:b="">
+    <a:value xml:space="preserve"><![CDATA[alpha ]]> &amp; <![CDATA[ beta]]></a:value>
+    <nested xmlns="urn:nested" xmlns:a="urn:shadow">
+      <a:item a:key="z"/>
+    </nested>
+  </a:item>
+  <?stage done?>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, body, trailer?)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT body (chunk+)>
+  <!ELEMENT chunk (#PCDATA|mark)*>
+  <!ELEMENT mark EMPTY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST header version NMTOKEN #REQUIRED flags NMTOKENS #IMPLIED>
+  <!ATTLIST chunk id ID #IMPLIED ref IDREF #IMPLIED>
+  <!ATTLIST mark kind (open|close|pause) "pause">
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+]>
+<packet>
+  <header version="v2" flags="urgent encrypted"/>
+  <body>
+    <chunk id="c1">one<mark kind="open"/>&left;two&right;</chunk>
+    <chunk ref="c1">three</chunk>
+  </body>
+  <trailer>tail</trailer>
+</packet>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (entry*)>
+  <!ELEMENT entry (key, value, note?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|link)*>
+  <!ELEMENT note ANY>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST entry id ID #REQUIRED type (text|number|flag) #IMPLIED>
+  <!ATTLIST link href CDATA #REQUIRED rel CDATA "related">
+  <!ENTITY nbsp "&#160;">
+]>
+<map>
+  <entry id="e0" type="text">
+    <key>name</key>
+    <value>Tom &amp; Jerry&nbsp;<link href="urn:item:7"/></value>
+    <note><extra>un-declared element</extra></note>
+  </entry>
+  <entry id="e1" type="number">
+    <key>count</key>
+    <value>42</value>
+  </entry>
+</map>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE response [
+  <!ELEMENT response (status, data)>
+  <!ELEMENT status (#PCDATA)>
+  <!ELEMENT data (row*)>
+  <!ELEMENT row (cell*)>
+  <!ELEMENT cell (#PCDATA)>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "missing.bin" NDATA bin>
+  <!ATTLIST response code (ok|error) #REQUIRED generated CDATA #FIXED "parser">
+  <!ATTLIST row number CDATA #REQUIRED>
+  <!ATTLIST cell kind (text|binary) "text" ref ENTITY #IMPLIED>
+]>
+<response code="ok">
+  <status>ready</status>
+  <data>
+    <row number="01">
+      <cell kind="text">first</cell>
+      <cell kind="binary" ref="blob"/>
+    </row>
+    <row number="02"><cell>second</cell></row>
+  </data>
+</response>
+```

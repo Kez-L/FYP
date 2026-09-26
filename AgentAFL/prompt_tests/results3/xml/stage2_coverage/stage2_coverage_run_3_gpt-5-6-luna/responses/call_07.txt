@@ -1,0 +1,132 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ENTITY % mode "INCLUDE">
+  <![%mode;[
+    <!ELEMENT report (title, item+, tail?)>
+    <!ELEMENT title (#PCDATA)>
+    <!ELEMENT item (#PCDATA|emph|br)*>
+    <!ELEMENT emph (#PCDATA)>
+    <!ELEMENT br EMPTY>
+    <!ELEMENT tail (#PCDATA)>
+  ]]>
+  <!NOTATION raw SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "file:///tmp/fuzz.bin" NDATA raw>
+  <!ATTLIST report
+    xmlns CDATA #IMPLIED
+    xml:lang NMTOKEN #IMPLIED
+  >
+  <!ATTLIST item
+    kind (alpha|beta) "alpha"
+    payload ENTITY #IMPLIED
+  >
+]>
+<report xmlns="urn:example:report" xml:lang="en-Latn">
+  <title>mixed <emph>content</emph> and <br/> boundaries</title>
+  <item kind="beta" payload="blob">one &amp; two</item>
+  <item>before<br/>after<emph>inside</emph></item>
+  <tail><![CDATA[characters ]]> and markup-looking text</tail>
+</report>
+```
+
+```xml
+<?xml version="1.1"?>
+<space:universe
+    xmlns:space="urn:space:outer"
+    xmlns:inner="urn:space:inner"
+    xmlns:x="urn:space:extra"
+    xml:base="https://example.invalid/a/../b/"
+    xml:lang="zh-Hant"
+    xml:space="preserve">
+  <?calibrate mode="wide"?>
+  <!-- comment containing <fake> &amp; text -->
+  <inner:orbit id="o-1" x:axis="x:y" inner:note="αβγ">
+    <![CDATA[
+      <not-an-element attr="]"> &amp; π
+    ]]>
+    <x:point x:lat="0" x:lon="-0.000" xml:space="default">  trim me  </x:point>
+    <space:empty/>
+  </inner:orbit>
+  <?payload data?>
+</space:universe>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry|note)*>
+  <!ELEMENT entry (name, description, part*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|mark|part)*>
+  <!ELEMENT part (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST catalog version NMTOKEN #REQUIRED>
+  <!ATTLIST entry code ID #REQUIRED links IDREFS #IMPLIED>
+  <!ATTLIST part role (head|body|tail) "body">
+  <!ENTITY stamp "2026-09-24T00:00:00Z">
+  <!ENTITY fragment "<part role='head'>generated &amp; fragment</part>">
+]>
+<catalog version="v3">
+  <entry code="e0" links="e1 e2">
+    <name>alpha</name>
+    <description>created at <mark>&stamp;</mark> with &fragment; trailing text</description>
+    <part role="tail">end <![CDATA[ ]]> marker</part>
+  </entry>
+  <entry code="e1">
+    <name><![CDATA[brackets: < > ]]></name>
+    <description><part>nested <mark>piece</mark></part></description>
+  </entry>
+  <note>unassociated text</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE vessel [
+  <!ENTITY % optional "IGNORE">
+  <![%optional;[
+    <!ELEMENT hidden EMPTY>
+    <!ATTLIST hidden forbidden CDATA #IMPLIED>
+  ]]>
+  <!ELEMENT vessel (header, payload, footer)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload (#PCDATA)>
+  <!ELEMENT footer EMPTY>
+  <!ATTLIST vessel
+    xmlns:vh CDATA #IMPLIED
+    state (armed|idle|sealed) "idle"
+    checksum CDATA #IMPLIED
+  >
+  <!ATTLIST header
+    source CDATA #FIXED "sensor"
+    revision NMTOKEN #IMPLIED
+  >
+  <!ENTITY left "&lt;left&gt;">
+  <!ENTITY right "&gt;right&lt;">
+]>
+<vessel xmlns:vh="urn:vessel" state="sealed" checksum="&#x0A;A&amp;B">
+  <header revision="0007"/>
+  <payload>&left; raw &amp; quoted &quot;data&quot; &right; &#x1F642;</payload>
+  <footer/>
+</vessel>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE recursive [
+  <!ELEMENT recursive (#PCDATA|branch|leaf)*>
+  <!ELEMENT branch (#PCDATA|leaf|branch)*>
+  <!ELEMENT leaf (#PCDATA)>
+  <!ATTLIST branch depth NMTOKEN #IMPLIED>
+  <!ENTITY a "A-&b;-Z">
+  <!ENTITY b "B-&c;-Y">
+  <!ENTITY c "C-&a;-X">
+  <!ENTITY markup "<branch depth='entity'><leaf>expanded</leaf></branch>">
+  <!ENTITY nbsp "&#160;">
+]>
+<recursive>
+  prefix &nbsp; &markup; middle &a; suffix
+  <branch depth="0"><leaf><![CDATA[&a; is literal here]]></leaf></branch>
+</recursive>
+```

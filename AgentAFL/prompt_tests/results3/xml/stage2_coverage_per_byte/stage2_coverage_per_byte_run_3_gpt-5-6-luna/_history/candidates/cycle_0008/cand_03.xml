@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE network [
+  <!ELEMENT network (node+, edge*)>
+  <!ELEMENT node (label?, property*)>
+  <!ELEMENT edge EMPTY>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST network xmlns:n CDATA #IMPLIED>
+  <!ATTLIST node id ID #REQUIRED type (router|host|switch) #REQUIRED>
+  <!ATTLIST label xml:space (default|preserve) "default">
+  <!ATTLIST property key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+  <!ENTITY amp "&amp;">
+  <!ENTITY note "node-&amp;-edge">
+]>
+<network xmlns:n="urn:net">
+  <node id="r1" type="router">
+    <label xml:space="preserve"> core &amp; gateway </label>
+    <property key="role" value="&note;"/>
+  </node>
+  <node id="h1" type="host">
+    <property key="address" value="2001:db8::1"/>
+  </node>
+  <node id="s1" type="switch"/>
+  <edge from="r1" to="s1" weight="1.5"/>
+  <edge from="s1" to="h1" weight="&amp;"/>
+</network>

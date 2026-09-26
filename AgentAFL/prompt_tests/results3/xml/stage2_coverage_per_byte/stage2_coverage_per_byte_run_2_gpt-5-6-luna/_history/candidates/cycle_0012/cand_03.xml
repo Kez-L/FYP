@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder+)>
+  <!ELEMENT folder (label, entry*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT entry (name, metadata, content?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT metadata (owner, tag*)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT content (#PCDATA|ref|linebreak)*>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT linebreak EMPTY>
+  <!ATTLIST archive xmlns:a CDATA #FIXED "urn:archive"
+                    format (flat|tree) "tree">
+  <!ATTLIST folder id ID #REQUIRED>
+  <!ATTLIST entry state (new|kept|deleted) "kept" checksum CDATA #IMPLIED>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY missing "unclosed">
+]>
+<archive xmlns:a="urn:archive" format="tree">
+  <folder id="root">
+    <label>Primary &missing;</label>
+    <entry state="new" checksum="a&amp;b">
+      <name>notes.txt</name>
+      <metadata>
+        <owner>user</owner>
+        <tag>a</tag>
+        <tag>b</tag>
+      </metadata>
+      <content>first<linebreak/>second<ref target="ghost"/>tail</content>
+    </entry>
+  </folder>
+</archive>

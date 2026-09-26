@@ -1,0 +1,100 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (name, price?, note*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST section code ID #IMPLIED>
+  <!ATTLIST item ref IDREF #IMPLIED status (new|used|unknown) "unknown">
+  <!ENTITY currency "€">
+]>
+<catalog>
+  <section code="s1">
+    <title>Hardware</title>
+    <item ref="missing" status="new">
+      <name>Adapter</name>
+      <price>19 &currency; 99</price>
+      <note><![CDATA[<unparsed> & bytes]]></note>
+    </item>
+  </section>
+  <section code="s2">
+    <title>Empty section</title>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<r xmlns="urn:default" xmlns:x="urn:x" xmlns:y="urn:y">
+  <x:a x:k="1">
+    <y:b xmlns="urn:inner">
+      <c xmlns:x="">text</c>
+      <x:d xmlns:x="urn:rebound" x:k="2"/>
+    </y:b>
+  </x:a>
+  <mixed xml:space="preserve">  one
+    <part>two</part>
+    three  </mixed>
+  <tail xmlns:y="urn:other" y:z="&quot;quoted&quot;"/>
+</r>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE root [
+  <!ELEMENT root (entry*)>
+  <!ELEMENT entry (#PCDATA|entry)*>
+  <!ATTLIST entry level CDATA "0">
+  <!ENTITY one "alpha">
+  <!ENTITY two "&one; &amp; beta">
+  <!ENTITY recursive "&two;">
+]>
+<root>
+  <entry level="1">A &two;</entry>
+  <entry level="2"><entry level="3">&recursive;</entry></entry>
+  <entry><![CDATA[]]><![CDATA[split]]>tail</entry>
+</root>
+```
+
+```xml
+<message xmlns="urn:msg" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Header>
+    <token soap:mustUnderstand="1">abc</token>
+    <route>
+      <hop>first</hop>
+      <hop>second</hop>
+    </route>
+  </soap:Header>
+  <soap:Body>
+    <request id="r-7" xml:lang="fr">
+      <payload encoding="base64">AAEC/f8=</payload>
+      <payload encoding="unknown"/>
+    </request>
+    <soap:Fault>
+      <code>Client</code>
+      <detail><![CDATA[malformed & diagnostic]]></detail>
+    </soap:Fault>
+  </soap:Body>
+</message>
+```
+
+```xml
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST cell kind NMTOKENS #IMPLIED>
+  <!ENTITY left "<cell>generated</cell>">
+]>
+<matrix>
+  <row><cell kind="a b c">1</cell><cell>2</cell></row>
+  <row>
+    &left;
+    <cell>3 &lt; 4 &amp;&amp; 5 &gt; 1</cell>
+  </row>
+</matrix>
+```

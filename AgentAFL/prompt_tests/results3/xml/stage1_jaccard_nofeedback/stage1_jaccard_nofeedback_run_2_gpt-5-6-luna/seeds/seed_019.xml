@@ -1,0 +1,29 @@
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header?, body)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field (#PCDATA)>
+  <!ELEMENT body (message|group|empty)*>
+  <!ELEMENT message (#PCDATA|link|br)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT group (message|group)*>
+  <!ELEMENT empty EMPTY>
+  <!ATTLIST message id ID #IMPLIED>
+  <!ATTLIST link href CDATA #REQUIRED>
+]>
+<envelope>
+  <header>
+    <field>content-type: application/xml</field>
+    <field>checksum: &#xFFFFFFFF;</field>
+  </header>
+  <body>
+    <group>
+      <message id="m1">start<link href="urn:x">middle</link><br/>end</message>
+      <group>
+        <message>deep <![CDATA[section]]> value</message>
+        <empty/>
+      </group>
+    </group>
+    <message id="m2">tail &lt; escaped &gt; text</message>
+  </body>
+</envelope>

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (chunk+)>
+  <!ELEMENT chunk (#PCDATA|meta|data)*>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT data (#PCDATA)>
+  <!ATTLIST stream count NMTOKEN #IMPLIED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED sealed (true|false) #IMPLIED>
+  <!ATTLIST meta key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY open "&#x3C;">
+  <!ENTITY close "&#x3E;">
+]>
+<stream count="3">
+  <chunk index="0" sealed="false">
+    <meta key="encoding" value="UTF-8"/>
+    <data><![CDATA[
+      bytes: 00 01 02 03
+      delimiters: < & > " '
+    ]]></data>
+  </chunk>
+  <chunk index="1">
+    prefix &open;data&close;
+    <meta key="empty"/>
+    <data>left &amp; right &#x1F600;</data>
+  </chunk>
+  <chunk index="2" sealed="true"><![CDATA[unterminated-looking ]]]></chunk>
+</stream>

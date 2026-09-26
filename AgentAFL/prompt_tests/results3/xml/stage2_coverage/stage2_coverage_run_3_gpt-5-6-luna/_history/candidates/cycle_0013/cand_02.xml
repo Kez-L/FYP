@@ -1,0 +1,31 @@
+<?xml version="1.1"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record*)>
+  <!ELEMENT record (key, payload, link*)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk|escape)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT escape (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST archive mode (full|delta) "full">
+  <!ATTLIST record uid ID #REQUIRED type CDATA #IMPLIED>
+  <!ATTLIST link rel (next|previous|related) #REQUIRED target IDREF #IMPLIED>
+  <!ENTITY alpha "one">
+  <!ENTITY beta "&alpha;-two">
+  <!ENTITY gamma "&beta;-three">
+]>
+<archive mode="delta">
+  <record uid="rA" type="text">
+    <key>first</key>
+    <payload><![CDATA[
+      raw <markup> and ]]> characters
+    ]]><chunk>&gamma;</chunk><escape>&lt;tag attr=&quot;x&quot;&gt;</escape></payload>
+    <link rel="next" target="rB"/>
+  </record>
+  <record uid="rB" type="binary">
+    <key>second&#x85;entry</key>
+    <payload><chunk><![CDATA[AA<<BB&&CC]]></chunk></payload>
+    <link rel="previous" target="rA"/>
+    <link rel="related" target="unknown"/>
+  </record>
+</archive>

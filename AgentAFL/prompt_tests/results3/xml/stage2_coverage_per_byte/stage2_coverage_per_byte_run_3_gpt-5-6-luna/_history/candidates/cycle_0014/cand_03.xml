@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (start, step*, end)>
+  <!ELEMENT start EMPTY>
+  <!ELEMENT step (input?, action+, output?)>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT output (#PCDATA)>
+  <!ELEMENT end EMPTY>
+  <!ATTLIST workflow version CDATA #FIXED "3">
+  <!ATTLIST start next IDREF #IMPLIED>
+  <!ATTLIST step id ID #REQUIRED next IDREFS #IMPLIED>
+  <!ATTLIST action type (shell|http|noop) "noop">
+  <!ENTITY nbsp "&#160;">
+]>
+<workflow version="3">
+  <start next="s1"/>
+  <step id="s1" next="s2 s3">
+    <input>user&nbsp;data</input>
+    <action type="http">/api/v1/items?x=1&amp;y=2</action>
+    <action type="noop">ignored</action>
+    <output>queued</output>
+  </step>
+  <step id="s2">
+    <action type="shell">echo <![CDATA[$HOME && $?]]></action>
+  </step>
+  <step id="s3"><action type="http"/></step>
+  <end/>
+</workflow>

@@ -1,0 +1,124 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:workspace xmlns:r="urn:root" xmlns:x="urn:aux" xmlns="">
+  <r:header xml:space="preserve"><![CDATA[  leading
+trailing  ]]></r:header>
+  <x:item x:code="A&amp;B" xml:lang="zh-Hant">
+    pre<r:mark data="&#x2028;"/><![CDATA[<not-an-element>]]>post
+    <?trace value="αβγ"?>
+  </x:item>
+  <r:empty x:flag="true"/>
+  <!-- comment with --? no -->
+  <r:tail xmlns:x="urn:shadow"><x:item/><x:item x:code="&#65;"/></r:tail>
+</r:workspace>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, (record | note | record-ref)*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT record EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT record-ref EMPTY>
+  <!ATTLIST section id ID #REQUIRED kind (open|closed) "open">
+  <!ATTLIST record key ID #REQUIRED status CDATA #IMPLIED>
+  <!ATTLIST record-ref target IDREF #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quoted "&quot;inside&quot;">
+  <!NOTATION plain SYSTEM "text/plain">
+]>
+<catalog>
+  <section id="s1" kind="closed">
+    <title>Résumé &nbsp; &quoted;</title>
+    <record key="r1" status="archived"/>
+    <record-ref target="r1"/>
+    <note>mixed <![CDATA[content]]> and &#x9; tabs</note>
+  </section>
+  <section id="s2">
+    <title>Second</title>
+    <record key="r2"/>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (meta?, body, checksum?)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT body (#PCDATA | chunk)*>
+  <!ELEMENT chunk EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST meta
+    version NMTOKEN #REQUIRED
+    flags NMTOKENS #IMPLIED>
+  <!ATTLIST chunk
+    offset NMTOKEN #REQUIRED
+    size NMTOKEN "0">
+  <!ENTITY linebreak "&#x85;">
+  <!ENTITY ctrl "&#x1F;">
+]>
+<packet>
+  <meta version="v1.0" flags="compressed signed"/>
+  <body>start&linebreak;<chunk offset="0" size="000"/>&ctrl;end</body>
+  <checksum><![CDATA[00ff11ee]]></checksum>
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % declarations '
+    <!ELEMENT warning (#PCDATA)>
+    <!ATTLIST warning level (low|medium|high) "medium">
+  '>
+  %declarations;
+  <!ELEMENT report (context, warning*, data)>
+  <!ELEMENT context (source, timestamp)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT data ANY>
+  <!ENTITY amp "&amp;">
+  <!ENTITY nested "one &amp; two &amp; three">
+]>
+<report>
+  <context>
+    <source><![CDATA[scanner/core]]></source>
+    <timestamp>2026-09-24T12:34:56Z</timestamp>
+  </context>
+  <warning level="high">A &amp; B</warning>
+  <warning>line one
+line two</warning>
+  <data>
+    <unknown attr="&nested;">&amp; &lt; &gt; &quot; &apos;</unknown>
+    <warning level="low">inside ANY</warning>
+  </data>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" alternate="yes" media="screen"?>
+<stream xmlns="urn:stream" xmlns:m="urn:meta">
+  <frame m:id="f-001">
+    <payload><![CDATA[
+      <![CDATA-looking text ]]>
+      <raw>&amp;still-text;</raw>
+    ]]></payload>
+    <attributes>
+      <attribute name="a" value="1"/>
+      <attribute name="b" value=""/>
+      <attribute name="c">text<sub/>tail</attribute>
+    </attributes>
+  </frame>
+  <frame m:id="f-002" m:empty="true">
+    <payload/>
+    <!-- deliberately unusual whitespace -->
+    <attributes xml:space="default">
+      <attribute name="unicode" value="é漢字"/>
+    </attributes>
+  </frame>
+</stream>
+```

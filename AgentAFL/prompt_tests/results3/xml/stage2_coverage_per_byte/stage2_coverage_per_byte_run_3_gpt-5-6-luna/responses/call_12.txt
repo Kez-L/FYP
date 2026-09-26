@@ -1,0 +1,139 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION svg SYSTEM "image/svg+xml">
+  <!ENTITY logo SYSTEM "logo.svg" NDATA svg>
+  <!ENTITY nbsp "&#160;">
+  <!ELEMENT catalog (entry+, footer?)>
+  <!ELEMENT entry (title, summary?, link*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST catalog version NMTOKEN #REQUIRED>
+  <!ATTLIST entry id ID #REQUIRED status (new|old|archived) "new">
+  <!ATTLIST link href URI #REQUIRED rel CDATA #IMPLIED>
+]>
+<catalog version="2.0">
+  <entry id="e1">
+    <title>Symbols &amp; &nbsp; &lt;test&gt;</title>
+    <summary>Use <em>carefully</em> with <code>CDATA</code>.</summary>
+    <link href="urn:item:one" rel="alternate"/>
+  </entry>
+  <entry id="e2" status="archived">
+    <title>Second entry</title>
+    <link href="#e1"/>
+  </entry>
+  <footer>generated &logo;</footer>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, sections)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT sections (section*)>
+  <!ELEMENT section (name, item*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT item (#PCDATA|br|mark)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT mark (#PCDATA)>
+  <!ATTLIST envelope xmlns CDATA #IMPLIED>
+  <!ATTLIST section key ID #REQUIRED>
+  <!ATTLIST item ref IDREFS #IMPLIED>
+]>
+<envelope xmlns="urn:outer">
+  <header xmlns="" xml:lang="fr" xml:space="preserve"/>
+  <sections>
+    <section key="s-a" xmlns:x="urn:x">
+      <name x:label="α">Résumé</name>
+      <item ref="s-a">avant<br/>milieu<mark>après</mark></item>
+    </section>
+    <section key="s-b" xmlns:x="">
+      <name>Plain</name>
+      <item ref="s-a s-b">x</item>
+    </section>
+  </sections>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE labyrinth [
+  <!ENTITY left "<node side='L'>&amp;left;</node>">
+  <!ENTITY right "<node side='R'>&amp;right;</node>">
+  <!ENTITY pair "&left;&right;">
+  <!ELEMENT labyrinth (branch|leaf)*>
+  <!ELEMENT branch (branch|leaf|#PCDATA)*>
+  <!ELEMENT leaf (#PCDATA)>
+  <!ATTLIST branch depth CDATA #IMPLIED>
+  <!ATTLIST leaf code CDATA #REQUIRED>
+]>
+<labyrinth>
+  <branch depth="0">
+    <leaf code="a">start</leaf>
+    <branch depth="1"><leaf code="b"><![CDATA[mid]]></leaf></branch>
+  </branch>
+  &pair;
+</labyrinth>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE records [
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (key, value, audit?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|line)*>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT audit (actor, stamp)>
+  <!ELEMENT actor (#PCDATA)>
+  <!ELEMENT stamp (#PCDATA)>
+  <!ATTLIST record ident ID #IMPLIED kind (alpha|numeric|mixed) #REQUIRED>
+  <!ATTLIST value format CDATA "plain">
+  <!ENTITY qmark "&#x3F;">
+  <!ENTITY nested "A &qmark; B">
+]>
+<records>
+  <record ident="r01" kind="mixed">
+    <key>name</key>
+    <value format="rich">first<line/>second &nested;</value>
+    <audit><actor>system</actor><stamp>2026-09-24</stamp></audit>
+  </record>
+  <record kind="numeric">
+    <key>count</key>
+    <value format="plain"><![CDATA[001
+002
+003]]></value>
+  </record>
+</records>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST matrix size NMTOKENS #REQUIRED>
+  <!ATTLIST row index NMTOKEN #REQUIRED checksum CDATA #IMPLIED>
+  <!ATTLIST cell column NMTOKEN #REQUIRED type (text|number|empty) "text">
+]>
+<matrix size="3 2">
+  <row index="0" checksum="a&amp;b">
+    <cell column="0" type="text">north</cell>
+    <cell column="1">east&#x0A;west</cell>
+  </row>
+  <row index="1">
+    <cell column="0" type="number">-17.50</cell>
+    <cell column="1" type="empty"></cell>
+  </row>
+  <row index="2">
+    <cell column="0"><![CDATA[x]]></cell>
+    <cell column="1">tail</cell>
+  </row>
+</matrix>
+```

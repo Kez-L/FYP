@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload, signature?)>
+  <!ELEMENT manifest (part+)>
+  <!ELEMENT part EMPTY>
+  <!ELEMENT payload (section*)>
+  <!ELEMENT section (record*)>
+  <!ELEMENT record (#PCDATA|field)*>
+  <!ELEMENT field (#PCDATA)>
+  <!ELEMENT signature (value)>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST part name NMTOKEN #REQUIRED media CDATA #IMPLIED length CDATA #IMPLIED>
+  <!ATTLIST section id ID #IMPLIED>
+  <!ATTLIST record key CDATA #IMPLIED>
+  <!ATTLIST field name CDATA #REQUIRED>
+]>
+<package>
+  <manifest>
+    <part name="header" media="application/octet-stream" length="0"/>
+    <part name="body" media="text/xml" length="999999999999"/>
+    <part name="trailer" media="application/octet-stream"/>
+  </manifest>
+  <payload>
+    <section id="s-alpha">
+      <record key="r1">
+        <field name="a">one</field>
+        <field name="b">two &lt; three</field>
+      </record>
+      <record key="r2"><field name="empty"/><![CDATA[interleaved]]><field name="tail">x</field></record>
+    </section>
+    <section id="s-beta">
+      <record><field name="unicode">π λ 雪</field></record>
+    </section>
+  </payload>
+  <signature><value><![CDATA[-----BEGIN SIGNATURE-----
+not-a-real-signature
+-----END SIGNATURE-----]]></value></signature>
+</package>

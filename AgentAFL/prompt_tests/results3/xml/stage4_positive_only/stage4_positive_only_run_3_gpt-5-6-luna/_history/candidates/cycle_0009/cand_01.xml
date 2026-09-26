@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<workflow xmlns="urn:example:workflow" xmlns:x="urn:example:extension">
+  <?pipeline mode="diagnostic"?>
+  <!-- An intentionally nested process description -->
+  <job id="J-2048" owner="ops@example.invalid">
+    <input>
+      <resource href="file:///var/tmp/input.dat" checksum="none"/>
+      <resource href="https://example.invalid/data?x=1&amp;y=2" checksum="pending"/>
+    </input>
+    <steps>
+      <step name="prepare" retry="0">
+        <command><![CDATA[printf '<payload/>']]></command>
+        <environment>
+          <variable name="LANG">C.UTF-8</variable>
+          <variable name="MODE">safe</variable>
+        </environment>
+      </step>
+      <step name="transform" retry="3">
+        <command>normalize --input="${INPUT}" --output="${OUTPUT}"</command>
+        <x:limits cpu="2" memory="512MiB"/>
+      </step>
+      <step name="publish" retry="1">
+        <targets>
+          <target channel="staging">https://example.invalid/upload</target>
+          <target channel="archive">s3://bucket.example/object</target>
+        </targets>
+      </step>
+    </steps>
+    <notifications>
+      <notification when="failure" format="json">alerts@example.invalid</notification>
+    </notifications>
+  </job>
+</workflow>

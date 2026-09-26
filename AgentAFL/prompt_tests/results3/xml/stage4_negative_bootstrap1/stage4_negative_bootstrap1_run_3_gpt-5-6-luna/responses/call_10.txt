@@ -1,0 +1,147 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, note?)>
+  <!ELEMENT item (name, price, description)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST catalog version NMTOKEN #REQUIRED>
+  <!ATTLIST item id ID #REQUIRED refs IDREFS #IMPLIED>
+  <!ATTLIST item status (draft|active|retired) "active">
+  <!ENTITY euro "&#x20AC;">
+  <!ENTITY % common-attrs "xml:lang NMTOKEN #IMPLIED">
+  <!ATTLIST description %common-attrs;>
+]>
+<catalog version="2.7">
+  <item id="a1" status="active">
+    <name>Thermal &euro;mitter</name>
+    <price>19.95 &euro;</price>
+    <description xml:lang="en">Compact <em>precision</em> device with <code>USB-C</code> output.</description>
+  </item>
+  <item id="b2" refs="a1" status="draft">
+    <name>Calibration plate</name>
+    <price>4.00 &euro;</price>
+    <description xml:lang="de">Markierung <em>und</em> Referenz</description>
+  </item>
+  <note>Values are indicative.</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="view.xsl" alternate="yes"?>
+<workspace xmlns="urn:example:workspace"
+           xmlns:ui="urn:example:ui"
+           xmlns:data="urn:example:data"
+           xml:base="https://example.invalid/projects/">
+  <ui:panel id="overview" ui:collapsed="false">
+    <ui:caption>Project <ui:badge>alpha</ui:badge></ui:caption>
+    <section xmlns="" data:kind="summary">
+      <label xml:lang="fr">Résumé</label>
+      <value><![CDATA[status <pending> & needs review]]></value>
+      <link href="../details.xml" xml:base="https://example.invalid/archive/"/>
+    </section>
+  </ui:panel>
+  <data:matrix rows="2" columns="3">
+    <data:row index="1"><data:cell>0</data:cell><data:cell>1</data:cell><data:cell>1</data:cell></data:row>
+    <data:row index="2"><data:cell>1</data:cell><data:cell>0</data:cell><data:cell>0</data:cell></data:row>
+  </data:matrix>
+  <!-- preserve mixed namespace scope -->
+  <ui:footer xml:space="preserve">  end  </ui:footer>
+</workspace>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, section*)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT section (title, para+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT para (#PCDATA|br|ref)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT ref (#PCDATA)>
+  <!ATTLIST ref target ENTITY #REQUIRED>
+  <!ENTITY logo SYSTEM "logo.bin" NDATA png>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY company "North &amp; South">
+]>
+<report>
+  <header>&company; — quarterly review</header>
+  <section id="intro">
+    <title>Scope</title>
+    <para>Measurements were collected<ref target="logo"> in three regions</ref>.<br/>No values were discarded.</para>
+  </section>
+  <section id="remarks">
+    <title><![CDATA[Exceptions / edge cases]]></title>
+    <para xml:space="default">A literal sequence such as <ref target="logo">A &lt; B</ref> is retained.</para>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<document xmlns="urn:example:doc"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:xi="http://www.w3.org/2001/XInclude"
+          xmlns:svg="http://www.w3.org/2000/svg">
+  <metadata>
+    <created>2026-09-24</created>
+    <keywords xml:space="preserve">xml, parser, fuzzing</keywords>
+  </metadata>
+  <body>
+    <xi:include href="fragments/part-a.xml" parse="xml" xpointer="element(/1/1)">
+      <xi:fallback>
+        <placeholder reason="unavailable">No fragment loaded</placeholder>
+      </xi:fallback>
+    </xi:include>
+    <asset xlink:type="simple"
+           xlink:href="data:text/plain,hello%20world"
+           xlink:show="embed"
+           xlink:actuate="onLoad"/>
+    <svg:svg viewBox="0 0 32 16" width="32" height="16">
+      <svg:defs><svg:linearGradient id="g"/></svg:defs>
+      <svg:rect x="0" y="0" width="32" height="16" fill="url(#g)"/>
+      <svg:text x="2" y="11">A&amp;B</svg:text>
+    </svg:svg>
+  </body>
+</document>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?processing instruction-data?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (key, value, binary?, history?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|linebreak)*>
+  <!ELEMENT binary (#PCDATA)>
+  <!ELEMENT history (change*)>
+  <!ELEMENT change (#PCDATA)>
+  <!ELEMENT linebreak EMPTY>
+  <!ATTLIST entry key ID #REQUIRED>
+  <!ATTLIST entry flags NMTOKENS #IMPLIED>
+  <!ATTLIST binary encoding (hex|base64) "base64">
+]>
+<archive>
+  <entry key="k0" flags="sealed archived">
+    <key>Résumé</key>
+    <value>first line<linebreak/>second line <![CDATA[raw & markup <here>]]></value>
+    <binary encoding="hex">00ff10aB</binary>
+    <history>
+      <change>created by &quot;importer&quot;</change>
+      <change>verified &apos;later&apos;</change>
+    </history>
+  </entry>
+  <entry key="k1" flags="open">
+    <key>空白</key>
+    <value xml:space="preserve"> leading
+      and trailing </value>
+  </entry>
+</archive>
+```

@@ -1,0 +1,121 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+  <entry id="alpha" status="active">
+    <title><![CDATA[5 < 7 & 9 > 2]]></title>
+    <meta>
+      <author>Élodie</author>
+      <tags>
+        <tag>xml</tag>
+        <tag>fuzzing</tag>
+      </tags>
+    </meta>
+    <description>Text before<!-- embedded comment -->text after<?note data?></description>
+  </entry>
+  <entry id="beta">
+    <empty/>
+    <payload><![CDATA[]]></payload>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, section+, footer?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|subitem)*>
+  <!ELEMENT subitem (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY marker "A &amp; B">
+]>
+<report>
+  <header>&marker;</header>
+  <section>
+    <title>First</title>
+    <item>one<subitem>nested</subitem>two</item>
+    <item><![CDATA[raw ]]> content</item>
+  </section>
+  <section>
+    <title>Second</title>
+  </section>
+  <footer>done</footer>
+</report>
+```
+
+```xml
+<?xml version="1.1"?>
+<ns:root xmlns:ns="urn:example:root" xmlns:x="urn:example:aux" xml:lang="en">
+  <ns:branch x:key="v1" xml:space="preserve">
+    <x:item>
+      <x:name>alpha</x:name>
+      <x:value>42</x:value>
+    </x:item>
+    <ns:branch>
+      <x:item x:key="v2"/>
+    </ns:branch>
+  </ns:branch>
+  <ns:branch x:key="v3">
+    <x:item>
+      <x:name>omega</x:name>
+      <x:value>&#x1F600;</x:value>
+    </x:item>
+  </ns:branch>
+</ns:root>
+```
+
+```xml
+<configuration>
+  <paths>
+    <path kind="input">./data/&amp;one</path>
+    <path kind="output"/>
+  </paths>
+  <options enabled="true">
+    <option name="threshold">0</option>
+    <option name="pattern"><![CDATA[[a-z]+(\d{2,})?]]></option>
+  </options>
+  <!-- deliberately mixed content around processing instructions -->
+  before<?set mode="safe"?>middle
+  <extensions>
+    <extension version="1.0">
+      <property key="α">π</property>
+    </extension>
+  </extensions>
+  after
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (message)>
+  <!ELEMENT message (sender, recipient, body, attachment*)>
+  <!ELEMENT sender EMPTY>
+  <!ELEMENT recipient EMPTY>
+  <!ELEMENT body (#PCDATA|line|emphasis)*>
+  <!ELEMENT line (#PCDATA|emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT attachment (name, data)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+  <!ATTLIST sender address CDATA #REQUIRED>
+  <!ATTLIST recipient address CDATA #REQUIRED>
+]>
+<envelope>
+  <message>
+    <sender address="a@example.test"/>
+    <recipient address="b@example.test"/>
+    <body>
+      Hello <emphasis>world</emphasis>.
+      <line>Second line with &quot;quotes&quot;.</line>
+      <line><![CDATA[<not-an-element>&still-text;</not-an-element>]]></line>
+    </body>
+    <attachment>
+      <name>sample.bin</name>
+      <data>AAECAwQFBgcICQ==</data>
+    </attachment>
+  </message>
+</envelope>
+```

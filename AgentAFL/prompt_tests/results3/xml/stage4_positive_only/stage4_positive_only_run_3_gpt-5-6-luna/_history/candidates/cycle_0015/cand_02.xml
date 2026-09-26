@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workshop [
+  <!ELEMENT workshop (instructions,assembly)>
+  <!ELEMENT instructions (step+)>
+  <!ELEMENT step (#PCDATA|tool|warning)*>
+  <!ATTLIST step number NMTOKEN #REQUIRED>
+  <!ELEMENT tool EMPTY>
+  <!ATTLIST tool ref ENTITY #REQUIRED>
+  <!ELEMENT warning (#PCDATA)>
+  <!ELEMENT assembly (component*,connection*)>
+  <!ELEMENT component (label,property*)>
+  <!ATTLIST component id ID #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST property name CDATA #REQUIRED>
+  <!ELEMENT connection EMPTY>
+  <!ATTLIST connection from IDREF #REQUIRED to IDREF #REQUIRED signal CDATA #IMPLIED>
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY controller SYSTEM "controller.bin" NDATA binary>
+  <!ENTITY sensor SYSTEM "sensor.bin" NDATA binary>
+]>
+<workshop>
+  <instructions>
+    <step number="1">Mount the <tool ref="controller"/> before connecting power.</step>
+    <step number="2"><warning>Do not reverse polarity.</warning> Verify the <tool ref="sensor"/> output.</step>
+  </instructions>
+  <assembly>
+    <component id="board">
+      <label>Control board</label>
+      <property name="revision">C</property>
+      <property name="firmware">5.14</property>
+    </component>
+    <component id="probe">
+      <label>Temperature probe</label>
+      <property name="range">-40..125</property>
+    </component>
+    <connection from="board" to="probe" signal="i2c"/>
+  </assembly>
+</workshop>

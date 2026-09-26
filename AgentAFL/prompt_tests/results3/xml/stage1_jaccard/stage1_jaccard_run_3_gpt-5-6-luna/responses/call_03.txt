@@ -1,0 +1,114 @@
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE r [
+  <!ELEMENT r ANY>
+  <!ATTLIST r
+    xmlns CDATA #IMPLIED
+    xmlns:p CDATA #IMPLIED
+    p:mode CDATA "Δ"
+    stamp NMTOKENS "one two three">
+  <!ENTITY atom "α&amp;β">
+  <!ENTITY pair "&atom;:&atom;">
+  <!NOTATION image SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "urn:example:blob" NDATA image>
+]>
+<r xmlns="urn:zero" xmlns:p="urn:prime" p:mode="π" stamp="a b">
+  <p:item key="&pair;" xml:lang="fr">before<![CDATA[<opaque>&raw;</opaque>]]>after</p:item>
+  <p:item>&atom;</p:item>
+</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (entry|gap)*>
+  <!ELEMENT entry (head, body?, tail)>
+  <!ELEMENT head (#PCDATA)>
+  <!ELEMENT body (#PCDATA|mark)*>
+  <!ELEMENT mark EMPTY>
+  <!ELEMENT tail (#PCDATA)>
+  <!ELEMENT gap EMPTY>
+  <!ATTLIST entry id ID #IMPLIED refs IDREFS #IMPLIED>
+  <!ATTLIST mark level (low|mid|high) "mid">
+  <!ENTITY nbsp "&#160;">
+]>
+<ledger>
+  <entry id="e1" refs="e1">
+    <head>Opening &nbsp; section</head>
+    <body>left<mark level="high"/>middle<mark/>right</body>
+    <tail>done</tail>
+  </entry>
+  <gap/>
+  <entry id="e2">
+    <head><![CDATA[]]></head>
+    <tail>trailing <?audit value?> text</tail>
+  </entry>
+</ledger>
+```
+
+```xml
+<!DOCTYPE vault [
+  <!ELEMENT vault (record)>
+  <!ELEMENT record (key, payload)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ATTLIST record class CDATA #FIXED "sealed">
+  <!ENTITY ext SYSTEM "urn:unavailable:fragment">
+  <!ENTITY quote "&#x22; &apos; &lt; &gt; &amp;">
+]>
+<vault>
+  <record class="sealed">
+    <key>k-000</key>
+    <payload>
+      <node a="&quote;" b="&#x1F600;">text</node>
+      <node><![CDATA[section ]]]]><![CDATA[> boundary]]></node>
+      &ext;
+    </payload>
+  </record>
+</vault>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (layer+)>
+  <!ELEMENT layer (shape*)>
+  <!ELEMENT shape EMPTY>
+  <!ATTLIST layer name CDATA #REQUIRED visible (true|false) "true">
+  <!ATTLIST shape
+    kind CDATA #REQUIRED
+    coords CDATA #IMPLIED
+    transform CDATA #IMPLIED>
+  <!ENTITY amp "&#38;">
+]>
+<scene>
+  <layer name="背景" visible="false">
+    <shape kind="line" coords="0,0 10,10"/>
+    <shape kind="text" transform="rotate(90) translate(1 &amp; 2)"/>
+  </layer>
+  <layer name="foreground">
+    <!-- comment with --? and unusual spacing -->
+    <shape kind="path" coords="M0 0 C1 2 3 4 Z"/>
+    <?render profile="fast"?>
+  </layer>
+</scene>
+```
+
+```xml
+<catalog xmlns:x="urn:x" xmlns:y="urn:y">
+  <x:entry code="A&amp;B" data="&quot;quoted&quot;">
+    <x:title>one</x:title>
+    <x:meta>
+      <![CDATA[
+        <embedded attr='value'>not markup</embedded>
+        ]]>
+    </x:meta>
+  </x:entry>
+  <y:entry code="&#xD;&#xA;&#x9;">
+    <y:title xml:space="preserve">  padded
+text  </y:title>
+    <y:meta><!-- nested-looking <!-- text --> --></y:meta>
+  </y:entry>
+  <?finish?>
+</catalog>
+```

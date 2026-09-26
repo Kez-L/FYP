@@ -1,0 +1,131 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ENTITY % feature "<!ELEMENT audit (record|summary)*>">
+  <![INCLUDE[
+    <!ELEMENT archive (meta, audit)>
+    <!ELEMENT meta (title, created, flag?)>
+    <!ELEMENT title (#PCDATA)>
+    <!ELEMENT created (#PCDATA)>
+    <!ELEMENT flag EMPTY>
+    <!ATTLIST flag state (on|off|unknown) "unknown">
+  ]]>
+  %feature;
+  <![IGNORE[
+    <!ELEMENT ignored (never, parsed)>
+    <!ELEMENT never EMPTY>
+  ]]>
+  <!ELEMENT record (key, value, note?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ENTITY ampersand "&amp;">
+  <!ENTITY wrapped "left-&ampersand;-right">
+]>
+<archive>
+  <meta>
+    <title>conditional declaration test</title>
+    <created>2026-09-24</created>
+    <flag state="on"/>
+  </meta>
+  <audit>
+    <record><key>A-1</key><value>&wrapped;</value><note><![CDATA[x < y && y > z]]></note></record>
+    <summary>done</summary>
+  </audit>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:report xmlns:r="urn:example:report" xmlns:d="urn:example:data"
+          xmlns="urn:example:default" xml:lang="x-klingon">
+  <?build phase="namespace"?>
+  <!-- comment containing --? no, safely separated -->
+  <r:header d:version="3" xml:base="https://invalid.example/root/">
+    <r:name>Δelta</r:name>
+    <r:empty d:kind="marker"/>
+  </r:header>
+  <payload xmlns="">
+    <item xmlns:d="urn:example:data" d:id="α-01" xml:space="preserve"><![CDATA[
+      leading whitespace
+      <not-an-element attr='x'/>
+    ]]></item>
+    <item d:id="β-02"><value>&#x1F642;</value><?note data?></item>
+  </payload>
+  <r:tail xmlns:q="urn:example:query">
+    <q:term q:field="status">ready</q:term>
+  </r:tail>
+</r:report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE media [
+  <!NOTATION png SYSTEM "image/png">
+  <!NOTATION text PUBLIC "-//Example//NOTATION Plain Text//EN">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ELEMENT media (caption, asset, metadata?)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT asset EMPTY>
+  <!ELEMENT metadata (author|checksum|tag)*>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST asset source ENTITY #REQUIRED format NOTATION (png|text) #IMPLIED>
+  <!ATTLIST metadata mode CDATA "compact">
+]>
+<media>
+  <caption>binary reference follows</caption>
+  <asset source="logo" format="png"/>
+  <metadata mode="expanded">
+    <author>parser-test</author>
+    <tag>one</tag>
+    <checksum>00ff:aa11</checksum>
+    <tag><![CDATA[semi & literal < text]]></tag>
+  </metadata>
+</media>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell*)>
+  <!ELEMENT cell (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ATTLIST row index NMTOKEN #REQUIRED>
+  <!ATTLIST cell span NMTOKENS #IMPLIED kind CDATA #IMPLIED>
+  <!ENTITY open "<mark>">
+  <!ENTITY close "</mark>">
+]>
+<matrix>
+  <row index="r1">
+    <cell span="a b" kind="text">plain</cell>
+    <cell kind="mixed">before &open;inside&close; after</cell>
+    <cell><![CDATA[]]></cell>
+  </row>
+  <row index="r2"><cell span="single">line&#10;break</cell></row>
+  <row index="r3">
+    <cell kind="quote">one &quot;two&quot; &apos;three&apos;</cell>
+  </row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE broken [
+  <!ELEMENT broken (one, two)>
+  <!ELEMENT one (#PCDATA)>
+  <!ELEMENT two (inner)>
+  <!ELEMENT inner EMPTY>
+  <!ATTLIST one a CDATA #IMPLIED b CDATA #IMPLIED>
+]>
+<broken>
+  <one a="&quot;" a="duplicate">unterminated text
+  <two>
+    <inner flag="&amp;"/>
+  </two>
+  <dangling><![CDATA[section never closes
+</broken>
+```

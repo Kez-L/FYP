@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload, signatures)>
+  <!ELEMENT manifest (file*)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT payload (data|folder|data)*>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT folder (data|folder)*>
+  <!ELEMENT signatures (signature+)>
+  <!ELEMENT signature (algorithm, digest)>
+  <!ELEMENT algorithm (#PCDATA)>
+  <!ELEMENT digest (#PCDATA)>
+  <!ATTLIST package version CDATA "0">
+  <!ATTLIST file path CDATA #REQUIRED size CDATA #IMPLIED compressed (true|false) "false">
+  <!ATTLIST data encoding (plain|base64|hex) "plain">
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ATTLIST signature signer CDATA #REQUIRED valid (yes|no) "yes">
+  <!ENTITY hex "3C3F786D6C3E">
+  <!ENTITY amp "&amp;">
+]>
+<package version="2">
+  <manifest>
+    <file path="readme.txt" size="17"/>
+    <file path="bin/app" size="2048" compressed="true"/>
+    <file path="dir/empty" size="0"/>
+  </manifest>
+  <payload>
+    <data encoding="plain">header &amp; metadata</data>
+    <folder name="nested">
+      <data encoding="base64">QUJDRA==</data>
+      <folder name="deeper">
+        <data encoding="hex">&hex;</data>
+      </folder>
+    </folder>
+    <data encoding="plain">tail &amp; &amp; end</data>
+  </payload>
+  <signatures>
+    <signature signer="alice" valid="yes">
+      <algorithm>urn:hash:sha256</algorithm>
+      <digest>abcdef0123456789</digest>
+    </signature>
+    <signature signer="bob" valid="no">
+      <algorithm>urn:hash:sha1</algorithm>
+      <digest></digest>
+    </signature>
+  </signatures>
+</package>

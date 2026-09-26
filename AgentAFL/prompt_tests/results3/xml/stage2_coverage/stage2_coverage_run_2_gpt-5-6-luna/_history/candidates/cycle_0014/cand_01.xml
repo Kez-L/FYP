@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, payload, checksum)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header version NMTOKEN #REQUIRED source CDATA #IMPLIED>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|byte)*>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding (hex|base64|raw) "raw">
+  <!ELEMENT byte EMPTY>
+  <!ATTLIST byte value CDATA #REQUIRED>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY lf "&#10;">
+  <!ENTITY amp "&amp;">
+]>
+<packet>
+  <header version="2.7" source="sensor/α"/>
+  <payload>
+    <chunk index="00" encoding="hex">7F <byte value="00"/><byte value="FF"/></chunk>
+    <chunk index="01" encoding="base64">QmFk&#x0A;RGF0YQ==</chunk>
+    <chunk index="02" encoding="raw"><![CDATA[<& not markup ]]><byte value="&amp;"/></chunk>
+    <chunk index="03">&amp;raw;&unknown;&lf;</chunk>
+  </payload>
+  <checksum>sha256:&amp;&amp;&amp;</checksum>
+</packet>

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT payload (#PCDATA|chunk|separator)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ATTLIST envelope version NMTOKEN #REQUIRED>
+  <!ATTLIST header field-count NMTOKEN #IMPLIED>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST chunk encoding (plain|base64|hex) "plain">
+  <!ENTITY open "{">
+  <!ENTITY close "}">
+]>
+<envelope version="2.0">
+  <header field-count="3">
+    <field name="x-empty"/>
+    <field name="quoted" value="&quot;&apos;&quot;"/>
+    <field name="expanded" value="&open;value&close;"/>
+  </header>
+  <payload>
+    pre<chunk encoding="base64">QUJD&#x0A;REVG</chunk>
+    <separator/>
+    <![CDATA[<not-an-element/>]]>post
+  </payload>
+</envelope>

@@ -1,0 +1,27 @@
+<?xml version="1.1" standalone="yes"?>
+<!DOCTYPE signal [
+  <!ELEMENT signal (channel+, checksum?)>
+  <!ELEMENT channel (name, sample*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT sample (#PCDATA)>
+  <!ELEMENT checksum EMPTY>
+  <!ATTLIST signal level (low|medium|high) "medium" xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST channel id ID #REQUIRED links IDREFS #IMPLIED>
+  <!ATTLIST sample units NMTOKEN #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "capture.bin" NDATA bin>
+  <!ENTITY lf "&#xA;">
+  <!ENTITY control "&#x1F;">
+]>
+<signal xmlns:s="urn:signals" level="high" xml:lang="en">
+  <channel id="ch0" links="ch0">
+    <name>s:primary</name>
+    <sample units="Hz">440&lf;880&#x0D;1320</sample>
+    <sample units="raw"><![CDATA[bytes: \x00 \xFF <not-an-element>]]></sample>
+  </channel>
+  <channel id="ch1">
+    <name>aux</name>
+    <sample units="count">1 &control; 2</sample>
+  </channel>
+  <checksum/>
+</signal>

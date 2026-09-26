@@ -1,0 +1,23 @@
+{
+  "call": 12,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (header, entry*)>\n  <!ELEMENT header (title, generated)>\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT generated EMPTY>\n  <!ELEMENT entry (path, checksum, payload)>\n  <!ATTLIST entry type (text|binary) \"text\" id ID #IMPLIED>\n  <!ELEMENT path (#PCDATA)>\n  <!ELEMENT checksum (#PCDATA)>\n  <!ELEMENT payload (#PCDATA|line|quote)*>\n  <!ELEMENT line (#PCDATA)>\n  <!ELEMENT quote (#PCDATA)>\n  <!ENTITY separator \" / \">\n]>\n<archive>\n  <header>\n    <title>Nightly snapshot</title>\n    <generated utc=\"2026-09-24T02:14:00Z\"/>\n  </header>\n  <entry id=\"e-alpha\" type=\"text\">\n    <path>notes/readme.txt</path>\n    <checksum algorithm=\"sha256\">7f83b1657ff1fc53b92dc18148a1d65dfa135b1c1f7f5a0e6f4d0c9a1b2e3f40</checksum>\n    <payload>\n      <line>First line &amp; second line</line>\n      <quote>Keep &quot;small&quot; things observable.</quote>\n      <line>alpha &separator; omega</line>\n    </payload>\n  </entry>\n  <entry id=\"e-beta\" type=\"binary\">\n    <path>data/blob.bin</path>\n    <checksum algorithm=\"sha256\">0000000000000000000000000000000000000000000000000000000000000000</checksum>\n    <payload><![CDATA[AAECAwQFBgcICQoLDA0ODw==]]></payload>\n  </entry>\n</archive>\n\n--- example 2 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<map xmlns=\"http://example.invalid/map\" xmlns:g=\"http://example.invalid/geometry\">\n  <metadata>\n    <title>Southern transect</title>\n    <bounds west=\"-12.5\" east=\"18.75\" north=\"64.0\" south=\"41.25\"/>\n  </metadata>\n  <layer name=\"terrain\" opacity=\"0.85\">\n    <g:feature id=\"ridge-7\" class=\"landform\">\n      <g:point lat=\"52.010\" lon=\"-1.440\"/>\n      <g:point lat=\"52.081\" lon=\"-1.103\"/>\n      <g:point lat=\"51.932\" lon=\"-0.887\"/>\n      <g:label xml:space=\"preserve\">North &amp; West Ridge</g:label>\n    </g:feature>\n    <g:feature id=\"lake-2\" class=\"water\">\n      <g:polygon>\n        <g:vertex x=\"14.2\" y=\"8.1\"/>\n        <g:vertex x=\"16.9\" y=\"8.7\"/>\n        <g:vertex x=\"17.4\" y=\"6.4\"/>\n        <g:vertex x=\"14.8\" y=\"5.8\"/>\n      </g:polygon>\n    </g:feature>\n  </layer>\n  <layer name=\"labels\">\n    <label ref=\"ridge-7\"><![CDATA[RIDGE / 07]]></label>\n    <label ref=\"lake-2\">Lake Meridian</label>\n  </layer>\n</map>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T03:26:12.593138+00:00"
+}

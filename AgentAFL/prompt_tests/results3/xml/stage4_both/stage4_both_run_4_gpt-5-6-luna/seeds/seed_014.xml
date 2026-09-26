@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:workflow" xmlns:ext="urn:workflow:extension">
+  <?instruction continue-on-error?>
+  <stage id="prepare">
+    <task name="decode" retries="0">
+      <input media="application/octet-stream">blob-001</input>
+      <output media="application/xml" optional="false">decoded</output>
+    </task>
+    <task name="validate" retries="2">
+      <depends-on>decode</depends-on>
+      <rule language="xpath">count(/*) = 1</rule>
+    </task>
+  </stage>
+  <stage id="publish" enabled="false">
+    <task name="emit" retries="1">
+      <depends-on>validate</depends-on>
+      <destination ext:region="eu-west" protocol="queue">
+        <ext:property key="visibility">private</ext:property>
+        <ext:property key="retention">30d</ext:property>
+      </destination>
+      <template xml:space="preserve">
+        <![CDATA[<result status="${status}">
+  <message>${message}</message>
+</result>]]>
+      </template>
+    </task>
+  </stage>
+  <artifacts>
+    <artifact path="reports/final.xml" checksum=""/>
+    <artifact path="logs/run.txt" checksum="unavailable"/>
+  </artifacts>
+</workflow>

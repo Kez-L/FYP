@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body, trailer)>
+  <!ELEMENT header (timestamp, source)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT source EMPTY>
+  <!ATTLIST source
+            xmlns:evt CDATA #FIXED "urn:example:event"
+            evt:id ID #REQUIRED
+            active (yes|no) "yes">
+  <!ELEMENT body (message | attachment | message)*>
+  <!ELEMENT message (#PCDATA|strong|span)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT span (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment
+            name CDATA #REQUIRED
+            type CDATA #IMPLIED
+            size CDATA "0">
+  <!ELEMENT trailer EMPTY>
+  <!ENTITY greeting "Hello, &quot;parser&quot;">
+  <!ENTITY mark "&#x2026;">
+]>
+<envelope>
+  <header>
+    <timestamp>2026-09-24T12:34:56Z</timestamp>
+    <source evt:id="source-main" active="no"/>
+  </header>
+  <body>
+    <message>&greeting; <strong>world</strong><span>&mark;</span></message>
+    <attachment name="résumé.xml" type="application/xml" size="18446744073709551615"/>
+    <message><![CDATA[<escaped><payload/></escaped>]]></message>
+  </body>
+  <trailer/>
+</envelope>

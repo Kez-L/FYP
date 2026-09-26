@@ -1,0 +1,47 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//AFLSeed//TodoDependencies//EN
+CALSCALE:GREGORIAN
+METHOD:REQUEST
+BEGIN:VTODO
+UID:deploy-parent-73@example.invalid
+DTSTAMP:20260924T171200Z
+DTSTART:20261008T160000Z
+DUE:20261008T180000Z
+SUMMARY:Deploy service update
+DESCRIPTION:Promote the validated build after all prerequisite checks pass.
+STATUS:IN-PROCESS
+PERCENT-COMPLETE:60
+PRIORITY:1
+RELATED-TO;RELTYPE=CHILD:deploy-test-73@example.invalid
+RELATED-TO;RELTYPE=CHILD:deploy-review-73@example.invalid
+ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:mailto:release@example.invalid
+ORGANIZER;CN=Release Manager:mailto:manager@example.invalid
+BEGIN:VALARM
+ACTION:EMAIL
+TRIGGER;RELATED=END:-PT15M
+SUMMARY:Deployment window closing
+DESCRIPTION:Complete the deployment or record a deferment.
+ATTENDEE:mailto:release@example.invalid
+END:VALARM
+END:VTODO
+BEGIN:VTODO
+UID:deploy-test-73@example.invalid
+DTSTAMP:20260924T171201Z
+DUE:20261007T150000Z
+SUMMARY:Validate deployment candidate
+STATUS:COMPLETED
+COMPLETED:20260924T164500Z
+PERCENT-COMPLETE:100
+RELATED-TO;RELTYPE=PARENT:deploy-parent-73@example.invalid
+END:VTODO
+BEGIN:VTODO
+UID:deploy-review-73@example.invalid
+DTSTAMP:20260924T171202Z
+DUE:20261008T120000Z
+SUMMARY:Approve deployment notes
+STATUS:NEEDS-ACTION
+PRIORITY:2
+RELATED-TO;RELTYPE=PARENT:deploy-parent-73@example.invalid
+END:VTODO
+END:VCALENDAR

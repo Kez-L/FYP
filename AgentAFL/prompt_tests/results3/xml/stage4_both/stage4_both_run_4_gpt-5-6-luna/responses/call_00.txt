@@ -1,0 +1,140 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section
+            code ID #REQUIRED
+            xml:lang NMTOKEN "en">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|note|emph)*>
+  <!ATTLIST item
+            key CDATA #IMPLIED
+            state (new|used|archived) "new">
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT emph (#PCDATA)>
+  <!ENTITY notice "Use &lt;care&gt; when &amp; parsing.">
+]>
+<catalog>
+  <section code="s-01" xml:lang="en-US">
+    <title>Inventory</title>
+    <item key="α-1" state="new">plain <emph>text</emph><note>&notice;</note></item>
+    <item key="q&amp;r">line one
+line two</item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, trailer)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header
+            version CDATA #REQUIRED
+            timestamp CDATA #IMPLIED>
+  <!ELEMENT payload ANY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST envelope xmlns:meta CDATA #IMPLIED>
+  <!ENTITY chunk "<part id='embedded'>A&amp;B</part>">
+]>
+<envelope xmlns="urn:outer:envelope" xmlns:meta="urn:metadata">
+  <header version="2.7" timestamp="2026-09-24T12:34:56Z"/>
+  <payload>
+    <meta:record meta:type="delta">
+      <![CDATA[<not-an-element>&still-literal;</not-an-element>]]>
+      &chunk;
+    </meta:record>
+  </payload>
+  <trailer>checksum=&quot;unknown&quot;</trailer>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ENTITY % switches "<!ELEMENT private (secret*)>">
+  %switches;
+  <!ELEMENT archive (public, private)>
+  <!ELEMENT public (entry*)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ATTLIST entry ref ID #IMPLIED>
+  <!ELEMENT secret (#PCDATA)>
+  <!ATTLIST secret level (low|high) "low">
+  <!ENTITY left "L">
+  <!ENTITY right "R">
+]>
+<archive>
+  <public>
+    <entry ref="e1">&left;middle&right;</entry>
+    <entry ref="e2"><![CDATA[raw ]]> characters</entry>
+  </public>
+  <private>
+    <secret level="high">hidden</secret>
+    <secret level="low"/>
+  </private>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+)>
+  <!ELEMENT node (label?, link*)>
+  <!ATTLIST node
+            id ID #REQUIRED
+            kind CDATA "generic">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link
+            target IDREF #REQUIRED
+            weight NMTOKEN #IMPLIED
+            directed (yes|no) "yes">
+]>
+<graph xmlns:g="urn:graph">
+  <node id="n0" kind="root">
+    <label xml:space="preserve"> start <g:mark>?</g:mark> end </label>
+    <link target="n1" weight="0x10"/>
+    <link target="n2" directed="no"/>
+  </node>
+  <node id="n1"><label>βeta</label></node>
+  <node id="n2">
+    <link target="n1"/>
+  </node>
+</graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (metadata, body)>
+  <!ELEMENT metadata (field*)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field
+            name CDATA #REQUIRED
+            value CDATA #IMPLIED>
+  <!ELEMENT body (paragraph|table|break)*>
+  <!ELEMENT paragraph (#PCDATA|code|br)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ENTITY quote "&#x22;">
+]>
+<report xml:lang="fr" xml:base="urn:example:reports/">
+  <metadata>
+    <field name="owner" value="A/B"/>
+    <field name="empty"/>
+  </metadata>
+  <body>
+    <paragraph>Avant<code>&lt;tag attr=&quot;x&quot;&gt;</code><br/>Après</paragraph>
+    <table>
+      <row><cell>r1c1</cell><cell>r1c2 &quote;</cell></row>
+      <row><cell><![CDATA[r2c1]]></cell><cell>r2c2</cell></row>
+    </table>
+    <?audit status="pending"?>
+    <break/>
+  </body>
+</report>
+```

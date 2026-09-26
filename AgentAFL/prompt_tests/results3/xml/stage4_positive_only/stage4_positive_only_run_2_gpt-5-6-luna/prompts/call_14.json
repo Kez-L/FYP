@@ -1,0 +1,23 @@
+{
+  "call": 14,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE dashboard [\n  <!ELEMENT dashboard (metadata, panel+)>\n  <!ELEMENT metadata (title, owner, updated)>\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT owner (#PCDATA)>\n  <!ELEMENT updated (#PCDATA)>\n  <!ELEMENT panel (label, widget+)>\n  <!ATTLIST panel name ID #REQUIRED visible (true|false) \"true\">\n  <!ELEMENT label (#PCDATA)>\n  <!ELEMENT widget (caption, value, note?)>\n  <!ATTLIST widget kind (gauge|sparkline|counter) #REQUIRED>\n  <!ELEMENT caption (#PCDATA)>\n  <!ELEMENT value (#PCDATA)>\n  <!ELEMENT note (#PCDATA|strong|code)*>\n  <!ELEMENT strong (#PCDATA)>\n  <!ELEMENT code (#PCDATA)>\n  <!ENTITY product \"Telemetry Console\">\n]>\n<?build revision=\"17\"?>\n<dashboard>\n  <metadata>\n    <title>&product;</title>\n    <owner>Operations</owner>\n    <updated>2026-09-24T08:30:00Z</updated>\n  </metadata>\n  <panel name=\"latency\">\n    <label>Request latency</label>\n    <widget kind=\"gauge\">\n      <caption>p95</caption>\n      <value>184 ms</value>\n      <note>Within <strong>normal</strong> range</note>\n    </widget>\n    <widget kind=\"sparkline\">\n      <caption>Last hour</caption>\n      <value><![CDATA[120,135,131,170,162,184,179]]></value>\n    </widget>\n  </panel>\n  <panel name=\"workers\" visible=\"false\">\n    <label>Worker pool</label>\n    <widget kind=\"counter\">\n      <caption>Active jobs</caption>\n      <value>7</value>\n      <note>See <code>queue.depth</code> for details.</note>\n    </widget>\n  </panel>\n</dashboard>\n\n--- example 2 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE workflow [\n  <!ELEMENT workflow (step+, on-error?)>\n  <!ATTLIST workflow xmlns CDATA #IMPLIED>\n  <!ELEMENT step (input*, action, output*)>\n  <!ATTLIST step id ID #REQUIRED depends-on IDREFS #IMPLIED>\n  <!ELEMENT input EMPTY>\n  <!ATTLIST input name NMTOKEN #REQUIRED value CDATA #IMPLIED>\n  <!ELEMENT action (#PCDATA)>\n  <!ELEMENT output EMPTY>\n  <!ATTLIST output name NMTOKEN #REQUIRED path CDATA #REQUIRED>\n  <!ELEMENT on-error (action)>\n]>\n<workflow xmlns=\"urn:example:workflow\" xmlns:log=\"urn:example:log\">\n  <step id=\"fetch\">\n    <input name=\"endpoint\" value=\"https://example.invalid/data?mode=full&amp;limit=20\"/>\n    <action>download</action>\n    <output name=\"response\" path=\"/var/tmp/input.json\"/>\n  </step>\n  <step id=\"transform\" depends-on=\"fetch\">\n    <input name=\"format\" value=\"normalized\"/>\n    <action><![CDATA[\n      select records\n      where status != \"deleted\"\n    ]]></action>\n    <output name=\"result\" path=\"/var/tmp/output.ndjson\"/>\n    <log:message severity=\"info\">Transformation queued</log:message>\n  </step>\n  <step id=\"publish\" depends-on=\"transform\">\n    <action>publish</action>\n    <output name=\"receipt\" path=\"/var/tmp/receipt.xml\"/>\n  </step>\n  <on-error>\n    <action>notify-owner</action>\n  </on-error>\n</workflow>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T03:26:46.225733+00:00"
+}

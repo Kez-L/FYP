@@ -1,0 +1,166 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section id ID #REQUIRED xml:lang NMTOKEN "en">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (name, price, details?)>
+  <!ATTLIST item code ID #REQUIRED status (new|used|archived) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|emph|link)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+]>
+<catalog>
+  <section id="hardware" xml:lang="en">
+    <title>Devices &amp; Accessories</title>
+    <item code="p-001">
+      <name>Sensor &lt;A&gt;</name>
+      <price>19.95</price>
+      <details>Compact <emph>weather</emph> sensor with <link>USB</link> support.</details>
+    </item>
+    <item code="p-002" status="used">
+      <name>Control Unit</name>
+      <price>7.50</price>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY company "Northwind &amp; Sons">
+  <!ENTITY note "This text contains a &quot;quoted&quot; value.">
+  <!ELEMENT report (header, body, footer)>
+  <!ELEMENT header (title, meta*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT body (paragraph|table|warning)*>
+  <!ELEMENT paragraph (#PCDATA|strong|code|br)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT warning (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<report>
+  <header>
+    <title>&company; quarterly report</title>
+    <meta key="period" value="2026-Q3"/>
+    <meta key="confidential" value="false"/>
+  </header>
+  <body>
+    <paragraph>Revenue increased <strong>12%</strong><br/> compared with <code>2025-Q3</code>.</paragraph>
+    <table>
+      <row><cell>Region</cell><cell>Total</cell></row>
+      <row><cell>北</cell><cell>42</cell></row>
+    </table>
+    <warning>&note;</warning>
+  </body>
+  <footer>Generated automatically.</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (metadata, layer+)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST metadata created CDATA #REQUIRED creator CDATA #IMPLIED>
+  <!ELEMENT layer (group|object|path|text)*>
+  <!ATTLIST layer name CDATA #REQUIRED visible (true|false) "true">
+  <!ELEMENT group (group|object|path|text)*>
+  <!ATTLIST group id ID #IMPLIED transform CDATA #IMPLIED>
+  <!ELEMENT object EMPTY>
+  <!ATTLIST object id ID #REQUIRED x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ELEMENT path (#PCDATA)>
+  <!ATTLIST path closed (yes|no) "no">
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST text align (left|center|right) "left">
+]>
+<scene>
+  <metadata created="2026-09-24T12:00:00Z" creator="αβγ"/>
+  <layer name="background" visible="false"/>
+  <layer name="foreground">
+    <group id="g-main" transform="translate(10,20) scale(1.5)">
+      <object id="o-1" x="0" y="0"/>
+      <path closed="yes"><![CDATA[M 0 0 L 10 0 L 10 10 Z]]></path>
+      <text align="center">Hello — 世界</text>
+      <group id="g-nested">
+        <object id="o-2" x="-4.25" y="8e1"/>
+      </group>
+    </group>
+  </layer>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ENTITY % switches "enabled (yes|no) 'yes'">
+  <!ELEMENT configuration (module+, defaults?)>
+  <!ELEMENT module (option*, endpoint?)>
+  <!ATTLIST module name NMTOKEN #REQUIRED %switches;>
+  <!ELEMENT option EMPTY>
+  <!ATTLIST option key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT endpoint (header*)>
+  <!ATTLIST endpoint scheme (http|https|unix) #REQUIRED address CDATA #REQUIRED>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header name CDATA #REQUIRED value CDATA #REQUIRED>
+  <!ELEMENT defaults (option*)>
+  <!ATTLIST defaults scope CDATA "global">
+]>
+<configuration>
+  <module name="cache" enabled="yes">
+    <option key="size" value="256"/>
+    <option key="policy" value="lru"/>
+  </module>
+  <module name="gateway" enabled="no">
+    <endpoint scheme="https" address="api.example.test/v1">
+      <header name="Accept" value="application/xml"/>
+      <header name="X-Trace" value="a&amp;b"/>
+    </endpoint>
+  </module>
+  <defaults scope="global">
+    <option key="timeout" value="30"/>
+  </defaults>
+</configuration>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ATTLIST archive format CDATA #FIXED "bundle">
+  <!ELEMENT entry (name, checksum, payload)>
+  <!ATTLIST entry id ID #REQUIRED kind (text|binary|empty) #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|section|linebreak)*>
+  <!ELEMENT section (#PCDATA|linebreak)*>
+  <!ATTLIST section title CDATA #IMPLIED>
+  <!ELEMENT linebreak EMPTY>
+]>
+<archive format="bundle">
+  <entry id="e01" kind="text">
+    <name>readme.txt</name>
+    <checksum>sha256:00aa11bb22cc33dd</checksum>
+    <payload>
+      <section title="Introduction">First line<linebreak/>Second line.</section>
+      <section title="Notes"><![CDATA[Raw markup: <tag attr="x"/> & not expanded]]></section>
+    </payload>
+  </entry>
+  <entry id="e02" kind="empty">
+    <name>placeholder</name>
+    <checksum>none</checksum>
+    <payload/>
+  </entry>
+</archive>
+```

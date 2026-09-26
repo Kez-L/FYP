@@ -1,0 +1,99 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <item id="A-01" enabled="true">
+    <name>alpha &amp; omega</name>
+    <price currency="EUR">19.95</price>
+    <x:metadata><![CDATA[<opaque key="value"/> & bytes]]></x:metadata>
+  </item>
+  <item id="B-02">
+    <name xml:lang="fr">élan</name>
+    <price currency="JPY">0</price>
+    <tags>
+      <tag>one</tag><tag>two</tag><tag/>
+    </tags>
+  </item>
+</catalog>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ELEMENT root (section+)>
+  <!ELEMENT section (title, entry*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (#PCDATA|note)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST section kind (primary|secondary) "primary">
+  <!ENTITY greeting "hello">
+]>
+<root>
+  <section kind="secondary">
+    <title>&greeting; section</title>
+    <entry>first<note>nested note</note>tail</entry>
+    <entry>second</entry>
+  </section>
+  <section>
+    <title>empty entries</title>
+  </section>
+</root>
+```
+
+```xml
+<?xml version="1.1"?>
+<r:report xmlns:r="urn:report" xmlns="urn:default" xmlns:q="urn:quoted">
+  <r:header q:stamp="2026-09-24T00:00:00Z"/>
+  <r:body>
+    <record key="x&amp;y" value="&quot;quoted&quot;">
+      <![CDATA[
+        line one
+        ]]> 
+      <value>before</value>
+      <value><![CDATA[<not-an-element/>]]></value>
+      <value>after</value>
+    </record>
+    <record key="empty"><value/></record>
+  </r:body>
+</r:report>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ENTITY internal "A &amp; B">
+  <!ENTITY quoted 'single "double"'>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY logo SYSTEM "logo.dat" NDATA bin>
+]>
+<envelope status="&internal;">
+  <message><![CDATA[&internal; is literal here]]></message>
+  <details>
+    <text>&quoted;</text>
+    <external>&logo;</external>
+  </details>
+  <empty a="" b="&#x20;" c="&#10;"/>
+</envelope>
+```
+
+```xml
+<tree>
+  <node id="0">
+    <node id="1">
+      <left/>
+      <right>
+        <leaf><![CDATA[]]></leaf>
+        <leaf>text &lt; text &gt; text &amp; text</leaf>
+      </right>
+    </node>
+    <node id="2" flag="false">
+      <children>
+        <child index="1"/>
+        <child index="2">
+          <payload>
+            <part name="a">A</part>
+            <part name="b">B</part>
+          </payload>
+        </child>
+      </children>
+    </node>
+  </node>
+</tree>
+```

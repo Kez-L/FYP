@@ -1,0 +1,148 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, author+, metadata?, description)>
+  <!ATTLIST entry id ID #REQUIRED category (book|paper|other) "book">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT metadata (published?, tags?)>
+  <!ELEMENT published (#PCDATA)>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+]>
+<catalog>
+  <entry id="item-a" category="paper">
+    <title>Parsing &amp; Validation</title>
+    <author>Ada Lovelace</author>
+    <author>Grace Hopper</author>
+    <metadata>
+      <published>1843-10-01</published>
+      <tags>
+        <tag>markup</tag>
+        <tag>testing</tag>
+      </tags>
+    </metadata>
+    <description>Text with <em>mixed</em> content, <code>&lt;token&gt;</code><br/>and a break.</description>
+  </entry>
+  <entry id="item-b">
+    <title>Unadorned Entry</title>
+    <author>Unknown</author>
+    <description><![CDATA[Literal <characters> and ]]> markers]]></description>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node|edge)+>
+  <!ELEMENT node EMPTY>
+  <!ATTLIST node id ID #REQUIRED label CDATA #IMPLIED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight NMTOKEN "1">
+]>
+<graph>
+  <node id="n1" label="α"/>
+  <node id="n2" label="β &amp; γ"/>
+  <node id="n3"/>
+  <edge from="n1" to="n2" weight="0.125"/>
+  <edge from="n2" to="n3"/>
+  <edge from="n3" to="n1" weight="99"/>
+</graph>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<warehouse xmlns="urn:inventory" xmlns:p="urn:product" xml:lang="fr">
+  <!-- A namespaced document with attributes in several namespaces -->
+  <aisle number="07">
+    <bin xml:id="bin-α" p:code="A&amp;B" capacity="∞">
+      <p:item sku="Q-1" quantity="000">
+        <p:name>Crème brûlée</p:name>
+        <p:dimensions>
+          <p:width unit="mm">12.5</p:width>
+          <p:height unit="mm">8</p:height>
+        </p:dimensions>
+      </p:item>
+      <p:item sku="Q-2" quantity="1">
+        <p:name>茶</p:name>
+        <p:dimensions>
+          <p:width unit="cm">1</p:width>
+          <p:height unit="cm">2</p:height>
+        </p:dimensions>
+      </p:item>
+    </bin>
+  </aisle>
+  <aisle number="08">
+    <bin xml:id="bin-empty"/>
+  </aisle>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY company "Example &amp; Sons">
+  <!ENTITY note "Generated &quot;internally&quot;">
+  <!ENTITY % extra "<!ELEMENT appendix (#PCDATA)>">
+  %extra;
+  <!ELEMENT report (section+, appendix?)>
+  <!ELEMENT section (heading, paragraph+)>
+  <!ATTLIST section name CDATA #IMPLIED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|list|itemref)*>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT itemref EMPTY>
+  <!ATTLIST itemref ref NMTOKEN #REQUIRED>
+]>
+<report>
+  <section name="intro">
+    <heading>Welcome</heading>
+    <paragraph>&company; presents this report.</paragraph>
+    <paragraph>Confidential: &note;</paragraph>
+  </section>
+  <section name="details">
+    <heading>Items</heading>
+    <paragraph>
+      A nested list follows:
+      <list>
+        <item>one</item>
+        <item>two</item>
+        <item>three</item>
+      </list>
+      <itemref ref="external-7"/>
+    </paragraph>
+  </section>
+  <appendix>End of document.</appendix>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<timeline>
+  <event at="2026-09-24T12:34:56Z" type="start">
+    <payload><![CDATA[
+      { "kind": "sample", "values": [null, true, 3.14159] }
+    ]]></payload>
+  </event>
+  <event at="2026-09-24T12:35:00+05:30" type="update">
+    <payload>
+      <delta path="/state/name" operation="replace">
+        <value>R&amp;D / 東京</value>
+      </delta>
+      <delta path="/state/items/0" operation="add">
+        <value><![CDATA[<opaque/>]]></value>
+      </delta>
+    </payload>
+  </event>
+  <event at="2026-09-24" type="stop">
+    <payload/>
+  </event>
+</timeline>
+```

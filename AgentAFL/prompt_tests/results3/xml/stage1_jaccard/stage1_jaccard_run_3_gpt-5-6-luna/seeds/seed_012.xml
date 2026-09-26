@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ENTITY open "<vertex>">
+  <!ENTITY close "</vertex>">
+  <!ENTITY label "generated &amp; node">
+  <!ELEMENT graph ANY>
+  <!ELEMENT vertex (label|edge|vertex)*>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST vertex uid ID #REQUIRED refs IDREFS #IMPLIED>
+  <!ATTLIST edge to IDREF #REQUIRED weight NMTOKEN "1">
+  <!ENTITY fragment "&open;&label;&close;">
+]>
+<graph>
+  <vertex uid="root" refs="v1 v2">
+    <label>root node</label>
+    <edge to="v1" weight="05"/>
+    <edge to="v2"/>
+    <vertex uid="v1">
+      <label>&fragment;</label>
+    </vertex>
+    <vertex uid="v2" refs="root">
+      <label>leaf</label>
+      <edge to="root" weight="0x10"/>
+    </vertex>
+  </vertex>
+</graph>

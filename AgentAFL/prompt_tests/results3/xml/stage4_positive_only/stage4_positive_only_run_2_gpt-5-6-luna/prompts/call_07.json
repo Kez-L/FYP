@@ -1,0 +1,23 @@
+{
+  "call": 7,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (book*)>\n  <!ELEMENT book (title, author+, description?)>\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT author (#PCDATA)>\n  <!ELEMENT description (#PCDATA|emph|br)*>\n  <!ELEMENT emph (#PCDATA)>\n  <!ELEMENT br EMPTY>\n  <!ATTLIST book isbn ID #REQUIRED>\n  <!ENTITY publisher \"Northwind Press\">\n]>\n<catalog generated=\"2026-09-24\">\n  <!-- A catalog entry with mixed content and an internal entity. -->\n  <book isbn=\"bk-001\">\n    <title>The Glass Orchard</title>\n    <author>Rina Vale</author>\n    <author>O. Mercer</author>\n    <description>A study of <emph>seasonal light</emph><br/>and forgotten gardens, published by &publisher;.</description>\n  </book>\n  <book isbn=\"bk-002\">\n    <title>Signals at Dusk</title>\n    <author>Jun Calder</author>\n  </book>\n</catalog>\n\n--- example 2 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<map xmlns=\"http://example.invalid/map\" xmlns:g=\"http://example.invalid/geometry\">\n  <metadata>\n    <title>Southern transect</title>\n    <bounds west=\"-12.5\" east=\"18.75\" north=\"64.0\" south=\"41.25\"/>\n  </metadata>\n  <layer name=\"terrain\" opacity=\"0.85\">\n    <g:feature id=\"ridge-7\" class=\"landform\">\n      <g:point lat=\"52.010\" lon=\"-1.440\"/>\n      <g:point lat=\"52.081\" lon=\"-1.103\"/>\n      <g:point lat=\"51.932\" lon=\"-0.887\"/>\n      <g:label xml:space=\"preserve\">North &amp; West Ridge</g:label>\n    </g:feature>\n    <g:feature id=\"lake-2\" class=\"water\">\n      <g:polygon>\n        <g:vertex x=\"14.2\" y=\"8.1\"/>\n        <g:vertex x=\"16.9\" y=\"8.7\"/>\n        <g:vertex x=\"17.4\" y=\"6.4\"/>\n        <g:vertex x=\"14.8\" y=\"5.8\"/>\n      </g:polygon>\n    </g:feature>\n  </layer>\n  <layer name=\"labels\">\n    <label ref=\"ridge-7\"><![CDATA[RIDGE / 07]]></label>\n    <label ref=\"lake-2\">Lake Meridian</label>\n  </layer>\n</map>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T03:24:55.136507+00:00"
+}

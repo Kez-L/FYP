@@ -1,0 +1,36 @@
+<!DOCTYPE query [
+  <!ELEMENT query (select, criteria?, order?)>
+  <!ELEMENT select (field+)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT criteria (and|or|not|condition)*>
+  <!ELEMENT and (condition|and|or|not)*>
+  <!ELEMENT or (condition|and|or|not)*>
+  <!ELEMENT not (condition)>
+  <!ELEMENT condition EMPTY>
+  <!ELEMENT order (by+)>
+  <!ELEMENT by EMPTY>
+  <!ATTLIST query distinct (true|false) "false">
+  <!ATTLIST field name NMTOKEN #REQUIRED alias NMTOKEN #IMPLIED>
+  <!ATTLIST condition field NMTOKEN #REQUIRED op (eq|ne|lt|gt|contains) #REQUIRED value CDATA #REQUIRED>
+  <!ATTLIST by field NMTOKEN #REQUIRED direction (asc|desc) "asc">
+]>
+<query distinct="true">
+  <select>
+    <field name="title" alias="t"/>
+    <field name="updated"/>
+  </select>
+  <criteria>
+    <and>
+      <condition field="state" op="eq" value="open"/>
+      <or>
+        <condition field="owner" op="contains" value="&amp;"/>
+        <not>
+          <condition field="priority" op="lt" value="3"/>
+        </not>
+      </or>
+    </and>
+  </criteria>
+  <order>
+    <by field="updated" direction="desc"/>
+  </order>
+</query>

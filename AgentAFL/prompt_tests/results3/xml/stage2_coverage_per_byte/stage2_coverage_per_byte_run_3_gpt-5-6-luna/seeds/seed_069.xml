@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, content)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ELEMENT content (part*)>
+  <!ELEMENT part (#PCDATA|segment)*>
+  <!ELEMENT segment (#PCDATA)>
+  <!ATTLIST package mode (safe|fast) "safe">
+  <!ATTLIST entry name CDATA #REQUIRED type NMTOKEN #IMPLIED>
+  <!ATTLIST part number CDATA #REQUIRED encoding (plain|base64) "plain">
+  <!ENTITY % optional "INCLUDE">
+  <![%optional;[
+    <!ELEMENT checksum (#PCDATA)>
+  ]]>
+]>
+<package mode="fast">
+  <manifest>
+    <entry name="readme.txt" type="text"/>
+    <entry name="data.bin" type="binary"/>
+  </manifest>
+  <content>
+    <part number="1">first<segment>split</segment>tail</part>
+    <part number="2" encoding="base64"><![CDATA[AAEC/f8=]]></part>
+    <part number="3">x<!-- inside part -->y</part>
+  </content>
+</package>

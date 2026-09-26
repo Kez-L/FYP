@@ -1,0 +1,128 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder+, note?)>
+  <!ELEMENT folder (entry*)>
+  <!ATTLIST folder id ID #REQUIRED mode (open|sealed) "open">
+  <!ELEMENT entry (title, data, checksum?)>
+  <!ATTLIST entry key CDATA #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT data (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY marker "A&amp;B&lt;C&gt;">
+]>
+<archive>
+  <folder id="f1">
+    <entry key="alpha">
+      <title>First &marker;</title>
+      <data>prefix<part>middle</part>suffix</data>
+      <checksum>7f9e</checksum>
+    </entry>
+  </folder>
+  <folder id="f2" mode="sealed"/>
+  <note>archive-end</note>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:report xmlns:r="urn:report:v2"
+          xmlns:x="urn:ext"
+          xml:lang="fr">
+  <r:header x:revision="0042">
+    <![CDATA[<unparsed>&payload;</unparsed>]]>
+    <?trace phase="header"?>
+  </r:header>
+  <!-- a comment containing <markup> and & symbols -->
+  <r:body>
+    <r:section name="Δ">
+      <r:item enabled="true">café&nbsp;naïve</r:item>
+      <x:foreign>
+        <x:value><![CDATA[]]></x:value>
+      </x:foreign>
+    </r:section>
+    <r:section name="empty">
+      <?instruction data?>
+    </r:section>
+  </r:body>
+</r:report>
+```
+
+```xml
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST row index NMTOKEN #REQUIRED>
+  <!ATTLIST cell kind CDATA "text">
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<matrix>
+  <row index="0">
+    <cell kind="number">0</cell>
+    <cell>&left;one&right;</cell>
+    <cell><![CDATA[2 < 3 && 4 > 1]]></cell>
+  </row>
+  <row index="1">
+    <cell kind="number">-17</cell>
+    <cell kind="number">+0x10</cell>
+  </row>
+  <row index="last">
+    <cell>line
+break</cell>
+  </row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (product*)>
+  <!ELEMENT product (label, details, cost)>
+  <!ATTLIST product sku ID #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT details (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT cost (#PCDATA)>
+  <!ENTITY % optional
+    "<!ELEMENT badge (#PCDATA)>
+     <!ATTLIST product badge CDATA #IMPLIED>">
+  %optional;
+  <!ENTITY currency "&#x20AC;">
+]>
+<catalog>
+  <product sku="p001" badge="featured">
+    <label>Widget</label>
+    <details>small <em>blue</em><br/>replacement part</details>
+    <cost>19.95 &currency;</cost>
+    <badge>limited</badge>
+  </product>
+  <product sku="p002">
+    <label>Bracket</label>
+    <details>plain text only</details>
+    <cost>0</cost>
+  </product>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<configuration xmlns="urn:config" xmlns:q="urn:qualified">
+  <q:defaults xml:space="preserve">
+    <q:value key="path">/var/tmp/data</q:value>
+    <q:value key="limit">00000000000000000000000000000000000000000000000001</q:value>
+  </q:defaults>
+  <module name="parser" active="yes">
+    <option key="mode">strict</option>
+    <option key="mask">&#x1F600;</option>
+    <option key="empty"></option>
+  </module>
+  <module name="output" active="no">
+    <option key="format"><![CDATA[<json>{"ok":true}</json>]]></option>
+  </module>
+</configuration>
+```

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (branch|leaf|mixed)*>
+  <!ELEMENT branch (branch|leaf|mixed|empty)*>
+  <!ELEMENT leaf (#PCDATA)>
+  <!ELEMENT mixed (#PCDATA|leaf|empty)*>
+  <!ELEMENT empty EMPTY>
+  <!ATTLIST root xmlns CDATA #IMPLIED xmlns:x CDATA #IMPLIED>
+  <!ATTLIST branch id ID #IMPLIED level NMTOKEN #IMPLIED>
+  <!ATTLIST leaf role (key|value|other) #IMPLIED>
+  <!ATTLIST empty flag (on|off) "off">
+  <!ENTITY amp "&amp;">
+  <!ENTITY lt "&lt;">
+]>
+<root xmlns="urn:default" xmlns:x="urn:x">
+  <branch id="b0" level="0">
+    <leaf role="key">name</leaf>
+    <leaf role="value">A&amp;B</leaf>
+    <mixed>prefix<x:item xmlns:x="urn:item" x:code="7">inside</x:item><empty flag="on"/>suffix</mixed>
+    <branch id="b1" level="1">
+      <leaf role="other"><![CDATA[<not-an-element/>]]></leaf>
+      <empty/>
+    </branch>
+  </branch>
+  <mixed>
+    text &lt; &amp; text
+    <leaf>line&#x0A;break</leaf>
+    <x:empty xmlns:x="urn:x" flag="off"/>
+  </mixed>
+  <branch xmlns="" id="b2">
+    <leaf role="key">unqualified</leaf>
+  </branch>
+</root>

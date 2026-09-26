@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (defaults, environments)>
+  <!ELEMENT defaults (option*)>
+  <!ELEMENT environments (environment+)>
+  <!ELEMENT environment (inherits?, option*, secret?)>
+  <!ATTLIST environment name ID #REQUIRED>
+  <!ELEMENT inherits EMPTY>
+  <!ATTLIST inherits from IDREF #REQUIRED>
+  <!ELEMENT option EMPTY>
+  <!ATTLIST option key NMTOKEN #REQUIRED value CDATA #REQUIRED>
+  <!ELEMENT secret (#PCDATA)>
+]>
+<configuration xmlns="urn:config">
+  <defaults>
+    <option key="timeout" value="30"/>
+    <option key="retries" value="3"/>
+  </defaults>
+  <environments>
+    <environment name="development">
+      <option key="debug" value="true"/>
+    </environment>
+    <environment name="production">
+      <inherits from="development"/>
+      <option key="debug" value="false"/>
+      <secret><![CDATA[do-not-log]]></secret>
+    </environment>
+  </environments>
+</configuration>

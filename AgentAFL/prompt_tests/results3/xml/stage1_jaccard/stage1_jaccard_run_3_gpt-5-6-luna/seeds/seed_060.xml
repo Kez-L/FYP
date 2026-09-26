@@ -1,0 +1,31 @@
+<?xml version="1.1" standalone="yes"?>
+<!DOCTYPE archive [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "payload.bin" NDATA bin>
+  <!ENTITY title "A &amp; B">
+  <!ENTITY nbsp "&#160;">
+  <!ELEMENT archive (record*, trailer)>
+  <!ELEMENT record (key, data, note?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST record
+    kind (alpha|beta) "alpha"
+    blob ENTITY #IMPLIED
+    ref ID #IMPLIED>
+  <!ATTLIST note importance NMTOKEN "normal">
+]>
+<archive>
+  <record kind="beta" blob="payload" ref="r1">
+    <key>r1</key>
+    <data>&title; &nbsp; &#x41;</data>
+    <note importance="high">A <emph>marked</emph> fragment.</note>
+  </record>
+  <record ref="r2">
+    <key>r2</key>
+    <data><![CDATA[raw <data> & symbols]]></data>
+  </record>
+  <trailer>done<?archive-pi value?></trailer>
+</archive>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+    name CDATA #REQUIRED
+    kind NOTATION (text|binary) "text"
+    digest CDATA #IMPLIED>
+  <!ELEMENT payload ANY>
+  <!NOTATION text SYSTEM "text/plain">
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY sample SYSTEM "sample.dat" NDATA binary>
+]>
+<package xml:base="urn:example:bundle">
+  <manifest>
+    <file name="α.txt" digest="&#x1F4A5;"/>
+    <file name="blob.bin" kind="binary"/>
+  </manifest>
+  <payload>
+    <chunk index="0">first</chunk>
+    <chunk index="1"><![CDATA[raw <bytes> & markers]]></chunk>
+    <?payload-end?>
+  </payload>
+</package>

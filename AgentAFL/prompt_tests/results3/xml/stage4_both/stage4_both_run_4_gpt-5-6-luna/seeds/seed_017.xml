@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, directory, payload)>
+  <!ELEMENT header (name, created, comment?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT comment (#PCDATA|emph|quote)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT directory (folder*)>
+  <!ELEMENT folder (folder|file)*>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file name CDATA #REQUIRED
+               size NMTOKEN #REQUIRED
+               checksum CDATA #IMPLIED
+               type (text|binary|link) "binary">
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk number NMTOKEN #REQUIRED>
+  <!ENTITY intro "portable archive">
+]>
+<archive>
+  <header>
+    <name>&intro; &quot;sample&quot;</name>
+    <created>2026-09-24T14:05:07Z</created>
+    <comment>Contains <emph>nested</emph> notes and a <quote>quoted phrase</quote>.</comment>
+  </header>
+  <directory>
+    <folder name="src">
+      <file name="main.c" size="1832" checksum="sha256:abc123" type="text"/>
+      <folder name="include">
+        <file name="config.h" size="417" type="text"/>
+      </folder>
+    </folder>
+    <folder name="assets">
+      <file name="logo.dat" size="65536"/>
+      <file name="latest" size="0" type="link"/>
+    </folder>
+  </directory>
+  <payload>
+    <chunk number="0">AAECAwQFBgcICQ==</chunk>
+    <chunk number="1"><![CDATA[H4sIAAAAAAAC/8tIzcnJBwCGphA2BQAAAA==]]></chunk>
+  </payload>
+</archive>

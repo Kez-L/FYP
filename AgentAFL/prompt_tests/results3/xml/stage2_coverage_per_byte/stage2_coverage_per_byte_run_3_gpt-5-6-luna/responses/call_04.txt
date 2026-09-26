@@ -1,0 +1,167 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE invoice [
+  <!ELEMENT invoice (header, items, total)>
+  <!ELEMENT header (issuer, recipient, issued)>
+  <!ELEMENT issuer (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT issued (#PCDATA)>
+  <!ELEMENT items (item+)>
+  <!ELEMENT item (sku, label, quantity, price, discount?)>
+  <!ELEMENT sku (#PCDATA)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT quantity (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT discount (#PCDATA)>
+  <!ELEMENT total (#PCDATA)>
+  <!ATTLIST invoice currency (USD|EUR|JPY) "USD" xml:lang CDATA #IMPLIED>
+  <!ATTLIST item index NMTOKEN #REQUIRED taxable (yes|no) "yes">
+  <!ENTITY currency "&#x20AC;">
+]>
+<invoice currency="EUR" xml:lang="fr">
+  <header>
+    <issuer>Atelier &amp; Fils</issuer>
+    <recipient><![CDATA[North <West> Trading]]></recipient>
+    <issued>2026-09-24</issued>
+  </header>
+  <items>
+    <item index="A-01">
+      <sku>Q&amp;7</sku>
+      <label>Glass &currency; mug</label>
+      <quantity>2</quantity>
+      <price>19.95</price>
+      <discount><![CDATA[5%]]></discount>
+    </item>
+    <item index="A-02" taxable="no">
+      <sku>R-99</sku>
+      <label>Replacement lid</label>
+      <quantity>1</quantity>
+      <price>4.00</price>
+    </item>
+  </items>
+  <total>43.90</total>
+</invoice>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node|edge|meta)*>
+  <!ELEMENT node EMPTY>
+  <!ELEMENT edge EMPTY>
+  <!ELEMENT meta (#PCDATA)>
+  <!ATTLIST graph xmlns:g CDATA #FIXED "urn:graph:test" version CDATA "1">
+  <!ATTLIST node id ID #REQUIRED label CDATA #IMPLIED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED kind (directed|weak|loop) "directed">
+  <!ENTITY % optional "<!ELEMENT annotation (#PCDATA)>">
+  %optional;
+]>
+<g:graph xmlns:g="urn:graph:test" version="v&amp;2">
+  <g:meta>nodes &lt; edges</g:meta>
+  <g:node id="n0" label="root"/>
+  <g:node id="n1" label="left &quot;branch&quot;"/>
+  <g:node id="n2"/>
+  <g:edge from="n0" to="n1"/>
+  <g:edge from="n1" to="n2" kind="weak"/>
+  <g:edge from="n2" to="n2" kind="loop"/>
+</g:graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+)>
+  <!ELEMENT section (heading, body, section*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT body (#PCDATA|b|i|br|q|span)*>
+  <!ELEMENT b (#PCDATA|i|span)*>
+  <!ELEMENT i (#PCDATA|b|span)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT q (#PCDATA|b|i|span)*>
+  <!ELEMENT span (#PCDATA|b|i|span)*>
+  <!ATTLIST section number CDATA #IMPLIED>
+  <!ATTLIST span class CDATA #IMPLIED data CDATA #IMPLIED>
+  <!ENTITY leftbracket "&#91;">
+  <![INCLUDE[
+    <!ENTITY rightbracket "&#93;">
+  ]]>
+]>
+<report>
+  <section number="1">
+    <heading>Parsing notes</heading>
+    <body>Text <b>bold <i>nested</i></b><br/><q>quoted &leftbracket;value&rightbracket;</q></body>
+    <section number="1.1">
+      <heading>Details</heading>
+      <body><span class="code" data="a&amp;b">&lt;tag attr="x"/&gt;</span></body>
+    </section>
+  </section>
+  <section number="2">
+    <heading><![CDATA[Raw ]]> content</heading>
+    <body>tail<!-- comment with -- separators? --></body>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (record*)>
+  <!ELEMENT record (key, value, flag?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST stream mode (push|pull) #REQUIRED>
+  <!ATTLIST record seq NMTOKEN #REQUIRED type CDATA #IMPLIED>
+  <!ATTLIST flag enabled (true|false) "true">
+  <!ENTITY quotemark "&quot;">
+  <!ENTITY nested "x&amp;y">
+]>
+<stream mode="push">
+  <?checkpoint id="α"?>
+  <record seq="0001" type="text">
+    <key>path</key>
+    <value>/tmp/&quot;cache&quot;</value>
+    <flag enabled="false"/>
+  </record>
+  <!-- split records -->
+  <record seq="0002">
+    <key>payload</key>
+    <value>one &nested; two</value>
+  </record>
+  <?vendor event='close'?>
+</stream>
+```
+
+```xml
+<!DOCTYPE archive [
+  <!ELEMENT archive (directory, manifest)>
+  <!ELEMENT directory (folder+)>
+  <!ELEMENT folder (folder|file)*>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT manifest (entry*)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST archive xmlns CDATA #IMPLIED created CDATA #IMPLIED>
+  <!ATTLIST folder name CDATA #REQUIRED hidden (0|1) "0">
+  <!ATTLIST file name CDATA #REQUIRED kind (text|binary|link) #IMPLIED>
+  <!ATTLIST entry path CDATA #REQUIRED checksum CDATA #IMPLIED>
+  <!NOTATION gif SYSTEM "image/gif">
+  <!ENTITY icon SYSTEM "icon.gif" NDATA gif>
+  <!ENTITY % declarations "<!ATTLIST file mode NMTOKENS #IMPLIED>">
+  %declarations;
+]>
+<archive xmlns="urn:archive" created="2026-09-24T00:00:00Z">
+  <directory>
+    <folder name="." hidden="0">
+      <file name="readme.txt" kind="text" mode="rw r"/>
+      <folder name="assets">
+        <file name="logo.gif" kind="binary"/>
+        <file name="current" kind="link"/>
+      </folder>
+    </folder>
+  </directory>
+  <manifest>
+    <entry path="./readme.txt" checksum="sha256:abc&amp;def"/>
+    <entry path="./assets/logo.gif"/>
+  </manifest>
+</archive>
+```

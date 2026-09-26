@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder*)>
+  <!ELEMENT folder (name, item*)>
+  <!ATTLIST folder id ID #REQUIRED parent IDREF #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT item (label, metadata, blob)>
+  <!ATTLIST item key ID #REQUIRED refs IDREFS #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT metadata (property+)>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST property key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT blob (#PCDATA)>
+  <!ENTITY hex "&#x41;&#x42;&#x43;">
+  <!ENTITY % switches "IGNORE">
+  <![%switches;[
+    <!ELEMENT hidden EMPTY>
+    <!ATTLIST hidden mode CDATA "secret">
+  ]]>
+]>
+<archive>
+  <folder id="root">
+    <name>Root</name>
+    <item key="i1" refs="i2 i3">
+      <label>&hex;</label>
+      <metadata>
+        <property key="empty"/>
+        <property key="mode" value="fast"/>
+      </metadata>
+      <blob>QmFzZTY0==&#xA;next</blob>
+    </item>
+  </folder>
+  <folder id="child" parent="root">
+    <name>Nested &amp; detached</name>
+    <item key="i2">
+      <label>unterminated
+      <metadata><property key="x" value="&quot;"/></metadata>
+      <blob><![CDATA[abc]]></blob>
+    </item>
+  </folder>
+</archive>

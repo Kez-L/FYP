@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (step+, variables?)>
+  <!ELEMENT step (command, on-success?, on-failure?)>
+  <!ELEMENT command (#PCDATA)>
+  <!ELEMENT on-success (step-ref*)>
+  <!ELEMENT on-failure (step-ref*)>
+  <!ELEMENT step-ref EMPTY>
+  <!ELEMENT variables (var*)>
+  <!ELEMENT var EMPTY>
+  <!ATTLIST workflow id ID #REQUIRED xmlns:w CDATA #IMPLIED>
+  <!ATTLIST step id ID #REQUIRED state (queued|running|done|failed) "queued">
+  <!ATTLIST step-ref use IDREF #REQUIRED>
+  <!ATTLIST var name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY amp "&amp;">
+  <!ENTITY path "/srv/&amp;data">
+  <!ENTITY % common "CDATA #IMPLIED">
+  <!ATTLIST command shell %common;>
+]>
+<workflow id="wf-9" xmlns:w="urn:workflow">
+  <step id="prepare" state="done">
+    <command shell="sh">echo &path;</command>
+    <on-success>
+      <step-ref use="execute"/>
+    </on-success>
+  </step>
+  <step id="execute">
+    <command><![CDATA[
+      printf '%s' "A < B && C > D"
+    ]]></command>
+    <on-success><step-ref use="finish"/></on-success>
+    <on-failure><step-ref use="rollback"/></on-failure>
+  </step>
+  <step id="finish"><command>echo done &amp; log</command></step>
+  <step id="rollback"><command>echo rollback</command></step>
+  <variables>
+    <var name="A" value="1"/>
+    <var name="B" value="&quot;two&quot;"/>
+  </variables>
+</workflow>

@@ -1,0 +1,23 @@
+{
+  "call": 12,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ATTLIST koo xml:lang CDATA \"eng\">\n  <!ATTLIST foo bar CDATA \"&lt;&gt;)qrking Group (orisable oveuot;\">\n]>\n<root>\n  <foo xml:lang=\"ger\">Ja</fo\u0000\u0004\n</roos>\n\n\n--- example 2 ---\n<!DOCTYPE doc [\n<!ELEMENT doc EMPTY>\n<!ATTLIST doc\n defatt  (0|1)   \"0\"\n     xmlns:tst CDATA #FIXED \"http://example.org\"  tst:att  (0|1)   \"0\"\n    att (0|1)   \"1\">\n]>\n<doc att=\"1B/h12;&laugh12;&laugh12;&la>\n\n\nTried before \u2014 no new coverage, avoid repeating:\n--- a seed you generated (cycle 12) added 0 new edges ---\n<!DOCTYPE archive [\n  <!ENTITY % common \"<!ELEMENT metadata (created, tags?)><!ELEMENT created (#PCDATA)><!ELEMENT tags (tag*)><!ELEMENT tag (#PCDATA)>\">\n  %common;\n  <!ELEMENT archive (metadata, payload)>\n  <!ELEMENT payload ANY>\n  <!ATTLIST archive format (tar|zip|raw) \"raw\">\n  <![INCLUDE[\n    <!ENTITY status \"ready\">\n  ]]>\n]>\n<archive format=\"zip\">\n  <metadata>\n    <created>2026-09-24T00:00:00Z</created>\n    <tags><tag>one</tag><tag>two &amp; three</tag></tags>\n  </metadata>\n  <payload>\n    <?transform mode=\"compact\"?>\n    <!-- embedded fragment -->\n    <chunk index=\"0\"><![CDATA[alpha]]></chunk>\n    <chunk index=\"1\">beta &status;</chunk>\n  </payload>\n</archive>\n\n--- a seed you generated (cycle 12) added 0 new edges ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE packet [\n  <!ELEMENT packet (header, body)>\n  <!ELEMENT header EMPTY>\n  <!ELEMENT body (#PCDATA|data|![CDATA[not-a-name]])*>\n  <!ELEMENT data EMPTY>\n  <!ATTLIST header\n    xmlns CDATA #IMPLIED\n    xmlns:a CDATA #IMPLIED\n    a:kind CDATA #IMPLIED\n    count NMTOKEN #IMPLIED>\n]>\n<packet xmlns=\"urn:packet\" xmlns:a=\"urn:attributes\">\n  <header a:kind=\"binary\" count=\"07\"/>\n  <body>\n    prefix\n    <data value=\"&quot;broken\"/>\n    <![CDATA[split ]]]]><![CDATA[> marker]]>\n    suffix\n  </body>\n</packet>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage-per-byte",
+  "positive_feedback": false,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T05:48:05.127048+00:00"
+}

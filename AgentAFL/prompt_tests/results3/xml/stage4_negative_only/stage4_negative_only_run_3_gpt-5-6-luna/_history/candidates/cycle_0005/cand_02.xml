@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log [
+  <!ELEMENT log (header, event*)>
+  <!ELEMENT header (source, generated)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT event (timestamp, level, message, context?)>
+  <!ATTLIST event id ID #REQUIRED level (debug|info|warning|error) "info">
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT level (#PCDATA)>
+  <!ELEMENT message (#PCDATA|code|link)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT context (field*)>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST field name NMTOKEN #REQUIRED>
+]>
+<log>
+  <header>
+    <source>worker-07</source>
+    <generated>2026-09-24T12:34:56.789+05:30</generated>
+  </header>
+  <event id="evt-a1" level="warning">
+    <timestamp>2026-09-24T12:35:01Z</timestamp>
+    <level>warning</level>
+    <message>Retrying <code>PUT /v1/items</code> after <link>gateway timeout</link>.</message>
+    <context>
+      <field name="attempt">2</field>
+      <field name="latency-ms">1840</field>
+      <field name="empty"/>
+    </context>
+  </event>
+  <event id="evt-a2" level="error">
+    <timestamp>2026-09-24T12:35:04Z</timestamp>
+    <level>error</level>
+    <message><![CDATA[response contained ]]>]]><![CDATA[ unexpected delimiters]]></message>
+  </event>
+</log>

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (item+)>
+  <!ELEMENT item (name, data, checksum?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST archive format (tar|zip|raw) #REQUIRED>
+  <!ATTLIST item id ID #REQUIRED ref IDREF #IMPLIED>
+  <!ENTITY left "[[">
+  <!ENTITY right "]]">
+]>
+<archive format="raw">
+  <item id="a1">
+    <name>broken-cdata</name>
+    <data><![CDATA[one]]]]><![CDATA[>two & three]]></data>
+    <checksum>&left;9f00&right;</checksum>
+  </item>
+  <item id="a2" ref="a1">
+    <name>unterminated</name>
+    <data>before &unknown; after</data>
+  </item>
+</archive>

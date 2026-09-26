@@ -1,0 +1,182 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (title, meta, body)>
+  <!ATTLIST record key ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta (author, tags?)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT body (#PCDATA|section|br)*>
+  <!ELEMENT section (#PCDATA|strong|code)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ENTITY intro "An &quot;archived&quot; entry">
+]>
+<archive>
+  <record key="r-17">
+    <title>&intro;</title>
+    <meta>
+      <author xml:lang="fr">Équipe de recherche</author>
+      <tags>
+        <tag>xml</tag>
+        <tag>parser</tag>
+      </tags>
+    </meta>
+    <body>Before<section>A <strong>nested</strong> fragment with <code>markup</code>.</section><br/>After <![CDATA[raw ]]> text.</body>
+  </record>
+  <record key="r-18">
+    <title>Second record</title>
+    <meta><author>匿名</author></meta>
+    <body>Mixed <section>content</section> and ordinary text.</body>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<drawing xmlns="http://www.w3.org/2000/svg"
+         xmlns:ink="http://www.inkscape.org/namespaces/inkscape"
+         width="320" height="180" viewBox="0 0 320 180">
+  <title>Layered geometry</title>
+  <desc>Shapes with transformations and metadata</desc>
+  <defs>
+    <linearGradient id="shade" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0" stop-color="#112233"/>
+      <stop offset="0.5" stop-color="#aabbcc" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="white"/>
+    </linearGradient>
+    <clipPath id="window"><rect x="8" y="8" width="304" height="164" rx="6"/></clipPath>
+  </defs>
+  <g id="scene" ink:label="main scene" clip-path="url(#window)" transform="translate(4 2)">
+    <rect x="0" y="0" width="312" height="168" fill="url(#shade)"/>
+    <g transform="rotate(-8 160 90)">
+      <path d="M20,130 C70,20 120,160 170,45 S270,30 300,125"
+            fill="none" stroke="#ffffff" stroke-width="3"/>
+      <circle cx="160" cy="90" r="24" fill="none" stroke="black" stroke-dasharray="4 2"/>
+    </g>
+    <foreignObject x="24" y="116" width="180" height="32">
+      <html xmlns="http://www.w3.org/1999/xhtml">
+        <body><p xml:lang="en">Embedded <b>text</b>.</p></body>
+      </html>
+    </foreignObject>
+  </g>
+  <?render mode="preview"?>
+</drawing>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<ledger xmlns="urn:finance:ledger"
+        xmlns:acct="urn:finance:account"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:nil="false">
+  <period from="2026-01-01" to="2026-03-31"/>
+  <currency code="EUR">€</currency>
+  <account acct:number="4000" acct:type="asset">
+    <name>Operating account</name>
+    <opening balance="1250.00"/>
+    <transaction id="t-001" booked="2026-01-03T09:12:00+01:00">
+      <debit>48.50</debit>
+      <credit>0</credit>
+      <payee xml:lang="de">Bäckerei &amp; Sohn</payee>
+      <memo>Breakfast meeting</memo>
+      <line-items>
+        <line sku="food-01" quantity="2" unit-price="24.25"/>
+      </line-items>
+    </transaction>
+    <transaction id="t-002" booked="2026-02-14Z">
+      <debit>0</debit>
+      <credit>9000.00</credit>
+      <payee>Acme Holdings</payee>
+      <memo><![CDATA[Invoice reference: <INV-22/7>]]></memo>
+    </transaction>
+    <closing balance="10201.50"/>
+  </account>
+  <reconciliation complete="true">
+    <statement hash="sha256:deadbeef" entries="2"/>
+    <difference xsi:nil="true"/>
+  </reconciliation>
+</ledger>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE test-suite [
+  <!ELEMENT test-suite (case+)>
+  <!ELEMENT case (input, expect)>
+  <!ATTLIST case name CDATA #REQUIRED result (pass|fail|skip) "pass">
+  <!ELEMENT input (#PCDATA|value|pair)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT pair (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT expect (code, message?)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT message (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+]>
+<test-suite xml:base="https://tests.example.invalid/v4/">
+  <case name="empty-value">
+    <input><value/></input>
+    <expect><code>204</code><message>No content &nbsp; returned</message></expect>
+  </case>
+  <case name="nested-pairs" result="fail">
+    <input>
+      <pair><key>alpha</key><value>1</value></pair>
+      <pair><key>beta</key><value>two &amp; three</value></pair>
+    </input>
+    <expect>
+      <code>422</code>
+      <message>Invalid <emphasis xmlns="urn:test:annotation">pair</emphasis></message>
+    </expect>
+  </case>
+  <case name="unicode">
+    <input><![CDATA[{"text":"line\nbreak","value":"\u2603"}]]></input>
+    <expect><code>200</code></expect>
+  </case>
+  <?case-note owner="qa"?>
+</test-suite>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<network xmlns="urn:network:topology"
+         xmlns:n="urn:network:node"
+         xmlns:l="urn:network:link"
+         xmlns:ext="urn:network:extension">
+  <metadata>
+    <created>2026-09-24</created>
+    <description>Graph with cycles, annotations, and empty endpoints</description>
+  </metadata>
+  <nodes>
+    <n:node id="router-a" role="gateway" enabled="true">
+      <n:address family="ipv6">2001:db8::1</n:address>
+      <n:interface name="wan0" mtu="1500"/>
+      <n:interface name="lan0" mtu="9000"><n:alias>inside</n:alias></n:interface>
+    </n:node>
+    <n:node id="switch-b" role="access" enabled="false">
+      <n:address family="ipv4">192.0.2.8</n:address>
+    </n:node>
+    <n:node id="sensor-c" role="leaf">
+      <n:address family="ipv4">198.51.100.23</n:address>
+      <n:telemetry interval="PT15S"><n:metric unit="C">21.75</n:metric></n:telemetry>
+    </n:node>
+  </nodes>
+  <links>
+    <l:link id="edge-1" from="router-a" to="switch-b" state="up">
+      <l:capacity unit="Gbps">10</l:capacity>
+      <l:latency unit="ms">0.42</l:latency>
+    </l:link>
+    <l:link id="edge-2" from="switch-b" to="sensor-c" state="down"/>
+    <l:link id="edge-3" from="sensor-c" to="router-a" state="unknown">
+      <l:note><![CDATA[maintenance window: 02:00 < 03:00]]></l:note>
+    </l:link>
+  </links>
+  <ext:diagnostics ext:level="verbose">
+    <ext:warning code="W-17">Interface has no negotiated speed</ext:warning>
+  </ext:diagnostics>
+</network>
+```

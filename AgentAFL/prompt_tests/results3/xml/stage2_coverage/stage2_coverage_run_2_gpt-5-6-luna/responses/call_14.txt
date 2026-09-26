@@ -1,0 +1,163 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (name, description, link?, payload)>
+  <!ATTLIST entry
+    xml:lang NMTOKEN #IMPLIED
+    status (draft|published|retired) "draft"
+    ref ID #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link rel NMTOKEN #IMPLIED>
+  <!ELEMENT payload (#PCDATA)>
+]>
+<catalog xmlns="urn:catalog:v2" xmlns:p="urn:catalog:private" xml:base="https://example.invalid/root/">
+  <entry ref="first" status="published" xml:lang="en">
+    <name>Nested &amp; encoded</name>
+    <description>Text with <em>emphasis</em><br/>and a <![CDATA[raw <fragment>]]>.</description>
+    <link rel="alternate">https://example.invalid/a?x=1&amp;y=2</link>
+    <payload p:format="opaque">A&#x2028;B&#x1F642;</payload>
+  </entry>
+  <entry ref="second" status="retired" xmlns="urn:catalog:archive">
+    <name>Archived item</name>
+    <description>Mixed <em>content</em> with <!-- a comment --> markers.</description>
+    <payload xml:space="preserve">
+      leading
+      whitespace
+    </payload>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ENTITY % feature "INCLUDE">
+  <![%feature;[
+    <!ELEMENT matrix (row+)>
+    <!ELEMENT row (cell+)>
+    <!ATTLIST row number NMTOKEN #REQUIRED>
+    <!ELEMENT cell (#PCDATA|formula)*>
+    <!ATTLIST cell kind (text|number|date) "text">
+    <!ELEMENT formula (#PCDATA)>
+  ]]>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "https://example.invalid/logo.png" NDATA png>
+  <!ATTLIST cell source ENTITY #IMPLIED>
+]>
+<matrix>
+  <row number="01">
+    <cell kind="text">alpha</cell>
+    <cell kind="number">42</cell>
+    <cell kind="text">before <formula>SUM(A1:A2)</formula> after</cell>
+  </row>
+  <row number="02">
+    <cell kind="date" source="logo">2026-09-24</cell>
+    <cell>line one&#10;line two</cell>
+  </row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="view.xsl" alternate="yes"?>
+<package xmlns="urn:example:package" xmlns:x="urn:example:extra">
+  <manifest xml:lang="fr">
+    <item x:key="main" media-type="application/xml" href="content.xml"/>
+    <item x:key="data" media-type="application/octet-stream" href="data.bin"/>
+  </manifest>
+  <content xml:base="https://example.invalid/book/">
+    <section id="intro">
+      Welcome to <strong>the package</strong>,
+      with <x:mark tone="warm">embedded annotations</x:mark>.
+      <include xmlns="http://www.w3.org/2001/XInclude"
+               href="chapter-1.xml"
+               parse="xml"
+               xpointer="element(/1/2)"/>
+    </section>
+    <section id="details" xmlns="">
+      <p>Unnamespaced text <br/> followed by a control-like reference: &#9;.</p>
+      <p><![CDATA[<literal attr="value">not markup</literal>]]></p>
+    </section>
+  </content>
+  <signature xmlns:s="urn:example:signature">
+    <s:digest algorithm="sha256">AAECAwQFBgcICQ==</s:digest>
+  </signature>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ENTITY unit "°C">
+  <!ENTITY label "temperature &amp; humidity">
+  <!ENTITY combined "&label; (&unit;)">
+  <!ELEMENT dashboard (title, graph, notes)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT graph (point+)>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST point
+    t CDATA #REQUIRED
+    v CDATA #REQUIRED
+    quality (good|suspect|missing) "good">
+  <!ELEMENT notes (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+]>
+<dashboard xmlns="urn:telemetry" xmlns:m="urn:telemetry:meta"
+           m:device="Σ-42" m:label="&combined;">
+  <title xml:space="preserve">Sensor report — 東京 / München</title>
+  <graph>
+    <point t="2026-09-24T00:00:00Z" v="21.5" quality="good"/>
+    <point t="2026-09-24T00:15:00Z" v="22.0" quality="suspect"/>
+    <point t="2026-09-24T00:30:00Z" v="NaN" quality="missing"/>
+  </graph>
+  <notes>
+    Calibration <mark data-code="Δ">adjusted</mark>;
+    observed nonbreaking&#xA0;space and a line separator&#x2028;here.
+  </notes>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, body, footer?)>
+  <!ELEMENT header (title, created)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT body (section*)>
+  <!ELEMENT section (heading?, paragraph*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|code|quote|img)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT img EMPTY>
+  <!ATTLIST img src CDATA #REQUIRED alt CDATA #IMPLIED>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY note "unclosed-looking text: &lt;tag&gt;">
+]>
+<report>
+  <header>
+    <title>Delayed failure test</title>
+    <created>2026-09-24</created>
+  </header>
+  <body>
+    <section>
+      <heading>Mixed material</heading>
+      <paragraph>before <code>if (a &lt; b) return;</code>
+        <quote>&note;</quote>
+        <img src="diagram.svg" alt="diagram"/>
+        after</paragraph>
+    </section>
+    <section>
+      <paragraph><![CDATA[raw bytes: [ [ { } ] ]]></paragraph>
+      <paragraph>entity follows: &ghost;</paragraph>
+    </section>
+  </body>
+  <footer>trailing content</footer>
+</report>
+```

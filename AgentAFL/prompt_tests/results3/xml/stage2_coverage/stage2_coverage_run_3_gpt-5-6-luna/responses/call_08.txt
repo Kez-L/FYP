@@ -1,0 +1,137 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry|note)*>
+  <!ELEMENT entry (title, details?, link*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT details (#PCDATA|emph|code)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST catalog xml:lang NMTOKEN #IMPLIED version CDATA "1">
+  <!ATTLIST entry key ID #REQUIRED status (new|old|draft) "new">
+  <!ATTLIST link href CDATA #REQUIRED rel NMTOKENS #IMPLIED>
+  <!ENTITY brand "A &amp; B">
+  <!ENTITY % extras "<!ELEMENT appendix (#PCDATA)>">
+  %extras;
+]>
+<catalog xml:lang="en-US" version="2">
+  <entry key="e1" status="draft">
+    <title>&brand; &lt;preview&gt;</title>
+    <details>alpha <emph>beta</emph> gamma <code>r&amp;d</code></details>
+    <link href="urn:item:1" rel="self related"/>
+  </entry>
+  <note><![CDATA[raw ]]> text with ]]> avoided</note>
+  <appendix>tail</appendix>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:report xmlns:r="urn:report" xmlns="urn:default" xmlns:x="urn:x">
+  <section id="S1" x:kind="summary">
+    <item>one</item>
+    <x:item x:flag="yes">two</x:item>
+    <nested xmlns:r="">
+      <r:broken>prefix reset</r:broken>
+    </nested>
+  </section>
+  <section xmlns:x="urn:other">
+    <item xml:lang="fr" xml:space="preserve">  trois  </item>
+    <x:item x:flag="no"/>
+    <empty xmlns=""/>
+  </section>
+  <?process instruction-data?>
+</r:report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder*)>
+  <!ELEMENT folder (folder|file|description)*>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT description (#PCDATA)>
+  <!ATTLIST folder name CDATA #REQUIRED level NMTOKEN #IMPLIED>
+  <!ATTLIST file name CDATA #REQUIRED size CDATA #IMPLIED kind (text|binary|link) "text">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quote "&quot;">
+  <!ENTITY literal "<not-an-element>">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "data.bin" NDATA bin>
+]>
+<archive>
+  <folder name="root" level="0">
+    <description>Files&nbsp;and &quote;notes&quote;</description>
+    <file name="readme.txt" size="12" kind="text"/>
+    <file name="image.bin" kind="binary"/>
+    <folder name="nested">
+      <description>&literal;</description>
+    </folder>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (chunk+)>
+  <!ELEMENT chunk (#PCDATA|meta|data)*>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT data (#PCDATA)>
+  <!ATTLIST stream count NMTOKEN #IMPLIED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED sealed (true|false) #IMPLIED>
+  <!ATTLIST meta key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY open "&#x3C;">
+  <!ENTITY close "&#x3E;">
+]>
+<stream count="3">
+  <chunk index="0" sealed="false">
+    <meta key="encoding" value="UTF-8"/>
+    <data><![CDATA[
+      bytes: 00 01 02 03
+      delimiters: < & > " '
+    ]]></data>
+  </chunk>
+  <chunk index="1">
+    prefix &open;data&close;
+    <meta key="empty"/>
+    <data>left &amp; right &#x1F600;</data>
+  </chunk>
+  <chunk index="2" sealed="true"><![CDATA[unterminated-looking ]]]></chunk>
+</stream>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package SYSTEM "missing-package.dtd" [
+  <!ELEMENT package (header, body, trailer?)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT body (record|error|raw)*>
+  <!ELEMENT record (field*)>
+  <!ELEMENT field (#PCDATA)>
+  <!ELEMENT error (#PCDATA)>
+  <!ELEMENT raw ANY>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST package id ID #IMPLIED state (open|closed) #REQUIRED>
+  <!ATTLIST header created CDATA #IMPLIED checksum CDATA #IMPLIED>
+  <!ATTLIST record type NMTOKEN #REQUIRED>
+  <!ATTLIST field name CDATA #REQUIRED>
+  <!ENTITY marker "&#x2022;">
+]>
+<package id="pkg-7" state="open">
+  <header created="2026-09-24T12:00:00Z" checksum="a&amp;b"/>
+  <body>
+    <record type="alpha">
+      <field name="a">one</field>
+      <field name="b">two &marker;</field>
+    </record>
+    <error>status &lt;unknown&gt;</error>
+    <raw><![CDATA[
+      {"key":[1,2,3],"ok":true}
+    ]]></raw>
+  </body>
+  <trailer/>
+</package>
+```

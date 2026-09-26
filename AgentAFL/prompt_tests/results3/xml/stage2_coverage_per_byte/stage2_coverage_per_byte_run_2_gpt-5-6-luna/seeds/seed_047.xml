@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ENTITY % switch "<!ELEMENT packet (meta, body, checksum)>">
+  %switch;
+  <!ENTITY % fields "<!ELEMENT meta (field*)><!ELEMENT field (#PCDATA)>">
+  %fields;
+  <!ELEMENT body (chunk|separator)*>
+  <!ELEMENT chunk (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST packet mode (raw|encoded) "raw">
+  <!ATTLIST field name NMTOKEN #REQUIRED type CDATA #IMPLIED>
+  <!ATTLIST chunk n NMTOKEN #REQUIRED>
+  <!ATTLIST separator kind CDATA #FIXED "record">
+  <![IGNORE[
+    <!ELEMENT ignored EMPTY>
+    <!ATTLIST ignored never CDATA #REQUIRED>
+  ]]>
+]>
+<packet mode="encoded">
+  <meta>
+    <field name="source" type="text">sensor-7</field>
+    <field name="checksum" type="hex">A9F0</field>
+  </meta>
+  <body>
+    <chunk n="001">abc<part>DEF</part>ghi</chunk>
+    <separator/>
+    <chunk n="002"><part>jkl</part><![CDATA[mno]]></chunk>
+  </body>
+  <checksum>9f:00:aa</checksum>
+</packet>

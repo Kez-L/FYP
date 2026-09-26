@@ -1,0 +1,139 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY % feature "INCLUDE">
+  <![%feature;[
+    <!ELEMENT catalog (entry+)>
+    <!ELEMENT entry (name, meta?, description)>
+    <!ELEMENT name (#PCDATA)>
+    <!ELEMENT meta EMPTY>
+    <!ELEMENT description (#PCDATA|em|br)*>
+    <!ELEMENT em (#PCDATA)>
+    <!ELEMENT br EMPTY>
+    <!ATTLIST entry id ID #REQUIRED status (new|old) "new">
+    <!ATTLIST meta source CDATA #IMPLIED>
+  ]]>
+  <!ENTITY copyright "&#xA9; 2026">
+]>
+<catalog>
+  <entry id="e1">
+    <name>alpha &amp; beta</name>
+    <meta source="imported"/>
+    <description>Text <em>with emphasis</em><br/>and a symbol: &copyright;</description>
+  </entry>
+  <entry id="e2" status="old">
+    <name>delta</name>
+    <description><![CDATA[raw ]]> brackets ]]></description>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder|file)*>
+  <!ELEMENT folder (folder|file|note)*>
+  <!ELEMENT file (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST folder name NMTOKEN #REQUIRED>
+  <!ATTLIST file path CDATA #REQUIRED checksum CDATA #IMPLIED>
+  <!ENTITY filemark "FILE">
+]>
+<archive>
+  <folder name="a.b">
+    <file path="one&amp;two.txt" checksum="sha256:deadbeef">&filemark;:payload</file>
+    <note>line one
+line two&#x0A;line three</note>
+    <folder name="nested">
+      <file path="empty.bin"></file>
+    </folder>
+  </folder>
+  <folder name="z">
+    <file path="quote&apos;s.dat">]]&gt;</file>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ENTITY % declarations SYSTEM "urn:unavailable:message-entities">
+  %declarations;
+  <!ELEMENT message (header, body, footer?)>
+  <!ELEMENT header (sender, recipient, subject)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|line|link)*>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST message version CDATA "1.0">
+  <!ATTLIST link href URI #REQUIRED>
+]>
+<message version="2.0">
+  <header>
+    <sender>alice@example.invalid</sender>
+    <recipient>bob@example.invalid</recipient>
+    <subject>Update &amp; status</subject>
+  </header>
+  <body>
+    First line.
+    <line>Second line with &lt;markup&gt;.</line>
+    <link href="mailto:test@example.invalid">contact</link>
+  </body>
+  <footer>End</footer>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE transform [
+  <!ELEMENT transform (source, steps, result)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT steps (step*)>
+  <!ELEMENT step EMPTY>
+  <!ELEMENT result (#PCDATA)>
+  <!ATTLIST step
+            operation (copy|rename|delete|replace) #REQUIRED
+            from CDATA #IMPLIED
+            to CDATA #IMPLIED
+            count NMTOKEN "1">
+]>
+<transform>
+  <source><![CDATA[
+    <item key="x">old</item>
+    <item key="y">keep</item>
+  ]]></source>
+  <steps>
+    <step operation="rename" from="x" to="z" count="01"/>
+    <step operation="replace" from="old" to="new"/>
+    <step operation="delete" from="missing"/>
+  </steps>
+  <result>&lt;item key=&quot;z&quot;&gt;new&lt;/item&gt;</result>
+</transform>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE geometry [
+  <!NOTATION svg SYSTEM "image/svg+xml">
+  <!ENTITY drawing SYSTEM "shape.svg" NDATA svg>
+  <!ELEMENT geometry (point*, polygon?, external?)>
+  <!ELEMENT point EMPTY>
+  <!ELEMENT polygon (point+)>
+  <!ELEMENT external EMPTY>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED label CDATA #IMPLIED>
+  <!ATTLIST polygon closed (true|false) "true">
+  <!ATTLIST external src ENTITY #REQUIRED>
+]>
+<geometry>
+  <point x="0" y="0" label="origin"/>
+  <point x="1e309" y="-0"/>
+  <polygon closed="false">
+    <point x="10" y="20"/>
+    <point x="30" y="40" label="p&amp;q"/>
+  </polygon>
+  <external src="drawing"/>
+</geometry>
+```

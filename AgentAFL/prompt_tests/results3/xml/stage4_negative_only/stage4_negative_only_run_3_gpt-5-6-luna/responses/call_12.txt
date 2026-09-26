@@ -1,0 +1,149 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, signature?)>
+  <!ELEMENT header (from, to, subject)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|emphasis|link)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST message priority (low|normal|high) "normal">
+  <!ENTITY company "Example &amp; Sons">
+]>
+<message priority="high">
+  <header>
+    <from>sender@example.test</from>
+    <to>receiver@example.test</to>
+    <subject>Entity handling</subject>
+  </header>
+  <body>Hello, <emphasis>world</emphasis>! Visit <link>https://example.test/?a=1&amp;b=2</link>.
+    &company; confirms delivery.
+  </body>
+  <signature>-- Mail System</signature>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:archive:library" xmlns:dc="http://purl.org/dc/elements/1.1/" xml:lang="fr">
+  <record xml:id="r-α">
+    <dc:title xml:space="preserve">Les Misérables</dc:title>
+    <dc:creator>Victor Hugo</dc:creator>
+    <dc:date>1862-01-01</dc:date>
+    <classification>
+      <code scheme="Dewey">843.8</code>
+      <code scheme="LOC">PQ2469</code>
+    </classification>
+    <notes>Texte avec accents : élève, cœur, naïveté.</notes>
+  </record>
+  <record xml:id="r-β">
+    <dc:title>Три сестры</dc:title>
+    <dc:creator>Антон Чехов</dc:creator>
+    <availability>
+      <copy shelf="B-17" status="available"/>
+      <copy shelf="B-18" status="repair"/>
+    </availability>
+  </record>
+</library>
+```
+
+```xml
+<?xml version="1.0"?>
+<?processing instruction-data?>
+<configuration>
+  <environment name="staging">
+    <variable name="PATH">/opt/app/bin:/usr/local/bin</variable>
+    <variable name="EMPTY"/>
+    <variable name="QUOTED" value="&quot;alpha&quot; &amp; &apos;beta&apos;"/>
+  </environment>
+  <!-- The following values intentionally exercise mixed content. -->
+  <pipeline>
+    <step id="fetch" enabled="yes">
+      <input type="uri">https://api.example.test/v2/items?limit=10&amp;sort=-name</input>
+    </step>
+    <step id="transform" enabled="no">
+      <script language="text/x-shell"><![CDATA[
+        for item in "$@"; do
+          printf '%s\n' "$item"
+        done
+      ]]></script>
+    </step>
+    <step id="publish" enabled="yes">
+      <destination><![CDATA[/var/lib/app/output/<daily>]]></destination>
+    </step>
+  </pipeline>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<invoice xmlns="urn:billing:invoice" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="urn:billing:invoice invoice.xsd" number="INV-2026-0042"
+         issued="2026-09-24T16:45:30Z">
+  <seller>
+    <name>Northwind Traders</name>
+    <address>
+      <line>42 Harbor Way</line>
+      <city>Rotterdam</city>
+      <postal>3011AA</postal>
+      <country>NL</country>
+    </address>
+  </seller>
+  <buyer>
+    <name>Contoso Research</name>
+    <tax-id country="US">US-88421</tax-id>
+  </buyer>
+  <lines>
+    <line position="1">
+      <description>Precision sensor</description>
+      <quantity unit="pcs">3</quantity>
+      <unit-price currency="USD">125.00</unit-price>
+      <discount percent="5"/>
+    </line>
+    <line position="2">
+      <description>Calibration service</description>
+      <quantity unit="hour">2.5</quantity>
+      <unit-price currency="USD">80.00</unit-price>
+    </line>
+  </lines>
+  <totals>
+    <subtotal currency="USD">535.00</subtotal>
+    <tax rate="0.00" currency="USD">0.00</tax>
+    <grand-total currency="USD">535.00</grand-total>
+  </totals>
+</invoice>
+```
+
+```xml
+<?xml version="1.0"?>
+<document xml:base="https://docs.example.test/releases/9/" xml:lang="en">
+  <section id="intro">
+    <heading>Release notes</heading>
+    <paragraph>Version <strong>9.4</strong> changes the default behavior.</paragraph>
+    <list ordered="true">
+      <entry value="1">Preserve whitespace in templates.</entry>
+      <entry value="2">Reject malformed attribute names.</entry>
+      <entry value="3">Improve diagnostics for nested declarations.</entry>
+    </list>
+  </section>
+  <section id="references">
+    <heading>References</heading>
+    <bibliography>
+      <reference href="manual.html#parser">Parser manual</reference>
+      <reference href="../changelog.xml">Change log</reference>
+      <reference href="mailto:maintainer@example.test">Maintainer</reference>
+    </bibliography>
+  </section>
+  <section id="appendix">
+    <heading>Appendix</heading>
+    <table>
+      <row><cell>Input</cell><cell>Output</cell></row>
+      <row><cell>α &lt; β</cell><cell>β &gt; α</cell></row>
+      <row><cell>NULL</cell><cell>∅</cell></row>
+    </table>
+  </section>
+</document>
+```

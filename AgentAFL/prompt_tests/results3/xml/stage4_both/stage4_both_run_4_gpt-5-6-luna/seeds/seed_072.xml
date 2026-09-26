@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:acme:workflow" xmlns:sec="urn:acme:security">
+  <trigger id="nightly" active="true">
+    <schedule>
+      <day>Monday</day>
+      <day>Wednesday</day>
+      <day>Friday</day>
+      <time zone="UTC">23:45:00</time>
+    </schedule>
+  </trigger>
+  <pipeline name="archive-and-notify">
+    <step id="collect" type="command" retry="2">
+      <argument>--since</argument>
+      <argument>24h</argument>
+      <environment>
+        <variable name="MODE">incremental</variable>
+        <variable name="FORMAT">tar</variable>
+      </environment>
+    </step>
+    <step id="compress" type="transform">
+      <input ref="collect"/>
+      <parameter key="level">9</parameter>
+    </step>
+    <step id="publish" type="http">
+      <endpoint method="PUT">https://example.invalid/upload</endpoint>
+      <header name="Content-Type">application/octet-stream</header>
+      <sec:credential scope="upload">vault://jobs/archive-token</sec:credential>
+    </step>
+    <on-error>
+      <notify channel="email" address="ops@example.invalid"/>
+      <halt/>
+    </on-error>
+  </pipeline>
+</workflow>

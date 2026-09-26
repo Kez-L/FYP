@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (meta?, body)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT body (#PCDATA|record|break|tail)*>
+  <!ELEMENT record (#PCDATA|field)*>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT tail (#PCDATA)>
+  <!ATTLIST meta version CDATA #FIXED "v2" flags NMTOKENS #IMPLIED>
+  <!ATTLIST record number NMTOKEN #REQUIRED>
+  <!ATTLIST field key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY q "&#34;">
+]>
+<packet>
+  <meta version="v2" flags="fast safe"/>
+  <body>
+    pre
+    <record number="0001">
+      <field key="a" value="1"/>
+      <field key="b" value="&q;quoted&q;"/>
+    </record>
+    <break/>
+    <![CDATA[<record number="literal"/>]]>
+    <tail>post &lt; end</tail>
+  </body>
+</packet>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow>
+  <start ref="prepare"/>
+  <node id="prepare" kind="task">
+    <input name="source" type="file">input.dat</input>
+    <output name="normalized" type="file">normalized.dat</output>
+    <next ref="validate"/>
+  </node>
+  <node id="validate" kind="decision">
+    <condition expression="size &gt; 0"/>
+    <when value="true" next="publish"/>
+    <when value="false" next="reject"/>
+  </node>
+  <node id="publish" kind="task">
+    <command><![CDATA[install -m 0644 normalized.dat /srv/incoming/]]></command>
+    <next ref="finish"/>
+  </node>
+  <node id="reject" kind="terminal">
+    <reason>empty input</reason>
+  </node>
+  <node id="finish" kind="terminal">
+    <message>workflow complete</message>
+  </node>
+</workflow>

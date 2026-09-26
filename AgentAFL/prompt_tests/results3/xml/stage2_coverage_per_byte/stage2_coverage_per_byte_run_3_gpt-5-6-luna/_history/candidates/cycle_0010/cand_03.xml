@@ -1,0 +1,20 @@
+<?xml version="1.1"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (record*)>
+  <!ELEMENT record (field|record)*>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST record kind CDATA #IMPLIED>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY amp "&#38;">
+  <!ENTITY nested "&amp;&amp;&amp;">
+]>
+<stream kind="outer">
+  <record kind="a">
+    <field name="empty" value=""/>
+    <record>
+      <field name="escaped" value="&lt;&gt;&quot;&apos;"/>
+      <field name="numeric" value="&#x0B;&#x85;&#x2028;"/>
+    </record>
+  </record>
+  <record kind="b">&nested;<field name="tail"/></record>
+</stream>

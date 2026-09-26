@@ -1,0 +1,23 @@
+{
+  "call": 6,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Tried before \u2014 no new coverage, avoid repeating:\n--- 3 of your past seeds (cycles 4,5,6) drove the same already-covered path with 0 new edges ---\n<?xml version=\"1.0\"?>\n<package xmlns=\"urn:pkg\" xmlns:rel=\"urn:relationship\" xml:base=\"https://example.invalid/root/\">\n  <manifest>\n    <file href=\"./a/../payload.bin\" media-type=\"application/octet-stream\"/>\n    <file href=\"data:text/plain;charset=utf-8,hello%20world\" media-type=\"text/plain\"/>\n  </manifest>\n  <relationships>\n    <rel:relationship id=\"r1\" type=\"urn:link\" target=\"../other.xml\"/>\n    <rel:relationship id=\"r2\" type=\"urn:link\">\n      <rel:target>fragment.xml#part-1</rel:target>\n    </rel:relationship>\n  </relationships>\n  <content><![CDATA[\n    <not-parsed>\n      & still text\n    </not-parsed>\n  ]]></content>\n</package>\n\n--- 2 of your past seeds (cycles 2,4) drove the same already-covered path with 0 new edges ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (entry+)>\n  <!ELEMENT entry (key, value, checksum?)>\n  <!ELEMENT key (#PCDATA)>\n  <!ELEMENT value (#PCDATA)>\n  <!ELEMENT checksum (#PCDATA)>\n  <!ATTLIST entry priority (low|normal|high) \"normal\">\n  <!ENTITY nbsp \"&#160;\">\n]>\n<archive>\n  <entry priority=\"high\">\n    <key>alpha</key>\n    <value>First&nbsp;record</value>\n    <checksum><![CDATA[sha256:0000<invalid-looking>]]></checksum>\n  </entry>\n  <entry priority=\"low\">\n    <key>omega</key>\n    <value>Trailing whitespace&#x20;</value>\n  </entry>\n</archive>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "no-seed",
+  "positive_feedback": false,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T05:54:30.930324+00:00"
+}

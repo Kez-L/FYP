@@ -1,0 +1,137 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY logo SYSTEM "logo.bin" NDATA bin>
+  <!ENTITY greeting "Hello, &quot;world&quot; &amp; universe">
+  <!ENTITY % feature "<!ELEMENT archive (section|record)*>
+                       <!ATTLIST archive mode (compact|verbose) 'compact'>">
+  %feature;
+  <!ELEMENT section (#PCDATA|record|![CDATA[raw]]|link)*>
+  <!ELEMENT record EMPTY>
+  <!ATTLIST record key ID #REQUIRED payload ENTITY #IMPLIED>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link ref IDREF #IMPLIED>
+  <!ENTITY nested "A &greeting; B">
+]>
+<archive mode="verbose" xmlns="urn:seed:archive">
+  <section><![CDATA[<not-an-element>&still-literal;</not-an-element>]]>
+    &nested;
+    <record key="r1" payload="logo"/>
+    <link ref="r1"/>
+  </section>
+  <section>tail &#x1F642; &greeting;</section>
+</archive>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE configuration [
+  <!ENTITY % declarations '
+    <!ELEMENT configuration (module*, setting*)>
+    <!ATTLIST configuration xml:space (default|preserve) "preserve">
+    <!ELEMENT module (name, option*)>
+    <!ELEMENT name (#PCDATA)>
+    <!ELEMENT option (#PCDATA)>
+    <!ELEMENT setting EMPTY>
+    <!ATTLIST setting key CDATA #REQUIRED value CDATA #IMPLIED>
+  '>
+  %declarations;
+  <!ENTITY % extras '<!ATTLIST module enabled (yes|no) "yes">'>
+  %extras;
+]>
+<configuration xml:space="preserve">
+  <module enabled="no">
+    <name>core</name>
+    <option>one&#x85;two</option>
+    <option>three&#x2028;four</option>
+  </module>
+  <setting key="path" value="a&#xD;&#xA;b"/>
+</configuration>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell*)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST cell colspan NMTOKEN "1" rowspan NMTOKEN "1">
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+  <!ENTITY quoted "&lt;cell&gt;">
+]>
+<matrix xmlns:x="urn:x">
+  <row><cell colspan="01">&left;one&right;</cell><cell><![CDATA[
+    line-one
+    line-two
+  ]]></cell></row>
+  <row><cell rowspan="0">&quoted;</cell><cell x:flag="yes"/></row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (item*)>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item name CDATA #REQUIRED kind CDATA #IMPLIED>
+  <!ELEMENT payload ANY>
+  <!ENTITY % conditional '
+    <![IGNORE[
+      <!ELEMENT ignored (never)>
+      <!ATTLIST ignored phantom CDATA #IMPLIED>
+    ]]>
+  '>
+  %conditional;
+  <!ENTITY amp "&amp;">
+  <!ENTITY quote "&quot;">
+]>
+<?processing instruction?>
+<package>
+  <manifest>
+    <item name="alpha" kind="text"/>
+    <item name="beta" kind="binary"/>
+  </manifest>
+  <payload>
+    <chunk index="0">&amp; &amp; &amp;</chunk>
+    <chunk index="1"><![CDATA[]]></chunk>
+    <chunk index="2">before<!-- comment --><![CDATA[inside]]>after</chunk>
+    &quote;&amp;
+  </payload>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body, trailer?)>
+  <!ELEMENT header (field+)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT body (item|note|itemref)*>
+  <!ELEMENT item (#PCDATA|meta)*>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta k CDATA #REQUIRED v CDATA #IMPLIED>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT itemref EMPTY>
+  <!ATTLIST itemref target IDREF #REQUIRED>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST envelope id ID #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY text "A &nbsp; B &lt; C &gt; D">
+]>
+<envelope id="env-9">
+  <header>
+    <field name="mode" value="test"/>
+    <field name="empty"/>
+  </header>
+  <body>
+    <item id="it-1">&text;<meta k="quoted" v="&quot;x&quot;"/></item>
+    <itemref target="it-1"/>
+    <note><![CDATA[<item>raw markup</item>]]></note>
+  </body>
+  <trailer>done</trailer>
+</envelope>
+```

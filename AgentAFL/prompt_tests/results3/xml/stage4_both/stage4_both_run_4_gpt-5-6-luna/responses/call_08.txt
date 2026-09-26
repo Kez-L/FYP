@@ -1,0 +1,257 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:inv="urn:example:inventory"
+  exclude-result-prefixes="inv">
+  <xsl:output method="html" encoding="UTF-8" doctype-system="about:legacy-compat"/>
+  <xsl:param name="currency" select="'USD'"/>
+  <xsl:variable name="tax-rate" select="0.0825"/>
+  <xsl:key name="by-sku" match="inv:item" use="@sku"/>
+
+  <xsl:template match="/">
+    <html lang="en">
+      <head>
+        <meta charset="utf-8"/>
+        <title><xsl:value-of select="inv:warehouse/@name"/></title>
+      </head>
+      <body>
+        <h1><xsl:value-of select="inv:warehouse/@name"/></h1>
+        <xsl:apply-templates select="inv:warehouse/inv:aisle">
+          <xsl:sort select="@code" data-type="text"/>
+        </xsl:apply-templates>
+        <p class="summary">
+          <xsl:text>Total units: </xsl:text>
+          <xsl:value-of select="sum(inv:warehouse/inv:aisle/inv:item/@quantity)"/>
+        </p>
+      </body>
+    </html>
+  </xsl:template>
+
+  <xsl:template match="inv:aisle">
+    <section data-code="{@code}">
+      <h2><xsl:value-of select="inv:label"/></h2>
+      <ul>
+        <xsl:for-each select="inv:item[@quantity &gt; 0]">
+          <li>
+            <xsl:value-of select="@sku"/>
+            <xsl:text> — </xsl:text>
+            <xsl:value-of select="inv:name"/>
+            <xsl:text> (</xsl:text>
+            <xsl:value-of select="format-number(@quantity * @price * (1 + $tax-rate), '0.00')"/>
+            <xsl:text> </xsl:text>
+            <xsl:value-of select="$currency"/>
+            <xsl:text>)</xsl:text>
+          </li>
+        </xsl:for-each>
+      </ul>
+    </section>
+  </xsl:template>
+</xsl:stylesheet>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"
+      xmlns:thr="http://purl.org/syndication/thread/1.0"
+      xmlns:media="http://search.yahoo.com/mrss/"
+      xml:lang="en">
+  <id>urn:uuid:6f4d4d8e-9b20-4a9b-ae3d-51d7f6ce8120</id>
+  <title type="html">Field Notes &amp; Instruments</title>
+  <subtitle><![CDATA[Observations from the northern transect]]></subtitle>
+  <updated>2026-09-21T14:32:18Z</updated>
+  <generator uri="https://example.invalid/reader" version="4.7">Northstar Reader</generator>
+  <link rel="self" type="application/atom+xml" href="https://example.invalid/feed.xml"/>
+  <link rel="alternate" type="text/html" hreflang="en" href="https://example.invalid/notes"/>
+  <author>
+    <name>Rina Solberg</name>
+    <uri>https://example.invalid/people/rina</uri>
+    <email>rina@example.invalid</email>
+  </author>
+  <entry>
+    <id>tag:example.invalid,2026:note-771</id>
+    <title>Rain gauge calibration</title>
+    <published>2026-09-19T07:10:00Z</published>
+    <updated>2026-09-20T11:04:00Z</updated>
+    <category term="instrumentation" scheme="https://example.invalid/tags"/>
+    <category term="fieldwork"/>
+    <summary type="text">A comparison of three collection vessels.</summary>
+    <content type="xhtml">
+      <div xmlns="http://www.w3.org/1999/xhtml">
+        <p>The readings diverged after <em>17:00</em>.</p>
+        <table>
+          <tr><th>vessel</th><th>mm</th></tr>
+          <tr><td>glass</td><td>12.4</td></tr>
+          <tr><td>polymer</td><td>12.1</td></tr>
+        </table>
+      </div>
+    </content>
+    <media:content url="https://example.invalid/media/gauge.jpg" type="image/jpeg" medium="image" width="640" height="480"/>
+    <thr:in-reply-to ref="tag:example.invalid,2026:note-760" href="https://example.invalid/notes/760"/>
+  </entry>
+</feed>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="urn:example:booking"
+           xmlns:b="urn:example:booking"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+  <xs:element name="reservation" type="b:ReservationType"/>
+  <xs:complexType name="ReservationType">
+    <xs:sequence>
+      <xs:element name="reference" type="xs:token"/>
+      <xs:element name="guest" type="b:GuestType" minOccurs="1" maxOccurs="4"/>
+      <xs:element name="stay">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="arrival" type="xs:date"/>
+            <xs:element name="departure" type="xs:date"/>
+            <xs:element name="nights" type="b:PositiveCount"/>
+          </xs:sequence>
+          <xs:attribute name="timezone" type="xs:string" use="required"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:choice minOccurs="0">
+        <xs:element name="room" type="b:RoomType"/>
+        <xs:element name="campSite" type="b:CampSiteType"/>
+      </xs:choice>
+      <xs:element name="notes" minOccurs="0">
+        <xs:complexType mixed="true">
+          <xs:sequence>
+            <xs:element name="tag" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="status" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="held"/>
+          <xs:enumeration value="confirmed"/>
+          <xs:enumeration value="cancelled"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:complexType>
+  <xs:complexType name="GuestType">
+    <xs:sequence>
+      <xs:element name="given" type="xs:string"/>
+      <xs:element name="family" type="xs:string"/>
+      <xs:element name="contact" type="b:ContactType" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="age" type="xs:nonNegativeInteger"/>
+  </xs:complexType>
+  <xs:complexType name="ContactType">
+    <xs:choice>
+      <xs:element name="email" type="xs:string"/>
+      <xs:element name="phone" type="xs:string"/>
+    </xs:choice>
+  </xs:complexType>
+  <xs:complexType name="RoomType">
+    <xs:attribute name="floor" type="xs:integer" use="required"/>
+    <xs:attribute name="accessible" type="xs:boolean" default="false"/>
+  </xs:complexType>
+  <xs:complexType name="CampSiteType">
+    <xs:attribute name="pitch" type="xs:string" use="required"/>
+    <xs:attribute name="power" type="xs:boolean"/>
+  </xs:complexType>
+  <xs:simpleType name="PositiveCount">
+    <xs:restriction base="xs:positiveInteger">
+      <xs:maxInclusive value=" ninety"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope"
+              xmlns:addr="http://www.w3.org/2005/08/addressing"
+              xmlns:svc="urn:example:geocode"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <env:Header>
+    <addr:Action env:mustUnderstand="true">urn:example:geocode:LookupResponse</addr:Action>
+    <addr:MessageID>urn:uuid:2d54d6a1-5ed8-4e89-8e8c-45e2d7f0af62</addr:MessageID>
+    <addr:RelatesTo>urn:uuid:8c77a04f-9c9f-4a2e-b0cc-6b2d66f9a1d5</addr:RelatesTo>
+    <addr:To>https://api.example.invalid/geocode</addr:To>
+    <svc:Trace env:role="http://www.w3.org/2003/05/soap-envelope/role/next" level="verbose">
+      <svc:span>lookup-19</svc:span>
+      <svc:sampled>true</svc:sampled>
+    </svc:Trace>
+  </env:Header>
+  <env:Body>
+    <svc:LookupResponse>
+      <svc:requestId>g-91827</svc:requestId>
+      <svc:result xsi:type="svc:Place">
+        <svc:formatted>14 Rue des Églantines, 69002 Lyon</svc:formatted>
+        <svc:coordinate>
+          <svc:latitude>45.7489</svc:latitude>
+          <svc:longitude>4.8467</svc:longitude>
+        </svc:coordinate>
+        <svc:components>
+          <svc:component kind="street">Rue des Églantines</svc:component>
+          <svc:component kind="city">Lyon</svc:component>
+          <svc:component kind="country" code="FR">France</svc:component>
+        </svc:components>
+        <svc:precision>rooftop</svc:precision>
+      </svc:result>
+      <svc:links>
+        <svc:link rel="map" href="https://maps.example.invalid/?q=45.7489,4.8467"/>
+        <svc:link rel="metadata" href="urn:example:geocode:g-91827"/>
+      </svc:links>
+    </svc:LookupResponse>
+  </env:Body>
+</env:Envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (package, signature, files, metadata?)>
+  <!ELEMENT package EMPTY>
+  <!ATTLIST package name NMTOKEN #REQUIRED version CDATA #REQUIRED platform (linux|windows|macos|any) "any">
+  <!ELEMENT signature (algorithm, value)>
+  <!ELEMENT algorithm (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT files (file+)>
+  <!ELEMENT file (hash, chunk*)>
+  <!ATTLIST file path CDATA #REQUIRED size CDATA #REQUIRED executable (yes|no) "no">
+  <!ELEMENT hash (#PCDATA)>
+  <!ATTLIST hash scheme (sha256|sha512) "sha256">
+  <!ELEMENT chunk EMPTY>
+  <!ATTLIST chunk offset CDATA #REQUIRED length CDATA #REQUIRED digest CDATA #REQUIRED>
+  <!ELEMENT metadata (property*)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST property key NMTOKEN #REQUIRED>
+  <!ENTITY vendor "Aurora Systems">
+  <!ENTITY build "2026.09.24">
+]>
+<manifest>
+  <package name="aurora-agent" version="&build;" platform="linux"/>
+  <signature>
+    <algorithm>ed25519</algorithm>
+    <value><![CDATA[
+MCowBQYDK2VwAyEA//////////////////////////////////////////8=
+]]></value>
+  </signature>
+  <files>
+    <file path="bin/aurora-agent" size="184320" executable="yes">
+      <hash scheme="sha512">7f83b1657ff1fc53b92dc18148a1d65dfa135a3c</hash>
+      <chunk offset="0" length="65536" digest="a1b2c3d4e5f60123"/>
+      <chunk offset="65536" length="65536" digest="1122334455667788"/>
+      <chunk offset="131072" length="53248" digest="99aabbccddeeff00"/>
+    </file>
+    <file path="share/NOTICE.txt" size="912" executable="no">
+      <hash>3a7bd3e2360a3d29</hash>
+    </file>
+  </files>
+  <metadata>
+    <property key="publisher">&vendor;</property>
+    <property key="channel">stable</property>
+    <property key="release-notes">Security fixes, parser diagnostics, and offline mode.</property>
+  </metadata>
+</manifest>
+```

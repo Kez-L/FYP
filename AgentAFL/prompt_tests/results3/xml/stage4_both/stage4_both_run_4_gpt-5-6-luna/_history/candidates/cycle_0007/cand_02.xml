@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:example:config"
+               xmlns:sec="urn:example:security"
+               xmlns:env="urn:example:environment"
+               xml:base="https://config.example.invalid/root/">
+  <profile name="staging" enabled="true">
+    <include href="fragments/network.xml" parse="xml"/>
+    <parameters>
+      <parameter name="timeout" type="duration">
+        <default unit="ms">2500</default>
+        <override scope="region" value="eu-west">
+          <value>3100</value>
+        </override>
+      </parameter>
+      <parameter name="features" type="set">
+        <member>telemetry</member>
+        <member>compression</member>
+        <member>signed-events</member>
+      </parameter>
+    </parameters>
+    <sec:credentials>
+      <sec:principal id="svc-42">
+        <sec:role>reader</sec:role>
+        <sec:role>auditor</sec:role>
+        <sec:key algorithm="ed25519"><![CDATA[
+-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+-----END PUBLIC KEY-----
+        ]]></sec:key>
+      </sec:principal>
+    </sec:credentials>
+    <env:matrix>
+      <env:variable name="REGION">eu-west</env:variable>
+      <env:variable name="FLAGS" xml:space="preserve"> A:B::C </env:variable>
+      <env:variable name="EMPTY"/>
+    </env:matrix>
+    <rules>
+      <rule priority="10">
+        <when><all><equals left="env" right="staging"/><exists path="/parameters"/></all></when>
+        <then action="enable"><target>telemetry</target></then>
+      </rule>
+      <rule priority="20">
+        <when><not><exists path="/missing"/></not></when>
+        <then action="warn"><message>fallback &lt;path&gt; selected</message></then>
+      </rule>
+    </rules>
+  </profile>
+</configuration>

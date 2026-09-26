@@ -1,0 +1,96 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:m="urn:example:meta">
+  <!-- mixed content and namespace transitions -->
+  <item id="α-01" active="true">
+    <m:title>Résumé &amp; tea</m:title>
+    <description><![CDATA[<not-an-element attr="&amp;">payload]]></description>
+    text-before
+    <price currency="€">12.50</price>
+    <?audit level="verbose"?>
+    text-after
+  </item>
+  <item id="β-02" active="false">
+    <m:title xml:lang="ja">東京</m:title>
+    <description>line one&#x0A;line two&#x2028;終わり</description>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body)>
+  <!ELEMENT header (token?, flag*)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ELEMENT body ANY>
+  <!ATTLIST flag name NMTOKEN #REQUIRED value CDATA "">
+  <!ENTITY greeting "hello &amp; goodbye">
+  <!ENTITY quoted "a &quot;b&quot; c">
+]>
+<envelope>
+  <header>
+    <token>&greeting; &quoted;</token>
+    <flag name="x" value="1"/>
+    <flag name="y"/>
+  </header>
+  <body>
+    <section><p>one</p><p>two &lt; three</p></section>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.1"?>
+<root xmlns:x="urn:x" xmlns:y="urn:y">
+  <x:branch>
+    <x:leaf a="&quot;&apos;&amp;&lt;&gt;" b="&#x1F600;">A</x:leaf>
+    <y:leaf>
+      <![CDATA[
+        ]]]]><![CDATA[>
+        nested-looking markup: <a b="c"/>
+      ]]>
+    </y:leaf>
+  </x:branch>
+  <empty/>
+  <mixed>α<x:leaf/>β<y:leaf/>γ</mixed>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE r [
+  <!ENTITY % common "<!ELEMENT r (a|b|c)*>">
+  %common;
+  <!ELEMENT a (#PCDATA|b|c)*>
+  <!ELEMENT b EMPTY>
+  <!ELEMENT c (#PCDATA)>
+  <!ATTLIST a mode (one|two|three) "one">
+  <!ATTLIST c data CDATA #IMPLIED>
+]>
+<r>
+  <a mode="three">prefix<b/>middle<c data="x &amp; y">tail</c>suffix</a>
+  <c/>
+  <a>last</a>
+</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<document>
+  <?xml-stylesheet type="text/xsl" href="style.xsl"?>
+  <record key="&#x0;bad" note="unterminated-like &amp; text">
+    <name>before</name>
+    <value><![CDATA[raw ]]> tail ]]></value>
+    <group>
+      <entry id="1">one</entry>
+      <entry id="2"><![CDATA[two]]></entry>
+      <entry id="3">three</entry>
+    </group>
+  </record>
+  <record key="2">
+    <name>after</name>
+  </record>
+</document>
+```

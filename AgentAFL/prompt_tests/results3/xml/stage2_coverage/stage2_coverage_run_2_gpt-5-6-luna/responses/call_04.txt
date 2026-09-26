@@ -1,0 +1,189 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry*)>
+  <!ELEMENT entry (key, data, metadata?)>
+  <!ATTLIST entry
+    code ID #REQUIRED
+    active (yes|no) "yes">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT data (#PCDATA|chunk|![CDATA[not markup]]>)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT metadata (created, tags)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ENTITY amp "&#38;">
+  <!ENTITY note "A &amp; B &lt; C">
+]>
+<catalog>
+  <entry code="e1">
+    <key>alpha</key>
+    <data>left<chunk>middle</chunk>right &amp; &note;</data>
+    <metadata>
+      <created>2026-09-24</created>
+      <tags><tag>one</tag><tag>two</tag></tags>
+    </metadata>
+  </entry>
+  <entry code="e2" active="no">
+    <key>beta</key>
+    <data><![CDATA[raw ]]> text <![CDATA[ with ]]> delimiters</data>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST row index NMTOKEN #REQUIRED>
+  <!ATTLIST cell
+    kind NMTOKENS #IMPLIED
+    ref IDREF #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quote "&#34;">
+]>
+<matrix xmlns="urn:matrix" xmlns:m="urn:meta">
+  <row index="r0">
+    <cell kind="numeric primary" ref="r0">0</cell>
+    <cell kind="numeric">&nbsp;</cell>
+    <cell kind="quoted">&quote;</cell>
+  </row>
+  <row index="r1">
+    <cell kind="numeric" ref="missing">-1</cell>
+    <cell><![CDATA[1 < 2 && 3 > 2]]></cell>
+    <cell kind="text"><m:annotation xml:lang="en">edge</m:annotation></cell>
+  </row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE form [
+  <!ELEMENT form (header, fieldset+, submit?)>
+  <!ELEMENT header (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT fieldset (legend?, field*)>
+  <!ELEMENT legend (#PCDATA)>
+  <!ELEMENT field (label?, input, hint?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT input EMPTY>
+  <!ELEMENT hint (#PCDATA)>
+  <!ELEMENT submit EMPTY>
+  <!ATTLIST fieldset name CDATA #REQUIRED>
+  <!ATTLIST field name CDATA #IMPLIED>
+  <!ATTLIST input
+    type (text|number|checkbox|hidden) "text"
+    value CDATA #IMPLIED
+    disabled (true|false) "false">
+  <!ATTLIST submit action CDATA #REQUIRED>
+]>
+<form>
+  <header>Registration<linebreak/>Please complete all sections.</header>
+  <fieldset name="identity">
+    <legend>Identity</legend>
+    <field name="nickname">
+      <label>Nickname</label>
+      <input type="text" value="A &quot;quoted&quot; name"/>
+      <hint>Optional &lt;display&gt; name</hint>
+    </field>
+    <field name="age"><label>Age</label><input type="number" value="0007"/></field>
+  </fieldset>
+  <fieldset name="flags">
+    <field name="verified"><input type="checkbox" value="yes" disabled="true"/></field>
+    <field name="token"><input type="hidden" value="&apos;raw&apos;"/></field>
+  </fieldset>
+  <submit action="/save?mode=xml"/>
+</form>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE log [
+  <!ELEMENT log (event*)>
+  <!ELEMENT event (timestamp, source, message, detail?)>
+  <!ATTLIST event
+    severity (debug|info|warn|error) "info"
+    sequence NMTOKEN #IMPLIED>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT source EMPTY>
+  <!ATTLIST source
+    host CDATA #REQUIRED
+    process CDATA #IMPLIED
+    pid NMTOKEN #IMPLIED>
+  <!ELEMENT message (#PCDATA|code|br)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT detail (property*)>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST property key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY leftbracket "&#91;">
+  <!ENTITY rightbracket "&#93;">
+]>
+<log>
+  <event severity="error" sequence="0001">
+    <timestamp>2026-09-24T12:34:56.000Z</timestamp>
+    <source host="node-7" process="worker" pid="4294967295"/>
+    <message>Failure in <code>parser</code><br/>retry &leftbracket;scheduled&rightbracket;</message>
+    <detail>
+      <property key="errno" value="ENOMEM"/>
+      <property key="path" value="/tmp/a&amp;b"/>
+      <property key="empty"/>
+    </detail>
+  </event>
+  <event severity="debug">
+    <timestamp>never</timestamp>
+    <source host="localhost"/>
+    <message><![CDATA[diagnostic: ]]> bytes=0</message>
+  </event>
+</log>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (name, version, dependency*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT version (#PCDATA)>
+  <!ELEMENT dependency EMPTY>
+  <!ATTLIST dependency
+    name CDATA #REQUIRED
+    range CDATA #IMPLIED
+    optional (true|false) "false">
+  <!ELEMENT payload (section*)>
+  <!ELEMENT section (title?, content)>
+  <!ATTLIST section id ID #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT content (#PCDATA|item|separator)*>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ENTITY % common 'xml:space (default|preserve) "default"'>
+  <!ATTLIST content %common;>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data.bin" NDATA bin>
+]>
+<package>
+  <manifest>
+    <name>sample&amp;bundle</name>
+    <version>0.0.0-alpha+7</version>
+    <dependency name="core" range="&gt;=1.0" optional="false"/>
+    <dependency name="extras" range="*" optional="true"/>
+  </manifest>
+  <payload>
+    <section id="s-a">
+      <title>First</title>
+      <content xml:space="preserve">
+        leading
+        <item>one</item><separator/>
+        trailing
+      </content>
+    </section>
+    <section id="s-b">
+      <content><item><![CDATA[x]]></item><item>y</item></content>
+    </section>
+  </payload>
+</package>
+```

@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node*, edge*)>
+  <!ELEMENT node (label?, value*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST node id ID #REQUIRED type CDATA "generic">
+  <!ATTLIST value name CDATA #REQUIRED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+]>
+<graph>
+  <node id="n-root" type="container">
+    <label>Root</label>
+    <value name="enabled">true</value>
+    <value name="threshold">0.000001</value>
+  </node>
+  <node id="n-left">
+    <label><![CDATA[Left <branch>]]></label>
+    <value name="payload">A&#x0A;B&#x0D;C</value>
+  </node>
+  <node id="n-right" type="leaf">
+    <value name="payload">right</value>
+  </node>
+  <node id="n-unlinked">
+    <label>orphan</label>
+  </node>
+  <edge from="n-root" to="n-left" weight="0.5"/>
+  <edge from="n-root" to="n-right" weight="2e3"/>
+  <edge from="n-left" to="n-right" weight="NaN"/>
+</graph>

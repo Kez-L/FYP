@@ -1,0 +1,23 @@
+{
+  "call": 14,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE report [\n  <!ELEMENT report (section+, appendix?)>\n  <!ELEMENT section (heading, paragraph*)>\n  <!ATTLIST section number NMTOKEN #REQUIRED>\n  <!ELEMENT heading (#PCDATA)>\n  <!ELEMENT paragraph (#PCDATA|quote|term)*>\n  <!ELEMENT quote (#PCDATA)>\n  <!ELEMENT term (#PCDATA)>\n  <!ELEMENT appendix (#PCDATA)>\n  <!ENTITY nbsp \"&#160;\">\n  <!ENTITY note \"internal entity text\">\n]>\n<?audit mode=\"strict\"?>\n<report>\n  <section number=\"1\">\n    <heading>Overview</heading>\n    <paragraph>Alpha&nbsp;content with a <term>defined term</term>.</paragraph>\n    <paragraph>A <quote>quoted fragment</quote> follows.</paragraph>\n  </section>\n  <section number=\"2\">\n    <heading>Results</heading>\n    <paragraph>Observed &note;.</paragraph>\n  </section>\n  <appendix>Supplementary material.</appendix>\n</report>\n\n--- example 2 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<archive xmlns=\"urn:example:archive\" xml:base=\"https://example.invalid/archive/\">\n  <directory name=\"root\">\n    <directory name=\"\u65e5\u672c\u8a9e\">\n      <file name=\"\u7a7a.txt\" media-type=\"text/plain\" xml:space=\"default\">\u3053\u3093\u306b\u3061\u306f</file>\n      <file name=\"data.bin\" media-type=\"application/octet-stream\">\n        <content encoding=\"base64\">AAECAwQFBgcICQ==</content>\n      </file>\n    </directory>\n    <symlink name=\"latest\" target=\"\u65e5\u672c\u8a9e/data.bin\"/>\n  </directory>\n  <index generated=\"2026-09-24T12:34:56Z\">\n    <reference href=\"root/\u65e5\u672c\u8a9e/\u7a7a.txt\" fragment=\"line-1\">\n      <label>localized text</label>\n    </reference>\n  </index>\n</archive>\n\nTried before \u2014 no new coverage, avoid repeating:\n--- 14 of your past seeds (cycles 6,8,9,10,11,12,13,14) drove the same already-covered path with 0 new edges ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<timeline xmlns=\"urn:demo:timeline\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <interval begin=\"2026-09-24T08:00:00Z\" end=\"2026-09-24T09:30:00Z\">\n    <label xml:lang=\"en\">Morning maintenance</label>\n    <marker at=\"2026-09-24T08:15:00Z\" kind=\"checkpoint\"/>\n    <marker at=\"2026-09-24T08:45:00Z\" kind=\"checkpoint\">\n      <note>operator acknowledged</note>\n    </marker>\n    <attachment xlink:type=\"simple\" xlink:href=\"urn:attachment:report-17\">\n      <xlink:title>Inspection report</xlink:title>\n    </attachment>\n  </interval>\n  <interval begin=\"2026-09-24T11:00:00+02:00\">\n    <label xml:lang=\"ja\">\u518d\u8d77\u52d5\u30a6\u30a3\u30f3\u30c9\u30a6</label>\n    <marker at=\"2026-09-24T11:05:30+02:00\"...[truncated, 743 chars total]\n\n--- 3 of your past seeds (cycles 8,14) drove the same already-covered path with 0 new edges ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<geometry xmlns=\"urn:example:geometry\" xmlns:g=\"urn:example:geo\">\n  <shape id=\"path-1\" transform=\"rotate(45 10 20)\">\n    <g:polyline closed=\"false\">\n      <g:point x=\"0\" y=\"0\"/>\n      <g:point x=\"10.5\" y=\"-3.25\"/>\n      <g:point x=\"20\" y=\"8\"/>\n    </g:polyline>\n    <style>\n      <fill color=\"#ff00aa\" opacity=\"0.75\"/>\n      <stroke color=\"rgb(0,0,0)\" width=\"2\"/>\n    </style>\n  </shape>\n  <shape id=\"circle-1\">\n    <circle center=\"10,20\" radius=\"5\">\n      <![CDATA[\n        geometry data may contain <angle> and & symbols\n      ]]>\n    </circle>\n  </shape>\n</geometry>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T06:10:33.003328+00:00"
+}

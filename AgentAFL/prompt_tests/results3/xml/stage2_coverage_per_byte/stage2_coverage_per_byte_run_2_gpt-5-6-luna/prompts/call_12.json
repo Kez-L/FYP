@@ -1,0 +1,23 @@
+{
+  "call": 12,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ATTLIST koo xml:lang CDATA \"eng\">\n  <!ATTLIST foo bar CDATA \"&lt;&gt;)qrking Group (orisable oveuot;\">\n]>\n<root>\n  <foo xml:lang=\"ger\">Ja</fo\u0000\u0004\n</roos>\n\n\n--- example 2 ---\n<!DOCTYPE doc [\n<!ELEMENT doc EMPTY>\n<!ATTLIST doc\n defatt  (0|1)   \"0\"\n     xmlns:tst CDATA #FIXED \"http://example.org\"  tst:att  (0|1)   \"0\"\n    att (0|1)   \"1\">\n]>\n<doc att=\"1B/h12;&laugh12;&laugh12;&la>\n\n\nTried before \u2014 no new coverage, avoid repeating:\n--- 2 of your past seeds (cycles 5,11) drove the same already-covered path with 0 new edges ---\n<?xml version=\"1.1\" standalone=\"no\"?>\n<!DOCTYPE envelope [\n  <!ELEMENT envelope (header, payload, footer?)>\n  <!ELEMENT header (#PCDATA)>\n  <!ELEMENT payload (chunk+)>\n  <!ELEMENT chunk (#PCDATA|![CDATA[not markup]]>)*>\n  <!ELEMENT footer EMPTY>\n  <!ATTLIST envelope version CDATA #FIXED \"v2\">\n  <!ATTLIST chunk encoding (plain|hex|base64) \"plain\">\n  <!ENTITY open \"<tag>\">\n  <!ENTITY close \"</tag>\">\n]>\n<envelope version=\"v2\">\n  <header><?meta phase=\"test\"?>start<!--inside--></header>\n  <payload>\n    <chunk encoding=\"hex\">4142&amp;4344</chunk>\n    <chunk><![CDATA[raw ]]> <![CDATA[split]]></chunk>\n  </payload>\n  <footer/>\n</envelope>\n\n--- a seed you generated (cycle 12) added 0 new edges ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE message [\n  <!ELEMENT message (sender, recipient+, body, attachment*)>\n  <!ELEMENT sender EMPTY>\n  <!ELEMENT recipient EMPTY>\n  <!ELEMENT body (#PCDATA|b|i|code|quote)*>\n  <!ELEMENT attachment (description?, digest)>\n  <!ELEMENT description (#PCDATA)>\n  <!ELEMENT digest (#PCDATA)>\n  <!ELEMENT b (#PCDATA|i)*>\n  <!ELEMENT i (#PCDATA|b)*>\n  <!ELEMENT code (#PCDATA)>\n  <!ELEMENT quote (#PCDATA|b|i|code)*>\n  <!ATTLIST message xmlns CDATA #FIXED \"urn:mail:v3\"\n                    priority (low|normal|urgent) \"normal\">\n  <!ATTLIST sender address CDATA #REQUIRED>\n  <!ATTLIST recipient address CDATA #REQUIRED role (to|cc|bcc) \"to\">\n  <!ATTLIST attachment filename CDATA ...[truncated, 1295 chars total]\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage-per-byte",
+  "positive_feedback": false,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T03:15:05.887295+00:00"
+}

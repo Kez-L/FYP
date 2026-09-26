@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (sender, recipient+, body, attachment*)>
+  <!ELEMENT sender EMPTY>
+  <!ELEMENT recipient EMPTY>
+  <!ELEMENT body (#PCDATA|b|i|code|quote)*>
+  <!ELEMENT attachment (description?, digest)>
+  <!ELEMENT description (#PCDATA)>
+  <!ELEMENT digest (#PCDATA)>
+  <!ELEMENT b (#PCDATA|i)*>
+  <!ELEMENT i (#PCDATA|b)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT quote (#PCDATA|b|i|code)*>
+  <!ATTLIST message xmlns CDATA #FIXED "urn:mail:v3"
+                    priority (low|normal|urgent) "normal">
+  <!ATTLIST sender address CDATA #REQUIRED>
+  <!ATTLIST recipient address CDATA #REQUIRED role (to|cc|bcc) "to">
+  <!ATTLIST attachment filename CDATA #REQUIRED media CDATA #IMPLIED>
+  <!ENTITY accent "&#x301;">
+  <!ENTITY marker "<b data-kind='generated'>[auto]</b>">
+]>
+<message xmlns="urn:mail:v3" priority="urgent">
+  <sender address="alerts@example.test"/>
+  <recipient address="ops@example.test" role="to"/>
+  <recipient address="audit@example.test" role="cc"/>
+  <body>Hello <b>team</b>, status is <i>nominal</i>&marker; Caf&#xE9;&accent;.</body>
+  <attachment filename="report&amp;1.bin" media="application/octet-stream">
+    <description>compressed export</description>
+    <digest>sha256:00ff11ee22dd</digest>
+  </attachment>
+</message>

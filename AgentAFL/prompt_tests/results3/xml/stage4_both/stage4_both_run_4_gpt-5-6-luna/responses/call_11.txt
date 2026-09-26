@@ -1,0 +1,157 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="urn:example:package" xmlns:sec="urn:example:security" xml:lang="en">
+  <header>
+    <name>delta-bundle</name>
+    <version major="3" minor="1" patch="4"/>
+    <issued xml:space="preserve"> 2026-09-24T12:00:00Z </issued>
+  </header>
+  <manifest>
+    <item id="p-001" media-type="application/xml" size="2048">
+      <checksum algorithm="sha256">8f14e45fceea167a5a36dedd4bea2543</checksum>
+      <path>records/main.xml</path>
+    </item>
+    <item id="p-002" media-type="text/plain" size="17">
+      <checksum algorithm="md5"><![CDATA[d41d8cd98f00b204e9800998ecf8427e]]></checksum>
+      <path>notes/readme.txt</path>
+    </item>
+  </manifest>
+  <sec:policy level="restricted">
+    <sec:principal type="service">ingest-worker</sec:principal>
+    <sec:permission action="read" resource="manifest"/>
+    <sec:permission action="write" resource="records"/>
+  </sec:policy>
+  <!-- preserved because it documents the import boundary -->
+  <payload><![CDATA[
+    <not-parsed>
+      & intentionally remains text
+    </not-parsed>
+  ]]></payload>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log [
+  <!ELEMENT log (session+)>
+  <!ELEMENT session (event*, summary)>
+  <!ATTLIST session token ID #REQUIRED started CDATA #IMPLIED>
+  <!ELEMENT event (#PCDATA)>
+  <!ATTLIST event level (debug|info|warn|error) "info" code NMTOKEN #IMPLIED>
+  <!ELEMENT summary (#PCDATA)>
+  <!ENTITY product "parser">
+  <!ENTITY % common "xml:lang CDATA #IMPLIED">
+  <!ATTLIST event %common;>
+]>
+<log>
+  <session token="s-alpha" started="2026-09-24T10:00:00Z">
+    <event level="debug" code="BOOT">starting &product; diagnostics</event>
+    <event level="warn" code="W-17" xml:lang="fr">entrée partiellement vide</event>
+    <event level="error" code="E_42"><![CDATA[unexpected ]]> sequence]]></event>
+    <summary>three events received</summary>
+  </session>
+  <session token="s-beta">
+    <event>worker completed</event>
+    <summary><![CDATA[ok < 1ms]]></summary>
+  </session>
+</log>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/"
+          xmlns:m="urn:example:messages"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Header>
+    <m:trace correlationId="a7f3">
+      <m:hop>gateway</m:hop>
+      <m:hop>queue</m:hop>
+    </m:trace>
+    <m:credentials xsi:type="m:Token">
+      <m:subject>anonymous</m:subject>
+      <m:expires xsi:nil="true"/>
+    </m:credentials>
+  </Header>
+  <Body>
+    <m:submitRequest priority="high">
+      <m:options>
+        <m:option name="dry-run">false</m:option>
+        <m:option name="retries">2</m:option>
+      </m:options>
+      <m:document>
+        <m:section index="1">
+          <m:title>Input &amp; validation</m:title>
+          <m:paragraph>Use &lt;tokens&gt; and preserve whitespace.</m:paragraph>
+        </m:section>
+        <m:section index="2">
+          <m:title>Result</m:title>
+          <m:paragraph xml:space="preserve">  pending  </m:paragraph>
+        </m:section>
+      </m:document>
+    </m:submitRequest>
+  </Body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<graph xmlns="urn:example:graph" xmlns:meta="urn:example:metadata">
+  <meta:about href="urn:graph:sample">
+    <meta:label xml:lang="en">Dependency graph</meta:label>
+    <meta:label xml:lang="de">Abhängigkeitsgraph</meta:label>
+  </meta:about>
+  <nodes>
+    <node id="n1" type="source">
+      <attribute key="path">src/main.c</attribute>
+      <attribute key="flags" count="2">
+        <value>-Wall</value>
+        <value>-O2</value>
+      </attribute>
+    </node>
+    <node id="n2" type="task">
+      <attribute key="owner"><![CDATA[build & test]]></attribute>
+    </node>
+    <node id="n3" type="artifact"/>
+  </nodes>
+  <edges directed="true">
+    <edge from="n1" to="n2" weight="1.5"/>
+    <edge from="n2" to="n3">
+      <annotation>produces</annotation>
+    </edge>
+  </edges>
+  <queries>
+    <query id="q1"><![CDATA[//node[@type='task']]]></query>
+    <query id="q2">/graph/edges/edge</query>
+  </queries>
+</graph>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder+)>
+  <!ELEMENT folder (folder|file|link)*>
+  <!ATTLIST folder name CDATA #REQUIRED hidden (yes|no) "no">
+  <!ELEMENT file (#PCDATA)>
+  <!ATTLIST file name CDATA #REQUIRED encoding CDATA "binary">
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link name CDATA #REQUIRED target CDATA #REQUIRED>
+]>
+<archive>
+  <folder name="root">
+    <folder name="config" hidden="yes">
+      <file name="settings.ini" encoding="utf-8">mode=fast
+retry=3
+</file>
+      <link name="current" target="../releases/2026-09"/>
+    </folder>
+    <folder name="releases">
+      <folder name="2026-09">
+        <file name="manifest.json" encoding="utf-8"><![CDATA[{"ready":true,"count":0}]]></file>
+        <file name="blob.dat" encoding="base64">AAECAwQFBgcICQ==</file>
+      </folder>
+    </folder>
+    <file name="README" encoding="utf-8">Archive <em>format</em> notes &amp; examples.</file>
+  </folder>
+</archive>
+```

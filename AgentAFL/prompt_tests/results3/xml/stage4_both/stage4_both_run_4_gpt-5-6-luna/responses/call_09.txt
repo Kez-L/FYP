@@ -1,0 +1,190 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg [
+  <!ENTITY accent "Aurora">
+  <!ENTITY smile "&#x263A;">
+]>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.1" viewBox="0 0 320 180" preserveAspectRatio="xMidYMid meet">
+  <title>&accent; dashboard &smile;</title>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0" stop-color="#101820"/>
+      <stop offset="1" stop-color="#345678"/>
+    </linearGradient>
+    <path id="wave" d="M 10,120 C 50,80 70,160 110,120 S 170,80 210,120 S 270,160 310,110"/>
+    <clipPath id="panel"><rect x="8" y="8" width="304" height="164" rx="12"/></clipPath>
+  </defs>
+  <g clip-path="url(#panel)" font-family="sans-serif">
+    <rect width="320" height="180" fill="url(#bg)"/>
+    <use xlink:href="#wave" fill="none" stroke="#7fd8ff" stroke-width="5"/>
+    <g transform="translate(24 30)" opacity="0.92">
+      <circle cx="22" cy="22" r="20" fill="#f4b942"/>
+      <text x="55" y="18" fill="white" font-size="16">&accent; telemetry</text>
+      <text x="55" y="40" fill="#b9d7e8" font-size="11">status: nominal</text>
+    </g>
+    <foreignObject x="24" y="112" width="272" height="42">
+      <div xmlns="http://www.w3.org/1999/xhtml" lang="en">
+        <p style="margin:0;color:white;font-size:12px">Embedded XHTML <em>fragment</em></p>
+      </div>
+    </foreignObject>
+  </g>
+</svg>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope"
+               xmlns:m="urn:example:metrics"
+               xmlns:wsa="http://www.w3.org/2005/08/addressing">
+  <soap:Header>
+    <wsa:Action soap:mustUnderstand="true">urn:example:metrics:submit</wsa:Action>
+    <wsa:MessageID>urn:uuid:9c7d3e1a-44d1-4bf2-8f90-2b7d0eab1122</wsa:MessageID>
+    <m:Trace soap:role="http://www.w3.org/2003/05/soap-envelope/role/next"
+            soap:relay="true">
+      <m:Correlation>batch-07</m:Correlation>
+      <m:Sampled>false</m:Sampled>
+    </m:Trace>
+  </soap:Header>
+  <soap:Body>
+    <m:SubmitBatch>
+      <m:source region="ap-south" protocol="v2">edge-gateway</m:source>
+      <m:window start="2026-09-24T10:00:00Z" end="2026-09-24T10:05:00Z"/>
+      <m:series name="requests" unit="count">
+        <m:point at="2026-09-24T10:00:00Z" value="17"/>
+        <m:point at="2026-09-24T10:01:00Z" value="23"/>
+        <m:point at="2026-09-24T10:02:00Z" value="19"/>
+      </m:series>
+      <m:series name="latency" unit="ms" aggregation="p95">
+        <m:point at="2026-09-24T10:00:00Z" value="84.5"/>
+        <m:point at="2026-09-24T10:01:00Z" value="91.25"/>
+      </m:series>
+      <m:annotations>
+        <m:item key="deployment">blue-canary</m:item>
+        <m:item key="note"><![CDATA[threshold < 100ms; investigate & retain]]></m:item>
+      </m:annotations>
+    </m:SubmitBatch>
+  </soap:Body>
+</soap:Envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (collection+, note?)>
+  <!ELEMENT collection (entry+)>
+  <!ATTLIST collection id ID #REQUIRED lang NMTOKEN #IMPLIED>
+  <!ELEMENT entry (name, identifier, location, related*)>
+  <!ATTLIST entry kind (book|article|dataset) #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT identifier (#PCDATA)>
+  <!ATTLIST identifier scheme (isbn|doi|uri) #REQUIRED>
+  <!ELEMENT location (#PCDATA)>
+  <!ELEMENT related EMPTY>
+  <!ATTLIST related ref IDREF #REQUIRED relation CDATA #REQUIRED>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY archive "North&nbsp;Archive">
+  <!ENTITY nbsp "&#160;">
+  <!NOTATION pdf SYSTEM "application/pdf">
+  <!ENTITY sample SYSTEM "sample.bin" NDATA pdf>
+]>
+<catalog>
+  <collection id="c-main" lang="en">
+    <entry kind="book">
+      <name>Parsing &amp; Processing</name>
+      <identifier scheme="isbn">978-0-123456-78-9</identifier>
+      <location>https://archive.example.invalid/items/p-17</location>
+      <related ref="c-data" relation="supplement"/>
+    </entry>
+    <entry kind="article">
+      <name>Signals in a Noisy &lt;World&gt;</name>
+      <identifier scheme="doi">10.5555/example.2026.17</identifier>
+      <location>urn:example:article:17</location>
+    </entry>
+  </collection>
+  <collection id="c-data" lang="fr">
+    <entry kind="dataset">
+      <name>&archive; &nbsp;— mesures</name>
+      <identifier scheme="uri">urn:data:telemetry:2026-09</identifier>
+      <location><![CDATA[https://data.example.invalid/download?id=7&format=xml]]></location>
+    </entry>
+  </collection>
+  <note>Imported from the legacy &quot;catalog&quot; index.</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?processing mode="incremental"?>
+<message xmlns="urn:example:message" xmlns:meta="urn:example:metadata"
+         xml:lang="ja" xml:space="preserve">
+  <!-- Deliberately mixed character data around nested content. -->
+  <subject priority="high">状態 <emphasis>更新</emphasis> / status</subject>
+  <body>
+    Before
+    <section id="intro">
+      <heading>Résumé &amp; context</heading>
+      <paragraph>Line one.<break/>Line two with <code>alpha::beta</code>.</paragraph>
+      <paragraph><![CDATA[
+        Raw text includes <tags>, ampersands (&), and line breaks.
+      ]]></paragraph>
+    </section>
+    After
+  </body>
+  <meta:properties>
+    <meta:property name="origin" value="sensor"/>
+    <meta:property name="retry-count" value="0"/>
+    <meta:property name="empty" value=""/>
+  </meta:properties>
+  <attachments>
+    <attachment media-type="text/plain" encoding="base64">
+      SGVsbG8sIHdvcmxkIQ==
+    </attachment>
+    <attachment media-type="application/octet-stream">
+      <data length="4">000102ff</data>
+    </attachment>
+  </attachments>
+  <?audit actor="daemon" result="accepted"?>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<index xmlns="urn:example:index" xmlns:r="urn:example:record"
+       xmlns:xlink="http://www.w3.org/1999/xlink">
+  <header generated="2026-09-24T12:34:56+00:00">
+    <field name="title" type="text"/>
+    <field name="score" type="decimal" min="-1.0" max="1.0"/>
+    <field name="active" type="boolean"/>
+  </header>
+  <query id="q-42" limit="3" offset="0">
+    <term field="title" mode="phrase">blue moon</term>
+    <filter field="score" operator="between">
+      <lower inclusive="true">-0.25</lower>
+      <upper inclusive="false">0.95</upper>
+    </filter>
+    <order field="score" direction="descending"/>
+  </query>
+  <results total="2" took-ms="7">
+    <r:record key="a/17" rank="1">
+      <r:title xml:lang="en">Blue Moon</r:title>
+      <r:score>0.875</r:score>
+      <r:active>true</r:active>
+      <r:tags>
+        <r:tag weight="0.8">night</r:tag>
+        <r:tag weight="0.4">music</r:tag>
+      </r:tags>
+      <r:link xlink:type="simple"
+              xlink:href="https://example.invalid/r/a%2F17"
+              xlink:show="new">open</r:link>
+    </r:record>
+    <r:record key="b-03" rank="2">
+      <r:title xml:lang="fr">Lune bleue</r:title>
+      <r:score>0.125</r:score>
+      <r:active>false</r:active>
+      <r:tags/>
+      <r:link xlink:type="simple" xlink:href="#local-b-03"/>
+    </r:record>
+  </results>
+</index>
+```

@@ -1,0 +1,156 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY logo SYSTEM "logo.bin" NDATA bin>
+  <!ENTITY quote "She said: &quot;left &amp; right&quot;">
+  <!ELEMENT archive (header, payload, footer)>
+  <!ELEMENT header (title, owner)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT owner EMPTY>
+  <!ELEMENT payload (record+)>
+  <!ELEMENT record (key, value, blob?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT blob EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST archive version NMTOKEN #REQUIRED>
+  <!ATTLIST owner uid ID #REQUIRED role (reader|writer|admin) "reader">
+  <!ATTLIST record rid ID #REQUIRED source ENTITY #IMPLIED>
+  <!ATTLIST blob href ENTITY #REQUIRED>
+]>
+<archive version="v2" xmlns="urn:archive">
+  <header>
+    <title>&quote;</title>
+    <owner uid="u-1" role="admin"/>
+  </header>
+  <payload>
+    <record rid="r-1" source="logo">
+      <key>alpha</key>
+      <value>before<mark>middle</mark>after</value>
+      <blob href="logo"/>
+    </record>
+  </payload>
+  <footer>done</footer>
+</archive>
+```
+
+```xml
+<?xml version="1.1"?>
+<outer xmlns="urn:one" xmlns:p="urn:two" xml:space="preserve">
+  <?state phase="decode"?>
+  <p:branch p:id="A&amp;B">
+    <![CDATA[
+      <not-an-element attr="&amp;"> 
+      ]]>
+    <leaf xmlns="" xml:space="default">&#x1F642;&#x85;&#x2028;</leaf>
+    <leaf xmlns:p="urn:three" p:kind="changed">
+      text &lt;inside&gt; <![CDATA[]]> tail
+    </leaf>
+  </p:branch>
+  <!-- comment containing --? no -->
+  <empty p:flag="yes"/>
+</outer>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ENTITY % switch "<!ELEMENT packet (meta, body, checksum)>">
+  %switch;
+  <!ENTITY % fields "<!ELEMENT meta (field*)><!ELEMENT field (#PCDATA)>">
+  %fields;
+  <!ELEMENT body (chunk|separator)*>
+  <!ELEMENT chunk (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST packet mode (raw|encoded) "raw">
+  <!ATTLIST field name NMTOKEN #REQUIRED type CDATA #IMPLIED>
+  <!ATTLIST chunk n NMTOKEN #REQUIRED>
+  <!ATTLIST separator kind CDATA #FIXED "record">
+  <![IGNORE[
+    <!ELEMENT ignored EMPTY>
+    <!ATTLIST ignored never CDATA #REQUIRED>
+  ]]>
+]>
+<packet mode="encoded">
+  <meta>
+    <field name="source" type="text">sensor-7</field>
+    <field name="checksum" type="hex">A9F0</field>
+  </meta>
+  <body>
+    <chunk n="001">abc<part>DEF</part>ghi</chunk>
+    <separator/>
+    <chunk n="002"><part>jkl</part><![CDATA[mno]]></chunk>
+  </body>
+  <checksum>9f:00:aa</checksum>
+</packet>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (entry*)>
+  <!ELEMENT entry (key, value, entry*)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|ref|raw)*>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT raw (#PCDATA)>
+  <!ATTLIST map xml:lang CDATA #IMPLIED>
+  <!ATTLIST entry id ID #IMPLIED kind (scalar|object|array) "scalar">
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ATTLIST raw encoding (none|base64) "none">
+  <!ENTITY open "{">
+  <!ENTITY close "}">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY fragment "<raw encoding='base64'>QUJDRA==</raw>">
+]>
+<map xml:lang="x-test">
+  <entry id="root" kind="object">
+    <key>&open;root&close;</key>
+    <value>
+      literal&nbsp;text
+      <ref target="item"/>
+      &fragment;
+    </value>
+    <entry id="item" kind="array">
+      <key>items</key>
+      <value><raw>one</raw><raw>two</raw></value>
+    </entry>
+  </entry>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (layer+)>
+  <!ELEMENT layer (node|group|text)*>
+  <!ELEMENT group (node|group|text)*>
+  <!ELEMENT node EMPTY>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST scene xmlns CDATA #IMPLIED>
+  <!ATTLIST layer name CDATA #REQUIRED order NMTOKENS #IMPLIED>
+  <!ATTLIST group gid ID #REQUIRED transform CDATA #IMPLIED>
+  <!ATTLIST node nid ID #REQUIRED class NMTOKENS #IMPLIED visible (true|false) "true">
+  <!ATTLIST text lang CDATA #IMPLIED>
+  <!ENTITY nbsp "&#xA0;">
+]>
+<scene xmlns="urn:graphics" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <layer name="background" order="base fill">
+    <node nid="n0" class="rect solid" visible="false"/>
+    <group gid="g1" transform="translate(10,20) rotate(45)">
+      <node nid="n1" class="circle highlighted"/>
+      <text lang="en">A &lt; B &amp;&nbsp;C</text>
+    </group>
+  </layer>
+  <layer name="foreground">
+    <group gid="g2">
+      <group gid="g3"><node nid="n2"/></group>
+      <text><![CDATA[raw ]]><x:emphasis xmlns:x="urn:extra">layer</x:emphasis><![CDATA[ text]]></text>
+    </group>
+  </layer>
+</scene>
+```

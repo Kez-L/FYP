@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<network>
+  <node name="root" role="hub">
+    <node name="north" role="relay">
+      <endpoint protocol="tcp" port="443">n.example</endpoint>
+      <node name="north-east" role="leaf">
+        <endpoint protocol="udp" port="5353">m.example</endpoint>
+      </node>
+    </node>
+    <node name="south" role="relay">
+      <endpoint protocol="unix" path="/tmp/service.sock"/>
+      <metadata>
+        <entry name="capacity" value="high"/>
+        <entry name="active" value="false"/>
+      </metadata>
+    </node>
+    <route from="root" to="north-east">
+      <hop index="1">north</hop>
+      <hop index="2">north-east</hop>
+    </route>
+  </node>
+</network>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (warehouse+)>
+  <!ELEMENT warehouse (name, aisle*)>
+  <!ATTLIST warehouse id ID #REQUIRED open (yes|no) "yes">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT aisle (label, bin+)>
+  <!ATTLIST aisle number NMTOKEN #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT bin (product*)>
+  <!ATTLIST bin code CDATA #REQUIRED temperature CDATA #IMPLIED>
+  <!ELEMENT product EMPTY>
+  <!ATTLIST product sku CDATA #REQUIRED
+                    quantity CDATA #REQUIRED
+                    fragile (true|false) "false">
+]>
+<inventory xmlns:stock="urn:warehouse:stock">
+  <warehouse id="w-north" open="yes">
+    <name>North distribution center</name>
+    <aisle number="A-01">
+      <label>Fast movers</label>
+      <bin code="A01-RED" temperature="ambient">
+        <product sku="P-100" quantity="48"/>
+        <product sku="P-101" quantity="0" fragile="true"/>
+      </bin>
+      <bin code="A01-BLUE">
+        <product sku="P-203" quantity="7"/>
+      </bin>
+    </aisle>
+    <aisle number="COLD-7">
+      <label>Refrigerated</label>
+      <bin code="C7-ICE" temperature="-18C">
+        <product sku="P-900" quantity="12" fragile="true"/>
+      </bin>
+    </aisle>
+  </warehouse>
+  <warehouse id="w-remote" open="no">
+    <name xml:space="preserve">Remote depot&#x0A;temporary</name>
+    <aisle number="Z">
+      <label>Returns</label>
+      <bin code="Z-RET">
+        <product sku="P-101" quantity="3"/>
+      </bin>
+    </aisle>
+  </warehouse>
+</inventory>

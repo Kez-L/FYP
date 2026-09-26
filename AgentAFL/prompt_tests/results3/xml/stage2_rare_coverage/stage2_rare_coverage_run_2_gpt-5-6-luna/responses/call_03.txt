@@ -1,0 +1,156 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (section+)>
+  <!ELEMENT section (title, entry*)>
+  <!ATTLIST section
+    code ID #REQUIRED
+    visibility (public|private|internal) "public">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (key, value, note?)>
+  <!ATTLIST entry ref IDREF #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY company "North &amp; South">
+  <!ENTITY marker "&#x2063;">
+]>
+<archive>
+  <section code="s-main" visibility="internal">
+    <title>Configuration &company;&marker;</title>
+    <entry>
+      <key>alpha</key>
+      <value>first <em>important</em><br/>value</value>
+      <note>line one&#10;line two</note>
+    </entry>
+    <entry ref="s-main">
+      <key>omega</key>
+      <value><![CDATA[raw <markup> and ]]> characters]]></value>
+    </entry>
+  </section>
+</archive>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE map [
+  <!ELEMENT map (node)>
+  <!ELEMENT node (label, node*)>
+  <!ATTLIST node xml:id ID #IMPLIED role CDATA "branch">
+  <!ELEMENT label (#PCDATA)>
+]>
+<map xmlns="urn:tree" xmlns:xlink="http://www.w3.org/1999/xlink"
+     xml:lang="fr" xml:base="https://example.invalid/root/">
+  <node xml:id="root" role="branch">
+    <label>Racine&#x85;départ</label>
+    <node xml:id="leaf-a" role="leaf" xlink:href="parts/a.xml">
+      <label><![CDATA[A < B && C > D]]></label>
+    </node>
+    <node xml:id="branch-b">
+      <label>Deuxième</label>
+      <node xml:id="leaf-b">
+        <label>Terminal</label>
+      </node>
+      <node xml:id="leaf-c" xml:space="preserve">
+        <label>  padded  </label>
+      </node>
+    </node>
+  </node>
+  <?map instruction="after-tree"?>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, payload, footer)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT payload ANY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+  <!ENTITY nested "&left;&left;&left;payload&right;&right;&right;">
+  <!ENTITY % optional "<!ELEMENT checksum (#PCDATA)>">
+  %optional;
+]>
+<packet>
+  <header>
+    <field name="version" value="2"/>
+    <field name="flags" value="A&#x0D;B"/>
+    <field name="quoted" value="&quot;&amp;&apos;"/>
+  </header>
+  <payload>
+    &nested;
+    <checksum>sha256:00000000000000000000000000000000</checksum>
+    <![CDATA[
+      {"items":[1,2,3],"text":"<not-an-element>"}
+    ]]>
+  </payload>
+  <footer>done &amp; sealed</footer>
+</packet>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (product*, deleted*)>
+  <!ELEMENT product (name, price, dimensions?, tags)>
+  <!ATTLIST product sku ID #REQUIRED state (new|used|retired) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT dimensions (width, height, depth)>
+  <!ELEMENT width (#PCDATA)>
+  <!ELEMENT height (#PCDATA)>
+  <!ELEMENT depth (#PCDATA)>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT deleted EMPTY>
+  <!ATTLIST deleted ref IDREF #REQUIRED reason CDATA #IMPLIED>
+]>
+<catalog xml:lang="en">
+  <product sku="p-001" state="new">
+    <name>Glass &amp; Copper</name>
+    <price currency="EUR">19.95</price>
+    <dimensions>
+      <width>10</width><height>20</height><depth>0.5</depth>
+    </dimensions>
+    <tags><tag>fragile</tag><tag>home</tag></tags>
+  </product>
+  <product sku="p-002" state="used">
+    <name>Archive Box</name>
+    <price currency="USD">0007.00</price>
+    <tags/>
+  </product>
+  <deleted ref="p-001" reason="duplicate"/>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns="urn:default" xmlns:a="urn:one" xmlns:b="urn:two"
+      xmlns:empty="" xml:space="default">
+  <a:container a:id="c1">
+    <item b:kind="mixed" xml:space="preserve">
+      text
+      <a:part><![CDATA[alpha]]></a:part>
+      <b:part>
+        <b:value><![CDATA[beta]]></b:value>
+        <b:value>gamma &amp; delta</b:value>
+      </b:part>
+    </item>
+    <item b:kind="empty">
+      <!-- comment containing <angle> & symbols -->
+      <empty:leaf/>
+      <?process data with spaces?>
+    </item>
+  </a:container>
+  <tail>
+    <entry key="one">A&#x9;B&#xA;C</entry>
+    <entry key="two"><![CDATA[]]></entry>
+  </tail>
+</root>
+```

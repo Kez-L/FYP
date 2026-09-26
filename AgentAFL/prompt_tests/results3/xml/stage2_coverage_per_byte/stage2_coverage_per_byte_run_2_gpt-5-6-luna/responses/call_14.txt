@@ -1,0 +1,158 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, metadata?)>
+  <!ELEMENT entry (title, description?, tag*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|strong|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT tag EMPTY>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST catalog xml:base URI #IMPLIED xml:lang CDATA "en">
+  <!ATTLIST entry id ID #REQUIRED ref IDREF #IMPLIED status (new|old|archived) "new">
+  <!ATTLIST tag name CDATA #REQUIRED>
+  <!ATTLIST metadata generated CDATA #IMPLIED>
+]>
+<catalog xml:base="urn:example:catalog" xml:lang="fr">
+  <entry id="e1" status="old">
+    <title>Résumé &amp; notes</title>
+    <description>Text with <em>emphasis</em>, <strong>weight</strong><br/>and a reference.</description>
+    <tag name="alpha"/>
+  </entry>
+  <entry id="e2" ref="e1">
+    <title><![CDATA[Brackets ]]> and entities</title>
+    <description xml:space="preserve">  padded
+      <em>mixed</em>
+    </description>
+    <tag name="beta"/>
+    <tag name="gamma"/>
+  </entry>
+  <metadata generated="2026-09-24"/>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE workbook [
+  <!ELEMENT workbook (sheet*)>
+  <!ELEMENT sheet (row*)>
+  <!ELEMENT row (cell*)>
+  <!ELEMENT cell (#PCDATA|formula|value)*>
+  <!ELEMENT formula (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST workbook version NMTOKEN #REQUIRED>
+  <!ATTLIST sheet name NMTOKEN #REQUIRED hidden (yes|no) "no">
+  <!ATTLIST row index NMTOKEN #IMPLIED>
+  <!ATTLIST cell type (text|number|error) "text">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY mark "A &amp; B">
+  <!ENTITY % extra "<!ELEMENT annotation (#PCDATA)>">
+  %extra;
+]>
+<workbook version="7">
+  <sheet name="Résumé" hidden="yes">
+    <row index="001">
+      <cell type="text">Name&nbsp;&amp;&nbsp;Status</cell>
+      <cell type="number"><value>00042</value></cell>
+      <cell type="error"><formula>=SUM(A1:A4)</formula>!</cell>
+    </row>
+  </sheet>
+  <sheet name="Data">
+    <row>
+      <cell><![CDATA[=IF(A1<2,"x","y")]]></cell>
+      <cell>&mark;</cell>
+    </row>
+  </sheet>
+</workbook>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:request xmlns:r="urn:request" xmlns:d="urn:data" xmlns:x="urn:extra" xml:id="req-α">
+  <r:header>
+    <r:method>POST</r:method>
+    <r:target xml:base="https://example.invalid/api/v1/">items</r:target>
+    <r:options x:trace="true" d:count="0"/>
+  </r:header>
+  <r:body>
+    <d:items d:kind="collection">
+      <d:item d:key="A&amp;1" x:rank="01">
+        <d:name xml:lang="zh-Hant">資料</d:name>
+        <d:value xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+      </d:item>
+      <d:item d:key="B&lt;2" x:rank="2">
+        <d:name xml:space="preserve"> leading
+trailing </d:name>
+        <d:value>42</d:value>
+        <r:link r:rel="self" r:href="#frag"/>
+      </d:item>
+    </d:items>
+  </r:body>
+  <r:signature x:algorithm="none"><![CDATA[--BEGIN--]]>opaque<![CDATA[--END--]]></r:signature>
+</r:request>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder|record|empty)*>
+  <!ELEMENT folder (folder|record|alias)*>
+  <!ELEMENT record (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT alias EMPTY>
+  <!ELEMENT empty EMPTY>
+  <!ATTLIST archive created CDATA #IMPLIED>
+  <!ATTLIST folder name CDATA #REQUIRED depth NMTOKEN #IMPLIED>
+  <!ATTLIST record key ID #REQUIRED format (bin|txt|xml) "txt">
+  <!ATTLIST alias target IDREF #REQUIRED>
+  <!ATTLIST part kind CDATA #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<archive created="2026-09-24T12:34:56Z">
+  <folder name="root" depth="0">
+    <record key="r0" format="txt">literal &left;payload&right;<part kind="tail">尾</part></record>
+    <folder name="nested" depth="1">
+      <record key="r1" format="xml"><![CDATA[<not-an-element attr="&bad;">]]></record>
+      <alias target="r0"/>
+    </folder>
+    <empty/>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (event*)>
+  <!ELEMENT event (time, payload?)>
+  <!ELEMENT time (#PCDATA)>
+  <!ELEMENT payload (chunk|![CDATA[not grammar]]>)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST stream mode (live|batch) #REQUIRED>
+  <!ATTLIST event id NMTOKEN #IMPLIED level (debug|info|warn|error) "info">
+  <!ATTLIST chunk seq NMTOKEN #IMPLIED encoding CDATA #IMPLIED>
+]>
+<stream mode="live">
+  <event id="α-01" level="debug">
+    <time>00:00:00</time>
+    <payload>
+      <chunk seq="0" encoding="base64">AAEC/f8=</chunk>
+      <![CDATA[
+        raw event text containing <angles> & ampersands
+      ]]>
+    </payload>
+  </event>
+  <event id="broken" level="error">
+    <time>23:59:60</time>
+    <payload><chunk seq="x">unterminated-ish &amp; text</chunk></payload>
+  </event>
+  <event>
+    <time/>
+    <payload/>
+  </event>
+</stream>
+```

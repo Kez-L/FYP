@@ -1,0 +1,118 @@
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:m="urn:example:meta">
+  <entry key="α-001" status="active">
+    <title xml:lang="el">Δοκιμή καταλόγου</title>
+    <description>A <emphasis level="strong">mixed-content</emphasis> description with <code>markup</code>.</description>
+    <m:metadata>
+      <m:created>2026-09-24</m:created>
+      <m:tags>
+        <m:tag>parser</m:tag>
+        <m:tag>fuzzing</m:tag>
+      </m:tags>
+    </m:metadata>
+  </entry>
+  <entry key="β-002" status="retired">
+    <title xml:lang="ja">古い項目</title>
+    <description>Text before <link href="urn:item:beta">a link</link> and after.</description>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+, appendix?)>
+  <!ELEMENT section (heading, paragraph*)>
+  <!ATTLIST section number NMTOKEN #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|quote|term)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT term (#PCDATA)>
+  <!ELEMENT appendix (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY note "internal entity text">
+]>
+<?audit mode="strict"?>
+<report>
+  <section number="1">
+    <heading>Overview</heading>
+    <paragraph>Alpha&nbsp;content with a <term>defined term</term>.</paragraph>
+    <paragraph>A <quote>quoted fragment</quote> follows.</paragraph>
+  </section>
+  <section number="2">
+    <heading>Results</heading>
+    <paragraph>Observed &note;.</paragraph>
+  </section>
+  <appendix>Supplementary material.</appendix>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<geometry xmlns="urn:example:geometry" xmlns:g="urn:example:geo">
+  <shape id="path-1" transform="rotate(45 10 20)">
+    <g:polyline closed="false">
+      <g:point x="0" y="0"/>
+      <g:point x="10.5" y="-3.25"/>
+      <g:point x="20" y="8"/>
+    </g:polyline>
+    <style>
+      <fill color="#ff00aa" opacity="0.75"/>
+      <stroke color="rgb(0,0,0)" width="2"/>
+    </style>
+  </shape>
+  <shape id="circle-1">
+    <circle center="10,20" radius="5">
+      <![CDATA[
+        geometry data may contain <angle> and & symbols
+      ]]>
+    </circle>
+  </shape>
+</geometry>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow" xmlns:ext="urn:example:extension">
+  <definition name="nightly" version="2.0">
+    <trigger type="schedule">
+      <cron>0 0 * * *</cron>
+      <timezone>UTC</timezone>
+    </trigger>
+    <steps>
+      <step id="fetch" retries="3">
+        <command><![CDATA[curl --fail "https://example.invalid/data?a=1&b=2"]]></command>
+        <on-success goto="validate"/>
+        <on-failure>
+          <notify channel="ops">fetch failed</notify>
+        </on-failure>
+      </step>
+      <step id="validate">
+        <condition language="xpath">count(/workflow/definition/steps/step) &gt; 1</condition>
+        <ext:assert severity="warning">result-set-not-empty</ext:assert>
+      </step>
+    </steps>
+  </definition>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<archive xmlns="urn:example:archive" xml:base="https://example.invalid/archive/">
+  <directory name="root">
+    <directory name="日本語">
+      <file name="空.txt" media-type="text/plain" xml:space="default">こんにちは</file>
+      <file name="data.bin" media-type="application/octet-stream">
+        <content encoding="base64">AAECAwQFBgcICQ==</content>
+      </file>
+    </directory>
+    <symlink name="latest" target="日本語/data.bin"/>
+  </directory>
+  <index generated="2026-09-24T12:34:56Z">
+    <reference href="root/日本語/空.txt" fragment="line-1">
+      <label>localized text</label>
+    </reference>
+  </index>
+</archive>
+```

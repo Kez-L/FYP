@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, attachment*)>
+  <!ELEMENT header (from, to, subject)>
+  <!ELEMENT from EMPTY>
+  <!ELEMENT to EMPTY>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|line|br)*>
+  <!ELEMENT line (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST from address CDATA #REQUIRED>
+  <!ATTLIST to address CDATA #REQUIRED>
+  <!ATTLIST link href URI #IMPLIED>
+  <!ATTLIST attachment name CDATA #REQUIRED type CDATA #IMPLIED>
+  <!ENTITY greeting "Hello, &quot;reader&quot;">
+]>
+<message>
+  <header>
+    <from address="sender@example.test"/>
+    <to address="receiver@example.test"/>
+    <subject>&greeting;</subject>
+  </header>
+  <body>
+    <line>First line<link href="urn:test:a">alpha</link></line>
+    <br/>
+    <line><![CDATA[raw ]]> data &amp; more</line>
+  </body>
+  <attachment name="report.bin" type="application/octet-stream"/>
+</message>

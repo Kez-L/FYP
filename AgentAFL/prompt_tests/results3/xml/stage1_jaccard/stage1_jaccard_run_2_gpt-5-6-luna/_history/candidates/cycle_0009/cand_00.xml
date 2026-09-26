@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (header, resources, relation*)>
+  <!ELEMENT header (label, timestamp, checksum)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT resources (resource+)>
+  <!ELEMENT resource (path, content)>
+  <!ELEMENT path (#PCDATA)>
+  <!ELEMENT content (#PCDATA|line|mark|empty)*>
+  <!ELEMENT line (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT empty EMPTY>
+  <!ELEMENT relation EMPTY>
+  <!ATTLIST manifest xmlns CDATA #IMPLIED version NMTOKEN #REQUIRED>
+  <!ATTLIST resource id ID #REQUIRED kind (text|binary|virtual) "text" ref IDREFS #IMPLIED>
+  <!ATTLIST relation from IDREF #REQUIRED to IDREF #REQUIRED type NMTOKEN #IMPLIED>
+  <!ENTITY ltmark "&lt;mark&gt;">
+  <!ENTITY snowman "&#x2603;">
+]>
+<manifest xmlns="urn:example:manifest" version="v2.7">
+  <header>
+    <label>release &lt;candidate&gt; &snowman;</label>
+    <timestamp>2026-09-24T12:34:56Z</timestamp>
+    <checksum algorithm="sha256">not-declared-attribute</checksum>
+  </header>
+  <resources>
+    <resource id="r0" kind="virtual" ref="r1 r2">
+      <path>memory://root</path>
+      <content><![CDATA[<not-an-element attr="&entity;">]]><line>alpha<mark>β</mark></line><empty/></content>
+    </resource>
+    <resource id="r1">
+      <path>./a/../b.txt</path>
+      <content>literal &lt;tag&gt; and &lt;mark&gt;</content>
+    </resource>
+    <resource id="r2" kind="binary">
+      <path>blob://00ff</path>
+      <content>&lt;![CDATA[&amp;]]&gt;</content>
+    </resource>
+  </resources>
+  <relation from="r0" to="r1" type="contains"/>
+  <relation from="r1" to="r2" type="derived"/>
+</manifest>

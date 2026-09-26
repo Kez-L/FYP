@@ -1,0 +1,252 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ENTITY company "Northwind Research">
+  <!ENTITY sep " / ">
+  <!ELEMENT archive (collection+)>
+  <!ELEMENT collection (label, entry*)>
+  <!ATTLIST collection code NMTOKEN #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT entry (title, author+, abstract?, keywords?, attachment*)>
+  <!ATTLIST entry uid ID #REQUIRED status (draft|review|published) "draft">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (name, affiliation?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT affiliation (#PCDATA)>
+  <!ELEMENT abstract (#PCDATA|emph|ref)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT ref (#PCDATA)>
+  <!ELEMENT keywords (keyword+)>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment media CDATA #REQUIRED
+                    href CDATA #REQUIRED
+                    bytes CDATA #IMPLIED>
+]>
+<archive>
+  <collection code="astro">
+    <label>&company;&sep;Astrophysics</label>
+    <entry uid="paper-α7" status="published">
+      <title>Dust lanes in the outer disk</title>
+      <author>
+        <name>Rina Okafor</name>
+        <affiliation>Institute for Long Baselines</affiliation>
+      </author>
+      <author>
+        <name>Mateo Silva</name>
+      </author>
+      <abstract>We compare <emph>infrared</emph> maps with <ref>Table 3</ref> across six seasons.</abstract>
+      <keywords>
+        <keyword>galaxies</keyword>
+        <keyword>spectroscopy</keyword>
+      </keywords>
+      <attachment media="image/fits" href="maps/disk-outer.fits" bytes="184320"/>
+    </entry>
+  </collection>
+  <collection code="field">
+    <label>Field notes</label>
+    <entry uid="note-β2">
+      <title>Night survey</title>
+      <author>
+        <name>J. Chen</name>
+      </author>
+      <abstract><![CDATA[Wind: 18 km/h; visibility < 4 km; instrument state = "warm"]]></abstract>
+    </entry>
+  </collection>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE itinerary [
+  <!ELEMENT itinerary (trip+)>
+  <!ELEMENT trip (origin, destination, stop*, note?)>
+  <!ATTLIST trip number CDATA #REQUIRED>
+  <!ELEMENT origin (city, time)>
+  <!ELEMENT destination (city, time)>
+  <!ELEMENT stop (city, time, activity*)>
+  <!ELEMENT city (#PCDATA)>
+  <!ELEMENT time (#PCDATA)>
+  <!ELEMENT activity (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY morning "06:45">
+  <!ENTITY evening "21:10">
+]>
+<itinerary xmlns="urn:travel:plan"
+           xmlns:geo="urn:travel:geo"
+           xml:lang="en">
+  <?route generated="planner-4" priority="normal"?>
+  <!-- Times are local unless a UTC offset is shown. -->
+  <trip number="A-17">
+    <origin>
+      <city geo:lat="48.8566" geo:lon="2.3522">Paris</city>
+      <time>&morning;</time>
+    </origin>
+    <stop>
+      <city geo:lat="50.8466" geo:lon="4.3528">Brussels</city>
+      <time>09:35+02:00</time>
+      <activity>Change platforms</activity>
+      <activity><![CDATA[Coffee & maps]]></activity>
+    </stop>
+    <stop>
+      <city geo:lat="52.3676" geo:lon="4.9041">Amsterdam</city>
+      <time>13:20+02:00</time>
+      <activity>Canal district</activity>
+    </stop>
+    <destination>
+      <city geo:lat="53.5511" geo:lon="9.9937">Hamburg</city>
+      <time>&evening;</time>
+    </destination>
+    <note>Reservation code: <b>not printed</b>.</note>
+  </trip>
+  <trip number="B-03">
+    <origin>
+      <city>Osaka</city>
+      <time>07:05+09:00</time>
+    </origin>
+    <destination>
+      <city>Kyoto</city>
+      <time>08:01+09:00</time>
+    </destination>
+  </trip>
+</itinerary>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (warehouse+)>
+  <!ELEMENT warehouse (name, aisle*)>
+  <!ATTLIST warehouse id ID #REQUIRED open (yes|no) "yes">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT aisle (label, bin+)>
+  <!ATTLIST aisle number NMTOKEN #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT bin (product*)>
+  <!ATTLIST bin code CDATA #REQUIRED temperature CDATA #IMPLIED>
+  <!ELEMENT product EMPTY>
+  <!ATTLIST product sku CDATA #REQUIRED
+                    quantity CDATA #REQUIRED
+                    fragile (true|false) "false">
+]>
+<inventory xmlns:stock="urn:warehouse:stock">
+  <warehouse id="w-north" open="yes">
+    <name>North distribution center</name>
+    <aisle number="A-01">
+      <label>Fast movers</label>
+      <bin code="A01-RED" temperature="ambient">
+        <product sku="P-100" quantity="48"/>
+        <product sku="P-101" quantity="0" fragile="true"/>
+      </bin>
+      <bin code="A01-BLUE">
+        <product sku="P-203" quantity="7"/>
+      </bin>
+    </aisle>
+    <aisle number="COLD-7">
+      <label>Refrigerated</label>
+      <bin code="C7-ICE" temperature="-18C">
+        <product sku="P-900" quantity="12" fragile="true"/>
+      </bin>
+    </aisle>
+  </warehouse>
+  <warehouse id="w-remote" open="no">
+    <name xml:space="preserve">Remote depot&#x0A;temporary</name>
+    <aisle number="Z">
+      <label>Returns</label>
+      <bin code="Z-RET">
+        <product sku="P-101" quantity="3"/>
+      </bin>
+    </aisle>
+  </warehouse>
+</inventory>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE storyboard [
+  <!ELEMENT storyboard (scene+)>
+  <!ELEMENT scene (heading, shot+)>
+  <!ATTLIST scene id ID #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT shot (camera, action, dialogue*)>
+  <!ATTLIST shot type (wide|medium|close|insert) #REQUIRED>
+  <!ELEMENT camera EMPTY>
+  <!ATTLIST camera lens CDATA #IMPLIED movement CDATA #IMPLIED>
+  <!ELEMENT action (#PCDATA|pause|sound)*>
+  <!ELEMENT pause EMPTY>
+  <!ELEMENT sound (#PCDATA)>
+  <!ELEMENT dialogue (#PCDATA|stage)*>
+  <!ATTLIST dialogue speaker CDATA #REQUIRED>
+  <!ELEMENT stage (#PCDATA)>
+  <!ENTITY hush "…">
+]>
+<storyboard xmlns:fx="urn:cinema:effects"
+            xmlns:meta="urn:cinema:metadata">
+  <meta:production meta:code="LX-204" meta:revision="7"/>
+  <scene id="s01">
+    <heading>EXT. SALT FLATS — DAWN</heading>
+    <shot type="wide">
+      <camera lens="24mm" movement="slow-pan"/>
+      <action>A pale horizon appears <pause/> beneath a violet sky.</action>
+      <dialogue speaker="RADIO">Base to rover, do you copy?</dialogue>
+    </shot>
+    <shot type="close">
+      <camera lens="85mm"/>
+      <action><sound>static</sound> The receiver blinks twice.</action>
+      <dialogue speaker="ROVER">
+        <stage>(whispered)</stage>&hush; I see the tower.
+      </dialogue>
+    </shot>
+  </scene>
+  <scene id="s02">
+    <heading>INT. CONTROL ROOM — CONTINUOUS</heading>
+    <shot type="insert">
+      <camera lens="50mm" movement="locked"/>
+      <action><![CDATA[Monitor values: TEMP < 0, SIGNAL > 80, MODE = "AUTO"]]></action>
+      <dialogue speaker="TECH">Mark the coordinates.</dialogue>
+    </shot>
+    <shot type="medium">
+      <camera lens="35mm"/>
+      <action>Three operators turn toward the window.</action>
+    </shot>
+  </scene>
+</storyboard>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE knowledge [
+  <!ELEMENT knowledge (topic+)>
+  <!ELEMENT topic (term, definition, related*)>
+  <!ATTLIST topic id ID #REQUIRED level (introductory|advanced) #IMPLIED>
+  <!ELEMENT term (#PCDATA)>
+  <!ELEMENT definition (#PCDATA|code|link)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link target IDREF #IMPLIED href CDATA #IMPLIED>
+  <!ELEMENT related EMPTY>
+  <!ATTLIST related ref IDREF #REQUIRED relation (broader|narrower|see-also) #REQUIRED>
+  <!ENTITY lt "&amp;lt;">
+]>
+<knowledge xmlns="urn:notes:knowledge"
+           xmlns:doc="urn:notes:document"
+           xml:base="https://notes.example.invalid/library/">
+  <topic id="xml" level="introductory">
+    <term>XML</term>
+    <definition>A markup language for structured documents; literal syntax includes <code>&lt;element&gt;</code> and escaped characters.</definition>
+    <related ref="namespaces" relation="narrower"/>
+    <related ref="parsing" relation="see-also"/>
+  </topic>
+  <topic id="namespaces" level="advanced">
+    <term>Namespaces</term>
+    <definition>Names combine a URI with a local name. See <link href="chapters/ns.html#qnames">qualified names</link>.</definition>
+    <related ref="xml" relation="broader"/>
+  </topic>
+  <topic id="parsing" level="advanced">
+    <term>Parsing</term>
+    <definition><![CDATA[Applications may inspect a tree, stream events, or preserve lexical details.]]></definition>
+    <related ref="namespaces" relation="see-also"/>
+  </topic>
+  <doc:revision doc:number="12" doc:editor="M. Ito"/>
+</knowledge>
+```

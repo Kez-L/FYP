@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE log [
+  <!ELEMENT log (event*)>
+  <!ELEMENT event (timestamp, source, message, detail?)>
+  <!ATTLIST event
+    severity (debug|info|warn|error) "info"
+    sequence NMTOKEN #IMPLIED>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT source EMPTY>
+  <!ATTLIST source
+    host CDATA #REQUIRED
+    process CDATA #IMPLIED
+    pid NMTOKEN #IMPLIED>
+  <!ELEMENT message (#PCDATA|code|br)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT detail (property*)>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST property key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY leftbracket "&#91;">
+  <!ENTITY rightbracket "&#93;">
+]>
+<log>
+  <event severity="error" sequence="0001">
+    <timestamp>2026-09-24T12:34:56.000Z</timestamp>
+    <source host="node-7" process="worker" pid="4294967295"/>
+    <message>Failure in <code>parser</code><br/>retry &leftbracket;scheduled&rightbracket;</message>
+    <detail>
+      <property key="errno" value="ENOMEM"/>
+      <property key="path" value="/tmp/a&amp;b"/>
+      <property key="empty"/>
+    </detail>
+  </event>
+  <event severity="debug">
+    <timestamp>never</timestamp>
+    <source host="localhost"/>
+    <message><![CDATA[diagnostic: ]]> bytes=0</message>
+  </event>
+</log>

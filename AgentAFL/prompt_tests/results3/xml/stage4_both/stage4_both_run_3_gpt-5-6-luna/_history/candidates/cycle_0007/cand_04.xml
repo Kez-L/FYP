@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<network xmlns="urn:network:topology"
+         xmlns:n="urn:network:node"
+         xmlns:l="urn:network:link"
+         xmlns:ext="urn:network:extension">
+  <metadata>
+    <created>2026-09-24</created>
+    <description>Graph with cycles, annotations, and empty endpoints</description>
+  </metadata>
+  <nodes>
+    <n:node id="router-a" role="gateway" enabled="true">
+      <n:address family="ipv6">2001:db8::1</n:address>
+      <n:interface name="wan0" mtu="1500"/>
+      <n:interface name="lan0" mtu="9000"><n:alias>inside</n:alias></n:interface>
+    </n:node>
+    <n:node id="switch-b" role="access" enabled="false">
+      <n:address family="ipv4">192.0.2.8</n:address>
+    </n:node>
+    <n:node id="sensor-c" role="leaf">
+      <n:address family="ipv4">198.51.100.23</n:address>
+      <n:telemetry interval="PT15S"><n:metric unit="C">21.75</n:metric></n:telemetry>
+    </n:node>
+  </nodes>
+  <links>
+    <l:link id="edge-1" from="router-a" to="switch-b" state="up">
+      <l:capacity unit="Gbps">10</l:capacity>
+      <l:latency unit="ms">0.42</l:latency>
+    </l:link>
+    <l:link id="edge-2" from="switch-b" to="sensor-c" state="down"/>
+    <l:link id="edge-3" from="sensor-c" to="router-a" state="unknown">
+      <l:note><![CDATA[maintenance window: 02:00 < 03:00]]></l:note>
+    </l:link>
+  </links>
+  <ext:diagnostics ext:level="verbose">
+    <ext:warning code="W-17">Interface has no negotiated speed</ext:warning>
+  </ext:diagnostics>
+</network>

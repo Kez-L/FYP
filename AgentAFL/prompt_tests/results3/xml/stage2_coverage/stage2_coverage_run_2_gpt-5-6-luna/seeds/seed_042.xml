@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header,body,trailers?)>
+  <!ATTLIST envelope xmlns CDATA #IMPLIED>
+  <!ELEMENT header (route,credential?,option*)>
+  <!ELEMENT route EMPTY>
+  <!ATTLIST route from CDATA #REQUIRED to CDATA #REQUIRED>
+  <!ELEMENT credential (user,secret)>
+  <!ELEMENT user (#PCDATA)>
+  <!ELEMENT secret (#PCDATA)>
+  <!ELEMENT option EMPTY>
+  <!ATTLIST option name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT body (request|response|fault)>
+  <!ELEMENT request (method,argument*)>
+  <!ELEMENT response (status,result?)>
+  <!ELEMENT fault (code,message,detail?)>
+  <!ELEMENT method (#PCDATA)>
+  <!ELEMENT argument (#PCDATA|value)*>
+  <!ELEMENT value (#PCDATA|value)*>
+  <!ELEMENT status (#PCDATA)>
+  <!ELEMENT result ANY>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT detail ANY>
+  <!ELEMENT trailers (signature?,note*)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY apostrophe "&apos;">
+]>
+<envelope xmlns="urn:example:rpc" xmlns:x="urn:example:ext" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <header>
+    <route from="client/α" to="service://node-4"/>
+    <credential><user>guest</user><secret>p&amp;ss&apos;word</secret></credential>
+    <option name="trace" value="true"/>
+    <option name="retries" value="0"/>
+  </header>
+  <body>
+    <request>
+      <method>compile</method>
+      <argument name="unused">ignored</argument>
+      <argument><value>one<value>nested</value></value></argument>
+    </request>
+  </body>
+  <trailers>
+    <signature><![CDATA[-----BEGIN SIGNATURE-----
+aGVsbG8=
+-----END SIGNATURE-----]]></signature>
+    <note x:level="debug">end &amp; done</note>
+  </trailers>
+</envelope>

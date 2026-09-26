@@ -1,0 +1,108 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (record*)>
+  <!ELEMENT record (title, tags?, data)>
+  <!ATTLIST record key NMTOKEN #REQUIRED status CDATA "new">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT data (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ENTITY label "A &amp; B">
+]>
+<catalog>
+  <record key="r-α" status="active">
+    <title><![CDATA[Raw <title> & preserved]]></title>
+    <tags><tag>one</tag><tag>two</tag><tag>three</tag></tags>
+    <data>prefix &label;<chunk><![CDATA[<binary>]]></chunk>suffix</data>
+  </record>
+  <record key="r-β">
+    <title>Second&#x20;record</title>
+    <data><![CDATA[line one
+line two
+]]></data>
+  </record>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<envelope xmlns="urn:env" xmlns:x="urn:x" xmlns:y="urn:y">
+  <header>
+    <x:token xml:space="preserve">  A	B
+C  </x:token>
+    <x:signature><![CDATA[-----BEGIN-----
+abc/+/==
+-----END-----]]></x:signature>
+  </header>
+  <body>
+    <message y:type="request">
+      <y:route from="α" to="β"/>
+      <content xmlns="">
+        <item id="1" xml:lang="fr"><![CDATA[été & hiver]]></item>
+        <item id="2" xml:space="default">plain</item>
+      </content>
+    </message>
+  </body>
+  <?audit completed?>
+</envelope>
+```
+
+```xml
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file path CDATA #REQUIRED size NMTOKEN #IMPLIED>
+  <!ELEMENT payload (section*)>
+  <!ELEMENT section (#PCDATA|blob)*>
+  <!ATTLIST section name CDATA #IMPLIED>
+  <!ELEMENT blob (#PCDATA)>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY percent "100%">
+]>
+<package>
+  <manifest>
+    <file path="a&amp;b.txt" size="0"/>
+    <file path="space name.dat" size="0000000007"/>
+  </manifest>
+  <payload>
+    <section name="empty"></section>
+    <section name="mixed">start<blob>AAECAwQF</blob>middle &percent; end</section>
+    <section><![CDATA[]]></section>
+  </payload>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:report xmlns:r="urn:report" xmlns:m="urn:metrics" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <r:period start="2026-01-01T00:00:00Z" end="2026-12-31T23:59:59+00:00"/>
+  <r:series m:unit="ms" m:scale="10^-3">
+    <r:point m:value="-0" m:at="0"/>
+    <r:point m:value="NaN" m:at="1"/>
+    <r:point m:value="INF" m:at="2"/>
+    <r:point m:value="1.7976931348623157E+308" m:at="3"/>
+  </r:series>
+  <r:attachment xlink:type="simple" xlink:href="data:text/plain;base64,AAEC/w==" xlink:actuate="onLoad"/>
+  <r:notes xml:space="preserve"><![CDATA[
+  <not-an-element attr='x'/>
+  ]]></r:notes>
+</r:report>
+```
+
+```xml
+<root>
+  <a><![CDATA[one]]></a>
+  <b><!-- comment with --? --><![CDATA[two]]></b>
+  <?pi data?><c attr="&quot;&apos;&amp;&lt;&gt;">text&#0;&#xD;&#x2028;</c>
+  <d>
+    <e>
+      <f/>
+      <g><![CDATA[split ]]]]><![CDATA[> marker]]></g>
+    </e>
+  </d>
+  <mixed>left<child><![CDATA[middle]]></child>right<!--tail--></mixed>
+</root>
+```

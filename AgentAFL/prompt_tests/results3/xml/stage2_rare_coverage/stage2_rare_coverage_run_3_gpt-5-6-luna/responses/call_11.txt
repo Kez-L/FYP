@@ -1,0 +1,155 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry | note)*>
+  <!ELEMENT entry (title, metadata?, description?, related*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT metadata (author+, tag*)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT tag EMPTY>
+  <!ELEMENT description (#PCDATA | emphasis | ref)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT ref (#PCDATA)>
+  <!ELEMENT related EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST entry
+    key ID #REQUIRED
+    status (draft|final|archived) "draft">
+  <!ATTLIST tag value CDATA #REQUIRED>
+  <!ATTLIST related target IDREF #IMPLIED>
+  <!ENTITY company "A &amp; B Research">
+]>
+<catalog>
+  <entry key="r1" status="final">
+    <title>Boundary &company;</title>
+    <metadata>
+      <author>Élodie</author>
+      <author>李明</author>
+      <tag value="xml"/>
+      <tag value="parser"/>
+    </metadata>
+    <description>Text <emphasis>with</emphasis> mixed <ref>references</ref> and a numeric entity &#x1F642;.</description>
+    <related target="r2"/>
+  </entry>
+  <note><![CDATA[ ]]>A note containing ]]> is not represented literally.</note>
+  <entry key="r2">
+    <title>Second entry</title>
+    <description>line one
+line two&#10;line three</description>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<envelope xmlns="urn:outer" xmlns:m="urn:message" xmlns:x="urn:extra">
+  <header>
+    <m:source x:type="automated">sensor-07</m:source>
+    <m:timestamp>2026-09-24T12:34:56Z</m:timestamp>
+    <?route channel="priority"?>
+  </header>
+  <payload>
+    <m:record id="α-01" xml:lang="ar" xml:space="preserve">
+      <m:value><![CDATA[
+        <not-an-element attr="&fake;"/>
+      ]]></m:value>
+      <m:empty/>
+      <!-- comment with -- invalid? no, this is safe -->
+    </m:record>
+    <x:extension>
+      <x:item x:code="A&amp;B">left &lt; right</x:item>
+      <x:item x:code="C&#x2F;D"/>
+    </x:extension>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (node)>
+  <!ELEMENT node (node*, value?)>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST node name CDATA #IMPLIED>
+  <!ENTITY nl "&#10;">
+]>
+<map>
+  <node name="root">
+    <node name="left">
+      <node name="leaf-a">
+        <value>one&nl;two</value>
+      </node>
+      <node name="leaf-b">
+        <value><![CDATA[<json>{"a":[1,2,3]}</json>]]></value>
+      </node>
+    </node>
+    <node name="right">
+      <node name="empty"/>
+      <node name="mixed">prefix<value>inside</value>suffix</node>
+    </node>
+  </node>
+</map>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<stream>
+  <frame seq="0">
+    <bytes encoding="base64">
+      <![CDATA[AAEC/f7+////////AAEC]]>
+    </bytes>
+    <checksum algorithm="sha256">0000000000000000000000000000000000000000000000000000000000000000</checksum>
+  </frame>
+  <frame seq="1" compressed="false">
+    <bytes encoding="hex">00ff10aBdeadBEEF</bytes>
+    <metadata>
+      <field name="length" value="18446744073709551615"/>
+      <field name="signed" value="-9223372036854775808"/>
+      <field name="empty" value=""/>
+    </metadata>
+  </frame>
+  <?checkpoint?>
+  <frame seq="2">
+    <bytes><![CDATA[
+      A line with tabs&#x9;and entities &amp; markup-like text.
+    ]]></bytes>
+  </frame>
+</stream>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+)>
+  <!ELEMENT section (heading, paragraph+, table?)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA | b | i | br | link)*>
+  <!ELEMENT b (#PCDATA | i)*>
+  <!ELEMENT i (#PCDATA | b)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST section code NMTOKEN #REQUIRED>
+  <!ATTLIST link href URI #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+]>
+<report>
+  <section code="A-01">
+    <heading>Overview</heading>
+    <paragraph>Start <b>bold <i>nested</i></b><br/>after&nbsp;break.</paragraph>
+    <paragraph>A <link href="urn:item:42">linked value</link> and escaped &lt;angle&gt; text.</paragraph>
+    <table>
+      <row><cell>r1c1</cell><cell>r1c2</cell></row>
+      <row><cell><![CDATA[r2,c1]]></cell><cell>r2c2</cell></row>
+    </table>
+  </section>
+  <section code="B_02">
+    <heading>Trailing section</heading>
+    <paragraph>Whitespace
+      around
+      text</paragraph>
+  </section>
+</report>
+```

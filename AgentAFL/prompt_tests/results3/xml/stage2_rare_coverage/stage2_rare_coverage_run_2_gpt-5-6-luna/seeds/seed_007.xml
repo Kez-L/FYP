@@ -1,0 +1,28 @@
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (meta, payload, checksum)>
+  <!ELEMENT meta (field+)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field
+    name CDATA #REQUIRED
+    value CDATA #IMPLIED
+    enabled (yes|no) "yes">
+  <!ELEMENT payload (#PCDATA|chunk|break)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quoted "&#34;quoted&#34;">
+]>
+<packet>
+  <meta>
+    <field name="version" value="2.7"/>
+    <field name="mode" value="&quoted;" enabled="no"/>
+    <field name="empty" value=""/>
+  </meta>
+  <payload>start<chunk>one</chunk><break/>middle
+    <![CDATA[
+      raw ]]> text ]]>
+    <chunk>two &nbsp; three</chunk>end</payload>
+  <checksum><?sum algorithm="xor"?>9f2a</checksum>
+</packet>

@@ -1,0 +1,157 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "file:///tmp/nonexistent.bin" NDATA bin>
+  <!ELEMENT catalog (item+, trailer?)>
+  <!ELEMENT item (title, detail?, ref*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|emph|code)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST item id ID #REQUIRED state (new|old|archived) "new">
+  <!ATTLIST ref target ENTITY #REQUIRED>
+]>
+<catalog>
+  <item id="i-1" state="archived">
+    <title>Binary &lt;payload&gt;</title>
+    <detail>before<emph>inside</emph>after<code>r&amp;d</code></detail>
+    <ref target="payload"/>
+  </item>
+  <item id="i-2">
+    <title><![CDATA[ ]]>second</title>
+    <detail><![CDATA[<not-an-element>]]></detail>
+  </item>
+  <trailer>done</trailer>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body, signature)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT body (section+)>
+  <!ELEMENT section (heading, (p|list|table)*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT p (#PCDATA|b|i|br)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT list (li*)>
+  <!ELEMENT li (#PCDATA|b|i)*>
+  <!ELEMENT table (row*)>
+  <!ELEMENT row (cell*)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST header version NMTOKEN #IMPLIED>
+  <!ATTLIST section level NMTOKEN #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+]>
+<envelope>
+  <header version="v2.7"/>
+  <body>
+    <section level="1">
+      <heading>Overview</heading>
+      <p>alpha<b>bold</b><br/><i>italic</i>&nbsp;omega</p>
+      <list><li>one</li><li>two<b>!</b></li></list>
+    </section>
+    <section level="2">
+      <heading><![CDATA[Rows & columns]]></heading>
+      <table>
+        <row><cell>A</cell><cell>B</cell></row>
+        <row><cell><![CDATA[<x/>]]></cell><cell>C</cell></row>
+      </table>
+    </section>
+  </body>
+  <signature>sha256:unknown</signature>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ENTITY % common '
+    <!ELEMENT package (manifest, content)>
+    <!ELEMENT manifest (file*)>
+    <!ELEMENT file EMPTY>
+    <!ATTLIST file path CDATA #REQUIRED kind (text|binary) "text">
+  '>
+  %common;
+  <!ENTITY % optional ' <!ELEMENT content (text|chunk|section)*> '>
+  %optional;
+  <![IGNORE[
+    <!ELEMENT ignored (anything)>
+    <!ENTITY hidden "not expanded">
+  ]]>
+  <!ELEMENT text (#PCDATA)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT section (text|chunk)*>
+  <!ATTLIST package mode CDATA #IMPLIED>
+  <!ENTITY open "<![CDATA[">
+  <!ENTITY close "]]>">
+]>
+<package mode="mixed">
+  <manifest>
+    <file path="a.txt"/>
+    <file path="blob.dat" kind="binary"/>
+  </manifest>
+  <content>
+    <text>plain &lt;markup&gt;</text>
+    <chunk><![CDATA[raw ]]> data</chunk>
+    <section><text>nested</text><chunk>&open;still characters&close;</chunk></section>
+  </content>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE r [
+  <!ELEMENT r ANY>
+  <!ELEMENT a ANY>
+  <!ELEMENT b ANY>
+  <!ELEMENT c (#PCDATA)>
+  <!ATTLIST r xml:space (default|preserve) "default">
+  <!ATTLIST a x CDATA #IMPLIED>
+  <!ATTLIST b y CDATA #IMPLIED>
+  <!ENTITY one "A">
+  <!ENTITY two "&one;B">
+  <!ENTITY three "&two;C">
+]>
+<r xml:space="preserve" xmlns="urn:root" xmlns:x="urn:x">
+  <a x:one="&three;" x:two="&#x41;&#65;">
+    <b y="&quot;&apos;&amp;&lt;&gt;">
+      <c>left&amp;right</c>
+      <x:foreign xmlns:x="urn:other"><x:item/></x:foreign>
+    </b>
+  </a>
+  <a xmlns=""><c><![CDATA[unclosed-looking ]]]]><![CDATA[> text]]></c></a>
+</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (node)>
+  <!ELEMENT node (node|value|empty)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT empty EMPTY>
+  <!ATTLIST node id ID #IMPLIED>
+  <!ENTITY bad "unterminated
+]>
+<root>
+  <node id="n0">
+    <node id="n1">
+      <value>ok</value>
+      <empty/>
+      <node id="n2">
+        <value>line one
+line two&#x0D;&#x0A;line three</value>
+      </node>
+    </node>
+    <value>tail</value>
+  </node>
+</root>
+```

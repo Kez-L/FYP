@@ -1,0 +1,20 @@
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body)>
+  <!ELEMENT header (name, token?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT body (message+)>
+  <!ELEMENT message (#PCDATA|ref)*>
+  <!ATTLIST message level NMTOKEN #IMPLIED>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target ENTITY #IMPLIED>
+  <!ENTITY one "A &amp; B">
+  <!ENTITY two "&one; <![CDATA[raw]]>">
+]>
+<envelope>
+  <header><name>αβγ</name><token>&two;</token></header>
+  <body>
+    <message level="high">start<ref target="one"/>end</message>
+    <message level="low">&one;</message>
+  </body>
+</envelope>

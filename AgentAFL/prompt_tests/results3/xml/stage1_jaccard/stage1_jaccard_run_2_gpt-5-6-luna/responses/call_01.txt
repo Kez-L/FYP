@@ -1,0 +1,132 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+, trailer?)>
+  <!ELEMENT entry (key, data, note?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT data (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    priority (low|normal|high) "normal"
+    state CDATA "new">
+  <!ATTLIST part
+    kind CDATA #IMPLIED>
+  <!ENTITY left "[[">
+  <!ENTITY right "]]">
+  <!ENTITY amp "&#38;">
+]>
+<archive>
+  <entry id="e1" priority="high">
+    <key>&left;alpha&right;</key>
+    <data>before<part kind="raw">A&amp;B</part>middle<part>line&#10;break</part>after</data>
+    <note xml:space="preserve">  padded   text  </note>
+  </entry>
+  <entry id="e2" state="closed">
+    <key>second</key>
+    <data>&amp;&amp;&amp;<part kind="empty"/></data>
+  </entry>
+  <trailer/>
+</archive>
+```
+
+```xml
+<!DOCTYPE r [
+  <!ELEMENT r ANY>
+  <!ENTITY a "one">
+  <!ENTITY b "&a;&a;&a;">
+  <!ENTITY c "&b;&b;">
+  <!NOTATION n SYSTEM "urn:odd:notation">
+  <!ENTITY external SYSTEM "urn:not-loaded" NDATA n>
+]>
+<r xmlns:q="urn:q" q:x="&c;">
+  <![CDATA[]]>
+  <![CDATA[<r>&not-an-entity;</r>]]>
+  <q:branch><![CDATA[abc]]>&b;<![CDATA[]]></q:branch>
+  <?inside data?>
+  <leaf ref="&a;" />
+</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT body (#PCDATA|section|item)*>
+  <!ELEMENT section (item*)>
+  <!ELEMENT item (#PCDATA|item)*>
+  <!ATTLIST envelope xmlns CDATA #IMPLIED>
+  <!ATTLIST item code NMTOKEN #IMPLIED>
+  <!ENTITY quote "&#34;">
+]>
+<envelope xmlns="urn:outer" xmlns:a="urn:a" xmlns:b="urn:b" xml:lang="x-klingon">
+  <header xmlns="" a:flag="yes" b:flag="no" xml:base="">
+  </header>
+  <body>
+    text<a:section xmlns:a="urn:changed">
+      <a:item code="A_1">one<item code="nested">two</item>three</a:item>
+      <b:item xmlns:b="">four</b:item>
+    </a:section>
+    <![CDATA[tail]]>
+    <item xml:space="default" title="&quote;quoted&quote;">last</item>
+  </body>
+</envelope>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ELEMENT root (a)>
+  <!ELEMENT a (b)>
+  <!ELEMENT b (c)>
+  <!ELEMENT c (d)>
+  <!ELEMENT d (e)>
+  <!ELEMENT e (#PCDATA)>
+  <!ATTLIST root flag CDATA "&#x0D;&#x0A;">
+]>
+<root flag="&#x9;&#xA;&#xD;">
+  <a>
+    <b>
+      <c>
+        <d>
+          <e>left&#x20;right&#x85;&#x2028;</e>
+        </d>
+      </c>
+    </b>
+  </a>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+  <!ENTITY % declarations '
+    <!ELEMENT doc (section|empty|mixed)*>
+    <!ELEMENT section (title, row*)>
+    <!ELEMENT title (#PCDATA)>
+    <!ELEMENT row (#PCDATA|cell)*>
+    <!ELEMENT cell (#PCDATA)>
+    <!ELEMENT empty EMPTY>
+    <!ELEMENT mixed ANY>
+    <!ATTLIST section mode CDATA "implicit">
+  '>
+  %declarations;
+  <!ENTITY ampersand "&#38;">
+]>
+<doc>
+  <section mode="explicit">
+    <title>Rows</title>
+    <row>one<cell>1</cell><cell><![CDATA[2 < 3]]></cell>tail</row>
+    <row><cell>&ampersand;</cell></row>
+  </section>
+  <empty/>
+  <mixed>
+    <?stage value?>
+    plain
+    <unknown xmlns="urn:unexpected" a="1&#x0A;2"/>
+    <![CDATA[raw]]>
+  </mixed>
+</doc>
+```

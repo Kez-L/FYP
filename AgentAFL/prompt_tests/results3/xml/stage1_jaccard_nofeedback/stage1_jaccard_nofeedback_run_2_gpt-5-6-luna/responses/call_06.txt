@@ -1,0 +1,203 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+, footer?)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (name, description?, price)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emph|code)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST catalog version NMTOKEN #REQUIRED>
+  <!ATTLIST section id ID #IMPLIED>
+  <!ATTLIST item ref ID #IMPLIED state (new|used|archived) "new">
+  <!ENTITY company "A &amp; B Trading">
+  <!ENTITY notice "Prices are subject to change.">
+]>
+<catalog version="2">
+  <section id="featured">
+    <title>&company;: featured goods</title>
+    <item ref="p1">
+      <name>Glass &lt;Widget&gt;</name>
+      <description>Clear <emph>and</emph> durable; use <code>--safe</code>.</description>
+      <price>19.95</price>
+    </item>
+    <item ref="p2" state="used">
+      <name>Second-hand device</name>
+      <description><![CDATA[Contains text like <tags>, &entities;, and ]]> safely.</description>
+      <price>7.00</price>
+    </item>
+  </section>
+  <footer>&notice;</footer>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, attachments?)>
+  <!ELEMENT header (sender, recipient+, subject, timestamp)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT body (#PCDATA|paragraph|quote|linebreak)*>
+  <!ELEMENT paragraph (#PCDATA|strong|link)*>
+  <!ELEMENT quote (#PCDATA|paragraph)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT attachments (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST message priority (low|normal|urgent) "normal">
+  <!ATTLIST file name CDATA #REQUIRED size CDATA #IMPLIED>
+  <!ENTITY apos "'">
+  <!ENTITY greeting "Hello, reader">
+]>
+<message priority="urgent">
+  <header>
+    <sender>parser@example.test</sender>
+    <recipient>one@example.test</recipient>
+    <recipient>two@example.test</recipient>
+    <subject>&greeting;&apos;s report</subject>
+    <timestamp>2026-09-24T12:34:56Z</timestamp>
+  </header>
+  <body>
+    <paragraph><strong>Important:</strong> check the <link>results</link>.</paragraph>
+    <linebreak/>
+    <quote>
+      <paragraph>Nested quotation with &quot;escaped&quot; punctuation.</paragraph>
+      <paragraph><![CDATA[raw section: ]]><strong>mixed</strong><![CDATA[ content]]></paragraph>
+    </quote>
+  </body>
+  <attachments>
+    <file name="summary.xml" size="4096"/>
+    <file name="data &amp; notes.txt"/>
+  </attachments>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ENTITY % declarations '
+    <!ELEMENT archive (metadata, record*)>
+    <!ELEMENT metadata (owner, created, keywords?)>
+    <!ELEMENT owner (#PCDATA)>
+    <!ELEMENT created (#PCDATA)>
+    <!ELEMENT keywords (keyword+)>
+    <!ELEMENT keyword (#PCDATA)>
+    <!ELEMENT record (key, value, history?)>
+    <!ELEMENT key (#PCDATA)>
+    <!ELEMENT value (#PCDATA|fragment)*>
+    <!ELEMENT fragment (#PCDATA)>
+    <!ELEMENT history (change+)>
+    <!ELEMENT change (#PCDATA)>
+    <!ATTLIST record kind CDATA "generic">
+    <!ATTLIST change by CDATA #IMPLIED>
+  '
+  %declarations;
+  <!ENTITY open "[" >
+  <!ENTITY close "]" >
+  <!ENTITY nested "&open;payload&close;">
+]>
+<archive>
+  <metadata>
+    <owner>build-system</owner>
+    <created>2026-09-24</created>
+    <keywords>
+      <keyword>xml</keyword>
+      <keyword>fuzzing</keyword>
+      <keyword>entities</keyword>
+    </keywords>
+  </metadata>
+  <record kind="text">
+    <key>alpha</key>
+    <value>plain <fragment>embedded</fragment> value &nested;</value>
+    <history>
+      <change by="one">created</change>
+      <change by="two">modified &amp; reviewed</change>
+    </history>
+  </record>
+  <record kind="binary">
+    <key>beta</key>
+    <value><![CDATA[00112233AABBCC]]></value>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE r:dashboard [
+  <!ELEMENT r:dashboard (r:summary, r:panel*)>
+  <!ELEMENT r:summary (#PCDATA)>
+  <!ELEMENT r:panel (r:label, r:metric+, r:note?)>
+  <!ELEMENT r:label (#PCDATA)>
+  <!ELEMENT r:metric (#PCDATA)>
+  <!ELEMENT r:note (#PCDATA)>
+  <!ATTLIST r:dashboard xmlns:svg CDATA #IMPLIED>
+  <!ATTLIST r:panel id ID #IMPLIED collapsed (yes|no) "no">
+  <!ENTITY delta "Δ">
+  <!ENTITY nbsp "&#160;">
+]>
+<r:dashboard xmlns:r="urn:example:report" xmlns:svg="http://www.w3.org/2000/svg"
+             xml:lang="en" xml:base="https://example.test/reports/">
+  <r:summary xml:space="preserve"> Status: &delta;&nbsp; nominal </r:summary>
+  <r:panel id="cpu" collapsed="no">
+    <r:label>CPU &amp; memory</r:label>
+    <r:metric>usage=43%</r:metric>
+    <r:metric>resident=128MiB</r:metric>
+    <r:note><![CDATA[Use <svg:path/> only as literal text here.]]></r:note>
+  </r:panel>
+  <r:panel id="graph" collapsed="yes">
+    <r:label>Vector preview</r:label>
+    <r:metric>
+      <svg:svg width="10" height="10">
+        <svg:circle cx="5" cy="5" r="4"/>
+      </svg:svg>
+    </r:metric>
+  </r:panel>
+</r:dashboard>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload, signature)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry path CDATA #REQUIRED media CDATA #IMPLIED checksum CDATA #IMPLIED>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT signature (algorithm, value)>
+  <!ELEMENT algorithm (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY ampersand "&amp;">
+  <!ENTITY quote "&quot;">
+]>
+<package>
+  <!-- Manifest entries deliberately use different attribute order and quoting. -->
+  <manifest>
+    <entry checksum="abc123" path="docs/readme.xml" media="application/xml"/>
+    <entry path="images/logo.png" media="image/png" checksum="def456"/>
+    <entry path="empty.dat"/>
+  </manifest>
+  <payload>
+    <chunk id="first">begin &amp; continue</chunk>
+    <chunk id="second"><![CDATA[
+      line one
+      line two
+      ]]>tail</chunk>
+    <chunk id="third">symbols: &lt; &gt; &quot; &apos; &logo;</chunk>
+  </payload>
+  <signature>
+    <algorithm>sha256</algorithm>
+    <value>&quote;9f00aa&quote;</value>
+  </signature>
+</package>
+```

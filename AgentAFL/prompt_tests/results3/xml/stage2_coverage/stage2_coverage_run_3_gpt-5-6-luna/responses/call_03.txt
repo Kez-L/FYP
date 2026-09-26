@@ -1,0 +1,164 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, note?)>
+  <!ELEMENT item (title, price, tag*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT tag EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST item
+    id ID #REQUIRED
+    related IDREFS #IMPLIED
+    state (new|used|archived) "new"
+    xml:lang NMTOKEN #IMPLIED
+    cover ENTITY #IMPLIED>
+  <!ATTLIST tag
+    key CDATA #REQUIRED
+    value CDATA #IMPLIED>
+  <!ENTITY amp "&#38;">
+  <!ENTITY currency "EUR">
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY cover SYSTEM "cover.jpg" NDATA jpeg>
+]>
+<catalog>
+  <item id="i001" state="new" cover="cover">
+    <title>R&amp;D &amp; Field Notes</title>
+    <price>19.95 &currency;</price>
+    <tag key="format" value="print"/>
+    <tag key="special" value="a&amp;b"/>
+  </item>
+  <item id="i002" related="i001" state="used" xml:lang="fr">
+    <title>Archives</title>
+    <price>7.50 &currency;</price>
+  </item>
+  <note xml:space="preserve">catalog &amp; inventory</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE journal [
+  <!ELEMENT journal (entry*)>
+  <!ELEMENT entry (#PCDATA|em|ref)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST entry id ID #REQUIRED author CDATA #IMPLIED>
+  <!ATTLIST ref target IDREF #REQUIRED kind (citation|link|footnote) "link">
+  <!ENTITY sep " — ">
+]>
+<journal xmlns:lit="urn:literature" xml:lang="en">
+  <?index mode="full"?>
+  <!-- mixed content with namespace transitions -->
+  <entry id="e1" author="A. Writer">A beginning&sep;<em>not an ending</em>
+    <ref target="e2" kind="citation"/>.</entry>
+  <entry id="e2" xmlns="urn:entry" lit:edition="draft">
+    Plain text, <em>emphasis</em>, and a
+    <ref target="e1"/> back-reference.
+  </entry>
+  <entry id="e3" xmlns="" xml:space="preserve"><![CDATA[
+    whitespace, brackets ] ]>, and literal markup: <fake/>
+  ]]></entry>
+</journal>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE pipeline [
+  <!ELEMENT pipeline (source, transform*, sink)>
+  <!ELEMENT source EMPTY>
+  <!ELEMENT transform (option*)>
+  <!ELEMENT option EMPTY>
+  <!ELEMENT sink EMPTY>
+  <!ATTLIST pipeline xml:id ID #IMPLIED mode (stream|batch) "stream">
+  <!ATTLIST source uri URI #REQUIRED format CDATA "raw">
+  <!ATTLIST transform name CDATA #REQUIRED enabled (yes|no) "yes">
+  <!ATTLIST option key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST sink destination CDATA #REQUIRED overwrite (true|false) "false">
+  <!ENTITY arrow "&#x2192;">
+  <!ENTITY control "&#x1;">
+]>
+<pipeline xmlns:cfg="urn:config" xml:id="p-7" mode="batch">
+  <source uri="file:///tmp/input.dat" format="binary"/>
+  <transform name="normalize" enabled="yes">
+    <option key="trim" value="true"/>
+    <option key="separator" value="&arrow;"/>
+  </transform>
+  <transform name="filter" enabled="no">
+    <option key="pattern" value="A&amp;B"/>
+  </transform>
+  <sink destination="file:///tmp/output.dat" overwrite="true"/>&control;
+</pipeline>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (header, actor*, script)>
+  <!ELEMENT header (title, author)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT actor EMPTY>
+  <!ELEMENT script (line+)>
+  <!ELEMENT line (#PCDATA|cue|pause)*>
+  <!ELEMENT cue EMPTY>
+  <!ELEMENT pause EMPTY>
+  <!ATTLIST actor name CDATA #REQUIRED entrance (left|right|center) "center">
+  <!ATTLIST line speaker CDATA #REQUIRED number NMTOKEN #IMPLIED>
+  <!ATTLIST cue type (light|sound|set) #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY stage "the old theatre">
+  <!ENTITY quote "&quot;">
+]>
+<scene xml:base="https://example.invalid/play/">
+  <header>
+    <title>Night at &stage;</title>
+    <author>R. Example</author>
+  </header>
+  <actor name="Mira" entrance="left"/>
+  <actor name="Keeper"/>
+  <script>
+    <line speaker="Mira" number="001">Is this <cue type="light" value="blue"/> still alive?</line>
+    <line speaker="Keeper">Only in &quote;memory&quote;.</line>
+    <line speaker="Mira">Then wait<cue type="pause"/><![CDATA[...]]>
+      <cue type="sound" value="bell"/> begin.</line>
+  </script>
+  <?rehearse pass="two"?>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ENTITY % commonAttrs '
+    uid ID #REQUIRED
+    role (primary|secondary) "primary"
+  '>
+  <!ELEMENT archive (record*)>
+  <!ELEMENT record (key, value, metadata?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT metadata (flag*)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST record %commonAttrs; xml:space (default|preserve) "default">
+  <!ATTLIST metadata source CDATA #IMPLIED>
+  <!ATTLIST flag name CDATA #REQUIRED state (on|off) "on">
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+  <!ENTITY nested "&left;value&right;">
+]>
+<archive xmlns:a="urn:archive">
+  <record uid="r1" role="primary">
+    <key>a-001</key>
+    <value>alpha <part>one</part> &nested; <part>two</part></value>
+    <metadata source="import">
+      <flag name="verified" state="on"/>
+      <flag name="encrypted" state="off"/>
+    </metadata>
+  </record>
+  <record uid="r2" role="secondary" xml:space="preserve">
+    <key> b-002 </key>
+    <value><![CDATA[raw <payload> & untouched]]> tail</value>
+  </record>
+</archive>
+```

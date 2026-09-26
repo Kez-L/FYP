@@ -1,0 +1,31 @@
+<?xml version="1.1"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (record*)>
+  <!ELEMENT record (key, value, raw?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT raw ANY>
+  <!ATTLIST record
+    sequence NMTOKEN #REQUIRED
+    status (new|open|closed) "new">
+]>
+<stream xmlns:m="urn:message" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <record sequence="0001" status="open">
+    <key>α-1</key>
+    <value><part>A</part><part>B</part>&#x85;<part>C</part></value>
+    <raw><![CDATA[
+      <m:embedded xsi:type="m:fragment">
+        not parsed as markup
+      </m:embedded>
+    ]]></raw>
+  </record>
+  <record sequence="0002">
+    <key>k&amp;v</key>
+    <value>left<?mark data?>right<!--gap--><part><![CDATA[]]></part></value>
+  </record>
+  <record sequence="0003" status="closed">
+    <key>final</key>
+    <value>done</value>
+  </record>
+</stream>

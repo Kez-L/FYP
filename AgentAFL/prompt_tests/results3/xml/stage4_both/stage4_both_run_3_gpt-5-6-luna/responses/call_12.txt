@@ -1,0 +1,163 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY mark "A &amp; B">
+  <!ELEMENT catalog (record*)>
+  <!ELEMENT record (key, data, note?)>
+  <!ATTLIST record rid ID #REQUIRED format NOTATION (jpeg) #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT data (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+]>
+<catalog>
+  <record rid="r-001" format="jpeg">
+    <key>alpha&nbsp;01</key>
+    <data>prefix <part>one</part> middle <part>two &mark;</part> suffix</data>
+    <note><![CDATA[raw <markup> and ]]> brackets]]></note>
+  </record>
+  <record rid="r-002">
+    <key>&#x03A9;-β</key>
+    <data><part>孤立</part><part>🙂</part></data>
+  </record>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workspace xmlns="urn:example:workspace"
+           xmlns:a="urn:example:asset"
+           xmlns:b="urn:example:build"
+           xml:lang="fr">
+  <a:asset xml:id="asset-7" xml:base="../media/">
+    <a:name>Café / résumé</a:name>
+    <a:variants>
+      <a:variant kind="thumbnail" href="thumb.png"/>
+      <a:variant kind="original" href="./full%20size.png"/>
+      <a:variant kind="missing" href=""/>
+    </a:variants>
+  </a:asset>
+  <b:build xml:lang="en" xml:space="default">
+    <!-- whitespace around the following instruction is significant to some consumers -->
+    <?make target="all" flags="--clean --verbose"?>
+    <b:input>src/&amp;generated</b:input>
+    <b:output><![CDATA[dist/<name attr="x"/>]]></b:output>
+  </b:build>
+  <section xmlns="" xml:lang="zh">
+    <heading>独立命名空间</heading>
+    <item data-value="&quot;&apos;&amp;&lt;&gt;">内容</item>
+  </section>
+</workspace>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE labyrinth [
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+  <!ENTITY arrow "&#x2192;">
+  <!ELEMENT labyrinth ANY>
+  <!ELEMENT node (name, link*, payload?)>
+  <!ATTLIST node ident ID #REQUIRED kind (entry|branch|terminal) "entry">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target IDREF #REQUIRED weight CDATA "1">
+  <!ELEMENT payload (#PCDATA)>
+  <!ENTITY % optional "INCLUDE">
+  <![%optional;[
+    <!ELEMENT annotation (#PCDATA)>
+  ]]>
+]>
+<labyrinth>
+  <node ident="n0" kind="branch">
+    <name>root &left;start&right;</name>
+    <link target="n1" weight="0"/>
+    <link target="n2" weight="1.5"/>
+    <payload>route &arrow; east</payload>
+  </node>
+  <node ident="n1" kind="terminal">
+    <name>leaf-one</name>
+    <annotation>conditionally declared</annotation>
+  </node>
+  <node ident="n2">
+    <name>leaf-two</name>
+    <link target="n1"/>
+  </node>
+</labyrinth>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<ledger xmlns="urn:ledger:v2" xmlns:m="urn:ledger:meta">
+  <period start="2026-01-01" end="2026-12-31">
+    <entry ref="A-000" state="open">
+      <when>2026-09-24T18:42:11Z</when>
+      <amount currency="EUR" scale="2">0000012.50</amount>
+      <memo>Transfer &amp; adjustment&#10;second line</memo>
+      <tags>
+        <tag>cash</tag>
+        <tag><![CDATA[<internal>]]></tag>
+      </tags>
+      <m:attributes>
+        <m:attribute name="nullable" value=""/>
+        <m:attribute name="quoted" value="a'b&quot;c"/>
+      </m:attributes>
+    </entry>
+    <entry ref="B-∞" state="closed">
+      <when>2026-02-29</when>
+      <amount currency="JPY" scale="0">９９９</amount>
+      <memo xml:space="preserve">
+        
+          padded text
+          
+      </memo>
+    </entry>
+  </period>
+  <footer>
+    <checksum algorithm="none">-</checksum>
+    <?audit actor="system"?>
+  </footer>
+</ledger>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE scene [
+  <!ENTITY quote "&#x201C;hello&#x201D;">
+  <!ENTITY ampersand "&amp;">
+  <!ELEMENT scene (background, actor*, props)>
+  <!ELEMENT background (#PCDATA)>
+  <!ELEMENT actor (name, line*)>
+  <!ATTLIST actor id ID #REQUIRED role CDATA #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT line (#PCDATA|pause|gesture)*>
+  <!ELEMENT pause EMPTY>
+  <!ATTLIST pause duration CDATA #IMPLIED>
+  <!ELEMENT gesture (#PCDATA)>
+  <!ELEMENT props (prop*)>
+  <!ELEMENT prop EMPTY>
+  <!ATTLIST prop key CDATA #REQUIRED value CDATA #IMPLIED>
+]>
+<scene>
+  <background><![CDATA[
+    A stage with a painted moon.
+    The sequence ]]> is represented safely here.
+  ]]></background>
+  <actor id="a1" role="narrator">
+    <name>Zoë &quote;</name>
+    <line>Once upon a time<pause duration="0.25s"/>there was <gesture>silence</gesture>.</line>
+    <line>Symbols: &amp; &lt; &gt; &quot; &apos; &amp;and;</line>
+  </actor>
+  <actor id="a2">
+    <name>李明</name>
+    <line><gesture>whispers</gesture> Καλημέρα</line>
+  </actor>
+  <props>
+    <prop key="empty" value=""/>
+    <prop key="flag"/>
+    <prop key="path" value="C:\tmp\file"/>
+  </props>
+</scene>
+```

@@ -1,0 +1,119 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE journal [
+  <!ELEMENT journal (entry+)>
+  <!ELEMENT entry (title, body, attachment*)>
+  <!ATTLIST entry id ID #REQUIRED date CDATA #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (#PCDATA|em|link|break)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT attachment (#PCDATA)>
+  <!ATTLIST attachment type CDATA "text/plain">
+  <!ENTITY notice "This text came from an internal entity.">
+]>
+<journal>
+  <entry id="e1" date="2026-09-24">
+    <title>Field Notes</title>
+    <body>Observations include <em>wind</em> and <link href="urn:note:17">dust</link><break/>after sunset.</body>
+    <attachment type="text/plain">&notice;</attachment>
+  </entry>
+  <entry id="e2">
+    <title>Closing Remark</title>
+    <body><![CDATA[Literal markup: <not-an-element> & still text.]]></body>
+  </entry>
+</journal>
+```
+
+```xml
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-10 -10 220 120">
+  <defs>
+    <linearGradient id="fade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#112233"/>
+      <stop offset="100%" stop-color="rgb(240,240,240)"/>
+    </linearGradient>
+    <path id="curve" d="M 10,90 C 40,10 80,110 120,30"/>
+  </defs>
+  <title>Coordinate Sketch</title>
+  <g id="scene" transform="translate(5 3) rotate(-2)">
+    <rect x="0" y="0" width="180" height="90" rx="7.5" fill="url(#fade)" opacity=".875"/>
+    <use xlink:href="#curve" fill="none" stroke="black" stroke-width="2"/>
+    <text x="12" y="22" xml:space="preserve">x &lt; y &amp; z</text>
+    <circle cx="120.5" cy="30" r="4"/>
+  </g>
+</svg>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:app:config" xmlns:sec="urn:app:security">
+  <profile name="staging">
+    <include href="defaults.xml"/>
+    <setting key="timeout" type="duration">PT1H15M</setting>
+    <setting key="enabled" type="boolean">false</setting>
+    <setting key="threshold" type="decimal">-0.00075</setting>
+    <credentials>
+      <sec:method algorithm="sha-256">
+        <sec:token encoding="base64">QWJjMTIzIT8=</sec:token>
+      </sec:method>
+    </credentials>
+  </profile>
+  <profile name="minimal">
+    <setting key="path" type="path">/var/tmp/app &amp; logs</setting>
+  </profile>
+</configuration>
+```
+
+```xml
+<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+  <id>urn:uuid:123e4567-e89b-12d3-a456-426614174000</id>
+  <title type="html">Updates &amp; Signals</title>
+  <updated>2026-09-24T12:34:56.789Z</updated>
+  <author><name>Example &amp; Sons</name><email>robot@example.invalid</email></author>
+  <link rel="self" type="application/atom+xml" href="https://example.invalid/feed.xml"/>
+  <entry>
+    <id>tag:example.invalid,2026:item/7</id>
+    <title type="text">A short entry</title>
+    <published>2026-09-23T23:59:59+02:00</published>
+    <content type="xhtml">
+      <div xmlns="http://www.w3.org/1999/xhtml">
+        <p>Embedded XHTML with <strong>nested</strong> content.</p>
+        <br/>
+      </div>
+    </content>
+    <category term="testing" label="parser tests"/>
+  </entry>
+</feed>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset xmlns="urn:example:data" xmlns:m="urn:example:meta">
+  <m:description xml:lang="fr">Échantillon — été</m:description>
+  <records count="3">
+    <record key="alpha">
+      <value kind="integer">42</value>
+      <value kind="empty"/>
+      <matrix rows="2" columns="2">
+        <row index="0"><cell>1</cell><cell>0</cell></row>
+        <row index="1"><cell>-3</cell><cell>∞</cell></row>
+      </matrix>
+    </record>
+    <record key="beta" xml:space="preserve">
+      <value kind="text">
+        line one
+        line two
+      </value>
+      <note><![CDATA[Markers such as ]]> and <tags> remain literal here.]]></note>
+    </record>
+    <record key="gamma">
+      <value kind="hex">0xDEADBEEF</value>
+      <reference target="alpha" relation="derived-from"/>
+    </record>
+  </records>
+</dataset>
+```

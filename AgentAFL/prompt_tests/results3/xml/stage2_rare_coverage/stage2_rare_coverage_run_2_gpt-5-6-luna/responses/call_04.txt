@@ -1,0 +1,260 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header,section+,footer)>
+  <!ELEMENT header (title,meta*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta
+    key NMTOKEN #REQUIRED
+    value CDATA #IMPLIED>
+  <!ELEMENT section (heading,para+,list?)>
+  <!ATTLIST section
+    id ID #REQUIRED
+    lang NMTOKEN "en">
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT para (#PCDATA|em|strong|link|br)*>
+  <!ELEMENT em (#PCDATA|em|strong|link|br)*>
+  <!ELEMENT strong (#PCDATA|em|strong|link|br)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|em|strong)*>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY copyright "© 2026">
+]>
+<archive xml:lang="en" xml:base="https://example.invalid/data/">
+  <header>
+    <title>Markup &amp; Meaning</title>
+    <meta key="format" value="text"/>
+    <meta key="revision" value="β-2"/>
+  </header>
+  <section id="intro">
+    <heading>Introduction</heading>
+    <para>Text with <em>nested <strong>emphasis</strong></em>, a <link href="guide.xml#part">reference</link>, and a line break<br/>inside.</para>
+    <para>Symbols: &lt;tag&gt;, &quot;quoted&quot;, and &copyright;.</para>
+  </section>
+  <section id="details" lang="fr">
+    <heading>Résumé</heading>
+    <para>Éléments mélangés — naïve façade — 日本語.</para>
+    <list>
+      <item>first</item>
+      <item>second <em>annotated</em></item>
+    </list>
+  </section>
+  <footer>End of document.</footer>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry*)>
+  <!ELEMENT entry (name,description?,price,related*)>
+  <!ATTLIST entry
+    code ID #REQUIRED
+    refs IDREFS #IMPLIED
+    media ENTITY #IMPLIED
+    kind (book|music|video) "book">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|keyword)*>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT related EMPTY>
+  <!ATTLIST related target IDREF #REQUIRED>
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY cover SYSTEM "cover.jpg" NDATA jpeg>
+  <!ENTITY euro "&#x20AC;">
+]>
+<catalog>
+  <entry code="bk-1" kind="book" refs="bk-2" media="cover">
+    <name>Parsing &amp; Practice</name>
+    <description>Guide to <keyword>XML</keyword> and <keyword>DTDs</keyword>.</description>
+    <price>19.95 &euro;</price>
+    <related target="bk-2"/>
+  </entry>
+  <entry code="bk-2" kind="book">
+    <name>Recursive Patterns</name>
+    <price>7.50 &euro;</price>
+  </entry>
+  <entry code="mv-1" kind="video">
+    <name>Nodes in Motion</name>
+    <description><keyword>document</keyword> structure</description>
+    <price>12.00 &euro;</price>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE message [
+  <!ELEMENT message (sender,recipients,body,attachments?)>
+  <!ELEMENT sender EMPTY>
+  <!ATTLIST sender address CDATA #REQUIRED display CDATA #IMPLIED>
+  <!ELEMENT recipients (to+,cc*,bcc*)>
+  <!ELEMENT to EMPTY>
+  <!ATTLIST to address CDATA #REQUIRED>
+  <!ELEMENT cc EMPTY>
+  <!ATTLIST cc address CDATA #REQUIRED>
+  <!ELEMENT bcc EMPTY>
+  <!ATTLIST bcc address CDATA #REQUIRED>
+  <!ELEMENT body (paragraph|quote|code|table)*>
+  <!ELEMENT paragraph (#PCDATA|italic|bold|br)*>
+  <!ELEMENT italic (#PCDATA|bold)*>
+  <!ELEMENT bold (#PCDATA|italic)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT quote (#PCDATA|paragraph)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA|bold|italic)*>
+  <!ELEMENT attachments (attachment+)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment
+    filename NMTOKEN #REQUIRED
+    content-type CDATA #REQUIRED
+    size NMTOKEN #IMPLIED>
+]>
+<message xml:id="m-001" xml:space="preserve">
+  <sender address="sender@example.invalid" display="Sender Name"/>
+  <recipients>
+    <to address="alpha@example.invalid"/>
+    <to address="beta@example.invalid"/>
+    <cc address="archive@example.invalid"/>
+    <bcc address="hidden@example.invalid"/>
+  </recipients>
+  <body>
+    <paragraph>Hello <bold>world</bold>.<br/>This line contains a&nbsp;literal-looking name.</paragraph>
+    <quote><paragraph>Quoted <italic>material</italic> follows.</paragraph></quote>
+    <code>if (x &lt; 10 &amp;&amp; y &gt; 2) return;</code>
+    <table>
+      <row><cell>left</cell><cell><bold>right</bold></cell></row>
+      <row><cell>α</cell><cell>β</cell></row>
+    </table>
+  </body>
+  <attachments>
+    <attachment filename="report.pdf" content-type="application/pdf" size="4096"/>
+    <attachment filename="résumé.txt" content-type="text/plain"/>
+  </attachments>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (world,actors,events)>
+  <!ATTLIST scene xmlns CDATA #IMPLIED>
+  <!ELEMENT world (location+,weather)>
+  <!ELEMENT location (name,coordinate)>
+  <!ATTLIST location id ID #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT coordinate EMPTY>
+  <!ATTLIST coordinate lat CDATA #REQUIRED lon CDATA #REQUIRED>
+  <!ELEMENT weather (#PCDATA)>
+  <!ELEMENT actors (actor+)>
+  <!ELEMENT actor (alias,inventory?,status)>
+  <!ATTLIST actor id ID #REQUIRED role (player|npc|creature) #REQUIRED>
+  <!ELEMENT alias (#PCDATA)>
+  <!ELEMENT inventory (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT status (#PCDATA)>
+  <!ELEMENT events (event+)>
+  <!ELEMENT event (when,action,result?)>
+  <!ATTLIST event actor IDREF #REQUIRED location IDREF #REQUIRED>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT result (#PCDATA)>
+]>
+<scene xmlns="urn:game:scene" xmlns:geo="urn:game:geo" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <world>
+    <location id="loc-forest">
+      <name>Whispering Forest</name>
+      <coordinate geo:lat="51.5074" geo:lon="-0.1278"/>
+    </location>
+    <location id="loc-tower">
+      <name xlink:href="names.xml#tower">Old Tower</name>
+      <coordinate geo:lat="51.5000" geo:lon="-0.1200"/>
+    </location>
+    <weather>misty &amp; cold</weather>
+  </world>
+  <actors>
+    <actor id="hero" role="player">
+      <alias>Rin</alias>
+      <inventory>
+        <item>compass</item>
+        <item>silver key</item>
+      </inventory>
+      <status>ready</status>
+    </actor>
+    <actor id="gatekeeper" role="npc">
+      <alias>Keeper</alias>
+      <status>waiting</status>
+    </actor>
+    <actor id="owl" role="creature">
+      <alias>Night Owl</alias>
+      <status>watching</status>
+    </actor>
+  </actors>
+  <events>
+    <event actor="hero" location="loc-forest">
+      <when>21:00:00Z</when>
+      <action>walks toward the tower</action>
+      <result>footprints found</result>
+    </event>
+    <event actor="gatekeeper" location="loc-tower">
+      <when>21:05:00Z</when>
+      <action>opens the gate</action>
+    </event>
+  </events>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ENTITY % optional "INCLUDE">
+  <!ENTITY % featureDecl
+    "<!ELEMENT experimental (flag*)>
+     <!ELEMENT flag EMPTY>
+     <!ATTLIST flag name NMTOKEN #REQUIRED value CDATA #REQUIRED>">
+  %featureDecl;
+  <!ELEMENT configuration (defaults,profile+,experimental?)>
+  <!ELEMENT defaults (setting+)>
+  <!ELEMENT profile (inherits?,setting+,path*)>
+  <!ATTLIST profile name NMTOKEN #REQUIRED active (yes|no) "no">
+  <!ELEMENT inherits EMPTY>
+  <!ATTLIST inherits profile NMTOKEN #REQUIRED>
+  <!ELEMENT setting EMPTY>
+  <!ATTLIST setting
+    key NMTOKEN #REQUIRED
+    value CDATA #REQUIRED
+    locked (true|false) "false">
+  <!ELEMENT path (#PCDATA)>
+  <!ATTLIST path kind (input|output|cache) #REQUIRED>
+  <![%optional;[
+    <!ATTLIST configuration environment CDATA "test">
+  ]]>
+]>
+<configuration environment="staging">
+  <defaults>
+    <setting key="threads" value="04" locked="true"/>
+    <setting key="verbose" value="false"/>
+  </defaults>
+  <profile name="minimal" active="no">
+    <inherits profile="base"/>
+    <setting key="threads" value="1"/>
+    <path kind="cache">./cache/../cache</path>
+  </profile>
+  <profile name="base" active="yes">
+    <setting key="threads" value="8"/>
+    <setting key="locale" value="en-US"/>
+    <path kind="input">data/in</path>
+    <path kind="output">data/out</path>
+  </profile>
+  <experimental>
+    <flag name="streaming" value="on"/>
+    <flag name="diagnostics" value="&quot;full&quot;"/>
+  </experimental>
+</configuration>
+```

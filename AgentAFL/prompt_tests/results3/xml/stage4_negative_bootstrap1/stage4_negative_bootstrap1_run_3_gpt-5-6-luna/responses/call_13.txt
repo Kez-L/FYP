@@ -1,0 +1,152 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (item+)>
+  <!ATTLIST section name CDATA #REQUIRED>
+  <!ELEMENT item (name, description, price)>
+  <!ATTLIST item sku ID #REQUIRED available (yes|no) "yes">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ENTITY currency "€">
+  <!ENTITY notice "Limited release">
+]>
+<catalog>
+  <section name="tools">
+    <item sku="tool-001" available="yes">
+      <name>Parser &amp; Probe</name>
+      <description>Handles <em>structured</em> input with <code>--safe</code> mode.</description>
+      <price>19.95 &currency;</price>
+    </item>
+    <item sku="tool-002">
+      <name>Signal Clamp</name>
+      <description>&notice; — inspect values before storage.</description>
+      <price>7.50 &currency;</price>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:example:config" xmlns:sec="urn:example:security">
+  <profile id="staging" enabled="true">
+    <property key="timeout" type="integer">0030</property>
+    <property key="ratio" type="decimal">0.875</property>
+    <property key="empty" type="string"></property>
+    <sec:credentials>
+      <sec:method algorithm="scram-sha-256">
+        <sec:parameter name="iterations">4096</sec:parameter>
+        <sec:parameter name="salt">aGVsbG8=</sec:parameter>
+      </sec:method>
+    </sec:credentials>
+    <routes>
+      <route pattern="/api/v1/*" target="backend-a">
+        <header name="X-Trace">enabled</header>
+        <header name="X-Mode">staging</header>
+      </route>
+      <route pattern="/health" target="local" terminal="true"/>
+    </routes>
+  </profile>
+  <profile id="minimal" enabled="false">
+    <property key="timeout" type="integer">0</property>
+  </profile>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?processing mode="diagnostic"?>
+<!-- Deliberately mixed content with comments and processing instructions. -->
+<transcript date="2026-09-24">
+  <line speaker="α">Καλημέρα — <pause duration="250ms"/> welcome to the <mark>test</mark>.</line>
+  <line speaker="β">Symbols: &lt; &gt; &amp; &quot; &apos;.</line>
+  <line speaker="γ"><![CDATA[
+    Raw payload:
+    <not-an-element attr="&value;">
+    ]]> after cdata.</line>
+  <?checkpoint id="42"?>
+  <line speaker="α">Trailing text <emphasis level="high">with nesting</emphasis> and whitespace.</line>
+</transcript>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (metadata, records)>
+  <!ELEMENT metadata (title, created, tags)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (key, value, history?)>
+  <!ATTLIST record kind NMTOKEN #REQUIRED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT history (change*)>
+  <!ELEMENT change (#PCDATA)>
+  <!ATTLIST change by CDATA #IMPLIED at CDATA #IMPLIED>
+]>
+<archive>
+  <metadata>
+    <title>Configuration snapshots</title>
+    <created>2026-09-24T00:00:00Z</created>
+    <tags>
+      <tag>delta</tag>
+      <tag>rollback</tag>
+      <tag>Δοκιμή</tag>
+    </tags>
+  </metadata>
+  <records>
+    <record kind="map">
+      <key>alpha</key>
+      <value>one</value>
+      <history>
+        <change by="operator" at="2026-09-20">created</change>
+        <change by="system" at="2026-09-21">normalized</change>
+      </history>
+    </record>
+    <record kind="scalar">
+      <key>threshold</key>
+      <value>0</value>
+    </record>
+  </records>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ext="urn:example:workflow:extension" version="2.1">
+  <variables>
+    <variable name="attempts" value="3"/>
+    <variable name="message"><![CDATA[retry <later> & inspect]]></variable>
+  </variables>
+  <pipeline name="ingest">
+    <step id="fetch" type="source">
+      <endpoint protocol="https" host="example.invalid" port="443"/>
+    </step>
+    <step id="validate" type="transform" depends-on="fetch">
+      <rule field="status" operator="in">
+        <option>ready</option>
+        <option>queued</option>
+      </rule>
+      <ext:annotation xlink:href="#fetch">linked source</ext:annotation>
+    </step>
+    <branch condition="${attempts} &gt; 0">
+      <on-success ref="publish"/>
+      <on-failure>
+        <step id="retry" type="delay">
+          <duration unit="seconds">5</duration>
+        </step>
+      </on-failure>
+    </branch>
+    <step id="publish" type="sink" depends-on="validate">
+      <format media-type="application/xml" pretty="false"/>
+    </step>
+  </pipeline>
+</workflow>
+```

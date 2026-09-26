@@ -1,0 +1,140 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (key, payload, checksum?)>
+  <!ATTLIST record status (new|stored|retired) "new">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY product "libxml2">
+  <!ENTITY revision "&#x26;stable;">
+]>
+<archive>
+  <record status="stored">
+    <key>r-001</key>
+    <payload>Parser &product; &revision;</payload>
+    <checksum>8f14e45f</checksum>
+  </record>
+  <record status="retired">
+    <key>r-002</key>
+    <payload><![CDATA[raw bytes: <tag attr="x"/> &amp; ]]></payload>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<messages xmlns="urn:acme:messages" xmlns:m="urn:acme:meta">
+  <thread m:id="T-47" m:priority="high">
+    <header>
+      <subject>Re: deployment report</subject>
+      <sender address="ops@example.invalid">Nora</sender>
+      <recipient address="qa@example.invalid">Ilya</recipient>
+    </header>
+    <body xml:space="preserve"> First line
+
+      <emphasis>Indented text</emphasis>
+      <br/>
+      trailing text.
+    </body>
+    <attachment m:media-type="text/plain" m:size="0"/>
+  </thread>
+  <thread m:id="T-48" closed="true">
+    <header>
+      <subject><![CDATA[Status: [pending]]]></subject>
+      <sender address="build@example.invalid">Build Bot</sender>
+    </header>
+    <body>Result: <quote>pass</quote><quote>warning</quote></body>
+  </thread>
+</messages>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE itinerary [
+  <!ELEMENT itinerary (leg, leg, notes)>
+  <!ELEMENT leg (departure, arrival, transport)>
+  <!ATTLIST leg sequence NMTOKEN #REQUIRED>
+  <!ELEMENT departure (place, time)>
+  <!ELEMENT arrival (place, time)>
+  <!ELEMENT place (#PCDATA)>
+  <!ELEMENT time (#PCDATA)>
+  <!ELEMENT transport (#PCDATA)>
+  <!ELEMENT notes (#PCDATA)>
+]>
+<itinerary>
+  <?route generated="true"?>
+  <leg sequence="01">
+    <departure>
+      <place>North Station</place>
+      <time>2026-09-24T07:05:00Z</time>
+    </departure>
+    <arrival>
+      <place>Harbor Terminal</place>
+      <time>2026-09-24T08:42:11Z</time>
+    </arrival>
+    <transport>rail</transport>
+  </leg>
+  <leg sequence="02">
+    <departure>
+      <place>Harbor Terminal</place>
+      <time>2026-09-24T09:10:00Z</time>
+    </departure>
+    <arrival>
+      <place><![CDATA[Island Pier <3>]]></place>
+      <time>2026-09-24T09:38:00Z</time>
+    </arrival>
+    <transport>ferry</transport>
+  </leg>
+  <notes>Allow 12 minutes for transfer; tickets are non-refundable.</notes>
+</itinerary>
+```
+
+```xml
+<?xml version="1.0"?>
+<configuration xmlns="urn:example:config" xmlns:sec="urn:example:security">
+  <environment name="staging">
+    <property key="timeout" type="duration">PT15S</property>
+    <property key="retries" type="integer">03</property>
+    <property key="endpoint" type="uri">https://service.example.invalid/api?v=2&amp;mode=quiet</property>
+  </environment>
+  <credentials sec:scheme="token">
+    <sec:token expires="2027-01-01T00:00:00Z">redacted-placeholder</sec:token>
+  </credentials>
+  <features>
+    <feature name="tracing" enabled="false"/>
+    <feature name="compression" enabled="true">
+      <algorithm>zstd</algorithm>
+    </feature>
+  </features>
+  <!-- Configuration intentionally contains an empty override. -->
+  <overrides/>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest xmlns="urn:example:manifest" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <package id="pkg-9" version="2.4.0">
+    <metadata>
+      <name>sample bundle</name>
+      <description>Files with mixed content and references.</description>
+      <tag>alpha</tag>
+      <tag>contains:colon</tag>
+    </metadata>
+    <resources>
+      <resource id="r-a" path="docs/readme.txt" media-type="text/plain">
+        <digest algorithm="sha256">0000000000000000000000000000000000000000000000000000000000000000</digest>
+      </resource>
+      <resource id="r-b" path="images/icon.svg" media-type="image/svg+xml">
+        <alias xlink:href="#r-a" reason="fallback"/>
+      </resource>
+    </resources>
+    <dependencies>
+      <dependency name="core" version="[1.0,3.0)" optional="no"/>
+      <dependency name="extras" version="2.1" optional="yes"/>
+    </dependencies>
+  </package>
+</manifest>
+```

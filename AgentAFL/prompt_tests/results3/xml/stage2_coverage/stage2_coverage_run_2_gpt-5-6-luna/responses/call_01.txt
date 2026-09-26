@@ -1,0 +1,121 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common "<!ELEMENT item (#PCDATA|price|meta)*>">
+  %common;
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST catalog version NMTOKEN #IMPLIED>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ATTLIST item sku ID #IMPLIED state (new|used|hold) "new">
+  <!ATTLIST meta key CDATA #REQUIRED>
+]>
+<catalog version="v&amp;2">
+  <section code="s1">
+    <title>Tools <?note inside?> and parts</title>
+    <item sku="i-1" state="used">hammer<price>12.50</price><meta key="origin"/></item>
+    <item><meta key="empty"/><![CDATA[raw ]]> text</item>
+  </section>
+</catalog>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, trailer)>
+  <!ELEMENT header (sender, receiver?)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT receiver (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST envelope mode (sync|async) "sync">
+  <!ENTITY left "[[">
+  <!ENTITY right "]]">
+]>
+<envelope mode="async">
+  <header>
+    <sender>alpha</sender>
+    <receiver>beta</receiver>
+  </header>
+  <payload>
+    <message id="m7"><![CDATA[&left; not an entity &right;]]></message>
+    <message id="m8">A &lt; B <?trace value?> C</message>
+  </payload>
+  <trailer/>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell*)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST matrix xmlns CDATA #IMPLIED>
+  <!ATTLIST row index CDATA #REQUIRED>
+  <!ATTLIST cell colspan NMTOKEN "1" rowspan NMTOKEN "1">
+]>
+<matrix xmlns="urn:grid">
+  <row index="0"><cell colspan="2">A</cell><cell>B</cell></row>
+  <row index="1">
+    <cell rowspan="0"><![CDATA[x<y && z>q]]></cell>
+    <cell colspan="3">C&amp;D</cell>
+  </row>
+  <row index="2"><?row-end?><cell>tail</cell></row>
+</matrix>
+```
+
+```xml
+<!DOCTYPE package [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ELEMENT data (chunk*)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST package format CDATA #FIXED "archive">
+  <!ATTLIST entry name CDATA #REQUIRED type NOTATION (bin) #IMPLIED>
+  <!ATTLIST data checksum CDATA #IMPLIED>
+  <!ENTITY marker "&#x41;&#65;">
+]>
+<package format="archive">
+  <manifest>
+    <entry name="readme.txt"/>
+    <entry name="blob.bin" type="bin"/>
+  </manifest>
+  <data checksum="&marker;">
+    <chunk>first</chunk>
+    <chunk><![CDATA[second]]></chunk>
+    <chunk>third &amp; final</chunk>
+  </data>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE timeline [
+  <!ELEMENT timeline (event | gap | event*)*>
+  <!ELEMENT event (when, description)>
+  <!ELEMENT gap EMPTY>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT description (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST event id ID #IMPLIED kind CDATA #REQUIRED>
+  <!ATTLIST gap duration NMTOKEN #REQUIRED>
+  <!ENTITY emph "<link>important</link>">
+]>
+<timeline>
+  <event kind="start" id="e0">
+    <when>00:00</when>
+    <description>begin <link href="urn:x">now</link></description>
+  </event>
+  <gap duration="00:05"/>
+  <event kind="update">
+    <when>00:05</when>
+    <description>status: &emph; and <![CDATA[ literal <link> ]]></description>
+  </event>
+  <event kind="end"><when>00:10</when><description>done</description></event>
+</timeline>
+```

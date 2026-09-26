@@ -1,0 +1,18 @@
+<!DOCTYPE outer [
+  <!ELEMENT outer (left, middle, right)>
+  <!ELEMENT left (#PCDATA)>
+  <!ELEMENT middle (part*)>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT right ANY>
+  <!ATTLIST outer a CDATA #IMPLIED b CDATA "default">
+  <!ENTITY one "one">
+  <!ENTITY two "&one;-two">
+  <!ENTITY three "&two;-three">
+]>
+<outer a="&three;" b="&quot;">
+  <left><![CDATA[unclosed-looking ]]]]><![CDATA[ text]]></left>
+  <middle><part>1</part><?x?><part>&two;</part></middle>
+  <right>
+    <unknown xmlns:z="urn:z" z:v="&apos;q&apos;">content</unknown>
+  </right>
+</outer>

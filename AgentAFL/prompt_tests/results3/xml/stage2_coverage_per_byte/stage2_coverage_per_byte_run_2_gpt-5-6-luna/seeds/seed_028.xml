@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (module|bundle|empty)+>
+  <!ELEMENT module (file*, dependency*)>
+  <!ELEMENT bundle (module+, checksum?)>
+  <!ELEMENT empty EMPTY>
+  <!ELEMENT file (#PCDATA)>
+  <!ELEMENT dependency (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST manifest generated CDATA #IMPLIED>
+  <!ATTLIST module name CDATA #REQUIRED version CDATA #IMPLIED>
+  <!ATTLIST file path CDATA #REQUIRED mode NMTOKENS #IMPLIED>
+  <!ATTLIST dependency module IDREF #REQUIRED>
+  <!ATTLIST bundle id ID #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+]>
+<manifest generated="yes">
+  <bundle id="core">
+    <module name="alpha" version="1.0">
+      <file path="bin/alpha" mode="read execute"/>
+      <file path="share/&nbsp;data" mode="read"/>
+      <dependency module="missing"/>
+    </module>
+    <module name="beta">
+      <file path="lib/beta.so" mode="read write"/>
+    </module>
+    <checksum>sha256:abc&amp;def</checksum>
+  </bundle>
+  <empty/>
+  <module name="standalone">
+    <dependency module="core"/>
+  </module>
+</manifest>

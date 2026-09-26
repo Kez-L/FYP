@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, payload, footer)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT payload ANY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+  <!ENTITY nested "&left;&left;&left;payload&right;&right;&right;">
+  <!ENTITY % optional "<!ELEMENT checksum (#PCDATA)>">
+  %optional;
+]>
+<packet>
+  <header>
+    <field name="version" value="2"/>
+    <field name="flags" value="A&#x0D;B"/>
+    <field name="quoted" value="&quot;&amp;&apos;"/>
+  </header>
+  <payload>
+    &nested;
+    <checksum>sha256:00000000000000000000000000000000</checksum>
+    <![CDATA[
+      {"items":[1,2,3],"text":"<not-an-element>"}
+    ]]>
+  </payload>
+  <footer>done &amp; sealed</footer>
+</packet>

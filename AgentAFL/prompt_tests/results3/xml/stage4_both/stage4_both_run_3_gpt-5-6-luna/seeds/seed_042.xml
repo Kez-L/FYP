@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:fn="urn:example:functions"
+  exclude-result-prefixes="fn">
+  <xsl:output method="xml" encoding="UTF-8" omit-xml-declaration="no"
+              cdata-section-elements="description"/>
+  <xsl:param name="minimum" select="0"/>
+  <xsl:variable name="label">generated-report</xsl:variable>
+  <xsl:key name="by-kind" match="record" use="@kind"/>
+  <xsl:template match="/">
+    <report name="{$label}">
+      <xsl:comment>created by transformation</xsl:comment>
+      <xsl:apply-templates select="catalog/record[number(value) &gt;= $minimum]">
+        <xsl:sort select="@kind" data-type="text"/>
+        <xsl:sort select="value" data-type="number" order="descending"/>
+      </xsl:apply-templates>
+    </report>
+  </xsl:template>
+  <xsl:template match="record">
+    <item kind="{@kind}" id="{@id}">
+      <xsl:attribute name="rank">
+        <xsl:number level="any" count="record"/>
+      </xsl:attribute>
+      <name><xsl:value-of select="normalize-space(name)"/></name>
+      <description>
+        <xsl:choose>
+          <xsl:when test="description"><xsl:copy-of select="description/node()"/></xsl:when>
+          <xsl:otherwise>unknown</xsl:otherwise>
+        </xsl:choose>
+      </description>
+      <value><xsl:value-of select="format-number(value, '0.00')"/></value>
+    </item>
+  </xsl:template>
+  <xsl:template match="text()"/>
+</xsl:stylesheet>

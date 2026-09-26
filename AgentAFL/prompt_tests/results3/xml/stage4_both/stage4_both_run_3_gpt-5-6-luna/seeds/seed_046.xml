@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:example:runtime"
+               xmlns:sec="urn:example:security"
+               xmlns:env="urn:example:environment"
+               version="3.14"
+               xml:lang="en-US">
+  <!-- Deliberately varied scalar representations -->
+  <profiles>
+    <profile name="interactive" enabled="true">
+      <limits memory="0x40000000" threads="08" timeout="PT1.250S"/>
+      <paths>
+        <path kind="cache" value="/var/tmp/app/cache"/>
+        <path kind="state" value="file:///var/lib/app/state.xml"/>
+      </paths>
+      <features>
+        <feature id="alpha" state="on"/>
+        <feature id="beta" state="off" reason="not&nbsp;available"/>
+      </features>
+    </profile>
+    <profile name="batch" enabled="false">
+      <limits memory="2147483648" threads="16" timeout="P1DT2H"/>
+      <paths>
+        <path kind="input" value="stdin:"/>
+        <path kind="output" value="stdout:"/>
+      </paths>
+    </profile>
+  </profiles>
+  <sec:credentials>
+    <sec:principal id="svc-import">
+      <sec:token algorithm="urn:example:sha3-256"
+                expires="2027-01-01T00:00:00Z">
+        <![CDATA[opaque-token-with-<angle>-characters]]>
+      </sec:token>
+      <sec:scope>read</sec:scope>
+      <sec:scope>write</sec:scope>
+    </sec:principal>
+  </sec:credentials>
+  <env:matrix>
+    <env:variable name="EMPTY"/>
+    <env:variable name="QUOTED">line 1
+line 2&#x0A;line 3</env:variable>
+  </env:matrix>
+</configuration>

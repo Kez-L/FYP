@@ -1,0 +1,104 @@
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE catalog [
+  <!ENTITY % itemdecl "<!ELEMENT item (#PCDATA|meta)*>">
+  %itemdecl;
+  <!ELEMENT catalog (header, item+)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST catalog revision NMTOKEN #REQUIRED>
+  <!ATTLIST item code ID #REQUIRED status (new|old|hold) "new">
+  <!ATTLIST meta key CDATA #REQUIRED value CDATA #IMPLIED>
+]>
+<catalog revision="r-07">
+  <header>inventory &amp; archive</header>
+  <item code="a1"><meta key="x" value="1"/>alpha</item>
+  <item code="b2" status="hold">beta<meta key="flag"/></item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<workspace xmlns="urn:example:workspace"
+           xmlns:p="urn:example:panel"
+           xmlns:xlink="http://www.w3.org/1999/xlink"
+           xml:base="https://example.invalid/root/">
+  <p:panel id="P&amp;1" xml:space="preserve">
+    <![CDATA[<not-an-element>]]>
+    <p:title> A &lt; B &amp; C </p:title>
+    <p:link xlink:type="simple"
+            xlink:href="../asset?id=7&amp;mode=raw">open</p:link>
+    <p:slot xmlns="" data="plain">
+      <p:missing/>
+    </p:slot>
+  </p:panel>
+  <?render mode="compact"?>
+</workspace>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!ENTITY logo SYSTEM "logo.gif" NDATA gif>
+  <!ENTITY quote "He said &quot;go&quot; &amp; left">
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (entry*)>
+  <!ELEMENT entry EMPTY>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST package logo ENTITY #IMPLIED>
+  <!ATTLIST entry name NMTOKEN #REQUIRED type CDATA "binary">
+]>
+<package logo="logo">
+  <manifest>
+    <entry name="one" type="text"/>
+    <entry name="two"/>
+  </manifest>
+  <payload>start &quote;<chunk>middle</chunk>end</payload>
+</package>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (record*)>
+  <!ELEMENT record (field|record)*>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST record kind CDATA #IMPLIED>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY amp "&#38;">
+  <!ENTITY nested "&amp;&amp;&amp;">
+]>
+<stream kind="outer">
+  <record kind="a">
+    <field name="empty" value=""/>
+    <record>
+      <field name="escaped" value="&lt;&gt;&quot;&apos;"/>
+      <field name="numeric" value="&#x0B;&#x85;&#x2028;"/>
+    </record>
+  </record>
+  <record kind="b">&nested;<field name="tail"/></record>
+</stream>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE r [
+  <!ELEMENT r (a?, b*, c)>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b ANY>
+  <!ELEMENT c EMPTY>
+  <!ATTLIST r xmlns:q CDATA #IMPLIED q:mode CDATA #IMPLIED>
+  <!ATTLIST b n ID #IMPLIED>
+]>
+<r xmlns:q="urn:q" q:mode="&quot;odd&quot;">
+  <a><![CDATA[x]]><?inside data?></a>
+  <b n="n1"><![CDATA[raw ]]>text<q:child xmlns:q="">z</q:child></b>
+  <b n="n2">
+    <!-- comment with --? -->
+    <inner attr="v"/>
+  </b>
+  <c/>
+</r>
+```

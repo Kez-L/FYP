@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (title, widget+, footer?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT widget (caption?, data)>
+  <!ELEMENT caption (#PCDATA|b|i)*>
+  <!ELEMENT b (#PCDATA|i)*>
+  <!ELEMENT i (#PCDATA|b)*>
+  <!ELEMENT data EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST dashboard xmlns:ui CDATA #FIXED "urn:ui" profile (compact|full) #REQUIRED>
+  <!ATTLIST widget id ID #REQUIRED type CDATA #IMPLIED enabled (true|false) "true">
+  <!ATTLIST caption xml:space (default|preserve) #IMPLIED>
+  <!ATTLIST data source CDATA #REQUIRED format (json|csv|text) #IMPLIED>
+  <!ATTLIST footer ref IDREF #IMPLIED>
+  <!ENTITY lt "<">
+  <!ENTITY gt ">">
+  <!ENTITY nbsp "&#xA0;">
+]>
+<dashboard xmlns:ui="urn:ui" profile="full">
+  <title>Ops &amp; Metrics</title>
+  <widget id="w1" type="chart">
+    <caption xml:space="preserve">CPU <b>load <i>high</i></b>&nbsp;</caption>
+    <data source="a&amp;b.json" format="json"/>
+  </widget>
+  <widget id="w2" enabled="false">
+    <caption><i>Queue <b>depth</b></i> &lt;threshold&gt;</caption>
+    <data source="stdin" format="text"/>
+  </widget>
+  <footer ref="w1">generated &lt; &gt; &amp;</footer>
+</dashboard>

@@ -1,0 +1,101 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section|memo|attachment)*>
+  <!ELEMENT section (#PCDATA|section|mark)*>
+  <!ELEMENT memo (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ELEMENT mark (#PCDATA)>
+  <!ATTLIST report mode (draft|final|archived) "draft">
+  <!ATTLIST section level CDATA #IMPLIED>
+  <!ATTLIST attachment type NOTATION (text|binary) #REQUIRED>
+  <!NOTATION text SYSTEM "text/plain">
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY badge "&#x2063;status&#x2063;">
+]>
+<report mode="final">
+  <section level="0">alpha <section level="1"><mark>&badge;</mark><![CDATA[<raw> & not markup ]]></section> omega</section>
+  <memo>left &lt; middle &amp; right &gt;</memo>
+  <attachment type="text"/>
+</report>
+```
+
+```xml
+<?xml version="1.1"?>
+<warehouse xmlns="urn:warehouse:v2" xmlns:p="urn:product">
+  <aisle code="A&amp;B">
+    <bin id="b-01" capacity="&#x1F4E6;"><p:item sku="X-1"><p:name><![CDATA[bolt & washer]]></p:name></p:item></bin>
+    <bin id="b-02"><p:item sku="X-2"><p:name>café&#x301;</p:name><?scan result="partial"?></p:item></bin>
+  </aisle>
+  <aisle code="C">
+    <!-- comment with --? -->
+    <bin id="b-03"><p:item sku="X-3"/></bin>
+  </aisle>
+</warehouse>
+```
+
+```xml
+<!DOCTYPE packet [
+  <!ELEMENT packet (meta, payload, trail)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT payload (#PCDATA|chunk|![CDATA[not allowed here]])*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT trail (event*)>
+  <!ELEMENT event EMPTY>
+  <!ATTLIST meta xmlns CDATA #IMPLIED timestamp CDATA #REQUIRED>
+  <!ATTLIST chunk n ID #IMPLIED ref IDREF #IMPLIED>
+  <!ATTLIST event kind (open|close|fault) "open" at CDATA #IMPLIED>
+  <!ENTITY open "<chunk n='c1'>">
+  <!ENTITY close "</chunk>">
+]>
+<packet>
+  <meta xmlns="urn:meta" timestamp="2026-09-24T12:34:56Z"/>
+  <payload>
+    &open;fragment &amp; residue&close;
+    <chunk n="c2" ref="c1"><![CDATA[]]></chunk>
+    <chunk n="c3"><![CDATA[abc]]><![CDATA[def]]></chunk>
+  </payload>
+  <trail><event kind="open"/><event kind="fault" at="line:7"/></trail>
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (node)>
+  <!ELEMENT node (node|leaf|text)*>
+  <!ELEMENT leaf EMPTY>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST node key CDATA #IMPLIED>
+  <!ATTLIST leaf value CDATA #IMPLIED>
+  <!ENTITY quote "&quot;&apos;">
+]>
+<root>
+  <node key="outer">
+    <node key="middle">
+      <node key="inner">
+        <leaf value="&quote;"/>
+        <text>one <![CDATA[two ]]> three]]&gt; four</text>
+      </node>
+    </node>
+    <text>tail&#x0A;line&#13;break&#9;tab</text>
+  </node>
+</root>
+```
+
+```xml
+<stream xmlns="urn:stream" xmlns:a="urn:a">
+  <?phase one?>
+  <frame seq="0000000000000000000000000000000000001">
+    <header><![CDATA[BEGIN]]></header>
+    <body>
+      <entry a:type="x" a:flag="true">pre<!-- embedded -->mid<![CDATA[post]]></entry>
+      <entry a:type="y"><![CDATA[&amp; &lt; not expanded]]></entry>
+      <entry a:type="z" broken="unterminated>
+        <nested/>
+      </entry>
+    </body>
+  </frame>
+  <frame seq="2"><header>END</header><body/></frame>
+</stream>
+```

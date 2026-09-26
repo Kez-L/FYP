@@ -1,0 +1,236 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ENTITY brand "Asteria">
+  <!ENTITY arrow "&#x2192;">
+  <!ELEMENT dashboard (header, panel+, footer)>
+  <!ELEMENT header (name, tagline)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT tagline (#PCDATA)>
+  <!ELEMENT panel (title, widget+)>
+  <!ATTLIST panel id ID #REQUIRED collapsed (true|false) "false">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT widget (caption, value, detail?)>
+  <!ATTLIST widget kind (gauge|sparkline|text) #REQUIRED>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT detail (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<dashboard>
+  <header>
+    <name>&brand; Operations</name>
+    <tagline>Signals &arrow; decisions</tagline>
+  </header>
+  <panel id="health" collapsed="false">
+    <title>System health</title>
+    <widget kind="gauge">
+      <caption>Availability</caption>
+      <value>99.982%</value>
+      <detail><![CDATA[threshold >= 99.950]]></detail>
+    </widget>
+    <widget kind="sparkline">
+      <caption>Latency</caption>
+      <value>12,14,11,18,16,13</value>
+    </widget>
+  </panel>
+  <panel id="alerts" collapsed="true">
+    <title>Recent alerts</title>
+    <widget kind="text">
+      <caption>Message</caption>
+      <value>Queue depth returned to normal.</value>
+    </widget>
+  </panel>
+  <footer>Generated at 2026-09-24T12:30:00Z</footer>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0"?>
+<envelope xmlns="urn:acme:message"
+          xmlns:h="urn:acme:headers"
+          xmlns:p="urn:acme:payload">
+  <!-- Transport metadata is intentionally separate from the payload. -->
+  <h:header>
+    <h:message-id>7f3b2a9e</h:message-id>
+    <h:sender uri="urn:agent:delta">delta</h:sender>
+    <?trace level="verbose"?>
+  </h:header>
+  <body>
+    <p:request action="merge" dry-run="true">
+      <p:resource href="/records/42" etag="&quot;abc-123&quot;"/>
+      <p:fields>
+        <p:field name="summary">Rain &amp; wind</p:field>
+        <p:field name="description"><![CDATA[
+          <text>This fragment is data, not markup.</text>
+        ]]></p:field>
+        <p:field name="priority">high</p:field>
+      </p:fields>
+      <p:options>
+        <p:option key="notify">false</p:option>
+        <p:option key="owners">
+          <p:item>north</p:item>
+          <p:item>west</p:item>
+        </p:option>
+      </p:options>
+    </p:request>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article [
+  <!ELEMENT article (front, body, back)>
+  <!ATTLIST article xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT front (title, authors, abstract)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT authors (author+)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT abstract (#PCDATA|em|ref)*>
+  <!ELEMENT body (section+)>
+  <!ELEMENT section (heading, (para|list|figure)+)>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT para (#PCDATA|em|strong|ref|quote|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT ref (#PCDATA)>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT list (item+)>
+  <!ATTLIST list ordered (yes|no) "no">
+  <!ELEMENT item (#PCDATA|em|ref)*>
+  <!ELEMENT figure (caption, image)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT image EMPTY>
+  <!ATTLIST image src CDATA #REQUIRED alt CDATA #IMPLIED>
+  <!ELEMENT back (references)>
+  <!ELEMENT references (entry+)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ATTLIST entry id ID #REQUIRED>
+]>
+<article xml:lang="en">
+  <front>
+    <title>Observing Tidal Wetlands</title>
+    <authors><author>R. Chen</author><author>M. Ibarra</author></authors>
+    <abstract>We compare <em>in situ</em> measurements with <ref target="r1">prior surveys</ref>.</abstract>
+  </front>
+  <body>
+    <section id="method">
+      <heading>Methods</heading>
+      <para>Samples were collected at dawn.<br/>Coordinates were recorded independently.</para>
+      <list ordered="yes">
+        <item>Calibrate the instrument.</item>
+        <item>Record salinity and temperature.</item>
+      </list>
+      <figure>
+        <caption>Sampling locations</caption>
+        <image src="map-01.svg" alt="Map of three sites"/>
+      </figure>
+    </section>
+    <section id="results">
+      <heading>Results</heading>
+      <para>The northern site showed a <strong>modest</strong> increase.</para>
+      <para><quote>Patterns were consistent across two seasons.</quote></para>
+    </section>
+  </body>
+  <back>
+    <references><entry id="r1">Field Survey Archive, 2024.</entry></references>
+  </back>
+</article>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:fn="urn:example:functions"
+  exclude-result-prefixes="fn">
+  <xsl:output method="xml" omit-xml-declaration="yes" indent="yes"/>
+  <xsl:param name="minimum" select="0"/>
+  <xsl:variable name="separator"> | </xsl:variable>
+
+  <xsl:template match="/">
+    <report generated="2026-09-24">
+      <xsl:apply-templates select="inventory/item[number(@quantity) &gt;= $minimum]">
+        <xsl:sort select="@category" data-type="text"/>
+        <xsl:sort select="@quantity" data-type="number" order="descending"/>
+      </xsl:apply-templates>
+    </report>
+  </xsl:template>
+
+  <xsl:template match="item">
+    <entry>
+      <xsl:attribute name="code"><xsl:value-of select="@sku"/></xsl:attribute>
+      <name><xsl:value-of select="name"/></name>
+      <summary>
+        <xsl:value-of select="@category"/>
+        <xsl:value-of select="$separator"/>
+        <xsl:choose>
+          <xsl:when test="@quantity = 0">out of stock</xsl:when>
+          <xsl:when test="@quantity &lt; 10">low stock</xsl:when>
+          <xsl:otherwise>available</xsl:otherwise>
+        </xsl:choose>
+      </summary>
+      <xsl:if test="notes">
+        <notes><xsl:copy-of select="notes/node()"/></notes>
+      </xsl:if>
+    </entry>
+  </xsl:template>
+
+  <xsl:template match="text()"/>
+</xsl:stylesheet>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<survey xmlns="urn:field:survey"
+        xmlns:g="urn:field:geometry"
+        xmlns:m="urn:field:measurement"
+        xml:base="https://data.example.invalid/surveys/">
+  <metadata>
+    <identifier>wetland-2026-09</identifier>
+    <title xml:lang="en">September transect survey</title>
+    <license href="https://creativecommons.org/licenses/by/4.0/"/>
+    <keywords>
+      <keyword>marsh</keyword>
+      <keyword>salinity</keyword>
+      <keyword>tidal</keyword>
+    </keywords>
+  </metadata>
+  <transects>
+    <transect code="T-A" length="125.5" unit="m">
+      <g:line srsName="urn:ogc:def:crs:EPSG::4326">
+        <g:point lat="51.4812" lon="-0.0194"/>
+        <g:point lat="51.4820" lon="-0.0168"/>
+      </g:line>
+      <observations>
+        <observation time="2026-09-24T06:15:03Z">
+          <m:temperature unit="C">14.8</m:temperature>
+          <m:salinity unit="ppt">18.25</m:salinity>
+          <m:depth unit="cm">42</m:depth>
+          <condition>overcast &amp; calm</condition>
+        </observation>
+        <observation time="2026-09-24T06:45:03Z">
+          <m:temperature unit="C">15.1</m:temperature>
+          <m:salinity unit="ppt">18.31</m:salinity>
+          <flag name="equipment-check" value="passed"/>
+        </observation>
+      </observations>
+    </transect>
+    <transect code="T-B" length="80" unit="m">
+      <g:line>
+        <g:point lat="51.4900" lon="-0.0110"/>
+        <g:point lat="51.4909" lon="-0.0102"/>
+      </g:line>
+      <observations/>
+    </transect>
+  </transects>
+  <notes><![CDATA[
+    Observer note:
+      waterline shifted after the second reading.
+  ]]></notes>
+</survey>
+```

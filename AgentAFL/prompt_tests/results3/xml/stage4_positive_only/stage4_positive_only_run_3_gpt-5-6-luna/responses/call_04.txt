@@ -1,0 +1,161 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <section id="s1">
+    <title>Tools &amp; Materials</title>
+    <item sku="A-001" available="true">
+      <name>Hammer</name>
+      <price currency="EUR">19.95</price>
+      <tags>
+        <tag>metal</tag>
+        <tag>wood</tag>
+      </tags>
+      <description>A tool with <emphasis>mixed</emphasis> content and a <x:link href="https://example.invalid/">reference</x:link>.</description>
+    </item>
+    <item sku="A-002" available="false">
+      <name>Saw</name>
+      <price currency="EUR">7.00</price>
+      <tags/>
+      <description><![CDATA[Cutting <boards> requires care.]]></description>
+    </item>
+  </section>
+  <section id="s2">
+    <title>Empty Section</title>
+    <item sku="Z-000"><name/><price currency="XXX">0</price><tags/></item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (metadata, body)>
+  <!ELEMENT metadata (author+, generated)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT body (paragraph|table|quote|paragraph)*>
+  <!ELEMENT paragraph (#PCDATA|bold|italic|code)*>
+  <!ELEMENT bold (#PCDATA)>
+  <!ELEMENT italic (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT table (thead, tbody)>
+  <!ELEMENT thead (cell+)>
+  <!ELEMENT tbody (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ENTITY product "XML &amp; Validation">
+]>
+<report>
+  <metadata>
+    <author>Analyst One</author>
+    <author>Analyst Two</author>
+    <generated>2026-09-24</generated>
+  </metadata>
+  <body>
+    <paragraph>Testing &product; with <bold>nested</bold> and <italic>inline</italic> nodes.</paragraph>
+    <quote>“A quoted line” — unknown speaker</quote>
+    <table>
+      <thead><cell>Name</cell><cell>Value</cell><cell>Notes</cell></thead>
+      <tbody>
+        <row><cell>alpha</cell><cell>1</cell><cell>first</cell></row>
+        <row><cell>beta</cell><cell>2 &gt; 1</cell><cell><code>a&amp;b</code></cell></row>
+      </tbody>
+    </table>
+    <paragraph>Trailing text with &#x1F642; and numeric &#65; entities.</paragraph>
+  </body>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<graph xmlns="urn:graph:test">
+  <node id="root" label="Root">
+    <data key="weight" type="double">1.0</data>
+    <edge to="left" relation="child"/>
+    <edge to="right" relation="child"/>
+  </node>
+  <node id="left" label="Left">
+    <data key="weight" type="double">-2.5e-3</data>
+    <edge to="root" relation="parent"/>
+    <edge to="leaf" relation="child"/>
+  </node>
+  <node id="right">
+    <data key="weight" type="null"/>
+    <data key="payload" type="base64">AAEC/f8=</data>
+  </node>
+  <node id="leaf" label="Leaf &quot;node&quot;">
+    <data key="text" type="string">line one&#10;line two</data>
+  </node>
+  <metadata>
+    <entry name="created">2026-09-24T12:34:56.123456+05:30</entry>
+    <entry name="flags"><flag enabled="1"/><flag enabled="0"/></entry>
+  </metadata>
+</graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<package xmlns="urn:pkg" xmlns:meta="urn:meta">
+  <manifest>
+    <file path="README.md" mode="0644" size="128"/>
+    <file path="src/main.c" mode="0755" size="4096"/>
+    <file path="data/empty.bin" mode="0000" size="0"/>
+  </manifest>
+  <payload>
+    <chunk id="c0" encoding="hex">00ff10Aa</chunk>
+    <chunk id="c1" encoding="base64">VGhpcyBpcyBhIHRlc3Qu</chunk>
+    <chunk id="c2" encoding="none">plain text / slash / spaces</chunk>
+  </payload>
+  <meta:properties>
+    <meta:property name="owner" value="build-system"/>
+    <meta:property name="checksum" value="sha256:0000000000000000000000000000000000000000000000000000000000000000"/>
+  </meta:properties>
+  <signatures>
+    <signature algorithm="ed25519">
+      <key id="K-1">-----BEGIN PUBLIC KEY-----&#10;ZmFrZQ==&#10;-----END PUBLIC KEY-----</key>
+      <value><![CDATA[
+-----BEGIN SIGNATURE-----
+not-a-real-signature
+-----END SIGNATURE-----
+]]></value>
+    </signature>
+  </signatures>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (start, task*, finish)>
+  <!ELEMENT start EMPTY>
+  <!ELEMENT task (input*, action, output*)>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT output (#PCDATA)>
+  <!ELEMENT finish (#PCDATA)>
+  <!ATTLIST task id ID #REQUIRED depends IDREFS #IMPLIED priority NMTOKEN "normal">
+]>
+<workflow>
+  <start/>
+  <task id="fetch" priority="high">
+    <input>https://example.invalid/resource?x=1&amp;y=2</input>
+    <input><![CDATA[header: X-Test: <value>]]></input>
+    <action>download</action>
+    <output>/tmp/resource</output>
+  </task>
+  <task id="parse" depends="fetch">
+    <input>/tmp/resource</input>
+    <action>parse --mode="strict" --limit=0</action>
+    <output>records</output>
+    <output>diagnostics</output>
+  </task>
+  <task id="publish" depends="parse fetch" priority="low">
+    <action>publish &lt;records&gt;</action>
+  </task>
+  <task id="orphan" depends="missing">
+    <action>noop</action>
+  </task>
+  <finish>status: <result code="0"/> complete</finish>
+</workflow>
+```

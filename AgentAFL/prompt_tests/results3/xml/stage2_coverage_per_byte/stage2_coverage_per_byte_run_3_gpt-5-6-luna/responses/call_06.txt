@@ -1,0 +1,189 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ENTITY % commonAttrs '<!ATTLIST packet stamp CDATA #IMPLIED origin NMTOKEN #IMPLIED>'>
+  %commonAttrs;
+  <!ELEMENT envelope (header, payload, trailer?)>
+  <!ELEMENT header (source, destination, flags?)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT destination (#PCDATA)>
+  <!ELEMENT flags EMPTY>
+  <!ATTLIST flags urgent (yes|no) "no" encrypted (yes|no) "no">
+  <!ELEMENT payload (packet+)>
+  <!ELEMENT packet (key, value, checksum?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|fragment)*>
+  <!ELEMENT fragment (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ENTITY ampersand "&#38;">
+  <!ENTITY quoted "&quot;inside&quot;">
+]>
+<envelope>
+  <header>
+    <source>node-A</source>
+    <destination>node-B</destination>
+    <flags urgent="yes" encrypted="no"/>
+  </header>
+  <payload>
+    <packet stamp="2026-09-24T12:00:00Z" origin="relay">
+      <key>alpha</key>
+      <value>left<fragment>&quoted;</fragment>right &amp; &ampersand;</value>
+      <checksum>7f:00</checksum>
+    </packet>
+    <packet stamp="broken&#x0D;stamp" origin="r_2">
+      <key>beta</key>
+      <value><![CDATA[raw ]]> tail]]&gt;</value>
+    </packet>
+  </payload>
+  <trailer>done</trailer>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder*)>
+  <!ELEMENT folder (name, item*)>
+  <!ATTLIST folder id ID #REQUIRED parent IDREF #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT item (label, metadata, blob)>
+  <!ATTLIST item key ID #REQUIRED refs IDREFS #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT metadata (property+)>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST property key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT blob (#PCDATA)>
+  <!ENTITY hex "&#x41;&#x42;&#x43;">
+  <!ENTITY % switches "IGNORE">
+  <![%switches;[
+    <!ELEMENT hidden EMPTY>
+    <!ATTLIST hidden mode CDATA "secret">
+  ]]>
+]>
+<archive>
+  <folder id="root">
+    <name>Root</name>
+    <item key="i1" refs="i2 i3">
+      <label>&hex;</label>
+      <metadata>
+        <property key="empty"/>
+        <property key="mode" value="fast"/>
+      </metadata>
+      <blob>QmFzZTY0==&#xA;next</blob>
+    </item>
+  </folder>
+  <folder id="child" parent="root">
+    <name>Nested &amp; detached</name>
+    <item key="i2">
+      <label>unterminated
+      <metadata><property key="x" value="&quot;"/></metadata>
+      <blob><![CDATA[abc]]></blob>
+    </item>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (open, record*, close)>
+  <!ELEMENT open EMPTY>
+  <!ATTLIST open version NMTOKEN #REQUIRED session CDATA #IMPLIED>
+  <!ELEMENT record (timestamp, actor, action, detail?)>
+  <!ATTLIST record level (debug|info|warn|error) "info">
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT actor (#PCDATA)>
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|code|linebreak)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT close EMPTY>
+  <!ATTLIST close status (ok|failed) #REQUIRED>
+  <!ENTITY apos "&#39;">
+  <!ENTITY % extra SYSTEM "missing-subset.ent">
+  %extra;
+]>
+<stream>
+  <open version="v1.2" session="s-&#x31;"/>
+  <record level="warn">
+    <timestamp>2026-09-24T12:34:56+00:00</timestamp>
+    <actor>operator</actor>
+    <action>rotate</action>
+    <detail>old<code>key</code><linebreak/>new &apos;key&apos;</detail>
+  </record>
+  <record level="error">
+    <timestamp>not-a-date</timestamp>
+    <actor>svc:parser</actor>
+    <action>flush &amp; close</action>
+    <detail><![CDATA[unterminated CDATA
+  </record>
+  <close status="failed"/>
+</stream>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ATTLIST matrix rows CDATA #IMPLIED cols CDATA #IMPLIED>
+  <!ELEMENT row (cell+)>
+  <!ATTLIST row index NMTOKEN #REQUIRED>
+  <!ELEMENT cell (#PCDATA|mark|formula)*>
+  <!ATTLIST cell col NMTOKEN #REQUIRED type (text|number|date|empty) "text">
+  <!ELEMENT mark (#PCDATA)>
+  <!ATTLIST mark color (red|green|blue) #IMPLIED>
+  <!ELEMENT formula (#PCDATA)>
+  <!ENTITY emptycell "<cell type='empty' col='?'/>">
+  <!ENTITY % declarations '
+    <!NOTATION csv SYSTEM "text/csv">
+    <!ATTLIST formula format CDATA #IMPLIED>
+  '>
+  %declarations;
+]>
+<matrix rows="2" cols="3">
+  <row index="01">
+    <cell col="A" type="text">Name<mark color="blue">?</mark></cell>
+    <cell col="B" type="number">42</cell>
+    <cell col="C" type="date">2026-09-24</cell>
+  </row>
+  <row index="02">
+    <cell col="A">R&amp;D</cell>
+    <cell col="B" type="number"><formula format="calc">=SUM(A1:B1)</formula></cell>
+    &emptycell;
+  </row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE response [
+  <!ELEMENT response (status, headers?, body)>
+  <!ELEMENT status (#PCDATA)>
+  <!ELEMENT headers (header*)>
+  <!ELEMENT header (#PCDATA)>
+  <!ATTLIST header name NMTOKEN #REQUIRED>
+  <!ELEMENT body (json|html|binary|empty)>
+  <!ELEMENT json (#PCDATA)>
+  <!ELEMENT html ANY>
+  <!ELEMENT binary (#PCDATA)>
+  <!ELEMENT empty EMPTY>
+  <!ATTLIST body encoding (plain|base64|escaped) #IMPLIED>
+  <!ENTITY lt "<">
+  <!ENTITY gt ">">
+  <!ENTITY quote "&quot;">
+  <!ENTITY % bodyKinds "json|html|binary|empty">
+  <!ATTLIST response request-id CDATA #IMPLIED>
+]>
+<response request-id="req-9&amp;7">
+  <status>206 Partial Content</status>
+  <headers>
+    <header name="Content-Type">application/xml</header>
+    <header name="X-Test">a&#x9;b&#xA;c</header>
+    <header name="Odd_Name">value with &quot;quotes&quot;</header>
+  </headers>
+  <body encoding="escaped">
+    <html><div class="x">fragment &lt;not closed</div></html>
+  </body>
+</response>
+```

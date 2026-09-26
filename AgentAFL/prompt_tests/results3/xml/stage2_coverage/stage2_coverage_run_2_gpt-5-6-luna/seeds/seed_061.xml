@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE archive [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!NOTATION text SYSTEM "text/plain">
+  <!ENTITY cover SYSTEM "cover.jpg" NDATA jpeg>
+  <!ENTITY words SYSTEM "words.txt" NDATA text>
+  <!ELEMENT archive (folder*, link*)>
+  <!ATTLIST archive
+    label CDATA #IMPLIED
+    attachments ENTITIES #IMPLIED>
+  <!ELEMENT folder (folder|file|comment)*>
+  <!ATTLIST folder
+    id ID #IMPLIED
+    parent IDREF #IMPLIED>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+    id ID #REQUIRED
+    name NMTOKEN #REQUIRED
+    format NOTATION (jpeg|text) #IMPLIED
+    source ENTITY #IMPLIED>
+  <!ELEMENT comment (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link
+    target IDREF #REQUIRED
+    aliases NMTOKENS #IMPLIED>
+]>
+<archive label="media" attachments="cover words">
+  <folder id="root">
+    <folder id="pics" parent="root">
+      <file id="f1" name="cover.jpg" format="jpeg" source="cover"/>
+      <comment>binary files are represented by unparsed entities</comment>
+    </folder>
+    <folder id="docs" parent="root">
+      <file id="f2" name="words.txt" format="text" source="words"/>
+    </folder>
+  </folder>
+  <link target="f1" aliases="front cover-image"/>
+  <link target="f2" aliases="readme plain-text"/>
+</archive>

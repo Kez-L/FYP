@@ -1,0 +1,117 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (key, value, note?)>
+  <!ATTLIST record kind (alpha|beta|gamma) "alpha">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY company "A &amp; B Research">
+]>
+<archive>
+  <!-- Entity expansion and mixed whitespace -->
+  <record kind="beta">
+    <key>001</key>
+    <value>&company; &lt;encoded&gt;</value>
+    <note xml:space="preserve">  line one
+  line two  </note>
+  </record>
+  <record>
+    <key>002</key>
+    <value>caf&#xE9; &quot;quoted&quot;</value>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<scene xmlns="urn:scene" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <svg:svg viewBox="0 0 120 80" preserveAspectRatio="xMidYMid meet">
+    <svg:defs>
+      <svg:linearGradient id="fade" x1="0%" y1="0%" x2="100%" y2="100%">
+        <svg:stop offset="0" stop-color="#fff"/>
+        <svg:stop offset="1" stop-color="#000"/>
+      </svg:linearGradient>
+    </svg:defs>
+    <svg:path d="M 0,0 C 10,20 40,5 60,30 S 100,60 120,80" fill="url(#fade)"/>
+    <svg:image x="4" y="7" width="32" height="18" xlink:href="image.svg#icon"/>
+  </svg:svg>
+  <caption><![CDATA[vector <shapes> & raw characters]]></caption>
+</scene>
+```
+
+```xml
+<?xml version="1.1"?>
+<workflow id="wf-42" xmlns:task="urn:workflow:task">
+  <?build profile="strict" timestamp="2026-09-24T12:34:56Z"?>
+  <task:step order="1" enabled="yes">
+    <task:name>Acquire</task:name>
+    <task:input path="/var/tmp/input&#x0A;part" checksum="sha256:00"/>
+  </task:step>
+  <task:step order="2" enabled="no">
+    <task:name>Transform</task:name>
+    <task:when test="count(/workflow/task:step) &gt; 1"/>
+    <task:parameters>
+      <task:parameter name="mode" value="stream"/>
+      <task:parameter name="limit" value="00000000000000000000000000000042"/>
+    </task:parameters>
+  </task:step>
+  <?audit completed?>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE library [
+  <!ELEMENT library (shelf*)>
+  <!ELEMENT shelf (book*)>
+  <!ATTLIST shelf code ID #REQUIRED>
+  <!ELEMENT book (title, author, isbn)>
+  <!ATTLIST book ref IDREF #IMPLIED lang CDATA "und">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (first, last)>
+  <!ELEMENT first (#PCDATA)>
+  <!ELEMENT last (#PCDATA)>
+  <!ELEMENT isbn (#PCDATA)>
+]>
+<library>
+  <shelf code="fiction">
+    <book ref="missing" lang="fr">
+      <title>Les &lt;ombres&gt;</title>
+      <author><first>Zoë</first><last>Ng</last></author>
+      <isbn>978-0-00-000000-0</isbn>
+    </book>
+  </shelf>
+  <shelf code="reference">
+    <book ref="fiction" lang="ja">
+      <title>記録と資料</title>
+      <author><first>Ren</first><last>Ito</last></author>
+      <isbn>0-00-000000-X</isbn>
+    </book>
+  </shelf>
+</library>
+```
+
+```xml
+<?xml version="1.0"?>
+<bundle xmlns="urn:bundle">
+  <entry name="alpha" flags="rwx" count="0">
+    <meta>
+      <tag>one</tag>
+      <tag>two</tag>
+      <tag><![CDATA[three & four]]></tag>
+    </meta>
+    <payload encoding="base64">
+      QWxwaGEKQmV0YQ==
+    </payload>
+  </entry>
+  <entry name="beta" count="-17" flags="">
+    <meta/>
+    <payload encoding="hex">00ff7E</payload>
+  </entry>
+  <entry name="gamma&#x2D;delta" count="18446744073709551615">
+    <payload encoding="none"><![CDATA[]]></payload>
+  </entry>
+</bundle>
+```

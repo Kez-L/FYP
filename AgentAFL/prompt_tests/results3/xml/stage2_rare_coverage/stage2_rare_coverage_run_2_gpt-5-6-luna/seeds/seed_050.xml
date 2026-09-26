@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (warehouse+, audit?)>
+  <!ELEMENT warehouse (label, bin*)>
+  <!ATTLIST warehouse code ID #REQUIRED region (north|south|east|west) "north">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT bin (item*)>
+  <!ATTLIST bin id ID #IMPLIED sealed (yes|no) "no">
+  <!ELEMENT item (#PCDATA|note)*>
+  <!ATTLIST item sku CDATA #REQUIRED quantity NMTOKEN #IMPLIED>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT audit (#PCDATA)>
+  <!ENTITY mark "&#x25A1;">
+]>
+<inventory>
+  <warehouse code="w1" region="east">
+    <label>Dock &amp; Receiving</label>
+    <bin id="b1" sealed="yes">
+      <item sku="A-01" quantity="0007">bolts<note>&mark; counted</note></item>
+      <item sku="A-02">washers</item>
+    </bin>
+    <bin id="b2">
+      <item sku="B-09" quantity="3"><![CDATA[<raw>payload</raw>]]></item>
+    </bin>
+  </warehouse>
+  <warehouse code="w2">
+    <label>Overflow</label>
+    <bin><item sku="C-3">empty<note/></item></bin>
+  </warehouse>
+  <audit>checked by &quot;operator&quot;</audit>
+</inventory>

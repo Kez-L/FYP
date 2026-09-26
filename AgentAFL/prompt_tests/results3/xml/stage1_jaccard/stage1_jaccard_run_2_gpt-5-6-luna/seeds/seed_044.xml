@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body, signature?)>
+  <!ELEMENT header (sender, receiver, nonce)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT receiver (#PCDATA)>
+  <!ELEMENT nonce (#PCDATA)>
+  <!ELEMENT body ANY>
+  <!ELEMENT signature (algorithm, digest)>
+  <!ELEMENT algorithm (#PCDATA)>
+  <!ELEMENT digest (#PCDATA)>
+  <!ATTLIST envelope xmlns:sec CDATA #IMPLIED>
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+  <!ENTITY encoded "&#x3C;escaped&#x3E;">
+]>
+<envelope xmlns:sec="urn:security" sec:version="3">
+  <header>
+    <sender>urn:node:one</sender>
+    <receiver>urn:node:two</receiver>
+    <nonce>00:11:22:33:44:55</nonce>
+  </header>
+  <body>
+    <sec:command xmlns:sec="urn:security" sec:id="cmd-7">
+      <sec:name>rotate-key</sec:name>
+      <sec:arguments>
+        <sec:argument name="scope">global</sec:argument>
+        <sec:argument name="dry-run">false</sec:argument>
+        <sec:argument name="pattern"><![CDATA[(a|b)+?]]></sec:argument>
+      </sec:arguments>
+    </sec:command>
+    <data kind="mixed">prefix &left;literal&right; <item/><item><![CDATA[x]]></item> suffix</data>
+    <empty xmlns="urn:empty"/>
+  </body>
+  <signature>
+    <algorithm>urn:hash:sha512</algorithm>
+    <digest>&encoded; &amp; trailing</digest>
+  </signature>
+</envelope>

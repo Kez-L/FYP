@@ -1,0 +1,106 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE catalog [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY cover SYSTEM "cover.jpg" NDATA jpeg>
+  <!ELEMENT catalog (book+)>
+  <!ELEMENT book (title, author?, summary)>
+  <!ATTLIST book
+    id ID #REQUIRED
+    cover ENTITY #IMPLIED
+    rating NMTOKEN "unrated">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|emph|br)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT br EMPTY>
+]>
+<catalog>
+  <book id="b1" cover="cover" rating="5">
+    <title>Parser &amp; Entities</title>
+    <author>A &amp; B</author>
+    <summary>Mixed <emph>content</emph><br/>with references.</summary>
+  </book>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<archive xml:lang="fr" xml:base="urn:example:archive">
+  <entry key="alpha" xmlns="urn:records">
+    <![CDATA[first ]]]]><![CDATA[> second]]>
+    <?audit mode="deep"?>
+    <field name="empty"/>
+    <field name="quoted">a &quot; b &apos; c &#x85;</field>
+  </entry>
+  <entry key="beta">
+    <field name="line">one&#x85;two</field>
+    <field name="line"><![CDATA[]]></field>
+  </entry>
+</archive>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ELEMENT report (header, section*)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header
+    generated CDATA #FIXED "parser"
+    version NMTOKEN #REQUIRED>
+  <!ELEMENT section (name, item*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item ref IDREF #IMPLIED>
+]>
+<report>
+  <header version="v2"/>
+  <section>
+    <name>First</name>
+    <item ref="missing">unresolved reference</item>
+    <item>plain</item>
+  </section>
+  <section>
+    <name>Second</name>
+    <item ref="missing"/>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+  <!ENTITY payload "&left;inside&right;">
+  <!ELEMENT envelope (message, metadata)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT metadata (tag*)>
+  <!ELEMENT tag EMPTY>
+  <!ATTLIST tag
+    name CDATA #REQUIRED
+    value CDATA "default">
+]>
+<envelope>
+  <message>&payload; &lt;raw&gt; &#65;&#x42;</message>
+  <metadata>
+    <tag name="one"/>
+    <tag name="two" value="&quot;quoted&quot;"/>
+    <tag name="three" value="&payload;"/>
+  </metadata>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE broken [
+  <!ELEMENT broken (a|b)*>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b EMPTY>
+  <!ATTLIST a x CDATA #IMPLIED>
+]>
+<broken>
+  <a x="unterminated>text</a>
+  <b/>
+  <![CDATA[unfinished
+</broken>
+```

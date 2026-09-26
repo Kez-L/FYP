@@ -1,0 +1,96 @@
+```xml
+<?xml version="1.0"?>
+<directory xmlns="urn:example:directory" xmlns:x="urn:example:extra">
+  <entry key="root">
+    <name>Ångström &amp; Co.</name>
+    <metadata>
+      <x:flag enabled="true"/>
+      <tag>one</tag>
+      <tag>two</tag>
+    </metadata>
+    <children>
+      <entry key="nested">
+        <name>Second</name>
+        <link href="https://example.test/a?x=1&amp;y=2"/>
+      </entry>
+    </children>
+  </entry>
+</directory>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<records>
+  <record>
+    <timestamp timezone="Z">2024-02-29T23:59:60Z</timestamp>
+    <payload><![CDATA[
+      {"items":[1,2,3],"text":"<xml-looking content>"}
+    ]]></payload>
+    <empty/>
+  </record>
+  <record status="pending">
+    <timestamp timezone="+05:30">0001-01-01T00:00:00+05:30</timestamp>
+    <payload>leading&#x9;tab&#xA;and&#xD;break</payload>
+  </record>
+</records>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ELEMENT report (section*)>
+  <!ELEMENT section (title, paragraph+, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|em|br)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+]>
+<report>
+  <section id="s1">
+    <title>Mixed content</title>
+    <paragraph>This is <em>important</em><br/>and continues.</paragraph>
+    <paragraph>Text with &amp; symbols and &lt; markup-looking text.</paragraph>
+    <note>Optional annotation</note>
+  </section>
+  <section id="s2">
+    <title>Empty note area</title>
+    <paragraph><br/><em>tail</em></paragraph>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<configuration>
+  <option name="path">C:\Program Files\App\bin</option>
+  <option name="pattern">[A-Z]+\d{2}</option>
+  <matrix rows="2" columns="3">
+    <row index="0"><value>0</value><value>-1</value><value>3.14159</value></row>
+    <row index="1"><value>NaN</value><value>INF</value><value>-0</value></row>
+  </matrix>
+  <references>
+    <ref target="#missing"/>
+    <ref target="urn:example:item:α"/>
+  </references>
+</configuration>
+```
+
+```xml
+<workflow>
+  <start ref="prepare"/>
+  <state name="prepare">
+    <transition event="load" to="running"/>
+    <transition event="cancel" to="finished"/>
+  </state>
+  <state name="running">
+    <transition event="pause" to="paused"/>
+    <transition event="complete" to="finished"/>
+  </state>
+  <state name="paused">
+    <transition event="resume" to="running"/>
+  </state>
+  <state name="finished" final="yes">
+    <result code="0">done</result>
+  </state>
+</workflow>
+```

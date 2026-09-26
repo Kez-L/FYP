@@ -1,0 +1,123 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+)>
+  <!ELEMENT item (name, details?, note*)>
+  <!ATTLIST item id ID #REQUIRED status (new|used|unknown) "unknown">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT details (#PCDATA|emph|br)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<catalog>
+  <item id="i-01" status="new">
+    <name>alpha &left;one&right;</name>
+    <details>before <emph>inside</emph><br/>after</details>
+    <note xml:lang="fr">café &amp; thé</note>
+  </item>
+  <item id="i-02">
+    <name>beta</name>
+    <details><![CDATA[<not-an-element> && ]]]]><![CDATA[>]]></details>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<r xmlns="urn:root" xmlns:p="urn:prefix" xml:space="preserve">
+  <p:branch p:key="&#x9;&#xA;  mixed  " xmlns:q="urn:other">
+    <!-- comment with --? no -->
+    <q:leaf><![CDATA[data ]]]]><![CDATA[> tail]]></q:leaf>
+    <?pi value="&quot; &amp; &#x1f;"?>
+    <empty/>
+  </p:branch>
+  <branch xmlns="">
+    <x:y xmlns:x="urn:x" xmlns:y="urn:y"/>
+  </branch>
+</r>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ENTITY alpha "A">
+  <!ENTITY beta "&alpha;&alpha;&alpha;">
+  <!ENTITY quote "&#34;">
+  <!ENTITY apos "&#39;">
+  <!ELEMENT root (section|text|mixed)*>
+  <!ELEMENT section (title, paragraph*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|link|mark)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT text (#PCDATA)>
+]>
+<root data="&quote; &apos; &beta;">
+  <section>
+    <title>&alpha; title</title>
+    <paragraph>one <link href="a&amp;b">two</link> <mark>three</mark></paragraph>
+    <paragraph><![CDATA[line one
+line two
+line three]]></paragraph>
+  </section>
+  <text>leading</text>
+  <mixed>not declared as an element in the subset</mixed>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body, trailer)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT body ANY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ENTITY % common "CDATA">
+  <!ATTLIST envelope version %common; "1">
+]>
+<envelope version="2" xmlns="urn:test">
+  <header>
+    <field name="a" value="&quot;&gt;&lt;"/>
+    <field name="b"/>
+    <field name="c" value="x&#xD;&#xA;y"/>
+  </header>
+  <body>
+    <data><![CDATA[raw ]]> text <![CDATA[ more raw]]></data>
+    <![CDATA[section at body level]]>
+    <nested><one><two><three/></two></one></nested>
+  </body>
+  <trailer>done &amp; dust</trailer>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (meta, payload)>
+  <!ELEMENT meta (from, to, flags?)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT flags (#PCDATA)>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding NMTOKEN "plain">
+  <!ENTITY amp "&#38;">
+  <!ENTITY hex "&#x41;&#x42;&#x43;">
+]>
+<message>
+  <meta>
+    <from>alice@example.invalid</from>
+    <to>bob@example.invalid</to>
+    <flags>urgent &amp; signed</flags>
+  </meta>
+  <payload>
+    <chunk index="000" encoding="base64">QUJD&#x0A;REVG</chunk>
+    <chunk index="001">&hex;&amp;&amp;&amp;</chunk>
+    <chunk index="002"><![CDATA[<xml>&broken;]]></chunk>
+  </payload>
+</message>
+```

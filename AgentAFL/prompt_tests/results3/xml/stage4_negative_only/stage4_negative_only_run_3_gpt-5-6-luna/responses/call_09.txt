@@ -1,0 +1,145 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+, digest?)>
+  <!ELEMENT record (key, value, metadata)>
+  <!ATTLIST record status (draft|final|removed) "draft">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT metadata (created, updated?)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT updated (#PCDATA)>
+  <!ELEMENT digest (#PCDATA)>
+  <!ENTITY product "XML &amp; Parsing">
+  <!ENTITY author "Ada Lovelace">
+]>
+<archive>
+  <record status="final">
+    <key>alpha-001</key>
+    <value>&product; by <emph>&author;</emph></value>
+    <metadata>
+      <created>1843-01-01</created>
+      <updated>2026-09-24</updated>
+    </metadata>
+  </record>
+  <record status="removed">
+    <key>beta-002</key>
+    <value>obsolete &#x3C;entry&#x3E; &amp; retained</value>
+    <metadata><created>1906-12-09</created></metadata>
+  </record>
+  <digest>sha256:0000000000000000000000000000000000000000000000000000000000000000</digest>
+</archive>
+```
+
+```xml
+<?xml version="1.1"?>
+<scene xmlns="urn:fiction:scene" xmlns:x="urn:fiction:extra" xml:space="preserve">
+  text-before
+  <chapter number="0">
+    <heading x:lang="fr">Échos &amp; silences</heading>
+    <paragraph>Line one<break/>Line two<break/>Line three</paragraph>
+    <paragraph><![CDATA[
+      <literal attr="&not-expanded;"> raw markup, brackets, and ]] are data
+    ]]></paragraph>
+  </chapter>
+  <chapter number="1">
+    <heading>Nested <x:term code="Q-7">terminology</x:term></heading>
+    <list>
+      <entry><label>A</label><description>first</description></entry>
+      <entry><label>B</label><description>second <mark>highlighted</mark></description></entry>
+      <entry><label>C</label><description>third</description></entry>
+    </list>
+  </chapter>
+  text-after
+</scene>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (node|edge)*>
+  <!ELEMENT node EMPTY>
+  <!ATTLIST node id ID #REQUIRED kind CDATA #IMPLIED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight NMTOKEN #IMPLIED>
+]>
+<map>
+  <node id="n-root" kind="hub"/>
+  <node id="n-a" kind="leaf"/>
+  <node id="n-b"/>
+  <node id="n-c" kind="leaf"/>
+  <edge from="n-root" to="n-a" weight="1"/>
+  <edge from="n-root" to="n-b" weight="2.5"/>
+  <edge from="n-b" to="n-c" weight="&#x2B;3"/>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<configuration xmlns:sec="urn:security" xmlns:env="urn:environment">
+  <profile name="edge-case" enabled="1">
+    <env:variables>
+      <env:variable name="EMPTY"/>
+      <env:variable name="QUOTED" value="&quot;single&apos;double&quot;"/>
+      <env:variable name="UNICODE" value="λ漢字🙂"/>
+    </env:variables>
+    <sec:policy>
+      <sec:allow resource="urn:a"/>
+      <sec:deny resource="urn:b">
+        <sec:reason>not applicable</sec:reason>
+      </sec:deny>
+    </sec:policy>
+    <timeouts>
+      <connect unit="ms">000000</connect>
+      <read unit="s">-1</read>
+      <retry unit="count">999999999999999999999999</retry>
+    </timeouts>
+    <switch>
+      <case when="true"><result><![CDATA[yes]]></result></case>
+      <case when="false"><result>no</result></case>
+      <default><result>unknown</result></default>
+    </switch>
+  </profile>
+</configuration>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body)>
+  <!ELEMENT header (trace?, flags)>
+  <!ELEMENT trace (#PCDATA)>
+  <!ELEMENT flags (flag*)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST flag name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT body ANY>
+]>
+<envelope>
+  <header>
+    <trace>urn:trace:20260924:αβγ</trace>
+    <flags>
+      <flag name="compressed" value="false"/>
+      <flag name="signed" value="true"/>
+      <flag name="experimental"/>
+    </flags>
+  </header>
+  <body>
+    <request method="POST" path="/submit">
+      <payload>
+        <field name="message">A&amp;B &lt; C &gt; D</field>
+        <field name="multiline">first
+second
+third</field>
+        <field name="empty"/>
+      </payload>
+    </request>
+    <response status="202">
+      <details>
+        <code>accepted</code>
+        <note>Queued for processing</note>
+      </details>
+    </response>
+  </body>
+</envelope>
+```

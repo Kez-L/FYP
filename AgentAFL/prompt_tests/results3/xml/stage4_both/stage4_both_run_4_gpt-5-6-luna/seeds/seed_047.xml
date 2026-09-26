@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope"
+               xmlns:m="urn:example:metrics"
+               xmlns:wsa="http://www.w3.org/2005/08/addressing">
+  <soap:Header>
+    <wsa:Action soap:mustUnderstand="true">urn:example:metrics:submit</wsa:Action>
+    <wsa:MessageID>urn:uuid:9c7d3e1a-44d1-4bf2-8f90-2b7d0eab1122</wsa:MessageID>
+    <m:Trace soap:role="http://www.w3.org/2003/05/soap-envelope/role/next"
+            soap:relay="true">
+      <m:Correlation>batch-07</m:Correlation>
+      <m:Sampled>false</m:Sampled>
+    </m:Trace>
+  </soap:Header>
+  <soap:Body>
+    <m:SubmitBatch>
+      <m:source region="ap-south" protocol="v2">edge-gateway</m:source>
+      <m:window start="2026-09-24T10:00:00Z" end="2026-09-24T10:05:00Z"/>
+      <m:series name="requests" unit="count">
+        <m:point at="2026-09-24T10:00:00Z" value="17"/>
+        <m:point at="2026-09-24T10:01:00Z" value="23"/>
+        <m:point at="2026-09-24T10:02:00Z" value="19"/>
+      </m:series>
+      <m:series name="latency" unit="ms" aggregation="p95">
+        <m:point at="2026-09-24T10:00:00Z" value="84.5"/>
+        <m:point at="2026-09-24T10:01:00Z" value="91.25"/>
+      </m:series>
+      <m:annotations>
+        <m:item key="deployment">blue-canary</m:item>
+        <m:item key="note"><![CDATA[threshold < 100ms; investigate & retain]]></m:item>
+      </m:annotations>
+    </m:SubmitBatch>
+  </soap:Body>
+</soap:Envelope>

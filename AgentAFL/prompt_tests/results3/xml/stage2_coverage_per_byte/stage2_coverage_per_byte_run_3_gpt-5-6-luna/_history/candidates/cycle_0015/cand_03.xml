@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE transform [
+  <!ELEMENT transform (source, steps, result)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT steps (step*)>
+  <!ELEMENT step EMPTY>
+  <!ELEMENT result (#PCDATA)>
+  <!ATTLIST step
+            operation (copy|rename|delete|replace) #REQUIRED
+            from CDATA #IMPLIED
+            to CDATA #IMPLIED
+            count NMTOKEN "1">
+]>
+<transform>
+  <source><![CDATA[
+    <item key="x">old</item>
+    <item key="y">keep</item>
+  ]]></source>
+  <steps>
+    <step operation="rename" from="x" to="z" count="01"/>
+    <step operation="replace" from="old" to="new"/>
+    <step operation="delete" from="missing"/>
+  </steps>
+  <result>&lt;item key=&quot;z&quot;&gt;new&lt;/item&gt;</result>
+</transform>

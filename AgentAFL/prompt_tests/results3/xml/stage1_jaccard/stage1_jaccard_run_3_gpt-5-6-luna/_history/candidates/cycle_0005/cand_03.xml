@@ -1,0 +1,27 @@
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+    path CDATA #REQUIRED
+    checksum CDATA #IMPLIED
+    kind (text|binary|link) #REQUIRED>
+  <!ELEMENT data (chunk*)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!ENTITY e1 "A&amp;B">
+  <!ENTITY e2 "&e1;::&#x3C;fragment&#x3E;">
+  <!ENTITY e3 "&#xD;&#xA;&#x9;">
+]>
+<package>
+  <manifest>
+    <file path="a/b.txt" checksum="&e2;" kind="text"/>
+    <file path="link&#x2F;target" kind="link"/>
+    <file path="blob.bin" checksum="&e3;" kind="binary"/>
+  </manifest>
+  <data>
+    <chunk index="0">&e1;</chunk>
+    <chunk index="1"><![CDATA[&e2; is not expanded here]]></chunk>
+    <chunk index="2">end</chunk>
+  </data>
+</package>

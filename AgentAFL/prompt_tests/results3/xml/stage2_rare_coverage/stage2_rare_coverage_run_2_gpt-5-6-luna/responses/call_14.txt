@@ -1,0 +1,122 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (header, section+)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT section (title, entry*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (#PCDATA|em|ref)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST section xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST entry key ID #REQUIRED>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY notice "catalog &amp; archive">
+]>
+<catalog xml:base="https://example.test/root/">
+  <?index mode="full"?>
+  <header xml:lang="en">&notice;</header>
+  <section xml:lang="fr">
+    <title>Éléments &amp; références</title>
+    <entry key="first">plain <em>marked</em> text<ref target="second"/></entry>
+    <entry key="second"><![CDATA[raw <angle> and ]]]]><![CDATA[> content]]></entry>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE media [
+  <!ELEMENT media (asset+, license?)>
+  <!ELEMENT asset EMPTY>
+  <!ELEMENT license (#PCDATA)>
+  <!ATTLIST media version NMTOKEN #REQUIRED>
+  <!ATTLIST asset name CDATA #REQUIRED
+                  source ENTITY #IMPLIED
+                  kind NOTATION #IMPLIED>
+  <!NOTATION svg SYSTEM "image/svg+xml">
+  <!NOTATION png PUBLIC "-//PNG//NOTATION Portable Network Graphics//EN">
+  <!ENTITY logo SYSTEM "logo.svg" NDATA svg>
+  <!ENTITY icon SYSTEM "icon.png" NDATA png>
+]>
+<media version="2.0">
+  <asset name="brand" source="logo" kind="svg"/>
+  <asset name="small" source="icon" kind="png"/>
+  <license>Use permitted for testing.</license>
+</media>
+```
+
+```xml
+<?xml version="1.0"?>
+<package xmlns="urn:pkg" xmlns:m="urn:meta" xml:space="preserve">
+  <m:metadata>
+    <m:created>2026-09-24T12:34:56Z</m:created>
+    <m:tags>
+      <m:tag priority="high">alpha</m:tag>
+      <m:tag priority="low">beta</m:tag>
+    </m:tags>
+  </m:metadata>
+  <manifest count="3">
+    <file path="./one.txt" checksum="&#x1f4a1;"/>
+    <file path="../two.bin" checksum="&#x00a9;"/>
+    <file path="space%20name" checksum="&quot;quoted&quot;"/>
+  </manifest>
+  <payload><![CDATA[
+    {"kind":"example","items":[1,2,3],"nested":{"ok":true}}
+  ]]></payload>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE labyrinth [
+  <!ELEMENT labyrinth (node)>
+  <!ELEMENT node (node|leaf)*>
+  <!ELEMENT leaf EMPTY>
+  <!ATTLIST node name CDATA #IMPLIED>
+  <!ENTITY left "<node name='inner'><leaf/></node>">
+  <!ENTITY right "<node name='outer'>&left;</node>">
+  <!ENTITY loop "&loop;">
+]>
+<labyrinth>
+  <node name="start">
+    &right;
+    <leaf/>
+  </node>
+</labyrinth>
+```
+
+```xml
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE report [
+  <!ELEMENT report (summary, table, footer)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST row index NMTOKEN #REQUIRED>
+  <!ENTITY % common ' xml:id ID #IMPLIED xml:lang NMTOKEN #IMPLIED'>
+  <!ATTLIST cell%common; role (header|data|total) "data">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY ampersand "&amp;">
+]>
+<report>
+  <summary xml:lang="en">Totals&nbsp;&ampersand; details</summary>
+  <table>
+    <row index="A">
+      <cell role="header">Name</cell>
+      <cell role="header">Value</cell>
+    </row>
+    <row index="B">
+      <cell xml:id="name-b">North</cell>
+      <cell>42</cell>
+    </row>
+    <row index="C">
+      <cell>South</cell>
+      <cell role="total">84</cell>
+    </row>
+  </table>
+  <footer><![CDATA[End of report]]></footer>
+</report>
+```

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (header, message+)>
+  <!ELEMENT header (subject, participants)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT participants (person*)>
+  <!ELEMENT person EMPTY>
+  <!ELEMENT message (#PCDATA|mention|quote|br)*>
+  <!ELEMENT mention (#PCDATA)>
+  <!ELEMENT quote (#PCDATA|br)*>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST conversation xmlns CDATA #IMPLIED>
+  <!ATTLIST person uid ID #REQUIRED role (sender|receiver|observer) "observer">
+  <!ATTLIST message id ID #REQUIRED reply-to IDREF #IMPLIED>
+  <!ENTITY dash "&#x2014;">
+  <!ENTITY mark "<mention>system</mention>">
+]>
+<conversation xmlns="urn:chat">
+  <?trace id="alpha-7"?>
+  <header>
+    <subject>Parsing &amp; entities</subject>
+    <participants>
+      <person uid="u1" role="sender"/>
+      <person uid="u2" role="receiver"/>
+    </participants>
+  </header>
+  <message id="m1">Hello< br="ignored"/><!-- comment --></message>
+  <message id="m2" reply-to="m1">The result &dash; <mention>@u2</mention><br/>is ready.</message>
+  <message id="m3">A quoted fragment: <quote>one<br/>two</quote> and a literal &lt;tag&gt;.</message>
+</conversation>

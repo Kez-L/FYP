@@ -1,0 +1,148 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (warehouse+, audit?)>
+  <!ELEMENT warehouse (label, bin*)>
+  <!ATTLIST warehouse code ID #REQUIRED region (north|south|east|west) "north">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT bin (item*)>
+  <!ATTLIST bin id ID #IMPLIED sealed (yes|no) "no">
+  <!ELEMENT item (#PCDATA|note)*>
+  <!ATTLIST item sku CDATA #REQUIRED quantity NMTOKEN #IMPLIED>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT audit (#PCDATA)>
+  <!ENTITY mark "&#x25A1;">
+]>
+<inventory>
+  <warehouse code="w1" region="east">
+    <label>Dock &amp; Receiving</label>
+    <bin id="b1" sealed="yes">
+      <item sku="A-01" quantity="0007">bolts<note>&mark; counted</note></item>
+      <item sku="A-02">washers</item>
+    </bin>
+    <bin id="b2">
+      <item sku="B-09" quantity="3"><![CDATA[<raw>payload</raw>]]></item>
+    </bin>
+  </warehouse>
+  <warehouse code="w2">
+    <label>Overflow</label>
+    <bin><item sku="C-3">empty<note/></item></bin>
+  </warehouse>
+  <audit>checked by &quot;operator&quot;</audit>
+</inventory>
+```
+
+```xml
+<?xml version="1.1"?>
+<message xmlns="urn:message" xmlns:x="urn:extension" xml:lang="ar">
+  <header>
+    <x:sender id="s-9">مُرسِل</x:sender>
+    <x:recipient id="r-2"/>
+    <timestamp xml:space="preserve">2026-09-24T12:00:00Z</timestamp>
+  </header>
+  <body format="mixed">
+    <![CDATA[first ]]>middle &lt;escaped&gt;<![CDATA[ last]]>
+    <x:attachment media-type="application/octet-stream" encoding="base64">
+      QUJDREVGRw==
+    </x:attachment>
+    <p>line one&#x85;line two&#x2028;line three</p>
+  </body>
+  <?delivery retry="2"?>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<scene xmlns="urn:scene" xmlns:svg="http://www.w3.org/2000/svg" xmlns:fx="urn:effects">
+  <!-- namespace transitions and mixed content -->
+  <layer name="background">
+    <svg:svg viewBox="0 0 640 480" width="640">
+      <svg:defs>
+        <svg:linearGradient id="g">
+          <svg:stop offset="0%" stop-color="#000"/>
+          <svg:stop offset="100%" stop-color="#fff"/>
+        </svg:linearGradient>
+      </svg:defs>
+      <svg:g transform="translate(10,20)">
+        <svg:path d="M0 0 L10 10 Z"/>
+        <svg:text x="4" y="8">vector label</svg:text>
+      </svg:g>
+    </svg:svg>
+  </layer>
+  <layer xmlns="" name="foreign">
+    <data><![CDATA[<not-an-element attr='x'/>]]></data>
+    <fx:effect xmlns:fx="urn:effects" intensity="0.75"/>
+  </layer>
+  <layer name="empty"><node/><node value="&amp;&quot;&lt;"/></layer>
+</scene>
+```
+
+```xml
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+, footer?)>
+  <!ELEMENT section (title, paragraph+, figure?)>
+  <!ATTLIST section number ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|code|link|br)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link target CDATA #IMPLIED>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT figure EMPTY>
+  <!ATTLIST figure format NOTATION (svg|txt) "txt" source ENTITY #IMPLIED>
+  <!NOTATION svg SYSTEM "image/svg+xml">
+  <!NOTATION txt SYSTEM "text/plain">
+  <!ENTITY copyright "&#169;">
+  <!ENTITY project "XML &amp; Validation">
+]>
+<report>
+  <section number="intro">
+    <title>Overview &copyright;</title>
+    <paragraph>Use <code>xmllint</code> with a <link target="#appendix">link</link><br/>after it.</paragraph>
+    <paragraph>Project: &project;.</paragraph>
+    <figure format="svg" source="diagram"/>
+  </section>
+  <section number="appendix">
+    <title>Appendix</title>
+    <paragraph><![CDATA[<tag> remains literal here]]></paragraph>
+    <paragraph>Quotes: 'single' and "double".</paragraph>
+  </section>
+  <footer>End</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:config" xmlns:p="urn:plugin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="local.xsd">
+  <?profile name="stress"?>
+  <defaults>
+    <option key="mode" value="safe"/>
+    <option key="retries">0</option>
+  </defaults>
+  <pipeline enabled="true">
+    <stage id="parse" depends-on="">
+      <input path="./in/&quot;quoted&quot;.xml"/>
+      <output path="./out/parse.xml"/>
+    </stage>
+    <stage id="transform" depends-on="parse">
+      <p:plugin name="identity" version="1.0">
+        <p:parameter name="keep-comments">true</p:parameter>
+        <p:parameter name="expression">a &gt; b &amp;&amp; b &lt; c</p:parameter>
+      </p:plugin>
+    </stage>
+    <stage id="publish" depends-on="transform">
+      <environment>
+        <variable name="EMPTY"/>
+        <variable name="UNICODE">𐍈 café 中文</variable>
+      </environment>
+    </stage>
+  </pipeline>
+  <rules>
+    <rule match="//*" action="include"/>
+    <rule match="@*" action="exclude">
+      <reason>temporary</reason>
+    </rule>
+  </rules>
+</configuration>
+```

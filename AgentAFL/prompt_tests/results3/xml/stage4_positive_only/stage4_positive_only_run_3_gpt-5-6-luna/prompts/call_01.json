@@ -1,0 +1,23 @@
+{
+  "call": 1,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ENTITY % itemDecl \"<!ELEMENT item (#PCDATA)><!ATTLIST item id ID #REQUIRED kind (book|tool|other) 'other'>\">\n  %itemDecl;\n  <!ELEMENT catalog (header, item+)>\n  <!ELEMENT header (#PCDATA)>\n  <!ENTITY greeting \"A &amp; B &lt; C\">\n]>\n<catalog>\n  <header>&greeting;</header>\n  <item id=\"i001\" kind=\"book\">alpha</item>\n  <item id=\"i002\" kind=\"tool\">beta <![CDATA[<not-an-element/>]]> gamma</item>\n</catalog>\n\n--- example 2 ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE envelope [\n  <!ELEMENT envelope (meta, payload)>\n  <!ELEMENT meta EMPTY>\n  <!ATTLIST meta xml:lang NMTOKEN #IMPLIED>\n  <!ELEMENT payload (p:entry*, tail?)>\n  <!ELEMENT p:entry (#PCDATA|p:mark)*>\n  <!ELEMENT p:mark EMPTY>\n  <!ELEMENT tail (#PCDATA)>\n]>\n<envelope xmlns=\"urn:outer\" xmlns:p=\"urn:payload\" xml:base=\"urn:root\">\n  <meta xml:lang=\"fr\"/>\n  <payload xmlns=\"\">\n    <p:entry code=\"A&amp;1\">one<p:mark/>two</p:entry>\n    <p:entry xmlns:p=\"urn:alternate\" p:flag=\"yes\">three</p:entry>\n    <tail xml:space=\"preserve\">  end  </tail>\n  </payload>\n</envelope>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T05:57:24.598085+00:00"
+}

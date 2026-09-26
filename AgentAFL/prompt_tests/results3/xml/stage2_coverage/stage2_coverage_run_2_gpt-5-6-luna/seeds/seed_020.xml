@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry*)>
+  <!ELEMENT entry (key, data, metadata?)>
+  <!ATTLIST entry
+    code ID #REQUIRED
+    active (yes|no) "yes">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT data (#PCDATA|chunk|![CDATA[not markup]]>)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT metadata (created, tags)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ENTITY amp "&#38;">
+  <!ENTITY note "A &amp; B &lt; C">
+]>
+<catalog>
+  <entry code="e1">
+    <key>alpha</key>
+    <data>left<chunk>middle</chunk>right &amp; &note;</data>
+    <metadata>
+      <created>2026-09-24</created>
+      <tags><tag>one</tag><tag>two</tag></tags>
+    </metadata>
+  </entry>
+  <entry code="e2" active="no">
+    <key>beta</key>
+    <data><![CDATA[raw ]]> text <![CDATA[ with ]]> delimiters</data>
+  </entry>
+</catalog>

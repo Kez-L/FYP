@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT payload (data|chunk)+>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST package version CDATA #REQUIRED>
+  <!ATTLIST file path CDATA #REQUIRED checksum CDATA #IMPLIED>
+  <!ATTLIST data encoding (base64|text|hex) #REQUIRED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED final (yes|no) "no">
+]>
+<package version="3.0">
+  <manifest>
+    <file path="bin/app" checksum="sha256:abc123"/>
+    <file path="config/main.xml"/>
+    <file path="docs/readme.txt" checksum=""/>
+  </manifest>
+  <payload>
+    <data encoding="base64">AAECAwQFBgcICQ==</data>
+    <chunk index="0001">first&amp;second</chunk>
+    <chunk index="0002" final="yes"><![CDATA[last <raw> block]]></chunk>
+  </payload>
+</package>

@@ -1,0 +1,136 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (title, payload)>
+  <!ATTLIST record id ID #REQUIRED kind (text|binary) "text">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ENTITY separator " :: ">
+  <!ENTITY notice "internal entity content">
+]>
+<archive>
+  <record id="r1" kind="text">
+    <title>First &separator; Entry</title>
+    <payload>alpha<chunk>one</chunk>beta<chunk>&notice;</chunk>gamma</payload>
+  </record>
+  <record id="r2">
+    <title>Second Entry</title>
+    <payload><![CDATA[x < y && y < z]]></payload>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog"
+         xmlns:p="urn:example:product"
+         xmlns:m="urn:example:meta"
+         xml:base="https://example.invalid/items/">
+  <?catalog-mode compact?>
+  <!-- intentionally interleaved metadata and product elements -->
+  <m:header m:revision="007" xml:lang="fr">
+    <m:label>Échantillon</m:label>
+    <m:checksum algorithm="sha256">00ff11aa</m:checksum>
+  </m:header>
+  <p:item p:sku="A-01" p:available="true">
+    <p:name xml:space="preserve">  Café &amp; thé  </p:name>
+    <p:price currency="EUR">12.50</p:price>
+    <p:tags>
+      <p:tag>hot</p:tag>
+      <p:tag>☕</p:tag>
+    </p:tags>
+  </p:item>
+  <p:item p:sku="B-02" p:available="false">
+    <p:name><![CDATA[<seasonal> spice ]]></p:name>
+    <p:price currency="GBP">0</p:price>
+  </p:item>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (entry*)>
+  <!ELEMENT entry (stamp, amount, note?)>
+  <!ATTLIST entry ref ID #REQUIRED links IDREFS #IMPLIED>
+  <!ELEMENT stamp EMPTY>
+  <!ATTLIST stamp year CDATA #REQUIRED month CDATA #REQUIRED>
+  <!ELEMENT amount (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+]>
+<ledger>
+  <entry ref="e1" links="e2 e3">
+    <stamp year="2026" month="09"/>
+    <amount>+00042.75</amount>
+    <note>line one&#x85;line two&#x2028;終</note>
+  </entry>
+  <entry ref="e2">
+    <stamp year="0000" month="00"/>
+    <amount>0</amount>
+  </entry>
+  <entry ref="e3">
+    <stamp year="9999" month="12"/>
+    <amount>-1</amount>
+  </entry>
+</ledger>
+```
+
+```xml
+<?xml version="1.0"?>
+<package xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xml:lang="en">
+  <?xml-stylesheet type="text/css" href="view.css" media="screen"?>
+  <manifest>
+    <file href="docs/readme.txt" size="0"/>
+    <file href="images/icon.svg" size="184">
+      <svg:svg width="16" height="16" viewBox="0 0 16 16">
+        <svg:path d="M0,0 L16,8 L0,16 Z"/>
+      </svg:svg>
+    </file>
+  </manifest>
+  <content>
+    <xi:include href="chapter-one.xml" parse="xml">
+      <xi:fallback>
+        <placeholder reason="missing">No chapter available.</placeholder>
+      </xi:fallback>
+    </xi:include>
+    <xi:include href="excerpt.txt" parse="text"/>
+  </content>
+  <signature algorithm="urn:example:sha256">
+    <![CDATA[
+      -----BEGIN SIGNATURE-----
+      abc+/=xyz
+      -----END SIGNATURE-----
+    ]]>
+  </signature>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+)>
+  <!ELEMENT section (heading, item*)>
+  <!ATTLIST section name NMTOKEN #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (#PCDATA|link|br)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link target URI #IMPLIED>
+  <!ELEMENT br EMPTY>
+]>
+<report>
+  <section name="overview">
+    <heading>Mixed content &amp; boundaries</heading>
+    <item>before<link target="urn:test:a">inside</link>after<br/>tail</item>
+    <item><![CDATA[]]></item>
+  </section>
+  <section name="edge_case">
+    <heading>Characters: &#0; &#x1F600;</heading>
+    <item>quotes: &quot;apostrophe: &apos; less: &lt; greater: &gt;</item>
+    <item>split<![CDATA[ CDATA ]]>text<link>link</link><![CDATA[ end ]]></item>
+  </section>
+</report>
+```

@@ -1,0 +1,147 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (metadata, product*)>
+  <!ELEMENT metadata (title, generated)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT product (name, price, stock, description?)>
+  <!ATTLIST product sku ID #REQUIRED category CDATA #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT stock (#PCDATA)>
+  <!ELEMENT description (#PCDATA)>
+  <!ENTITY currency "€">
+  <!ENTITY company "Northwind &amp; Sons">
+]>
+<catalog>
+  <metadata>
+    <title>&company; inventory</title>
+    <generated>2026-09-24T12:00:00Z</generated>
+  </metadata>
+  <product sku="p-001" category="hardware">
+    <name>Precision &amp; patience</name>
+    <price>19.95 &currency;</price>
+    <stock>42</stock>
+    <description>Compact tool for fine adjustments.</description>
+  </product>
+  <product sku="p-002">
+    <name>Glass vial</name>
+    <price>7.50 &currency;</price>
+    <stock>0</stock>
+  </product>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<message xmlns="urn:example:message" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:type="Alert" xml:lang="ja" xml:space="preserve">
+  <header>
+    <message-id>urn:msg:9f7e</message-id>
+    <sender address="ops@example.test" verified="true"/>
+    <recipients>
+      <recipient priority="high">東京チーム</recipient>
+      <recipient priority="normal">support@example.test</recipient>
+    </recipients>
+  </header>
+  <payload>
+    <alert severity="critical" code="E&#x1F525;7">
+      <![CDATA[Disk threshold reached: < 2% free & immediate action required.]]>
+    </alert>
+    <attachments>
+      <attachment media-type="application/octet-stream" checksum="sha256:abc123">
+        <filename>report-Δ.bin</filename>
+        <size unit="bytes">4096</size>
+      </attachment>
+    </attachments>
+  </payload>
+  <?delivery retry="3"?>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder | file | link)*>
+  <!ELEMENT folder (folder | file | link)*>
+  <!ATTLIST folder name CDATA #REQUIRED hidden (yes|no) "no">
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file name CDATA #REQUIRED bytes NMTOKEN #REQUIRED executable (true|false) "false">
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link name CDATA #REQUIRED target CDATA #REQUIRED>
+]>
+<archive created="2026-09-24" compression="none">
+  <folder name="." hidden="no">
+    <file name="README" bytes="118" executable="false"/>
+    <folder name="bin">
+      <file name="launch.sh" bytes="2048" executable="true"/>
+      <link name="current" target="../releases/2026.09"/>
+    </folder>
+    <folder name=".cache" hidden="yes">
+      <file name="index" bytes="0"/>
+    </folder>
+  </folder>
+  <link name="latest" target="./bin/current"/>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<survey xmlns="urn:survey:v2" xmlns:q="urn:survey:question">
+  <respondent id="R-0042">
+    <profile>
+      <age precision="approximate">30</age>
+      <region code="EU">Europe</region>
+      <consent timestamp="2026-09-24T09:15:00+02:00">yes</consent>
+    </profile>
+    <answers>
+      <q:answer question="q1" selected="A C"/>
+      <q:answer question="q2">
+        <q:rank value="1">blue</q:rank>
+        <q:rank value="2">green</q:rank>
+        <q:rank value="3">red</q:rank>
+      </q:answer>
+      <q:answer question="q3" skipped="true"/>
+    </answers>
+    <notes>
+      First line.
+      <remark importance="low">Includes <b>mixed</b> content.</remark>
+      Final line with emoji: ☂
+    </notes>
+  </respondent>
+  <pagination page="1" per-page="1" total="1"/>
+</survey>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?processing instruction-data?>
+<configuration xmlns:inc="urn:include" xmlns:sec="urn:security">
+  <!-- Deliberately varied scalar representations -->
+  <settings>
+    <enabled>true</enabled>
+    <limits min="-0" max="1.0e+6" retries="0003"/>
+    <paths>
+      <path kind="relative">../var/</path>
+      <path kind="absolute">/tmp/input</path>
+      <path kind="uri">file:///var/lib/data</path>
+    </paths>
+  </settings>
+  <credentials>
+    <sec:token algorithm="none">ZmFrZS10b2tlbg==</sec:token>
+    <sec:permissions>
+      <sec:allow resource="read"/>
+      <sec:allow resource="write"/>
+      <sec:deny resource="admin"/>
+    </sec:permissions>
+  </credentials>
+  <inc:modules>
+    <inc:module name="alpha" version="1.0"/>
+    <inc:module name="βeta" version="2.3">
+      <inc:dependency optional="true" name="alpha"/>
+    </inc:module>
+  </inc:modules>
+  <empty-set/>
+</configuration>
+```

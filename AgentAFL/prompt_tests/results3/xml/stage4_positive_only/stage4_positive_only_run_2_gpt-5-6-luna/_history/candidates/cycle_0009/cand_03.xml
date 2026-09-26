@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow" xmlns:sec="urn:example:security" version="2.4">
+  <variables>
+    <variable name="attempts" type="integer">3</variable>
+    <variable name="timeout" type="duration">PT45S</variable>
+    <variable name="message" type="string">Use &quot;safe mode&quot; when needed.</variable>
+  </variables>
+  <pipeline id="nightly">
+    <step id="fetch" action="http:get" retries="2">
+      <endpoint scheme="https" host="service.example.invalid" path="/snapshot"/>
+      <headers>
+        <header name="Accept">application/xml</header>
+        <header name="X-Trace">nightly-2026-09-24</header>
+      </headers>
+    </step>
+    <step id="verify" action="signature:check" depends-on="fetch">
+      <sec:key algorithm="ed25519"><![CDATA[
+-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+-----END PUBLIC KEY-----
+      ]]></sec:key>
+      <on-failure>
+        <notify channel="audit">Verification failed</notify>
+        <halt reason="untrusted-input"/>
+      </on-failure>
+    </step>
+    <step id="publish" action="queue:send" depends-on="verify">
+      <payload format="json"><![CDATA[{"topic":"snapshot","priority":4}]]></payload>
+    </step>
+  </pipeline>
+  <!-- The final step is intentionally disabled during maintenance. -->
+  <step id="cleanup" action="files:remove" enabled="false"/>
+</workflow>

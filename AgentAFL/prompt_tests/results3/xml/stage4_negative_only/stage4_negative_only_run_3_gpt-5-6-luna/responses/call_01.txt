@@ -1,0 +1,131 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<mission xmlns="urn:space:mission" xmlns:telemetry="urn:space:telemetry" id="ORBIT-42">
+  <!-- Mixed content, CDATA, namespaces, and empty elements -->
+  <name>Perseus Survey</name>
+  <objective priority="high">Map the <emphasis>outer ring</emphasis> of the system.</objective>
+  <telemetry:stream interval="00:00:05">
+    <telemetry:sample timestamp="2026-09-24T12:00:00Z" unit="km">
+      <telemetry:value>384400</telemetry:value>
+      <telemetry:status>nominal</telemetry:status>
+    </telemetry:sample>
+    <telemetry:sample timestamp="2026-09-24T12:00:05Z" unit="km">
+      <telemetry:value><![CDATA[384399.7]]></telemetry:value>
+      <telemetry:status>nominal</telemetry:status>
+    </telemetry:sample>
+  </telemetry:stream>
+  <payload>
+    <![CDATA[
+      if (signal < threshold && mode == "scan") {
+        emit("candidate");
+      }
+    ]]>
+  </payload>
+  <checksum algorithm="sha256">9f2a7d1c</checksum>
+</mission>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+)>
+  <!ATTLIST archive format CDATA #FIXED "sealed">
+  <!ELEMENT entry (key, value, note?)>
+  <!ATTLIST entry kind (text|number|flag) "text">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY product "A &amp; B">
+]>
+<archive format="sealed">
+  <entry kind="text">
+    <key>display-name</key>
+    <value>&product; console</value>
+    <note>Retained for compatibility.</note>
+  </entry>
+  <entry kind="number">
+    <key>retry-limit</key>
+    <value>007</value>
+  </entry>
+  <entry kind="flag">
+    <key>enabled</key>
+    <value>true</value>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<configuration xmlns="urn:example:config" xml:lang="ja" xml:space="preserve">
+  <profile name="夜間">
+    <rule match="α/β" enabled="yes">
+      <pattern><![CDATA[^\p{L}+\s+\d{2,4}$]]></pattern>
+      <replacement>Δ</replacement>
+    </rule>
+    <rule match="emoji" enabled="no">
+      <pattern>☃️ &amp; ☀️</pattern>
+      <replacement>—</replacement>
+    </rule>
+  </profile>
+  <defaults>
+    <timeout unit="ms">250</timeout>
+    <paths>
+      <path>/var/lib/example</path>
+      <path>relative/../cache</path>
+    </paths>
+  </defaults>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<graph xmlns="urn:example:graph" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <node id="n0" label="root"/>
+  <node id="n1" label="left">
+    <metadata>
+      <tag>branch</tag>
+      <tag><![CDATA[priority<high>]]></tag>
+    </metadata>
+  </node>
+  <node id="n2" label="right" xlink:href="#n1"/>
+  <edge from="n0" to="n1" weight="0.5">
+    <annotation>descending &gt; ascending</annotation>
+  </edge>
+  <edge from="n0" to="n2" weight="1">
+    <annotation><!-- intentionally empty --></annotation>
+  </edge>
+  <layout orientation="radial">
+    <point x="-1.25" y="+3.00"/>
+    <point x="0" y="0"/>
+    <point x="1.25" y="-3.00"/>
+  </layout>
+</graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<package xmlns="urn:example:package" version="2.0">
+  <?build profile="fuzz"?>
+  <manifest>
+    <file path="bin/tool" mode="0755" size="0"/>
+    <file path="share/data &amp; notes.txt" mode="0644" size="18446744073709551615">
+      <digest type="none"/>
+    </file>
+    <file path="empty/" mode="0400" size="0">
+      <content/>
+    </file>
+  </manifest>
+  <dependencies>
+    <dependency name="core" constraint="&gt;=1.0 &lt;2.0"/>
+    <dependency name="optional" constraint="*">
+      <platform os="unix" arch="x86_64"/>
+      <platform os="windows" arch="arm64"/>
+    </dependency>
+  </dependencies>
+  <signature algorithm="ed25519">
+    <![CDATA[-----BEGIN SIGNATURE-----
+ZmFrZS1zaWduYXR1cmUtYnl0ZXM=
+-----END SIGNATURE-----]]>
+  </signature>
+</package>
+```

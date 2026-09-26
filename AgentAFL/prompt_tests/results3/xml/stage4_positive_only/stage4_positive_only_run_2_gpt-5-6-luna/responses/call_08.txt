@@ -1,0 +1,178 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, records)>
+  <!ELEMENT header (name, generated)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT records (record+)>
+  <!ELEMENT record (key, value, note?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST record status (open|closed|pending) "open">
+  <!ENTITY team "Orchid Operations">
+]>
+<archive>
+  <header>
+    <name>&team; incident archive</name>
+    <generated>2026-09-24T13:45:00Z</generated>
+  </header>
+  <records>
+    <record status="closed">
+      <key>INC-1042</key>
+      <value>Cache rotation completed</value>
+      <note><![CDATA[No residual files were found in /var/tmp/cache.]]></note>
+    </record>
+    <record status="pending">
+      <key>INC-1043</key>
+      <value>Unexpected response: &lt;empty&gt;</value>
+    </record>
+    <record status="open">
+      <key>INC-1044</key>
+      <value>Worker queue stalled</value>
+      <note>Retry window is <strong>15 minutes</strong>.</note>
+    </record>
+  </records>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<scene xmlns="urn:example:scene" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <gradient id="sunset" spread="pad">
+      <stop offset="0%" color="#24104f"/>
+      <stop offset="47.5%" color="#d95f59"/>
+      <stop offset="100%" color="#ffd27a"/>
+    </gradient>
+    <symbol id="beacon" viewBox="0 0 20 20">
+      <circle cx="10" cy="10" r="8"/>
+      <path d="M10 2 L10 18 M2 10 L18 10"/>
+    </symbol>
+  </defs>
+  <canvas width="1024" height="768" background="url(#sunset)">
+    <layer id="far-hills" opacity="0.62">
+      <path fill="#31254d" d="M0,510 C140,390 210,470 330,410 S570,455 710,350 S910,405 1024,320 L1024,768 L0,768 Z"/>
+      <path fill="#18263d" d="M0,600 C180,510 290,590 430,515 S720,550 1024,460 L1024,768 L0,768 Z"/>
+    </layer>
+    <layer id="markers">
+      <use x="742" y="214" width="40" height="40" xlink:href="#beacon"/>
+      <text x="796" y="239">Station 9</text>
+      <polyline points="120,690 260,640 410,665 590,602 742,628" stroke="#f4d58a" fill="none"/>
+    </layer>
+  </canvas>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<questionnaire xmlns="urn:example:survey" xml:lang="en">
+  <?form revision="3"?>
+  <introduction>
+    <![CDATA[Please answer each question as accurately as possible.]]>
+  </introduction>
+  <section code="habits" required="true">
+    <heading>Daily routines</heading>
+    <question id="q1" type="choice">
+      <prompt>Which transport do you use most often?</prompt>
+      <option value="rail">Rail</option>
+      <option value="cycle">Bicycle</option>
+      <option value="walk">Walking</option>
+      <option value="other">Other: <input name="transport-other"/></option>
+    </question>
+    <question id="q2" type="scale" min="1" max="5">
+      <prompt>How predictable is your commute?</prompt>
+      <labels>
+        <low>Not predictable</low>
+        <high>Highly predictable</high>
+      </labels>
+    </question>
+  </section>
+  <section code="comments" required="false">
+    <heading>Additional remarks</heading>
+    <question id="q3" type="multiline">
+      <prompt>What would improve your journey?</prompt>
+      <textarea rows="4" columns="60" placeholder="Optional response"/>
+    </question>
+  </section>
+  <submission method="post" endpoint="https://example.invalid/submit">
+    <token><![CDATA[questionnaire-token-7f3c]]></token>
+    <consent>yes</consent>
+  </submission>
+</questionnaire>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow" xmlns:sec="urn:example:security" version="2.4">
+  <variables>
+    <variable name="attempts" type="integer">3</variable>
+    <variable name="timeout" type="duration">PT45S</variable>
+    <variable name="message" type="string">Use &quot;safe mode&quot; when needed.</variable>
+  </variables>
+  <pipeline id="nightly">
+    <step id="fetch" action="http:get" retries="2">
+      <endpoint scheme="https" host="service.example.invalid" path="/snapshot"/>
+      <headers>
+        <header name="Accept">application/xml</header>
+        <header name="X-Trace">nightly-2026-09-24</header>
+      </headers>
+    </step>
+    <step id="verify" action="signature:check" depends-on="fetch">
+      <sec:key algorithm="ed25519"><![CDATA[
+-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+-----END PUBLIC KEY-----
+      ]]></sec:key>
+      <on-failure>
+        <notify channel="audit">Verification failed</notify>
+        <halt reason="untrusted-input"/>
+      </on-failure>
+    </step>
+    <step id="publish" action="queue:send" depends-on="verify">
+      <payload format="json"><![CDATA[{"topic":"snapshot","priority":4}]]></payload>
+    </step>
+  </pipeline>
+  <!-- The final step is intentionally disabled during maintenance. -->
+  <step id="cleanup" action="files:remove" enabled="false"/>
+</workflow>
+```
+
+```xml
+<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xml:base="https://news.example.invalid/">
+  <title>Harbor Signals</title>
+  <subtitle>Observations from the northern breakwater</subtitle>
+  <link rel="self" type="application/atom+xml" href="feed.xml"/>
+  <link rel="alternate" type="text/html" href="index.html"/>
+  <id>urn:uuid:9a31d4c0-10c7-4a8c-8f2f-7d6b4a901122</id>
+  <updated>2026-09-24T08:20:00Z</updated>
+  <author>
+    <name>Harbor Desk</name>
+    <email>desk@example.invalid</email>
+  </author>
+  <entry>
+    <title>Fog closes the eastern channel</title>
+    <id>tag:news.example.invalid,2026:entry-881</id>
+    <published>2026-09-23T21:10:00Z</published>
+    <updated>2026-09-24T05:42:11Z</updated>
+    <category term="weather" label="Weather"/>
+    <summary type="text">Visibility fell below two hundred metres before dawn.</summary>
+    <content type="xhtml">
+      <div xmlns="http://www.w3.org/1999/xhtml">
+        <p>Ferries paused at <em>04:55</em> and resumed shortly after sunrise.</p>
+        <ul><li>Wind: 18 knots</li><li>Visibility: 180 m</li></ul>
+      </div>
+    </content>
+    <media:thumbnail url="images/fog-881.jpg" width="320" height="180"/>
+  </entry>
+  <entry>
+    <title>Maintenance window announced</title>
+    <id>tag:news.example.invalid,2026:entry-882</id>
+    <updated>2026-09-24T07:05:00Z</updated>
+    <link rel="alternate" href="updates/882"/>
+    <summary type="html">Systems will be unavailable from <b>23:00</b> to <b>23:30</b>.</summary>
+  </entry>
+</feed>
+```

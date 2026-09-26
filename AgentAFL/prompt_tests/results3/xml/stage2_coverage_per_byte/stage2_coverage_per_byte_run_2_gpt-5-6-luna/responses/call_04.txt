@@ -1,0 +1,109 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE r [
+  <!ELEMENT r (a|b)*>
+  <!ELEMENT a (#PCDATA|c|d)*>
+  <!ELEMENT b EMPTY>
+  <!ELEMENT c EMPTY>
+  <!ELEMENT d (#PCDATA)>
+  <!ATTLIST r xmlns CDATA #IMPLIED xml:base CDATA #IMPLIED>
+  <!ATTLIST a id ID #IMPLIED role (primary|secondary|other) "other">
+  <!ENTITY mark "A&amp;B">
+  <!ENTITY nested "left &mark; right">
+]>
+<r xmlns="urn:seed:one" xml:base="urn:base/">
+  <a id="node1" role="primary">text &nested; <![CDATA[x<y>&z]]><c/><?proc data?></a>
+  <b/>
+  <a role="secondary"><d>tail</d></a>
+</r>
+```
+
+```xml
+<?xml version="1.1" standalone="no"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, footer?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|![CDATA[not markup]]>)*>
+  <!ELEMENT footer EMPTY>
+  <!ATTLIST envelope version CDATA #FIXED "v2">
+  <!ATTLIST chunk encoding (plain|hex|base64) "plain">
+  <!ENTITY open "<tag>">
+  <!ENTITY close "</tag>">
+]>
+<envelope version="v2">
+  <header><?meta phase="test"?>start<!--inside--></header>
+  <payload>
+    <chunk encoding="hex">4142&amp;4344</chunk>
+    <chunk><![CDATA[raw ]]> <![CDATA[split]]></chunk>
+  </payload>
+  <footer/>
+</envelope>
+```
+
+```xml
+<!DOCTYPE shell [
+  <!ELEMENT shell (section*)>
+  <!ELEMENT section (title?, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST section name CDATA #REQUIRED>
+  <!ATTLIST item key CDATA #IMPLIED state (new|old|x) #REQUIRED>
+  <!ENTITY % optional "<!ELEMENT note (#PCDATA)>">
+  <![IGNORE[
+    <!ELEMENT ignored (never)>
+    <!ATTLIST ignored flag CDATA "x">
+  ]]>
+  %optional;
+]>
+<shell>
+  <section name="one">
+    <title>First &apos;section&apos;</title>
+    <item key="a" state="new"/>
+    <item key="b" state="old"></item>
+  </section>
+  <section name="two"><item state="x"/></section>
+</shell>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE document [
+  <!ELEMENT document (p, box?, p*)>
+  <!ELEMENT p (#PCDATA|em|link)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT box EMPTY>
+  <!ATTLIST document xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST p xml:space (default|preserve) "default">
+  <!ATTLIST link href URI #IMPLIED target CDATA #IMPLIED>
+  <!ATTLIST box xmlns:q CDATA #FIXED "urn:q" q:type CDATA "void">
+  <!ENTITY ltmark "&lt;&lt;">
+]>
+<document xml:lang="x-klingon">
+  <p xml:space="preserve">alpha<em>bold</em><link href="urn:x?y=1&amp;z=2" target="_blank">jump</link>&lt; &lt;mark;</p>
+  <box/>
+  <p>omega<!-- comment --></p>
+</document>
+```
+
+```xml
+<!DOCTYPE outer [
+  <!ELEMENT outer (left, middle, right)>
+  <!ELEMENT left (#PCDATA)>
+  <!ELEMENT middle (part*)>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT right ANY>
+  <!ATTLIST outer a CDATA #IMPLIED b CDATA "default">
+  <!ENTITY one "one">
+  <!ENTITY two "&one;-two">
+  <!ENTITY three "&two;-three">
+]>
+<outer a="&three;" b="&quot;">
+  <left><![CDATA[unclosed-looking ]]]]><![CDATA[ text]]></left>
+  <middle><part>1</part><?x?><part>&two;</part></middle>
+  <right>
+    <unknown xmlns:z="urn:z" z:v="&apos;q&apos;">content</unknown>
+  </right>
+</outer>
+```

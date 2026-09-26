@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record*)>
+  <!ATTLIST archive xmlns:r CDATA #FIXED "urn:records">
+  <!ELEMENT record (r:key, r:value, metadata?)>
+  <!ATTLIST record
+    uid CDATA #REQUIRED
+    kind (text|binary|link) #REQUIRED
+  >
+  <!ELEMENT metadata (tag*)>
+  <!ELEMENT tag EMPTY>
+  <!ATTLIST tag
+    name CDATA #REQUIRED
+    value CDATA #IMPLIED
+  >
+  <!ELEMENT r:key (#PCDATA)>
+  <!ELEMENT r:value (#PCDATA|r:fragment)*>
+  <!ELEMENT r:fragment (#PCDATA)>
+  <!ENTITY open "&#x3C;">
+  <!ENTITY close "&#x3E;">
+]>
+<archive xmlns:r="urn:records">
+  <record uid="a-001" kind="text">
+    <r:key>alpha</r:key>
+    <r:value>literal delimiters: &open;not markup&close;
+      <r:fragment><![CDATA[raw ]]> content &amp; brackets]]></r:fragment>
+    <metadata>
+      <tag name="owner" value="ops"/>
+      <tag name="empty"/>
+    </metadata>
+  </record>
+  <record uid="a-002" kind="link">
+    <r:key>beta</r:key>
+    <r:value><r:fragment>one</r:fragment><r:fragment>two</r:fragment></r:value>
+  </record>
+</archive>

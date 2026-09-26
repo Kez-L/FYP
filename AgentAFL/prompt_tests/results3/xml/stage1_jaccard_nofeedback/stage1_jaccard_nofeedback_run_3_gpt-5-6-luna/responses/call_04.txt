@@ -1,0 +1,157 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+)>
+  <!ELEMENT item (title, details, price?)>
+  <!ATTLIST item id ID #REQUIRED category NMTOKEN #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT details (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ENTITY trademark "™">
+]>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra" xml:lang="en">
+  <item id="i1" category="tools" x:flag="yes">
+    <title>Hammer &amp; &trademark;</title>
+    <details><![CDATA[Handle length: <unknown>; ]]><em>solid</em><code>x &lt; y</code></details>
+    <price xml:space="preserve"> 19.95 </price>
+  </item>
+  <item id="i2">
+    <title>Nested <em>content</em></title>
+    <details>one<x:mark/>two<!-- embedded comment -->three</details>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, attachment*)>
+  <!ELEMENT header (from, to, subject)>
+  <!ELEMENT from EMPTY>
+  <!ELEMENT to EMPTY>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|line|br)*>
+  <!ELEMENT line (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST from address CDATA #REQUIRED>
+  <!ATTLIST to address CDATA #REQUIRED>
+  <!ATTLIST link href URI #IMPLIED>
+  <!ATTLIST attachment name CDATA #REQUIRED type CDATA #IMPLIED>
+  <!ENTITY greeting "Hello, &quot;reader&quot;">
+]>
+<message>
+  <header>
+    <from address="sender@example.test"/>
+    <to address="receiver@example.test"/>
+    <subject>&greeting;</subject>
+  </header>
+  <body>
+    <line>First line<link href="urn:test:a">alpha</link></line>
+    <br/>
+    <line><![CDATA[raw ]]> data &amp; more</line>
+  </body>
+  <attachment name="report.bin" type="application/octet-stream"/>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<world xmlns="urn:world" xmlns:p="urn:place">
+  <region id="north">
+    <country code="AA">
+      <city p:rank="1">
+        <name>Alpha</name>
+        <coordinates>
+          <latitude>12.000000</latitude>
+          <longitude>-45.500000</longitude>
+        </coordinates>
+        <district>
+          <name>Old Town</name>
+          <street>
+            <name>Long Road</name>
+            <building number="0000000000000000000000007">
+              <occupant status="unknown"/>
+            </building>
+          </street>
+        </district>
+      </city>
+    </country>
+  </region>
+  <region id="south">
+    <country code="BB">
+      <city p:rank="2">
+        <name><![CDATA[Beta & Gamma]]></name>
+        <coordinates/>
+      </city>
+    </country>
+  </region>
+</world>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, content)>
+  <!ELEMENT manifest (entry*)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry path CDATA #REQUIRED media CDATA #IMPLIED>
+  <!ELEMENT content (section+)>
+  <!ELEMENT section (heading, paragraph*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|quote|list)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY % switches 'INCLUDE'>
+  <![%switches;[
+    <!ATTLIST package version CDATA "1.0">
+  ]]>
+]>
+<package version="2.7">
+  <manifest>
+    <entry path="a/b/c.txt" media="text/plain"/>
+    <entry path="./data.xml"/>
+  </manifest>
+  <content>
+    <section>
+      <heading>Overview</heading>
+      <paragraph>Text before <quote>quoted &lt;material&gt;</quote> and after.</paragraph>
+      <paragraph>
+        <list>
+          <item>first</item>
+          <item><![CDATA[second <item>]]></item>
+        </list>
+      </paragraph>
+    </section>
+  </content>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<records xmlns:a="urn:a" xmlns:b="urn:b">
+  <record key="&quot;alpha&quot;" a:type="mixed">
+    <value><![CDATA[]]></value>
+    <value><![CDATA[one]]><![CDATA[two]]></value>
+    <meta b:empty="" xml:space="default">
+      <!-- comment with --? -->
+      <flag enabled="true">yes</flag>
+    </meta>
+  </record>
+  <record key="beta">
+    <value> leading&#x0A;trailing </value>
+    <meta>
+      <flag enabled="false"/>
+      <flag enabled="1">0</flag>
+    </meta>
+  </record>
+  <record key="gamma" a:type="unknown">
+    <value>left &lt; middle &amp; right &gt; end</value>
+    <meta b:empty="value"/>
+  </record>
+</records>
+```

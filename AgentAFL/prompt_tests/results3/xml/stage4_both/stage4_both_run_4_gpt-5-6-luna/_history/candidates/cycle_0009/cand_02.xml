@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="urn:example:booking"
+           xmlns:b="urn:example:booking"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+  <xs:element name="reservation" type="b:ReservationType"/>
+  <xs:complexType name="ReservationType">
+    <xs:sequence>
+      <xs:element name="reference" type="xs:token"/>
+      <xs:element name="guest" type="b:GuestType" minOccurs="1" maxOccurs="4"/>
+      <xs:element name="stay">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="arrival" type="xs:date"/>
+            <xs:element name="departure" type="xs:date"/>
+            <xs:element name="nights" type="b:PositiveCount"/>
+          </xs:sequence>
+          <xs:attribute name="timezone" type="xs:string" use="required"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:choice minOccurs="0">
+        <xs:element name="room" type="b:RoomType"/>
+        <xs:element name="campSite" type="b:CampSiteType"/>
+      </xs:choice>
+      <xs:element name="notes" minOccurs="0">
+        <xs:complexType mixed="true">
+          <xs:sequence>
+            <xs:element name="tag" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="status" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="held"/>
+          <xs:enumeration value="confirmed"/>
+          <xs:enumeration value="cancelled"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:complexType>
+  <xs:complexType name="GuestType">
+    <xs:sequence>
+      <xs:element name="given" type="xs:string"/>
+      <xs:element name="family" type="xs:string"/>
+      <xs:element name="contact" type="b:ContactType" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="age" type="xs:nonNegativeInteger"/>
+  </xs:complexType>
+  <xs:complexType name="ContactType">
+    <xs:choice>
+      <xs:element name="email" type="xs:string"/>
+      <xs:element name="phone" type="xs:string"/>
+    </xs:choice>
+  </xs:complexType>
+  <xs:complexType name="RoomType">
+    <xs:attribute name="floor" type="xs:integer" use="required"/>
+    <xs:attribute name="accessible" type="xs:boolean" default="false"/>
+  </xs:complexType>
+  <xs:complexType name="CampSiteType">
+    <xs:attribute name="pitch" type="xs:string" use="required"/>
+    <xs:attribute name="power" type="xs:boolean"/>
+  </xs:complexType>
+  <xs:simpleType name="PositiveCount">
+    <xs:restriction base="xs:positiveInteger">
+      <xs:maxInclusive value=" ninety"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

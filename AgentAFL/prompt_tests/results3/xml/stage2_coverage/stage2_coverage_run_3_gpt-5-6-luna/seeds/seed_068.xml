@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body, attachments?)>
+  <!ELEMENT header (from, to, token)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT body ANY>
+  <!ELEMENT attachments (attachment+)>
+  <!ELEMENT attachment (name, content)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT content (#PCDATA)>
+  <!ATTLIST envelope version NMTOKEN #FIXED "2.0">
+  <!ATTLIST header id ID #IMPLIED>
+  <!ATTLIST attachment id ID #REQUIRED media CDATA #IMPLIED>
+  <!ENTITY newline "&#xA;">
+  <!ENTITY payload "one&newline;two&newline;three">
+]>
+<envelope version="2.0" xmlns:e="urn:env">
+  <header id="h0">
+    <from>sender@example.invalid</from>
+    <to>receiver@example.invalid</to>
+    <token><![CDATA[<opaque>&token]]></token>
+  </header>
+  <body>
+    <e:message priority="urgent">hello &payload;</e:message>
+    <e:message priority="0"><![CDATA[
+      <![CDATA[nested-looking text]]>
+    ]]></e:message>
+  </body>
+  <attachments>
+    <attachment id="a0" media="text/plain">
+      <name>note.txt</name>
+      <content>&payload;</content>
+    </attachment>
+    <attachment id="a1" media="application/octet-stream">
+      <name>empty.bin</name>
+      <content/>
+    </attachment>
+  </attachments>
+</envelope>

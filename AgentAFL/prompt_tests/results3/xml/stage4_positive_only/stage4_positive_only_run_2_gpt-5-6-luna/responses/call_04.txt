@@ -1,0 +1,154 @@
+```xml
+<?xml version="1.0"?>
+<catalog>
+  <section name="tools">
+    <item sku="A-001">
+      <name>Orbital wrench</name>
+      <price currency="EUR">19.95</price>
+      <availability>
+        <warehouse code="north">7</warehouse>
+        <warehouse code="south">0</warehouse>
+      </availability>
+    </item>
+    <item sku="B-204" discontinued="true">
+      <name>Glass gauge</name>
+      <price currency="JPY">1200</price>
+      <availability/>
+    </item>
+  </section>
+  <section name="materials">
+    <item sku="C-900">
+      <name>Thermal filament</name>
+      <price currency="USD">0.004</price>
+      <availability>
+        <warehouse code="east">999999</warehouse>
+      </availability>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<map xmlns="urn:geo:map" xmlns:g="urn:geo:geometry">
+  <layer id="terrain" visible="1">
+    <g:polygon winding="even-odd">
+      <g:ring role="outer">
+        <g:point x="-180.0000" y="90.0000"/>
+        <g:point x="0" y="0"/>
+        <g:point x="180.0000" y="-90.0000"/>
+        <g:point x="-180.0000" y="90.0000"/>
+      </g:ring>
+      <g:ring role="inner">
+        <g:point x="-1" y="-1"/>
+        <g:point x="1" y="-1"/>
+        <g:point x="1" y="1"/>
+        <g:point x="-1" y="1"/>
+        <g:point x="-1" y="-1"/>
+      </g:ring>
+    </g:polygon>
+  </layer>
+  <layer id="labels" visible="0">
+    <label at="0,0">center &amp; origin</label>
+  </layer>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+  <!ENTITY marker "inside">
+]>
+<archive>
+  <folder path="/">
+    <folder path="/a">
+      <file name="empty.txt" size="0"></file>
+      <file name="notes.txt" size="17"><![CDATA[line one
+line two
+]]></file>
+    </folder>
+    <folder path="/b">
+      <link name="latest" target="../a/notes.txt"/>
+      <file name="symbols.dat" size="3">&left;&marker;&right;</file>
+    </folder>
+  </folder>
+  <manifest generated="false">
+    <checksum algorithm="none"/>
+    <comment>Trailing spaces are intentional:   </comment>
+  </manifest>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<workflow id="wf-77" version="3">
+  <trigger kind="schedule">
+    <calendar>
+      <day-of-week>Monday</day-of-week>
+      <time zone="UTC">00:00:00</time>
+    </calendar>
+  </trigger>
+  <branch test="result = 'ok'">
+    <task name="collect" retry="0">
+      <input source="stdin"/>
+      <output format="json"/>
+    </task>
+    <parallel>
+      <task name="compress">
+        <depends-on ref="collect"/>
+      </task>
+      <task name="notify">
+        <depends-on ref="collect"/>
+        <recipients>
+          <recipient channel="email">nobody@example.invalid</recipient>
+          <recipient channel="sms"></recipient>
+        </recipients>
+      </task>
+    </parallel>
+  </branch>
+  <on-error>
+    <action type="rollback"/>
+    <action type="log">failure &gt; threshold</action>
+  </on-error>
+</workflow>
+```
+
+```xml
+<?xml version="1.0"?>
+<report>
+  <metadata>
+    <title>Layered observations</title>
+    <keywords>
+      <keyword>edge</keyword>
+      <keyword>empty</keyword>
+      <keyword>unicode-π</keyword>
+    </keywords>
+    <author>
+      <first>Élodie</first>
+      <last>Ng</last>
+    </author>
+  </metadata>
+  <body>
+    <section level="1">
+      <heading>Opening</heading>
+      <p>Text before <em>emphasis</em>, after it, and <span data-kind="x">nested <b>bold</b> content</span>.</p>
+      <p><![CDATA[Raw characters: <tag> & " ' ]]></p>
+      <list ordered="false">
+        <entry/>
+        <entry>alpha</entry>
+        <entry>omega<subscript>2</subscript></entry>
+      </list>
+    </section>
+    <section level="2">
+      <heading/>
+      <table>
+        <row><cell>1</cell><cell>2</cell></row>
+        <row><cell colspan="2">combined</cell></row>
+      </table>
+    </section>
+  </body>
+  <?render mode="compact"?>
+</report>
+```

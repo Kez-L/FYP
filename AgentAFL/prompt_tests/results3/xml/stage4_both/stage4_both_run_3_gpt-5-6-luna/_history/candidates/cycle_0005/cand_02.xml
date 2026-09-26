@@ -1,0 +1,52 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (header, accounts, transactions)>
+  <!ELEMENT header (period, note)>
+  <!ELEMENT period (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT accounts (account+)>
+  <!ELEMENT account (owner, balance, flag*)>
+  <!ATTLIST account number ID #REQUIRED currency (EUR|USD|JPY) "EUR">
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT balance (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST flag name NMTOKEN #REQUIRED>
+  <!ELEMENT transactions (transaction+)>
+  <!ELEMENT transaction (debit, credit, memo?)>
+  <!ATTLIST transaction ref ID #REQUIRED date CDATA #REQUIRED>
+  <!ELEMENT debit EMPTY>
+  <!ATTLIST debit account IDREF #REQUIRED amount CDATA #REQUIRED>
+  <!ELEMENT credit EMPTY>
+  <!ATTLIST credit account IDREF #REQUIRED amount CDATA #REQUIRED>
+  <!ELEMENT memo (#PCDATA)>
+  <!ENTITY euro "&#x20AC;">
+]>
+<ledger xml:lang="en">
+  <header>
+    <period>2026-Q3</period>
+    <note>Reconciled&#x85;pending external confirmation.</note>
+  </header>
+  <accounts>
+    <account number="acct-01" currency="EUR">
+      <owner>R&amp;D</owner>
+      <balance>&euro;12500.50</balance>
+      <flag name="verified"/>
+      <flag name="restricted"/>
+    </account>
+    <account number="acct-02" currency="USD">
+      <owner>Operations</owner>
+      <balance>8400.00</balance>
+    </account>
+  </accounts>
+  <transactions>
+    <transaction ref="tx-100" date="2026-09-20">
+      <debit account="acct-01" amount="250.00"/>
+      <credit account="acct-02" amount="250.00"/>
+      <memo>Tooling allocation &#x1F4C8;</memo>
+    </transaction>
+    <transaction ref="tx-101" date="2026-09-21">
+      <debit account="acct-02" amount="75.25"/>
+      <credit account="acct-01" amount="75.25"/>
+    </transaction>
+  </transactions>
+</ledger>

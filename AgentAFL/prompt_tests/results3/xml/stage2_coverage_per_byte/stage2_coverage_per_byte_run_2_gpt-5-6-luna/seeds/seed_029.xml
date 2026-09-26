@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (header, records, trailer)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (key, value, annotation?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|item)*>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT annotation (#PCDATA)>
+  <!ATTLIST header timestamp CDATA #REQUIRED source CDATA #IMPLIED>
+  <!ATTLIST records count NMTOKEN #IMPLIED>
+  <!ATTLIST record uid ID #REQUIRED type (text|number|mixed) #IMPLIED>
+  <!ATTLIST annotation xml:space (default|preserve) "default">
+  <!ENTITY amp "&amp;">
+  <!ENTITY recursive "&amp;recursive;">
+]>
+<stream>
+  <header timestamp="2026-09-24T12:34:56Z" source="sensor-7"/>
+  <records count="3">
+    <record uid="r1" type="text">
+      <key>alpha</key>
+      <value>left<item>middle</item>right</value>
+      <annotation xml:space="preserve">  padded  </annotation>
+    </record>
+    <record uid="r2" type="number">
+      <key>42</key>
+      <value>1&lt;2 &amp; 3&gt;2</value>
+    </record>
+    <record uid="r3" type="mixed">
+      <key>delta</key>
+      <value><![CDATA[one]]><item><![CDATA[two]]></item>&amp;</value>
+    </record>
+  </records>
+  <trailer/>
+</stream>

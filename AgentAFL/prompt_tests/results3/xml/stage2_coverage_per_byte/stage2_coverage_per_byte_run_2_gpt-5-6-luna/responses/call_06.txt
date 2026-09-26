@@ -1,0 +1,113 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (name, details?, link*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT details (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST entry id ID #REQUIRED kind (book|video|other) "other">
+  <!ATTLIST link href CDATA #REQUIRED rel CDATA "related">
+  <!ENTITY copyright "&#169;">
+]>
+<catalog>
+  <entry id="a1" kind="book">
+    <name>XML &amp; Parsing</name>
+    <details>Use <em>carefully</em> with <code>&lt;markup&gt;</code> &copyright;</details>
+    <link href="urn:one" rel="self"/>
+    <link href="urn:two"/>
+  </entry>
+</catalog>
+```
+
+```xml
+<!DOCTYPE message [
+  <!ELEMENT message (sender, recipient, body, attachment*)>
+  <!ELEMENT sender EMPTY>
+  <!ELEMENT recipient EMPTY>
+  <!ELEMENT body (#PCDATA|br)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT attachment (#PCDATA)>
+  <!ATTLIST sender address CDATA #REQUIRED>
+  <!ATTLIST recipient address CDATA #REQUIRED>
+  <!ATTLIST attachment type CDATA #IMPLIED>
+  <!ENTITY linebreak "<br/>">
+]>
+<message priority="high">
+  <sender address="alpha@example.test"/>
+  <recipient address="beta@example.test"/>
+  <body>Before &linebreak; after &amp; then <![CDATA[<literal/>]]></body>
+  <attachment type="text">a&#x0D;b&#x0A;c</attachment>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE map [
+  <!ELEMENT map (pair*)>
+  <!ELEMENT pair (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|pair)*>
+  <!ATTLIST pair keyref IDREF #IMPLIED>
+  <!ENTITY nested "x &amp; y">
+]>
+<map>
+  <pair keyref="missing">
+    <key>root</key>
+    <value>
+      <pair><key>inner</key><value>&nested;</value></pair>
+      <pair><key><![CDATA[split]]></key><value>text</value></pair>
+    </value>
+  </pair>
+</map>
+```
+
+```xml
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder|file|alias)*>
+  <!ELEMENT folder (folder|file|alias)*>
+  <!ELEMENT file (#PCDATA)>
+  <!ELEMENT alias EMPTY>
+  <!ATTLIST folder path NMTOKEN #REQUIRED>
+  <!ATTLIST file path CDATA #REQUIRED compressed (yes|no) "no">
+  <!ATTLIST alias target IDREF #REQUIRED>
+  <!ATTLIST file id ID #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data.bin" NDATA bin>
+]>
+<archive>
+  <folder path="root">
+    <file id="f1" path="a&amp;b.bin" compressed="yes">&blob;</file>
+    <alias target="f1"/>
+    <folder path="nested">
+      <file path="empty"></file>
+    </folder>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % declarations SYSTEM "missing-subset.dtd">
+  %declarations;
+  <!ELEMENT report (summary, table)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST report generated CDATA #IMPLIED>
+  <!ATTLIST row number NMTOKEN #REQUIRED>
+  <!ATTLIST cell span NMTOKEN "1">
+]>
+<report generated="now">
+  <?audit level="verbose"?>
+  <summary><![CDATA[<summary> & untouched]]></summary>
+  <table>
+    <row number="01"><cell span="2">A</cell><cell>B</cell></row>
+    <row number="02"><cell>&quot;C&quot;</cell><cell span="0"/></row>
+  </table>
+</report>
+```

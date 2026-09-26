@@ -1,0 +1,198 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header,section+,footer)>
+  <!ELEMENT header (title,generated)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT section (heading,para+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT para (#PCDATA|term|ref)*>
+  <!ELEMENT term (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST section number NMTOKEN #REQUIRED>
+  <!ATTLIST ref target IDREF #IMPLIED kind (internal|external) "internal">
+  <!ATTLIST term id ID #IMPLIED>
+  <!ENTITY trademark "&#x2122;">
+  <!ENTITY intro "This is an &trademark; notice.">
+]>
+<report>
+  <header>
+    <title id="main">Quarterly &amp; Annual Review</title>
+    <generated>2026-09-24T12:30:00Z</generated>
+  </header>
+  <section number="01">
+    <heading>Scope</heading>
+    <para>&intro; See <ref target="term-x" kind="internal"/> for definitions.</para>
+    <para><term id="term-x">XML entity handling</term> remains significant.</para>
+  </section>
+  <section number="02">
+    <heading>Findings</heading>
+    <para>Input may contain <term>nested <term>terminology</term></term> and escaped &lt;markers&gt;.</para>
+  </section>
+  <footer>End of report.</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (layer*)>
+  <!ELEMENT layer (metadata?, feature*)>
+  <!ELEMENT metadata ANY>
+  <!ELEMENT feature (geometry,properties?)>
+  <!ELEMENT geometry (point|line|polygon)>
+  <!ELEMENT point EMPTY>
+  <!ELEMENT line (point+)>
+  <!ELEMENT polygon (ring+)>
+  <!ELEMENT ring (point+)>
+  <!ELEMENT properties (property*)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST layer name CDATA #REQUIRED visible (true|false) "true">
+  <!ATTLIST feature fid ID #IMPLIED>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ATTLIST property key CDATA #REQUIRED>
+]>
+<map>
+  <layer name="coastline" visible="false">
+    <metadata><![CDATA[projection=EPSG:4326; source=<survey/>]]></metadata>
+    <feature fid="f-7">
+      <geometry>
+        <polygon>
+          <ring>
+            <point x="-3.2" y="51.4"/>
+            <point x="-3.1" y="51.5"/>
+            <point x="-3.2" y="51.4"/>
+          </ring>
+        </polygon>
+      </geometry>
+      <properties>
+        <property key="label">North &amp; West</property>
+      </properties>
+    </feature>
+  </layer>
+  <layer name="routes">
+    <feature>
+      <geometry>
+        <line>
+          <point x="0" y="0"/>
+          <point x="1e2" y="-4.5"/>
+        </line>
+      </geometry>
+    </feature>
+  </layer>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT payload (data|chunk)+>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST package version CDATA #REQUIRED>
+  <!ATTLIST file path CDATA #REQUIRED checksum CDATA #IMPLIED>
+  <!ATTLIST data encoding (base64|text|hex) #REQUIRED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED final (yes|no) "no">
+]>
+<package version="3.0">
+  <manifest>
+    <file path="bin/app" checksum="sha256:abc123"/>
+    <file path="config/main.xml"/>
+    <file path="docs/readme.txt" checksum=""/>
+  </manifest>
+  <payload>
+    <data encoding="base64">AAECAwQFBgcICQ==</data>
+    <chunk index="0001">first&amp;second</chunk>
+    <chunk index="0002" final="yes"><![CDATA[last <raw> block]]></chunk>
+  </payload>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dialogue [
+  <!ELEMENT dialogue (scene+)>
+  <!ELEMENT scene (stage?,actor+)>
+  <!ELEMENT stage (#PCDATA)>
+  <!ELEMENT actor (name,utterance+)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT utterance (#PCDATA|pause|emphasis)*>
+  <!ELEMENT pause EMPTY>
+  <!ELEMENT emphasis (#PCDATA|pause)*>
+  <!ATTLIST scene id ID #REQUIRED time CDATA #IMPLIED>
+  <!ATTLIST actor role CDATA #IMPLIED>
+  <!ATTLIST utterance mood (calm|urgent|unknown) "unknown">
+  <!ENTITY ellipsis "&#x2026;">
+]>
+<dialogue>
+  <scene id="s1" time="00:00:01">
+    <stage>The room is dark; a clock ticks.</stage>
+    <actor role="narrator">
+      <name>Voice</name>
+      <utterance mood="calm">Listen<pause/>carefully&ellipsis;</utterance>
+    </actor>
+    <actor role="visitor">
+      <name>Rhea</name>
+      <utterance mood="urgent">Open the door <emphasis>now<pause/>please</emphasis>!</utterance>
+      <utterance>There is no answer.</utterance>
+    </actor>
+  </scene>
+  <scene id="s2">
+    <stage><![CDATA[<wind> rises beyond the wall ]]></stage>
+    <actor>
+      <name>Guard &amp; Child</name>
+      <utterance mood="unknown">Who goes there?</utterance>
+    </actor>
+  </scene>
+</dialogue>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (collection+)>
+  <!ELEMENT collection (item*)>
+  <!ELEMENT item (key,value,history?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|binary)*>
+  <!ELEMENT binary EMPTY>
+  <!ELEMENT history (event+)>
+  <!ELEMENT event (#PCDATA)>
+  <!ATTLIST collection name CDATA #REQUIRED>
+  <!ATTLIST item uid ID #REQUIRED state (new|changed|deleted) #REQUIRED>
+  <!ATTLIST binary type CDATA #REQUIRED length NMTOKEN #IMPLIED>
+  <!ATTLIST event when CDATA #REQUIRED actor CDATA #IMPLIED>
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY logo SYSTEM "logo.jpg" NDATA jpeg>
+]>
+<archive>
+  <collection name="alpha">
+    <item uid="u001" state="new">
+      <key>theme</key>
+      <value>light</value>
+      <history>
+        <event when="2026-01-01">created</event>
+      </history>
+    </item>
+    <item uid="u002" state="changed">
+      <key>avatar</key>
+      <value><binary type="image/jpeg" length="4096"/></value>
+      <history>
+        <event when="2026-02-03" actor="admin">replaced &amp; indexed</event>
+        <event when="2026-07-19">verified</event>
+      </history>
+    </item>
+  </collection>
+  <collection name="βeta">
+    <item uid="u003" state="deleted">
+      <key>note</key>
+      <value><![CDATA[obsolete <entry/>]]></value>
+    </item>
+  </collection>
+</archive>
+```

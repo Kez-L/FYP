@@ -1,0 +1,92 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (item*)>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ELEMENT item (#PCDATA|meta|value)*>
+  <!ATTLIST item key CDATA #IMPLIED>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta xmlns:p CDATA #IMPLIED p:flag (yes|no) "no">
+  <!ELEMENT value (#PCDATA)>
+  <!ENTITY nested "<value>expanded &amp; content</value>">
+]>
+<catalog>
+  <section id="main">
+    <item key="alpha"><meta xmlns:p="urn:test" p:flag="yes"/><value><![CDATA[x<y>&z]]></value></item>
+    &nested;
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<r xmlns="urn:root" xmlns:x="urn:x">
+  <x:a x:n="1">
+    <![CDATA[unclosed-looking ]]]]><![CDATA[> text]]>
+    <b xmlns="">plain</b>
+  </x:a>
+  <empty/>
+  <mixed>before<!-- comment --><![CDATA[inside]]><?pi data?></mixed>
+</r>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body)>
+  <!ELEMENT header (name, token?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT body (message+)>
+  <!ELEMENT message (#PCDATA|ref)*>
+  <!ATTLIST message level NMTOKEN #IMPLIED>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target ENTITY #IMPLIED>
+  <!ENTITY one "A &amp; B">
+  <!ENTITY two "&one; <![CDATA[raw]]>">
+]>
+<envelope>
+  <header><name>αβγ</name><token>&two;</token></header>
+  <body>
+    <message level="high">start<ref target="one"/>end</message>
+    <message level="low">&one;</message>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!NOTATION bin SYSTEM "file:///tmp/data.bin">
+  <!ENTITY external SYSTEM "file:///tmp/missing.ent">
+  <!ENTITY literal "quote: &quot; apostrophe: &apos; less: &lt;">
+]>
+<root xmlns:q="urn:q" xml:lang="en">
+  <q:node id="a&amp;b" data="&#x1F600;">&literal;</q:node>
+  <q:node><![CDATA[
+    line one
+    line two
+  ]]></q:node>
+  <?instruction value?>
+  <child xml:space="preserve">  spaced  </child>
+</root>
+```
+
+```xml
+<document>
+  <group name="outer">
+    <group name="inner">
+      <entry><![CDATA[alpha]]></entry>
+      <entry name="&amp;&quot;">text</entry>
+    </group>
+  </group>
+  <tail xmlns:a="urn:a" xmlns:b="urn:b">
+    <a:item b:kind="x">
+      <a:item b:kind="y"/>
+    </a:item>
+  </tail>
+  <!-- boundary -->
+  <data>one &lt; two &amp;&amp; three</data>
+</document>
+```

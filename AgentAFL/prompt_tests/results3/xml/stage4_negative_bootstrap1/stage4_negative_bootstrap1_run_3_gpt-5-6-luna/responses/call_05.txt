@@ -1,0 +1,147 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, records)>
+  <!ELEMENT header (title, created)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (name, value, note?)>
+  <!ATTLIST record key ID #REQUIRED category CDATA "general">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY company "Aster &amp; Oak">
+]>
+<archive>
+  <header>
+    <title>Quarterly &company; Report</title>
+    <created>2026-09-24T12:30:00Z</created>
+  </header>
+  <records>
+    <record key="r1" category="finance">
+      <name>revenue</name>
+      <value>1842.75</value>
+      <note><![CDATA[Values include <adjustments> and "estimates".]]></note>
+    </record>
+    <record key="r2">
+      <name>visitors</name>
+      <value>000731</value>
+    </record>
+  </records>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:m="urn:example:meta" xml:lang="fr">
+  <m:metadata m:revision="7" m:verified="false">
+    <m:source xml:base="https://example.invalid/data/">import.xml</m:source>
+  </m:metadata>
+  <entry code="α-01" status="active">
+    <label>Éléments &amp; données</label>
+    <description xml:space="preserve">  leading
+      <emphasis>mixed</emphasis> trailing  </description>
+    <tags>
+      <tag priority="1">one</tag>
+      <tag priority="0">two</tag>
+      <tag priority="-1"/>
+    </tags>
+  </entry>
+  <entry code="β-02" status="archived">
+    <label>Ωmega</label>
+    <description><![CDATA[
+      <synthetic item="not-markup"/>
+    ]]></description>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE form [
+  <!ELEMENT form (section+)>
+  <!ELEMENT section (heading, field*)>
+  <!ATTLIST section name CDATA #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT field (label, input, help?)>
+  <!ATTLIST field id ID #REQUIRED required (yes|no) "no">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT input EMPTY>
+  <!ATTLIST input type (text|number|date) #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT help (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+]>
+<form>
+  <section name="account">
+    <heading>Account &nbsp; details</heading>
+    <field id="username" required="yes">
+      <label>User name</label>
+      <input type="text" value="guest"/>
+      <help>Use letters, digits, or a dash.</help>
+    </field>
+    <field id="birthdate">
+      <label>Date of birth</label>
+      <input type="date"/>
+    </field>
+  </section>
+  <section name="limits">
+    <heading>Limits</heading>
+    <field id="quota">
+      <label>Maximum value</label>
+      <input type="number" value="0x10"/>
+    </field>
+  </section>
+</form>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<package xmlns:p="urn:pkg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <?process stage="parse"?>
+  <p:manifest generated="2026-09-24">
+    <p:item path="bin/tool" media-type="application/octet-stream"
+            size="0" checksum="sha256:">
+      <p:link xlink:type="simple" xlink:href="data:text/plain,hello"/>
+    </p:item>
+    <p:item path="docs/readme.xml" media-type="application/xml" size="42">
+      <p:content>
+        <p:line number="1">alpha</p:line>
+        <p:line number="2">beta &amp; gamma</p:line>
+      </p:content>
+    </p:item>
+  </p:manifest>
+  <!-- An intentionally varied processing instruction and whitespace -->
+  <p:signature algorithm="none"><?placeholder?></p:signature>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE telemetry [
+  <!ELEMENT telemetry (device, sample*)>
+  <!ELEMENT device EMPTY>
+  <!ATTLIST device
+    id ID #REQUIRED
+    model CDATA #IMPLIED
+    enabled (true|false) "true">
+  <!ELEMENT sample (timestamp, reading, annotation?)>
+  <!ATTLIST sample ref IDREF #IMPLIED>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT reading (#PCDATA)>
+  <!ATTLIST reading unit CDATA #REQUIRED quality CDATA "unknown">
+  <!ELEMENT annotation (#PCDATA)>
+]>
+<telemetry>
+  <device id="sensor-main" model="X&amp;Y" enabled="true"/>
+  <sample ref="sensor-main">
+    <timestamp>2026-09-24T00:00:00.000+00:00</timestamp>
+    <reading unit="°C" quality="nominal">21.75</reading>
+    <annotation>steady <![CDATA[<signal/>]]> output</annotation>
+  </sample>
+  <sample>
+    <timestamp>2026-09-24T00:01:00Z</timestamp>
+    <reading unit="%" quality="calibrating">99.999</reading>
+  </sample>
+</telemetry>
+```

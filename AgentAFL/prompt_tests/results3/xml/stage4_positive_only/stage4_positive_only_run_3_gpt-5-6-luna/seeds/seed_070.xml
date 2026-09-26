@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE galaxy [
+  <!ELEMENT galaxy (starfield,mission-log)>
+  <!ATTLIST galaxy epoch CDATA #IMPLIED>
+  <!ELEMENT starfield (star+)>
+  <!ELEMENT star (name,position,planetary-system?)>
+  <!ATTLIST star id ID #REQUIRED spectral (O|B|A|F|G|K|M) #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT position EMPTY>
+  <!ATTLIST position x CDATA #REQUIRED y CDATA #REQUIRED z CDATA #REQUIRED>
+  <!ELEMENT planetary-system (planet*)>
+  <!ELEMENT planet (name,atmosphere?,moon*)>
+  <!ATTLIST planet id ID #REQUIRED orbit IDREF #IMPLIED>
+  <!ELEMENT atmosphere (#PCDATA|gas)*>
+  <!ELEMENT gas (#PCDATA)>
+  <!ELEMENT moon (#PCDATA)>
+  <!ELEMENT mission-log (entry+)>
+  <!ELEMENT entry (#PCDATA|coordinate|result)*>
+  <!ATTLIST entry target IDREF #REQUIRED status (planned|complete|failed) "planned">
+  <!ELEMENT coordinate EMPTY>
+  <!ATTLIST coordinate ra CDATA #REQUIRED dec CDATA #REQUIRED>
+  <!ELEMENT result (#PCDATA)>
+  <!ENTITY unit "parsecs">
+]>
+<galaxy epoch="2026">
+  <starfield>
+    <star id="sol" spectral="G">
+      <name>Sol</name>
+      <position x="0" y="0" z="0"/>
+      <planetary-system>
+        <planet id="terra" orbit="sol">
+          <name>Earth</name>
+          <atmosphere>
+            <gas>Nitrogen</gas>
+            <gas>Oxygen</gas>
+          </atmosphere>
+          <moon>Luna</moon>
+        </planet>
+        <planet id="ares" orbit="sol">
+          <name>Mars</name>
+          <moon>Phobos</moon>
+          <moon>Deimos</moon>
+        </planet>
+      </planetary-system>
+    </star>
+    <star id="vega" spectral="A">
+      <name>Vega</name>
+      <position x="7.68" y="3.21" z="-1.04"/>
+    </star>
+  </starfield>
+  <mission-log>
+    <entry target="terra" status="complete">
+      Surveyed at <coordinate ra="14h39m" dec="+62d"/>
+      <result>Nominal; distance measured in &unit;.</result>
+    </entry>
+    <entry target="vega" status="planned">
+      <result>Awaiting launch window.</result>
+    </entry>
+  </mission-log>
+</galaxy>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload, signature)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry path CDATA #REQUIRED media CDATA #IMPLIED checksum CDATA #IMPLIED>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT signature (algorithm, value)>
+  <!ELEMENT algorithm (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY ampersand "&amp;">
+  <!ENTITY quote "&quot;">
+]>
+<package>
+  <!-- Manifest entries deliberately use different attribute order and quoting. -->
+  <manifest>
+    <entry checksum="abc123" path="docs/readme.xml" media="application/xml"/>
+    <entry path="images/logo.png" media="image/png" checksum="def456"/>
+    <entry path="empty.dat"/>
+  </manifest>
+  <payload>
+    <chunk id="first">begin &amp; continue</chunk>
+    <chunk id="second"><![CDATA[
+      line one
+      line two
+      ]]>tail</chunk>
+    <chunk id="third">symbols: &lt; &gt; &quot; &apos; &logo;</chunk>
+  </payload>
+  <signature>
+    <algorithm>sha256</algorithm>
+    <value>&quote;9f00aa&quote;</value>
+  </signature>
+</package>

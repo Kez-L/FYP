@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!DOCTYPE federation [
+  <!ELEMENT federation (endpoint+, policy)>
+  <!ATTLIST federation xmlns:sec CDATA #FIXED "urn:security" generation NMTOKEN #REQUIRED>
+  <!ELEMENT endpoint (address, capabilities, credentials?)>
+  <!ATTLIST endpoint id ID #REQUIRED region CDATA #IMPLIED>
+  <!ELEMENT address (#PCDATA)>
+  <!ELEMENT capabilities (capability*)>
+  <!ELEMENT capability EMPTY>
+  <!ATTLIST capability name NMTOKEN #REQUIRED enabled (true|false) "true">
+  <!ELEMENT credentials (sec:token, expires)>
+  <!ELEMENT sec:token (#PCDATA)>
+  <!ELEMENT expires (#PCDATA)>
+  <!ELEMENT policy (rule+)>
+  <!ELEMENT rule (match, action)>
+  <!ATTLIST rule priority NMTOKEN #REQUIRED>
+  <!ELEMENT match (#PCDATA|wildcard)*>
+  <!ELEMENT wildcard EMPTY>
+  <!ATTLIST wildcard field (host|path|method) #REQUIRED>
+  <!ELEMENT action (#PCDATA)>
+  <!ENTITY amp "&amp;">
+]>
+<federation xmlns:sec="urn:security" generation="42">
+  <?routing experimental="yes"?>
+  <endpoint id="east" region="us-east">
+    <address>https://east.example.test/api?mode=read&amp;v=2</address>
+    <capabilities>
+      <capability name="query"/>
+      <capability name="stream" enabled="false"/>
+    </capabilities>
+    <credentials>
+      <sec:token><![CDATA[Bearer a/b+c==]]></sec:token>
+      <expires>2048-06-30</expires>
+    </credentials>
+  </endpoint>
+  <endpoint id="local">
+    <address>http://[::1]:8080/service</address>
+    <capabilities><capability name="query"/></capabilities>
+  </endpoint>
+  <policy>
+    <rule priority="10">
+      <match><wildcard field="host"/>:<wildcard field="path"/></match>
+      <action>allow &amp; audit</action>
+    </rule>
+    <rule priority="20">
+      <match><wildcard field="method"/> POST</match>
+      <action>deny &amp; notify</action>
+    </rule>
+  </policy>
+</federation>

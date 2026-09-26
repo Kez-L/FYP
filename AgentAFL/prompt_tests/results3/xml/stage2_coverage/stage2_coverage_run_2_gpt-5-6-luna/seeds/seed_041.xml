@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (header,part+)>
+  <!ATTLIST package ident ID #REQUIRED refs IDREFS #IMPLIED>
+  <!ELEMENT header (property*)>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST property key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT part (label?,payload,checksum?)>
+  <!ATTLIST part kind (text|binary|encoded) #REQUIRED
+                token ID #IMPLIED
+                flags ENTITIES #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk|quote|mark)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT mark EMPTY>
+  <!ATTLIST mark ref IDREF #REQUIRED>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY open "[[">
+  <!ENTITY close "]]">
+  <!ENTITY ampersand "&amp;">
+  <!ENTITY sample "&open;payload&close;">
+]>
+<package ident="pkg-main" refs="p-alpha p-beta">
+  <header>
+    <property key="owner" value="ops"/>
+    <property key="mode" value="delta"/>
+  </header>
+  <part kind="text" token="p-alpha" flags="flagA flagB">
+    <label>intro</label>
+    <payload>Before &sample; after <chunk index="0">A&amp;B</chunk><quote>&quot;quoted&quot;</quote></payload>
+    <checksum>e7f1</checksum>
+  </part>
+  <part kind="encoded" token="p-beta">
+    <payload><![CDATA[raw <bytes> & untouched]]><mark ref="p-alpha"/></payload>
+  </part>
+</package>

@@ -1,0 +1,23 @@
+{
+  "call": 13,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (section+)>\n  <!ELEMENT section (heading, product*)>\n  <!ATTLIST section code ID #REQUIRED>\n  <!ELEMENT heading (#PCDATA)>\n  <!ELEMENT product (name, price, availability, description?)>\n  <!ATTLIST product sku ID #REQUIRED category CDATA #IMPLIED>\n  <!ELEMENT name (#PCDATA)>\n  <!ELEMENT price (#PCDATA)>\n  <!ELEMENT availability EMPTY>\n  <!ATTLIST availability status (in-stock|backorder|discontinued) \"in-stock\">\n  <!ELEMENT description (#PCDATA|em|br)*>\n  <!ELEMENT em (#PCDATA)>\n  <!ELEMENT br EMPTY>\n  <!ENTITY currency \"\u20ac\">\n]>\n<catalog>\n  <section code=\"hardware\">\n    <heading>Field equipment</heading>\n    <product sku=\"p-001\" category=\"sensor\">\n      <name>Thermal probe</name>\n      <price>&currency; 48.50</price>\n      <availability status=\"in-stock\"/>\n      <description>Compact <em>weatherproof</em> probe<br/>with replaceable tip.</description>\n    </product>\n    <product sku=\"p-002\">\n      <name>Signal meter</name>\n      <price>&currency; 112.00</price>\n      <availability status=\"backorder\"/>\n    </product>\n  </section>\n  <section code=\"software\">\n    <heading>Utilities</heading>\n    <product sku=\"p-010\" category=\"analysis\">\n      <name>Trace viewer</name>\n      <price>&currency; 19.95</price>\n      <availability status=\"discontinued\"/>\n      <description><![CDATA[Legacy viewer: <open> -> inspect -> close]]></description>\n    </product>\n  </section>\n</catalog>\n\n--- example 2 ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE conversation [\n  <!ELEMENT conversation (participants, message+)>\n  <!ELEMENT participants (person+)>\n  <!ELEMENT person EMPTY>\n  <!ATTLIST person id ID #REQUIRED role CDATA #IMPLIED>\n  <!ELEMENT message (sender, timestamp, body, attachment*)>\n  <!ATTLIST message id ID #REQUIRED reply-to IDREF #IMPLIED>\n  <!ELEMENT sender (#PCDATA)>\n  <!ELEMENT timestamp (#PCDATA)>\n  <!ELEMENT body (#PCDATA|mention|link|newline)*>\n  <!ELEMENT mention (#PCDATA)>\n  <!ELEMENT link (#PCDATA)>\n  <!ATTLIST link href URI #REQUIRED>\n  <!ELEMENT newline EMPTY>\n  <!ELEMENT attachment (filename, bytes)>\n  <!ELEMENT filename (#PCDATA)>\n  <!ELEMENT bytes (#PCDATA)>\n]>\n<conversation>\n  <participants>\n    <person id=\"u1\" role=\"editor\"/>\n    <person id=\"u2\" role=\"reviewer\"/>\n    <person id=\"u3\"/>\n  </participants>\n  <message id=\"m1\">\n    <sender>u1</sender>\n    <timestamp>2026-09-24T06:10:03+00:00</timestamp>\n    <body>\n      Hello <mention>@u2</mention><newline/>\n      Please review the <link href=\"https://example.invalid/spec?id=17&amp;view=full\">updated draft</link>.\n    </body>\n    <attachment>\n      <filename>draft-v3.txt</filename>\n      <bytes>2048</bytes>\n    </attachment>\n  </message>\n  <message id=\"m2\" reply-to=\"m1\">\n    <sender>u2</sender>\n    <timestamp>2026-09-24T06:42:19+00:00</timestamp>\n    <body>Looks good; I added one note.</body>\n  </message>\n</conversation>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T03:26:28.909817+00:00"
+}

@@ -1,0 +1,26 @@
+<?xml version="1.1"?>
+<!DOCTYPE pipeline [
+  <!ELEMENT pipeline (source, transform*, sink)>
+  <!ELEMENT source EMPTY>
+  <!ELEMENT transform (option*)>
+  <!ELEMENT option EMPTY>
+  <!ELEMENT sink EMPTY>
+  <!ATTLIST pipeline xml:id ID #IMPLIED mode (stream|batch) "stream">
+  <!ATTLIST source uri URI #REQUIRED format CDATA "raw">
+  <!ATTLIST transform name CDATA #REQUIRED enabled (yes|no) "yes">
+  <!ATTLIST option key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST sink destination CDATA #REQUIRED overwrite (true|false) "false">
+  <!ENTITY arrow "&#x2192;">
+  <!ENTITY control "&#x1;">
+]>
+<pipeline xmlns:cfg="urn:config" xml:id="p-7" mode="batch">
+  <source uri="file:///tmp/input.dat" format="binary"/>
+  <transform name="normalize" enabled="yes">
+    <option key="trim" value="true"/>
+    <option key="separator" value="&arrow;"/>
+  </transform>
+  <transform name="filter" enabled="no">
+    <option key="pattern" value="A&amp;B"/>
+  </transform>
+  <sink destination="file:///tmp/output.dat" overwrite="true"/>&control;
+</pipeline>

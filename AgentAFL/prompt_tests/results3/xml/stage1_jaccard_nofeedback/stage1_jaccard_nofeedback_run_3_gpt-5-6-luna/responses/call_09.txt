@@ -1,0 +1,106 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <x:entry id="0" enabled="true">
+    <title><![CDATA[<mixed>&text;]]></title>
+    <metadata>
+      <value type="integer">00000000000000000042</value>
+      <value type="empty"></value>
+      <value type="whitespace">
+        
+      </value>
+    </metadata>
+  </x:entry>
+  <entry id="1">
+    <title>alpha &amp; beta</title>
+    <metadata>
+      <value type="quoted">&quot;one&quot;</value>
+    </metadata>
+  </entry>
+</catalog>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ELEMENT root (section | note)*>
+  <!ELEMENT section (item+, section?)>
+  <!ELEMENT item (#PCDATA | emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST section name NMTOKEN #IMPLIED>
+  <!ATTLIST item rank CDATA "0">
+]>
+<root>
+  <section name="outer">
+    <item rank="1">first <emphasis>important</emphasis> item</item>
+    <section name="inner">
+      <item rank="2">nested <![CDATA[content with ]]> marker</item>
+    </section>
+  </section>
+  <note>tail</note>
+</root>
+```
+
+```xml
+<?xml version="1.1"?>
+<document>
+  <header>
+    <field key="a:b:c" value="&#x0A;&#x09;"/>
+    <field key="unicode" value="&#x20AC;&#x2603;"/>
+  </header>
+  <body>
+    <paragraph>before<break/>after<break/><inline>text</inline></paragraph>
+    <list ordered="false">
+      <item index="01"/>
+      <item index="02"><![CDATA[
+        line one
+        line two
+      ]]></item>
+    </list>
+  </body>
+  <footer/>
+</document>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (message)>
+  <!ELEMENT message (from, to, payload)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT data (#PCDATA)>
+  <!ATTLIST message id ID #REQUIRED>
+]>
+<envelope>
+  <message id="m0">
+    <from>sender@example.test</from>
+    <to>receiver@example.test</to>
+    <payload>
+      <data><![CDATA[&lt;not-an-element&gt;]]></data>
+      <data>left &lt; right &amp;&amp; right &gt; left</data>
+    </payload>
+  </message>
+</envelope>
+```
+
+```xml
+<root>
+  <a>
+    <b>
+      <c level="3">
+        <leaf/>
+        <leaf value="x"/>
+      </c>
+    </b>
+    <mixed>text<q>quoted</q><![CDATA[ raw <xml> ]]><q/></mixed>
+  </a>
+  <a>
+    <b id="second">
+      <c level="0"/>
+    </b>
+  </a>
+  <!-- comment with -- unusual? -->
+  <tail><![CDATA[]]></tail>
+</root>
+```

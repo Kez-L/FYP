@@ -1,0 +1,28 @@
+<?xml version="1.1"?>
+<!DOCTYPE envelope [
+  <!ENTITY % declarations '
+    <!ELEMENT envelope (header, payload)>
+    <!ELEMENT header (stamp, sender, recipient)>
+    <!ELEMENT stamp (#PCDATA)>
+    <!ELEMENT sender (#PCDATA)>
+    <!ELEMENT recipient (#PCDATA)>
+    <!ELEMENT payload (#PCDATA|section|token)*>
+    <!ELEMENT section (#PCDATA|token)*>
+    <!ELEMENT token EMPTY>
+    <!ATTLIST token value CDATA #IMPLIED>
+  '>
+  %declarations;
+  <!ENTITY quote "&#x22; &#x27; &lt;tag&gt;">
+  <!ENTITY controls "&#x85;&#x2028;&#x2029;">
+]>
+<envelope>
+  <header>
+    <stamp>2026-09-24T12:34:56Z</stamp>
+    <sender>alpha@example.invalid</sender>
+    <recipient>beta@example.invalid</recipient>
+  </header>
+  <payload>
+    Prefix &quote; <section>nested <token value="&quote;"/> text</section>
+    <section><![CDATA[ raw ]]> and &#x1F642; &controls;</section>
+  </payload>
+</envelope>

@@ -1,0 +1,135 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:meta="urn:example:metadata">
+  <meta:generated-at meta:format="iso8601">2026-09-24T00:00:00Z</meta:generated-at>
+  <product id="p-001" available="true">
+    <name><![CDATA[Glass & Stone <Limited>]]></name>
+    <price currency="EUR">19.95</price>
+    <tags>
+      <tag priority="high">fragile</tag>
+      <tag priority="low">handmade</tag>
+    </tags>
+    <specification>
+      <dimension unit="mm" axis="x">120</dimension>
+      <dimension unit="mm" axis="y">80</dimension>
+      <dimension unit="mm" axis="z">6</dimension>
+    </specification>
+  </product>
+  <product id="p-002" available="false">
+    <name>Plain &amp; Simple</name>
+    <price currency="JPY">0</price>
+    <tags/>
+    <specification/>
+  </product>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!-- A document containing mixed content, namespaces, and processing instructions. -->
+<article xmlns="urn:example:article" xml:lang="en">
+  <title>Signals</title>
+  <paragraph>Before <emphasis level="strong">the break</emphasis>, the system emitted
+    <code>READY</code> and then <link href="urn:example:status">stopped</link>.</paragraph>
+  <?audit source="seed" mode="verbose"?>
+  <table border="0">
+    <row>
+      <cell colspan="2">A</cell>
+      <cell>β</cell>
+    </row>
+    <row>
+      <cell>1</cell>
+      <cell><![CDATA[x < y && y < z]]></cell>
+      <cell>𐐷</cell>
+    </row>
+  </table>
+  <footer>End&#x0A;of&nbsp;record.</footer>
+</article>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE library [
+  <!ELEMENT library (shelf+)>
+  <!ELEMENT shelf (book*, note?)>
+  <!ATTLIST shelf code ID #REQUIRED>
+  <!ELEMENT book (title, author+, summary?)>
+  <!ATTLIST book ref ID #IMPLIED category (fiction|reference|other) "other">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|quote)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY mark "&#x2605;">
+]>
+<library>
+  <shelf code="west">
+    <book ref="b7" category="fiction">
+      <title>The &mark; Archive</title>
+      <author>A. One</author>
+      <author>B. Two</author>
+      <summary>Fragments <quote>kept &nbsp; intact</quote> across editions.</summary>
+    </book>
+    <note>Inventory checked.</note>
+  </shelf>
+  <shelf code="east">
+    <book category="reference">
+      <title>Indexes</title>
+      <author>Catalog Office</author>
+    </book>
+  </shelf>
+</library>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:noNamespaceSchemaLocation="config.xsd">
+  <runtime>
+    <limit name="workers">00000000000000000004</limit>
+    <limit name="timeout" unit="ms">-1</limit>
+    <feature enabled="yes" experimental="0"/>
+  </runtime>
+  <paths>
+    <path kind="cache">./cache/../cache//objects</path>
+    <path kind="empty"></path>
+    <path kind="unicode">/tmp/λ/雪</path>
+  </paths>
+  <mapping>
+    <entry key="&quot;quoted&quot;" value="&apos;single&apos;"/>
+    <entry key="ampersand" value="A &amp; B"/>
+  </mapping>
+  <sequence start="0" step="0">
+    <item index="0"/>
+    <item index="18446744073709551615"/>
+  </sequence>
+</configuration>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, trailer)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header session CDATA #REQUIRED>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|data)*>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT trailer EMPTY>
+  <!ENTITY left "&#x5B;">
+  <!ENTITY right "&#x5D;">
+]>
+<envelope>
+  <header session="s&amp;1"/>
+  <payload>
+    <chunk>&left;<data><![CDATA[raw ]]]]><![CDATA[> text]]></data>&right;</chunk>
+    <chunk>
+      line one
+      <data>line &lt; two</data>
+      line three
+    </chunk>
+  </payload>
+  <trailer/>
+</envelope>
+```

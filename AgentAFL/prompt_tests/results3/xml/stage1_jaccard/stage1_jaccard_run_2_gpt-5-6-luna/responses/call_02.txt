@@ -1,0 +1,180 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (name, details, link?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT details (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST entry id ID #REQUIRED xml:space (default|preserve) "default">
+  <!ATTLIST link href URI #REQUIRED>
+  <!ENTITY nbsp "&#xA0;">
+  <!ENTITY note "café &amp; crème">
+]>
+<catalog xml:lang="fr">
+  <entry id="item-1" xml:space="preserve">
+    <name>Éléments &nbsp; spéciaux</name>
+    <details>Texte <em>accentué</em><br/>fin &note;</details>
+    <link href="https://example.invalid/a?x=1&amp;y=2"/>
+  </entry>
+</catalog>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ELEMENT report (header, body, footer)>
+  <!ELEMENT header (title, stamp)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT stamp EMPTY>
+  <!ELEMENT body (paragraph|table|separator)*>
+  <!ELEMENT paragraph (#PCDATA|strong|quote)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT table (tr+)>
+  <!ELEMENT tr (td+)>
+  <!ELEMENT td (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST stamp when CDATA #IMPLIED>
+  <!ENTITY % optional "INCLUDE">
+  <![%optional;[
+    <!ENTITY marker "included-section">
+    <!ELEMENT annotation (#PCDATA)>
+  ]]>
+  <![IGNORE[
+    <!ELEMENT discarded (anything)>
+    <!ATTLIST discarded obsolete CDATA #IMPLIED>
+  ]]>
+  <!NOTATION plain SYSTEM "text/plain">
+  <!ENTITY attachment SYSTEM "payload.bin" NDATA plain>
+]>
+<report>
+  <header>
+    <title>Conditional sections</title>
+    <stamp when="2026-09-24T00:00:00Z"/>
+  </header>
+  <body>
+    <paragraph>Before <strong>bold</strong> <quote>quoted</quote> after.</paragraph>
+    <separator/>
+    <table>
+      <tr><td>A&amp;B</td><td>1</td></tr>
+      <tr><td>line&#10;break</td><td>2</td></tr>
+    </table>
+    <annotation>&marker;</annotation>
+  </body>
+  <footer>done</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE feed [
+  <!ELEMENT feed (channel, channel)>
+  <!ELEMENT channel (id, item*)>
+  <!ELEMENT id (#PCDATA)>
+  <!ELEMENT item (guid, summary, media?)>
+  <!ELEMENT guid (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|code|x:line)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT media EMPTY>
+  <!ATTLIST channel xml:base CDATA #IMPLIED>
+  <!ATTLIST item key ID #REQUIRED state (new|old) "new">
+  <!ATTLIST media type CDATA #REQUIRED>
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+  <!ENTITY markup "&lt;not-an-element&gt;">
+]>
+<feed xmlns:x="urn:example:lines" xmlns:m="urn:example:media">
+  <channel xml:base="https://example.invalid/root/">
+    <id>alpha</id>
+    <item key="a1" state="old">
+      <guid>urn:one</guid>
+      <summary xml:lang="en">Text &left;<code>a &lt; b</code><x:line n="1"/>tail&right; &markup;</summary>
+      <m:media type="image/svg+xml" src="cover.svg"/>
+    </item>
+  </channel>
+  <channel>
+    <id>beta</id>
+    <item key="b1">
+      <guid>urn:two</guid>
+      <summary><x:line n="2"/><code>return &quot;x&quot;;</code></summary>
+    </item>
+  </channel>
+</feed>
+```
+
+```xml
+<!DOCTYPE archive [
+  <!ELEMENT archive (metadata, records)>
+  <!ELEMENT metadata (owner, checksum)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (key, value, history?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|delta)*>
+  <!ELEMENT delta (#PCDATA)>
+  <!ELEMENT history (event+)>
+  <!ELEMENT event EMPTY>
+  <!ATTLIST record rid ID #REQUIRED>
+  <!ATTLIST event kind (created|updated|deleted) #REQUIRED at CDATA #REQUIRED>
+  <!ENTITY hex "&#x41;&#x42;&#x43;">
+  <!ENTITY decimal "&#65;&#66;&#67;">
+  <!ENTITY quote "&quot;quoted&quot;">
+]>
+<archive>
+  <metadata>
+    <owner xml:lang="und">system</owner>
+    <checksum algorithm="sha256">aabbccddeeff</checksum>
+  </metadata>
+  <records>
+    <record rid="r0">
+      <key>&hex;</key>
+      <value>original<delta type="patch">+&decimal;</delta>final</value>
+      <history>
+        <event kind="created" at="2020-02-29T23:59:60Z"/>
+        <event kind="updated" at="2026-09-24"/>
+      </history>
+    </record>
+    <record rid="r1">
+      <key>second</key>
+      <value><![CDATA[<escaped> & untouched]]>&quote;</value>
+    </record>
+  </records>
+</archive>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header?, payload, trailer?)>
+  <!ELEMENT header (token, option*)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT option EMPTY>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|part|break)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST option name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!ENTITY greeting "hello">
+  <!ENTITY amp "&#x26;">
+  <!ENTITY open "&lt;chunk&gt;">
+]>
+<envelope>
+  <header>
+    <token>&greeting; &amp; ready</token>
+    <option name="mode" value="compact"/>
+    <option name="flags" value="a&#x20;b&#x9;c"/>
+  </header>
+  <payload>
+    <chunk index="0"><![CDATA[first <raw> block]]><part>middle</part><break/>last</chunk>
+    <chunk index="1">&open; &amp; &amp; &amp;</chunk>
+    <chunk index="2"><part>π</part><part>漢字</part>&amp;</chunk>
+  </payload>
+  <trailer>終端 &#x2028; Ω</trailer>
+</envelope>
+```

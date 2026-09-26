@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (directory)>
+  <!ELEMENT directory (folder|file|link)*>
+  <!ELEMENT folder (folder|file|link)*>
+  <!ELEMENT file (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ATTLIST file name CDATA #REQUIRED size NMTOKEN #IMPLIED>
+  <!ATTLIST link name CDATA #REQUIRED target CDATA #REQUIRED>
+  <!ENTITY a "A">
+  <!ENTITY b "&a;&a;">
+  <!ENTITY c "&b;&b;">
+  <!ENTITY d "&c;&c;">
+  <!ENTITY e "&d;&d;">
+  <!ENTITY f "&e;&e;">
+]>
+<archive>
+  <directory>
+    <folder name="root">
+      <folder name="nested">
+        <file name="alpha.txt" size="001">&f;</file>
+        <link name="current" target="../alpha.txt"/>
+      </folder>
+      <file name="empty.bin" size="0"/>
+      <folder name="unicode">
+        <file name="notes.txt">line one&#x0A;line two&#x0A;終わり</file>
+      </folder>
+    </folder>
+    <file name="outside" size="42">tail</file>
+  </directory>
+</archive>

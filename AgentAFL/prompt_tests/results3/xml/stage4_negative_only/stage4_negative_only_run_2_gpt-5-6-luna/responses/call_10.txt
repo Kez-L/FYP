@@ -1,0 +1,112 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (title,body)>
+  <!ATTLIST record id ID #REQUIRED ref IDREF #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ENTITY company "A &amp; B">
+]>
+<archive>
+  <record id="r1">
+    <title>Quarterly &company; report</title>
+    <body>See <link href="urn:report:summary">the summary</link> before approval.</body>
+  </record>
+  <record id="r2" ref="r1">
+    <title>Follow-up</title>
+    <body>Reviewed by <link href="#r1">the first record</link>.</body>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle xmlns="urn:example:bundle" xmlns:m="urn:example:meta" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <m:header>
+    <m:created>2026-09-24T12:30:00Z</m:created>
+    <m:source xsi:type="m:automated">collector-7</m:source>
+  </m:header>
+  <payload>
+    <item code="α-01">
+      <value unit="kelvin">273.15</value>
+      <tags>
+        <tag primary="true">thermal</tag>
+        <tag>reference</tag>
+      </tags>
+    </item>
+    <item code="β-02" status="pending">
+      <value unit="pascal">101325</value>
+      <tags/>
+    </item>
+  </payload>
+</bundle>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<?processing mode="strict"?>
+<manuscript>
+  <!-- Deliberately mixed narrative and markup content -->
+  <chapter number="1">
+    Once <term>parsing</term> begins, the reader encounters
+    <quote><![CDATA[<literal> text & symbols remain untouched]]></quote>
+    before the end of the paragraph.
+    <footnote id="n1">A note with <code>node-&gt;next</code>.</footnote>
+  </chapter>
+  <appendix>
+    <table>
+      <row><cell>left</cell><cell>right</cell></row>
+      <row><cell rowspan="2">spanning</cell><cell>bottom</cell></row>
+    </table>
+  </appendix>
+</manuscript>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<inventory xml:lang="fr" xml:space="preserve" xmlns="urn:inventory:v2" xmlns:loc="urn:inventory:location">
+  <entry sku="X&amp;Y-7" available="false">
+    <label>Crème brûlée &#x1F36E;</label>
+    <dimensions width="0" height="0" depth="1.25"/>
+    <location loc:warehouse="Paris" loc:bin="A-00">
+      
+    </location>
+    <description>  leading and trailing spaces  </description>
+  </entry>
+  <entry sku="Z-9" available="true">
+    <label>Тестовый образец</label>
+    <dimensions width="10e0" height="-2" depth="NaN"/>
+    <location loc:warehouse="東京" loc:bin="棚-β"/>
+    <description><![CDATA[line one
+line two
+]]></description>
+  </entry>
+</inventory>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (service*, disabled?)>
+  <!ELEMENT service (endpoint+, credential?)>
+  <!ATTLIST service name NMTOKEN #REQUIRED version CDATA #IMPLIED>
+  <!ELEMENT endpoint EMPTY>
+  <!ATTLIST endpoint method (GET|POST|PUT|DELETE) "GET" path CDATA #REQUIRED>
+  <!ELEMENT credential (#PCDATA)>
+  <!ELEMENT disabled (#PCDATA)>
+]>
+<registry xmlns="urn:services">
+  <service name="search.api" version="2.0">
+    <endpoint method="GET" path="/find?q=a%20b"/>
+    <endpoint method="POST" path="/reindex"/>
+    <credential>token:&#x85;masked</credential>
+  </service>
+  <service name="metrics">
+    <endpoint path="/health"/>
+  </service>
+  <disabled>maintenance&#x0A;window</disabled>
+</registry>
+```

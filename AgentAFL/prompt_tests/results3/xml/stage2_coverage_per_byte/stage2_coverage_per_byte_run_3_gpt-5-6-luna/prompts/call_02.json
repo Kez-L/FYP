@@ -1,0 +1,23 @@
+{
+  "call": 2,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ATTLIST koo xml:lang CDATA \"eng\">\n  <!ATTLIST foo bar CDATA \"&lt;&gt;)qrking Group (orisable oveuot;\">\n]>\n<root>\n  <foo xml:lang=\"ger\">Ja</fo\u0000\u0004\n</roos>\n\n\n--- example 2 ---\n<!DOCTYPE doc [\n<!ELEMENT doc EMPTY>\n<!ATTLIST doc\n defatt  (0|1)   \"0\"\n     xmlns:tst CDATA #FIXED \"http://example.org\"  tst:att  (0|1)   \"0\"\n    att (0|1)   \"1\">\n]>\n<doc att=\"1B/h12;&laugh12;&laugh12;&la>\n\n\nTried before \u2014 no new coverage, avoid repeating:\n--- a seed you generated (cycle 2) added 0 new edges ---\n<!DOCTYPE envelope [\n  <!ELEMENT envelope (meta, body, trailer)>\n  <!ELEMENT meta (stamp?, flag*)>\n  <!ELEMENT stamp (#PCDATA)>\n  <!ELEMENT flag EMPTY>\n  <!ELEMENT body ANY>\n  <!ELEMENT trailer (#PCDATA)>\n  <!ATTLIST flag code CDATA #REQUIRED>\n  <!ENTITY open \"<chunk>\">\n  <!ENTITY close \"</chunk>\">\n  <!ENTITY data \"left &amp; right\">\n]>\n<envelope>\n  <meta>\n    <stamp>2026-09-24T00:00:00Z</stamp>\n    <flag code=\"A\"/>\n    <flag code=\"B&amp;C\"/>\n  </meta>\n  <body>\n    &open;\n      &data;\n      <![CDATA[ raw ]]> <nested level=\"2\"/>\n    &close;\n  </body>\n  <trailer>done</trailer>\n</envelope>\n\n--- a seed you generated (cycle 2) added 0 new edges ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE matrix [\n  <!ELEMENT matrix (row+)>\n  <!ELEMENT row (cell*)>\n  <!ELEMENT cell (#PCDATA)>\n  <!ATTLIST matrix xmlns CDATA #IMPLIED>\n  <!ATTLIST row index CDATA #REQUIRED>\n  <!ATTLIST cell\n    column CDATA #REQUIRED\n    type (text|number|formula) \"text\">\n]>\n<matrix xmlns=\"urn:test:matrix\">\n  <row index=\"0\">\n    <cell column=\"0\" type=\"number\">001</cell>\n    <cell column=\"1\">alpha</cell>\n    <cell column=\"2\" type=\"formula\"><![CDATA[=SUM(A1:B1)]]></cell>\n  </row>\n  <row index=\"1\">\n    <cell column=\"0\" type=\"number\">-3.14</cell>\n    <cell column=\"1\">line\nbreak</cell>\n  </row>\n</matrix>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage-per-byte",
+  "positive_feedback": false,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T05:44:57.098536+00:00"
+}

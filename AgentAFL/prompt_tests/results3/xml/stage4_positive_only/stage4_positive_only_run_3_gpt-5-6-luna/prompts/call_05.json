@@ -1,0 +1,23 @@
+{
+  "call": 5,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE workflow [\n  <!ELEMENT workflow (start, task*, finish)>\n  <!ELEMENT start EMPTY>\n  <!ELEMENT task (input*, action, output*)>\n  <!ELEMENT input (#PCDATA)>\n  <!ELEMENT action (#PCDATA)>\n  <!ELEMENT output (#PCDATA)>\n  <!ELEMENT finish (#PCDATA)>\n  <!ATTLIST task id ID #REQUIRED depends IDREFS #IMPLIED priority NMTOKEN \"normal\">\n]>\n<workflow>\n  <start/>\n  <task id=\"fetch\" priority=\"high\">\n    <input>https://example.invalid/resource?x=1&amp;y=2</input>\n    <input><![CDATA[header: X-Test: <value>]]></input>\n    <action>download</action>\n    <output>/tmp/resource</output>\n  </task>\n  <task id=\"parse\" depends=\"fetch\">\n    <input>/tmp/resource</input>\n    <action>parse --mode=\"strict\" --limit=0</action>\n    <output>records</output>\n    <output>diagnostics</output>\n  </task>\n  <task id=\"publish\" depends=\"parse fetch\" priority=\"low\">\n    <action>publish &lt;records&gt;</action>\n  </task>\n  <task id=\"orphan\" depends=\"missing\">\n    <action>noop</action>\n  </task>\n  <finish>status: <result code=\"0\"/> complete</finish>\n</workflow>\n\n--- example 2 ---\n<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<configuration>\n  <option name=\"path\">C:\\Program Files\\App\\bin</option>\n  <option name=\"pattern\">[A-Z]+\\d{2}</option>\n  <matrix rows=\"2\" columns=\"3\">\n    <row index=\"0\"><value>0</value><value>-1</value><value>3.14159</value></row>\n    <row index=\"1\"><value>NaN</value><value>INF</value><value>-0</value></row>\n  </matrix>\n  <references>\n    <ref target=\"#missing\"/>\n    <ref target=\"urn:example:item:\u03b1\"/>\n  </references>\n</configuration>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T05:58:22.063640+00:00"
+}

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<configuration xmlns="urn:config" xmlns:sec="urn:security" xmlns:env="urn:environment">
+  <profile id="production" enabled="yes">
+    <properties>
+      <property name="timeout" type="integer">30</property>
+      <property name="ratio" type="decimal">0.0000000000000000000001</property>
+      <property name="empty" type="string"/>
+      <property name="multiline" type="text">line one
+line two
+line three</property>
+    </properties>
+    <sec:credentials>
+      <sec:principal sec:kind="service">worker</sec:principal>
+      <sec:permissions>
+        <sec:allow action="read" resource="*"/>
+        <sec:deny action="write" resource="/system"/>
+      </sec:permissions>
+    </sec:credentials>
+    <env:locations>
+      <env:path absolute="false">./var/data/../cache</env:path>
+      <env:path absolute="true">/srv/application</env:path>
+    </env:locations>
+  </profile>
+  <?reload mode="safe"?>
+  <profile id="testing" enabled="no">
+    <properties><property name="timeout" type="integer">-1</property></properties>
+  </profile>
+</configuration>

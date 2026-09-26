@@ -1,0 +1,118 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, note?)>
+  <!ELEMENT item (title, description, media*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT media EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST catalog version CDATA #REQUIRED>
+  <!ATTLIST item id ID #REQUIRED status (new|used|archived) "new">
+  <!ATTLIST media src CDATA #REQUIRED kind (image|audio|video) #IMPLIED>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+]>
+<catalog version="3">
+  <item id="i1" status="new">
+    <title>Symbols &amp; Entities</title>
+    <description>Text with <em>emphasis</em>, <code>a&lt;b</code>, and spaces.</description>
+    <media src="cover.png" kind="image"/>
+  </item>
+  <item id="i2" status="archived">
+    <title>Second entry</title>
+    <description><![CDATA[raw markup: <tag attr="x"/> & still text]]></description>
+  </item>
+  <note xml:space="preserve"> trailing
+    content </note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<outer xmlns="urn:outer" xmlns:p="urn:p" xml:lang="fr">
+  <p:header p:code="A&amp;B">
+    <?process value?>
+    <!-- comment before payload -->
+    <section xmlns="">
+      <item xml:id="x-1" data-kind="plain">plain text</item>
+      <item xmlns:q="urn:q" q:name="qualified">
+        <q:part><![CDATA[one < two && three > two]]></q:part>
+      </item>
+    </section>
+  </p:header>
+  <p:footer xml:space="default">
+    <empty xmlns:p="urn:replacement" p:mark="yes"/>
+  </p:footer>
+</outer>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE world [
+  <!ELEMENT world (region*)>
+  <!ELEMENT region (country|region)*>
+  <!ELEMENT country (#PCDATA)>
+  <!ATTLIST region name CDATA #IMPLIED>
+  <!ENTITY greeting "hello">
+  <!ENTITY % common "<!ATTLIST country code CDATA #IMPLIED>">
+  %common;
+]>
+<world>
+  <region name="north">
+    <country code="N1">&greeting;, north</country>
+    <region name="islands">
+      <country code="I1">island&#x20;entry</country>
+    </region>
+  </region>
+  <region name="south">
+    <country>line
+break</country>
+  </region>
+</world>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT payload ANY>
+  <!ATTLIST file path CDATA #REQUIRED checksum CDATA #IMPLIED>
+  <!ENTITY open "<segment>generated</segment>">
+  <!ENTITY quoted "A &quot;quoted&quot; value">
+  <![IGNORE[
+    <!ELEMENT ignored EMPTY>
+    <!ENTITY never "unused">
+  ]]>
+  <![INCLUDE[
+    <!ELEMENT included EMPTY>
+  ]]>
+]>
+<package>
+  <manifest>
+    <file path="a/b.txt" checksum="00ff"/>
+    <file path="space name.dat"/>
+  </manifest>
+  <payload>
+    &open;
+    <segment><![CDATA[embedded]]></segment>
+    <value>&quoted;</value>
+  </payload>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<r a="1" a="2">
+  <unclosed>
+    <![CDATA[unterminated content
+  </wrong>
+  <x attr="&unknown;" />
+  <y><!-- comment without closure
+  <z><?pi
+</r>
+```

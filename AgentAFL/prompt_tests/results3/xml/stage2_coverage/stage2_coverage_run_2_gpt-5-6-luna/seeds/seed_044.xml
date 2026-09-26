@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+,edge*)>
+  <!ATTLIST graph directed (true|false) "true" label CDATA #IMPLIED>
+  <!ELEMENT node (caption?,property*)>
+  <!ATTLIST node id ID #REQUIRED class (root|leaf|internal) #REQUIRED>
+  <!ELEMENT caption (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST property key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT edge (annotation?)>
+  <!ATTLIST edge id ID #IMPLIED from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+  <!ELEMENT annotation (#PCDATA|math)*>
+  <!ELEMENT math (#PCDATA|op|arg)*>
+  <!ELEMENT op EMPTY>
+  <!ATTLIST op name NMTOKEN #REQUIRED>
+  <!ELEMENT arg (#PCDATA|math)*>
+  <!ENTITY pi "3.14159">
+  <!ENTITY quote "&quot;">
+]>
+<graph directed="false" label="dependency &amp; topology">
+  <node id="n0" class="root">
+    <caption>Build <mark>root</mark></caption>
+    <property key="owner" value="team-a"/>
+  </node>
+  <node id="n1" class="internal">
+    <caption>Parser &quote;core&quote;</caption>
+    <property key="stage">compile</property>
+  </node>
+  <node id="n2" class="leaf">
+    <caption>Artifact</caption>
+  </node>
+  <edge id="e0" from="n0" to="n1" weight="0.5">
+    <annotation>cost = <math><op name="add"/><arg>&pi;</arg><arg><math><op name="mul"/><arg>2</arg><arg>4</arg></math></arg></math></annotation>
+  </edge>
+  <edge from="n1" to="n2"/>
+</graph>

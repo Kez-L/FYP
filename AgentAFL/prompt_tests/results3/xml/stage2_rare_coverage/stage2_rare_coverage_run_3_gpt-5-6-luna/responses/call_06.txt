@@ -1,0 +1,113 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?catalog mode="staged"?>
+<catalog xmlns="urn:catalog" xmlns:m="urn:meta" xml:lang="fr">
+  <!-- mixed content with unusual ordering -->
+  <entry m:key="A-17" status="draft">
+    introductory <title><![CDATA[<unparsed> & text]]></title>
+    <author>
+      <name family="Dœ">Müller</name>
+      <affiliation>R&amp;D</affiliation>
+    </author>
+    <keywords><keyword>α</keyword><keyword>β</keyword></keywords>
+    <revision when="2026-09-24T12:34:56Z">3</revision>
+  </entry>
+  <entry status="empty"><title/></entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, item+, trailer?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT item (name, payload, checksum)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT payload (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST item kind NMTOKEN #IMPLIED>
+  <!ENTITY left "[BEGIN]">
+  <!ENTITY right "[END]">
+]>
+<archive>
+  <header>&left;records&right;</header>
+  <item kind="binary">
+    <name>first</name>
+    <payload><![CDATA[
+      00 01 02 7f ff
+    ]]></payload>
+    <checksum>deadbeef</checksum>
+  </item>
+  <item>
+    <name>second</name>
+    <payload>line one&#10;line two&#x0A;</payload>
+    <checksum>0000</checksum>
+  </item>
+  <trailer/>
+</archive>
+```
+
+```xml
+<?xml version="1.1"?>
+<r xmlns:p="urn:p" xmlns:q="urn:q">
+  <p:branch id="root">
+    <p:branch id="left">
+      <q:leaf q:kind="text">one</q:leaf>
+      <q:leaf q:kind="number">42</q:leaf>
+    </p:branch>
+    <p:branch id="right">
+      <p:branch id="nested">
+        <q:leaf><![CDATA[x]]></q:leaf>
+      </p:branch>
+    </p:branch>
+  </p:branch>
+  <tail xml:space="preserve">  spaced&#x9;text  </tail>
+</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section*)>
+  <!ELEMENT section (heading, paragraph*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA|em|br)*>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST section id ID #IMPLIED>
+  <!ENTITY mark "&#x25C7;">
+]>
+<report>
+  <section id="s1">
+    <heading>Overview &mark;</heading>
+    <paragraph>Plain <em>nested <em>emphasis</em></em><br/>after break.</paragraph>
+    <paragraph><![CDATA[raw ]]> text &amp; more</paragraph>
+  </section>
+  <section>
+    <heading>Empty section</heading>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<message xmlns="urn:message" xmlns:x="urn:extra">
+  <header x:priority="high">
+    <from address="sender@example.test"/>
+    <to address="receiver@example.test"/>
+    <subject>Boundary &lt; test</subject>
+  </header>
+  <body format="multipart">
+    <part media-type="text/plain">alpha</part>
+    <part media-type="application/xml">
+      <embedded xmlns="urn:embedded">
+        <value key="a">1</value>
+        <value key="b" nil="true"/>
+      </embedded>
+    </part>
+    <part media-type="text/plain"><![CDATA[omega]]></part>
+  </body>
+  <signature algorithm="none"/>
+</message>
+```

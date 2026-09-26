@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (routing, body, attachments?)>
+  <!ELEMENT routing (sender, recipients, reply-to?)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipients (recipient+)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT reply-to (#PCDATA)>
+  <!ELEMENT body (paragraph|list|table|separator)+>
+  <!ELEMENT paragraph (#PCDATA|strong|code|link|line-break)*>
+  <!ELEMENT strong (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ELEMENT line-break EMPTY>
+  <!ELEMENT list (item+)>
+  <!ATTLIST list ordered (yes|no) "no">
+  <!ELEMENT item (#PCDATA|paragraph|list)*>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA|strong|code)*>
+  <!ATTLIST cell colspan NMTOKEN "1">
+  <!ELEMENT separator EMPTY>
+  <!ELEMENT attachments (attachment+)>
+  <!ELEMENT attachment (#PCDATA)>
+  <!ATTLIST attachment filename CDATA #REQUIRED
+                       content-type CDATA #IMPLIED>
+]>
+<message>
+  <routing>
+    <sender>ops@example.invalid</sender>
+    <recipients>
+      <recipient>dev@example.invalid</recipient>
+      <recipient>qa@example.invalid</recipient>
+    </recipients>
+    <reply-to>noreply@example.invalid</reply-to>
+  </routing>
+  <body>
+    <paragraph>Please review the <strong>nightly</strong> report<line-break/>before deployment.</paragraph>
+    <list ordered="yes">
+      <item>Fetch the <code>manifest.xml</code> file.</item>
+      <item>Compare the checksum:
+        <paragraph><code>sha256sum</code> must match the published value.</paragraph>
+      </item>
+    </list>
+    <table>
+      <row><cell colspan="2">Environment</cell></row>
+      <row><cell>staging</cell><cell>healthy &amp; reachable</cell></row>
+      <row><cell>production</cell><cell><strong>maintenance</strong></cell></row>
+    </table>
+    <separator/>
+    <paragraph>See <link href="https://example.invalid/run/42">run details</link>.</paragraph>
+  </body>
+  <attachments>
+    <attachment filename="manifest.xml" content-type="application/xml">inline-reference</attachment>
+  </attachments>
+</message>

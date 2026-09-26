@@ -1,0 +1,100 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:seed:catalog" xmlns:x="urn:seed:extra">
+  <entry id="A-001" active="true">
+    <title><![CDATA[alpha < beta && gamma > delta]]></title>
+    <x:metadata>
+      <x:item key="empty"/>
+      <x:item key="quoted">"double" &amp; 'single'</x:item>
+    </x:metadata>
+  </entry>
+  <!-- comment with --? no, safely separated -->
+  <entry id="A-002" active="false">
+    <title>Mixed
+      whitespace&#x0A;and numeric &#65;&#x42;&#x43;
+    </title>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, trailer?)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST header version NMTOKEN #REQUIRED>
+  <!ENTITY marker "inside-entity">
+]>
+<envelope>
+  <header version="v2"/>
+  <payload>
+    before &marker;
+    <chunk><![CDATA[]]></chunk>
+    <chunk>text &lt; text &amp; text</chunk>
+    after
+  </payload>
+  <trailer>done</trailer>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:report xmlns:r="urn:report" xmlns:d="urn:data" generated="2026-09-24T12:34:56Z">
+  <r:section name="first">
+    <r:value d:type="integer">00000000000000000042</r:value>
+    <r:value d:type="boolean">false</r:value>
+    <r:group>
+      <r:item d:code="x:y" d:flag=""/>
+      <r:item d:code="z" d:flag="1">
+        <r:note><?audit level="verbose"?>payload</r:note>
+      </r:item>
+    </r:group>
+  </r:section>
+  <r:section name="second"/>
+</r:report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (mixed|pair|mixed)*>
+  <!ELEMENT mixed (#PCDATA|pair|leaf)*>
+  <!ELEMENT pair (left,right)>
+  <!ELEMENT left (#PCDATA)>
+  <!ELEMENT right (#PCDATA)>
+  <!ELEMENT leaf EMPTY>
+]>
+<root>
+  Leading text
+  <mixed>one<pair><left>L</left><right>R</right></pair>two<leaf/></mixed>
+  <pair>
+    <left><![CDATA[ line 1
+line 2 ]]></left>
+    <right>&#x1F600;</right>
+  </pair>
+  <mixed><![CDATA[<raw>&data;</raw>]]></mixed>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<configuration>
+  <paths>
+    <path name="home">/var/lib/app</path>
+    <path name="cache">./cache/../cache</path>
+    <path name="unicode">αβγ漢字🙂</path>
+  </paths>
+  <options>
+    <option enabled="yes" value="a&amp;b"/>
+    <option enabled="no" value="&quot;&apos;&lt;&gt;"/>
+    <option enabled="yes"><![CDATA[unterminated-looking ]]]]><![CDATA[> marker]]></option>
+  </options>
+  <matrix rows="2" cols="3">
+    <row><cell>1</cell><cell>2</cell><cell>3</cell></row>
+    <row><cell>4</cell><cell>5</cell><cell>6</cell></row>
+  </matrix>
+</configuration>
+```

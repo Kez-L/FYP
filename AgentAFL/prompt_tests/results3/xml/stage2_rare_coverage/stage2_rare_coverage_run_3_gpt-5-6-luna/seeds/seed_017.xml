@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, attachment*)>
+  <!ELEMENT header (from, to, subject)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|linebreak|strong)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST message id ID #REQUIRED refs IDREFS #IMPLIED>
+  <!ATTLIST header priority (low|normal|high) "normal">
+  <!ATTLIST attachment type NOTATION (image|archive) #REQUIRED file ENTITY #IMPLIED>
+  <!NOTATION image SYSTEM "image-handler">
+  <!NOTATION archive SYSTEM "archive-handler">
+  <!ENTITY greeting "Hello, &amp; welcome">
+  <!ENTITY % extra "standalone CDATA #IMPLIED">
+  <!ATTLIST body %extra;>
+]>
+<message id="m1" refs="m1">
+  <header priority="high">
+    <from>sender@example.invalid</from>
+    <to>receiver@example.invalid</to>
+    <subject>&greeting;</subject>
+  </header>
+  <body><![CDATA[First line]]><linebreak/><strong>Second line</strong></body>
+  <attachment type="image"/>
+</message>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<workflow xmlns:ext="urn:workflow:extensions">
+  <step id="prepare">
+    <action kind="shell" timeout="PT5S">printf '&lt;ready/&gt;'</action>
+    <on-success goto="validate"/>
+    <on-failure>
+      <retry count="2" delay="PT0.25S"/>
+      <notify channel="stderr">Preparation failed</notify>
+    </on-failure>
+  </step>
+  <step id="validate" parallel="true">
+    <input name="payload" required="true"/>
+    <ext:assert expression="count(/workflow/step) &gt; 1"/>
+    <branch test="exists">
+      <case value="yes"><result code="0"/></case>
+      <default><result code="1"/></default>
+    </branch>
+  </step>
+</workflow>

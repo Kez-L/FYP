@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graph xmlns="urn:example:graph" xmlns:meta="urn:example:metadata">
+  <meta:about href="urn:graph:sample">
+    <meta:label xml:lang="en">Dependency graph</meta:label>
+    <meta:label xml:lang="de">Abhängigkeitsgraph</meta:label>
+  </meta:about>
+  <nodes>
+    <node id="n1" type="source">
+      <attribute key="path">src/main.c</attribute>
+      <attribute key="flags" count="2">
+        <value>-Wall</value>
+        <value>-O2</value>
+      </attribute>
+    </node>
+    <node id="n2" type="task">
+      <attribute key="owner"><![CDATA[build & test]]></attribute>
+    </node>
+    <node id="n3" type="artifact"/>
+  </nodes>
+  <edges directed="true">
+    <edge from="n1" to="n2" weight="1.5"/>
+    <edge from="n2" to="n3">
+      <annotation>produces</annotation>
+    </edge>
+  </edges>
+  <queries>
+    <query id="q1"><![CDATA[//node[@type='task']]]></query>
+    <query id="q2">/graph/edges/edge</query>
+  </queries>
+</graph>

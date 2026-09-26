@@ -1,0 +1,120 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section id ID #REQUIRED kind (open|closed) "open">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|note)*>
+  <!ATTLIST item code CDATA #IMPLIED>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY marker "&#x3C;edge&#x3E;">
+]>
+<catalog>
+  <section id="s1" kind="closed">
+    <title>alpha &amp; beta</title>
+    <item code="A-&#x31;">first<note>inside</note>&marker;</item>
+    <item code="B-2">second<!-- split --><![CDATA[ raw <text> ]]></item>
+  </section>
+  <section id="s2">
+    <title><![CDATA[x]]>y</title>
+  </section>
+</catalog>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header
+    version NMTOKEN "v1"
+    stamp CDATA #IMPLIED>
+  <!ELEMENT payload (record*)>
+  <!ELEMENT record EMPTY>
+  <!ATTLIST record
+    key ID #REQUIRED
+    ref IDREF #IMPLIED
+    enabled (yes|no) "yes">
+]>
+<envelope>
+  <header stamp="&#x32;&#x30;&#x32;&#x36;-09-24"/>
+  <payload>
+    <record key="r0" enabled="no"/>
+    <record key="r1" ref="r0"/>
+    <record key="r2" ref="r1" enabled="yes"/>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % declarations '
+    <!ELEMENT root (branch)>
+    <!ELEMENT branch (leaf|branch)*>
+    <!ELEMENT leaf (#PCDATA)>
+    <!ATTLIST leaf xmlns CDATA #IMPLIED>
+  '>
+  %declarations;
+  <!ENTITY ampersand "&amp;">
+]>
+<root xmlns:p="urn:one" xmlns:q="urn:two">
+  <branch>
+    <leaf xmlns="urn:leaf" p:value="one">A&ampersand;B</leaf>
+    <branch>
+      <leaf q:value="&#x0A;">line&#10;break</leaf>
+      <leaf><![CDATA[ ]]>tail</leaf>
+    </branch>
+  </branch>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (summary?, data)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT data (entry+)>
+  <!ELEMENT entry (#PCDATA|meta)*>
+  <!ELEMENT meta (#PCDATA)>
+  <!ATTLIST entry name CDATA #REQUIRED>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<report>
+  <?audit mode="compact"?>
+  <summary>&left;status&right; <![CDATA[ok]]></summary>
+  <data>
+    <entry name="one">text<meta>m1</meta>tail</entry>
+    <entry name="two"><meta><![CDATA[<tag attr="x"/>]]></meta></entry>
+    <entry name="three">a&#x20;b&#x9;c&#xD;&#xA;</entry>
+  </data>
+  <!-- trailing comment -->
+</report>
+```
+
+```xml
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST row index NMTOKEN #REQUIRED>
+  <!ATTLIST cell
+    colspan CDATA "1"
+    role CDATA #IMPLIED>
+  <!ENTITY quote "&quot;">
+  <!ENTITY snowman "&#9731;">
+]>
+<matrix>
+  <row index="0">
+    <cell role="corner">&quote;A&quote;</cell>
+    <cell colspan="2"><![CDATA[<not-an-element/>]]></cell>
+  </row>
+  <row index="1">
+    <cell>1&snowman;</cell>
+    <cell><![CDATA[line one
+line two]]></cell>
+    <cell role="last">end</cell>
+  </row>
+</matrix>
+```

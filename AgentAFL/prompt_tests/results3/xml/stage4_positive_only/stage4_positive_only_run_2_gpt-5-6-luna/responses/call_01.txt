@@ -1,0 +1,174 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, records, footer?)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header created CDATA #IMPLIED>
+  <!ELEMENT records (record+)>
+  <!ELEMENT record (name, tags?, payload)>
+  <!ATTLIST record uid ID #REQUIRED state (open|closed) "open">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk|note)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk encoding CDATA #IMPLIED>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY marker "A &lt; B &amp;&amp; B &gt; C">
+]>
+<archive>
+  <header created="2026-09-24"/>
+  <records>
+    <record uid="r1">
+      <name>first</name>
+      <tags><tag>one</tag><tag>two</tag></tags>
+      <payload>start<chunk encoding="raw"><![CDATA[a]]></chunk><note>middle</note>&marker;</payload>
+    </record>
+    <record uid="r2" state="closed">
+      <name>second</name>
+      <payload><chunk>left</chunk><!-- boundary --><chunk>right</chunk></payload>
+    </record>
+  </records>
+  <footer>done</footer>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (panel*)>
+  <!ELEMENT panel (title, widget+)>
+  <!ATTLIST panel name NMTOKEN #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT widget (label?, metric|table|sparkline)>
+  <!ATTLIST widget kind (metric|table|sparkline) #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT metric (#PCDATA)>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT sparkline EMPTY>
+  <!ATTLIST sparkline points CDATA #REQUIRED>
+]>
+<dashboard xmlns="urn:dashboard" xmlns:x="urn:extra">
+  <panel name="system">
+    <title>System <x:emphasis>overview</x:emphasis></title>
+    <widget kind="metric"><label>load</label><metric>0.42</metric></widget>
+    <widget kind="table">
+      <table>
+        <row><cell>host</cell><cell>status</cell></row>
+        <row><cell><![CDATA[node-1]]></cell><cell>ok</cell></row>
+      </table>
+    </widget>
+  </panel>
+  <panel name="empty">
+    <title/>
+    <widget kind="sparkline"><sparkline points="1,2,3,2,5"/></widget>
+  </panel>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messages [
+  <!ELEMENT messages (message*)>
+  <!ELEMENT message (from, to, body, attachment*)>
+  <!ATTLIST message ref ID #REQUIRED priority CDATA "normal">
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|br)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment name CDATA #REQUIRED type CDATA #IMPLIED>
+]>
+<messages>
+  <message ref="m001" priority="urgent">
+    <from>alice@example.test</from>
+    <to>bob@example.test</to>
+    <body>Hello<br/>please see <quote>the nested <quote>reply</quote></quote>.</body>
+    <attachment name="report&amp;1.txt" type="text/plain"/>
+  </message>
+  <message ref="m002">
+    <from><![CDATA[service]]></from>
+    <to>ops@example.test</to>
+    <body>Line one&#xA;Line two&#x9;end</body>
+  </message>
+</messages>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (entry+)>
+  <!ELEMENT entry (key, value, metadata?)>
+  <!ATTLIST entry id ID #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (scalar|list|object|nil)>
+  <!ELEMENT scalar (#PCDATA)>
+  <!ELEMENT list (item*)>
+  <!ELEMENT item (scalar|list|object)>
+  <!ELEMENT object (field*)>
+  <!ELEMENT field (key, value)>
+  <!ELEMENT nil EMPTY>
+  <!ELEMENT metadata (author?, timestamp?)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+]>
+<map xmlns:m="urn:map" m:version="2">
+  <entry id="config">
+    <key>settings</key>
+    <value>
+      <object>
+        <field><key>enabled</key><value><scalar>true</scalar></value></field>
+        <field><key>paths</key><value><list><item><scalar>/a</scalar></item><item><scalar>/b</scalar></item></list></value></field>
+        <field><key>missing</key><value><nil/></value></field>
+      </object>
+    </value>
+    <metadata><author>admin &nbsp;</author><timestamp>2026-01-01T00:00:00Z</timestamp></metadata>
+  </entry>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (step, step*, on-error?)>
+  <!ATTLIST workflow name CDATA #REQUIRED>
+  <!ELEMENT step (command, environment?, result?)>
+  <!ATTLIST step number CDATA #REQUIRED>
+  <!ELEMENT command (#PCDATA)>
+  <!ELEMENT environment (variable*)>
+  <!ELEMENT variable EMPTY>
+  <!ATTLIST variable name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT result (stdout?, stderr?, code)>
+  <!ELEMENT stdout (#PCDATA)>
+  <!ELEMENT stderr (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT on-error (retry|abort)>
+  <!ELEMENT retry EMPTY>
+  <!ATTLIST retry count CDATA #REQUIRED>
+  <!ELEMENT abort (#PCDATA)>
+]>
+<workflow name="build">
+  <step number="1">
+    <command><![CDATA[./configure --with-feature="x"]]></command>
+    <environment>
+      <variable name="CC" value="clang"/>
+      <variable name="FLAGS" value="-O1 -g"/>
+    </environment>
+    <result>
+      <stdout>checking dependencies...</stdout>
+      <stderr><![CDATA[warning: optional module missing]]></stderr>
+      <code>0</code>
+    </result>
+  </step>
+  <step number="2">
+    <command>make &amp;&amp; make test</command>
+    <result><stdout>pass</stdout><code>0</code></result>
+  </step>
+  <on-error><retry count="3"/></on-error>
+</workflow>
+```

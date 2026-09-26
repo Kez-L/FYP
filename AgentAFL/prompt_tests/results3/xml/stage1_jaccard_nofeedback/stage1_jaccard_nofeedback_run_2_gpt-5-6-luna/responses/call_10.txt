@@ -1,0 +1,89 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:seed:catalog" xmlns:x="urn:seed:extra">
+  <item id="&quot;" status="active">
+    <x:name><![CDATA[alpha < beta && gamma > delta]]></x:name>
+    <price currency="EUR">0.0000000000000000001</price>
+    <metadata>
+      <tag><![CDATA[]]></tag>
+      <tag><![CDATA[embedded ]]]]><![CDATA[> marker]]></tag>
+    </metadata>
+  </item>
+  <item id="2">
+    <description>text &amp; text &#x0A; next</description>
+    <empty/>
+  </item>
+</catalog>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ELEMENT report (header, body, footer?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT body (section*)>
+  <!ELEMENT section (#PCDATA|note)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST section level NMTOKEN #IMPLIED>
+  <!ENTITY local "A&amp;B&lt;C&gt;">
+  <!ENTITY quoted "&quot;single&apos;double&quot;">
+]>
+<report>
+  <header>&local; &quoted;</header>
+  <body>
+    <section level="0000000000000000000000000000000000001">one<note>nested</note>two</section>
+    <section level="&#xD;&#xA;&#x9;">three</section>
+  </body>
+  <footer>done</footer>
+</report>
+```
+
+```xml
+<?xml version="1.1"?>
+<r xmlns:a="urn:a" xmlns:b="urn:b">
+  <a:n0>
+    <b:n1>
+      <a:n2>
+        <b:n3>
+          <a:n4>
+            <b:n5>
+              <a:n6><![CDATA[broken-looking ]]> content]]></a:n6>
+            </b:n5>
+          </a:n4>
+        </b:n3>
+      </a:n2>
+    </b:n1>
+  </a:n0>
+</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY one "first">
+  <!ENTITY two "&one;-second">
+  <!ENTITY three "&two;-third">
+  <!NOTATION bin SYSTEM "urn:binary">
+  <!ENTITY external SYSTEM "urn:unavailable" NDATA bin>
+]>
+<root a="&three;" b="&amp;&lt;&gt;&apos;&quot;">
+  <mixed>before<!-- comment --><![CDATA[x<y]]>&two;after</mixed>
+  <value><![CDATA[&one; &#38; ]]></value>
+  <ref>&external;</ref>
+</root>
+```
+
+```xml
+<outer>
+  <entry key="unterminated>
+    <child attr='single &amp; quote'>value</child>
+  </entry>
+  <entry>
+    <![CDATA[
+      line one
+      line two
+    ]]>
+    <broken><inner/></broken>
+  <tail>after</tail>
+</outer>
+```

@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (account+)>
+  <!ELEMENT account (owner, balance, transaction*)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT balance (#PCDATA)>
+  <!ELEMENT transaction (date, amount, memo?)>
+  <!ELEMENT date (#PCDATA)>
+  <!ELEMENT amount (#PCDATA)>
+  <!ELEMENT memo (#PCDATA|code)*>
+  <!ELEMENT code EMPTY>
+  <!ATTLIST account number NMTOKEN #REQUIRED status (open|closed|frozen) "open">
+  <!ATTLIST transaction id ID #IMPLIED kind (credit|debit|adjustment) #REQUIRED>
+  <!ATTLIST code name CDATA #REQUIRED>
+  <!ENTITY currency "&#x20AC;">
+  <!ENTITY nbsp "&#160;">
+]>
+<ledger>
+  <account number="A-000" status="frozen">
+    <owner>R&amp;D &amp; QA</owner>
+    <balance>0 &currency;</balance>
+    <transaction id="tx-1" kind="adjustment">
+      <date>2026-02-29</date>
+      <amount>-0.00</amount>
+      <memo>reconciled<code name="auto"/> &nbsp;</memo>
+    </transaction>
+  </account>
+  <account number="B-17">
+    <owner>Zoë O'Neil</owner>
+    <balance>123456789.001 &currency;</balance>
+    <transaction kind="credit">
+      <date>2025-12-31</date>
+      <amount>+42</amount>
+      <memo><![CDATA[wire <REF> & pending]]></memo>
+    </transaction>
+    <transaction id="tx-duplicate" kind="debit">
+      <date>2026-01-01</date>
+      <amount>42</amount>
+      <memo>reversal<code name="bank"/></memo>
+    </transaction>
+  </account>
+</ledger>

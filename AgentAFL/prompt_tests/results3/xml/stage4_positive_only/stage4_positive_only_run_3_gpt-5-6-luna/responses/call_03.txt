@@ -1,0 +1,135 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:bookstore" xmlns:meta="urn:metadata" xml:lang="en">
+  <!-- mixed content and namespace-qualified metadata -->
+  <book id="bk-α" available="true">
+    <meta:details created="2026-09-24">
+      <meta:author>Zoë Brontë</meta:author>
+      <meta:rating scale="5">4.75</meta:rating>
+    </meta:details>
+    <title>Parsing &amp; Validation</title>
+    <summary><![CDATA[Text containing <tags>, ampersands &, and ]]> safely.</summary>
+    <keywords>
+      <keyword>XML</keyword>
+      <keyword>fuzzing</keyword>
+      <keyword>memory-safety</keyword>
+    </keywords>
+  </book>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ENTITY company "North &amp; South Research">
+  <!ENTITY status "pending">
+  <!ELEMENT report (header, section+, footer?)>
+  <!ELEMENT header (title, owner)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT section (heading, paragraph+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|emphasis|link)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST report version CDATA #REQUIRED>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ATTLIST link href URI #IMPLIED>
+]>
+<report version="2.0">
+  <header>
+    <title>&company; status report</title>
+    <owner>team-&status;</owner>
+  </header>
+  <section code="intro">
+    <heading>Overview</heading>
+    <paragraph>This is <emphasis>mixed</emphasis> content with a <link href="https://example.invalid/a?b=1&amp;c=2">link</link>.</paragraph>
+  </section>
+  <section code="results">
+    <heading>Results</heading>
+    <paragraph>First paragraph.</paragraph>
+    <paragraph><![CDATA[Second paragraph with ]]> and literal markup-like text.</paragraph>
+  </section>
+  <footer>End of document.</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workspace xmlns="urn:workspace" xmlns:x="urn:extra" xml:base="https://example.invalid/root/">
+  <?build profile="instrumented"?>
+  <project name="parser" x:revision="r&num;42">
+    <resource path="./src/main.c" media-type="text/x-c">
+      <checksum algorithm="sha256">e3b0c44298fc1c149afbf4c8996fb924</checksum>
+    </resource>
+    <resource path="../include/api.h" media-type="text/x-c">
+      <checksum algorithm="sha256">9f86d081884c7d659a2feaa0c55ad015</checksum>
+    </resource>
+    <dependency optional="false">
+      <name>libxml2</name>
+      <constraint operator="&gt;=">2.12.0</constraint>
+    </dependency>
+  </project>
+  <!-- deliberately empty and self-closing nodes -->
+  <artifacts><artifact/><artifact kind="debug"></artifact></artifacts>
+</workspace>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<conversation xmlns="urn:chat" id="thread-17">
+  <message sender="alice" timestamp="2026-09-24T12:34:56Z">
+    <body>Hello <mention user="bob">@bob</mention>, see the attached note.</body>
+    <attachment name="note.txt" content-type="text/plain"><![CDATA[
+line one
+line two
+]]></attachment>
+    <reactions>
+      <reaction symbol="👍" count="2"/>
+      <reaction symbol="&amp;" count="1"/>
+    </reactions>
+  </message>
+  <message sender="bob" timestamp="2026-09-24T12:35:01+00:00">
+    <body>Reply with <quote source="thread-17#1">quoted content</quote>.</body>
+    <metadata>
+      <flag>read</flag>
+      <flag>starred</flag>
+    </metadata>
+  </message>
+</conversation>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (key, value, history?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT history (change+)>
+  <!ELEMENT change (#PCDATA)>
+  <!ATTLIST entry key ID #REQUIRED type (text|binary|secret) "text">
+  <!ATTLIST change by CDATA #REQUIRED at CDATA #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+]>
+<archive>
+  <entry key="alpha" type="text">
+    <key>alpha</key>
+    <value>first&nbsp;value<linebreak/>after break</value>
+    <history>
+      <change by="admin" at="2026-01-01T00:00:00Z">created</change>
+      <change by="user&amp;bot" at="2026-09-24T00:00:00Z">updated</change>
+    </history>
+  </entry>
+  <entry key="binary" type="binary">
+    <key>binary</key>
+    <value>AAECAwQFBgcICQ==</value>
+  </entry>
+  <entry key="secret" type="secret">
+    <key>secret</key>
+    <value><![CDATA[&lt;not-an-element&gt;]]></value>
+  </entry>
+</archive>
+```

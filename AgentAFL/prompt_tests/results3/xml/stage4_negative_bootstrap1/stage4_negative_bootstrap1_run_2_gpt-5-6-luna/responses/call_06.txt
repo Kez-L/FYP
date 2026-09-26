@@ -1,0 +1,105 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (book+)>
+  <!ELEMENT book (title, author+, metadata?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT metadata (tag*)>
+  <!ELEMENT tag EMPTY>
+  <!ATTLIST book isbn CDATA #REQUIRED edition CDATA "1">
+  <!ATTLIST tag name CDATA #REQUIRED>
+  <!ENTITY publisher "Northwind &amp; Sons">
+]>
+<catalog>
+  <book isbn="978-0-123456-78-9" edition="2">
+    <title>Parsing &amp; Validation</title>
+    <author>Ada Lovelace</author>
+    <author>Charles Babbage</author>
+    <metadata>
+      <tag name="xml"/>
+      <tag name="parser"/>
+      <tag name="&publisher;"/>
+    </metadata>
+  </book>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<library xml:space="preserve">
+  <!-- mixed content with nested inline elements -->
+  <entry id="r-17">
+    Text before <emphasis level="strong">important</emphasis>,
+    <link href="urn:book:17">text inside a link</link>
+    and text after.
+    <![CDATA[
+      <not-an-element attribute="&value;"> raw markup </not-an-element>
+    ]]>
+  </entry>
+  <entry id="r-18">
+    <empty/>
+    <line>first&#10;second&#13;third&#9;column</line>
+  </entry>
+</library>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns:a="urn:alpha" xmlns:b="urn:beta" xmlns="urn:default">
+  <a:item b:key="k1" xmlns:c="urn:gamma">
+    <c:value>42</c:value>
+    <b:payload>
+      <a:part index="0"/>
+      <a:part index="1">
+        <nested xmlns="">unqualified content</nested>
+      </a:part>
+    </b:payload>
+  </a:item>
+  <shadow xmlns="urn:other">
+    <child xmlns="urn:default">restored namespace</child>
+  </shadow>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section*)>
+  <!ELEMENT section (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (#PCDATA|note)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+]>
+<report>
+  <section code="s1">
+    <heading>Diagnostics</heading>
+    <item>before <note role="aside">inline note</note> after</item>
+    <item>&left;entity-expanded&right;</item>
+  </section>
+  <section code="s2">
+    <heading><![CDATA[CDATA heading with ]]> delimiter text</heading>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<conversation>
+  <message from="alice" to="bob" timestamp="2026-09-24T12:34:56Z">
+    <subject>Re: <![CDATA[edge cases]]></subject>
+    <body>
+      <paragraph>Line one<break/>Line two</paragraph>
+      <attachment media-type="application/octet-stream" length="0">
+        <data/>
+      </attachment>
+    </body>
+  </message>
+  <message from="bob" to="alice" timestamp="2026-09-24T12:35:01+00:00">
+    <body><paragraph xml:lang="fr">réponse déjà reçue</paragraph></body>
+  </message>
+</conversation>
+```

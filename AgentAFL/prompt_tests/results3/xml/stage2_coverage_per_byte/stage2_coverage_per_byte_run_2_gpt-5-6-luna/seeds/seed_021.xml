@@ -1,0 +1,20 @@
+<?xml version="1.1" standalone="no"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, footer?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|![CDATA[not markup]]>)*>
+  <!ELEMENT footer EMPTY>
+  <!ATTLIST envelope version CDATA #FIXED "v2">
+  <!ATTLIST chunk encoding (plain|hex|base64) "plain">
+  <!ENTITY open "<tag>">
+  <!ENTITY close "</tag>">
+]>
+<envelope version="v2">
+  <header><?meta phase="test"?>start<!--inside--></header>
+  <payload>
+    <chunk encoding="hex">4142&amp;4344</chunk>
+    <chunk><![CDATA[raw ]]> <![CDATA[split]]></chunk>
+  </payload>
+  <footer/>
+</envelope>

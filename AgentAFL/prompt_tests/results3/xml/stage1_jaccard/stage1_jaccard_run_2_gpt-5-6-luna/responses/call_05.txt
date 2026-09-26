@@ -1,0 +1,142 @@
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (title, body, link?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA|em)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST entry id ID #REQUIRED state (new|old|stale) "new">
+  <!ATTLIST link href URI #REQUIRED rel CDATA #IMPLIED>
+]>
+<archive>
+  <entry id="e0" state="stale">
+    <title>line&#x85;separator</title>
+    <body>alpha<em>nested <em>emphasis</em></em><br/>omega</body>
+    <link href="urn:x-test:a%20b?x=1&amp;y=2" rel="alternate"/>
+  </entry>
+  <entry id="e1">
+    <title>before&#x2028;after</title>
+    <body><![CDATA[raw ]]> text &lt;tag&gt; <em>tail</em></body>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+)>
+  <!ELEMENT item (name, price, detail*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT detail EMPTY>
+  <!ATTLIST item key ID #REQUIRED>
+  <!ATTLIST item class NMTOKENS "default">
+  <!ATTLIST detail kind (a|b|c) #IMPLIED code NMTOKEN #IMPLIED>
+]>
+<catalog>
+  <item key="k1" class="one two">
+    <name>alpha</name>
+    <price>12.00</price>
+    <detail kind="a" code="x-y"/>
+    <detail kind="c" code="q"/>
+  </item>
+  <item key="k2" class="  spaced   tokens ">
+    <name>beta&amp;gamma</name>
+    <price>0&lt;1</price>
+    <detail kind="b"/>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header (from, to, stamp)>
+  <!ELEMENT from EMPTY>
+  <!ELEMENT to EMPTY>
+  <!ELEMENT stamp (#PCDATA)>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA|part)*>
+  <!ATTLIST from address CDATA #REQUIRED>
+  <!ATTLIST to address CDATA #REQUIRED>
+  <!ENTITY left "L">
+  <!ENTITY right "R">
+  <!ENTITY middle "&left;&#x20;&right;">
+]>
+<envelope xmlns="urn:example:envelope" xmlns:x="urn:example:extra">
+  <header>
+    <from address="sender@example.invalid"/>
+    <to address="receiver@example.invalid"/>
+    <stamp>2026-09-24T00:00:00Z</stamp>
+  </header>
+  <payload>
+    <chunk id="a">&middle;<part>x<part>y</part>z</part></chunk>
+    <chunk id="b"><x:part xmlns:x="urn:example:extra">opaque</x:part>&left;</chunk>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (layer*)>
+  <!ELEMENT layer (object|group|empty)*>
+  <!ELEMENT group (object|group|empty)*>
+  <!ELEMENT object (#PCDATA|property)*>
+  <!ELEMENT property EMPTY>
+  <!ELEMENT empty EMPTY>
+  <!ATTLIST layer name CDATA #IMPLIED>
+  <!ATTLIST group name CDATA #REQUIRED depth NMTOKEN #IMPLIED>
+  <!ATTLIST object type CDATA #IMPLIED>
+  <!ATTLIST property key CDATA #REQUIRED value CDATA #IMPLIED>
+]>
+<scene>
+  <layer name="base">
+    <group name="g0" depth="0">
+      <object type="text">one<property key="font" value="serif"/></object>
+      <group name="g1" depth="1">
+        <empty/>
+        <object type="path"><![CDATA[M 0 0 L 10 10]]></object>
+      </group>
+    </group>
+  </layer>
+  <layer>
+    <object type="mixed">a&amp;b<property key="quote" value="&quot;'&quot;"/>c</object>
+  </layer>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (meta?, body)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT body (#PCDATA|record|break|tail)*>
+  <!ELEMENT record (#PCDATA|field)*>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT tail (#PCDATA)>
+  <!ATTLIST meta version CDATA #FIXED "v2" flags NMTOKENS #IMPLIED>
+  <!ATTLIST record number NMTOKEN #REQUIRED>
+  <!ATTLIST field key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY q "&#34;">
+]>
+<packet>
+  <meta version="v2" flags="fast safe"/>
+  <body>
+    pre
+    <record number="0001">
+      <field key="a" value="1"/>
+      <field key="b" value="&q;quoted&q;"/>
+    </record>
+    <break/>
+    <![CDATA[<record number="literal"/>]]>
+    <tail>post &lt; end</tail>
+  </body>
+</packet>
+```

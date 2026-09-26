@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (header, widgets)>
+  <!ATTLIST dashboard version CDATA #REQUIRED refresh CDATA "60">
+  <!ELEMENT header (title, generated)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT widgets (chart|table|alert)+>
+  <!ELEMENT chart (caption?, point+)>
+  <!ATTLIST chart id ID #REQUIRED kind (line|bar|scatter) "line">
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED label CDATA #IMPLIED>
+  <!ELEMENT table (columns, rows)>
+  <!ELEMENT columns (column+)>
+  <!ELEMENT column (#PCDATA)>
+  <!ATTLIST column key NMTOKEN #REQUIRED>
+  <!ELEMENT rows (row*)>
+  <!ELEMENT row (cell+)>
+  <!ATTLIST row id ID #IMPLIED>
+  <!ELEMENT cell (#PCDATA|strong|small)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT small (#PCDATA)>
+  <!ELEMENT alert (#PCDATA)>
+  <!ATTLIST alert severity (low|medium|high) #REQUIRED acknowledged (yes|no) "no">
+  <!ENTITY nbsp "&#160;">
+]>
+<dashboard version="3.4" refresh="15">
+  <?dashboard-mode compact?>
+  <header>
+    <title>Edge &amp; Flow</title>
+    <generated>2044-11-08T19:22:00+02:00</generated>
+  </header>
+  <widgets>
+    <chart id="latency" kind="scatter">
+      <caption>p95 response time</caption>
+      <point x="0" y="12" label="cold"/>
+      <point x="1" y="8"/>
+      <point x="2" y="31" label="spike"/>
+    </chart>
+    <table>
+      <columns><column key="service">Service</column><column key="state">State</column></columns>
+      <rows>
+        <row id="api"><cell><strong>API</strong></cell><cell>ready&nbsp;</cell></row>
+        <row><cell>worker</cell><cell><small>paused</small></cell></row>
+      </rows>
+    </table>
+    <alert severity="high">Queue depth exceeded &gt; 900.</alert>
+  </widgets>
+</dashboard>

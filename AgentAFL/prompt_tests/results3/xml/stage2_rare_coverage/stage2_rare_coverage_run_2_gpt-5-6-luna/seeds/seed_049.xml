@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<workflow>
+  <start id="s0" next="s1"/>
+  <branch id="s1">
+    <case test="count(/workflow/result) = 0" next="s2">
+      <action name="create" args="&quot;temporary&quot;"/>
+    </case>
+    <case test="not(@missing)" next="s3">
+      <action name="inspect">
+        <argument><![CDATA[if (x < 4 && y > 2) return "ok";]]></argument>
+      </action>
+    </case>
+  </branch>
+  <loop id="s2" until="&apos;done&apos;">
+    <body>
+      <step ref="s1"/>
+      <step ref="s4" optional="true"/>
+    </body>
+  </loop>
+  <result code="0">
+    <message>finished</message>
+    <details>
+      <item key="empty"/>
+      <item key="quoted" value="&lt;&quot;&amp;&gt;"/>
+    </details>
+  </result>
+  <?audit level="verbose"?>
+</workflow>

@@ -1,0 +1,173 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, index)>
+  <!ELEMENT item (label, summary, link, tags)>
+  <!ATTLIST item key ID #REQUIRED state (new|active|retired) "active">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|term|code)*>
+  <!ELEMENT term (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target IDREF #REQUIRED>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT index (entry*)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry item IDREF #REQUIRED rank NMTOKEN #IMPLIED>
+  <!ENTITY product "Atlas">
+  <!ENTITY note "Use &product; carefully.">
+]>
+<catalog>
+  <item key="a1" state="new">
+    <label>First &product; entry</label>
+    <summary>A <term>compact</term> description containing <code>catalog</code> data.</summary>
+    <link target="a2"/>
+    <tags><tag>alpha</tag><tag>local</tag></tags>
+  </item>
+  <item key="a2">
+    <label>Second entry</label>
+    <summary>&note;</summary>
+    <link target="a1"/>
+    <tags><tag>beta</tag></tags>
+  </item>
+  <index>
+    <entry item="a1" rank="01"/>
+    <entry item="a2" rank="02"/>
+  </index>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<workflow xmlns="urn:workflow" xmlns:x="urn:workflow:extra" xml:lang="fr">
+  <!-- Deliberately mixed content around instruction nodes. -->
+  <start when="2026-09-24T09:30:00Z"/>
+  <stage name="prepare" complete="false">
+    <task id="p1" owner="ops">Vérifier les fichiers</task>
+    <task id="p2" owner="qa"><![CDATA[checksum <pending> & retry]]></task>
+    <x:annotation x:level="warning">à confirmer</x:annotation>
+  </stage>
+  <branch test="available">
+    <when value="yes">
+      <action name="publish" channel="archive"/>
+    </when>
+    <otherwise>
+      <action name="hold" channel="review"/>
+    </otherwise>
+  </branch>
+  <?workflow checkpoint="after-branch"?>
+  <stage name="finish" complete="true">
+    <result code="0" message="terminé"/>
+    <artifact xml:space="preserve">  result.dat
+</artifact>
+  </stage>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (routing, payload, audit?)>
+  <!ELEMENT routing (sender, recipients, reply-to?)>
+  <!ELEMENT sender EMPTY>
+  <!ATTLIST sender address CDATA #REQUIRED>
+  <!ELEMENT recipients (recipient+)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT reply-to EMPTY>
+  <!ATTLIST reply-to address CDATA #REQUIRED>
+  <!ELEMENT payload (subject, content, binary?)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT content (#PCDATA|emphasis|break)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT binary (#PCDATA)>
+  <!ATTLIST binary encoding (base64|hex) "base64">
+  <!ELEMENT audit (stamp, actor)>
+  <!ELEMENT stamp (#PCDATA)>
+  <!ELEMENT actor (#PCDATA)>
+]>
+<message>
+  <routing>
+    <sender address="noreply@example.invalid"/>
+    <recipients>
+      <recipient>team@example.invalid</recipient>
+      <recipient>archive@example.invalid</recipient>
+    </recipients>
+    <reply-to address="support@example.invalid"/>
+  </routing>
+  <payload>
+    <subject>Deployment &amp; verification</subject>
+    <content>Read the <emphasis>attached</emphasis> report.<break/>Do not alter it.</content>
+    <binary encoding="hex">89504E470D0A1A0A0000</binary>
+  </payload>
+  <audit>
+    <stamp>2026-09-24T10:11:12+00:00</stamp>
+    <actor>automaton</actor>
+  </audit>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ENTITY % switches "<!ELEMENT switches (switch*)>
+    <!ELEMENT switch EMPTY>
+    <!ATTLIST switch name NMTOKEN #REQUIRED enabled (yes|no) 'no'>">
+  %switches;
+  <!ELEMENT configuration (defaults, profiles, switches)>
+  <!ELEMENT defaults (path, limits)>
+  <!ELEMENT path (#PCDATA)>
+  <!ELEMENT limits EMPTY>
+  <!ATTLIST limits workers NMTOKEN "1" memory NMTOKEN "256M">
+  <!ELEMENT profiles (profile*)>
+  <!ELEMENT profile (include*, exclude*)>
+  <!ATTLIST profile name NMTOKEN #REQUIRED inherits NMTOKEN #IMPLIED>
+  <!ELEMENT include (#PCDATA)>
+  <!ELEMENT exclude (#PCDATA)>
+]>
+<configuration>
+  <defaults>
+    <path>/srv/app/data</path>
+    <limits workers="4" memory="1G"/>
+  </defaults>
+  <profiles>
+    <profile name="safe">
+      <include>*.json</include>
+      <exclude>*.tmp</exclude>
+    </profile>
+    <profile name="fast" inherits="safe">
+      <include>cache/**</include>
+    </profile>
+  </profiles>
+  <switches>
+    <switch name="watch" enabled="yes"/>
+    <switch name="trace"/>
+  </switches>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<scene xmlns="urn:scene" xmlns:g="urn:geometry" xmlns:m="urn:material" xml:base="https://example.invalid/assets/">
+  <g:canvas width="800" height="600" units="px">
+    <g:layer id="background" z="0">
+      <g:rect x="0" y="0" width="800" height="600" fill="#101820"/>
+    </g:layer>
+    <g:layer id="foreground" z="10" visibility="visible">
+      <g:path d="M 10,20 C 40,60 90,10 140,50" stroke="#ffcc00" stroke-width="2"/>
+      <g:circle center="320,240" radius="48">
+        <m:surface family="glass" opacity="0.75">
+          <m:property name="roughness">0.12</m:property>
+          <m:property name="ior">1.45</m:property>
+        </m:surface>
+      </g:circle>
+      <g:text x="24" y="560" xml:lang="ja">状態: 準備完了</g:text>
+    </g:layer>
+  </g:canvas>
+  <metadata xml:base="meta/">
+    <source href="../capture.xml" media-type="application/xml"/>
+    <license href="license.txt">internal-use</license>
+  </metadata>
+</scene>
+```

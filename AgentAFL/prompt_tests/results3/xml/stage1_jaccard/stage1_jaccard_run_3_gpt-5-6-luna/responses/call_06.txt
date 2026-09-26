@@ -1,0 +1,134 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY logo SYSTEM "logo.bin" NDATA bin>
+  <!ENTITY amp "&#38;">
+  <!ELEMENT catalog (entry+, footer?)>
+  <!ELEMENT entry (title, meta*, description)>
+  <!ATTLIST entry
+            id ID #REQUIRED
+            ref IDREF #IMPLIED
+            asset ENTITY #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA|em|br)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<catalog xmlns="urn:seed:catalog" xmlns:x="urn:seed:extra">
+  <entry id="first" asset="logo">
+    <title>Alpha &amp; &amp;</title>
+    <meta key="priority" value="high"/>
+    <description>before <em>nested <em>emphasis</em></em><br/>after</description>
+  </entry>
+  <entry id="second" ref="first">
+    <title>x:prefixed <x:tag data="1">value</x:tag></title>
+    <description>tail</description>
+  </entry>
+  <footer>done</footer>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE r [
+  <!ELEMENT r (a|b|c)*>
+  <!ELEMENT a EMPTY>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c ANY>
+  <!ATTLIST a
+    state (on|off|unknown) "unknown"
+    token NMTOKENS #IMPLIED>
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+]>
+<r>
+  <a state="on" token="one two three"/>
+  <b>literal &lt; text &left;inside&right;</b>
+  <c>
+    <inner xmlns="urn:inner">
+      <![CDATA[raw ]]> content <![CDATA[with brackets]]>
+    </inner>
+    <?audit id='7'?>
+  </c>
+  <a state="off"/>
+</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ENTITY % declarations '
+    <!ELEMENT package (part, checksum)>
+    <!ELEMENT part (name, data)>
+    <!ELEMENT name (#PCDATA)>
+    <!ELEMENT data (#PCDATA)>
+    <!ELEMENT checksum EMPTY>
+    <!ATTLIST checksum algorithm (md5|sha1|none) "none" value CDATA #IMPLIED>
+  '>
+  %declarations;
+  <!ENTITY q "&#34;">
+]>
+<package>
+  <part>
+    <name>payload</name>
+    <data><![CDATA[one ]]]]><![CDATA[> two]]>&q;</data>
+  </part>
+  <checksum algorithm="sha1" value="deadbeef"/>
+</package>
+```
+
+```xml
+<!DOCTYPE network [
+  <!ELEMENT network (host+)>
+  <!ELEMENT host (address, service*)>
+  <!ATTLIST host name CDATA #REQUIRED enabled (yes|no) "yes">
+  <!ELEMENT address (#PCDATA)>
+  <!ELEMENT service EMPTY>
+  <!ATTLIST service
+            port NMTOKEN #REQUIRED
+            protocol (tcp|udp) #REQUIRED
+            secure (true|false) "false">
+  <!ENTITY nl "&#xA;">
+]>
+<network>
+  <host name="edge-1" enabled="yes">
+    <address>2001:db8::1</address>
+    <service port="443" protocol="tcp" secure="true"/>
+    <service port="53" protocol="udp"/>
+  </host>
+  <host name="edge&amp;2">
+    <address>127.0.0.1&nl;alias</address>
+    <service port="8080" protocol="tcp"/>
+  </host>
+</network>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section*)>
+  <!ELEMENT section (heading, item*)>
+  <!ATTLIST section xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (#PCDATA|value|mark)*>
+  <!ATTLIST item kind (text|number|flag) "text">
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT mark EMPTY>
+  <!ENTITY nbsp "&#160;">
+]>
+<report>
+  <section xml:lang="en-US">
+    <heading>Summary</heading>
+    <item kind="text">A<mark/>B<value>42</value>C</item>
+    <item kind="number">100&nbsp;200</item>
+  </section>
+  <section xml:lang="">
+    <heading>Second</heading>
+    <item kind="flag">yes</item>
+  </section>
+</report>
+```

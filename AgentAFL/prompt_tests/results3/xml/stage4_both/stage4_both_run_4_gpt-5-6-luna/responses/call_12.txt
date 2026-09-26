@@ -1,0 +1,154 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+  <section name="hardware">
+    <entry sku="HX-17" status="active">
+      <title>Thermal sensor</title>
+      <description>Measures inlet temperature in <emphasis>real time</emphasis>.</description>
+      <specifications>
+        <spec key="range" unit="celsius">-40..125</spec>
+        <spec key="accuracy" unit="celsius">0.25</spec>
+        <spec key="interfaces">
+          <interface>i2c</interface>
+          <interface>spi</interface>
+        </spec>
+      </specifications>
+    </entry>
+    <entry sku="BR-04" status="retired">
+      <title>Bridge module</title>
+      <description>Legacy adapter with <warning>limited support</warning>.</description>
+      <replacement sku="BR-11"/>
+    </entry>
+  </section>
+  <section name="software">
+    <entry sku="SDK-2" status="active">
+      <title>Integration kit</title>
+      <files>
+        <file path="include/api.h" executable="false"/>
+        <file path="bin/tool" executable="true"/>
+      </files>
+    </entry>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<timeline xmlns="urn:demo:timeline" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <interval begin="2026-09-24T08:00:00Z" end="2026-09-24T09:30:00Z">
+    <label xml:lang="en">Morning maintenance</label>
+    <marker at="2026-09-24T08:15:00Z" kind="checkpoint"/>
+    <marker at="2026-09-24T08:45:00Z" kind="checkpoint">
+      <note>operator acknowledged</note>
+    </marker>
+    <attachment xlink:type="simple" xlink:href="urn:attachment:report-17">
+      <xlink:title>Inspection report</xlink:title>
+    </attachment>
+  </interval>
+  <interval begin="2026-09-24T11:00:00+02:00">
+    <label xml:lang="ja">再起動ウィンドウ</label>
+    <marker at="2026-09-24T11:05:30+02:00" kind="restart"/>
+  </interval>
+</timeline>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (metadata, directory)>
+  <!ELEMENT metadata (title, owner, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT directory (folder|document)*>
+  <!ELEMENT folder (folder|document)*>
+  <!ELEMENT document (#PCDATA)>
+  <!ATTLIST document name CDATA #REQUIRED format CDATA #IMPLIED>
+  <!ENTITY copyright "© 2026">
+]>
+<archive>
+  <metadata>
+    <title>Field notes &copyright;</title>
+    <owner>Research Unit</owner>
+    <note><![CDATA[Imported from a removable medium.]]></note>
+  </metadata>
+  <directory>
+    <folder name="north">
+      <document name="survey-01.txt" format="text">12,18,27</document>
+      <folder name="images">
+        <document name="frame-a.dat" format="binary">AAECAwQF</document>
+      </folder>
+    </folder>
+    <document name="index.csv" format="csv">name,kind
+survey-01,field</document>
+  </directory>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <defaults>
+    <retry count="3" backoff="250ms"/>
+    <limits>
+      <limit name="connections" value="64"/>
+      <limit name="payload-bytes" value="1048576"/>
+    </limits>
+  </defaults>
+  <profiles>
+    <profile id="local" inherits="base">
+      <endpoint scheme="unix" path="/var/run/example.sock"/>
+      <feature name="tracing">enabled</feature>
+      <feature name="compression">disabled</feature>
+    </profile>
+    <profile id="remote" inherits="base">
+      <endpoint scheme="https" host="api.example.test" port="443">
+        <header name="Accept">application/xml</header>
+        <header name="X-Mode">strict</header>
+      </endpoint>
+      <credentials>
+        <token><![CDATA[abc&def<ghi>]]></token>
+      </credentials>
+    </profile>
+  </profiles>
+  <routing>
+    <route match="/v2/items/*" profile="remote" method="GET"/>
+    <route match="/health" profile="local" method="HEAD"/>
+  </routing>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<message xmlns="urn:demo:message" xmlns:err="urn:demo:error">
+  <header>
+    <sender id="node-7">Δelta</sender>
+    <recipient id="node-9">Север</recipient>
+    <sequence>0000000000000042</sequence>
+    <flags urgent="true" encrypted="false"/>
+  </header>
+  <body>
+    <text>Résumé — naïve façade; 가격 확인 필요.</text>
+    <table>
+      <row>
+        <cell colspan="2">A &amp; B</cell>
+        <cell rowspan="1">0</cell>
+      </row>
+      <row>
+        <cell>A</cell>
+        <cell>B</cell>
+        <cell>𐀀</cell>
+      </row>
+    </table>
+    <err:failure code="E_PARSE">
+      <err:message>Unexpected delimiter</err:message>
+      <err:location line="18" column="7"/>
+      <err:context><![CDATA[while reading <payload>]]></err:context>
+    </err:failure>
+  </body>
+  <footer>
+    <signature algorithm="none"></signature>
+    <!-- end of message -->
+  </footer>
+</message>
+```

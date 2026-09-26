@@ -1,0 +1,111 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:m="urn:example:meta" xml:lang="en">
+  <!-- mixed content, namespace shadowing, and whitespace preservation -->
+  <item id="α-01" status="active" m:rank="7">
+    <title><![CDATA[10 < 20 & 30 > 15]]></title>
+    <description xml:space="preserve"> leading
+      <emphasis>embedded</emphasis>
+      trailing </description>
+    <?audit action="review" level="high"?>
+    <m:metadata>
+      <m:created>2026-09-24T00:00:00Z</m:created>
+      <m:tags><m:tag>one</m:tag><m:tag>two</m:tag></m:tags>
+    </m:metadata>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.1" standalone="yes"?>
+<!DOCTYPE packet [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "payload.bin" NDATA bin>
+  <!ELEMENT packet (header, data, note?)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header
+            version NMTOKEN #REQUIRED
+            mode (fast|safe|debug) "safe">
+  <!ELEMENT data (#PCDATA)>
+  <!ATTLIST data source ENTITY #IMPLIED>
+  <!ELEMENT note (#PCDATA)>
+]>
+<packet>
+  <header version="v1.0" mode="debug"/>
+  <data source="payload">line one&#x85;line two&#x2028;line three</data>
+  <note>control reference follows: &#x1;</note>
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<workflow xmlns="urn:workflow" xmlns:x="urn:extension">
+  <stage name="prepare">
+    <task priority="0" enabled="true">
+      <![CDATA[
+        if (a < b && b > c) {
+          emit("raw ]]]]><![CDATA[> marker");
+        }
+      ]]>
+    </task>
+  </stage>
+  <?checkpoint id="7"?>
+  <stage name="finish">
+    <result x:code="R&amp;D">
+      <!-- comment containing punctuation: -- is avoided -->
+      <value><![CDATA[]]></value>
+      <value>text &lt; text &amp; text &gt; text</value>
+    </result>
+  </stage>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xml:base="urn:base:/documents/">
+  <resource xlink:type="simple"
+            xlink:href="part one.xml"
+            xlink:show="embed"
+            xlink:actuate="onLoad"/>
+  <xi:include href="fragment.xml" parse="xml">
+    <xi:fallback>
+      <fallback xmlns="">replacement &amp; content</fallback>
+    </xi:fallback>
+  </xi:include>
+  <xi:include href="values.txt" parse="text"/>
+  <wrapper xmlns="urn:inner">
+    <empty/>
+    <qualified xmlns:p="urn:p"><p:value p:key="v"/></qualified>
+  </wrapper>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+)>
+  <!ELEMENT entry (key, value, checksum)>
+  <!ATTLIST entry kind CDATA #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+  <!ENTITY quoted "&left;payload&right;">
+]>
+<archive>
+  <entry kind="text">
+    <key>alpha</key>
+    <value>before <part>middle</part> after &quoted;</value>
+    <checksum><![CDATA[sha256:00000000000000000000000000000000]]></checksum>
+  </entry>
+  <entry kind="empty-value">
+    <key>beta</key>
+    <value><part><![CDATA[<nested-looking>]]></part></value>
+    <checksum>&#x30;&#x31;&#x32;&#x33;</checksum>
+  </entry>
+</archive>
+```

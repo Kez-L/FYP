@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (record*)>
+  <!ELEMENT record (key, value, flag?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST stream mode (push|pull) #REQUIRED>
+  <!ATTLIST record seq NMTOKEN #REQUIRED type CDATA #IMPLIED>
+  <!ATTLIST flag enabled (true|false) "true">
+  <!ENTITY quotemark "&quot;">
+  <!ENTITY nested "x&amp;y">
+]>
+<stream mode="push">
+  <?checkpoint id="α"?>
+  <record seq="0001" type="text">
+    <key>path</key>
+    <value>/tmp/&quot;cache&quot;</value>
+    <flag enabled="false"/>
+  </record>
+  <!-- split records -->
+  <record seq="0002">
+    <key>payload</key>
+    <value>one &nested; two</value>
+  </record>
+  <?vendor event='close'?>
+</stream>

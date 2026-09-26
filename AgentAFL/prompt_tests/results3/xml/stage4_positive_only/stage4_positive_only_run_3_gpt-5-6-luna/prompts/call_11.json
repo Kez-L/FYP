@@ -1,0 +1,23 @@
+{
+  "call": 11,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n<package xmlns=\"urn:sample:package\" xmlns:x=\"urn:sample:extra\" xml:lang=\"fr\">\n  <x:header x:version=\"7\">\n    <x:label xml:space=\"default\">R\u00e9sum\u00e9 &amp; d\u00e9tails</x:label>\n    <x:flags enabled=\"true\" deprecated=\"false\"/>\n  </x:header>\n  <payload xml:base=\"https://example.invalid/archive/\">\n    <resource href=\"a.bin\" media-type=\"application/octet-stream\"/>\n    <resource href=\"../b.json\" media-type=\"application/json\">\n      <x:annotation key=\"source\">generated</x:annotation>\n    </resource>\n  </payload>\n  <footer>\n    <x:signature algorithm=\"none\">unsealed</x:signature>\n  </footer>\n</package>\n\n--- example 2 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE inventory [\n  <!ENTITY company \"Example &amp; Sons\">\n  <!ELEMENT inventory (warehouse+)>\n  <!ELEMENT warehouse (location, bin*)>\n  <!ATTLIST warehouse code ID #REQUIRED>\n  <!ELEMENT location (#PCDATA)>\n  <!ELEMENT bin (item*)>\n  <!ATTLIST bin label NMTOKEN #REQUIRED>\n  <!ELEMENT item (description, quantity, price?)>\n  <!ATTLIST item sku ID #REQUIRED fragile (yes|no) \"no\">\n  <!ELEMENT description (#PCDATA)>\n  <!ELEMENT quantity (#PCDATA)>\n  <!ELEMENT price (#PCDATA)>\n]>\n<inventory>\n  <warehouse code=\"wh-east\">\n    <location>&company; \u2014 East Depot</location>\n    <bin label=\"A-01\">\n      <item sku=\"sku-100\" fragile=\"yes\">\n        <description>Glass reagent bottle</description>\n        <quantity>12</quantity>\n        <price>19.95</price>\n      </item>\n      <item sku=\"sku-101\">\n        <description>Fiber cable, 10m</description>\n        <quantity>7</quantity>\n      </item>\n    </bin>\n    <bin label=\"B-99\"/>\n  </warehouse>\n  <warehouse code=\"wh-west\">\n    <location>West Depot</location>\n    <bin label=\"overflow\">\n      <item sku=\"sku-200\" fragile=\"no\">\n        <description><![CDATA[Replacement panel <prototype>]]></description>\n        <quantity>0</quantity>\n        <price>0.00</price>\n      </item>\n    </bin>\n  </warehouse>\n</inventory>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T06:00:23.990628+00:00"
+}

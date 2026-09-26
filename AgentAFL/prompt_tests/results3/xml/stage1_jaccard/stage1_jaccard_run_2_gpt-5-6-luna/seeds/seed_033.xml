@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE ledger SYSTEM "unavailable-external-subset.dtd" [
+  <!ELEMENT ledger (account*, audit?)>
+  <!ELEMENT account (owner, balance, transaction*)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT balance (#PCDATA)>
+  <!ELEMENT transaction EMPTY>
+  <!ELEMENT audit (#PCDATA|entry)*>
+  <!ELEMENT entry (#PCDATA)>
+  <!ATTLIST account number NMTOKEN #REQUIRED status (open|closed|frozen) "open">
+  <!ATTLIST transaction id CDATA #IMPLIED amount CDATA #REQUIRED currency CDATA "EUR">
+  <!ENTITY currency "€">
+  <!ENTITY % auditdecl '<!ATTLIST entry severity (low|high) "low">'>
+  %auditdecl;
+  <![IGNORE[
+    <!ELEMENT discarded ANY>
+    <!ENTITY ignored "shadow">
+  ]]>
+]>
+<ledger xmlns:fin="urn:finance">
+  <account number="A-0007" status="frozen">
+    <owner>Zoë &amp; Co.</owner>
+    <balance>0 &currency;</balance>
+    <transaction id="t1" amount="-12.50"/>
+    <transaction id="t2" amount="12.50" currency="GBP"/>
+  </account>
+  <account number="B-991" status="open">
+    <owner><![CDATA[&not-an-entity;]]></owner>
+    <balance>1042.00 EUR</balance>
+  </account>
+  <audit><entry severity="high">reconciled</entry><entry>signed</entry></audit>
+</ledger>

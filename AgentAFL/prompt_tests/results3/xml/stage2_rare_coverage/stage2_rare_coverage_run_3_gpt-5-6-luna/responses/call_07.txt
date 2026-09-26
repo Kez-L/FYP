@@ -1,0 +1,143 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (name, price, description?)>
+  <!ATTLIST item sku ID #REQUIRED status (active|retired) "active">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+]>
+<catalog>
+  <section code="hardware">
+    <title>Hardware &amp; Tools</title>
+    <item sku="hammer-1">
+      <name>Hammer</name>
+      <price>19.95</price>
+      <description>Steel head<em> forged</em><br/>wood handle</description>
+    </item>
+  </section>
+  <section code="software">
+    <title>Software</title>
+    <item sku="editor-1" status="retired">
+      <name>Text Editor</name>
+      <price>0</price>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<world xmlns="urn:world" xmlns:geo="urn:geo" xml:lang="fr">
+  <geo:location geo:lat="48.8566" geo:lon="2.3522">
+    <city>Paris</city>
+    <country code="FR">France</country>
+  </geo:location>
+  <region xmlns="">
+    <label xml:space="preserve">  outside namespace  </label>
+    <value>one &lt; two</value>
+  </region>
+  <world:note xmlns:world="urn:world"><![CDATA[raw ]]> content]]></world:note>
+</world>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, body, footer)>
+  <!ELEMENT header (created, author)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT body (paragraph+)>
+  <!ELEMENT paragraph (#PCDATA|link|mark|linebreak)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href URI #IMPLIED>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY company "Example &amp; Sons">
+  <!ENTITY notice "Confidential: &company;">
+]>
+<report>
+  <header>
+    <created>2026-09-24T12:34:56Z</created>
+    <author>editor@example.test</author>
+  </header>
+  <body>
+    <paragraph>Welcome to <mark>the report</mark>.<linebreak/>See <link href="https://example.test/a?x=1&amp;y=2">details</link>.</paragraph>
+    <paragraph>&notice;</paragraph>
+  </body>
+  <footer>End of document.</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xml:base="https://config.example.test/root/">
+  <!-- configuration values intentionally use mixed content -->
+  <profiles>
+    <profile name="minimal" enabled="true">
+      <paths>
+        <path kind="cache">./cache</path>
+        <path kind="data">data/</path>
+      </paths>
+      <options>
+        <option key="threads" value="4"/>
+        <option key="verbose">false</option>
+      </options>
+    </profile>
+    <profile name="extended" enabled="false">
+      <paths>
+        <path kind="cache">../var/cache</path>
+      </paths>
+      <options>
+        <option key="features">
+          <feature>alpha</feature>
+          <feature>beta</feature>
+          <feature>gamma</feature>
+        </option>
+      </options>
+    </profile>
+  </profiles>
+</configuration>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (metadata, payload)>
+  <!ATTLIST entry id ID #REQUIRED type CDATA "text">
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST metadata
+    created CDATA #IMPLIED
+    size CDATA #IMPLIED
+    checksum CDATA #IMPLIED>
+  <!ELEMENT payload (#PCDATA)>
+]>
+<archive>
+  <entry id="e-001" type="text">
+    <metadata created="2026-01-01" size="0" checksum="none"/>
+    <payload></payload>
+  </entry>
+  <entry id="e-002" type="text">
+    <metadata created="2026-02-02" size="27" checksum="sha256:abc"/>
+    <payload>line one
+line two
+line three</payload>
+  </entry>
+  <entry id="e-003">
+    <metadata size="unknown"/>
+    <payload><![CDATA[
+      symbols: <tag> & value
+      quotes: "double" and 'single'
+    ]]></payload>
+  </entry>
+</archive>
+```

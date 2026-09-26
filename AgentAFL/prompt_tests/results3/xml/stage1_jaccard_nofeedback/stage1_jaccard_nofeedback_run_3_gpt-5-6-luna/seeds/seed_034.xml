@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (meta, payload)>
+  <!ELEMENT meta (from, to, flags?)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT flags (#PCDATA)>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding NMTOKEN "plain">
+  <!ENTITY amp "&#38;">
+  <!ENTITY hex "&#x41;&#x42;&#x43;">
+]>
+<message>
+  <meta>
+    <from>alice@example.invalid</from>
+    <to>bob@example.invalid</to>
+    <flags>urgent &amp; signed</flags>
+  </meta>
+  <payload>
+    <chunk index="000" encoding="base64">QUJD&#x0A;REVG</chunk>
+    <chunk index="001">&hex;&amp;&amp;&amp;</chunk>
+    <chunk index="002"><![CDATA[<xml>&broken;]]></chunk>
+  </payload>
+</message>

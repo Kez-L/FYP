@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE canvas [
+  <!ENTITY % geometry "width CDATA #IMPLIED height CDATA #IMPLIED">
+  <!ELEMENT canvas (defs?, layer+)>
+  <!ATTLIST canvas viewBox CDATA #IMPLIED>
+  <!ELEMENT defs (gradient|symbol)*>
+  <!ELEMENT gradient (stop+)>
+  <!ATTLIST gradient id ID #REQUIRED>
+  <!ELEMENT stop EMPTY>
+  <!ATTLIST stop offset CDATA #REQUIRED color CDATA #REQUIRED>
+  <!ELEMENT symbol (path|circle|text)*>
+  <!ATTLIST symbol id ID #REQUIRED>
+  <!ELEMENT layer (use|path|group|text)*>
+  <!ATTLIST layer name CDATA #IMPLIED %geometry;>
+  <!ELEMENT use EMPTY>
+  <!ATTLIST use href IDREF #REQUIRED x CDATA #IMPLIED y CDATA #IMPLIED>
+  <!ELEMENT path EMPTY>
+  <!ATTLIST path d CDATA #REQUIRED fill CDATA #IMPLIED %geometry;>
+  <!ELEMENT circle EMPTY>
+  <!ATTLIST circle cx CDATA #REQUIRED cy CDATA #REQUIRED r CDATA #REQUIRED>
+  <!ELEMENT group (path|circle|text)*>
+  <!ATTLIST group transform CDATA #IMPLIED>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST text x CDATA #REQUIRED y CDATA #REQUIRED>
+]>
+<canvas xmlns="urn:graphics:canvas" viewBox="0 0 800 600">
+  <defs>
+    <gradient id="sunset">
+      <stop offset="0%" color="#ffcc66"/>
+      <stop offset="100%" color="#663399"/>
+    </gradient>
+    <symbol id="marker">
+      <circle cx="0" cy="0" r="6"/>
+      <text x="10" y="4">origin</text>
+    </symbol>
+  </defs>
+  <layer name="background" width="800" height="600">
+    <path d="M0,0 L800,0 L800,600 L0,600 Z" fill="url(#sunset)"/>
+  </layer>
+  <layer name="foreground">
+    <group transform="translate(240 180) rotate(-12)">
+      <use href="marker" x="12" y="8"/>
+      <path d="M10,20 C80,5 150,45 220,18" fill="none"/>
+      <text x="32" y="96">rendered &amp; measured</text>
+    </group>
+  </layer>
+</canvas>

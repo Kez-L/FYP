@@ -1,0 +1,212 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (metadata, section+)>
+  <!ATTLIST catalog generated CDATA #IMPLIED>
+  <!ELEMENT metadata (title, owner, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT owner EMPTY>
+  <!ATTLIST owner name CDATA #REQUIRED email CDATA #IMPLIED>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT section (heading, item*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (name, description, link+, tag*)>
+  <!ATTLIST item sku ID #REQUIRED state (new|used|archived) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link rel CDATA #REQUIRED href CDATA #REQUIRED>
+  <!ELEMENT tag (#PCDATA)>
+  <!ENTITY brand "Northwind &amp; Sons">
+]>
+<catalog generated="2026-09-24">
+  <metadata>
+    <title>&brand; field catalog</title>
+    <owner name="A. Rivera" email="catalog@example.invalid"/>
+    <note><![CDATA[Internal edition: <draft> material retained.]]></note>
+  </metadata>
+  <section code="tools">
+    <heading>Workshop tools</heading>
+    <item sku="hammer-04" state="used">
+      <name>Claw hammer</name>
+      <description>Balanced handle with <em>replaceable</em> grip and <code>H-04</code> head.</description>
+      <link rel="manual" href="manuals/hammer.xml">read</link>
+      <link rel="image" href="images/hammer.png">photo</link>
+      <tag>steel</tag>
+      <tag>hand-tool</tag>
+    </item>
+  </section>
+  <section code="materials">
+    <heading>Raw materials</heading>
+    <item sku="wire-19">
+      <name>Copper wire</name>
+      <description><![CDATA[Insulated wire, 19 AWG; spool length > 20m.]]></description>
+      <link rel="specification" href="specs/wire-19.txt">specification</link>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:ink="http://example.invalid/ink" viewBox="-10 -10 240 140" width="480" height="280">
+  <title>Layered signal diagram</title>
+  <desc>A collection of paths, markers, and grouped annotations.</desc>
+  <defs>
+    <linearGradient id="fade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#112233"/>
+      <stop offset="100%" stop-color="#ddeeff"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="currentColor"/>
+    </marker>
+  </defs>
+  <g id="background" opacity="0.35" ink:layer="underlay">
+    <rect x="0" y="0" width="220" height="120" rx="6" fill="url(#fade)"/>
+    <circle cx="36" cy="31" r="12" fill="#ffffff"/>
+    <ellipse cx="168" cy="86" rx="29" ry="11" fill="#778899"/>
+  </g>
+  <g id="routes" fill="none" stroke="#203040" stroke-width="2">
+    <path d="M12 96 C44 12, 87 116, 122 45 S184 20, 214 94" marker-end="url(#arrow)"/>
+    <polyline points="18,18 62,48 91,22 132,75 204,31"/>
+  </g>
+  <g id="labels" font-family="sans-serif" font-size="9">
+    <text x="14" y="114">origin</text>
+    <text x="176" y="114"><tspan fill="#cc0000">terminal</tspan><tspan dx="3">node</tspan></text>
+  </g>
+  <foreignObject x="74" y="83" width="70" height="22">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <small>embedded note</small>
+    </div>
+  </foreignObject>
+</svg>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope" xmlns:m="urn:example:metrics" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <env:Header>
+    <m:trace id="t-8841" sampled="true">
+      <m:parent>root</m:parent>
+      <m:flags>01</m:flags>
+    </m:trace>
+    <env:Upgrade>
+      <env:SupportedEnvelope qname="env:Envelope" xmlns:env="http://www.w3.org/2003/05/soap-envelope"/>
+    </env:Upgrade>
+  </env:Header>
+  <env:Body>
+    <m:BatchRequest request-id="r-17" xsi:type="m:MeasurementBatch">
+      <m:window from="2026-09-24T00:00:00Z" to="2026-09-24T00:15:00Z"/>
+      <m:series name="temperature" unit="C">
+        <m:sample at="2026-09-24T00:01:00Z">18.75</m:sample>
+        <m:sample at="2026-09-24T00:05:00Z">19.00</m:sample>
+        <m:sample at="2026-09-24T00:10:00Z" quality="estimated">19.125</m:sample>
+      </m:series>
+      <m:series name="status" unit="code">
+        <m:sample at="2026-09-24T00:01:00Z">ready</m:sample>
+      </m:series>
+      <m:options>
+        <m:compression>none</m:compression>
+        <m:notify address="ops@example.invalid"/>
+      </m:options>
+    </m:BatchRequest>
+  </env:Body>
+</env:Envelope>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (index, record*)>
+  <!ELEMENT index (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry ref ID #REQUIRED kind CDATA #IMPLIED>
+  <!ELEMENT record (key, payload, checksum?)>
+  <!ATTLIST record source IDREF #REQUIRED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY left-bracket "[">
+  <!ENTITY right-bracket "]">
+]>
+<archive>
+  <index>
+    <entry ref="r-a" kind="text"/>
+    <entry ref="r-b" kind="binary"/>
+    <entry ref="r-c" kind="text"/>
+  </index>
+  <record source="r-a">
+    <key>alpha</key>
+    <payload>first &left-bracket;segment&right-bracket;<chunk>one</chunk>middle<chunk>two</chunk>end</payload>
+    <checksum>sha256:0000000000000000</checksum>
+  </record>
+  <record source="r-b">
+    <key>beta</key>
+    <payload><![CDATA[
+      00 ff 10 7e 00
+      bytes-looking text with <angles> and ampersands & intact
+    ]]></payload>
+  </record>
+  <record source="r-c">
+    <key>gamma</key>
+    <payload>single value</payload>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<dashboard xmlns="urn:example:dashboard" xmlns:ui="urn:example:ui" xml:lang="en">
+  <layout direction="horizontal" gap="12">
+    <panel id="left" collapsed="false">
+      <header>
+        <caption>Queue monitor</caption>
+        <badge tone="warning">3</badge>
+      </header>
+      <content>
+        <table striped="true">
+          <columns>
+            <column key="job" width="wide"/>
+            <column key="owner" width="narrow"/>
+            <column key="age" width="numeric"/>
+          </columns>
+          <rows>
+            <row selected="true">
+              <cell key="job">nightly-index</cell>
+              <cell key="owner">s.lee</cell>
+              <cell key="age">00:42</cell>
+            </row>
+            <row>
+              <cell key="job">asset-import</cell>
+              <cell key="owner">m.khan</cell>
+              <cell key="age">01:07</cell>
+            </row>
+          </rows>
+        </table>
+      </content>
+      <footer ui:action="refresh">
+        <label>Updated <time datetime="2026-09-24T12:30:00Z">12:30 UTC</time></label>
+      </footer>
+    </panel>
+    <panel id="right" collapsed="true">
+      <header>
+        <caption>Details</caption>
+        <ui:button type="secondary" disabled="true">Inspect</ui:button>
+      </header>
+      <content>
+        <message severity="info">Select a queue item to view diagnostics.</message>
+        <chart type="sparkline" min="0" max="100">
+          <point x="0" y="12"/>
+          <point x="1" y="27"/>
+          <point x="2" y="19"/>
+          <point x="3" y="44"/>
+        </chart>
+      </content>
+    </panel>
+  </layout>
+</dashboard>
+```

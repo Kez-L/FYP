@@ -1,0 +1,122 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <x:item id="A-001" status="active">
+    <x:name>Crème &amp; Thé</x:name>
+    <x:price currency="EUR">12.50</x:price>
+    <x:tags>
+      <x:tag>α</x:tag>
+      <x:tag>β</x:tag>
+      <x:tag>γ</x:tag>
+    </x:tags>
+  </x:item>
+  <x:item id="A-002" status="archived">
+    <x:name><![CDATA[raw <text> & symbols]]></x:name>
+    <x:price currency="JPY">&#x5186;1000</x:price>
+  </x:item>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, footer?)>
+  <!ELEMENT header (subject, recipient+)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT recipient EMPTY>
+  <!ATTLIST recipient address CDATA #REQUIRED kind (to|cc|bcc) "to">
+  <!ELEMENT body (#PCDATA|line|emphasis)*>
+  <!ELEMENT line (#PCDATA|emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+]>
+<message>
+  <header>
+    <subject>Quarterly &amp; Review</subject>
+    <recipient address="alice@example.test"/>
+    <recipient address="ops@example.test" kind="cc"/>
+  </header>
+  <body>First line<line>Second <emphasis>important</emphasis> line</line>Third&nbsp;line</body>
+  <footer>Generated at 2026-09-24</footer>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:root xmlns:r="urn:root" xmlns:a="urn:alpha" xmlns:b="urn:beta">
+  <r:metadata xml:lang="en-US" xml:space="preserve">
+    <!-- whitespace and a processing instruction -->
+    <a:entry key="one">  leading
+      <b:value><![CDATA[<escaped markup>]]></b:value>
+      trailing  </a:entry>
+    <a:entry key="two" b:flag="yes">
+      <b:value>line&#10;break&#x2026;</b:value>
+    </a:entry>
+  </r:metadata>
+  <?audit action="inspect"?>
+  <r:payload>
+    <a:empty/>
+    <a:group>
+      <a:member index="0"/>
+      <a:member index="1"/>
+      <a:member index="2"><b:note>nested</b:note></a:member>
+    </a:group>
+  </r:payload>
+</r:root>
+```
+
+```xml
+<!DOCTYPE archive [
+  <!ELEMENT archive (record*)>
+  <!ELEMENT record (title, data, checksum)>
+  <!ATTLIST record id ID #REQUIRED category CDATA "general">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT data (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY left-bracket "&#91;">
+  <!ENTITY right-bracket "&#93;">
+]>
+<archive>
+  <record id="r1" category="binary">
+    <title>Packet &quot;one&quot;</title>
+    <data>
+      <chunk>alpha</chunk>
+      <chunk>&left-bracket;beta&amp;gamma&right-bracket;</chunk>
+      <chunk><![CDATA[delta]]></chunk>
+    </data>
+    <checksum>sha256:00000000000000000000000000000000</checksum>
+  </record>
+  <record id="r2">
+    <title>Empty payload</title>
+    <data/>
+    <checksum>none</checksum>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configuration version="3" enabled="true">
+  <paths>
+    <path name="home">/var/lib/app</path>
+    <path name="cache" read-only="false"/>
+    <path name="temp"><![CDATA[/tmp/app & staging]]></path>
+  </paths>
+  <limits>
+    <limit unit="bytes" value="0"/>
+    <limit unit="seconds" value="-1"/>
+    <limit unit="items" value="18446744073709551615"/>
+  </limits>
+  <features>
+    <feature name="unicode" state="on">東京</feature>
+    <feature name="quotes" state="off">a&apos;b&quot;c</feature>
+    <feature name="mixed">
+      text
+      <details source="generated"><![CDATA[x < y && y > z]]></details>
+      tail
+    </feature>
+  </features>
+</configuration>
+```

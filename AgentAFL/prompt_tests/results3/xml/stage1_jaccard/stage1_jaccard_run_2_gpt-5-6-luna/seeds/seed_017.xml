@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE labyrinth [
+  <!ELEMENT labyrinth (node)>
+  <!ELEMENT node (branch*)>
+  <!ELEMENT branch (node|leaf)>
+  <!ELEMENT leaf (#PCDATA)>
+  <!ENTITY seed "alpha">
+  <!ENTITY pair "&seed;-&seed;">
+  <!ENTITY quartet "&pair;&pair;">
+  <!ENTITY payload "&quartet;&quartet;">
+]>
+<labyrinth>
+  <node>
+    <branch><leaf>&payload;</leaf></branch>
+    <branch>
+      <node>
+        <branch><leaf><![CDATA[&payload; remains literal]]></leaf></branch>
+        <branch><node><branch><leaf>&pair;</leaf></branch></node></branch>
+      </node>
+    </branch>
+    <branch><leaf>before<!-- comment --><![CDATA[<not-an-element>]]><?probe x="&seed;"?>after</leaf></branch>
+  </node>
+</labyrinth>

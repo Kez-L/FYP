@@ -1,0 +1,131 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry | group)+>
+  <!ELEMENT group (entry*)>
+  <!ELEMENT entry (#PCDATA | tag)*>
+  <!ELEMENT tag EMPTY>
+  <!ATTLIST entry id ID #REQUIRED status (new|old|archived) "new">
+  <!ATTLIST tag key CDATA #IMPLIED value CDATA #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data.bin" NDATA bin>
+  <!ENTITY left "[[">
+  <!ENTITY right "]]">
+]>
+<catalog>
+  <group>
+    <entry id="e1">&left;<tag key="x" value="&quot;"/>&right;</entry>
+    <entry id="e2" status="archived">alpha<tag/>beta</entry>
+  </group>
+  <entry id="e3">tail &amp; more</entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body, trailer?)>
+  <!ELEMENT header (field+)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT body ANY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ENTITY q "&#x27;">
+  <!ENTITY nbsp "&#160;">
+]>
+<envelope>
+  <header>
+    <field name="mode" value="test"/>
+    <field name="quote" value="&q;"/>
+  </header>
+  <body>
+    <![CDATA[first ]]>]]><![CDATA[> second]]>
+    <item a="1" a="2"/>
+    <?checkpoint data="&nbsp;"?>
+  </body>
+  <trailer>unfinished &nbsp; marker</trailer>
+</envelope>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ENTITY % common '
+    <!ELEMENT report (section*)>
+    <!ELEMENT section (title, metric*)>
+    <!ELEMENT title (#PCDATA)>
+    <!ELEMENT metric EMPTY>
+    <!ATTLIST section code NMTOKEN #REQUIRED>
+    <!ATTLIST metric name CDATA #REQUIRED value CDATA #IMPLIED>
+  '>
+  %common;
+  <![IGNORE[
+    <!ELEMENT ignored ANY>
+    <!ENTITY hidden "not expanded">
+  ]]>
+  <![INCLUDE[
+    <!ENTITY visible "included">
+  ]]>
+]>
+<report>
+  <section code="A-01">
+    <title>Quarter &visible;</title>
+    <metric name="count" value="0042"/>
+  </section>
+  <section code="B_02">
+    <title>Second</title>
+    <metric name="ratio"/>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (point*)>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST point
+    id ID #IMPLIED
+    x CDATA #REQUIRED
+    y CDATA #REQUIRED
+    label CDATA "unset">
+  <!ENTITY open "(">
+  <!ENTITY close ")">
+  <!ENTITY coords "&open;10,&close;">
+]>
+<map>
+  <point id="p0" x="0" y="0" label="origin"/>
+  <point id="p1" x="&coords;" y="&quot;quoted&quot;"/>
+  <point x="&#x0B;" y="&#x0C;" label="control"/>
+  <!-- deliberately awkward -- comment -->
+  <point id="p1" x="duplicate" y="7"/>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (meta, payload)>
+  <!ELEMENT meta (name, checksum)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA | part)*>
+  <!ELEMENT part EMPTY>
+  <!ATTLIST chunk number NMTOKEN #REQUIRED>
+  <!ATTLIST part offset CDATA #REQUIRED length CDATA #REQUIRED>
+  <!ENTITY % injected '
+    <!ATTLIST part encoding (raw|base64) "raw">
+  '>
+  %injected;
+]>
+<package>
+  <meta>
+    <name>sample</name>
+    <checksum>deadbeef</checksum>
+  </meta>
+  <payload>
+    <chunk number="1">abc<part offset="0" length="3" encoding="base64"/>def</chunk>
+    <chunk number="2"><part offset="" length="-1"/>ghi</chunk>
+  </payload>
+</package>
+```

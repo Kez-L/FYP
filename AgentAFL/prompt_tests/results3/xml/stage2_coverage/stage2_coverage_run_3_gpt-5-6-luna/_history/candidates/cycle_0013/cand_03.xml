@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (envelope, attachment*, signature)>
+  <!ELEMENT envelope (sender, recipient, subject, body)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|list)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT list (entry+)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST message id ID #REQUIRED priority (low|normal|urgent) "normal">
+  <!ATTLIST envelope format (plain|rich) "plain">
+  <!ATTLIST attachment name CDATA #REQUIRED media CDATA #IMPLIED size NMTOKEN #IMPLIED>
+  <!ATTLIST signature algorithm CDATA #REQUIRED valid (true|false) #REQUIRED>
+  <!ENTITY opener "Hello &amp; welcome">
+  <!ENTITY quoteStart "&lt;quoted&gt;">
+]>
+<message id="m-17" priority="urgent">
+  <envelope format="rich">
+    <sender>alpha@example.test</sender>
+    <recipient>beta@example.test</recipient>
+    <subject>&opener;</subject>
+    <body>
+      &quoteStart;
+      <quote>Nested <quote>inner &amp; escaped</quote> content</quote>
+      <list>
+        <entry>one</entry>
+        <entry>two&#x09;with tab</entry>
+        <entry><![CDATA[three ]]> and more</entry>
+      </list>
+    </body>
+  </envelope>
+  <attachment name="data.bin" media="application/octet-stream" size="0042"/>
+  <attachment name="note.txt" media="text/plain"/>
+  <signature algorithm="sha256" valid="true">a1b2c3&#x0A;</signature>
+</message>

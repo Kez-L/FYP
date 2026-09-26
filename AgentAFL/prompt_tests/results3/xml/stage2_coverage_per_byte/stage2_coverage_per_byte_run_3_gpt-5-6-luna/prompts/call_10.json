@@ -1,0 +1,23 @@
+{
+  "call": 10,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ATTLIST koo xml:lang CDATA \"eng\">\n  <!ATTLIST foo bar CDATA \"&lt;&gt;)qrking Group (orisable oveuot;\">\n]>\n<root>\n  <foo xml:lang=\"ger\">Ja</fo\u0000\u0004\n</roos>\n\n\n--- example 2 ---\n<!DOCTYPE doc [\n<!ELEMENT doc EMPTY>\n<!ATTLIST doc\n defatt  (0|1)   \"0\"\n     xmlns:tst CDATA #FIXED \"http://example.org\"  tst:att  (0|1)   \"0\"\n    att (0|1)   \"1\">\n]>\n<doc att=\"1B/h12;&laugh12;&laugh12;&la>\n\n\nTried before \u2014 no new coverage, avoid repeating:\n--- a seed you generated (cycle 10) added 0 new edges ---\n<?xml version=\"1.1\"?>\n<!DOCTYPE stream [\n  <!ELEMENT stream (record*)>\n  <!ELEMENT record (field|record)*>\n  <!ELEMENT field EMPTY>\n  <!ATTLIST record kind CDATA #IMPLIED>\n  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>\n  <!ENTITY amp \"&#38;\">\n  <!ENTITY nested \"&amp;&amp;&amp;\">\n]>\n<stream kind=\"outer\">\n  <record kind=\"a\">\n    <field name=\"empty\" value=\"\"/>\n    <record>\n      <field name=\"escaped\" value=\"&lt;&gt;&quot;&apos;\"/>\n      <field name=\"numeric\" value=\"&#x0B;&#x85;&#x2028;\"/>\n    </record>\n  </record>\n  <record kind=\"b\">&nested;<field name=\"tail\"/></record>\n</stream>\n\n--- a seed you generated (cycle 8) added 0 new edges ---\n<?xml version=\"1.1\"?>\n<!DOCTYPE drawing [\n  <!ENTITY % shapes \"(line|circle|path|use)*\">\n  <!ELEMENT drawing %shapes;>\n  <!ELEMENT line EMPTY>\n  <!ELEMENT circle EMPTY>\n  <!ELEMENT path (#PCDATA)>\n  <!ELEMENT use EMPTY>\n  <!ATTLIST drawing xmlns CDATA #IMPLIED viewBox CDATA #IMPLIED>\n  <!ATTLIST line x1 CDATA #REQUIRED y1 CDATA #REQUIRED x2 CDATA #REQUIRED y2 CDATA #REQUIRED>\n  <!ATTLIST circle cx CDATA #REQUIRED cy CDATA #REQUIRED r CDATA #REQUIRED>\n  <!ATTLIST path d CDATA #REQUIRED>\n  <!ATTLIST use href ENTITY #IMPLIED>\n  <!ENTITY unit \"12\">\n]>\n<drawing xmlns=\"urn:vector:test\" viewBox=\"0 0 100 80\">\n  <line x1=\"0\" y1=\"0\" x2=\"&unit;\" y2=\"20\"/>\n  <circle cx=\"40\" cy=\"30\" r=\"&unit;\"/>\n  <path ...[truncated, 788 chars total]\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage-per-byte",
+  "positive_feedback": false,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T05:47:33.670691+00:00"
+}

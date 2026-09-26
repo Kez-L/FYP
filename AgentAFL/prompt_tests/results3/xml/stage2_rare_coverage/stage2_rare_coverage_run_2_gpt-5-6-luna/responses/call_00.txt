@@ -1,0 +1,131 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?audit mode="deep"?>
+<warehouse xmlns="urn:example:warehouse" xmlns:m="urn:example:meta" xml:space="preserve">
+  <!-- mixed content with nested namespaces -->
+  <section id="A-01" m:revision="7">
+    Text before <item sku="α-1"><name>tea &amp; honey</name><note><![CDATA[fragile <contents> & bytes]]></note></item>
+    <item sku="β-2">
+      <name xml:lang="fr">café</name>
+      <m:metadata><m:flag enabled="true"/><m:value>42</m:value></m:metadata>
+    </item>
+    Text after
+  </section>
+  <section id="B-02">
+    <empty/>
+    <group><group><group><leaf value="&#x1F600;"/></group></group></group>
+  </section>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (title, tags?, payload)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ATTLIST record key ID #REQUIRED ref IDREF #IMPLIED>
+  <!ATTLIST payload kind (text|binary|mixed) "mixed">
+  <!ENTITY greeting "hello &amp; welcome">
+  <!ENTITY open "<marker>">
+  <!ENTITY close "</marker>">
+]>
+<archive>
+  <record key="r1" ref="r2">
+    <title>&greeting;</title>
+    <tags><tag>one</tag><tag>two</tag><tag>three</tag></tags>
+    <payload kind="mixed">prefix &open;inside&close;<chunk>nested</chunk>suffix</payload>
+  </record>
+  <record key="r2">
+    <title>second &#65; &#x20AC;</title>
+    <payload><chunk><![CDATA[raw ]]> characters]]></chunk></payload>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.1"?>
+<envelope xmlns="urn:one" xmlns:x="urn:two" xmlns:y="urn:three">
+  <header>
+    <x:token algorithm="sha256">dGVzdA==</x:token>
+    <x:attributes>
+      <x:attribute name="empty"/>
+      <x:attribute name="quoted">a&amp;b&lt;c&gt;</x:attribute>
+    </x:attributes>
+  </header>
+  <body>
+    <message priority="high">
+      <data><![CDATA[
+        line-1
+        line-2 ]]&gt; still data
+      ]]></data>
+      <y:items>
+        <y:item index="0"><y:value>零</y:value></y:item>
+        <y:item index="1"><y:value>一</y:value></y:item>
+        <y:item index="2"><y:value>𐐷</y:value></y:item>
+      </y:items>
+    </message>
+    <x:signature>
+      <x:algorithm>urn:signature:test</x:algorithm>
+      <x:digest>0000000000000000</x:digest>
+    </x:signature>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<root>
+  <level n="0">
+    <level n="1">
+      <level n="2">
+        <level n="3"><value/></level>
+        <level n="3">
+          <value><![CDATA[unterminated-looking ]]]></value>
+          <value a="1" b="2">text<!-- comment --></value>
+        </level>
+      </level>
+    </level>
+  </level>
+  <tail>
+    <entry key="a">alpha</entry>
+    <entry key="b">beta</entry>
+    <entry key="c"><![CDATA[characters &lt;not parsed&gt;]]></entry>
+  </tail>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+    name CDATA #REQUIRED
+    type (text|image|other) "other"
+    size NMTOKEN #IMPLIED>
+  <!ELEMENT data (text|binary|ref)*>
+  <!ELEMENT text (#PCDATA)>
+  <!ELEMENT binary (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ATTLIST file id ID #IMPLIED>
+]>
+<package>
+  <manifest>
+    <file id="f1" name="readme.txt" type="text" size="0012"/>
+    <file id="f2" name="image.bin" type="image" size="FF"/>
+    <file id="f3" name="odd&amp;name" type="other"/>
+  </manifest>
+  <data>
+    <text>first block</text>
+    <ref target="f1"/>
+    <binary><![CDATA[AAECAwQFBgcICQoLDA0O]]></binary>
+    <text>last block &#10; with spaces</text>
+  </data>
+</package>
+```

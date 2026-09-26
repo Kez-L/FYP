@@ -1,0 +1,23 @@
+{
+  "call": 7,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (metadata, entry+)>\n  <!ELEMENT metadata (title, generated, tags)>\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT generated (#PCDATA)>\n  <!ELEMENT tags (tag*)>\n  <!ELEMENT tag (#PCDATA)>\n  <!ELEMENT entry (name, summary, price, availability)>\n  <!ATTLIST entry sku ID #REQUIRED category NMTOKEN #IMPLIED>\n  <!ELEMENT name (#PCDATA)>\n  <!ELEMENT summary (#PCDATA)>\n  <!ELEMENT price (#PCDATA)>\n  <!ELEMENT availability (#PCDATA)>\n]>\n<catalog>\n  <metadata>\n    <title>Seasonal &amp; Specialty Items</title>\n    <generated>2026-09-24T12:34:56Z</generated>\n    <tags>\n      <tag>limited</tag>\n      <tag>fragile</tag>\n      <tag>caf\u00e9</tag>\n    </tags>\n  </metadata>\n  <entry sku=\"item-001\" category=\"beverage\">\n    <name>Jasmine Tea</name>\n    <summary><![CDATA[Loose leaf tea with <notes> of citrus & cedar.]]></summary>\n    <price currency=\"EUR\">12.50</price>\n    <availability>in-stock</availability>\n  </entry>\n  <entry sku=\"item-002\" category=\"instrument\">\n    <name>Glass Harmonica</name>\n    <summary>Handle with care: <emphasis>very fragile</emphasis>.</summary>\n    <price currency=\"USD\">240.00</price>\n    <availability>back-order</availability>\n  </entry>\n</catalog>\n\n--- example 2 ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE report [\n  <!ENTITY product \"parser\">\n  <!ENTITY stamp \"2026-09-24\">\n  <!ENTITY nested \"&lt;escaped&gt; &amp; text\">\n  <!ELEMENT report (header, section*, conclusion?)>\n  <!ELEMENT header (subject, author, date)>\n  <!ELEMENT subject (#PCDATA)>\n  <!ELEMENT author (#PCDATA)>\n  <!ELEMENT date (#PCDATA)>\n  <!ELEMENT section (heading, paragraph+, list?)>\n  <!ATTLIST section level NMTOKEN #REQUIRED>\n  <!ELEMENT heading (#PCDATA)>\n  <!ELEMENT paragraph (#PCDATA|code|link|br)*>\n  <!ELEMENT code (#PCDATA)>\n  <!ELEMENT link (#PCDATA)>\n  <!ATTLIST link href URI #IMPLIED>\n  <!ELEMENT br EMPTY>\n  <!ELEMENT list (item*)>\n  <!ELEMENT item (#PCDATA)>\n  <!ELEMENT conclusion (#PCDATA)>\n]>\n<report>\n  <header>\n    <subject>Testing &product; behavior</subject>\n    <author>QA &lt;team&gt;</author>\n    <date>&stamp;</date>\n  </header>\n  <section level=\"1\">\n    <heading>Input handling</heading>\n    <paragraph>Literal entity expansion: &nested; <br/> and inline <code>--noout</code>.</paragraph>\n    <paragraph>See <link href=\"https://example.invalid/a?b=1&amp;c=2\">reference</link>.</paragraph>\n    <list>\n      <item>empty values</item>\n      <item>unicode: \u0395\u03bb\u03bb\u03b7\u03bd\u03b9\u03ba\u03ac / \u65e5\u672c\u8a9e / \u0627\u0644\u0639\u0631\u0628\u064a\u0629</item>\n      <item>quotes: &quot;single&quot; and &apos;double&apos;</item>\n    </list>\n  </section>\n  <section level=\"2\">\n    <heading>Boundary notes</heading>\n    <paragraph><![CDATA[Characters such as ]]> and & remain inside this section.</paragraph>\n  </section>\n  <conclusion>End of report.</conclusion>\n</report>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T05:58:58.721460+00:00"
+}

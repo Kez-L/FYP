@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE canvas [
+  <!ELEMENT canvas (layer+)>
+  <!ELEMENT layer (shape|group|text)*>
+  <!ELEMENT group (shape|group|text)*>
+  <!ELEMENT shape EMPTY>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST layer name CDATA #REQUIRED visible (true|false) "true">
+  <!ATTLIST group id ID #IMPLIED transform CDATA #IMPLIED>
+  <!ATTLIST shape type (rect|circle|path) #REQUIRED data CDATA #IMPLIED>
+  <!ATTLIST text x CDATA #IMPLIED y CDATA #IMPLIED>
+  <!ENTITY amp "&amp;">
+  <!ENTITY path "M0,0 L10,10 &amp; Z">
+]>
+<canvas xmlns="urn:drawing" xmlns:ink="urn:inkscape">
+  <layer name="background" visible="false">
+    <shape type="rect" data="0,0 800,600"/>
+  </layer>
+  <layer name="foreground">
+    <group id="g-main" transform="rotate(15)">
+      <shape type="circle" data="cx=40 cy=40 r=12"/>
+      <text x="12.5" y="88">A &amp; B &amp; &lt;C&gt;</text>
+      <group ink:label="nested">
+        <shape type="path" data="&path;"/>
+        <![CDATA[
+          <shape type="fake" data="not parsed"/>
+          ]]>
+      </group>
+    </group>
+  </layer>
+</canvas>

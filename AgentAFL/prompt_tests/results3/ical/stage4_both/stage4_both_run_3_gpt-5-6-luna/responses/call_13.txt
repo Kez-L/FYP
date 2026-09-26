@@ -1,0 +1,198 @@
+```icalendar
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//AFLSeed//RecurringAlarmMeeting//EN
+CALSCALE:GREGORIAN
+METHOD:REQUEST
+BEGIN:VEVENT
+UID:recurring-review-501@example.invalid
+DTSTAMP:20260924T170000Z
+DTSTART;TZID=Europe/Paris:20261005T093000
+DTEND;TZID=Europe/Paris:20261005T103000
+RRULE:FREQ=WEEKLY;COUNT=6;BYDAY=MO
+EXDATE;TZID=Europe/Paris:20261019T093000
+RDATE;TZID=Europe/Paris:20261117T093000
+SUMMARY:Architecture review
+DESCRIPTION:Weekly review of the platform architecture and deployment plan.
+LOCATION:Room 4B
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+SEQUENCE:3
+ORGANIZER;CN=Review Chair:mailto:chair@example.invalid
+ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;RSVP=TRUE;CN=Alex:mailto:alex@example.invalid
+ATTENDEE;ROLE=OPT-PARTICIPANT;PARTSTAT=TENTATIVE;CN=Sam:mailto:sam@example.invalid
+CATEGORIES:engineering,planning
+URL:https://example.invalid/meetings/architecture
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-PT15M
+DESCRIPTION:Architecture review begins in fifteen minutes
+END:VALARM
+BEGIN:VALARM
+ACTION:EMAIL
+TRIGGER;RELATED=END:-PT1H
+SUMMARY:Upcoming architecture review
+DESCRIPTION:Please review the agenda before the meeting.
+ATTENDEE:mailto:alex@example.invalid
+END:VALARM
+END:VEVENT
+END:VCALENDAR
+```
+
+```icalendar
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//AFLSeed//TaskLifecycle//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VTODO
+UID:release-checklist-884@example.invalid
+DTSTAMP:20260924T170100Z
+CREATED:20260920T081500Z
+LAST-MODIFIED:20260924T165900Z
+DTSTART:20261020T090000Z
+DUE:20261020T180000Z
+SUMMARY:Finalize release checklist
+DESCRIPTION;ALTREP="https://example.invalid/docs/release":Verify artifacts\, approvals\; and rollback instructions.
+STATUS:IN-PROCESS
+PERCENT-COMPLETE:67
+PRIORITY:5
+SEQUENCE:4
+CATEGORIES:release,operations
+ORGANIZER:mailto:release@example.invalid
+ATTENDEE;CN=On-call Engineer;PARTSTAT=ACCEPTED:mailto:oncall@example.invalid
+RELATED-TO;RELTYPE=CHILD:release-test-884@example.invalid
+RESOURCES:staging server,artifact repository
+URL:https://example.invalid/tickets/884
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;VALUE=DATE-TIME:20261020T083000Z
+DESCRIPTION:Release checklist is due today
+END:VALARM
+END:VTODO
+BEGIN:VTODO
+UID:release-test-884@example.invalid
+DTSTAMP:20260924T170101Z
+DUE:20261019T160000Z
+SUMMARY:Run release candidate tests
+STATUS:COMPLETED
+COMPLETED:20260924T164500Z
+PERCENT-COMPLETE:100
+PRIORITY:3
+RELATED-TO;RELTYPE=PARENT:release-checklist-884@example.invalid
+END:VTODO
+END:VCALENDAR
+```
+
+```icalendar
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//AFLSeed//HistoricalOffsetRules//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VTIMEZONE
+TZID:America/Example_City
+LAST-MODIFIED:20260924T170200Z
+TZURL:https://example.invalid/tz/america-example
+BEGIN:STANDARD
+DTSTART:20261025T020000
+TZOFFSETFROM:-0400
+TZOFFSETTO:-0500
+TZNAME:EAST
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+COMMENT:Autumn transition
+END:STANDARD
+BEGIN:DAYLIGHT
+DTSTART:20270328T020000
+TZOFFSETFROM:-0500
+TZOFFSETTO:-0400
+TZNAME:EDT
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+RDATE:20280326T020000
+END:DAYLIGHT
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:local-time-change-719@example.invalid
+DTSTAMP:20260924T170201Z
+DTSTART;TZID=America/Example_City:20261025T013000
+DTEND;TZID=America/Example_City:20261025T033000
+SUMMARY:Overnight migration window
+DESCRIPTION:The window crosses the local daylight-saving transition.
+STATUS:TENTATIVE
+SEQUENCE:1
+X-MIGRATION-ID:nightly-719
+END:VEVENT
+END:VCALENDAR
+```
+
+```icalendar
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//AFLSeed//ConferenceRegistration//EN
+CALSCALE:GREGORIAN
+METHOD:REPLY
+BEGIN:VEVENT
+UID:conference-session-312@example.invalid
+DTSTAMP:20260924T170300Z
+DTSTART:20261112T140000Z
+DTEND:20261112T153000Z
+SUMMARY:Parser interoperability workshop
+DESCRIPTION:Discussion of calendar interoperability\, escaping\, and line folding.
+LOCATION;LANGUAGE=en:Auditorium\, Building A
+GEO:48.856614;2.352222
+STATUS:CONFIRMED
+CLASS:PUBLIC
+TRANSP:OPAQUE
+SEQUENCE:2
+ATTENDEE;CN=Jordan Lee;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=DECLINED:mailto:jordan@example.invalid
+ATTENDEE;CN=Calendar Team;CUTYPE=GROUP;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:mailto:calendar-team@example.invalid
+ORGANIZER;CN=Conference Office:mailto:conference@example.invalid
+REQUEST-STATUS:2.0;Success
+CONTACT:conference@example.invalid
+CATEGORIES:conference,standards
+IMAGE;VALUE=URI;DISPLAY=BADGE;FMTTYPE=image/png:https://example.invalid/badges/session.png
+ATTACH;FMTTYPE=application/pdf;FILENAME=agenda.pdf:https://example.invalid/files/agenda.pdf
+X-LONG-NOTE:This property intentionally uses a folded continuation line to exercise
+ line unfolding and preservation of whitespace around calendar content.
+BEGIN:VALARM
+ACTION:AUDIO
+TRIGGER:-PT10M
+ATTACH;FMTTYPE=audio/basic:https://example.invalid/audio/chime.au
+END:VALARM
+END:VEVENT
+END:VCALENDAR
+```
+
+```icalendar
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//AFLSeed//AvailabilityAndJournal//EN
+CALSCALE:GREGORIAN
+METHOD:CANCEL
+BEGIN:VFREEBUSY
+UID:facility-block-990@example.invalid
+DTSTAMP:20260924T170400Z
+DTSTART:20261101T000000Z
+DTEND:20261108T000000Z
+ORGANIZER:mailto:facilities@example.invalid
+ATTENDEE:mailto:operations@example.invalid
+FREEBUSY;FBTYPE=BUSY-TENTATIVE:20261102T080000Z/20261102T100000Z
+FREEBUSY;FBTYPE=BUSY-UNAVAILABLE:20261104T180000Z/PT2H
+FREEBUSY;FBTYPE=BUSY:20261106T120000Z/20261106T133000Z
+END:VFREEBUSY
+BEGIN:VJOURNAL
+UID:maintenance-log-990@example.invalid
+DTSTAMP:20260924T170401Z
+DTSTART:20261104T200000Z
+SUMMARY:Maintenance window cancellation
+DESCRIPTION:Cancellation recorded after the facility inspection was postponed.
+STATUS:CANCELLED
+SEQUENCE:5
+CLASS:PRIVATE
+CATEGORIES:maintenance,facilities
+CONTACT:facilities@example.invalid
+RELATED-TO;RELTYPE=SIBLING:facility-block-990@example.invalid
+ATTENDEE;ROLE=NON-PARTICIPANT;PARTSTAT=DECLINED:mailto:vendor@example.invalid
+END:VJOURNAL
+END:VCALENDAR
+```

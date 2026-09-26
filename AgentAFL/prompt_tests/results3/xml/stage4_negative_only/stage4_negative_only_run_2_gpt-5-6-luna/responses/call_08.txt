@@ -1,0 +1,112 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+)>
+  <!ELEMENT item (name, price, note?)>
+  <!ATTLIST item sku ID #REQUIRED status (active|archived) "active">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY currency "€">
+  <!ENTITY clearance "limited availability">
+]>
+<catalog>
+  <item sku="a17" status="active">
+    <name>Thermal mug</name>
+    <price>19.95 &currency;</price>
+    <note>&clearance;</note>
+  </item>
+  <item sku="b42">
+    <name>Foldable lamp</name>
+    <price>31.00 &currency;</price>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<archive xmlns="urn:archive:v2" xmlns:m="urn:meta" xml:lang="el" xml:base="https://example.invalid/data/">
+  <!-- mixed content and namespace redeclaration -->
+  <record m:key="κλειδί" xml:space="preserve">
+    Before<value m:type="text">αβγ &amp; δεζ</value>after
+    <m:annotation>Σημείωση</m:annotation>
+  </record>
+  <record xmlns="" id="plain-1">
+    <title>Detached namespace</title>
+    <payload><![CDATA[x < y && y > z]]></payload>
+  </record>
+  <?index mode="rebuild"?>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, footer)>
+  <!ELEMENT header (from, to, subject)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body ANY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST message priority CDATA "normal">
+  <!ATTLIST header sent CDATA #IMPLIED>
+]>
+<message priority="urgent">
+  <header sent="2026-09-24T12:34:56Z">
+    <from>α@example.test</from>
+    <to>β@example.test</to>
+    <subject>Résumé &amp; naïveté</subject>
+  </header>
+  <body>
+    <p>Line one</p>
+    <p>Line two with <b>emphasis</b> and <i>spacing</i>.</p>
+    <empty/>
+  </body>
+  <footer>— end —</footer>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST row index NMTOKEN #REQUIRED>
+  <!ATTLIST cell kind CDATA "number">
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+]>
+<matrix>
+  <row index="zero">
+    <cell kind="number">0</cell>
+    <cell kind="number">-1.25</cell>
+    <cell kind="text">&left;origin&right;</cell>
+  </row>
+  <row index="one">
+    <cell kind="number">1e6</cell>
+    <cell kind="empty"/>
+  </row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0"?>
+<configuration xmlns:c="urn:cfg" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <?build profile="fuzz"?>
+  <c:module name="parser" enabled="true">
+    <c:option key="threshold" value="0"/>
+    <c:option key="pattern">
+      <c:value xsi:type="c:escaped">a&amp;b&lt;c&gt;</c:value>
+    </c:option>
+  </c:module>
+  <c:module name="storage">
+    <c:mount path="/tmp/cache" readonly="false"/>
+    <c:limits>
+      <c:limit name="soft">0000000000000000007</c:limit>
+      <c:limit name="hard">18446744073709551615</c:limit>
+    </c:limits>
+  </c:module>
+</configuration>
+```

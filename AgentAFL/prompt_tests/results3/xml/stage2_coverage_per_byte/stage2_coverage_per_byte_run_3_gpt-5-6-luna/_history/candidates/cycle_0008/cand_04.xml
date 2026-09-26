@@ -1,0 +1,21 @@
+<!DOCTYPE log [
+  <!ELEMENT log (event*)>
+  <!ELEMENT event (message?, detail*)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT detail ANY>
+  <!ATTLIST log source CDATA #IMPLIED>
+  <!ATTLIST event id CDATA #REQUIRED level (trace|info|warn|error) #REQUIRED>
+  <!ATTLIST detail name CDATA #REQUIRED>
+  <!ENTITY open "<detail name='generated'>">
+  <!ENTITY close "</detail>">
+]>
+<log source="fuzz">
+  <event id="e1" level="info">
+    <message><![CDATA[start <phase> & untouched]]></message>
+    <detail name="thread"><![CDATA[worker-0]]></detail>
+  </event>
+  <event id="e2" level="error">
+    <message>unterminated &amp; entity &unknown;</message>
+    &open;generated text&close;
+  </event>
+</log>

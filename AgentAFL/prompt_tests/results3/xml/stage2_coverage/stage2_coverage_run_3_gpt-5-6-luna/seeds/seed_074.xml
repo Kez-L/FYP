@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form [
+  <!ELEMENT form (field|group|submit)*>
+  <!ELEMENT group (label, field+)>
+  <!ATTLIST group
+    key ID #REQUIRED
+    collapsed (true|false) "false"
+  >
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT field (label?, help?)>
+  <!ATTLIST field
+    name NMTOKEN #REQUIRED
+    type (text|number|choice|check) "text"
+    required (true|false) "false"
+    depends IDREF #IMPLIED
+  >
+  <!ELEMENT help (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT submit EMPTY>
+  <!ATTLIST submit
+    action CDATA #REQUIRED
+    method (get|post) "post"
+  >
+  <!ENTITY star "&#x2605;">
+  <!ENTITY nbsp "&#xA0;">
+]>
+<form>
+  <group key="identity" collapsed="false">
+    <label>Identity &star;</label>
+    <field name="display_name" required="true">
+      <label>Display name</label>
+      <help>Use a short name; spaces are allowed.</help>
+    </field>
+    <field name="age" type="number" depends="identity">
+      <help>Enter digits only<code>[0-9]+</code>.</help>
+    </field>
+  </group>
+  <field name="newsletter" type="check">
+    <label>Send updates</label>
+    <help>Optional&nbsp;subscription.</help>
+  </field>
+  <field name="color" type="choice">
+    <label>Preferred color</label>
+  </field>
+  <submit action="/account/save" method="post"/>
+</form>

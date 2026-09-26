@@ -1,0 +1,118 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:m="urn:example:meta">
+  <?build mode="fuzz"?>
+  <entry id="α-01" status="active">
+    <m:title><![CDATA[<nested> & unusual ]]> text]]></m:title>
+    <summary>one &amp; two &#x1F600;</summary>
+    <!-- comment with brackets: ]]> -->
+    <items>
+      <item key="a"/>
+      <item key="b"><![CDATA[]]></item>
+    </items>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, body, footer?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT body (section+)>
+  <!ELEMENT section (title, paragraph*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|em|strong)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT footer EMPTY>
+  <!ATTLIST section name ID #IMPLIED>
+  <!ATTLIST footer stamp CDATA "none">
+  <!ENTITY quote "&#34;quoted&#34;">
+]>
+<report>
+  <header>&quote;</header>
+  <body>
+    <section name="first">
+      <title>Alpha</title>
+      <paragraph>plain <em>italic</em> and <strong>bold</strong>.</paragraph>
+    </section>
+    <section name="second">
+      <title>Beta</title>
+      <paragraph><![CDATA[line one
+line two]]></paragraph>
+    </section>
+  </body>
+  <footer/>
+</report>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE r [
+  <!ENTITY % common "<!ELEMENT leaf (#PCDATA)>">
+  %common;
+  <!ELEMENT r (branch | leaf)*>
+  <!ELEMENT branch (leaf, branch?)>
+  <!ATTLIST r mode (cold|warm|hot) "warm">
+  <![IGNORE[
+    <!ELEMENT discarded (anything)>
+    <!ATTLIST discarded x CDATA #IMPLIED>
+  ]]>
+  <!ENTITY nbsp "&#160;">
+]>
+<r mode="hot">
+  <branch><leaf>A&nbsp;B</leaf><branch><leaf>深度</leaf></branch></branch>
+  <leaf><![CDATA[raw <tag> & data]]></leaf>
+</r>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta, payload)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT payload ANY>
+  <!ATTLIST envelope xmlns:x CDATA #IMPLIED>
+  <!ATTLIST meta created CDATA #REQUIRED>
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+]>
+<envelope xmlns:x="urn:x" xmlns:y="urn:y">
+  <meta created="2026-09-24"/>
+  <payload>
+    <x:group y:kind="outer">
+      <x:item>value &left;inside&right;</x:item>
+      <y:item x:ref="x">42</y:item>
+    </x:group>
+    <mixed>before<inner xmlns="urn:inner">inside</inner>after</mixed>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a, b, c)>
+  <!ELEMENT a EMPTY>
+  <!ELEMENT b (cdata|text|node)*>
+  <!ELEMENT cdata (#PCDATA)>
+  <!ELEMENT text (#PCDATA)>
+  <!ELEMENT node (node|text)*>
+  <!ELEMENT c EMPTY>
+  <!ATTLIST root flag CDATA #FIXED "yes">
+  <!ATTLIST node level NMTOKEN #IMPLIED>
+]>
+<root flag="yes">
+  <a/>
+  <b>
+    <cdata><![CDATA[unclosed-looking ] text &amp; symbols]]></cdata>
+    <text>line&#10;break&#x0A;again</text>
+    <node level="0">
+      <node level="1"><text>leaf</text></node>
+      <node level="2"/>
+    </node>
+  </b>
+  <c/>
+</root>
+```

@@ -1,0 +1,115 @@
+```xml
+<?xml version="1.0"?>
+<root>
+  <section id="one">
+    <heading>Mixed content test</heading>
+    Text before <emphasis level="strong">embedded markup</emphasis>
+    and after.
+    <list>
+      <item rank="1">first</item>
+      <item rank="2"><![CDATA[second <literal> value]]></item>
+      <item rank="3"><![CDATA[]]></item>
+    </list>
+  </section>
+  <?checkpoint phase="alpha"?>
+  <!-- comment between processing stages -->
+  <section id="two">
+    <empty/>
+    <wrapper><inner><leaf/></inner></wrapper>
+  </section>
+</root>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<package xmlns="urn:sample:package" xmlns:x="urn:sample:extra" xml:lang="fr">
+  <x:header x:version="7">
+    <x:label xml:space="default">Résumé &amp; détails</x:label>
+    <x:flags enabled="true" deprecated="false"/>
+  </x:header>
+  <payload xml:base="https://example.invalid/archive/">
+    <resource href="a.bin" media-type="application/octet-stream"/>
+    <resource href="../b.json" media-type="application/json">
+      <x:annotation key="source">generated</x:annotation>
+    </resource>
+  </payload>
+  <footer>
+    <x:signature algorithm="none">unsealed</x:signature>
+  </footer>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+  <!ENTITY nbsp "&#160;">
+]>
+<report>
+  <title>Entity boundary report</title>
+  <record>
+    <code>A&amp;B</code>
+    <message>&left;raw-looking&right; text&nbsp;tail</message>
+    <data><![CDATA[
+      line one
+      line two
+      ]]> 
+    </data>
+  </record>
+  <record>
+    <code>EMPTY</code>
+    <message/>
+    <data>&#x1F642;</data>
+  </record>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<graph xmlns="urn:sample:graph">
+  <node name="start">
+    <edge target="middle" weight="0"/>
+    <edge target="end" weight="-1.25"/>
+  </node>
+  <node name="middle">
+    <property key="label">A → B</property>
+    <edge target="start" directed="false"/>
+  </node>
+  <node name="end">
+    <property key="label"><![CDATA[terminal & final]]></property>
+  </node>
+  <metadata>
+    <created>2026-09-24T12:34:56Z</created>
+    <author/>
+  </metadata>
+</graph>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <profile name="minimal">
+    <setting key="timeout" value="0"/>
+    <setting key="retries" value="18446744073709551615"/>
+  </profile>
+  <profile name="nested">
+    <group name="network">
+      <option name="host">localhost</option>
+      <option name="ports">
+        <value>80</value>
+        <value>443</value>
+        <value>8080</value>
+      </option>
+    </group>
+    <group name="output">
+      <option name="path">./logs/</option>
+      <option name="format">xml</option>
+    </group>
+  </profile>
+  <?apply mode="dry-run"?>
+  <defaults>
+    <unset key="obsolete"/>
+  </defaults>
+</configuration>
+```

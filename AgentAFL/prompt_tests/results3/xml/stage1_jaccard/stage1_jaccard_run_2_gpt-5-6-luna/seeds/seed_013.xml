@@ -1,0 +1,38 @@
+<!DOCTYPE archive [
+  <!ELEMENT archive (metadata, records)>
+  <!ELEMENT metadata (owner, checksum)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (key, value, history?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|delta)*>
+  <!ELEMENT delta (#PCDATA)>
+  <!ELEMENT history (event+)>
+  <!ELEMENT event EMPTY>
+  <!ATTLIST record rid ID #REQUIRED>
+  <!ATTLIST event kind (created|updated|deleted) #REQUIRED at CDATA #REQUIRED>
+  <!ENTITY hex "&#x41;&#x42;&#x43;">
+  <!ENTITY decimal "&#65;&#66;&#67;">
+  <!ENTITY quote "&quot;quoted&quot;">
+]>
+<archive>
+  <metadata>
+    <owner xml:lang="und">system</owner>
+    <checksum algorithm="sha256">aabbccddeeff</checksum>
+  </metadata>
+  <records>
+    <record rid="r0">
+      <key>&hex;</key>
+      <value>original<delta type="patch">+&decimal;</delta>final</value>
+      <history>
+        <event kind="created" at="2020-02-29T23:59:60Z"/>
+        <event kind="updated" at="2026-09-24"/>
+      </history>
+    </record>
+    <record rid="r1">
+      <key>second</key>
+      <value><![CDATA[<escaped> & untouched]]>&quote;</value>
+    </record>
+  </records>
+</archive>

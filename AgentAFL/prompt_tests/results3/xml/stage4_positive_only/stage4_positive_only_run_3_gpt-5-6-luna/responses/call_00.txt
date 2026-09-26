@@ -1,0 +1,103 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY % itemDecl "<!ELEMENT item (#PCDATA)><!ATTLIST item id ID #REQUIRED kind (book|tool|other) 'other'>">
+  %itemDecl;
+  <!ELEMENT catalog (header, item+)>
+  <!ELEMENT header (#PCDATA)>
+  <!ENTITY greeting "A &amp; B &lt; C">
+]>
+<catalog>
+  <header>&greeting;</header>
+  <item id="i001" kind="book">alpha</item>
+  <item id="i002" kind="tool">beta <![CDATA[<not-an-element/>]]> gamma</item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta, payload)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT payload (p:entry*, tail?)>
+  <!ELEMENT p:entry (#PCDATA|p:mark)*>
+  <!ELEMENT p:mark EMPTY>
+  <!ELEMENT tail (#PCDATA)>
+]>
+<envelope xmlns="urn:outer" xmlns:p="urn:payload" xml:base="urn:root">
+  <meta xml:lang="fr"/>
+  <payload xmlns="">
+    <p:entry code="A&amp;1">one<p:mark/>two</p:entry>
+    <p:entry xmlns:p="urn:alternate" p:flag="yes">three</p:entry>
+    <tail xml:space="preserve">  end  </tail>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE broken [
+  <!ELEMENT broken (section)>
+  <!ELEMENT section (name, value?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value ANY>
+  <!ENTITY local "replacement">
+]>
+<broken>
+  <section data="&local;">
+    <name><![CDATA[unfinished <markup> & text</name>
+    <value>after</value>
+  </section>
+  <section><name>second</name><value>&unknown;</value></section>
+</broken>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ENTITY % switches "<!ENTITY draft 'temporary'><!ATTLIST report mode (full|delta) 'full'>">
+  %switches;
+  <!ELEMENT report (title, group+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT group (record+)>
+  <!ATTLIST group name CDATA #REQUIRED>
+  <!ELEMENT record (key, value, note?)>
+  <!ATTLIST record active (yes|no) 'yes'>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <![IGNORE[
+    <!ELEMENT ignored (anything)>
+    <!ENTITY hidden "not expanded">
+  ]]>
+]>
+<report mode="delta">
+  <title>Quarterly &draft; report</title>
+  <group name="north">
+    <record active="yes"><key>k1</key><value>42</value><note><![CDATA[x < y]]></note></record>
+    <record><key>k2</key><value>7</value></record>
+  </group>
+</report>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE tree [
+  <!ELEMENT tree (branch)>
+  <!ELEMENT branch (branch|leaf)*>
+  <!ELEMENT leaf (#PCDATA)>
+]>
+<tree>
+  <branch id="r">
+    <branch id="a">
+      <leaf>root&#x1F;unit&#x85;mark</leaf>
+      <branch id="b"><leaf xml:space="preserve">  left &amp; right  </leaf></branch>
+    </branch>
+    <branch id="c">
+      <branch id="d"><branch id="e"><leaf>deep</leaf></branch></branch>
+    </branch>
+  </branch>
+  <?checkpoint phase="final"?>
+</tree>
+```

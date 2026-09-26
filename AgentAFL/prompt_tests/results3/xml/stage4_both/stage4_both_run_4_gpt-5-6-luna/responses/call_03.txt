@@ -1,0 +1,246 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (context, step+, result?)>
+  <!ELEMENT context (property*)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST property name NMTOKEN #REQUIRED>
+  <!ELEMENT step (label, action, when?, step*)>
+  <!ATTLIST step id ID #REQUIRED
+                depends IDREFS #IMPLIED
+                status (pending|running|done|skipped) "pending">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT action (#PCDATA|arg|literal)*>
+  <!ELEMENT arg EMPTY>
+  <!ATTLIST arg name NMTOKEN #REQUIRED value CDATA #REQUIRED>
+  <!ELEMENT literal (#PCDATA)>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT result (summary, artifact*)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT artifact (#PCDATA)>
+  <!ATTLIST artifact media CDATA #IMPLIED>
+  <!ENTITY command "compile">
+  <!ENTITY nbsp "&#160;">
+]>
+<workflow>
+  <context>
+    <property name="branch">release/&nbsp;candidate</property>
+    <property name="owner">build-bot</property>
+  </context>
+  <step id="prepare" status="done">
+    <label>Prepare workspace</label>
+    <action>
+      <literal>mkdir</literal>
+      <arg name="directory" value="/tmp/build"/>
+    </action>
+  </step>
+  <step id="execute" depends="prepare" status="running">
+    <label>Run &command;</label>
+    <action>
+      <arg name="profile" value="asan"/>
+      <literal>--verbose</literal>
+    </action>
+    <when>environment = "linux"</when>
+    <step id="verify" depends="execute">
+      <label>Verify output</label>
+      <action><literal>checksum &amp; signature</literal></action>
+    </step>
+  </step>
+  <result>
+    <summary>Artifacts are ready.</summary>
+    <artifact media="application/octet-stream">bundle.bin</artifact>
+  </result>
+</workflow>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE equation [
+  <!ELEMENT equation (title?, expression, annotation*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT expression (mi|mo|mn|mrow|mfrac|msup|mfenced)+>
+  <!ELEMENT annotation (#PCDATA)>
+  <!ELEMENT mi (#PCDATA|mtext)*>
+  <!ELEMENT mo (#PCDATA)>
+  <!ELEMENT mn (#PCDATA)>
+  <!ELEMENT mrow (mi|mo|mn|mfrac|msup|mtext)+>
+  <!ELEMENT mfrac (mrow, mrow)>
+  <!ELEMENT msup (mi|mrow, mn|mi)>
+  <!ELEMENT mfenced (mrow)>
+  <!ELEMENT mtext (#PCDATA)>
+  <!ATTLIST equation id ID #IMPLIED>
+  <!ENTITY alpha "&#945;">
+  <!ENTITY beta "&#946;">
+]>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <semantics>
+    <mrow>
+      <mi>f</mi>
+      <mo>(</mo>
+      <mi>x</mi>
+      <mo>)</mo>
+      <mo>=</mo>
+      <mfrac>
+        <mrow>
+          <mi>&alpha;</mi>
+          <mo>+</mo>
+          <msup><mi>x</mi><mn>2</mn></msup>
+        </mrow>
+        <mrow>
+          <mn>1</mn>
+          <mo>+</mo>
+          <mi>&beta;</mi>
+        </mrow>
+      </mfrac>
+    </mrow>
+    <annotation encoding="application/x-tex"><![CDATA[\frac{\alpha+x^2}{1+\beta}]]></annotation>
+  </semantics>
+</math>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, directory, payload)>
+  <!ELEMENT header (name, created, comment?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT comment (#PCDATA|emph|quote)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT directory (folder*)>
+  <!ELEMENT folder (folder|file)*>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file name CDATA #REQUIRED
+               size NMTOKEN #REQUIRED
+               checksum CDATA #IMPLIED
+               type (text|binary|link) "binary">
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk number NMTOKEN #REQUIRED>
+  <!ENTITY intro "portable archive">
+]>
+<archive>
+  <header>
+    <name>&intro; &quot;sample&quot;</name>
+    <created>2026-09-24T14:05:07Z</created>
+    <comment>Contains <emph>nested</emph> notes and a <quote>quoted phrase</quote>.</comment>
+  </header>
+  <directory>
+    <folder name="src">
+      <file name="main.c" size="1832" checksum="sha256:abc123" type="text"/>
+      <folder name="include">
+        <file name="config.h" size="417" type="text"/>
+      </folder>
+    </folder>
+    <folder name="assets">
+      <file name="logo.dat" size="65536"/>
+      <file name="latest" size="0" type="link"/>
+    </folder>
+  </directory>
+  <payload>
+    <chunk number="0">AAECAwQFBgcICQ==</chunk>
+    <chunk number="1"><![CDATA[H4sIAAAAAAAC/8tIzcnJBwCGphA2BQAAAA==]]></chunk>
+  </payload>
+</archive>
+```
+
+```xml
+<?xml version="1.1" standalone="yes"?>
+<configuration xml:lang="en-GB">
+  <?source generated?>
+  <section name="network" enabled="true">
+    <setting key="endpoint">
+      <value><![CDATA[https://service.example.invalid/api?v=1&mode=full]]></value>
+      <description>Primary service endpoint</description>
+    </setting>
+    <setting key="retry-count">
+      <value>007</value>
+      <description>Attempts before failure</description>
+    </setting>
+    <setting key="features">
+      <value>
+        <item id="compression">gzip</item>
+        <item id="tracing">off</item>
+        <item id="unicode">café / 東京 / 😀</item>
+      </value>
+    </setting>
+  </section>
+  <section name="limits" enabled="false">
+    <setting key="timeout">
+      <value unit="ms">2500</value>
+      <description xml:space="default">Connection timeout</description>
+    </setting>
+    <setting key="burst">
+      <value unit="bytes">0x1000</value>
+    </setting>
+  </section>
+  <extensions>
+    <extension xmlns:vendor="urn:vendor:config" vendor:kind="experimental">
+      <vendor:parameter name="window" value="rolling"/>
+      <vendor:parameter name="threshold">0.875</vendor:parameter>
+    </extension>
+  </extensions>
+</configuration>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (routing, body, attachments?)>
+  <!ELEMENT routing (sender, recipients, reply-to?)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipients (recipient+)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT reply-to (#PCDATA)>
+  <!ELEMENT body (paragraph|list|table|separator)+>
+  <!ELEMENT paragraph (#PCDATA|strong|code|link|line-break)*>
+  <!ELEMENT strong (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ELEMENT line-break EMPTY>
+  <!ELEMENT list (item+)>
+  <!ATTLIST list ordered (yes|no) "no">
+  <!ELEMENT item (#PCDATA|paragraph|list)*>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA|strong|code)*>
+  <!ATTLIST cell colspan NMTOKEN "1">
+  <!ELEMENT separator EMPTY>
+  <!ELEMENT attachments (attachment+)>
+  <!ELEMENT attachment (#PCDATA)>
+  <!ATTLIST attachment filename CDATA #REQUIRED
+                       content-type CDATA #IMPLIED>
+]>
+<message>
+  <routing>
+    <sender>ops@example.invalid</sender>
+    <recipients>
+      <recipient>dev@example.invalid</recipient>
+      <recipient>qa@example.invalid</recipient>
+    </recipients>
+    <reply-to>noreply@example.invalid</reply-to>
+  </routing>
+  <body>
+    <paragraph>Please review the <strong>nightly</strong> report<line-break/>before deployment.</paragraph>
+    <list ordered="yes">
+      <item>Fetch the <code>manifest.xml</code> file.</item>
+      <item>Compare the checksum:
+        <paragraph><code>sha256sum</code> must match the published value.</paragraph>
+      </item>
+    </list>
+    <table>
+      <row><cell colspan="2">Environment</cell></row>
+      <row><cell>staging</cell><cell>healthy &amp; reachable</cell></row>
+      <row><cell>production</cell><cell><strong>maintenance</strong></cell></row>
+    </table>
+    <separator/>
+    <paragraph>See <link href="https://example.invalid/run/42">run details</link>.</paragraph>
+  </body>
+  <attachments>
+    <attachment filename="manifest.xml" content-type="application/xml">inline-reference</attachment>
+  </attachments>
+</message>
+```

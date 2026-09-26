@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (description?, node+, edge*)>
+  <!ATTLIST graph directed (true|false) "true">
+  <!ELEMENT description (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT node (label, property*)>
+  <!ATTLIST node id ID #REQUIRED kind NMTOKEN #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA|value)*>
+  <!ATTLIST property name NMTOKEN #REQUIRED>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT edge (annotation*)>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA #IMPLIED>
+  <!ELEMENT annotation (#PCDATA)>
+  <!ATTLIST annotation key NMTOKEN #REQUIRED>
+]>
+<graph xmlns="urn:example:graph" xmlns:meta="urn:example:metadata" directed="false">
+  <description>A small dependency graph<linebreak/>with labels and references.</description>
+  <node id="n-root" kind="service">
+    <label>gateway</label>
+    <property name="region"><value>eu-west</value><value>backup</value></property>
+    <property name="owner">platform-team</property>
+  </node>
+  <node id="n-cache" kind="storage">
+    <label>cache</label>
+    <property name="capacity">512MiB</property>
+  </node>
+  <node id="n-worker" kind="process">
+    <label>worker</label>
+    <property name="queue"><value>events</value></property>
+  </node>
+  <edge from="n-root" to="n-cache" weight="0.25">
+    <annotation key="mode">read-through</annotation>
+  </edge>
+  <edge from="n-root" to="n-worker" weight="1">
+    <annotation key="protocol">internal</annotation>
+    <annotation key="retry">3</annotation>
+  </edge>
+  <meta:classification meta:confidence="0.98">operational</meta:classification>
+</graph>

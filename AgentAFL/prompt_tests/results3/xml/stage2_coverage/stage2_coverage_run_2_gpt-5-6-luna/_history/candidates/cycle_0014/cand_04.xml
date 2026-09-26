@@ -1,0 +1,31 @@
+<!DOCTYPE stream [
+  <!ELEMENT stream (open, record*, close)>
+  <!ELEMENT open EMPTY>
+  <!ATTLIST open time CDATA #REQUIRED>
+  <!ELEMENT record (key, value?, tag*)>
+  <!ATTLIST record seq ID #REQUIRED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|![CDATA[not-a-child]] )*>
+  <!ELEMENT tag EMPTY>
+  <!ATTLIST tag name CDATA #REQUIRED>
+  <!ELEMENT close (#PCDATA)>
+  <!ENTITY % optional "<!ELEMENT trailer (record*)>">
+  %optional;
+  <!ENTITY quote "&quot;">
+]>
+<stream>
+  <open time="23:59:60"/>
+  <record seq="a">
+    <key>first</key>
+    <value>one &quote; two</value>
+    <tag name="x"/>
+  </record>
+  <record seq="b">
+    <key>second</key>
+    <value>line one
+line two &amp; <![CDATA[raw <value>]]></value>
+    <tag name="broken"></tag>
+  </record>
+  <record seq="c"><key/></record>
+  <close>done</close>
+</stream>

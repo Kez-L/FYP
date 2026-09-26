@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<workflow xmlns="urn:example:workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="urn:example:workflow workflow.xsd"
+          id="deploy-17" xml:base="https://example.invalid/jobs/">
+  <?engine mode="safe"?>
+  <trigger at="2026-09-24T12:30:00Z">
+    <source kind="webhook" ref="refs/heads/main"/>
+  </trigger>
+  <steps>
+    <step name="checkout" kind="shell" timeout="30">
+      <command>git fetch --depth=1</command>
+      <environment>
+        <variable name="LANG">C.UTF-8</variable>
+        <variable name="CI">true</variable>
+      </environment>
+    </step>
+    <step name="build" kind="container" depends-on="checkout">
+      <image digest="sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef">
+        registry.example.invalid/toolchain:latest
+      </image>
+      <mount source="/cache" target="/workspace/.cache" read-only="false"/>
+    </step>
+    <step name="publish" kind="shell" depends-on="build" allow-failure="false">
+      <command><![CDATA[printf '%s\n' "artifact ready"]]></command>
+    </step>
+  </steps>
+  <notifications>
+    <email address="ops@example.invalid" on="failure"/>
+  </notifications>
+</workflow>

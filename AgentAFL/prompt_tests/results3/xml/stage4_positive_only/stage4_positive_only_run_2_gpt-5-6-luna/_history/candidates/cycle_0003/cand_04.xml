@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<!DOCTYPE pipeline [
+  <!ELEMENT pipeline (environment, stages)>
+  <!ATTLIST pipeline name CDATA #REQUIRED version CDATA #IMPLIED>
+  <!ELEMENT environment (variable*)>
+  <!ELEMENT variable EMPTY>
+  <!ATTLIST variable name NMTOKEN #REQUIRED value CDATA #IMPLIED secret (yes|no) "no">
+  <!ELEMENT stages (stage+)>
+  <!ELEMENT stage (input?, operation+, output?)>
+  <!ATTLIST stage id ID #REQUIRED depends-on IDREFS #IMPLIED>
+  <!ELEMENT input (source+)>
+  <!ELEMENT source EMPTY>
+  <!ATTLIST source uri CDATA #REQUIRED format (json|csv|xml|binary) #REQUIRED>
+  <!ELEMENT operation (argument*)>
+  <!ATTLIST operation name NMTOKEN #REQUIRED enabled (true|false) "true">
+  <!ELEMENT argument (literal|reference|map)>
+  <!ATTLIST argument key NMTOKEN #REQUIRED>
+  <!ELEMENT literal (#PCDATA)>
+  <!ELEMENT reference EMPTY>
+  <!ATTLIST reference path CDATA #REQUIRED>
+  <!ELEMENT map (entry+)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ATTLIST entry key NMTOKEN #REQUIRED>
+  <!ELEMENT output (destination+)>
+  <!ELEMENT destination EMPTY>
+  <!ATTLIST destination uri CDATA #REQUIRED overwrite (yes|no) "no">
+  <!ENTITY root "/srv/data">
+]>
+<pipeline name="nightly-index" version="3.1">
+  <environment>
+    <variable name="HOME" value="&root;" secret="no"/>
+    <variable name="TOKEN" secret="yes"/>
+    <variable name="MODE" value="incremental"/>
+  </environment>
+  <stages>
+    <stage id="extract">
+      <input>
+        <source uri="file:///srv/data/events.csv" format="csv"/>
+        <source uri="file:///srv/data/users.json" format="json"/>
+      </input>
+      <operation name="normalize">
+        <argument key="trim"><literal>true</literal></argument>
+        <argument key="locale"><literal>en-GB</literal></argument>
+      </operation>
+      <output>
+        <destination uri="file:///srv/data/normalized.xml" overwrite="yes"/>
+      </output>
+    </stage>
+    <stage id="publish" depends-on="extract">
+      <operation name="index">
+        <argument key="endpoint"><reference path="env.SEARCH_URL"/></argument>
+        <argument key="options">
+          <map>
+            <entry key="shards">4</entry>
+            <entry key="replicas">2</entry>
+          </map>
+        </argument>
+      </operation>
+      <operation name="notify" enabled="false">
+        <argument key="channel"><literal>ops</literal></argument>
+      </operation>
+      <output>
+        <destination uri="https://example.invalid/report" overwrite="no"/>
+      </output>
+    </stage>
+  </stages>
+</pipeline>

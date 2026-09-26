@@ -1,0 +1,104 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, tail?)>
+  <!ELEMENT entry (title, data)>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    status (draft|final|archived) "draft"
+  >
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT data (#PCDATA|note)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT tail EMPTY>
+  <!ENTITY author "Ada &amp; Lovelace">
+]>
+<catalog>
+  <entry id="e1" status="final">
+    <title>&author;'s notes</title>
+    <data>prefix<note priority="high">inline</note>suffix</data>
+  </entry>
+  <entry id="e2">
+    <title>Second entry</title>
+    <data><![CDATA[raw <markup> & symbols]]><note>after cdata</note></data>
+  </entry>
+  <tail/>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<message xmlns="urn:message" xmlns:m="urn:meta" xmlns:x="urn:extra"
+         xml:lang="fr" xml:space="preserve">
+  <header m:version="2" m:created="2026-09-24T12:34:56Z">
+    <m:sender x:code="A-17">équipe</m:sender>
+    <m:recipient xml:lang="en">reader</m:recipient>
+  </header>
+  <body>
+    Bonjour,
+    <section xml:id="s-1" x:flag="true">
+      <line>one</line>
+      <line>two<m:emphasis>!</m:emphasis></line>
+      <empty x:value=""/>
+    </section>
+  </body>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (heading, paragraph+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|ref|br)*>
+  <!ELEMENT ref (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ENTITY base "alpha">
+  <!ENTITY quoted "&quot;quoted&quot;">
+  <!ENTITY compound "&base;-&base;-&#x03A9;">
+]>
+<report>
+  <heading>&quoted; &compound;</heading>
+  <paragraph>before<ref key="r1">reference</ref>middle<br/>after</paragraph>
+  <paragraph><![CDATA[<not-an-element/>]]> &base; <ref key="r2">Ω</ref></paragraph>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<warehouse>
+  <aisle number="01">
+    <bin label="A">
+      <item sku="α-001" count="0"/>
+      <item sku="β-002" count="0007">
+        <description>mixed <b>bold</b> and <i>italic</i>.</description>
+        <!-- inventory comment -->
+        <?audit user="robot"?>
+      </item>
+    </bin>
+    <bin label="B">
+      <item sku="γ-003">
+        <payload><![CDATA[
+          line one
+          ]]>line two<![CDATA[ & < > " ' ]]></payload>
+      </item>
+    </bin>
+  </aisle>
+  <aisle number="02">
+    <bin label="empty"/>
+  </aisle>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a, b)>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b EMPTY>
+]>
+<root xmlns:q="urn:q" q:item="first" q:item="second">
+  <a>unterminated text
+  <b/>
+</root>
+```

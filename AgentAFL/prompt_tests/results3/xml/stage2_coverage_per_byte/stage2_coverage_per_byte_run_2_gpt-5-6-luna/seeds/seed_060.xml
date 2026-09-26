@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY % feature "INCLUDE">
+  <![%feature;[
+    <!ELEMENT catalog (section+, note?)>
+    <!ELEMENT section (entry*)>
+    <!ELEMENT entry (#PCDATA|em|ref)*>
+    <!ELEMENT em (#PCDATA)>
+    <!ELEMENT ref EMPTY>
+    <!ELEMENT note (#PCDATA)>
+  ]]>
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "blob.dat" NDATA binary>
+  <!ATTLIST catalog
+    xmlns CDATA #FIXED "urn:catalog"
+    edition CDATA #IMPLIED>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ATTLIST entry kind (text|link|binary) "text" target ENTITY #IMPLIED>
+  <!ATTLIST ref href URI #REQUIRED>
+]>
+<catalog xmlns="urn:catalog" edition="Δ-7">
+  <section id="s1">
+    <entry kind="text">alpha<em>mixed</em>omega</entry>
+    <entry kind="link"><ref href="urn:item:42"/></entry>
+  </section>
+  <section id="s2">
+    <entry kind="binary" target="payload">opaque</entry>
+  </section>
+  <note>line one&#x0A;line two</note>
+</catalog>

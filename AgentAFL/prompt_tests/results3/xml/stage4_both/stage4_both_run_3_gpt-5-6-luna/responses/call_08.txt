@@ -1,0 +1,242 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE drawing [
+  <!ELEMENT drawing (defs?, layer+)>
+  <!ELEMENT defs (gradient|filter|symbol)*>
+  <!ELEMENT gradient (stop+)>
+  <!ELEMENT stop EMPTY>
+  <!ATTLIST stop offset CDATA #REQUIRED color CDATA #IMPLIED>
+  <!ELEMENT filter (component-transfer?)>
+  <!ELEMENT component-transfer EMPTY>
+  <!ELEMENT symbol (path|text|use)*>
+  <!ELEMENT layer (path|circle|text|use|group)*>
+  <!ELEMENT group (path|circle|text|use|group)*>
+  <!ELEMENT path EMPTY>
+  <!ELEMENT circle EMPTY>
+  <!ELEMENT text (#PCDATA)>
+  <!ELEMENT use EMPTY>
+  <!ENTITY copyright "©">
+]>
+<drawing xmlns="http://www.w3.org/2000/svg"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         viewBox="0 0 640 480"
+         xml:space="preserve">
+  <defs>
+    <gradient id="sunset">
+      <stop offset="0%" color="#ffcc66"/>
+      <stop offset="100%" color="#663399"/>
+    </gradient>
+    <filter id="soften">
+      <component-transfer/>
+    </filter>
+    <symbol id="marker">
+      <path d="M 0,-8 L 6,6 L -6,6 Z"/>
+      <text y="20">north</text>
+    </symbol>
+  </defs>
+  <layer id="background" style="isolation:isolate">
+    <rect xmlns="http://www.w3.org/2000/svg"
+          x="0" y="0" width="640" height="480"
+          fill="url(#sunset)"/>
+    <circle cx="510" cy="92" r="48" fill="#fff8dc" opacity="0.82"/>
+  </layer>
+  <layer id="foreground">
+    <g transform="translate(320,240)" aria-label="&copyright; diagram">
+      <use xlink:href="#marker" x="0" y="-80"/>
+      <path d="M -180,100 C -90,-40 20,160 180,-20"
+            fill="none" stroke="#102030" stroke-width="3"
+            filter="url(#soften)"/>
+      <text x="-110" y="150"><![CDATA[α < β && γ > δ]]></text>
+    </g>
+  </layer>
+</drawing>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE article [
+  <!ELEMENT article (title, byline?, section+)>
+  <!ELEMENT title (#PCDATA|italic|code)*>
+  <!ELEMENT byline (author+, published?)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT published (#PCDATA)>
+  <!ELEMENT section (heading, (paragraph|list|quote|table|section)*)>
+  <!ELEMENT heading (#PCDATA|italic|code)*>
+  <!ELEMENT paragraph (#PCDATA|italic|bold|code|link|break)*>
+  <!ELEMENT italic (#PCDATA|bold|code)*>
+  <!ELEMENT bold (#PCDATA|italic|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (paragraph|list|quote)*>
+  <!ELEMENT quote (#PCDATA|italic|paragraph)*>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA|code|link)*>
+  <!ATTLIST article edition CDATA #IMPLIED>
+  <!ATTLIST link href CDATA #REQUIRED>
+]>
+<article edition="special">
+  <title>Notes on <italic>recursive</italic> markup</title>
+  <byline>
+    <author>R. Example</author>
+    <author>M. Parser</author>
+    <published>2026-09-24</published>
+  </byline>
+  <section>
+    <heading>Opening</heading>
+    <paragraph>Text can contain <bold>emphasis</bold>, <code>names()</code>, and a<break/>line boundary.</paragraph>
+    <quote>Markup is data when the context says so.</quote>
+    <list>
+      <item><paragraph>first branch</paragraph></item>
+      <item>
+        <paragraph>second branch</paragraph>
+        <list>
+          <item><paragraph>nested branch with <link href="urn:example:detail">a link</link></paragraph></item>
+        </list>
+      </item>
+    </list>
+  </section>
+  <section>
+    <heading>Values</heading>
+    <table>
+      <row><cell>key</cell><cell>value</cell></row>
+      <row><cell><code>π</code></cell><cell>3.141592653589793</cell></row>
+    </table>
+  </section>
+</article>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:fn="urn:example:functions"
+  exclude-result-prefixes="fn">
+  <xsl:output method="xml" encoding="UTF-8" omit-xml-declaration="no"
+              cdata-section-elements="description"/>
+  <xsl:param name="minimum" select="0"/>
+  <xsl:variable name="label">generated-report</xsl:variable>
+  <xsl:key name="by-kind" match="record" use="@kind"/>
+  <xsl:template match="/">
+    <report name="{$label}">
+      <xsl:comment>created by transformation</xsl:comment>
+      <xsl:apply-templates select="catalog/record[number(value) &gt;= $minimum]">
+        <xsl:sort select="@kind" data-type="text"/>
+        <xsl:sort select="value" data-type="number" order="descending"/>
+      </xsl:apply-templates>
+    </report>
+  </xsl:template>
+  <xsl:template match="record">
+    <item kind="{@kind}" id="{@id}">
+      <xsl:attribute name="rank">
+        <xsl:number level="any" count="record"/>
+      </xsl:attribute>
+      <name><xsl:value-of select="normalize-space(name)"/></name>
+      <description>
+        <xsl:choose>
+          <xsl:when test="description"><xsl:copy-of select="description/node()"/></xsl:when>
+          <xsl:otherwise>unknown</xsl:otherwise>
+        </xsl:choose>
+      </description>
+      <value><xsl:value-of select="format-number(value, '0.00')"/></value>
+    </item>
+  </xsl:template>
+  <xsl:template match="text()"/>
+</xsl:stylesheet>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (warehouse+)>
+  <!ELEMENT warehouse (location, bin+)>
+  <!ELEMENT location (name, coordinates?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT coordinates EMPTY>
+  <!ATTLIST coordinates lat CDATA #REQUIRED lon CDATA #REQUIRED>
+  <!ELEMENT bin (item*)>
+  <!ATTLIST bin code ID #REQUIRED temperature (ambient|chilled|frozen) "ambient">
+  <!ELEMENT item (sku, description?, quantity, dimensions?, tags?)>
+  <!ATTLIST item serial ID #IMPLIED fragile (yes|no) "no">
+  <!ELEMENT sku (#PCDATA)>
+  <!ELEMENT description (#PCDATA|br)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT quantity (#PCDATA)>
+  <!ELEMENT dimensions EMPTY>
+  <!ATTLIST dimensions unit CDATA #REQUIRED width CDATA #REQUIRED height CDATA #REQUIRED depth CDATA #REQUIRED>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+]>
+<inventory>
+  <warehouse>
+    <location>
+      <name>North Annex</name>
+      <coordinates lat="51.5074" lon="-0.1278"/>
+    </location>
+    <bin code="A-01" temperature="ambient">
+      <item serial="S-0007" fragile="yes">
+        <sku>GLASS-04</sku>
+        <description>Hand-blown<br/>sample vessel</description>
+        <quantity>12</quantity>
+        <dimensions unit="cm" width="8.5" height="19" depth="8.5"/>
+        <tags><tag>sample</tag><tag>display</tag></tags>
+      </item>
+      <item>
+        <sku>WIRE-200</sku>
+        <quantity>2048</quantity>
+      </item>
+    </bin>
+    <bin code="C-09" temperature="frozen">
+      <item serial="S-991">
+        <sku>ICE-CRYSTAL</sku>
+        <description><![CDATA[Temperature-sensitive & sealed]]></description>
+        <quantity>3</quantity>
+        <dimensions unit="mm" width="40" height="40" depth="40"/>
+        <tags><tag>cold</tag><tag>priority</tag></tags>
+      </item>
+    </bin>
+  </warehouse>
+</inventory>
+```
+
+```xml
+<?xml version="1.1" standalone="yes"?>
+<graph xmlns="urn:example:graph"
+       xmlns:m="urn:example:meta"
+       xml:lang="fr"
+       m:revision="Δ-42">
+  <?graph generated="false"?>
+  <metadata>
+    <m:owner><![CDATA[ops & research]]></m:owner>
+    <m:created>2026-09-24T19:00:00Z</m:created>
+    <m:labels>
+      <m:label key="α">réseau</m:label>
+      <m:label key="β">測試</m:label>
+    </m:labels>
+  </metadata>
+  <nodes>
+    <node id="n1" kind="source"><port name="out" direction="out"/></node>
+    <node id="n2" kind="transform">
+      <port name="in" direction="in"/>
+      <port name="out" direction="out"/>
+      <config enabled="true">
+        <option name="expression">a &lt; b and c &gt; d</option>
+        <option name="empty"/>
+      </config>
+    </node>
+    <node id="n3" kind="sink"><port name="in" direction="in"/></node>
+  </nodes>
+  <edges>
+    <edge from="n1:out" to="n2:in" weight="0.75"/>
+    <edge from="n2:out" to="n3:in" weight="1"/>
+  </edges>
+  <annotations>
+    <annotation target="n2"><![CDATA[
+      multiline note
+      with <literal>markup</literal> preserved
+    ]]></annotation>
+  </annotations>
+</graph>
+```

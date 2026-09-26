@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (sender, recipients, subject, body, attachment*)>
+  <!ELEMENT sender EMPTY>
+  <!ELEMENT recipients (recipient+)>
+  <!ELEMENT recipient EMPTY>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|list|item|code)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST sender address CDATA #REQUIRED>
+  <!ATTLIST recipient address CDATA #REQUIRED kind (to|cc|bcc) "to">
+  <!ATTLIST attachment filename CDATA #REQUIRED content-type CDATA #IMPLIED>
+  <!ENTITY signature "— sent from the &amp; test system —">
+]>
+<message>
+  <sender address="ops@example.invalid"/>
+  <recipients>
+    <recipient address="a@example.invalid"/>
+    <recipient address="b@example.invalid" kind="cc"/>
+  </recipients>
+  <subject>Build result: &lt;warning&gt;</subject>
+  <body>
+    The parser reported:
+    <quote>an unexpected <code>token</code></quote>
+    <list>
+      <item>preserve whitespace</item>
+      <item>decode &amp; escape sequences</item>
+    </list>
+    &signature;
+  </body>
+  <attachment filename="trace.xml" content-type="application/xml"/>
+</message>

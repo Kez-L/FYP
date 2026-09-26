@@ -1,0 +1,140 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, entry+)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header
+    xmlns:meta CDATA #FIXED "urn:example:metadata"
+    meta:version CDATA #REQUIRED>
+  <!ELEMENT entry (#PCDATA|tag|note)*>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    state (new|held|closed) "new"
+    ref IDREF #IMPLIED>
+  <!ELEMENT tag EMPTY>
+  <!ATTLIST tag value CDATA #REQUIRED>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY mark "&#x25; &amp; &quot; &apos;">
+]>
+<archive xmlns="urn:example:archive">
+  <header xmlns:meta="urn:example:metadata" meta:version="&quot;1&quot;"/>
+  <entry id="e1" state="held">alpha<tag value="&mark;"/>beta<note>one &amp; two</note></entry>
+  <entry id="e2" ref="e1">gamma<tag value="&#x0A;"/></entry>
+</archive>
+```
+
+```xml
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section*)>
+  <!ELEMENT section (item|section)*>
+  <!ATTLIST section code NMTOKEN #IMPLIED>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item
+    name CDATA #REQUIRED
+    weight NMTOKEN #IMPLIED
+    flags NMTOKENS #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "data:application/octet-stream;base64,AAEC" NDATA bin>
+  <!ENTITY literal "left&#x9;middle&#xD;right&#xA;">
+]>
+<catalog>
+  <section code="A">
+    <item name="&literal;" weight="0000000000000000000000000000000000000007" flags="x y z"/>
+    <section code="A.1">
+      <item name="nested" flags=""/>
+    </section>
+  </section>
+  <section>
+    <item name="after" weight="&lt;&gt;"/>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (title, body, footer?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (paragraph|quote|list)*>
+  <!ELEMENT paragraph (#PCDATA|em|br)*>
+  <!ELEMENT quote (#PCDATA|paragraph)*>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|em)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST report xml:lang NMTOKEN #IMPLIED>
+  <!ENTITY open "<em>">
+  <!ENTITY close "</em>">
+  <!ENTITY nbsp "&#160;">
+]>
+<report xml:lang="en-US">
+  <title>Entity boundaries</title>
+  <body>
+    <paragraph>before &open;emphasized&close; after<br/>tail&nbsp;</paragraph>
+    <quote><paragraph>nested &amp; quoted</paragraph></quote>
+    <list>
+      <item>first</item>
+      <item>second &nbsp; item</item>
+    </list>
+  </body>
+  <footer><![CDATA[raw ]]> <![CDATA[markers & < >]]></footer>
+</report>
+```
+
+```xml
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+    path CDATA #REQUIRED
+    checksum CDATA #IMPLIED
+    kind (text|binary|link) #REQUIRED>
+  <!ELEMENT data (chunk*)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!ENTITY e1 "A&amp;B">
+  <!ENTITY e2 "&e1;::&#x3C;fragment&#x3E;">
+  <!ENTITY e3 "&#xD;&#xA;&#x9;">
+]>
+<package>
+  <manifest>
+    <file path="a/b.txt" checksum="&e2;" kind="text"/>
+    <file path="link&#x2F;target" kind="link"/>
+    <file path="blob.bin" checksum="&e3;" kind="binary"/>
+  </manifest>
+  <data>
+    <chunk index="0">&e1;</chunk>
+    <chunk index="1"><![CDATA[&e2; is not expanded here]]></chunk>
+    <chunk index="2">end</chunk>
+  </data>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ATTLIST row n NMTOKEN #REQUIRED>
+  <!ELEMENT cell (#PCDATA|cell)*>
+  <!ATTLIST cell
+    col NMTOKEN #REQUIRED
+    type (int|text|empty) "text">
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+]>
+<matrix>
+  <row n="0000000000000000000000000000000001">
+    <cell col="1" type="int">0</cell>
+    <cell col="2">A &lt; B &amp;&amp; B &gt; C</cell>
+    <cell col="3" type="empty"/>
+  </row>
+  <row n="2">
+    <cell col="1"><cell col="1">deep</cell></cell>
+    <cell col="2">&left;literal&right;</cell>
+    <cell col="3"><![CDATA[]]]]><![CDATA[>]]></cell>
+  </row>
+</matrix>
+```

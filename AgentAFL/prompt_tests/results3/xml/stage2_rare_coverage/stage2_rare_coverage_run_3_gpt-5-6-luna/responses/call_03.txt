@@ -1,0 +1,155 @@
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+, note?)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (name, price, details?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST catalog xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ATTLIST item sku CDATA #IMPLIED status (new|used|hold) "new">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY mark "<em>special</em>">
+]>
+<catalog xml:lang="en">
+  <section id="s-1">
+    <title>Tools &amp; Parts</title>
+    <item sku="A-17">
+      <name>Socket</name>
+      <price>12.50&nbsp;USD</price>
+      <details>Size <code>7/16</code>; <em>revised</em> &mark;</details>
+    </item>
+  </section>
+  <section id="s-2">
+    <title><![CDATA[Outdoor <equipment>]]></title>
+    <item sku="B-04" status="used">
+      <name>Lantern</name>
+      <price>8.00</price>
+    </item>
+  </section>
+  <note>Inventory snapshot <?audit source="seed"?></note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workspace xmlns="urn:workspace" xmlns:x="urn:extra" xml:base="https://example.invalid/root/">
+  <folder name="alpha" xml:space="preserve">
+    <entry x:kind="text" xml:id="entry-a">
+      leading
+      <x:mark data="&quot;quoted&quot;">A&amp;B</x:mark>
+      trailing
+    </entry>
+    <folder xmlns="" name="plain">
+      <item xmlns="urn:item" x:kind="binary" x:flag="yes">
+        <![CDATA[raw ]]>]]&gt;<![CDATA[ content]]>
+      </item>
+    </folder>
+  </folder>
+  <x:metadata>
+    <x:value key="empty"/>
+    <?workspace mode="compact"?>
+    <!-- a comment between namespaced siblings -->
+  </x:metadata>
+</workspace>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, attachment*)>
+  <!ELEMENT header (from, to, subject)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|linebreak|strong)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST message id ID #REQUIRED refs IDREFS #IMPLIED>
+  <!ATTLIST header priority (low|normal|high) "normal">
+  <!ATTLIST attachment type NOTATION (image|archive) #REQUIRED file ENTITY #IMPLIED>
+  <!NOTATION image SYSTEM "image-handler">
+  <!NOTATION archive SYSTEM "archive-handler">
+  <!ENTITY greeting "Hello, &amp; welcome">
+  <!ENTITY % extra "standalone CDATA #IMPLIED">
+  <!ATTLIST body %extra;>
+]>
+<message id="m1" refs="m1">
+  <header priority="high">
+    <from>sender@example.invalid</from>
+    <to>receiver@example.invalid</to>
+    <subject>&greeting;</subject>
+  </header>
+  <body><![CDATA[First line]]><linebreak/><strong>Second line</strong></body>
+  <attachment type="image"/>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns:inc="http://www.w3.org/2001/XInclude"
+      xmlns:p="urn:primary"
+      xmlns:q="urn:secondary"
+      p:revision="3">
+  <p:record q:key="one">
+    <p:value xsi:type="text" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <![CDATA[alpha < beta && gamma > delta]]>
+    </p:value>
+    <q:value q:key="nested">
+      <q:part>left</q:part>
+      <q:part><![CDATA[right]]></q:part>
+    </q:value>
+  </p:record>
+  <inc:include href="fragment.xml" parse="xml">
+    <inc:fallback>
+      <p:record q:key="fallback">
+        <p:value>embedded fallback</p:value>
+      </p:record>
+    </inc:fallback>
+  </inc:include>
+  <p:record xmlns:p="" q:key="reset">
+    <local xmlns:q="urn:local" q:tag="yes">plain</local>
+  </p:record>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node (label?, property*)>
+  <!ELEMENT edge EMPTY>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA|value)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST graph version CDATA "1">
+  <!ATTLIST node id ID #REQUIRED kind (source|sink|middle) "middle">
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight NMTOKEN #IMPLIED>
+  <!ATTLIST property name CDATA #REQUIRED>
+  <!ENTITY left "L">
+  <!ENTITY right "R">
+]>
+<graph version="2">
+  <node id="n-left" kind="source">
+    <label>&left;-node</label>
+    <property name="tags"><value>one</value><value>two</value></property>
+  </node>
+  <node id="n-mid">
+    <label><![CDATA[center & hub]]></label>
+    <property name="empty"/>
+  </node>
+  <node id="n-right" kind="sink">
+    <label>&right;-node</label>
+  </node>
+  <edge from="n-left" to="n-mid" weight="0"/>
+  <edge from="n-mid" to="n-right" weight="1.0"/>
+  <?graph generated="false"?>
+</graph>
+```

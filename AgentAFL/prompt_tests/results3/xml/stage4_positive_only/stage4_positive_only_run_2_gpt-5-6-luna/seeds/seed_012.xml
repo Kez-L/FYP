@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body)>
+  <!ELEMENT header (transaction, credentials?, flags?)>
+  <!ELEMENT transaction (#PCDATA)>
+  <!ELEMENT credentials (user, token)>
+  <!ELEMENT user (#PCDATA)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT flags (flag+)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST flag name NMTOKEN #REQUIRED value (on|off) #REQUIRED>
+  <!ELEMENT body (request|batch|fault)>
+  <!ELEMENT request (action, parameters?)>
+  <!ATTLIST request id ID #REQUIRED retry CDATA "0">
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT parameters (parameter*)>
+  <!ELEMENT parameter (value|list)>
+  <!ATTLIST parameter name CDATA #REQUIRED type (text|integer|boolean|list) "text">
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT list (value+)>
+  <!ELEMENT batch (request+)>
+  <!ELEMENT fault (code, message, trace?)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT trace (#PCDATA)>
+]>
+<envelope xmlns="urn:acme:transport" xmlns:sec="urn:acme:security">
+  <header>
+    <transaction>TX-20260924-0042</transaction>
+    <credentials>
+      <user>operator</user>
+      <token sec:format="opaque">redacted-token</token>
+    </credentials>
+    <flags>
+      <flag name="audit" value="on"/>
+      <flag name="compress" value="off"/>
+    </flags>
+  </header>
+  <body>
+    <batch>
+      <request id="req-a" retry="2">
+        <action>lookup</action>
+        <parameters>
+          <parameter name="region"><value>eu-west</value></parameter>
+          <parameter name="codes" type="list">
+            <list><value>A1</value><value>B7</value><value>C9</value></list>
+          </parameter>
+        </parameters>
+      </request>
+      <request id="req-b">
+        <action>rotate</action>
+        <parameters>
+          <parameter name="force" type="boolean"><value>true</value></parameter>
+        </parameters>
+      </request>
+    </batch>
+  </body>
+</envelope>

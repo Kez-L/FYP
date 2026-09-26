@@ -1,0 +1,256 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE spacecraft [
+  <!ELEMENT spacecraft (mission, crew, payload?, log)>
+  <!ATTLIST spacecraft
+    xmlns CDATA #FIXED "urn:orbit"
+    registry ID #REQUIRED
+    phase (prelaunch|active|complete) "prelaunch">
+  <!ELEMENT mission (name, window)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT window EMPTY>
+  <!ATTLIST window
+    opens CDATA #REQUIRED
+    closes CDATA #IMPLIED>
+  <!ELEMENT crew (member+)>
+  <!ELEMENT member (#PCDATA)>
+  <!ATTLIST member role (pilot|engineer|scientist) #REQUIRED>
+  <!ELEMENT payload (sample*, note?)>
+  <!ELEMENT sample (#PCDATA)>
+  <!ATTLIST sample code NMTOKEN #REQUIRED sealed (yes|no) "yes">
+  <!ELEMENT note (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT log (entry+)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ATTLIST entry at CDATA #REQUIRED level (info|warn|error) "info">
+  <!ENTITY mission-name "Aurora-7">
+]>
+<spacecraft registry="orb-17" phase="active">
+  <mission>
+    <name>&mission-name;</name>
+    <window opens="2042-03-01T04:00:00Z" closes="2042-03-01T05:15:00Z"/>
+  </mission>
+  <crew>
+    <member role="pilot">Iris</member>
+    <member role="scientist">Nadir</member>
+  </crew>
+  <payload>
+    <sample code="ice-A1" sealed="no"><![CDATA[H2O < trace:argon > 0.04%]]></sample>
+    <note>Handle with <emph>gloves</emph> &amp; shielding.</note>
+  </payload>
+  <log>
+    <entry at="04:02:11Z">Systems nominal</entry>
+    <entry at="04:07:09Z" level="warn">Pressure fluctuation &lt; threshold</entry>
+  </log>
+</spacecraft>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder+)>
+  <!ATTLIST archive xml:lang CDATA #IMPLIED>
+  <!ELEMENT folder (label, folder*, record*)>
+  <!ATTLIST folder key ID #REQUIRED hidden (true|false) "false">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT record (title, metadata, body)>
+  <!ATTLIST record ref ID #REQUIRED format NOTATION #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT metadata (tag*)>
+  <!ELEMENT tag EMPTY>
+  <!ATTLIST tag name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT body (#PCDATA|link|code|break)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link target IDREF #REQUIRED>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!NOTATION markdown SYSTEM "text/markdown">
+  <!NOTATION plain SYSTEM "text/plain">
+  <!ENTITY legal "Copyright &amp; retention policy">
+]>
+<archive xml:lang="fr">
+  <folder key="root">
+    <label>Dossiers &amp; index</label>
+    <folder key="research" hidden="false">
+      <label>Recherche</label>
+      <record ref="r-01" format="markdown">
+        <title>Notes de terrain</title>
+        <metadata>
+          <tag name="owner" value="Léa"/>
+          <tag name="status"/>
+        </metadata>
+        <body><![CDATA[Mesure initiale: 17 < 19]]><break/>
+          Voir <link target="r-02">la calibration</link> et <code>sample --dry-run</code>.
+        </body>
+      </record>
+      <record ref="r-02" format="plain">
+        <title>Calibration</title>
+        <metadata><tag name="license" value="internal"/></metadata>
+        <body>&legal;: validé.</body>
+      </record>
+    </folder>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (header, widgets)>
+  <!ATTLIST dashboard version CDATA #REQUIRED refresh CDATA "60">
+  <!ELEMENT header (title, generated)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT widgets (chart|table|alert)+>
+  <!ELEMENT chart (caption?, point+)>
+  <!ATTLIST chart id ID #REQUIRED kind (line|bar|scatter) "line">
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED label CDATA #IMPLIED>
+  <!ELEMENT table (columns, rows)>
+  <!ELEMENT columns (column+)>
+  <!ELEMENT column (#PCDATA)>
+  <!ATTLIST column key NMTOKEN #REQUIRED>
+  <!ELEMENT rows (row*)>
+  <!ELEMENT row (cell+)>
+  <!ATTLIST row id ID #IMPLIED>
+  <!ELEMENT cell (#PCDATA|strong|small)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT small (#PCDATA)>
+  <!ELEMENT alert (#PCDATA)>
+  <!ATTLIST alert severity (low|medium|high) #REQUIRED acknowledged (yes|no) "no">
+  <!ENTITY nbsp "&#160;">
+]>
+<dashboard version="3.4" refresh="15">
+  <?dashboard-mode compact?>
+  <header>
+    <title>Edge &amp; Flow</title>
+    <generated>2044-11-08T19:22:00+02:00</generated>
+  </header>
+  <widgets>
+    <chart id="latency" kind="scatter">
+      <caption>p95 response time</caption>
+      <point x="0" y="12" label="cold"/>
+      <point x="1" y="8"/>
+      <point x="2" y="31" label="spike"/>
+    </chart>
+    <table>
+      <columns><column key="service">Service</column><column key="state">State</column></columns>
+      <rows>
+        <row id="api"><cell><strong>API</strong></cell><cell>ready&nbsp;</cell></row>
+        <row><cell>worker</cell><cell><small>paused</small></cell></row>
+      </rows>
+    </table>
+    <alert severity="high">Queue depth exceeded &gt; 900.</alert>
+  </widgets>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE recipe [
+  <!ELEMENT recipe (identity, ingredients, directions, nutrition?)>
+  <!ELEMENT identity (name, origin?, aliases*)>
+  <!ATTLIST identity id ID #REQUIRED difficulty (easy|moderate|hard) #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT origin (#PCDATA)>
+  <!ELEMENT aliases (#PCDATA)>
+  <!ELEMENT ingredients (ingredient+)>
+  <!ELEMENT ingredient (#PCDATA)>
+  <!ATTLIST ingredient amount CDATA #IMPLIED unit CDATA #IMPLIED optional (true|false) "false">
+  <!ELEMENT directions (step+)>
+  <!ELEMENT step (instruction, timer?)>
+  <!ATTLIST step number NMTOKEN #REQUIRED>
+  <!ELEMENT instruction (#PCDATA|em|ingredient-ref)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT ingredient-ref EMPTY>
+  <!ATTLIST ingredient-ref ref IDREF #REQUIRED>
+  <!ELEMENT timer EMPTY>
+  <!ATTLIST timer minutes NMTOKEN #REQUIRED>
+  <!ELEMENT nutrition (fact+)>
+  <!ELEMENT fact (#PCDATA)>
+  <!ATTLIST fact key (energy|protein|salt|fiber) #REQUIRED>
+  <!ENTITY degree "&#176;C">
+]>
+<recipe>
+  <identity id="ravioli-9" difficulty="moderate">
+    <name>Garden ravioli</name>
+    <origin>North &amp; South</origin>
+    <aliases>Ravioli verde</aliases>
+  </identity>
+  <ingredients>
+    <ingredient id="pasta" amount="250" unit="g">fresh pasta sheets</ingredient>
+    <ingredient id="herb" amount="40" unit="g">basil and mint</ingredient>
+    <ingredient id="oil" amount="2" unit="tbsp" optional="true">olive oil</ingredient>
+  </ingredients>
+  <directions>
+    <step number="1">
+      <instruction>Blend the <ingredient-ref ref="herb"/> with <em>half</em> the oil.</instruction>
+    </step>
+    <step number="2">
+      <instruction>Fold the <ingredient-ref ref="pasta"/> around the filling.</instruction>
+      <timer minutes="7"/>
+    </step>
+    <step number="3">
+      <instruction>Boil until tender at 96&degree;C.</instruction>
+    </step>
+  </directions>
+  <nutrition>
+    <fact key="energy">410 kcal</fact>
+    <fact key="fiber">6 g</fact>
+  </nutrition>
+</recipe>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE federation [
+  <!ELEMENT federation (endpoint+, policy)>
+  <!ATTLIST federation xmlns:sec CDATA #FIXED "urn:security" generation NMTOKEN #REQUIRED>
+  <!ELEMENT endpoint (address, capabilities, credentials?)>
+  <!ATTLIST endpoint id ID #REQUIRED region CDATA #IMPLIED>
+  <!ELEMENT address (#PCDATA)>
+  <!ELEMENT capabilities (capability*)>
+  <!ELEMENT capability EMPTY>
+  <!ATTLIST capability name NMTOKEN #REQUIRED enabled (true|false) "true">
+  <!ELEMENT credentials (sec:token, expires)>
+  <!ELEMENT sec:token (#PCDATA)>
+  <!ELEMENT expires (#PCDATA)>
+  <!ELEMENT policy (rule+)>
+  <!ELEMENT rule (match, action)>
+  <!ATTLIST rule priority NMTOKEN #REQUIRED>
+  <!ELEMENT match (#PCDATA|wildcard)*>
+  <!ELEMENT wildcard EMPTY>
+  <!ATTLIST wildcard field (host|path|method) #REQUIRED>
+  <!ELEMENT action (#PCDATA)>
+  <!ENTITY amp "&amp;">
+]>
+<federation xmlns:sec="urn:security" generation="42">
+  <?routing experimental="yes"?>
+  <endpoint id="east" region="us-east">
+    <address>https://east.example.test/api?mode=read&amp;v=2</address>
+    <capabilities>
+      <capability name="query"/>
+      <capability name="stream" enabled="false"/>
+    </capabilities>
+    <credentials>
+      <sec:token><![CDATA[Bearer a/b+c==]]></sec:token>
+      <expires>2048-06-30</expires>
+    </credentials>
+  </endpoint>
+  <endpoint id="local">
+    <address>http://[::1]:8080/service</address>
+    <capabilities><capability name="query"/></capabilities>
+  </endpoint>
+  <policy>
+    <rule priority="10">
+      <match><wildcard field="host"/>:<wildcard field="path"/></match>
+      <action>allow &amp; audit</action>
+    </rule>
+    <rule priority="20">
+      <match><wildcard field="method"/> POST</match>
+      <action>deny &amp; notify</action>
+    </rule>
+  </policy>
+</federation>
+```

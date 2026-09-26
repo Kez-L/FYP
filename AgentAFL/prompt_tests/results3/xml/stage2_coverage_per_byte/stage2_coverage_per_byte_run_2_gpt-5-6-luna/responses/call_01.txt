@@ -1,0 +1,113 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY company "North &amp; South">
+  <!ENTITY stamp "2026-09-24T12:34:56Z">
+  <!ELEMENT catalog (item+)>
+  <!ELEMENT item (name, description?, price)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ATTLIST catalog version NMTOKEN #REQUIRED>
+  <!ATTLIST item id ID #REQUIRED status (new|used|reserved) "new">
+]>
+<catalog version="v2">
+  <item id="i-1" status="reserved">
+    <name>&company; toolkit</name>
+    <description>Compact <emph>portable</emph> instrument</description>
+    <price currency="EUR">&stamp; 19.95</price>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (point*, link*)>
+  <!ELEMENT point EMPTY>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST point
+    ident ID #REQUIRED
+    x CDATA #IMPLIED
+    y CDATA #IMPLIED>
+  <!ATTLIST link
+    from IDREF #REQUIRED
+    to IDREF #REQUIRED
+    kind NMTOKENS #IMPLIED>
+]>
+<map xmlns="urn:cartography" xml:base="https://example.test/maps/">
+  <point ident="origin" x="0" y="0"/>
+  <point ident="north" x="0" y="100"/>
+  <link from="origin" to="north" kind="road paved">northbound <![CDATA[route & segment]]></link>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ENTITY open "[[">
+  <!ENTITY close "]]">
+  <!ENTITY quoted "&quot;quoted&quot;">
+  <!ELEMENT envelope (meta, body)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT body (#PCDATA|section|br)*>
+  <!ELEMENT section (#PCDATA|br)*>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST envelope mode (test|live) "test">
+  <!ATTLIST meta source CDATA #FIXED "generated">
+]>
+<envelope mode="live">
+  <meta source="generated"/>
+  <body>
+    Before &open;
+    <section title="&quoted;">alpha<br/>beta &amp; gamma</section>
+    &close; after
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, data)>
+  <!ELEMENT header (title, author+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT data (entry*)>
+  <!ELEMENT entry (key, value?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST report
+    format NOTATION (plain|rich) "plain"
+    code NMTOKEN #IMPLIED>
+  <!NOTATION plain SYSTEM "text/plain">
+  <!NOTATION rich PUBLIC "-//Example//Notation Rich//EN" "https://example.test/rich">
+]>
+<report format="rich" code="R-7">
+  <header>
+    <title>Signals &amp; Records</title>
+    <author>Ada</author>
+    <author>Lin</author>
+  </header>
+  <data>
+    <entry><key>empty-value</key></entry>
+    <entry><key>quote</key><value><![CDATA["<&>]]></value></entry>
+  </data>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE r [
+  <!ELEMENT r (a|b)+>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b EMPTY>
+  <!ATTLIST r flag (yes|no) "no">
+]>
+<r flag="yes">
+  <a>first &unknown; text</a>
+  <b id="x" id="y"/>
+  <a><![CDATA[unterminated section</a>
+</r>
+```

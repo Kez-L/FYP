@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, attachments?)>
+  <!ELEMENT header (sender, recipient+, subject, timestamp)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT body (#PCDATA|paragraph|quote|linebreak)*>
+  <!ELEMENT paragraph (#PCDATA|strong|link)*>
+  <!ELEMENT quote (#PCDATA|paragraph)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT attachments (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST message priority (low|normal|urgent) "normal">
+  <!ATTLIST file name CDATA #REQUIRED size CDATA #IMPLIED>
+  <!ENTITY apos "'">
+  <!ENTITY greeting "Hello, reader">
+]>
+<message priority="urgent">
+  <header>
+    <sender>parser@example.test</sender>
+    <recipient>one@example.test</recipient>
+    <recipient>two@example.test</recipient>
+    <subject>&greeting;&apos;s report</subject>
+    <timestamp>2026-09-24T12:34:56Z</timestamp>
+  </header>
+  <body>
+    <paragraph><strong>Important:</strong> check the <link>results</link>.</paragraph>
+    <linebreak/>
+    <quote>
+      <paragraph>Nested quotation with &quot;escaped&quot; punctuation.</paragraph>
+      <paragraph><![CDATA[raw section: ]]><strong>mixed</strong><![CDATA[ content]]></paragraph>
+    </quote>
+  </body>
+  <attachments>
+    <file name="summary.xml" size="4096"/>
+    <file name="data &amp; notes.txt"/>
+  </attachments>
+</message>

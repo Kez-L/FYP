@@ -1,0 +1,139 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY hello "welcome">
+  <!ENTITY twice "&hello; &hello;">
+  <!ENTITY markup "<entry generated='yes'/>">
+  <!NOTATION plain SYSTEM "text/plain">
+  <!ELEMENT catalog (section+, footer?)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|note|ref)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST section code NMTOKEN #REQUIRED>
+  <!ATTLIST item key ID #IMPLIED kind (a|b|c) "a">
+  <!ATTLIST ref target IDREF #IMPLIED>
+]>
+<catalog>
+  <section code="alpha">
+    <title>&twice;</title>
+    <item key="one">text<note>nested</note>tail</item>
+    <item kind="c">before &lt; after <ref target="one"/></item>
+  </section>
+  <section code="beta">
+    <title><![CDATA[raw ]]> content &amp; delimiters]]></title>
+    <item><![CDATA[<not-an-element>&unexpanded;</not-an-element>]]></item>
+  </section>
+  <footer>done &hello;</footer>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:envelope xmlns:r="urn:env" xmlns="urn:outer" xmlns:q="urn:q" xml:lang="x-klingon">
+  <header xmlns="" xml:space="preserve">
+    <token q:type="opaque" q:id="A&amp;B">  leading
+      <q:part>one</q:part>
+      <q:part><![CDATA[two]]></q:part>
+    </token>
+  </header>
+  <r:payload xmlns:s="urn:side" s:flag="true">
+    <item xmlns="urn:inner" name="&quot;quoted&quot;">
+      <empty/>
+      <q:node xmlns:q="urn:alternate" q:value="x"/>
+      <?custom data="a&#x9;b&#xA;c"?>
+      <!-- comment with --? -->
+    </item>
+    <s:tail xml:base="../relative">end</s:tail>
+  </r:payload>
+</r:envelope>
+```
+
+```xml
+<!DOCTYPE map [
+  <!ELEMENT map (pair*)>
+  <!ELEMENT pair (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|pair)*>
+  <!ATTLIST pair id ID #IMPLIED parent IDREF #IMPLIED>
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+]>
+<map>
+  <pair id="root">
+    <key>root</key>
+    <value>
+      <pair id="child" parent="root">
+        <key>nested</key>
+        <value>one &left; two &right;</value>
+      </pair>
+      <pair id="orphan" parent="missing">
+        <key>other</key>
+        <value><![CDATA[line1
+line2
+]]></value>
+      </pair>
+    </value>
+  </pair>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (meta, record+)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT record (name, data)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (#PCDATA|blob|list)*>
+  <!ELEMENT blob ANY>
+  <!ELEMENT list (value*)>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST meta created CDATA "unknown" mode (fast|slow) "slow">
+  <!ATTLIST record status (new|old|lost) "new" serial NMTOKEN #REQUIRED>
+  <!ENTITY % extra "<!ATTLIST blob encoding CDATA #IMPLIED>">
+  %extra;
+]>
+<report>
+  <meta created="2026-09-24" mode="fast"/>
+  <record serial="000000000000000000000000000000000000000000000000000000000000">
+    <name>first</name>
+    <data>
+      <blob encoding="base64">QUJDREVGRw==</blob>
+      <list><value>0</value><value>1</value><value>2</value></list>
+      <![CDATA[boundary]]>
+    </data>
+  </record>
+  <record serial="z-._:9" status="lost">
+    <name>second &amp; final</name>
+    <data><blob><![CDATA[]]></blob></data>
+  </record>
+</report>
+```
+
+```xml
+<root xmlns:x="urn:x1" xmlns:y="urn:x2">
+  <branch id="a">
+    <leaf><![CDATA[]]></leaf>
+    <leaf>
+      <![CDATA[abc]]>
+      <x:inside y:mark="1">text</x:inside>
+    </leaf>
+  </branch>
+  <branch id="b" x:mode="mixed">
+    <before/>
+    <?pi?>
+    <!-- spaced comment -->
+    <container>
+      <a><b><c><d><e>deep</e></d></c></b></a>
+    </container>
+  </branch>
+  <tail>
+    text
+    &lt;escaped&gt;
+    <x:foreign xmlns:x="">bad-namespace</x:foreign>
+  </tail>
+</root>
+```

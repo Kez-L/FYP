@@ -1,0 +1,111 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+)>
+  <!ELEMENT entry (title, payload)>
+  <!ATTLIST entry id ID #REQUIRED kind (text|binary) "text">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ENTITY notice "archival record">
+]>
+<archive>
+  <entry id="r-001" kind="text">
+    <title>&notice; &#x2014; alpha</title>
+    <payload>first<chunk>segment-A</chunk>second<chunk><![CDATA[<opaque/>]]></chunk>third</payload>
+  </entry>
+  <entry id="r-002">
+    <title>βeta &amp; gamma</title>
+    <payload><chunk>001</chunk><chunk>002</chunk></payload>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<scene xmlns="urn:example:scene" xmlns:svg="http://www.w3.org/2000/svg" xml:lang="fr">
+  <!-- mixed content and namespace transitions -->
+  <caption>Une <emphasis>scène</emphasis> très courte</caption>
+  <layer name="background">
+    <svg:svg viewBox="0 0 40 20" preserveAspectRatio="none">
+      <svg:rect x="0" y="0" width="40" height="20" fill="#204060"/>
+      <svg:g transform="rotate(15 20 10)">
+        <svg:path d="M1,18 C8,2 22,2 39,18" fill="none"/>
+        <svg:circle cx="20" cy="10" r="3"/>
+      </svg:g>
+    </svg:svg>
+  </layer>
+  <metadata xmlns="">
+    <owner xml:space="preserve">  A  B
+C  </owner>
+    <tag>été</tag>
+  </metadata>
+</scene>
+```
+
+```xml
+<?xml version="1.1" standalone="yes"?>
+<ledger xmlns="urn:ledger:v2" xmlns:m="urn:ledger:meta">
+  <record key="A&amp;B" timestamp="2024-02-29T23:59:60Z">
+    <amount currency="€">00000000000000000000000042.50</amount>
+    <description>line one&#10;line two&#13;line three&#x85;終</description>
+    <m:attributes>
+      <m:item name="empty"></m:item>
+      <m:item name="quoted">a&apos;b&quot;c&lt;d&gt;</m:item>
+    </m:attributes>
+  </record>
+  <record key="zero" timestamp="0000-01-01T00:00:00Z">
+    <amount currency="XXX">-0</amount>
+    <description><![CDATA[]]></description>
+    <m:attributes/>
+  </record>
+</ledger>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file*)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file path CDATA #REQUIRED size CDATA "0">
+  <!ELEMENT data (block+)>
+  <!ELEMENT block (#PCDATA)>
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+]>
+<package>
+  <manifest>
+    <file path="&left;docs&right;/readme.txt" size="17"/>
+    <file path="bin&#x2F;tool" size="18446744073709551615"/>
+  </manifest>
+  <data>
+    <block><![CDATA[raw bytes: \x00 \x01 \x7f]]></block>
+    <block>split &amp; joined &lt;content&gt;</block>
+    <block>&#0;<!-- comment between text nodes --></block>
+  </data>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="urn:root" xmlns:a="urn:a" xmlns:b="urn:b">
+  <a:matrix rows="2" columns="3">
+    <a:row index="0">
+      <a:cell>1</a:cell><a:cell>2</a:cell><a:cell>3</a:cell>
+    </a:row>
+    <a:row index="1">
+      <a:cell>4</a:cell><a:cell>5</a:cell><a:cell>6</a:cell>
+    </a:row>
+  </a:matrix>
+  <b:choice>
+    <b:option selected="true">north</b:option>
+    <b:option selected="false">south</b:option>
+    <b:option selected="false"><![CDATA[east & west]]></b:option>
+  </b:choice>
+  <section xmlns="" id="tail">
+    <item data="a&#x9;b&#xA;c">text</item>
+    <item><![CDATA[<nested-looking-markup attr="x">]]></item>
+  </section>
+</root>
+```

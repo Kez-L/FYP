@@ -1,0 +1,172 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (entry*)>
+  <!ELEMENT entry (date, account, amount, note?)>
+  <!ATTLIST entry ref ID #IMPLIED status (posted|pending|void) "pending">
+  <!ELEMENT date (#PCDATA)>
+  <!ELEMENT account (#PCDATA)>
+  <!ELEMENT amount (#PCDATA)>
+  <!ELEMENT note (#PCDATA|em|line-break)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT line-break EMPTY>
+  <!ENTITY currency "€">
+  <!ENTITY reminder "Review &amp; reconcile">
+]>
+<ledger>
+  <!-- entries may be revised after import -->
+  <entry ref="e001" status="posted">
+    <date>2026-09-24</date>
+    <account>operations</account>
+    <amount>&currency;1,204.50</amount>
+    <note>Quarterly <em>service</em> renewal<line-break/>approved.</note>
+  </entry>
+  <entry ref="e002">
+    <date>2026-10-01</date>
+    <account>reserve</account>
+    <amount>&currency;0.00</amount>
+    <note>&reminder;</note>
+  </entry>
+</ledger>
+```
+
+```xml
+<?xml version="1.0"?>
+<envelope xmlns="urn:example:message"
+          xmlns:h="urn:example:header"
+          xmlns:p="urn:example:payload"
+          xmlns:xlink="http://www.w3.org/1999/xlink">
+  <h:metadata>
+    <h:request-id>7f3e2a9c</h:request-id>
+    <h:timestamp>2026-09-24T18:42:11.004Z</h:timestamp>
+    <h:flags urgent="false" retryable="true"/>
+  </h:metadata>
+  <p:request method="PATCH" target="/records/42">
+    <p:fields>
+      <p:field name="label" xsi:type="string"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Δelta</p:field>
+      <p:field name="enabled" xsi:type="boolean"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">true</p:field>
+      <p:field name="comment"><![CDATA[Use <literal> syntax here & there.]]></p:field>
+    </p:fields>
+    <p:attachment xlink:type="simple"
+                  xlink:href="cid:payload-01"
+                  content-type="application/octet-stream">
+      <p:description>binary payload follows separately</p:description>
+    </p:attachment>
+  </p:request>
+  <?audit event="accepted"?>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form [
+  <!ELEMENT form (heading, fieldset+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT fieldset (legend, control*)>
+  <!ELEMENT legend (#PCDATA)>
+  <!ELEMENT control (label, value?, hint?)>
+  <!ATTLIST control name NMTOKEN #REQUIRED kind (text|choice|toggle) "text">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA|option)*>
+  <!ELEMENT option (#PCDATA)>
+  <!ELEMENT hint (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY check "&#x2611;">
+]>
+<form>
+  <heading>Account preferences &nbsp; &amp; notifications</heading>
+  <fieldset>
+    <legend>Identity</legend>
+    <control name="display_name">
+      <label>Display name</label>
+      <value>Zoë &amp; Co.</value>
+      <hint>Shown publicly</hint>
+    </control>
+    <control name="timezone" kind="choice">
+      <label>Time zone</label>
+      <value>
+        <option>UTC</option>
+        <option selected="true">Europe/Paris</option>
+        <option>Asia/Tokyo</option>
+      </value>
+    </control>
+  </fieldset>
+  <fieldset>
+    <legend>Alerts</legend>
+    <control name="weekly" kind="toggle">
+      <label>Weekly digest</label>
+      <value>&check;</value>
+    </control>
+  </fieldset>
+</form>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node|edge)*>
+  <!ELEMENT node (property*)>
+  <!ATTLIST node id ID #REQUIRED type CDATA #IMPLIED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+  <!ELEMENT property (#PCDATA|value)*>
+  <!ATTLIST property name CDATA #REQUIRED>
+  <!ELEMENT value (#PCDATA)>
+]>
+<graph xmlns="urn:topology:2026" xmlns:meta="urn:topology:meta">
+  <node id="n-root" type="router">
+    <property name="hostname"><value>edge-α</value></property>
+    <property name="roles"><value>gateway</value><value>metrics</value></property>
+  </node>
+  <node id="n-leaf" type="worker">
+    <property name="hostname"><value>worker-07</value></property>
+    <meta:property name="rack">R-12</meta:property>
+  </node>
+  <node id="n-cache">
+    <property name="hostname"><value>cache.internal</value></property>
+  </node>
+  <edge from="n-root" to="n-leaf" weight="0.75"/>
+  <edge from="n-root" to="n-cache" weight="1.25"/>
+  <!-- topology snapshot: deliberately preserves insertion order -->
+</graph>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (summary, chapter+)>
+  <!ATTLIST report generated CDATA #IMPLIED>
+  <!ELEMENT summary (#PCDATA|mark|break)*>
+  <!ELEMENT chapter (title, paragraph+, table?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|mark|break|link)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST cell colspan NMTOKEN "1">
+  <!ENTITY status "ready &amp; verified">
+]>
+<report generated="2026-09-24">
+  <summary>Pipeline status: <mark>&status;</mark><break/>No blocking findings.</summary>
+  <chapter>
+    <title>Input handling</title>
+    <paragraph>All sources were processed through the <link href="urn:tool:reader">reader</link>.</paragraph>
+    <paragraph>Escaped delimiters remain literal: &lt;tag&gt; and <![CDATA[ ]]></paragraph>
+  </chapter>
+  <chapter>
+    <title>Results</title>
+    <paragraph>Three checks passed; one warning was deferred.</paragraph>
+    <table>
+      <row><cell>check</cell><cell>result</cell><cell>owner</cell></row>
+      <row><cell>encoding</cell><cell colspan="2">pass — internationalized input</cell></row>
+      <row><cell>limits</cell><cell>warning</cell><cell>ops</cell></row>
+    </table>
+  </chapter>
+</report>
+```

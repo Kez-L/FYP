@@ -1,0 +1,187 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (section+)>
+  <!ELEMENT section (heading, item*)>
+  <!ATTLIST section code NMTOKEN #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (key, value, note?)>
+  <!ATTLIST item ref ID #REQUIRED status (open|closed|pending) "open">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY company "Aster &amp; Finch">
+]>
+<archive>
+  <section code="α-1">
+    <heading>Quarterly observations</heading>
+    <item ref="i-17" status="pending">
+      <key>temperature</key>
+      <value>18.4 <mark>°C</mark> average</value>
+      <note>Recorded by &company;.</note>
+    </item>
+    <item ref="i-18" status="closed">
+      <key>rainfall</key>
+      <value>42 <mark>mm</mark></value>
+    </item>
+  </section>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow" xmlns:x="urn:example:extra" version="3.2">
+  <trigger kind="schedule">
+    <calendar timezone="Europe/Oslo">
+      <day>Monday</day>
+      <time>07:30:00</time>
+      <exclude date="2026-12-24"/>
+    </calendar>
+  </trigger>
+  <steps>
+    <step name="extract" retry="2">
+      <input href="data/source.csv" format="text/csv"/>
+      <command><![CDATA[awk -F, '{ print $2 }' source.csv]]></command>
+    </step>
+    <step name="transform" retry="0">
+      <depends-on ref="extract"/>
+      <x:script language="lua"><![CDATA[
+        return normalize(records)
+      ]]></x:script>
+    </step>
+    <step name="publish" retry="5">
+      <depends-on ref="transform"/>
+      <destination scheme="sftp" host="files.example.invalid" path="/out/report.xml"/>
+    </step>
+  </steps>
+  <?audit generated-by="seed"?>
+</workflow>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, attachments?)>
+  <!ELEMENT header (sender, recipients, subject)>
+  <!ELEMENT sender EMPTY>
+  <!ATTLIST sender address CDATA #REQUIRED>
+  <!ELEMENT recipients (recipient+)>
+  <!ELEMENT recipient EMPTY>
+  <!ATTLIST recipient address CDATA #REQUIRED type (to|cc|bcc) "to">
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (paragraph|quote|list)+>
+  <!ELEMENT paragraph (#PCDATA|strong|link|linebreak)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT list (entry+)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ELEMENT attachments (attachment+)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment name CDATA #REQUIRED size CDATA #IMPLIED>
+]>
+<message>
+  <header>
+    <sender address="editor@example.invalid"/>
+    <recipients>
+      <recipient address="reader@example.invalid"/>
+      <recipient address="archive@example.invalid" type="cc"/>
+    </recipients>
+    <subject>Revision notice</subject>
+  </header>
+  <body>
+    <paragraph>Please review the <strong>marked</strong> passages before the <link href="https://example.invalid/deadline">deadline</link>.<linebreak/></paragraph>
+    <quote>Every map begins as an argument with uncertainty.</quote>
+    <list>
+      <entry>Check citations</entry>
+      <entry>Confirm translation</entry>
+    </list>
+  </body>
+  <attachments>
+    <attachment name="notes.txt" size="2048"/>
+  </attachments>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<registry xmlns:r="urn:registry" xmlns:m="urn:metadata">
+  <r:record key="K-0042">
+    <r:identity>
+      <r:name>Camellia House</r:name>
+      <r:aliases>
+        <r:alias>Old Conservatory</r:alias>
+        <r:alias xml:lang="fr">Maison des fleurs</r:alias>
+      </r:aliases>
+    </r:identity>
+    <r:coordinates>
+      <r:latitude unit="deg">51.507211</r:latitude>
+      <r:longitude unit="deg">-0.127586</r:longitude>
+      <r:elevation unit="m">19</r:elevation>
+    </r:coordinates>
+    <m:history>
+      <m:event year="1891" type="construction"/>
+      <m:event year="1978" type="restoration">
+        <m:architect>Elena Marsh</m:architect>
+      </m:event>
+      <m:event year="2024" type="inspection" result="pass"/>
+    </m:history>
+    <r:status active="true">
+      <![CDATA[Open to visitors; seasonal hours apply.]]>
+    </r:status>
+  </r:record>
+</registry>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE lexicon [
+  <!ELEMENT lexicon (entry+)>
+  <!ELEMENT entry (term, pronunciation?, senses, usage*)>
+  <!ATTLIST entry id ID #REQUIRED>
+  <!ELEMENT term (#PCDATA)>
+  <!ELEMENT pronunciation (#PCDATA)>
+  <!ELEMENT senses (sense+)>
+  <!ELEMENT sense (definition, example*)>
+  <!ATTLIST sense number NMTOKEN #REQUIRED>
+  <!ELEMENT definition (#PCDATA|foreign)*>
+  <!ELEMENT foreign (#PCDATA)>
+  <!ATTLIST foreign xml:lang NMTOKEN #REQUIRED>
+  <!ELEMENT example (#PCDATA)>
+  <!ELEMENT usage (#PCDATA)>
+]>
+<lexicon>
+  <entry id="lex-1">
+    <term>wayfarer</term>
+    <pronunciation>ˈweɪˌfɛərə</pronunciation>
+    <senses>
+      <sense number="1">
+        <definition>A person who travels, especially on foot.</definition>
+        <example>The wayfarer followed the river beyond the last bridge.</example>
+      </sense>
+      <sense number="2">
+        <definition>
+          A traveler in a figurative sense;
+          <foreign xml:lang="la">viator</foreign>.
+        </definition>
+      </sense>
+    </senses>
+    <usage>literary</usage>
+  </entry>
+  <entry id="lex-2">
+    <term>threshold</term>
+    <senses>
+      <sense number="1">
+        <definition>The sill beneath a door.</definition>
+      </sense>
+      <sense number="2">
+        <definition>A point at which an effect begins.</definition>
+        <example>Noise levels crossed the threshold.</example>
+      </sense>
+    </senses>
+  </entry>
+</lexicon>
+```

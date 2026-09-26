@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (step+, on-error?)>
+  <!ATTLIST workflow xmlns CDATA #IMPLIED>
+  <!ELEMENT step (input*, action, output*)>
+  <!ATTLIST step id ID #REQUIRED depends-on IDREFS #IMPLIED>
+  <!ELEMENT input EMPTY>
+  <!ATTLIST input name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT output EMPTY>
+  <!ATTLIST output name NMTOKEN #REQUIRED path CDATA #REQUIRED>
+  <!ELEMENT on-error (action)>
+]>
+<workflow xmlns="urn:example:workflow" xmlns:log="urn:example:log">
+  <step id="fetch">
+    <input name="endpoint" value="https://example.invalid/data?mode=full&amp;limit=20"/>
+    <action>download</action>
+    <output name="response" path="/var/tmp/input.json"/>
+  </step>
+  <step id="transform" depends-on="fetch">
+    <input name="format" value="normalized"/>
+    <action><![CDATA[
+      select records
+      where status != "deleted"
+    ]]></action>
+    <output name="result" path="/var/tmp/output.ndjson"/>
+    <log:message severity="info">Transformation queued</log:message>
+  </step>
+  <step id="publish" depends-on="transform">
+    <action>publish</action>
+    <output name="receipt" path="/var/tmp/receipt.xml"/>
+  </step>
+  <on-error>
+    <action>notify-owner</action>
+  </on-error>
+</workflow>

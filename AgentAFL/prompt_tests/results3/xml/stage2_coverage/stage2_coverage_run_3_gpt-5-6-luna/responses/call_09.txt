@@ -1,0 +1,142 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY cover SYSTEM "cover.jpg" NDATA jpeg>
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, metadata?, description)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST catalog edition NMTOKEN #REQUIRED>
+  <!ATTLIST entry code ID #REQUIRED cover ENTITY #IMPLIED>
+  <!ATTLIST metadata year NMTOKEN #IMPLIED>
+]>
+<catalog edition="2026">
+  <entry code="bk01" cover="cover">
+    <title>Signals &amp; Symbols</title>
+    <metadata year="0026"/>
+    <description>Words with <em>embedded emphasis</em><br/>and a closing mark.</description>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ENTITY % common "(header, record+, trailer)">
+  <!ELEMENT archive %common;>
+  <!ELEMENT header (name, created)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT record (key, value, note?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value ANY>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST archive format (compact|expanded) "expanded">
+  <!ATTLIST record uid ID #REQUIRED status (new|held|done) "new">
+]>
+<archive format="compact">
+  <header>
+    <name>delta</name>
+    <created>2026-09-24T00:00:00Z</created>
+  </header>
+  <record uid="r-a" status="held">
+    <key>alpha</key>
+    <value><part index="1">A</part><part index="2">B</part></value>
+    <note>pending review</note>
+  </record>
+  <record uid="r-b">
+    <key>beta</key>
+    <value>plain text</value>
+  </record>
+  <trailer/>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+)>
+  <!ELEMENT section (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (#PCDATA|link|code)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ATTLIST report xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST section id ID #REQUIRED xml:space (default|preserve) "default">
+  <!ATTLIST link href CDATA #REQUIRED rel (external|local) "local">
+]>
+<report xml:lang="en-US">
+  <section id="intro" xml:space="preserve">
+    <heading>  Introduction  </heading>
+    <item>Use <code>--noout</code> to inspect the document.</item>
+    <item>Visit <link href="https://example.org/a?x=1&amp;y=2" rel="external">the reference</link>.</item>
+  </section>
+  <section id="details">
+    <heading>Details</heading>
+    <item><![CDATA[raw <markup> and ]] characters]]></item>
+    <item>Line one&#xA;line two&#x9;tab.</item>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (vertex+)>
+  <!ELEMENT vertex (label, edge*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST graph xmlns:g CDATA #FIXED "urn:graph" root ID #REQUIRED>
+  <!ATTLIST vertex id ID #REQUIRED kind (input|middle|output) #IMPLIED>
+  <!ATTLIST edge to IDREF #REQUIRED weight CDATA "1.0" directed (yes|no) "yes">
+  <!ENTITY amp "&amp;">
+  <!ENTITY brackets "&lt;edge&gt;">
+]>
+<g:graph xmlns:g="urn:graph" root="v0">
+  <g:vertex id="v0" kind="input">
+    <g:label>start &amp; ready</g:label>
+    <g:edge to="v1" weight="0.25"/>
+    <g:edge to="v2" directed="no"/>
+  </g:vertex>
+  <g:vertex id="v1" kind="middle">
+    <g:label>middle &amp; &lt;node&gt;</g:label>
+    <g:edge to="v2" weight="2e0"/>
+  </g:vertex>
+  <g:vertex id="v2" kind="output">
+    <g:label>end</g:label>
+  </g:vertex>
+</g:graph>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (item*)>
+  <!ELEMENT item EMPTY>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST package version NMTOKEN #REQUIRED>
+  <!ATTLIST item path CDATA #REQUIRED size NMTOKEN #IMPLIED>
+  <!ATTLIST chunk number NMTOKEN #REQUIRED encoding (text|base64) "text">
+  <!ENTITY open "[" >
+  <!ENTITY close "]" >
+  <!ENTITY recursive "&recursive;">
+]>
+<package version="v1">
+  <manifest>
+    <item path="alpha.txt" size="17"/>
+    <item path="nested/beta.bin" size="4"/>
+  </manifest>
+  <payload>
+    <chunk number="1">first&#x85;line&#x2028;next</chunk>
+    <chunk number="2" encoding="base64">QUJDRA==</chunk>
+    <chunk number="3">&open;payload&close;</chunk>
+  </payload>
+</package>
+```

@@ -1,0 +1,132 @@
+```xml
+<?xml version="1.1"?>
+<catalog xmlns="urn:catalog:v3" xmlns:meta="urn:metadata" xml:lang="fr" xml:space="preserve">
+  <!-- mixed content, processing instruction, and Unicode character data -->
+  <meta:header meta:generated="2026-09-24T00:00:00Z" meta:revision="00000000"/>
+  <section id="α-01" status="draft">
+    Intro <emphasis level="strong">été &amp; hiver</emphasis>
+    <note><![CDATA[raw <markup> and ]]>]]><![CDATA[ adjacent section]]></note>
+    <item code="A&#x2D;7" enabled="true">
+      <label>naïve café</label>
+      <value xml:lang="ja">東京</value>
+    </item>
+  </section>
+  <?catalog-index mode="deferred"?>
+</catalog>
+```
+
+```xml
+<!DOCTYPE transform [
+  <!ENTITY % common "CDATA">
+  <!ENTITY stamp "2026-09-24T00:00:00Z">
+  <!ELEMENT transform (source, pipeline, result)>
+  <!ELEMENT source EMPTY>
+  <!ELEMENT pipeline (step+, checkpoint?)>
+  <!ELEMENT step (input?, output*)>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT output (#PCDATA)>
+  <!ELEMENT checkpoint EMPTY>
+  <!ELEMENT result (#PCDATA)>
+  <!ATTLIST source uri %common; #IMPLIED format (json|csv|xml) "xml">
+  <!ATTLIST step name %common; required (yes|no) "no">
+  <!ATTLIST checkpoint at %common; #REQUIRED>
+]>
+<transform>
+  <source uri="urn:memory:sample" format="xml"/>
+  <pipeline>
+    <step name="normalize" required="yes">
+      <input> whitespace </input>
+      <output>trimmed</output>
+      <output>canonical</output>
+    </step>
+    <step name="annotate">
+      <output>&stamp;</output>
+    </step>
+    <checkpoint at="after-annotation"/>
+  </pipeline>
+  <result>complete</result>
+</transform>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:report xmlns:r="urn:report" xmlns:x="urn:extension" xmlns="urn:default">
+  <r:metadata xml:id="m-1" xml:base="file:///var/tmp/report.xml">
+    <r:author x:role="automated" xml:lang="en-US">parser-test</r:author>
+    <r:tags>
+      <r:tag>alpha</r:tag>
+      <r:tag x:code="β">beta</r:tag>
+    </r:tags>
+  </r:metadata>
+  <r:body>
+    <r:paragraph>before <x:mark data="&quot;quoted&quot;">inside</x:mark> after</r:paragraph>
+    <x:attachment xmlns="" name="blob" type="application/octet-stream">
+      <chunk index="0"><![CDATA[AQIDBAUG]]></chunk>
+      <chunk index="1">BwgJCg==</chunk>
+    </x:attachment>
+    <r:paragraph><![CDATA[line one
+line two
+line three]]></r:paragraph>
+  </r:body>
+</r:report>
+```
+
+```xml
+<?xml version="1.0"?>
+<scene xmlns="urn:scene:2026" xmlns:svg="http://www.w3.org/2000/svg" xml:space="default">
+  <viewport width="640" height="480" preserveAspectRatio="xMidYMid meet"/>
+  <layer id="background" visibility="visible">
+    <svg:rect x="0" y="0" width="640" height="480" fill="#001122"/>
+  </layer>
+  <layer id="foreground">
+    <group transform="translate(12.5,-4.25) rotate(90)">
+      <path d="M0,0 C10,20 30,20 40,0 Z" closed="true"/>
+      <text x="18" y="33">A &lt; B &amp;&amp; C &gt; D</text>
+      <marker name="arrow" ref="urn:scene:marker:arrow">
+        <svg:circle cx="2.5" cy="2.5" r="2.5"/>
+      </marker>
+    </group>
+  </layer>
+  <resources>
+    <resource id="font-main" media="font/woff2" href="urn:resource:font-main"/>
+    <resource id="pattern" media="image/svg+xml"><![CDATA[
+      <svg:svg xmlns:svg="http://www.w3.org/2000/svg"><svg:path d="M1 1"/></svg:svg>
+    ]]></resource>
+  </resources>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<exchange xmlns="urn:exchange" xmlns:sec="urn:security" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <header>
+    <message-id>urn:uuid:00000000-0000-0000-0000-000000000001</message-id>
+    <route>
+      <hop ordinal="1" host="edge-a"/>
+      <hop ordinal="2" host="edge-b"/>
+      <hop ordinal="3" host="origin"/>
+    </route>
+    <flags>
+      <flag name="compressed" value="false"/>
+      <flag name="encrypted" value="true"/>
+    </flags>
+  </header>
+  <payload xsi:type="sec:SignedEnvelope">
+    <sec:signature algorithm="urn:hash:sha256">
+      <sec:key-info>
+        <sec:key-name>test-key</sec:key-name>
+        <sec:fingerprint encoding="hex">00:11:22:33:44:55</sec:fingerprint>
+      </sec:key-info>
+      <sec:value>AAECAwQFBgcICQ==</sec:value>
+    </sec:signature>
+    <records count="2">
+      <record ordinal="1" kind="text"><field name="subject">hello</field></record>
+      <record ordinal="2" kind="binary">
+        <field name="length">0</field>
+        <field name="data">AA==</field>
+      </record>
+    </records>
+  </payload>
+  <trailer checksum="none"/>
+</exchange>
+```

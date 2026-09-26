@@ -1,0 +1,23 @@
+{
+  "call": 12,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<!DOCTYPE  somedoc [\n  <!ENTITY a  NTITY b    \"something\">\n  <!ENTITY b   \"&a;\">\n]>\n\n<somedoc>\n\n<somebeacon s8672093846347259794686720938463omeattr bute=\"&b\u0000\u0000\u0000\u0000\n\n&a; sho~ld app version=\"1.0\n  ear after colon: &a;\n&b; should appear after colon: &a;\n&a; should appear after colon: &b;\n&b; shou47259794686720938463omeattributld appear after colon: &b\u001b\n\n</somedoc>\n\n\n--- example 2 ---\n<!DOCTYPE doc [\n    <!ENTITY % z '\n        &#37;z; &#37;z; &#37;z; &#37;z; &#37;z;\n        &#37;z; &#37;z; &#37;z; &#37;z; somebeacon someattribu;`&#37;z; &#37;z; &#37;z; &#37;z#37;z; &#37;z; &#37;z;\n        &#37;z; &#37;z; &#37;z; &#37;z; &#37;z;\n        &#37;z;`&#37;z; &#37;z; &#37;z; &#37;\n        &#37;z; &#37;z; &#37;z; &#37;z; &#37;z;\n        &#37;z; &lt;&gt;&quot;\">\n]>\n<root>\n ;z;\n    '>\n    %z;\n]>\n<doc/>\n\n\nTried before \u2014 no new coverage, avoid repeating:\n--- 2 of your past seeds (cycles 3,6) drove the same already-covered path with 0 new edges ---\n<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (entry+)>\n  <!ELEMENT entry (name, details, link?)>\n  <!ELEMENT name (#PCDATA)>\n  <!ELEMENT details (#PCDATA|em|br)*>\n  <!ELEMENT em (#PCDATA)>\n  <!ELEMENT br EMPTY>\n  <!ELEMENT link EMPTY>\n  <!ATTLIST entry id ID #REQUIRED xml:space (default|preserve) \"default\">\n  <!ATTLIST link href URI #REQUIRED>\n  <!ENTITY nbsp \"&#xA0;\">\n  <!ENTITY note \"caf\u00e9 &amp; cr\u00e8me\">\n]>\n<catalog xml:lang=\"fr\">\n  <entry id=\"item-1\" xml:space=\"preserve\">\n    <name>\u00c9l\u00e9ments &nbsp; sp\u00e9ciaux</name>\n    <details>Texte <em>accentu\u00e9</em><br/>fin &note;</details>\n    <link href=\"https://example.invalid/a?x=1&amp;y=2\"/>\n  </entry>...[truncated, 711 chars total]\n\n--- a seed you generated (cycle 12) added 0 new edges ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE message [\n  <!ELEMENT message (to, from, subject, body)>\n  <!ELEMENT to (#PCDATA)>\n  <!ELEMENT from (#PCDATA)>\n  <!ELEMENT subject (#PCDATA)>\n  <!ELEMENT body (#PCDATA|quote|list)*>\n  <!ELEMENT quote (#PCDATA)>\n  <!ELEMENT list (entry*)>\n  <!ELEMENT entry (#PCDATA)>\n  <!ATTLIST message priority (low|normal|high) \"normal\">\n  <!ENTITY % common \"xml:lang NMTOKEN #IMPLIED\">\n  <!ATTLIST message %common;>\n]>\n<message priority=\"high\" xml:lang=\"en\">\n  <to>alpha@example.test</to>\n  <from>beta@example.test</from>\n  <subject>Re: &quot;boundary&quot;</subject>\n  <body>\n    Intro\n    <quote>Nested &amp; quoted text</quote>\n    <list>\n      <entry>first</entry>\n      <entry...[truncated, 805 chars total]\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "stage1-jaccard",
+  "positive_feedback": false,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T03:04:32.243374+00:00"
+}

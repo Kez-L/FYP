@@ -1,0 +1,122 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <x:metadata xml:lang="en" x:flag="true">
+    <x:item id="A-01" quantity="0000000007">
+      <x:name><![CDATA[alpha < beta && gamma > delta]]></x:name>
+      <x:values>
+        <x:value rank="1">42</x:value>
+        <x:value rank="2">-0.000001</x:value>
+      </x:values>
+    </x:item>
+  </x:metadata>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+, note?)>
+  <!ELEMENT entry (title, payload, checksum)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT payload (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST entry key ID #REQUIRED state (new|old|unknown) "unknown">
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+]>
+<archive>
+  <entry key="e1" state="new">
+    <title>&left;encoded&right;</title>
+    <payload>line one
+line two&#x0A;line three</payload>
+    <checksum>00000000000000000000</checksum>
+  </entry>
+  <entry key="e2">
+    <title>empty-ish</title>
+    <payload><![CDATA[]]></payload>
+    <checksum>&#49;&#50;&#51;&#52;</checksum>
+  </entry>
+  <note>tail</note>
+</archive>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<?source name="fuzz" mode="edge"?>
+<r:report xmlns:r="urn:report" xmlns:d="urn:data" xml:base="urn:base/">
+  <!-- comment with -- forbidden? no, this one is safe -->
+  <r:header>
+    <r:sequence value="9223372036854775807"/>
+    <r:empty/>
+  </r:header>
+  <r:body>
+    <d:record d:key="k:1">
+      <d:field name="quotes" value="&quot;&apos;&amp;&lt;&gt;"/>
+      <d:field name="whitespace">  leading&#x9;middle&#xA;trailing  </d:field>
+      <d:field name="unicode">snowman: &#x2603; / &#x1F642;</d:field>
+    </d:record>
+  </r:body>
+</r:report>
+```
+
+```xml
+<?xml version="1.0"?>
+<maze xmlns="urn:maze">
+  <level index="0">
+    <cell>
+      <north>
+        <cell id="n1"><value>north</value></cell>
+      </north>
+      <south>
+        <cell id="s1">
+          <value>south</value>
+          <branch>
+            <cell id="s1a"><value>a</value></cell>
+            <cell id="s1b"><value>b</value></cell>
+          </branch>
+        </cell>
+      </south>
+      <east/>
+      <west>
+        <cell id="w1">
+          <![CDATA[
+            <not-an-element attr="&broken;">
+            ]]>
+        </cell>
+      </west>
+    </cell>
+  </level>
+  <level index="1">
+    <cell id="isolated"><value/></cell>
+  </level>
+</maze>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, body, trailer)>
+  <!ELEMENT header (kind, timestamp)>
+  <!ELEMENT body (chunk*)>
+  <!ELEMENT chunk (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST packet version CDATA #IMPLIED>
+  <!ATTLIST chunk id NMTOKEN #REQUIRED>
+  <!ENTITY amp "&#38;">
+]>
+<packet version="0001">
+  <header>
+    <kind><![CDATA[ΔATA]]></kind>
+    <timestamp>1970-01-01T00:00:00Z</timestamp>
+  </header>
+  <body>
+    <chunk id="c0">prefix<part>middle</part>suffix</chunk>
+    <chunk id="c1"><part>one</part><part>two</part>&amp;</chunk>
+    <chunk id="c2"><![CDATA[raw ]]> text with brackets ]]&gt;</chunk>
+  </body>
+  <trailer/>
+</packet>
+```

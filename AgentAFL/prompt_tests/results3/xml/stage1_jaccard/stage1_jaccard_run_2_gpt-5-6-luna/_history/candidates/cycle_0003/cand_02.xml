@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE feed [
+  <!ELEMENT feed (channel, channel)>
+  <!ELEMENT channel (id, item*)>
+  <!ELEMENT id (#PCDATA)>
+  <!ELEMENT item (guid, summary, media?)>
+  <!ELEMENT guid (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|code|x:line)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT media EMPTY>
+  <!ATTLIST channel xml:base CDATA #IMPLIED>
+  <!ATTLIST item key ID #REQUIRED state (new|old) "new">
+  <!ATTLIST media type CDATA #REQUIRED>
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+  <!ENTITY markup "&lt;not-an-element&gt;">
+]>
+<feed xmlns:x="urn:example:lines" xmlns:m="urn:example:media">
+  <channel xml:base="https://example.invalid/root/">
+    <id>alpha</id>
+    <item key="a1" state="old">
+      <guid>urn:one</guid>
+      <summary xml:lang="en">Text &left;<code>a &lt; b</code><x:line n="1"/>tail&right; &markup;</summary>
+      <m:media type="image/svg+xml" src="cover.svg"/>
+    </item>
+  </channel>
+  <channel>
+    <id>beta</id>
+    <item key="b1">
+      <guid>urn:two</guid>
+      <summary><x:line n="2"/><code>return &quot;x&quot;;</code></summary>
+    </item>
+  </channel>
+</feed>

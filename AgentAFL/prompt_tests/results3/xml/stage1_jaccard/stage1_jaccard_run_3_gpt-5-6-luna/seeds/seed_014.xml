@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ENTITY % feature '
+    <!ELEMENT metric (name, value, annotation?)>
+    <!ELEMENT name (#PCDATA)>
+    <!ELEMENT value (#PCDATA)>
+    <!ELEMENT annotation (#PCDATA)>
+    <!ATTLIST metric kind CDATA #IMPLIED>
+  '>
+  %feature;
+  <!ENTITY % optionalSection "INCLUDE">
+  <![%optionalSection;[
+    <!ELEMENT diagnostics (warning|error)*>
+    <!ELEMENT warning (#PCDATA)>
+    <!ELEMENT error (#PCDATA)>
+  ]]>
+  <!ELEMENT dashboard (summary, metric*, diagnostics)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ENTITY note "state: &quot;nominal&quot;">
+]>
+<dashboard>
+  <summary>&note;</summary>
+  <metric kind="counter">
+    <name>requests</name>
+    <value>42</value>
+    <annotation>steady</annotation>
+  </metric>
+  <metric kind="ratio">
+    <name>success</name>
+    <value>99.5%</value>
+  </metric>
+  <diagnostics>
+    <warning>threshold &lt; configured minimum</warning>
+    <error><![CDATA[diagnostic payload: ]]> &amp; delayed</error>
+  </diagnostics>
+</dashboard>

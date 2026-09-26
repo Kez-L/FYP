@@ -1,0 +1,219 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (metadata, item*)>
+  <!ELEMENT metadata (title, created, keywords?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT keywords (keyword+)>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ELEMENT item (name, price, availability, description?)>
+  <!ATTLIST item sku ID #REQUIRED category (book|tool|other) "other">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT availability EMPTY>
+  <!ATTLIST availability status (in-stock|backorder|retired) #REQUIRED quantity CDATA "0">
+  <!ELEMENT description (#PCDATA|emphasis|code)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+]>
+<catalog>
+  <metadata>
+    <title>Workshop inventory</title>
+    <created>2026-09-24</created>
+    <keywords>
+      <keyword>hardware</keyword>
+      <keyword>reference</keyword>
+    </keywords>
+  </metadata>
+  <item sku="sku-001" category="book">
+    <name>Parsing Systems</name>
+    <price currency="USD">39.95</price>
+    <availability status="in-stock" quantity="12"/>
+    <description>A guide to <emphasis>robust</emphasis> input handling and <code>validation</code>.</description>
+  </item>
+  <item sku="sku-002" category="tool">
+    <name>Hexagonal wrench</name>
+    <price currency="EUR">7.50</price>
+    <availability status="backorder" quantity="0"/>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:acme:workflow" xmlns:sec="urn:acme:security">
+  <trigger id="nightly" active="true">
+    <schedule>
+      <day>Monday</day>
+      <day>Wednesday</day>
+      <day>Friday</day>
+      <time zone="UTC">23:45:00</time>
+    </schedule>
+  </trigger>
+  <pipeline name="archive-and-notify">
+    <step id="collect" type="command" retry="2">
+      <argument>--since</argument>
+      <argument>24h</argument>
+      <environment>
+        <variable name="MODE">incremental</variable>
+        <variable name="FORMAT">tar</variable>
+      </environment>
+    </step>
+    <step id="compress" type="transform">
+      <input ref="collect"/>
+      <parameter key="level">9</parameter>
+    </step>
+    <step id="publish" type="http">
+      <endpoint method="PUT">https://example.invalid/upload</endpoint>
+      <header name="Content-Type">application/octet-stream</header>
+      <sec:credential scope="upload">vault://jobs/archive-token</sec:credential>
+    </step>
+    <on-error>
+      <notify channel="email" address="ops@example.invalid"/>
+      <halt/>
+    </on-error>
+  </pipeline>
+</workflow>
+```
+
+```xml
+<?xml version="1.0"?>
+<survey xmlns="urn:sample:survey" xmlns:q="urn:sample:question">
+  <respondent>
+    <identifier type="anonymous">R-1048</identifier>
+    <demographics>
+      <age-group>35-44</age-group>
+      <region code="NA">North America</region>
+      <languages>
+        <language primary="true">en</language>
+        <language primary="false">fr</language>
+      </languages>
+    </demographics>
+  </respondent>
+  <q:questionnaire version="3">
+    <q:section code="experience">
+      <q:question id="q1" required="true">
+        <q:text>How often do you use this service?</q:text>
+        <q:choice value="daily">Every day</q:choice>
+        <q:choice value="weekly">Every week</q:choice>
+        <q:choice value="rarely">Rarely</q:choice>
+      </q:question>
+      <q:question id="q2" required="false">
+        <q:text>Additional comments</q:text>
+        <q:response><![CDATA[
+          The interface is clear, but the export step could be faster.
+        ]]></q:response>
+      </q:question>
+    </q:section>
+  </q:questionnaire>
+  <submission submitted-at="2026-09-24T18:02:11Z">
+    <score maximum="10">8</score>
+    <consent>true</consent>
+  </submission>
+</survey>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE museum [
+  <!ELEMENT museum (exhibit+)>
+  <!ELEMENT exhibit (title, curator, artifact+)>
+  <!ATTLIST exhibit room CDATA #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT curator (#PCDATA)>
+  <!ELEMENT artifact (name, origin, dimensions, note?)>
+  <!ATTLIST artifact accession ID #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT origin (#PCDATA)>
+  <!ELEMENT dimensions (height, width, depth)>
+  <!ELEMENT height (#PCDATA)>
+  <!ELEMENT width (#PCDATA)>
+  <!ELEMENT depth (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+]>
+<museum>
+  <exhibit room="A-12">
+    <title>Instruments of Navigation</title>
+    <curator>Leila Morgan</curator>
+    <artifact accession="art-7001">
+      <name>Brass astrolabe</name>
+      <origin>Lisbon</origin>
+      <dimensions>
+        <height unit="cm">18.2</height>
+        <width unit="cm">17.9</width>
+        <depth unit="cm">3.1</depth>
+      </dimensions>
+      <note>Engraved with a partial star chart.</note>
+    </artifact>
+    <artifact accession="art-7002">
+      <name>Sounding line reel</name>
+      <origin>Alexandria</origin>
+      <dimensions>
+        <height unit="cm">26</height>
+        <width unit="cm">21</width>
+        <depth unit="cm">8</depth>
+      </dimensions>
+    </artifact>
+  </exhibit>
+  <exhibit room="B-04">
+    <title>Early Computing</title>
+    <curator>Jonas Wei</curator>
+    <artifact accession="art-7010">
+      <name>Relay calculator</name>
+      <origin>Manchester</origin>
+      <dimensions>
+        <height unit="cm">42</height>
+        <width unit="cm">36</width>
+        <depth unit="cm">19</depth>
+      </dimensions>
+    </artifact>
+  </exhibit>
+</museum>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<message xmlns="urn:example:message" xmlns:meta="urn:example:metadata">
+  <meta:properties>
+    <meta:property name="priority">high</meta:property>
+    <meta:property name="classification">internal</meta:property>
+    <meta:property name="retention-days">30</meta:property>
+  </meta:properties>
+  <sender>
+    <display-name>Build Service</display-name>
+    <address scheme="mailto">build@example.invalid</address>
+  </sender>
+  <recipients>
+    <recipient role="to">
+      <display-name>Release Team</display-name>
+      <address scheme="mailto">release@example.invalid</address>
+    </recipient>
+    <recipient role="cc">
+      <display-name>Audit Queue</display-name>
+      <address scheme="mailto">audit@example.invalid</address>
+    </recipient>
+  </recipients>
+  <body format="markdown">
+    <subject>Deployment completed</subject>
+    <content><![CDATA[
+# Deployment completed
+
+Version **4.8.2** is available in the staging environment.
+
+- 17 checks passed
+- 0 checks failed
+- review window: 30 minutes
+    ]]></content>
+    <attachments>
+      <attachment id="log" filename="deploy.log" media-type="text/plain">
+        <checksum algorithm="sha256">3a7bd3e2360a3d29eea436fcfb7e44c7</checksum>
+      </attachment>
+    </attachments>
+  </body>
+  <delivery>
+    <attempt number="1" timestamp="2026-09-24T19:10:00Z"/>
+    <result code="accepted">queued for processing</result>
+  </delivery>
+</message>
+```

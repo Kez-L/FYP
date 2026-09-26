@@ -1,0 +1,195 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="view.xsl"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (metadata, record*)>
+  <!ELEMENT metadata (created, description)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT description (#PCDATA|mark|br)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT record (heading, body, attachment*)>
+  <!ATTLIST record uuid ID #REQUIRED category NMTOKEN #IMPLIED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT body (#PCDATA|paragraph|quote|code)*>
+  <!ELEMENT paragraph (#PCDATA|mark|br)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment
+    filename CDATA #REQUIRED
+    media CDATA #IMPLIED
+    size NMTOKEN #IMPLIED
+  >
+]>
+<archive>
+  <metadata>
+    <created>2026-09-24T12:00:00Z</created>
+    <description>Release notes <mark>draft</mark><br/>for internal review.</description>
+  </metadata>
+  <record uuid="r-17" category="migration">
+    <heading>Storage transition</heading>
+    <body>
+      <paragraph>Move the legacy data before the <mark>maintenance window</mark>.</paragraph>
+      <quote>Keep a verified copy offline.</quote>
+      <code><![CDATA[rsync -a --delete old/ new/]]></code>
+    </body>
+    <attachment filename="plan.txt" media="text/plain" size="2048"/>
+    <attachment filename="diagram.svg" media="image/svg+xml"/>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<ns:message xmlns:ns="urn:example:message" xmlns:x="urn:example:extra" xml:lang="fr">
+  <ns:header>
+    <ns:sender address="alice@example.invalid">Alice &lt;A&gt;</ns:sender>
+    <ns:recipient address="bob@example.invalid">Bob</ns:recipient>
+    <ns:timestamp>2026-09-24T18:42:31+02:00</ns:timestamp>
+  </ns:header>
+  <ns:body format="mixed">
+    Bonjour,
+    <ns:paragraph priority="high">Voici un texte avec <x:highlight>des éléments</x:highlight> imbriqués.</ns:paragraph>
+    <x:metadata>
+      <x:tag>international</x:tag>
+      <x:tag>review</x:tag>
+    </x:metadata>
+    <ns:paragraph><![CDATA[Characters such as < and & remain literal here.]]></ns:paragraph>
+  </ns:body>
+  <ns:footer>
+    <ns:signature>— Alice</ns:signature>
+  </ns:footer>
+</ns:message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE project [
+  <!ELEMENT project (name, phase+, notes?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT phase (label, task*)>
+  <!ATTLIST phase number NMTOKEN #REQUIRED closed (true|false) "false">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT task (summary, owner?, dependency*)>
+  <!ATTLIST task key ID #REQUIRED priority (low|medium|high) "medium">
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT dependency EMPTY>
+  <!ATTLIST dependency ref IDREF #REQUIRED optional (yes|no) "no">
+  <!ELEMENT notes (#PCDATA|line)*>
+  <!ELEMENT line EMPTY>
+]>
+<project>
+  <name>Orchid Deployment</name>
+  <phase number="1" closed="true">
+    <label>Preparation</label>
+    <task key="t-a" priority="high">
+      <summary>Validate the environment</summary>
+      <owner>Team Alpha</owner>
+    </task>
+  </phase>
+  <phase number="2">
+    <label>Rollout</label>
+    <task key="t-b">
+      <summary>Publish the application</summary>
+      <dependency ref="t-a"/>
+      <dependency ref="t-missing" optional="yes"/>
+    </task>
+    <task key="t-c" priority="low">
+      <summary>Notify observers</summary>
+      <owner><![CDATA[ops@example.invalid]]></owner>
+      <dependency ref="t-b"/>
+    </task>
+  </phase>
+  <notes>
+    <line/>Deployment uses a staged process.
+    <line/>Rollback remains available.
+  </notes>
+</project>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE form [
+  <!ENTITY company "North &amp; South">
+  <!ENTITY legal "All submissions are retained for 30 days.">
+  <!ELEMENT form (intro, field+, consent)>
+  <!ELEMENT intro (#PCDATA)>
+  <!ELEMENT field (label, value, help?)>
+  <!ATTLIST field name NMTOKEN #REQUIRED type (text|number|choice|multiline) #REQUIRED required (true|false) "false">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT help (#PCDATA|kbd)*>
+  <!ELEMENT kbd (#PCDATA)>
+  <!ELEMENT consent (statement, checkbox)>
+  <!ELEMENT statement (#PCDATA)>
+  <!ELEMENT checkbox EMPTY>
+  <!ATTLIST checkbox checked (yes|no) #REQUIRED>
+]>
+<form>
+  <intro>Application for &company; services.</intro>
+  <field name="username" type="text" required="true">
+    <label>User name</label>
+    <value>delta_7</value>
+    <help>Use <kbd>A-Z</kbd>, digits, or underscore.</help>
+  </field>
+  <field name="age" type="number">
+    <label>Age</label>
+    <value>0042</value>
+  </field>
+  <field name="comment" type="multiline">
+    <label>Comment</label>
+    <value><![CDATA[Line one
+Line two
+<not-an-element>]]></value>
+    <help>&legal;</help>
+  </field>
+  <field name="color" type="choice">
+    <label>Preferred color</label>
+    <value>blue &amp; green</value>
+  </field>
+  <consent>
+    <statement>I accept the terms.</statement>
+    <checkbox checked="yes"/>
+  </consent>
+</form>
+```
+
+```xml
+<?xml version="1.0"?>
+<!-- A deliberately varied document with processing instructions and empty containers. -->
+<?build profile="fuzz"?>
+<telemetry xmlns="urn:telemetry:v2" xmlns:m="urn:telemetry:meta">
+  <session id="s-0000000000000001" started="2026-09-24T00:00:00Z">
+    <m:environment os="test" arch="x86_64">
+      <m:variable name="PATH"><![CDATA[/bin:/usr/bin:/opt/tools]]></m:variable>
+      <m:variable name="EMPTY"/>
+    </m:environment>
+    <event sequence="0" kind="start">
+      <message>Initialization complete</message>
+      <data><![CDATA[{"ready":true,"items":[]}]]></data>
+    </event>
+    <event sequence="1" kind="sample">
+      <message>Temperature: 21.5 °C</message>
+      <measurement unit="C" value="21.5"/>
+      <measurement unit="%" value="48"/>
+      <links>
+        <link rel="self" href="urn:event:1"/>
+        <link rel="related" href="urn:event:0"/>
+      </links>
+    </event>
+    <event sequence="2" kind="stop">
+      <message>Finished &amp; flushed</message>
+      <error code="0">
+        <details><![CDATA[]]></details>
+      </error>
+    </event>
+  </session>
+  <session id="s-0000000000000002" started="2026-09-24T01:02:03Z">
+    <event sequence="9" kind="heartbeat">
+      <message xml:space="preserve">  spaced message  </message>
+    </event>
+  </session>
+</telemetry>
+```

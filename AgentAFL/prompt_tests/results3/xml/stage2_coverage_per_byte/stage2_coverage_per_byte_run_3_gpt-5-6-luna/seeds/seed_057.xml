@@ -1,0 +1,22 @@
+<!DOCTYPE archive [
+  <!ENTITY % common "<!ELEMENT metadata (created, tags?)><!ELEMENT created (#PCDATA)><!ELEMENT tags (tag*)><!ELEMENT tag (#PCDATA)>">
+  %common;
+  <!ELEMENT archive (metadata, payload)>
+  <!ELEMENT payload ANY>
+  <!ATTLIST archive format (tar|zip|raw) "raw">
+  <![INCLUDE[
+    <!ENTITY status "ready">
+  ]]>
+]>
+<archive format="zip">
+  <metadata>
+    <created>2026-09-24T00:00:00Z</created>
+    <tags><tag>one</tag><tag>two &amp; three</tag></tags>
+  </metadata>
+  <payload>
+    <?transform mode="compact"?>
+    <!-- embedded fragment -->
+    <chunk index="0"><![CDATA[alpha]]></chunk>
+    <chunk index="1">beta &status;</chunk>
+  </payload>
+</archive>

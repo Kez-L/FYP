@@ -1,0 +1,159 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, entry*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (name, price, description?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST section code NMTOKEN #REQUIRED>
+  <!ATTLIST entry sku ID #REQUIRED status (new|used|backorder) "new">
+  <!ENTITY currency "€">
+]>
+<catalog>
+  <section code="A-01">
+    <title>Tools &amp; Parts</title>
+    <entry sku="item_α" status="used">
+      <name>Socket &quot;Delta&quot;</name>
+      <price>19 &currency; 95</price>
+      <description>Small <em>reversible</em> wrench<br/>with a long handle.</description>
+    </entry>
+  </section>
+  <section code="B_02">
+    <title><![CDATA[Odd <title> markers & raw ampersands]]></title>
+    <entry sku="item_beta" status="backorder">
+      <name>Washer</name>
+      <price>0.00</price>
+    </entry>
+  </section>
+</catalog>
+```
+
+```xml
+<!DOCTYPE records [
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (field+)>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST record key ID #REQUIRED kind NMTOKEN #IMPLIED>
+  <!ATTLIST field name CDATA #REQUIRED>
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+]>
+<records>
+  <record key="r1" kind="alpha">
+    <field name="empty"></field>
+    <field name="mixed">one &left; two &amp; three &right;</field>
+    <field name="spaces">
+      
+      tabs&#x9;and&#xA;lines
+    </field>
+  </record>
+  <record key="r2">
+    <field name="nested-text"><![CDATA[]]></field>
+  </record>
+  <record key="r3" kind="δ">
+    <field name="quotes">'single' &quot;double&quot;</field>
+    <field name="surrogate">&#xD7FF;&#xE000;&#xFFFD;</field>
+  </record>
+</records>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (vertex*, edge*)>
+  <!ELEMENT vertex (label?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST graph directed (yes|no) #REQUIRED>
+  <!ATTLIST vertex id ID #REQUIRED group CDATA #IMPLIED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+  <!ENTITY loop "&amp;&amp;">
+]>
+<graph directed="yes">
+  <vertex id="v0" group=""/>
+  <vertex id="v1" group="odd">
+    <label>first <![CDATA[<second>]]> node</label>
+  </vertex>
+  <vertex id="v2">
+    <label>&lt;unescaped-looking&gt; &loop;</label>
+  </vertex>
+  <edge from="v0" to="v1" weight="0"/>
+  <edge from="v1" to="v2" weight="-1.25"/>
+  <edge from="v2" to="v0" weight="NaN"/>
+  <edge from="missing" to="v2"/>
+</graph>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body)>
+  <!ELEMENT header (item*)>
+  <!ELEMENT item EMPTY>
+  <!ELEMENT body (section+)>
+  <!ELEMENT section (para|list|section)*>
+  <!ELEMENT para (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT list (li*)>
+  <!ELEMENT li (#PCDATA|link)*>
+  <!ATTLIST item name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST section id NMTOKEN #IMPLIED>
+  <!ATTLIST link href CDATA #REQUIRED>
+]>
+<envelope>
+  <header>
+    <item name="version" value="0"/>
+    <item name="flags" value="&quot;&amp;&lt;"/>
+    <item name="unicode" value="𐀀"/>
+  </header>
+  <body>
+    <section id="root">
+      <para>Before <link href="urn:x?y=1&amp;z=2">link text</link> after.</para>
+      <list>
+        <li>one</li>
+        <li>two <link href="">tail</link></li>
+        <li><![CDATA[raw ]]> brackets ]]&gt; remain</li>
+      </list>
+      <section id="nested">
+        <para>deep</para>
+        <section id="leaf"/>
+      </section>
+    </section>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "data:text/plain,external" NDATA bin>
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT data (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST package version CDATA #FIXED "1">
+  <!ATTLIST file name CDATA #REQUIRED size NMTOKEN #IMPLIED>
+  <!ATTLIST data encoding (plain|base64|hex) "plain">
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+]>
+<package version="1">
+  <manifest>
+    <file name="a&amp;b.bin" size="000"/>
+    <file name="newline&#xA;name" size="not-a-number"/>
+    <file name="external" size="12"/>
+  </manifest>
+  <data encoding="base64">
+    prefix
+    <chunk index="0">AAEC/f8=</chunk>
+    middle &amp; <![CDATA[characters]]>
+    <chunk index="1"></chunk>
+    suffix
+  </data>
+</package>
+```

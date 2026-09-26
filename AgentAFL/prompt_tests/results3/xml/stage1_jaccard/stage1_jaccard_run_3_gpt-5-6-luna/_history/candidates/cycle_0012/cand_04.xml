@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (start, branch, end)>
+  <!ELEMENT start EMPTY>
+  <!ELEMENT branch (case+)>
+  <!ELEMENT case (action*, branch?)>
+  <!ATTLIST case when CDATA #REQUIRED>
+  <!ELEMENT action EMPTY>
+  <!ATTLIST action name CDATA #REQUIRED args CDATA #IMPLIED>
+  <!ELEMENT end (#PCDATA)>
+]>
+<workflow>
+  <start/>
+  <branch>
+    <case when="ready &amp;&amp; valid">
+      <action name="open" args="mode=rw"/>
+      <action name="validate" args="strict=true"/>
+      <branch>
+        <case when="retry">
+          <action name="sleep" args="ms=10"/>
+        </case>
+        <case when="abort">
+          <action name="close"/>
+        </case>
+      </branch>
+    </case>
+    <case when="fallback">
+      <action name="recover" args="source=&quot;cache&quot;"/>
+    </case>
+  </branch>
+  <end>completed</end>
+</workflow>

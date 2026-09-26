@@ -1,0 +1,89 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (item*, note?)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT item (#PCDATA|details)*>
+  <!ATTLIST item ref IDREF #IMPLIED enabled (yes|no) "yes">
+  <!ELEMENT details (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY mark "&#x3C;escaped&#x3E;">
+]>
+<catalog>
+  <section code="alpha">
+    <item ref="missing" enabled="no">one<details>&amp;</details>&mark;</item>
+    <note><![CDATA[<not-an-element> & still text]]></note>
+  </section>
+  <section code="beta">
+    <item>two</item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<r:package xmlns:r="urn:root" xmlns:x="urn:one" xmlns:y="urn:two">
+  <r:header x:kind="&#xD;&#xA;" y:flag="true"/>
+  <r:body>
+    <x:entry id="A&amp;B" x:empty="">
+      <y:value><![CDATA[]]></y:value>
+      <x:value xmlns:x="">broken-prefix</x:value>
+    </x:entry>
+    <r:entry xmlns="urn:default">
+      <child xmlns:r="urn:shadow"><r:leaf/></child>
+    </r:entry>
+  </r:body>
+</r:package>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ELEMENT root (a|b|c)*>
+  <!ELEMENT a EMPTY>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c (d)>
+  <!ELEMENT d EMPTY>
+  <!ENTITY % fragment "<!ELEMENT injected EMPTY>">
+  %fragment;
+  <!ENTITY quote "&#34;&apos;&lt;&gt;&amp;">
+]>
+<root>
+  <a/>
+  <b>before &quote; after</b>
+  <c><d/></c>
+  <injected/>
+  <unknown><![CDATA[x]]></unknown>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form [
+  <!ELEMENT form (field+)>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST field name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+]>
+<form>
+  <field name="plain" value="&quot;quoted&quot;">text</field>
+  <field name="unicode-&#x1F600;">&#x0A;&#x20;&#x85;</field>
+  <field name="split">left<![CDATA[ middle ]]><!-- comment --><![CDATA[right]]></field>
+  <field name="nested"><![CDATA[terminator ]]]]><![CDATA[> fragment]]></field>
+</form>
+```
+
+```xml
+<root xmlns="urn:outer" xmlns:p="urn:p">
+  <p:one>
+    <two xmlns:p="urn:inner">
+      <p:three p:a="1" xmlns:q="urn:q">
+        <q:four xmlns=""/>
+      </p:three>
+    </two>
+  </p:one>
+  <mixed>alpha<empty/>omega</mixed>
+  <tail xmlns:p="">
+    <local/>
+  </tail>
+</root>
+```

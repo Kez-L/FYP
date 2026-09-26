@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<workflow xmlns="urn:workflow" xmlns:x="urn:workflow:extra" xml:lang="fr">
+  <!-- Deliberately mixed content around instruction nodes. -->
+  <start when="2026-09-24T09:30:00Z"/>
+  <stage name="prepare" complete="false">
+    <task id="p1" owner="ops">Vérifier les fichiers</task>
+    <task id="p2" owner="qa"><![CDATA[checksum <pending> & retry]]></task>
+    <x:annotation x:level="warning">à confirmer</x:annotation>
+  </stage>
+  <branch test="available">
+    <when value="yes">
+      <action name="publish" channel="archive"/>
+    </when>
+    <otherwise>
+      <action name="hold" channel="review"/>
+    </otherwise>
+  </branch>
+  <?workflow checkpoint="after-branch"?>
+  <stage name="finish" complete="true">
+    <result code="0" message="terminé"/>
+    <artifact xml:space="preserve">  result.dat
+</artifact>
+  </stage>
+</workflow>

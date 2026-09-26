@@ -1,0 +1,74 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:seed" xmlns:x="urn:extra">
+  <x:item id="a&amp;b" enabled="true">
+    <name><![CDATA[alpha < beta && gamma > delta]]></name>
+    <value>42</value>
+    <x:meta key="quote">&quot;&apos;&amp;&lt;&gt;</x:meta>
+  </x:item>
+  <item id="&#x0;bad">
+    <name>unterminated &amp; entity &unknown;</name>
+  </item>
+</catalog>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ELEMENT root (section+)>
+  <!ELEMENT section (#PCDATA|entry)*>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry
+    name CDATA #REQUIRED
+    flags NMTOKENS "a b c"
+  >
+  <!ENTITY local "replacement &amp; text">
+]>
+<root>
+  <section>&local;<entry name="one" flags="x y"/></section>
+  <section><![CDATA[
+    ]]> <entry name="two" flags=""/>
+  </section>
+</root>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<r>
+  <a><b><c/></b></a>
+  <mixed>before<![CDATA[<nested attr='x'/>]]>after</mixed>
+  <numbers>1&#10;2&#13;3&#9;4&#x1F600;</numbers>
+  <empty />
+  <bad attr="one" attr="two"></bad>
+</r>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ENTITY % parameter "<!ELEMENT injected (#PCDATA)>">
+  %parameter;
+  <!ENTITY amp "&#38;">
+]>
+<envelope>
+  <header>
+    <token>&amp;&amp;&amp;</token>
+    <signature><![CDATA[]]></signature>
+  </header>
+  <payload>
+    <injected>text</injected>
+    <chunk><![CDATA[raw ]]> markup ]]><![CDATA[ continuation]]></chunk>
+  </payload>
+</envelope>
+```
+
+```xml
+<outer xmlns:a="urn:a" xmlns:b="urn:b" a:flag="1">
+  <a:node b:value="&quot;quoted&quot;">
+    <inner xmlns="urn:default">
+      <leaf><![CDATA[x]]></leaf>
+      <leaf><![CDATA[<x/>]]></leaf>
+    </inner>
+  </a:node>
+  <b:node xmlns:b="" b:value="broken"/>
+  <tail>&missing;<!-- comment --><!----></tail>
+</outer>
+```

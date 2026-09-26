@@ -1,0 +1,180 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, note?)>
+  <!ELEMENT entry (title, metadata, description, related*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT metadata (author*, tag*)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT tag EMPTY>
+  <!ELEMENT description (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT related EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST entry key ID #REQUIRED status (draft|published|archived) "draft">
+  <!ATTLIST tag value CDATA #REQUIRED>
+  <!ATTLIST related ref IDREF #IMPLIED>
+]>
+<catalog>
+  <entry key="e1" status="published">
+    <title>Parser &amp; Entity Tests</title>
+    <metadata>
+      <author>alpha</author>
+      <author>beta</author>
+      <tag value="xml"/>
+      <tag value="fuzzing"/>
+    </metadata>
+    <description>Text <em>with</em> <code>markup</code><br/>and tails.</description>
+    <related ref="e2"/>
+  </entry>
+  <entry key="e2">
+    <title>Second Entry</title>
+    <metadata><tag value="edge"/></metadata>
+    <description><![CDATA[raw <content> & odd ]]></description>
+  </entry>
+  <note>finish</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:envelope xmlns:r="urn:envelope" xmlns:m="urn:message" xmlns:x="urn:extra">
+  <r:header>
+    <r:sequence>00000000000000000001</r:sequence>
+    <r:flags>
+      <r:flag name="urgent"/>
+      <r:flag name="signed" value="true"/>
+    </r:flags>
+  </r:header>
+  <r:payload>
+    <m:message m:type="notification" x:token="&quot;quoted&quot;">
+      <m:sender>
+        <m:name>sender</m:name>
+        <m:address><![CDATA[user@example.invalid]]></m:address>
+      </m:sender>
+      <m:body>
+        <m:line index="1">first</m:line>
+        <m:line index="2">second</m:line>
+        <m:line index="3"><![CDATA[third & fourth]]></m:line>
+      </m:body>
+    </m:message>
+  </r:payload>
+  <r:trailer><!-- retained comment --><r:checksum algorithm="none"/></r:trailer>
+</r:envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE universe [
+  <!ELEMENT universe (cluster*)>
+  <!ELEMENT cluster (system*)>
+  <!ELEMENT system (planet*)>
+  <!ELEMENT planet (continent*)>
+  <!ELEMENT continent (country*)>
+  <!ELEMENT country (city*)>
+  <!ELEMENT city (district*)>
+  <!ELEMENT district (building*)>
+  <!ELEMENT building (room*)>
+  <!ELEMENT room (#PCDATA|item)*>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST cluster id CDATA #IMPLIED>
+  <!ATTLIST system class CDATA #IMPLIED>
+  <!ATTLIST planet name CDATA #IMPLIED>
+]>
+<universe>
+  <cluster id="local">
+    <system class="binary">
+      <planet name="outer">
+        <continent>
+          <country>
+            <city>
+              <district>
+                <building>
+                  <room>north <item>table</item> center <item>lamp</item> south</room>
+                </building>
+              </district>
+            </city>
+          </country>
+        </continent>
+      </planet>
+    </system>
+    <system class="single">
+      <planet name="inner"><continent><country><city><district><building><room>vacant</room></building></district></city></country></continent></planet>
+    </system>
+  </cluster>
+</universe>
+```
+
+```xml
+<?xml version="1.0"?>
+<configuration xmlns="urn:config" xmlns:sec="urn:security" xmlns:env="urn:environment">
+  <profile id="production" enabled="yes">
+    <properties>
+      <property name="timeout" type="integer">30</property>
+      <property name="ratio" type="decimal">0.0000000000000000000001</property>
+      <property name="empty" type="string"/>
+      <property name="multiline" type="text">line one
+line two
+line three</property>
+    </properties>
+    <sec:credentials>
+      <sec:principal sec:kind="service">worker</sec:principal>
+      <sec:permissions>
+        <sec:allow action="read" resource="*"/>
+        <sec:deny action="write" resource="/system"/>
+      </sec:permissions>
+    </sec:credentials>
+    <env:locations>
+      <env:path absolute="false">./var/data/../cache</env:path>
+      <env:path absolute="true">/srv/application</env:path>
+    </env:locations>
+  </profile>
+  <?reload mode="safe"?>
+  <profile id="testing" enabled="no">
+    <properties><property name="timeout" type="integer">-1</property></properties>
+  </profile>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload, signature?)>
+  <!ELEMENT manifest (part+)>
+  <!ELEMENT part EMPTY>
+  <!ELEMENT payload (section*)>
+  <!ELEMENT section (record*)>
+  <!ELEMENT record (#PCDATA|field)*>
+  <!ELEMENT field (#PCDATA)>
+  <!ELEMENT signature (value)>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST part name NMTOKEN #REQUIRED media CDATA #IMPLIED length CDATA #IMPLIED>
+  <!ATTLIST section id ID #IMPLIED>
+  <!ATTLIST record key CDATA #IMPLIED>
+  <!ATTLIST field name CDATA #REQUIRED>
+]>
+<package>
+  <manifest>
+    <part name="header" media="application/octet-stream" length="0"/>
+    <part name="body" media="text/xml" length="999999999999"/>
+    <part name="trailer" media="application/octet-stream"/>
+  </manifest>
+  <payload>
+    <section id="s-alpha">
+      <record key="r1">
+        <field name="a">one</field>
+        <field name="b">two &lt; three</field>
+      </record>
+      <record key="r2"><field name="empty"/><![CDATA[interleaved]]><field name="tail">x</field></record>
+    </section>
+    <section id="s-beta">
+      <record><field name="unicode">π λ 雪</field></record>
+    </section>
+  </payload>
+  <signature><value><![CDATA[-----BEGIN SIGNATURE-----
+not-a-real-signature
+-----END SIGNATURE-----]]></value></signature>
+</package>
+```

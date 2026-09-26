@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<?pipeline mode="diagnostic" retries="02"?>
+<conversation xmlns="urn:example:chat" xmlns:m="urn:example:meta" xml:lang="fr">
+  <!-- Deliberately mixed content and nested metadata -->
+  <m:context session="α-17" created="2026-09-24T00:00:00Z">
+    <m:client platform="desktop" version="1.0"/>
+    <m:flags>
+      <m:flag name="trace">true</m:flag>
+      <m:flag name="compressed">false</m:flag>
+    </m:flags>
+  </m:context>
+  <turn speaker="human">
+    <text>Compare <term>résumé</term> with <term>resume</term> — preserving accents matters.</text>
+    <attachment media-type="text/plain" checksum="sha256:abc123">
+      <payload><![CDATA[line one
+line two
+line three]]></payload>
+    </attachment>
+  </turn>
+  <turn speaker="agent" confidence="0.875">
+    <text>They are distinct strings.</text>
+    <table>
+      <row>
+        <cell key="normalized">resume</cell>
+        <cell key="original">résumé</cell>
+      </row>
+      <row>
+        <cell key="length">6</cell>
+        <cell key="original-length">6</cell>
+      </row>
+    </table>
+    <actions>
+      <action id="a1" status="done">
+        <command>normalize</command>
+        <argument name="form">NFC</argument>
+      </action>
+      <action id="a2" status="pending">
+        <command>compare</command>
+        <argument name="locale">fr-FR</argument>
+      </action>
+    </actions>
+  </turn>
+  <?checkpoint id="end-of-turns"?>
+</conversation>

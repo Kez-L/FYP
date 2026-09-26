@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY logo SYSTEM "logo.bin" NDATA bin>
+  <!ENTITY greeting "Hello, &quot;world&quot; &amp; universe">
+  <!ENTITY % feature "<!ELEMENT archive (section|record)*>
+                       <!ATTLIST archive mode (compact|verbose) 'compact'>">
+  %feature;
+  <!ELEMENT section (#PCDATA|record|![CDATA[raw]]|link)*>
+  <!ELEMENT record EMPTY>
+  <!ATTLIST record key ID #REQUIRED payload ENTITY #IMPLIED>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link ref IDREF #IMPLIED>
+  <!ENTITY nested "A &greeting; B">
+]>
+<archive mode="verbose" xmlns="urn:seed:archive">
+  <section><![CDATA[<not-an-element>&still-literal;</not-an-element>]]>
+    &nested;
+    <record key="r1" payload="logo"/>
+    <link ref="r1"/>
+  </section>
+  <section>tail &#x1F642; &greeting;</section>
+</archive>

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, body, trailer?)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT body (chunk+)>
+  <!ELEMENT chunk (#PCDATA|mark)*>
+  <!ELEMENT mark EMPTY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST header version NMTOKEN #REQUIRED flags NMTOKENS #IMPLIED>
+  <!ATTLIST chunk id ID #IMPLIED ref IDREF #IMPLIED>
+  <!ATTLIST mark kind (open|close|pause) "pause">
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+]>
+<packet>
+  <header version="v2" flags="urgent encrypted"/>
+  <body>
+    <chunk id="c1">one<mark kind="open"/>&left;two&right;</chunk>
+    <chunk ref="c1">three</chunk>
+  </body>
+  <trailer>tail</trailer>
+</packet>

@@ -1,0 +1,133 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (header, item+, footer?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT item (name, price, note*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emph|ref)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST item id ID #REQUIRED state (new|used|hold) "new">
+  <!ATTLIST ref target IDREF #IMPLIED>
+  <!ENTITY euro "&#x20AC;">
+  <!ENTITY mark "<emph>special</emph>">
+]>
+<catalog>
+  <header xml:lang="fr">Résumé &euro;</header>
+  <item id="i17" state="used">
+    <name>Étagère</name>
+    <price>19.95</price>
+    <note>small <emph>wooden</emph> shelf <ref target="i17"/></note>
+    <note><![CDATA[raw ]]> text</note>
+  </item>
+  <item id="i18"><name>Box</name><price>&mark;</price></item>
+  <footer>fin</footer>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST matrix width NMTOKEN #IMPLIED>
+  <!ATTLIST row number NMTOKEN #REQUIRED>
+  <!ATTLIST cell pos NMTOKEN #REQUIRED kind (text|number|empty) "text">
+]>
+<matrix width="3">
+  <row number="01">
+    <cell pos="a" kind="number">0</cell>
+    <cell pos="b">-7&amp;2</cell>
+    <cell pos="c" kind="empty"/>
+  </row>
+  <row number="02">
+    <cell pos="a"><![CDATA[<not-an-element>]]></cell>
+    <cell pos="b">line
+break	inside</cell>
+    <cell pos="c" kind="text">&#x1F642;</cell>
+  </row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report SYSTEM "missing-report.dtd">
+<report xmlns="urn:report:v2" xmlns:x="urn:extra">
+  <?audit level="verbose"?>
+  <section x:id="A&amp;B" xml:base="file:///tmp/">
+    <title>Quarterly report</title>
+    <table>
+      <tr><th>name</th><th>value</th></tr>
+      <tr><td>alpha</td><td>1 &lt; 2</td></tr>
+      <tr><td>beta</td><td><![CDATA[&unresolved;]]></td></tr>
+    </table>
+    <!-- comment with --? no, keep well formed -->
+    <x:attachment x:type="binary">AAECAwQ=</x:attachment>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (start, step*, end)>
+  <!ELEMENT start EMPTY>
+  <!ELEMENT step (input?, action+, output?)>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT output (#PCDATA)>
+  <!ELEMENT end EMPTY>
+  <!ATTLIST workflow version CDATA #FIXED "3">
+  <!ATTLIST start next IDREF #IMPLIED>
+  <!ATTLIST step id ID #REQUIRED next IDREFS #IMPLIED>
+  <!ATTLIST action type (shell|http|noop) "noop">
+  <!ENTITY nbsp "&#160;">
+]>
+<workflow version="3">
+  <start next="s1"/>
+  <step id="s1" next="s2 s3">
+    <input>user&nbsp;data</input>
+    <action type="http">/api/v1/items?x=1&amp;y=2</action>
+    <action type="noop">ignored</action>
+    <output>queued</output>
+  </step>
+  <step id="s2">
+    <action type="shell">echo <![CDATA[$HOME && $?]]></action>
+  </step>
+  <step id="s3"><action type="http"/></step>
+  <end/>
+</workflow>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, content)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ELEMENT content (part*)>
+  <!ELEMENT part (#PCDATA|segment)*>
+  <!ELEMENT segment (#PCDATA)>
+  <!ATTLIST package mode (safe|fast) "safe">
+  <!ATTLIST entry name CDATA #REQUIRED type NMTOKEN #IMPLIED>
+  <!ATTLIST part number CDATA #REQUIRED encoding (plain|base64) "plain">
+  <!ENTITY % optional "INCLUDE">
+  <![%optional;[
+    <!ELEMENT checksum (#PCDATA)>
+  ]]>
+]>
+<package mode="fast">
+  <manifest>
+    <entry name="readme.txt" type="text"/>
+    <entry name="data.bin" type="binary"/>
+  </manifest>
+  <content>
+    <part number="1">first<segment>split</segment>tail</part>
+    <part number="2" encoding="base64"><![CDATA[AAEC/f8=]]></part>
+    <part number="3">x<!-- inside part -->y</part>
+  </content>
+</package>
+```

@@ -1,0 +1,143 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (metadata, product*)>
+  <!ELEMENT metadata (title, generated)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated EMPTY>
+  <!ELEMENT product (name, price, tags?, note?)>
+  <!ATTLIST product sku ID #REQUIRED status (active|archived) "active">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+]>
+<catalog>
+  <metadata>
+    <title>Winter inventory</title>
+    <generated/>
+  </metadata>
+  <product sku="p-001">
+    <name>Thermal flask</name>
+    <price currency="EUR">19.95</price>
+    <tags>
+      <tag>steel</tag>
+      <tag>insulated</tag>
+    </tags>
+    <note>Keep upright &amp; dry.</note>
+  </product>
+  <product sku="p-002" status="archived">
+    <name>Foldable cup</name>
+    <price currency="JPY">700</price>
+  </product>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<workflow xmlns="urn:example:workflow" xmlns:x="urn:example:extra" xml:lang="fr">
+  <x:header priority="high" x:token="αβγ">
+    <x:owner id="42"/>
+    <x:checksum>00ff7e</x:checksum>
+  </x:header>
+  <steps>
+    <step id="prepare" next="execute">
+      <command><![CDATA[printf "%s\n" "<ready>"]]></command>
+      <environment>
+        <variable name="MODE">safe</variable>
+        <variable name="PATH">/tmp/bin:/usr/bin</variable>
+      </environment>
+    </step>
+    <step id="execute" next="finish">
+      <retry count="3">
+        <delay unit="ms">250</delay>
+      </retry>
+      <x:payload encoding="base64">AAECAwQFBgcICQ==</x:payload>
+    </step>
+    <step id="finish">
+      <result code="0"/>
+    </step>
+  </steps>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder | file | link)*>
+  <!ELEMENT folder (folder | file | link)*>
+  <!ELEMENT file (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ATTLIST file name CDATA #REQUIRED size CDATA #IMPLIED>
+  <!ATTLIST link name CDATA #REQUIRED target CDATA #REQUIRED>
+]>
+<archive>
+  <folder name="root">
+    <folder name="docs">
+      <file name="readme.txt" size="17">Hello &amp; welcome</file>
+      <link name="latest" target="../release.txt"/>
+    </folder>
+    <folder name="data">
+      <file name="empty.bin" size="0"/>
+      <file name="unicode.txt">café — 東京 — 🧪</file>
+    </folder>
+  </folder>
+  <file name="release.txt"><![CDATA[release=2026.09]]></file>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY company "Northwind &amp; Sons">
+  <!ENTITY notice "Confidential — internal use only">
+]>
+<report xmlns:r="urn:report" created="2026-09-24T12:34:56Z">
+  <r:context>
+    <r:company>&company;</r:company>
+    <r:notice>&notice;</r:notice>
+  </r:context>
+  <section id="summary">
+    <heading>Quarterly status</heading>
+    <paragraph>Revenue increased by <strong>12%</strong> compared with the previous period.</paragraph>
+    <table border="1">
+      <row><cell>Region</cell><cell>Score</cell></row>
+      <row><cell>West</cell><cell>0.91</cell></row>
+      <row><cell>East</cell><cell>0.87</cell></row>
+    </table>
+  </section>
+  <section id="appendix">
+    <item key="a">First</item>
+    <item key="b">Second</item>
+    <item key="c"><![CDATA[raw <markup> stays here]]></item>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="urn:pkg" xmlns:m="urn:manifest" xml:space="preserve">
+  <?build profile="fuzz"?>
+  <!-- nested-looking data is intentionally represented as text -->
+  <manifest m:version="2.4">
+    <m:entry path="/" kind="directory"/>
+    <m:entry path="/assets/logo.svg" kind="resource" media="image/svg+xml"/>
+    <m:entry path="/config.json" kind="resource" media="application/json"/>
+  </manifest>
+  <payload>
+    <chunk index="0" compressed="false">
+      <![CDATA[
+        {"name":"sample","values":[null,true,-1,3.14159]}
+      ]]>
+    </chunk>
+    <chunk index="1" compressed="true">H4sIAAAAAA</chunk>
+  </payload>
+  <signatures>
+    <signature algorithm="sha256" key-id="k-01">
+      <digest>9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08</digest>
+    </signature>
+  </signatures>
+</package>
+```

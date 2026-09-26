@@ -1,0 +1,300 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (metadata, category+)>
+  <!ELEMENT metadata (title, generated, owner)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT category (label, item*)>
+  <!ATTLIST category key NMTOKEN #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT item (summary, price, availability, detail?)>
+  <!ATTLIST item code ID #REQUIRED featured (yes|no) "no">
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ATTLIST price currency NMTOKEN #REQUIRED>
+  <!ELEMENT availability EMPTY>
+  <!ATTLIST availability quantity CDATA #REQUIRED warehouse CDATA #IMPLIED>
+  <!ELEMENT detail (#PCDATA|link|emphasis)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href URI #IMPLIED>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ENTITY vendor "North &amp; South Supply">
+]>
+<catalog>
+  <metadata>
+    <title>Field equipment</title>
+    <generated>2026-09-24T12:00:00Z</generated>
+    <owner>&vendor;</owner>
+  </metadata>
+  <category key="tools">
+    <label>Tools</label>
+    <item code="hammer-1" featured="yes">
+      <summary>Composite hammer</summary>
+      <price currency="EUR">18.75</price>
+      <availability quantity="24" warehouse="west"/>
+      <detail>Impact-resistant <emphasis>grip</emphasis>; see <link href="https://example.invalid/h1">specification</link>.</detail>
+    </item>
+    <item code="level-2">
+      <summary>Compact level</summary>
+      <price currency="USD">9.50</price>
+      <availability quantity="0"/>
+    </item>
+  </category>
+  <category key="safety">
+    <label>Safety gear</label>
+    <item code="gloves-7">
+      <summary>Protective gloves</summary>
+      <price currency="GBP">6.20</price>
+      <availability quantity="113" warehouse="north"/>
+    </item>
+  </category>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (defs?, layer+)>
+  <!ATTLIST scene width CDATA #REQUIRED height CDATA #REQUIRED viewBox CDATA #IMPLIED>
+  <!ELEMENT defs (gradient|pattern|filter)*>
+  <!ELEMENT gradient (stop+)>
+  <!ATTLIST gradient id ID #REQUIRED direction (horizontal|vertical|radial) "horizontal">
+  <!ELEMENT stop EMPTY>
+  <!ATTLIST stop offset CDATA #REQUIRED color CDATA #REQUIRED opacity CDATA #IMPLIED>
+  <!ELEMENT pattern (rect|path|circle)*>
+  <!ATTLIST pattern id ID #REQUIRED>
+  <!ELEMENT filter (blur|shadow)*>
+  <!ATTLIST filter id ID #REQUIRED>
+  <!ELEMENT blur EMPTY>
+  <!ATTLIST blur radius CDATA #REQUIRED>
+  <!ELEMENT shadow EMPTY>
+  <!ATTLIST shadow dx CDATA #IMPLIED dy CDATA #IMPLIED>
+  <!ELEMENT layer (group|rect|circle|path|text)*>
+  <!ATTLIST layer name CDATA #IMPLIED visible (true|false) "true">
+  <!ELEMENT group (group|rect|circle|path|text)*>
+  <!ATTLIST group transform CDATA #IMPLIED>
+  <!ELEMENT rect EMPTY>
+  <!ATTLIST rect x CDATA #REQUIRED y CDATA #REQUIRED width CDATA #REQUIRED height CDATA #REQUIRED fill CDATA #IMPLIED>
+  <!ELEMENT circle EMPTY>
+  <!ATTLIST circle cx CDATA #REQUIRED cy CDATA #REQUIRED r CDATA #REQUIRED fill CDATA #IMPLIED>
+  <!ELEMENT path EMPTY>
+  <!ATTLIST path d CDATA #REQUIRED stroke CDATA #IMPLIED>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST text x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ENTITY accent "#5577AA">
+]>
+<?render mode="preview"?>
+<scene width="640" height="360" viewBox="0 0 640 360">
+  <defs>
+    <gradient id="sky" direction="vertical">
+      <stop offset="0%" color="#DDF4FF"/>
+      <stop offset="100%" color="&accent;" opacity="0.8"/>
+    </gradient>
+    <pattern id="grid">
+      <path d="M0 0 L20 0 L20 20" stroke="#CCCCCC"/>
+      <rect x="0" y="0" width="20" height="20" fill="none"/>
+    </pattern>
+    <filter id="soft">
+      <blur radius="4"/>
+      <shadow dx="2" dy="3"/>
+    </filter>
+  </defs>
+  <layer name="background">
+    <rect x="0" y="0" width="640" height="360" fill="url(#sky)"/>
+    <rect x="0" y="0" width="640" height="360" fill="url(#grid)"/>
+  </layer>
+  <layer name="objects" visible="true">
+    <group transform="translate(48,72)">
+      <circle cx="90" cy="80" r="54" fill="#FFCC44"/>
+      <path d="M0 180 C80 90 130 120 220 180" stroke="#334455"/>
+      <text x="18" y="230">dawn <![CDATA[<phase>]]> study</text>
+    </group>
+  </layer>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body)>
+  <!ELEMENT header (transaction, credentials?, flags?)>
+  <!ELEMENT transaction (#PCDATA)>
+  <!ELEMENT credentials (user, token)>
+  <!ELEMENT user (#PCDATA)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT flags (flag+)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST flag name NMTOKEN #REQUIRED value (on|off) #REQUIRED>
+  <!ELEMENT body (request|batch|fault)>
+  <!ELEMENT request (action, parameters?)>
+  <!ATTLIST request id ID #REQUIRED retry CDATA "0">
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT parameters (parameter*)>
+  <!ELEMENT parameter (value|list)>
+  <!ATTLIST parameter name CDATA #REQUIRED type (text|integer|boolean|list) "text">
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT list (value+)>
+  <!ELEMENT batch (request+)>
+  <!ELEMENT fault (code, message, trace?)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT trace (#PCDATA)>
+]>
+<envelope xmlns="urn:acme:transport" xmlns:sec="urn:acme:security">
+  <header>
+    <transaction>TX-20260924-0042</transaction>
+    <credentials>
+      <user>operator</user>
+      <token sec:format="opaque">redacted-token</token>
+    </credentials>
+    <flags>
+      <flag name="audit" value="on"/>
+      <flag name="compress" value="off"/>
+    </flags>
+  </header>
+  <body>
+    <batch>
+      <request id="req-a" retry="2">
+        <action>lookup</action>
+        <parameters>
+          <parameter name="region"><value>eu-west</value></parameter>
+          <parameter name="codes" type="list">
+            <list><value>A1</value><value>B7</value><value>C9</value></list>
+          </parameter>
+        </parameters>
+      </request>
+      <request id="req-b">
+        <action>rotate</action>
+        <parameters>
+          <parameter name="force" type="boolean"><value>true</value></parameter>
+        </parameters>
+      </request>
+    </batch>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE knowledge [
+  <!ELEMENT knowledge (section+)>
+  <!ATTLIST knowledge lang NMTOKEN #IMPLIED>
+  <!ELEMENT section (heading, intro?, entry+)>
+  <!ATTLIST section id ID #REQUIRED level (primary|secondary) "primary">
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT intro (#PCDATA|ref|code)*>
+  <!ELEMENT entry (term, definition, see-also?)>
+  <!ATTLIST entry status (draft|published|retired) "published">
+  <!ELEMENT term (#PCDATA)>
+  <!ELEMENT definition (#PCDATA|ref|code|quote|list)*>
+  <!ELEMENT ref (#PCDATA)>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|code|ref)*>
+  <!ELEMENT see-also (ref+)>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY product "XML &amp; Data">
+]>
+<knowledge lang="en">
+  <section id="parsing" level="primary">
+    <heading>Parsing concepts</heading>
+    <intro>Reliable processing of &product; requires attention to <code>encoding</code> and <ref target="entities">entities</ref>.</intro>
+    <entry status="published">
+      <term>Well-formedness</term>
+      <definition>A document has one root element and properly nested markup. &nbsp;Whitespace may vary.</definition>
+      <see-also><ref target="entities">Entity expansion</ref></see-also>
+    </entry>
+    <entry status="draft">
+      <term>Normalization</term>
+      <definition>Line endings and attribute values are normalized before application use.
+        <quote>Preserve meaning, not incidental formatting.</quote>
+        <list>
+          <item>Inspect character references.</item>
+          <item>Compare <code>CDATA</code> sections.</item>
+        </list>
+      </definition>
+    </entry>
+  </section>
+  <section id="entities">
+    <heading>Entity expansion</heading>
+    <entry>
+      <term>General entity</term>
+      <definition>Named content can be inserted with an ampersand reference.</definition>
+    </entry>
+  </section>
+</knowledge>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE pipeline [
+  <!ELEMENT pipeline (environment, stages)>
+  <!ATTLIST pipeline name CDATA #REQUIRED version CDATA #IMPLIED>
+  <!ELEMENT environment (variable*)>
+  <!ELEMENT variable EMPTY>
+  <!ATTLIST variable name NMTOKEN #REQUIRED value CDATA #IMPLIED secret (yes|no) "no">
+  <!ELEMENT stages (stage+)>
+  <!ELEMENT stage (input?, operation+, output?)>
+  <!ATTLIST stage id ID #REQUIRED depends-on IDREFS #IMPLIED>
+  <!ELEMENT input (source+)>
+  <!ELEMENT source EMPTY>
+  <!ATTLIST source uri CDATA #REQUIRED format (json|csv|xml|binary) #REQUIRED>
+  <!ELEMENT operation (argument*)>
+  <!ATTLIST operation name NMTOKEN #REQUIRED enabled (true|false) "true">
+  <!ELEMENT argument (literal|reference|map)>
+  <!ATTLIST argument key NMTOKEN #REQUIRED>
+  <!ELEMENT literal (#PCDATA)>
+  <!ELEMENT reference EMPTY>
+  <!ATTLIST reference path CDATA #REQUIRED>
+  <!ELEMENT map (entry+)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ATTLIST entry key NMTOKEN #REQUIRED>
+  <!ELEMENT output (destination+)>
+  <!ELEMENT destination EMPTY>
+  <!ATTLIST destination uri CDATA #REQUIRED overwrite (yes|no) "no">
+  <!ENTITY root "/srv/data">
+]>
+<pipeline name="nightly-index" version="3.1">
+  <environment>
+    <variable name="HOME" value="&root;" secret="no"/>
+    <variable name="TOKEN" secret="yes"/>
+    <variable name="MODE" value="incremental"/>
+  </environment>
+  <stages>
+    <stage id="extract">
+      <input>
+        <source uri="file:///srv/data/events.csv" format="csv"/>
+        <source uri="file:///srv/data/users.json" format="json"/>
+      </input>
+      <operation name="normalize">
+        <argument key="trim"><literal>true</literal></argument>
+        <argument key="locale"><literal>en-GB</literal></argument>
+      </operation>
+      <output>
+        <destination uri="file:///srv/data/normalized.xml" overwrite="yes"/>
+      </output>
+    </stage>
+    <stage id="publish" depends-on="extract">
+      <operation name="index">
+        <argument key="endpoint"><reference path="env.SEARCH_URL"/></argument>
+        <argument key="options">
+          <map>
+            <entry key="shards">4</entry>
+            <entry key="replicas">2</entry>
+          </map>
+        </argument>
+      </operation>
+      <operation name="notify" enabled="false">
+        <argument key="channel"><literal>ops</literal></argument>
+      </operation>
+      <output>
+        <destination uri="https://example.invalid/report" overwrite="no"/>
+      </output>
+    </stage>
+  </stages>
+</pipeline>
+```

@@ -1,0 +1,168 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY cover SYSTEM "cover.jpg" NDATA jpeg>
+  <!ENTITY amp "&#38;">
+  <!ELEMENT catalog (item+, note?)>
+  <!ELEMENT item (title, description, media?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT media EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST item sku ID #REQUIRED category NMTOKENS #IMPLIED>
+  <!ATTLIST media src ENTITY #IMPLIED type NOTATION (jpeg) #IMPLIED>
+]>
+<catalog>
+  <item sku="x-01" category="new featured">
+    <title>Angle &amp; Ampersand</title>
+    <description>text <em>emphasis <code>&amp;</code></em><br/>tail</description>
+    <media src="cover" type="jpeg"/>
+  </item>
+  <note><![CDATA[unparsed ]]> content]]></note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE shell [
+  <!ELEMENT shell (header, body, trailer)>
+  <!ELEMENT header (meta*)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT body (section+)>
+  <!ELEMENT section (heading, block*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT block (#PCDATA|quote|line)*>
+  <!ELEMENT quote (#PCDATA|line)*>
+  <!ELEMENT line EMPTY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST shell xmlns:p CDATA #FIXED "urn:parts" version CDATA #IMPLIED>
+  <!ATTLIST meta p:key NMTOKEN #REQUIRED p:value CDATA #IMPLIED>
+  <!ATTLIST section id ID #IMPLIED level (low|mid|high) "mid">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY phrase "left &nbsp; right">
+]>
+<shell xmlns:p="urn:parts" version="v&amp;1">
+  <header>
+    <meta p:key="alpha" p:value="&phrase;"/>
+    <meta p:key="beta"/>
+  </header>
+  <body>
+    <section id="s-a" level="high">
+      <heading>First</heading>
+      <block>one<line/>two<quote>three<line/>four</quote>five</block>
+    </section>
+    <section>
+      <heading>Second &amp; final</heading>
+      <block><![CDATA[x < y && z > q]]></block>
+    </section>
+  </body>
+  <trailer>done</trailer>
+</shell>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % switches '
+    <!ENTITY open "&#x5B;">
+    <!ENTITY close "&#x5D;">
+  '>
+  %switches;
+  <!ENTITY % optional "<!ELEMENT appendix (entry*)>">
+  %optional;
+  <!ELEMENT report (summary, data, appendix?)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT data (row*)>
+  <!ELEMENT row (cell, cell, cell?)>
+  <!ELEMENT cell (#PCDATA|value)*>
+  <!ELEMENT value EMPTY>
+  <!ELEMENT entry (label, value?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ATTLIST report generated CDATA #IMPLIED>
+  <!ATTLIST row n NMTOKEN #REQUIRED>
+  <!ATTLIST cell kind (text|number|empty) "text">
+  <!ATTLIST value v CDATA #IMPLIED>
+  <![IGNORE[
+    <!ELEMENT ignored EMPTY>
+    <!ENTITY ghost "not-expanded">
+  ]]>
+]>
+<report generated="2026-09-24T00:00:00Z">
+  <summary>Rows &open;three&close;</summary>
+  <data>
+    <row n="01"><cell kind="text">a</cell><cell kind="number">1</cell><cell/></row>
+    <row n="02"><cell><![CDATA[raw &entity; text]]></cell><cell><value v="7"/></cell></row>
+  </data>
+  <appendix>
+    <entry><label>end</label><value v="0"/></entry>
+  </appendix>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (node|alias|text)*>
+  <!ELEMENT node (node|alias|text)*>
+  <!ELEMENT alias EMPTY>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST map xmlns:m URI #IMPLIED root ID #IMPLIED>
+  <!ATTLIST node id ID #IMPLIED ref IDREF #IMPLIED xmlns:q CDATA #IMPLIED>
+  <!ATTLIST alias target IDREF #REQUIRED mode (hard|soft) #IMPLIED>
+  <!ATTLIST text xml:space (default|preserve) "default">
+  <!ENTITY snow "&#x2603;">
+  <!ENTITY quoted "&quot;quoted&quot;">
+]>
+<map xmlns:m="urn:map" root="n0">
+  <node id="n0" ref="n1" xmlns:q="urn:q">
+    <text xml:space="preserve">  leading &snow; &quoted;  </text>
+    <q:node id="n1" q:ref="missing">
+      <q:text>nested</q:text>
+      <alias target="n0" mode="soft"/>
+    </q:node>
+  </node>
+  <alias target="n0"/>
+  <m:node id="n2">
+    <m:text>prefix-local</m:text>
+  </m:node>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (packet)>
+  <!ELEMENT packet (from, to, payload, checksum)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT checksum EMPTY>
+  <!ATTLIST envelope xmlns:x CDATA #FIXED "urn:envelope" xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST packet sequence NMTOKEN #REQUIRED priority (low|normal|urgent) "normal">
+  <!ATTLIST from x:id ID #REQUIRED>
+  <!ATTLIST to x:id ID #REQUIRED>
+  <!ATTLIST checksum algorithm (none|sha256|md5) "none" value CDATA #IMPLIED>
+  <!ENTITY lt "<">
+  <!ENTITY trail "&#x0A;end">
+]>
+<envelope xmlns:x="urn:envelope" xml:lang="en-US">
+  <packet sequence="A-9" priority="urgent">
+    <from x:id="sender">alice@example.invalid</from>
+    <to x:id="receiver">bob@example.invalid</to>
+    <payload>
+      <x:command name="run" arg="&lt;safe&gt;">
+        <![CDATA[
+          <not-really-xml attr="&amp;">&lt;/payload&gt;
+        ]]>
+      </x:command>
+      <x:binary encoding="base64">AAEC/f8=</x:binary>
+      <x:message>&lt;head&gt; &amp; body &gt; tail</x:message>
+    </payload>
+    <checksum algorithm="sha256" value="deadbeef"/>
+  </packet>
+</envelope>
+```

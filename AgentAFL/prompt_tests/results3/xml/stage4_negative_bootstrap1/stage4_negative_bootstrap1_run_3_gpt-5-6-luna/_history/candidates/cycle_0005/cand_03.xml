@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (defaults, profiles)>
+  <!ELEMENT defaults EMPTY>
+  <!ATTLIST defaults timeout CDATA "30"
+                    retries NMTOKEN "3"
+                    enabled (true|false) "true">
+  <!ELEMENT profiles (profile*)>
+  <!ELEMENT profile (option*, include?)>
+  <!ATTLIST profile name NMTOKEN #REQUIRED inherits NMTOKEN #IMPLIED>
+  <!ELEMENT option (#PCDATA)>
+  <!ATTLIST option key CDATA #REQUIRED locked (yes|no) "no">
+  <!ELEMENT include EMPTY>
+  <!ATTLIST include profile NMTOKEN #REQUIRED>
+]>
+<configuration>
+  <defaults timeout="0" retries="0" enabled="false"/>
+  <profiles>
+    <profile name="minimal">
+      <option key="cache" locked="yes">off</option>
+      <option key="locale">C.UTF-8</option>
+    </profile>
+    <profile name="production" inherits="minimal">
+      <option key="cache">aggressive</option>
+      <include profile="logging"/>
+    </profile>
+    <profile name="logging">
+      <option key="level">debug</option>
+    </profile>
+  </profiles>
+</configuration>

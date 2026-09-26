@@ -1,0 +1,137 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (book*)>
+  <!ELEMENT book (title, author+, description?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emph|br)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST book isbn ID #REQUIRED>
+  <!ENTITY publisher "Northwind Press">
+]>
+<catalog generated="2026-09-24">
+  <!-- A catalog entry with mixed content and an internal entity. -->
+  <book isbn="bk-001">
+    <title>The Glass Orchard</title>
+    <author>Rina Vale</author>
+    <author>O. Mercer</author>
+    <description>A study of <emph>seasonal light</emph><br/>and forgotten gardens, published by &publisher;.</description>
+  </book>
+  <book isbn="bk-002">
+    <title>Signals at Dusk</title>
+    <author>Jun Calder</author>
+  </book>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<message xmlns="urn:example:message" xmlns:x="urn:example:extension">
+  <header>
+    <from address="sender@example.invalid">Sender &lt;sender@example.invalid&gt;</from>
+    <to address="receiver@example.invalid">Receiver</to>
+    <subject>Re: café — résumé</subject>
+    <timestamp>2026-09-24T18:42:11+00:00</timestamp>
+  </header>
+  <body>
+    <paragraph>Hello, <x:mention user="ops">team</x:mention>.</paragraph>
+    <paragraph>Use the following expression:</paragraph>
+    <code><![CDATA[
+      if (a < b && b > 0) return "ready";
+    ]]></code>
+    <attachments>
+      <attachment media-type="application/octet-stream" length="0"/>
+    </attachments>
+  </body>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<?processing mode="diagnostic" level="verbose"?>
+<archive>
+  <entry path="var/log/app.log" mode="0640" modified="2025-12-31T23:59:59Z">
+    <checksum algorithm="sha256">0000000000000000000000000000000000000000000000000000000000000000</checksum>
+    <chunks>
+      <chunk index="0" offset="0" size="17">first segment</chunk>
+      <chunk index="1" offset="17" size="0"/>
+    </chunks>
+  </entry>
+  <entry path="tmp/empty" mode="0000">
+    <checksum algorithm="none"/>
+  </entry>
+  <manifest>
+    <include pattern="*.log"/>
+    <exclude pattern="**/.cache/**"/>
+  </manifest>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<survey xmlns="urn:example:survey" xmlns:geo="http://www.opengis.net/gml">
+  <respondent active="true">
+    <name>Zoë Álvarez</name>
+    <answers>
+      <answer question="q1" value="5"/>
+      <answer question="q2">
+        <choice code="A">Strongly agree</choice>
+        <choice code="B" selected="false">Neutral</choice>
+      </answer>
+      <answer question="q3">
+        <text>Line one&#x0A;Line two&#x0D;&#x0A;終わり</text>
+      </answer>
+    </answers>
+    <location>
+      <geo:Point srsName="EPSG:4326">
+        <geo:coordinates>51.5074,-0.1278</geo:coordinates>
+      </geo:Point>
+    </location>
+  </respondent>
+  <respondent active="false">
+    <name>Anonymous</name>
+    <answers/>
+    <location xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+  </respondent>
+</survey>
+```
+
+```xml
+<?xml version="1.0"?>
+<configuration>
+  <profiles>
+    <profile name="default">
+      <setting key="cache">
+        <value type="boolean">false</value>
+      </setting>
+      <setting key="limits">
+        <value type="list">
+          <item type="integer">0</item>
+          <item type="integer">2147483647</item>
+          <item type="string">unbounded</item>
+        </value>
+      </setting>
+    </profile>
+    <profile name="staging" inherits="default">
+      <setting key="endpoint">
+        <value type="uri">https://staging.example.invalid/api?v=2&amp;mode=test</value>
+      </setting>
+    </profile>
+  </profiles>
+  <routes>
+    <route method="GET" path="/">
+      <handler class="LandingHandler"/>
+    </route>
+    <route method="POST" path="/submit">
+      <middleware name="csrf"/>
+      <middleware name="audit"/>
+      <handler class="SubmitHandler"/>
+    </route>
+  </routes>
+  <fallback>
+    <redirect code="307" target="/maintenance"/>
+  </fallback>
+</configuration>
+```

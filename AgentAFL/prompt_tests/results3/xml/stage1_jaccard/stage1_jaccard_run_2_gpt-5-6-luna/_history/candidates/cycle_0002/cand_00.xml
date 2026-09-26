@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+, trailer?)>
+  <!ELEMENT entry (key, data, note?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT data (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    priority (low|normal|high) "normal"
+    state CDATA "new">
+  <!ATTLIST part
+    kind CDATA #IMPLIED>
+  <!ENTITY left "[[">
+  <!ENTITY right "]]">
+  <!ENTITY amp "&#38;">
+]>
+<archive>
+  <entry id="e1" priority="high">
+    <key>&left;alpha&right;</key>
+    <data>before<part kind="raw">A&amp;B</part>middle<part>line&#10;break</part>after</data>
+    <note xml:space="preserve">  padded   text  </note>
+  </entry>
+  <entry id="e2" state="closed">
+    <key>second</key>
+    <data>&amp;&amp;&amp;<part kind="empty"/></data>
+  </entry>
+  <trailer/>
+</archive>

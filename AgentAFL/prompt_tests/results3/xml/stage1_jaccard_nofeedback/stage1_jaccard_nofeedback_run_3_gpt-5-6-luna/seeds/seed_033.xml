@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body, trailer)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT body ANY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ENTITY % common "CDATA">
+  <!ATTLIST envelope version %common; "1">
+]>
+<envelope version="2" xmlns="urn:test">
+  <header>
+    <field name="a" value="&quot;&gt;&lt;"/>
+    <field name="b"/>
+    <field name="c" value="x&#xD;&#xA;y"/>
+  </header>
+  <body>
+    <data><![CDATA[raw ]]> text <![CDATA[ more raw]]></data>
+    <![CDATA[section at body level]]>
+    <nested><one><two><three/></two></one></nested>
+  </body>
+  <trailer>done &amp; dust</trailer>
+</envelope>

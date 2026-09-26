@@ -1,0 +1,98 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, metadata?)>
+  <!ELEMENT item (name, description?, price)>
+  <!ATTLIST item id ID #REQUIRED status (new|used|unknown) "unknown">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT metadata ANY>
+  <!ENTITY currency "&#x20AC;">
+]>
+<catalog>
+  <item id="i1" status="new">
+    <name>Widget &amp; Tool</name>
+    <description><![CDATA[An unusual ]]> sequence ]]><em>inside</em><br/>text</description>
+    <price>19.95 &currency;</price>
+  </item>
+  <metadata><extra xmlns="urn:test"><![CDATA[raw & data]]></extra></metadata>
+</catalog>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<r:root xmlns:r="urn:root" xmlns:a="urn:alpha" xmlns:b="urn:beta" xml:lang="en">
+  <a:branch a:key="1" b:key="2" xmlns:a="">
+    <b:leaf xmlns:b="urn:leaf" xml:space="preserve">  spaced &lt; text  </b:leaf>
+    <r:branch>
+      <item><![CDATA[line one
+line two
+]]></item>
+    </r:branch>
+  </a:branch>
+  <r:empty/>
+</r:root>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ELEMENT report (header, section*)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT section (title, entry*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ENTITY local "alpha">
+  <!NOTATION weird SYSTEM "urn:odd">
+  <!ENTITY binary SYSTEM "missing.dat" NDATA weird>
+]>
+<report>
+  <header>&local; &amp; &#x41; &#65;</header>
+  <section>
+    <title>First</title>
+    <entry>before<!-- comment --><![CDATA[after]]></entry>
+    <entry><?processing instruction?></entry>
+  </section>
+  <section><title>Second</title></section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (payload)>
+  <!ELEMENT payload ANY>
+  <!ENTITY % common "<!ELEMENT generated (#PCDATA)>">
+  %common;
+  <![IGNORE[
+    <!ELEMENT ignored (anything)>
+    <!ATTLIST ignored flag CDATA "x">
+  ]]>
+  <![INCLUDE[
+    <!ENTITY included "inside">
+  ]]>
+]>
+<envelope>
+  <payload>
+    <generated>one &included; two</generated>
+    <unknown attr="&quot;">&lt;![CDATA[not cdata]]&gt;</unknown>
+  </payload>
+</envelope>
+```
+
+```xml
+<root xmlns="urn:default" xmlns:x="urn:x">
+  <x:node x:a="&quot;" a="unbound-prefix-value">
+    <child xmlns="" xmlns:x="urn:shadow" x:a="v"/>
+    <mixed>text<inner/>tail<!--c--><?pi data?></mixed>
+  </x:node>
+  <![CDATA[
+    <fake>
+      &not-an-entity;
+      ]]> and more
+  ]]>
+  <final><![CDATA[]]></final>
+</root>
+```

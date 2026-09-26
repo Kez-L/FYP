@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (packet)>
+  <!ELEMENT packet (from, to, payload, checksum)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT checksum EMPTY>
+  <!ATTLIST envelope xmlns:x CDATA #FIXED "urn:envelope" xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST packet sequence NMTOKEN #REQUIRED priority (low|normal|urgent) "normal">
+  <!ATTLIST from x:id ID #REQUIRED>
+  <!ATTLIST to x:id ID #REQUIRED>
+  <!ATTLIST checksum algorithm (none|sha256|md5) "none" value CDATA #IMPLIED>
+  <!ENTITY lt "<">
+  <!ENTITY trail "&#x0A;end">
+]>
+<envelope xmlns:x="urn:envelope" xml:lang="en-US">
+  <packet sequence="A-9" priority="urgent">
+    <from x:id="sender">alice@example.invalid</from>
+    <to x:id="receiver">bob@example.invalid</to>
+    <payload>
+      <x:command name="run" arg="&lt;safe&gt;">
+        <![CDATA[
+          <not-really-xml attr="&amp;">&lt;/payload&gt;
+        ]]>
+      </x:command>
+      <x:binary encoding="base64">AAEC/f8=</x:binary>
+      <x:message>&lt;head&gt; &amp; body &gt; tail</x:message>
+    </payload>
+    <checksum algorithm="sha256" value="deadbeef"/>
+  </packet>
+</envelope>

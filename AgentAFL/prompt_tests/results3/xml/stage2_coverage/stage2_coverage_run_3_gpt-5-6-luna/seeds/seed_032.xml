@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (vertex*, edge*)>
+  <!ELEMENT vertex (label?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST graph directed (yes|no) #REQUIRED>
+  <!ATTLIST vertex id ID #REQUIRED group CDATA #IMPLIED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+  <!ENTITY loop "&amp;&amp;">
+]>
+<graph directed="yes">
+  <vertex id="v0" group=""/>
+  <vertex id="v1" group="odd">
+    <label>first <![CDATA[<second>]]> node</label>
+  </vertex>
+  <vertex id="v2">
+    <label>&lt;unescaped-looking&gt; &loop;</label>
+  </vertex>
+  <edge from="v0" to="v1" weight="0"/>
+  <edge from="v1" to="v2" weight="-1.25"/>
+  <edge from="v2" to="v0" weight="NaN"/>
+  <edge from="missing" to="v2"/>
+</graph>

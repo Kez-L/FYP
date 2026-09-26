@@ -1,0 +1,147 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE package [
+  <!ELEMENT package (header, item+, footer?)>
+  <!ELEMENT header (#PCDATA|meta|flag)*>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT flag EMPTY>
+  <!ELEMENT item (name, description, link*, checksum)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|b|i|br)*>
+  <!ELEMENT b (#PCDATA|i)*>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST package xmlns CDATA #IMPLIED xml:lang CDATA #IMPLIED version NMTOKEN #REQUIRED>
+  <!ATTLIST item id ID #REQUIRED state (new|ready|archived) "new" related IDREFS #IMPLIED>
+  <!ATTLIST link rel (self|parent|alternate) "self" href CDATA #REQUIRED>
+  <!ATTLIST meta key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY copyright "&#xA9; 2026">
+]>
+<package xmlns="urn:pkg:one" xml:lang="en" version="v2">
+  <header><meta key="mode" value="&quot;test&quot;"/><flag/><?stage ready?></header>
+  <item id="i1" state="ready">
+    <name>Alpha</name>
+    <description>Text <b>bold <i>nested</i></b><br/>tail &copyright;</description>
+    <link rel="self" href="urn:item:i1"/>
+    <checksum>7&amp;9</checksum>
+  </item>
+  <item id="i2" state="archived" related="i1">
+    <name>Beta</name>
+    <description><![CDATA[raw ]]> content &lt;end&gt;</description>
+    <link rel="parent" href="urn:item:i1"/>
+    <checksum>none</checksum>
+  </item>
+  <!-- footer intentionally omitted -->
+</package>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<r:envelope xmlns:r="urn:root" xmlns:a="urn:a" xmlns:b="urn:b">
+  <r:header a:id="h-01" b:flag="yes">
+    <a:token>αβγ</a:token>
+    <?emit?>
+  </r:header>
+  <r:body>
+    <r:record a:key="k1">
+      <r:value xml:space="preserve">  leading
+middle&#x85;trailing  </r:value>
+      <r:value a:kind="empty"/>
+    </r:record>
+    <r:record a:key="k2">
+      <r:value><![CDATA[<not-an-element>&still-raw;</not-an-element>]]></r:value>
+      <!-- adjacent comment --><!-- second comment -->
+    </r:record>
+  </r:body>
+  <r:tail xmlns:a="" xmlns:b="urn:other" b:code="Z"/>
+</r:envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (group*)>
+  <!ELEMENT group (file|alias|![IGNORE[ impossible ]]) *>
+  <!ELEMENT file (#PCDATA)>
+  <!ELEMENT alias EMPTY>
+  <!ATTLIST manifest format NMTOKEN #FIXED "bundle">
+  <!ATTLIST group name NMTOKEN #REQUIRED members ENTITIES #IMPLIED>
+  <!ATTLIST file path CDATA #REQUIRED type (text|binary) #REQUIRED>
+  <!ATTLIST alias target ENTITY #REQUIRED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data.bin" NDATA bin>
+  <!ENTITY label "manifest &amp; entry">
+  <!ENTITY % attrs " xml:lang CDATA #IMPLIED xml:space (default|preserve) 'default' ">
+  <!ATTLIST file %attrs;>
+]>
+<manifest format="bundle">
+  <group name="assets">
+    <file path="a.txt" type="text" xml:lang="en">first &label;</file>
+    <file path="b.dat" type="binary">010203</file>
+    <alias target="blob"/>
+  </group>
+  <group name="empty" members=""/>
+</manifest>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (chunk, chunk, trailer)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST stream mode (fast|slow) "fast">
+  <!ATTLIST chunk seq NMTOKEN #REQUIRED>
+  <!ATTLIST trailer checksum CDATA #IMPLIED>
+]>
+<stream mode="slow">
+  <chunk seq="0001"><![CDATA[abc]]]]><![CDATA[>def]]></chunk>
+  <chunk seq="0002">left &amp; right &#x1F600; &#65;</chunk>
+  <trailer checksum="a&quot;b&amp;c"/>
+</stream>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE database [
+  <!ELEMENT database (schema, transaction*)>
+  <!ELEMENT schema (table+)>
+  <!ELEMENT table (column+, index*)>
+  <!ELEMENT column EMPTY>
+  <!ELEMENT index EMPTY>
+  <!ELEMENT transaction (insert|delete|update)+>
+  <!ELEMENT insert EMPTY>
+  <!ELEMENT delete EMPTY>
+  <!ELEMENT update EMPTY>
+  <!ATTLIST table name ID #REQUIRED owner CDATA #IMPLIED>
+  <!ATTLIST column name NMTOKEN #REQUIRED nullable (true|false) "true" default CDATA #IMPLIED>
+  <!ATTLIST index on IDREFS #REQUIRED unique (true|false) "false">
+  <!ATTLIST transaction id ID #REQUIRED tables IDREFS #IMPLIED>
+  <!ATTLIST insert table IDREF #REQUIRED values CDATA #IMPLIED>
+  <!ATTLIST delete table IDREF #REQUIRED where CDATA #IMPLIED>
+  <!ATTLIST update table IDREF #REQUIRED set CDATA #REQUIRED where CDATA #IMPLIED>
+]>
+<database>
+  <schema>
+    <table name="users" owner="admin">
+      <column name="id" nullable="false"/>
+      <column name="note" default="&quot;none&quot;"/>
+      <index on="id" unique="true"/>
+    </table>
+    <table name="events">
+      <column name="payload" nullable="true"/>
+      <index on="payload"/>
+    </table>
+  </schema>
+  <transaction id="t1" tables="users events">
+    <insert table="users" values="id=1;note='x&amp;y'"/>
+    <update table="users" set="note='changed'" where="id=1"/>
+  </transaction>
+  <transaction id="t2">
+    <delete table="events" where="payload &lt; 0"/>
+  </transaction>
+</database>
+```

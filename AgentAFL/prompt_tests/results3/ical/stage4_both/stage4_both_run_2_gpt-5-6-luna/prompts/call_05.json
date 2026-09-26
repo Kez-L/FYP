@@ -1,0 +1,23 @@
+{
+  "call": 5,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a iCalendar document parser.\nTarget: /home/user/Documents/1git-folder/AgentAFL/AFLPlus/libical-build/libical_fuzzer-afl.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 iCalendar document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\nBEGIN:VCALENDAR\nPRODID:-//SeedLab//Property Stress//EN\nVERSION:2.0\nCALSCALE:GREGORIAN\nBEGIN:VEVENT\nUID:property-stress-404\nDTSTAMP;VALUE=DATE-TIME:20260924T111213Z\nDTSTART;VALUE=DATE:20260924\nDTEND;VALUE=DATE:20260927\nSUMMARY:Date-only event\nDESCRIPTION:continuation without expected-looking indentation\n\tcontinued line with UTF-8: caf\u00e9 \u2603\nLOCATION;X-APPLE-STRUCTURED-LOCATION=geo:Somewhere\nGEO:0;0\nSTATUS:CONFIRMED\nTRANSP:TRANSPARENT\nSEQUENCE:2147483647\nPRIORITY:000\nPERCENT-COMPLETE:101\nCOLOR:#GGGGGG\nIMAGE;VALUE=URI;DISPLAY=BADGE;FMTTYPE=image/svg+xml:https://example.invalid/a.svg\nCONFERENCE;VALUE=URI;FEATURE=VIDEO:https://example.invalid/room\nRESOURCES;LANGUAGE=de:Beamer,Laptop\\, gro\u00df\nATTENDEE;CN=No Name;DIR=\"https://example.invalid/card.vcf\";MEMBER=\"mailto:list@example.invalid\";PARTSTAT=IN-PROCESS:mailto:person@example.invalid\nCOMMENT:contains a literal colon: and comma\\, plus semicolon\\;\nX-UNKNOWN-PARAM;A=1;B=\"two;three\":opaque\nEND:VEVENT\nEND:VCALENDAR\n\n--- example 2 ---\nBEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//FuzzLab//Busy Intervals//EN\nMETHOD:REPLY\nBEGIN:VFREEBUSY\nUID:freebusy-edge-01\nDTSTAMP:20260924T050000Z\nDTSTART:20260924T000000Z\nDTEND:20260925T000000Z\nORGANIZER;CN=Calendar Host:mailto:host@example.invalid\nATTENDEE;CUTYPE=GROUP;ROLE=NON-PARTICIPANT:mailto:group@example.invalid\nFREEBUSY;FBTYPE=BUSY:20260924T010000Z/20260924T011500Z,20260924T235959Z/20260925T000000Z\nFREEBUSY;FBTYPE=FREE:20260924T020000Z/PT0S\nFREEBUSY;FBTYPE=BUSY-UNAVAILABLE:20260924T030000Z/20260924T020000Z\nCOMMENT:intervals with unusual boundaries\nEND:VFREEBUSY\nBEGIN:VFREEBUSY\nUID:freebusy-empty-02\nDTSTAMP:20260924T050001Z\nDTSTART;TZID=Etc/UTC:20260924T000000\nDTEND;TZID=Etc/UTC:20260924T000000\nEND:VFREEBUSY\nEND:VCALENDAR\n\nTried before \u2014 no new coverage, avoid repeating:\n--- 3 of your past seeds (cycles 3,5) drove the same already-covered path with 0 new edges ---\nBEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//SeedLab//Timezone Transitions//EN\nCALSCALE:GREGORIAN\nMETHOD:REQUEST\nBEGIN:VTIMEZONE\nTZID:Custom/Fractured\nLAST-MODIFIED:19970101T000000Z\nTZURL:http://example.invalid/tz\nBEGIN:STANDARD\nDTSTART:19700101T020000\nTZOFFSETFROM:+0200\nTZOFFSETTO:+0100\nTZNAME:STD\nRRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU\nRDATE:20301027T020000,20311026T020000\nEND:STANDARD\nBEGIN:DAYLIGHT\nDTSTART:19700329T020000\nTZOFFSETFROM:+0100\nTZOFFSETTO:+0200\nTZNAME:DST\nRRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU\nCOMMENT:transition\\;with\\,delimiters\nEND:DAYLIGHT\nEND:VTIMEZONE\nBEGIN:VEVENT\nUID:tz-transition-1\nDTSTAMP:20260924T120000Z\nDTSTART;TZID=Custom/Fractured:20300331T013000\nDTEND;TZID=Custom/Fract...[truncated, 838 chars total]\n\n--- a seed you generated (cycle 5) added 0 new edges ---\nBEGIN:VCALENDAR\nPRODID:-//SeedLab//Journal Variants//EN\nVERSION:2.0\nCALSCALE:GREGORIAN\nMETHOD:CANCEL\nBEGIN:VJOURNAL\nUID:journal-mixed-77\nDTSTAMP:20260924T091011Z\nDTSTART;VALUE=DATE:20260924\nLAST-MODIFIED:20260924T091500Z\nSEQUENCE:0007\nSTATUS:CANCELLED\nCLASS:CONFIDENTIAL\nSUMMARY:Review notes\nDESCRIPTION:First line\\nSecond line with escaped comma\\, semicolon\\; and slash\\\\.\nCATEGORIES:one,two\\,with-comma,\"quoted\"\nCONTACT;CN=Editor;ROLE=REQ-PARTICIPANT:mailto:editor@example.invalid\nRELATED-TO;RELTYPE=CHILD;X-RELATION=archive:journal-parent-1\nATTACH;FMTTYPE=text/plain;ENCODING=BASE64:SGVsbG8sIGpvdXJuYWwu\nATTACH;VALUE=URI;FMTTYPE=application/json:https://example.invalid/data.json\nURL:https://examp...[truncated, 835 chars total]\n\nGenerate 5 new iCalendar document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libical-20260915",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-09-24T05:12:47.450891+00:00"
+}

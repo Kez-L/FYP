@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ENTITY % declarations '
+    <!ELEMENT archive (metadata, record*)>
+    <!ELEMENT metadata (owner, created, keywords?)>
+    <!ELEMENT owner (#PCDATA)>
+    <!ELEMENT created (#PCDATA)>
+    <!ELEMENT keywords (keyword+)>
+    <!ELEMENT keyword (#PCDATA)>
+    <!ELEMENT record (key, value, history?)>
+    <!ELEMENT key (#PCDATA)>
+    <!ELEMENT value (#PCDATA|fragment)*>
+    <!ELEMENT fragment (#PCDATA)>
+    <!ELEMENT history (change+)>
+    <!ELEMENT change (#PCDATA)>
+    <!ATTLIST record kind CDATA "generic">
+    <!ATTLIST change by CDATA #IMPLIED>
+  '
+  %declarations;
+  <!ENTITY open "[" >
+  <!ENTITY close "]" >
+  <!ENTITY nested "&open;payload&close;">
+]>
+<archive>
+  <metadata>
+    <owner>build-system</owner>
+    <created>2026-09-24</created>
+    <keywords>
+      <keyword>xml</keyword>
+      <keyword>fuzzing</keyword>
+      <keyword>entities</keyword>
+    </keywords>
+  </metadata>
+  <record kind="text">
+    <key>alpha</key>
+    <value>plain <fragment>embedded</fragment> value &nested;</value>
+    <history>
+      <change by="one">created</change>
+      <change by="two">modified &amp; reviewed</change>
+    </history>
+  </record>
+  <record kind="binary">
+    <key>beta</key>
+    <value><![CDATA[00112233AABBCC]]></value>
+  </record>
+</archive>

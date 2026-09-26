@@ -1,0 +1,51 @@
+<?xml version="1.1"?>
+<!DOCTYPE message [
+  <!ELEMENT message (sender,recipients,body,attachments?)>
+  <!ELEMENT sender EMPTY>
+  <!ATTLIST sender address CDATA #REQUIRED display CDATA #IMPLIED>
+  <!ELEMENT recipients (to+,cc*,bcc*)>
+  <!ELEMENT to EMPTY>
+  <!ATTLIST to address CDATA #REQUIRED>
+  <!ELEMENT cc EMPTY>
+  <!ATTLIST cc address CDATA #REQUIRED>
+  <!ELEMENT bcc EMPTY>
+  <!ATTLIST bcc address CDATA #REQUIRED>
+  <!ELEMENT body (paragraph|quote|code|table)*>
+  <!ELEMENT paragraph (#PCDATA|italic|bold|br)*>
+  <!ELEMENT italic (#PCDATA|bold)*>
+  <!ELEMENT bold (#PCDATA|italic)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT quote (#PCDATA|paragraph)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA|bold|italic)*>
+  <!ELEMENT attachments (attachment+)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment
+    filename NMTOKEN #REQUIRED
+    content-type CDATA #REQUIRED
+    size NMTOKEN #IMPLIED>
+]>
+<message xml:id="m-001" xml:space="preserve">
+  <sender address="sender@example.invalid" display="Sender Name"/>
+  <recipients>
+    <to address="alpha@example.invalid"/>
+    <to address="beta@example.invalid"/>
+    <cc address="archive@example.invalid"/>
+    <bcc address="hidden@example.invalid"/>
+  </recipients>
+  <body>
+    <paragraph>Hello <bold>world</bold>.<br/>This line contains a&nbsp;literal-looking name.</paragraph>
+    <quote><paragraph>Quoted <italic>material</italic> follows.</paragraph></quote>
+    <code>if (x &lt; 10 &amp;&amp; y &gt; 2) return;</code>
+    <table>
+      <row><cell>left</cell><cell><bold>right</bold></cell></row>
+      <row><cell>α</cell><cell>β</cell></row>
+    </table>
+  </body>
+  <attachments>
+    <attachment filename="report.pdf" content-type="application/pdf" size="4096"/>
+    <attachment filename="résumé.txt" content-type="text/plain"/>
+  </attachments>
+</message>

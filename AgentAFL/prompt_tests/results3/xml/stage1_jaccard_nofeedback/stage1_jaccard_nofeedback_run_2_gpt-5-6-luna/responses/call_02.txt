@@ -1,0 +1,108 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?processing instruction-data?>
+<catalog xmlns="urn:example:catalog" xmlns:meta="urn:example:metadata">
+  <item meta:code="A-001" available="true">
+    <name>Algebra &amp; Geometry</name>
+    <description><![CDATA[Text containing <markup>, ampersands (&), and ]]> brackets.]]></description>
+    <price currency="EUR">19.95</price>
+    <tags>
+      <tag priority="1">math</tag>
+      <tag priority="2">reference</tag>
+    </tags>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (title, payload)>
+  <!ATTLIST record id ID #REQUIRED category NMTOKEN #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ENTITY label "embedded-mark">
+]>
+<archive>
+  <record id="r1" category="alpha">
+    <title>First &label; Record</title>
+    <payload>prefix<chunk>one</chunk>middle<chunk>two &amp; three</chunk>suffix</payload>
+  </record>
+  <record id="r2">
+    <title>Second Record</title>
+    <payload><chunk><![CDATA[x<y>z]]></chunk></payload>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="120" height="80" viewBox="0 0 120 80">
+  <metadata>
+    <creator><![CDATA[generator & verifier]]></creator>
+  </metadata>
+  <g id="layer-1" transform="translate(3.5,4)">
+    <rect x="0" y="0" width="100" height="60" rx="7"/>
+    <path d="M 5,50 C 15,10 45,10 95,50" fill="none" stroke="#204060"/>
+    <text x="10" y="25">A &lt; B &amp;&amp; B &gt; C</text>
+    <use xlink:href="#missing-symbol"/>
+  </g>
+</svg>
+```
+
+```xml
+<?xml version="1.0"?>
+<configuration>
+  <profiles>
+    <profile name="default">
+      <option key="mode" value="safe"/>
+      <option key="limit" value="0"/>
+    </profile>
+    <profile name="experimental">
+      <option key="mode">fast</option>
+      <option key="features">
+        <feature enabled="yes">streaming</feature>
+        <feature enabled="no">legacy</feature>
+      </option>
+    </profile>
+  </profiles>
+  <paths>
+    <path kind="input">./data/</path>
+    <path kind="output"/>
+  </paths>
+  <empty/>
+</configuration>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, body, footer)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT body (#PCDATA|section)*>
+  <!ELEMENT section (line*)>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT footer EMPTY>
+]>
+<packet version="2">
+  <header>
+    <field name="source" value="sensor-7"/>
+    <field name="checksum"/>
+  </header>
+  <body>
+    <section id="A">
+      <line>alpha</line>
+      <line><![CDATA[beta ]]> gamma]]></line>
+    </section>
+    <section id="B">
+      <line>delta &quot;epsilon&quot;</line>
+    </section>
+  </body>
+  <footer/>
+</packet>
+```

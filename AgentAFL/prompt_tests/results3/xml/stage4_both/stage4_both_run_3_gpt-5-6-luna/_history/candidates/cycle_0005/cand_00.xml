@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (metadata, vertices, edges)>
+  <!ELEMENT metadata (title, creator?, keyword*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT creator (#PCDATA)>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ELEMENT vertices (vertex+)>
+  <!ELEMENT vertex (name, property*)>
+  <!ATTLIST vertex id ID #REQUIRED kind (person|place|thing) "thing">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST property key NMTOKEN #REQUIRED>
+  <!ELEMENT edges (edge*)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED relation CDATA #REQUIRED>
+  <!ENTITY graphTitle "Topology &amp; Relations">
+]>
+<graph xmlns="urn:graph:2026" xml:base="https://example.invalid/data/">
+  <metadata>
+    <title>&graphTitle;</title>
+    <creator>Research Unit</creator>
+    <keyword>directed</keyword>
+    <keyword>weighted</keyword>
+  </metadata>
+  <vertices>
+    <vertex id="v1" kind="person">
+      <name>Ada</name>
+      <property key="role">engineer</property>
+      <property key="active">yes</property>
+    </vertex>
+    <vertex id="v2" kind="place">
+      <name>North Lab</name>
+      <property key="floor">3</property>
+    </vertex>
+    <vertex id="v3">
+      <name>Prototype</name>
+      <property key="status">archived</property>
+    </vertex>
+  </vertices>
+  <edges>
+    <edge from="v1" to="v2" relation="works-at"/>
+    <edge from="v2" to="v3" relation="contains"/>
+    <edge from="v1" to="v3" relation="created"/>
+  </edges>
+</graph>

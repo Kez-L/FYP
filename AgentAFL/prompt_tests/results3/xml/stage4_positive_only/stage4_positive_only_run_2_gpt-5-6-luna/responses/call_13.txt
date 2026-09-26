@@ -1,0 +1,240 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (metadata, panel+)>
+  <!ELEMENT metadata (title, owner, updated)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT updated (#PCDATA)>
+  <!ELEMENT panel (label, widget+)>
+  <!ATTLIST panel name ID #REQUIRED visible (true|false) "true">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT widget (caption, value, note?)>
+  <!ATTLIST widget kind (gauge|sparkline|counter) #REQUIRED>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT note (#PCDATA|strong|code)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ENTITY product "Telemetry Console">
+]>
+<?build revision="17"?>
+<dashboard>
+  <metadata>
+    <title>&product;</title>
+    <owner>Operations</owner>
+    <updated>2026-09-24T08:30:00Z</updated>
+  </metadata>
+  <panel name="latency">
+    <label>Request latency</label>
+    <widget kind="gauge">
+      <caption>p95</caption>
+      <value>184 ms</value>
+      <note>Within <strong>normal</strong> range</note>
+    </widget>
+    <widget kind="sparkline">
+      <caption>Last hour</caption>
+      <value><![CDATA[120,135,131,170,162,184,179]]></value>
+    </widget>
+  </panel>
+  <panel name="workers" visible="false">
+    <label>Worker pool</label>
+    <widget kind="counter">
+      <caption>Active jobs</caption>
+      <value>7</value>
+      <note>See <code>queue.depth</code> for details.</note>
+    </widget>
+  </panel>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (collection*)>
+  <!ELEMENT collection (entry+)>
+  <!ATTLIST collection key NMTOKEN #REQUIRED>
+  <!ELEMENT entry (path, checksum, tags?, payload)>
+  <!ATTLIST entry id ID #REQUIRED state (new|stored|expired) "new">
+  <!ELEMENT path (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ENTITY separator "/">
+]>
+<archive>
+  <collection key="nightly">
+    <entry id="e17" state="stored">
+      <path>snapshots&separator;2026-09-24.bin</path>
+      <checksum algorithm="sha256">not-an-attribute-defined-value</checksum>
+      <tags>
+        <tag>compressed</tag>
+        <tag>encrypted</tag>
+      </tags>
+      <payload>
+        <chunk index="0">AAECAwQF</chunk>
+        <chunk index="1"><![CDATA[// binary-like text ++ ==]]></chunk>
+      </payload>
+    </entry>
+    <entry id="e18">
+      <path>manifests/latest.xml</path>
+      <checksum>8f14e45fceea167a5a36dedd4bea2543</checksum>
+      <payload>
+        <reference href="urn:example:manifest:latest"/>
+      </payload>
+    </entry>
+  </collection>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (step+, on-error?)>
+  <!ATTLIST workflow xmlns CDATA #IMPLIED>
+  <!ELEMENT step (input*, action, output*)>
+  <!ATTLIST step id ID #REQUIRED depends-on IDREFS #IMPLIED>
+  <!ELEMENT input EMPTY>
+  <!ATTLIST input name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT output EMPTY>
+  <!ATTLIST output name NMTOKEN #REQUIRED path CDATA #REQUIRED>
+  <!ELEMENT on-error (action)>
+]>
+<workflow xmlns="urn:example:workflow" xmlns:log="urn:example:log">
+  <step id="fetch">
+    <input name="endpoint" value="https://example.invalid/data?mode=full&amp;limit=20"/>
+    <action>download</action>
+    <output name="response" path="/var/tmp/input.json"/>
+  </step>
+  <step id="transform" depends-on="fetch">
+    <input name="format" value="normalized"/>
+    <action><![CDATA[
+      select records
+      where status != "deleted"
+    ]]></action>
+    <output name="result" path="/var/tmp/output.ndjson"/>
+    <log:message severity="info">Transformation queued</log:message>
+  </step>
+  <step id="publish" depends-on="transform">
+    <action>publish</action>
+    <output name="receipt" path="/var/tmp/receipt.xml"/>
+  </step>
+  <on-error>
+    <action>notify-owner</action>
+  </on-error>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, section+)>
+  <!ELEMENT header (name, period, generated-by)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT period EMPTY>
+  <!ATTLIST period from CDATA #REQUIRED to CDATA #REQUIRED>
+  <!ELEMENT generated-by (#PCDATA)>
+  <!ELEMENT section (heading, paragraph*, table?)>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|term|linebreak)*>
+  <!ELEMENT term (#PCDATA)>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT table (columns, row+)>
+  <!ELEMENT columns (column+)>
+  <!ELEMENT column (#PCDATA)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST cell emphasis (yes|no) "no">
+]>
+<report xmlns="urn:example:report" xmlns:meta="urn:example:metadata">
+  <header>
+    <name>Incident Review</name>
+    <period from="2026-09-01" to="2026-09-23"/>
+    <generated-by>automated-reviewer</generated-by>
+  </header>
+  <section id="summary">
+    <heading>Summary</heading>
+    <paragraph>The service recovered after a <term>configuration rollback</term>.<linebreak/>No data was lost.</paragraph>
+  </section>
+  <section id="metrics">
+    <heading>Observed metrics</heading>
+    <table>
+      <columns>
+        <column>Metric</column>
+        <column>Before</column>
+        <column>After</column>
+      </columns>
+      <row>
+        <cell emphasis="yes">Error rate</cell>
+        <cell>4.8%</cell>
+        <cell>0.2%</cell>
+      </row>
+      <row>
+        <cell>Recovery time</cell>
+        <cell>—</cell>
+        <cell>13m 42s</cell>
+      </row>
+    </table>
+    <meta:reviewer id="r-42">platform-team</meta:reviewer>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE library [
+  <!ELEMENT library (book+, reservation*)>
+  <!ELEMENT book (title, author+, identifiers, synopsis?)>
+  <!ATTLIST book isbn ID #REQUIRED format (paper|digital|audio) #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (given, family)>
+  <!ELEMENT given (#PCDATA)>
+  <!ELEMENT family (#PCDATA)>
+  <!ELEMENT identifiers (identifier+)>
+  <!ELEMENT identifier (#PCDATA)>
+  <!ATTLIST identifier type (isbn13|doi|internal) #REQUIRED>
+  <!ELEMENT synopsis (#PCDATA|quote)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT reservation (reader, book-ref, due-date)>
+  <!ELEMENT reader (#PCDATA)>
+  <!ELEMENT book-ref EMPTY>
+  <!ATTLIST book-ref target IDREF #REQUIRED>
+  <!ELEMENT due-date (#PCDATA)>
+]>
+<library xml:lang="en">
+  <book isbn="bk-001" format="paper">
+    <title>Patterns of Small Systems</title>
+    <author>
+      <given>Rina</given>
+      <family>Vale</family>
+    </author>
+    <author>
+      <given>Jon</given>
+      <family>Mercer</family>
+    </author>
+    <identifiers>
+      <identifier type="isbn13">9780000000001</identifier>
+      <identifier type="internal">shelf-b3-17</identifier>
+    </identifiers>
+    <synopsis>Short essays on design, including <quote>make failure visible</quote> as a recurring principle.</synopsis>
+  </book>
+  <book isbn="bk-002" format="digital">
+    <title>Signals in Winter</title>
+    <author>
+      <given>Mei</given>
+      <family>Arden</family>
+    </author>
+    <identifiers>
+      <identifier type="doi">10.5555/example.2026.02</identifier>
+    </identifiers>
+  </book>
+  <reservation>
+    <reader>alexa@example.invalid</reader>
+    <book-ref target="bk-001"/>
+    <due-date>2026-10-03</due-date>
+  </reservation>
+</library>
+```

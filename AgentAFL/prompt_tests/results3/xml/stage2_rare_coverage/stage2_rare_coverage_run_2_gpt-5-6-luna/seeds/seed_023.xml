@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (world,actors,events)>
+  <!ATTLIST scene xmlns CDATA #IMPLIED>
+  <!ELEMENT world (location+,weather)>
+  <!ELEMENT location (name,coordinate)>
+  <!ATTLIST location id ID #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT coordinate EMPTY>
+  <!ATTLIST coordinate lat CDATA #REQUIRED lon CDATA #REQUIRED>
+  <!ELEMENT weather (#PCDATA)>
+  <!ELEMENT actors (actor+)>
+  <!ELEMENT actor (alias,inventory?,status)>
+  <!ATTLIST actor id ID #REQUIRED role (player|npc|creature) #REQUIRED>
+  <!ELEMENT alias (#PCDATA)>
+  <!ELEMENT inventory (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT status (#PCDATA)>
+  <!ELEMENT events (event+)>
+  <!ELEMENT event (when,action,result?)>
+  <!ATTLIST event actor IDREF #REQUIRED location IDREF #REQUIRED>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT result (#PCDATA)>
+]>
+<scene xmlns="urn:game:scene" xmlns:geo="urn:game:geo" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <world>
+    <location id="loc-forest">
+      <name>Whispering Forest</name>
+      <coordinate geo:lat="51.5074" geo:lon="-0.1278"/>
+    </location>
+    <location id="loc-tower">
+      <name xlink:href="names.xml#tower">Old Tower</name>
+      <coordinate geo:lat="51.5000" geo:lon="-0.1200"/>
+    </location>
+    <weather>misty &amp; cold</weather>
+  </world>
+  <actors>
+    <actor id="hero" role="player">
+      <alias>Rin</alias>
+      <inventory>
+        <item>compass</item>
+        <item>silver key</item>
+      </inventory>
+      <status>ready</status>
+    </actor>
+    <actor id="gatekeeper" role="npc">
+      <alias>Keeper</alias>
+      <status>waiting</status>
+    </actor>
+    <actor id="owl" role="creature">
+      <alias>Night Owl</alias>
+      <status>watching</status>
+    </actor>
+  </actors>
+  <events>
+    <event actor="hero" location="loc-forest">
+      <when>21:00:00Z</when>
+      <action>walks toward the tower</action>
+      <result>footprints found</result>
+    </event>
+    <event actor="gatekeeper" location="loc-tower">
+      <when>21:05:00Z</when>
+      <action>opens the gate</action>
+    </event>
+  </events>
+</scene>

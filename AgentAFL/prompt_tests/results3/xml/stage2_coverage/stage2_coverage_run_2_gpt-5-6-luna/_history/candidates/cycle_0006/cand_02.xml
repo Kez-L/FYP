@@ -1,0 +1,31 @@
+<!DOCTYPE pipeline [
+  <!ELEMENT pipeline (step, (step|branch)*)>
+  <!ELEMENT step (input?, output*)>
+  <!ELEMENT branch (when, step+)>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT input EMPTY>
+  <!ELEMENT output (#PCDATA)>
+  <!ATTLIST pipeline version CDATA #FIXED "3">
+  <!ATTLIST step name CDATA #REQUIRED mode (safe|fast|dry-run) "safe">
+  <!ATTLIST input source CDATA #REQUIRED format (csv|json|xml) #IMPLIED>
+  <!ATTLIST output destination CDATA #IMPLIED>
+  <!ENTITY local "step-data">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "blob.bin" NDATA bin>
+]>
+<pipeline version="3">
+  <step name="load" mode="fast">
+    <input source="&local;" format="csv"/>
+    <output destination="memory">loaded</output>
+  </step>
+  <branch>
+    <when>count &gt; 0 &amp;&amp; ready</when>
+    <step name="transform">
+      <output>first</output>
+      <output>second</output>
+    </step>
+  </branch>
+  <step name="save" mode="dry-run">
+    <output destination="archive">&payload;</output>
+  </step>
+</pipeline>

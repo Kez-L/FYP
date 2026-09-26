@@ -1,0 +1,270 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (layer+, legend?)>
+  <!ELEMENT layer (label, bounds, feature*)>
+  <!ATTLIST layer name NMTOKEN #REQUIRED visible (true|false) "true">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT bounds (north, east, south, west)>
+  <!ELEMENT north (#PCDATA)>
+  <!ELEMENT east (#PCDATA)>
+  <!ELEMENT south (#PCDATA)>
+  <!ELEMENT west (#PCDATA)>
+  <!ELEMENT feature (point|line|area)>
+  <!ATTLIST feature id ID #REQUIRED kind NMTOKEN #REQUIRED>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST point lat CDATA #REQUIRED lon CDATA #REQUIRED>
+  <!ELEMENT line (point, point+)>
+  <!ELEMENT area (ring+)>
+  <!ELEMENT ring (point, point+)>
+  <!ELEMENT legend (symbol+)>
+  <!ELEMENT symbol (#PCDATA)>
+  <!ATTLIST symbol code NMTOKEN #REQUIRED>
+]>
+<map xmlns="urn:example:cartography" version="3.7">
+  <layer name="coastline" visible="true">
+    <label>Atlantic survey</label>
+    <bounds>
+      <north>51.482</north>
+      <east>2.104</east>
+      <south>49.901</south>
+      <west>-5.721</west>
+    </bounds>
+    <feature id="pt-001" kind="harbor">
+      <point lat="50.8472" lon="-1.0879"/>
+    </feature>
+    <feature id="ln-014" kind="route">
+      <line>
+        <point lat="50.8472" lon="-1.0879"/>
+        <point lat="50.3714" lon="-4.1427"/>
+        <point lat="49.901" lon="-5.721"/>
+      </line>
+    </feature>
+    <feature id="ar-003" kind="reserve">
+      <area>
+        <ring>
+          <point lat="50.90" lon="-1.10"/>
+          <point lat="50.92" lon="-1.04"/>
+          <point lat="50.87" lon="-1.01"/>
+          <point lat="50.90" lon="-1.10"/>
+        </ring>
+      </area>
+    </feature>
+  </layer>
+  <legend>
+    <symbol code="harbor">Anchorage</symbol>
+    <symbol code="route">Survey route</symbol>
+    <symbol code="reserve">Protected area</symbol>
+  </legend>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<?pipeline mode="diagnostic" retries="02"?>
+<conversation xmlns="urn:example:chat" xmlns:m="urn:example:meta" xml:lang="fr">
+  <!-- Deliberately mixed content and nested metadata -->
+  <m:context session="α-17" created="2026-09-24T00:00:00Z">
+    <m:client platform="desktop" version="1.0"/>
+    <m:flags>
+      <m:flag name="trace">true</m:flag>
+      <m:flag name="compressed">false</m:flag>
+    </m:flags>
+  </m:context>
+  <turn speaker="human">
+    <text>Compare <term>résumé</term> with <term>resume</term> — preserving accents matters.</text>
+    <attachment media-type="text/plain" checksum="sha256:abc123">
+      <payload><![CDATA[line one
+line two
+line three]]></payload>
+    </attachment>
+  </turn>
+  <turn speaker="agent" confidence="0.875">
+    <text>They are distinct strings.</text>
+    <table>
+      <row>
+        <cell key="normalized">resume</cell>
+        <cell key="original">résumé</cell>
+      </row>
+      <row>
+        <cell key="length">6</cell>
+        <cell key="original-length">6</cell>
+      </row>
+    </table>
+    <actions>
+      <action id="a1" status="done">
+        <command>normalize</command>
+        <argument name="form">NFC</argument>
+      </action>
+      <action id="a2" status="pending">
+        <command>compare</command>
+        <argument name="locale">fr-FR</argument>
+      </action>
+    </actions>
+  </turn>
+  <?checkpoint id="end-of-turns"?>
+</conversation>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<dashboard xmlns="http://example.invalid/dashboard"
+           xmlns:svg="http://www.w3.org/2000/svg"
+           xmlns:xlink="http://www.w3.org/1999/xlink"
+           xml:base="https://example.invalid/ui/">
+  <header>
+    <logo xlink:href="assets/logo.svg" aria-label="Operations"/>
+    <refresh interval="PT15S" enabled="1"/>
+    <filters>
+      <filter name="region" value="eu-west"/>
+      <filter name="severity" value="warning,error"/>
+    </filters>
+  </header>
+  <main>
+    <panel id="latency" title="Latency &amp; throughput" collapsed="false">
+      <svg:svg width="320" height="120" viewBox="0 0 320 120">
+        <svg:rect x="0" y="0" width="320" height="120" fill="#101820"/>
+        <svg:path d="M0 90 L40 81 L80 86 L120 44 L160 58 L200 31 L240 49 L280 20 L320 27"
+                  fill="none" stroke="#f2aa4c" stroke-width="2"/>
+        <svg:text x="8" y="112">p95: 184 ms</svg:text>
+      </svg:svg>
+      <metrics>
+        <metric key="requests" unit="per-second">1.2e4</metric>
+        <metric key="errors" unit="ratio">0.0007</metric>
+      </metrics>
+    </panel>
+    <panel id="incidents" title="Recent incidents">
+      <incident priority="high" acknowledged="false">
+        <timestamp>2026-09-24T09:10:00+02:00</timestamp>
+        <summary><![CDATA[Cache node reported "stale" data; operator note: check <region>.]]></summary>
+        <links>
+          <link rel="self" href="../incidents/42"/>
+          <link rel="runbook" href="runbooks/cache?id=42&amp;mode=quick"/>
+        </links>
+      </incident>
+      <incident priority="low" acknowledged="true">
+        <timestamp>2026-09-24T09:45:12Z</timestamp>
+        <summary>Certificate expires in 21 days.</summary>
+      </incident>
+    </panel>
+  </main>
+  <footer>© 2026 Operations Center</footer>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (collection*)>
+  <!ATTLIST archive year NMTOKEN #REQUIRED>
+  <!ELEMENT collection (name, record+)>
+  <!ATTLIST collection code ID #REQUIRED parent IDREF #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT record (title, creator+, identifier*, note?)>
+  <!ATTLIST record key ID #REQUIRED related IDREFS #IMPLIED format (book|map|audio|video) #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT creator (#PCDATA)>
+  <!ELEMENT identifier (#PCDATA)>
+  <!ATTLIST identifier scheme (isbn|issn|uri|local) #REQUIRED>
+  <!ELEMENT note (#PCDATA|emphasis|quote)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+]>
+<archive year="2026">
+  <collection code="north">
+    <name>North Reading Room</name>
+    <record key="r-100" format="book" related="r-101 r-102">
+      <title>The Geometry of Quiet Places</title>
+      <creator>Amara Vale</creator>
+      <creator>J. M. Osei</creator>
+      <identifier scheme="isbn">978-1-4028-9462-6</identifier>
+      <identifier scheme="local">N-000100</identifier>
+      <note>Acquired during the <emphasis>autumn</emphasis> survey; see <quote>box C</quote>.</note>
+    </record>
+    <record key="r-101" format="map" related="r-100">
+      <title>Contours of the Inner Coast</title>
+      <creator>Survey Office</creator>
+      <identifier scheme="uri">urn:archive:north:r-101</identifier>
+    </record>
+  </collection>
+  <collection code="sound" parent="north">
+    <name>Field Recordings</name>
+    <record key="r-102" format="audio" related="r-100">
+      <title>Rain on Copper</title>
+      <creator>Lin Wei</creator>
+      <identifier scheme="local">SND-77-A</identifier>
+      <note><![CDATA[Master tape: 00:17:04; channel A/B; retain original noise floor.]]></note>
+    </record>
+  </collection>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (variables, stages, audit)>
+  <!ELEMENT variables (var*)>
+  <!ELEMENT var EMPTY>
+  <!ATTLIST var name NMTOKEN #REQUIRED value CDATA #IMPLIED secret (yes|no) "no">
+  <!ELEMENT stages (stage+)>
+  <!ELEMENT stage (when?, task+, on-success?, on-failure?)>
+  <!ATTLIST stage id ID #REQUIRED depends-on IDREFS #IMPLIED>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT task (input*, output*)>
+  <!ATTLIST task id ID #REQUIRED executor NMTOKEN #REQUIRED>
+  <!ELEMENT input (#PCDATA)>
+  <!ATTLIST input name NMTOKEN #REQUIRED>
+  <!ELEMENT output (#PCDATA)>
+  <!ATTLIST output name NMTOKEN #REQUIRED>
+  <!ELEMENT on-success (#PCDATA)>
+  <!ELEMENT on-failure (#PCDATA)>
+  <!ELEMENT audit (event*)>
+  <!ELEMENT event (message, detail?)>
+  <!ATTLIST event at CDATA #REQUIRED level (info|warn|error) #REQUIRED>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT detail (#PCDATA)>
+]>
+<workflow xmlns="urn:example:workflow" id="nightly-archive" revision="18">
+  <variables>
+    <var name="REGION" value="eu-central" secret="no"/>
+    <var name="TOKEN" secret="yes"/>
+    <var name="RETAIN_DAYS" value="30"/>
+  </variables>
+  <stages>
+    <stage id="prepare">
+      <task id="scan" executor="filesystem">
+        <input name="root">/srv/data/${REGION}</input>
+        <input name="pattern">*.{json,xml}</input>
+        <output name="manifest">/tmp/manifest.json</output>
+      </task>
+      <on-success>package</on-success>
+      <on-failure>halt</on-failure>
+    </stage>
+    <stage id="package" depends-on="prepare">
+      <when>${RETAIN_DAYS} &gt; 0</when>
+      <task id="compress" executor="zstd">
+        <input name="manifest">/tmp/manifest.json</input>
+        <input name="level">19</input>
+        <output name="bundle">/var/archive/nightly.tar.zst</output>
+      </task>
+      <task id="sign" executor="cosign">
+        <input name="artifact">/var/archive/nightly.tar.zst</input>
+        <input name="key">env:TOKEN</input>
+        <output name="signature">/var/archive/nightly.tar.zst.sig</output>
+      </task>
+      <on-success>notify</on-success>
+      <on-failure>retry-package</on-failure>
+    </stage>
+  </stages>
+  <audit>
+    <event at="2026-09-24T01:00:00Z" level="info">
+      <message>Workflow accepted</message>
+      <detail><![CDATA[request-id=7f3a; actor=system; note=nightly window]]></detail>
+    </event>
+    <event at="2026-09-24T01:03:44Z" level="warn">
+      <message>One file skipped</message>
+      <detail>Path contained a non-UTF-8 byte sequence.</detail>
+    </event>
+  </audit>
+</workflow>
+```

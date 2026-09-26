@@ -1,0 +1,121 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/css" href="style.css"?>
+<!-- mixed content with processing instructions and namespace transitions -->
+<catalog xmlns="urn:catalog" xmlns:m="urn:meta" xml:lang="en">
+  <entry xml:id="e1" m:rank="01">
+    Text before
+    <title><![CDATA[An <escaped> title & fragment]]></title>
+    <summary>Text <emphasis level="strong">inside</emphasis> and after.</summary>
+    <?entry-note reviewed?>
+  </entry>
+  <entry xml:space="preserve">
+    <title>Second entry</title>
+    <summary>
+      <line number="1"/>
+      <line number="2"/>
+      <line number="3"><![CDATA[line-three]]></line>
+    </summary>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, section+)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT section (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (#PCDATA|ref)*>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ATTLIST item code ID #IMPLIED>
+  <!ENTITY mark "&#x27;quoted&#x27;">
+  <!ENTITY % shared "<!ENTITY injected 'parameter-entity-value'>">
+  %shared;
+]>
+<report>
+  <header>Run &mark; &injected;</header>
+  <section>
+    <heading>Alpha</heading>
+    <item code="i1">A <ref target="i1"/> B</item>
+    <item>plain text</item>
+  </section>
+  <section>
+    <heading>Beta</heading>
+    <item code="i2"><ref target="i1"/>tail</item>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.1"?>
+<filesystem xmlns="urn:fs" xmlns:p="urn:permissions" xml:base="file:///tmp/">
+  <directory name="root">
+    <directory name="nested" xml:base="nested/">
+      <file name="empty.bin" size="0" checksum=""/>
+      <file name="data.bin" size="18446744073709551615">
+        <p:mode owner="root" group="users">0644</p:mode>
+        <chunk index="0" encoding="base64"><![CDATA[AAECAwQFBgcICQ==]]></chunk>
+        <chunk index="1" encoding="hex"><![CDATA[deadbeef00]]></chunk>
+      </file>
+    </directory>
+    <link name="latest" href="../nested/data.bin"/>
+  </directory>
+</filesystem>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST matrix width NMTOKEN #REQUIRED height NMTOKEN #REQUIRED>
+  <!ATTLIST row index NMTOKEN #REQUIRED>
+  <!ATTLIST cell column NMTOKEN #REQUIRED kind (number|text|empty) "text">
+]>
+<matrix width="3" height="2">
+  <row index="0">
+    <cell column="0" kind="number">0</cell>
+    <cell column="1" kind="text">αβγ</cell>
+    <cell column="2" kind="empty"/>
+  </row>
+  <row index="1">
+    <cell column="0" kind="number">-1.25</cell>
+    <cell column="1">x &lt; y &amp;&amp; y &gt; z</cell>
+    <cell column="2" kind="text"><![CDATA[]]></cell>
+  </row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<message xmlns="urn:message" xmlns:x="urn:extension" x:version="2">
+  <metadata>
+    <sender address="sender@example.test"/>
+    <recipients>
+      <to address="a@example.test"/>
+      <cc address="b@example.test"/>
+      <bcc address="c@example.test"/>
+    </recipients>
+  </metadata>
+  <body format="multipart">
+    <part media-type="text/plain" disposition="inline">Hello&#10;world</part>
+    <part media-type="application/xml" disposition="attachment">
+      <payload>
+        <nested xmlns="urn:payload" xmlns:m="urn:meta">
+          <m:flag enabled="true"/>
+          <value><![CDATA[</not-a-real-tag>]]></value>
+        </nested>
+      </payload>
+    </part>
+    <part media-type="application/octet-stream" disposition="attachment">
+      <payload encoding="base64">
+        <![CDATA[AAEC/f7+]]>
+      </payload>
+    </part>
+  </body>
+</message>
+```

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ENTITY % common "<!ELEMENT archive (section+)><!ELEMENT section (title, record*)>">
+  %common;
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT record (#PCDATA|value|ref)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST section
+    id ID #REQUIRED
+    kind NMTOKENS "primary secondary">
+  <!ATTLIST record
+    rank NMTOKEN #IMPLIED
+    xml:space (default|preserve) "default">
+  <!ATTLIST ref
+    target IDREF #REQUIRED
+    external ENTITY #IMPLIED>
+  <!ENTITY greeting "alpha &lt; beta &amp; gamma">
+]>
+<archive>
+  <section id="s0" kind="primary">
+    <title>&greeting;</title>
+    <record rank="01">before<value>42</value>after<ref target="s0"/>tail</record>
+    <record xml:space="preserve">  padded
+text  </record>
+  </section>
+</archive>

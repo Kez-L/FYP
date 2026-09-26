@@ -1,0 +1,126 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+)>
+  <!ELEMENT entry (heading, body, note?)>
+  <!ATTLIST entry code ID #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|linebreak)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY editor "M. &amp; K.">
+  <!ENTITY mark "&#x2605;">
+]>
+<archive>
+  <entry code="e1">
+    <heading>Field Notes</heading>
+    <body>Prepared by &editor; &mark;<linebreak/><quote>Observe the margins.</quote> End.</body>
+    <note>Revised after dusk.</note>
+  </entry>
+  <entry code="e2">
+    <heading>Unsorted Fragment</heading>
+    <body><![CDATA[raw <tokens> remain untouched]]></body>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<exchange xmlns="urn:example:exchange"
+          xmlns:x="urn:example:extension"
+          xmlns:geo="urn:example:geo"
+          xml:lang="fr"
+          xml:base="https://example.invalid/data/">
+  <x:packet x:kind="observation">
+    <header>
+      <geo:point geo:lat="51.0504" geo:lon="13.7373"/>
+      <x:checksum algorithm="sha256">abc123</x:checksum>
+    </header>
+    <payload>
+      <item key="alpha">premier</item>
+      <item key="beta" xml:space="preserve">  second  </item>
+      <x:annotation>
+        <x:label xml:lang="de">Randnotiz</x:label>
+      </x:annotation>
+    </payload>
+    <footer>
+      <status code="204"/>
+    </footer>
+  </x:packet>
+</exchange>
+```
+
+```xml
+<?xml version="1.0"?>
+<?processing mode="stream"?>
+<!-- A document whose significant content is mixed with markup. -->
+<transcript>
+  Introductory text
+  <speaker id="s-7">Ariadne</speaker>
+  said:
+  <utterance xml:space="preserve">  Keep the <em>doors</em> open.  </utterance>
+  <pause duration="PT0.75S"/>
+  <speaker id="s-8">Borel</speaker>
+  <utterance><![CDATA[
+    The token sequence is: <alpha> & beta;
+    ]]></utterance>
+  <aside>
+    <line>Not part of the exchange.</line>
+    <!-- comment inside a nested branch -->
+    <line>Or perhaps it is.</line>
+  </aside>
+</transcript>
+```
+
+```xml
+<?xml version="1.0"?>
+<network>
+  <node name="root" role="hub">
+    <node name="north" role="relay">
+      <endpoint protocol="tcp" port="443">n.example</endpoint>
+      <node name="north-east" role="leaf">
+        <endpoint protocol="udp" port="5353">m.example</endpoint>
+      </node>
+    </node>
+    <node name="south" role="relay">
+      <endpoint protocol="unix" path="/tmp/service.sock"/>
+      <metadata>
+        <entry name="capacity" value="high"/>
+        <entry name="active" value="false"/>
+      </metadata>
+    </node>
+    <route from="root" to="north-east">
+      <hop index="1">north</hop>
+      <hop index="2">north-east</hop>
+    </route>
+  </node>
+</network>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE vault [
+  <!ENTITY % record-model "<!ELEMENT record (key,value,tag*)>">
+  %record-model;
+  <!ELEMENT vault (record+)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST record xml:id ID #REQUIRED priority (low|normal|high) "normal">
+  <!ENTITY separator " / ">
+  <!ENTITY quoted "&#x22;classified&#x22;">
+]>
+<vault>
+  <record xml:id="r1" priority="high">
+    <key>access</key>
+    <value>restricted&separator;&quoted;</value>
+    <tag>internal</tag>
+    <tag>review</tag>
+  </record>
+  <record xml:id="r2">
+    <key>retention</key>
+    <value>30 days</value>
+  </record>
+</vault>
+```
