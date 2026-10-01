@@ -1,0 +1,53 @@
+<?xml version="1.1"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (parameters, stages)>
+  <!ELEMENT parameters (parameter*)>
+  <!ELEMENT parameter EMPTY>
+  <!ELEMENT stages (stage+)>
+  <!ELEMENT stage (input*, action+, output*)>
+  <!ELEMENT input EMPTY>
+  <!ELEMENT action (command, environment?, condition?)>
+  <!ELEMENT output EMPTY>
+  <!ELEMENT command (#PCDATA)>
+  <!ELEMENT environment (variable*)>
+  <!ELEMENT variable EMPTY>
+  <!ELEMENT condition (#PCDATA)>
+  <!ATTLIST workflow id ID #REQUIRED>
+  <!ATTLIST parameter name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST stage id ID #REQUIRED depends IDREFS #IMPLIED>
+  <!ATTLIST input path CDATA #REQUIRED optional (true|false) "false">
+  <!ATTLIST action id ID #REQUIRED timeout CDATA #IMPLIED>
+  <!ATTLIST variable name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST output path CDATA #REQUIRED status (temporary|persistent) "temporary">
+]>
+<workflow id="wf-main">
+  <parameters>
+    <parameter name="root" value="/var/tmp/run"/>
+    <parameter name="mode" value="strict"/>
+    <parameter name="workers" value="4"/>
+  </parameters>
+  <stages>
+    <stage id="prepare">
+      <input path="input/source.xml"/>
+      <action id="normalize" timeout="00:00:30">
+        <command><![CDATA[normalize --mode "$mode" "$root/input/source.xml"]]></command>
+        <environment>
+          <variable name="LANG" value="C.UTF-8"/>
+          <variable name="TRACE" value="1"/>
+        </environment>
+        <condition>file.exists(root + "/input/source.xml")</condition>
+      </action>
+      <output path="work/normalized.xml" status="persistent"/>
+    </stage>
+    <stage id="analyze" depends="prepare">
+      <input path="work/normalized.xml"/>
+      <action id="scan">
+        <command>scan --format &quot;xml&quot; --emit &lt;report&gt;</command>
+      </action>
+      <action id="summarize">
+        <command>summarize --stdin</command>
+      </action>
+      <output path="reports/summary.txt" status="persistent"/>
+    </stage>
+  </stages>
+</workflow>

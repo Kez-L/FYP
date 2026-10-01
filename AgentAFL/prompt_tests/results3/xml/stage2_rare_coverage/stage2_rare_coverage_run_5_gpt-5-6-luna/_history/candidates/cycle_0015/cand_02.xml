@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (open, payload, close)>
+  <!ELEMENT open EMPTY>
+  <!ATTLIST open stamp CDATA #IMPLIED>
+  <!ELEMENT payload (record|blob|record)*>
+  <!ELEMENT record (key, value)>
+  <!ATTLIST record kind CDATA "text">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|br|chunk)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT blob (#PCDATA)>
+  <!ELEMENT close (#PCDATA)>
+  <!ENTITY newline "&#10;">
+]>
+<packet>
+  <open stamp="0000-00-00T00:00:00Z"/>
+  <payload>
+    <record kind="mixed">
+      <key>alpha</key>
+      <value>first<br/>second<chunk><![CDATA[raw ]]>third</chunk></value>
+    </record>
+    <blob><![CDATA[
+      binary-looking: AAECAwQFBgcICQoLDA0ODw==
+      terminator candidates: ] ]> and &amp;
+    ]]></blob>
+    <record>
+      <key>beta</key>
+      <value>&newline;leading whitespace<chunk>tail</chunk></value>
+    </record>
+  </payload>
+  <close>done</close>
+</packet>

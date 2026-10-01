@@ -1,0 +1,77 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ATTLIST item code NMTOKEN #IMPLIED>
+]>
+<catalog>
+  <section id="alpha">
+    <title><![CDATA[<encoded & title>]]></title>
+    <item code="x-1"/>
+    <item code="x_2"></item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<root xmlns="urn:default" xmlns:x="urn:example:x" xml:lang="fr">
+  <x:branch data="&quot;&amp;&lt;&gt;">
+    <leaf xml:space="preserve">  text
+      <![CDATA[raw ]]> content]]>
+    </leaf>
+  </x:branch>
+  <empty xmlns="" xmlns:x="urn:changed" x:k="v"/>
+</root>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ENTITY word "alpha">
+  <!ENTITY pair "&word;-&word;">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "missing.dat" NDATA bin>
+]>
+<report>
+  <header>&pair;</header>
+  <entry ref="&word;">&#x41;&#65;&#x20;</entry>
+  <external>&payload;</external>
+  <?processing instruction-data?>
+</report>
+```
+
+```xml
+<tree>
+  <node id="0">
+    <node id="1">
+      <value>one</value>
+      <node id="2">
+        <!-- nested comment -->
+        <value><![CDATA[a < b && c > d]]></value>
+      </node>
+    </node>
+  </node>
+  <tail><![CDATA[]]></tail>
+</tree>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (from, to, body)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT body (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+]>
+<message>
+  <from>sender</from>
+  <to>receiver</to>
+  <body>Hello <em>world</em><br/>after &apos;markup&apos;.</body>
+</message>
+```

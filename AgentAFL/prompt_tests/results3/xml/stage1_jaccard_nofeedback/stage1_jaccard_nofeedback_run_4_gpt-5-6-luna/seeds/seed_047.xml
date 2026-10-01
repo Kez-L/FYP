@@ -1,0 +1,27 @@
+<?xml version="1.1" standalone="no"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, attachment*)>
+  <!ELEMENT header (from, to, subject)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body ANY>
+  <!ELEMENT attachment (#PCDATA)>
+  <!ATTLIST attachment encoding NMTOKEN "base64">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY file SYSTEM "missing-resource.bin" NDATA bin>
+]>
+<message>
+  <header>
+    <from>sender@example.invalid</from>
+    <to>receiver@example.invalid</to>
+    <subject>mixed &amp; markup</subject>
+  </header>
+  <body>
+    <p xmlns="urn:p">paragraph</p>
+    <empty/>
+    <!-- comment with --? -->
+    <?processing instruction-data?>
+  </body>
+  <attachment encoding="raw">&file;</attachment>
+</message>

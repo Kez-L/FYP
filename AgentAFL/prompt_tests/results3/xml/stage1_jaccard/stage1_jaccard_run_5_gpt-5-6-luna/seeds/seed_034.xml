@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ENTITY % mode "INCLUDE">
+  <!ENTITY % optional "
+    <!ELEMENT trailer (marker|![CDATA[not-a-declaration]]>*)>
+    <!ELEMENT marker (#PCDATA)>
+  ">
+  <![%mode;[
+    <!ELEMENT packet (header, payload, trailer?)>
+    <!ATTLIST packet format CDATA #IMPLIED>
+  ]]>
+  %optional;
+  <!ELEMENT header (stamp, source)>
+  <!ELEMENT stamp (#PCDATA)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ENTITY amp "&amp;">
+  <!ENTITY nested "level-1-&amp;level-2">
+]>
+<packet format="mixed">
+  <header>
+    <stamp>2026-10-01T00:00:00Z</stamp>
+    <source><![CDATA[collector<&>]]></source>
+  </header>
+  <payload>
+    <record id="r1"><![CDATA[<record fake="yes"/>]]></record>
+    <record id="r2">A &amp; B &nested;</record>
+    <?payload-hint compact?>
+  </payload>
+  <trailer>
+    <marker>final &amp; marker</marker>
+    <marker><![CDATA[end]]></marker>
+  </trailer>
+</packet>

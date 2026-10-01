@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE wrapper [
+  <!ELEMENT wrapper ANY>
+  <!ELEMENT pair (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value ANY>
+  <!ENTITY nested "<pair><key>generated</key><value><leaf/></value></pair>">
+  <!ENTITY quote "&#34; &apos; &lt; &gt; &amp;">
+  <!ATTLIST wrapper mode CDATA #IMPLIED>
+]>
+<wrapper mode="test &quot;mode&quot;">
+  &nested;
+  <pair>
+    <key><![CDATA[key]]></key>
+    <value>
+      <leaf attr="&quote;"/>
+      &nested;
+      <!-- comment -- with unusual content -->
+      <![CDATA[&nested; <pair/>]]>
+    </value>
+  </pair>
+  <empty/>
+</wrapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE catalog [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!ENTITY logo SYSTEM "logo.gif" NDATA gif>
+  <!ENTITY greeting "Hello, &apos;catalog&apos;!">
+  <!ENTITY % itemDecls "
+    <!ELEMENT item (label, value?, metadata*)>
+    <!ATTLIST item
+      code ID #REQUIRED
+      ref IDREF #IMPLIED
+      kind (digital|physical|hybrid) 'digital'>
+  ">
+  %itemDecls;
+  <!ELEMENT catalog (item+, footer)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST metadata
+    key CDATA #REQUIRED
+    value CDATA #IMPLIED>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<catalog xml:lang="en-US">
+  <item code="first" kind="hybrid">
+    <label>&greeting;</label>
+    <value>alpha <emph>one</emph> and <emph>two</emph></value>
+    <metadata key="source" value="archive"/>
+  </item>
+  <item code="second" ref="first">
+    <label>binary reference follows</label>
+    <value>before &#x1F; after</value>
+  </item>
+  <footer>done</footer>
+</catalog>

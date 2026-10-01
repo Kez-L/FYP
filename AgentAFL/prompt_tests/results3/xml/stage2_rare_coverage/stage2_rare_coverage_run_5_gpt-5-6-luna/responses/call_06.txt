@@ -1,0 +1,132 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY company "Northwind &amp; Sons">
+  <!ENTITY stamp "2026-10-01">
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, product*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT product (name, price, note?)>
+  <!ATTLIST product sku ID #REQUIRED state (new|used|held) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+]>
+<catalog generated="&stamp;">
+  <section code="hardware">
+    <title>Tools for &company;</title>
+    <product sku="p-100" state="new">
+      <name>Socket set</name>
+      <price>19.95</price>
+      <note>Includes <emph>sixteen</emph> pieces.</note>
+    </product>
+    <product sku="p-101" state="held">
+      <name>Clamp</name>
+      <price>4.50</price>
+    </product>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<message xmlns="urn:message" xmlns:m="urn:meta" xmlns:xlink="http://www.w3.org/1999/xlink"
+         m:revision="3" xml:base="https://example.invalid/mail/">
+  <header>
+    <sender m:id="u-01">alice@example.invalid</sender>
+    <recipient m:id="u-02">bob@example.invalid</recipient>
+    <subject>Re: quarterly results</subject>
+  </header>
+  <body xml:lang="en">
+    <paragraph>First line<break/>second line.</paragraph>
+    <attachment xlink:type="simple"
+                xlink:href="files/report.xml"
+                xlink:show="embed"
+                xlink:actuate="onLoad">
+      <label>report.xml</label>
+    </attachment>
+    <forwarded m:origin="gateway">
+      <paragraph><![CDATA[<body>This markup is payload, not structure.</body>]]></paragraph>
+    </forwarded>
+  </body>
+  <footer m:checksum="sha256:00000000000000000000000000000000"/>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node|edge)*>
+  <!ELEMENT node EMPTY>
+  <!ATTLIST node id ID #REQUIRED label CDATA #IMPLIED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight NMTOKEN "1">
+]>
+<graph>
+  <!-- Nodes intentionally appear in a non-topological order. -->
+  <edge from="n2" to="n1" weight="0"/>
+  <node id="n1" label="root"/>
+  <node id="n3" label="&quot;quoted&quot; &amp; escaped"/>
+  <?trace phase="edges-before-nodes"?>
+  <edge from="n1" to="n3" weight="12.75"/>
+  <node id="n2">
+  </node>
+</graph>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (entry*)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry path CDATA #REQUIRED kind CDATA #REQUIRED>
+  <!ELEMENT data (#PCDATA)>
+  <!ENTITY left "{">
+  <!ENTITY right "}">
+]>
+<package>
+  <manifest>
+    <entry path="&left;root&right;/a" kind="text"/>
+    <entry path="dir/space name.txt" kind="binary"/>
+  </manifest>
+  <data><![CDATA[
+    00010203040506070809
+    ]]>tail &lt;after-data&gt;</data>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (widget*)>
+  <!ELEMENT widget (caption?, value, config?)>
+  <!ATTLIST widget name CDATA #REQUIRED enabled (true|false) "true">
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT config ANY>
+]>
+<dashboard xmlns:q="urn:query" xmlns:ui="urn:ui">
+  <widget name="cpu" enabled="true">
+    <caption xml:space="preserve"> CPU load </caption>
+    <value q:format="percent">87%</value>
+    <config ui:collapsed="false">
+      <ui:option key="window">5m</ui:option>
+      <ui:option key="threshold"><![CDATA[> 80 && < 95]]></ui:option>
+    </config>
+  </widget>
+  <widget name="disk" enabled="false">
+    <value q:format="bytes">1099511627776</value>
+  </widget>
+  <widget name="message">
+    <caption>status</caption>
+    <value>ready</value>
+    <config>
+      <q:expression>(load + queue) / 2</q:expression>
+      <q:argument name="queue" value="4"/>
+    </config>
+  </widget>
+</dashboard>
+```

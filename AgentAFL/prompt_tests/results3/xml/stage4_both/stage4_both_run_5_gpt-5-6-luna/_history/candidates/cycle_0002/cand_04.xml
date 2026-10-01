@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (settings, widgets)>
+  <!ELEMENT settings (setting*)>
+  <!ELEMENT setting EMPTY>
+  <!ELEMENT widgets (panel+)>
+  <!ELEMENT panel (title, grid)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT grid (cell+)>
+  <!ELEMENT cell (value, trend?)>
+  <!ELEMENT value (#PCDATA|number|unit)*>
+  <!ELEMENT number (#PCDATA)>
+  <!ELEMENT unit (#PCDATA)>
+  <!ELEMENT trend (#PCDATA)>
+  <!ATTLIST dashboard xmlns:ui CDATA #IMPLIED>
+  <!ATTLIST setting name NMTOKEN #REQUIRED value CDATA #REQUIRED locked (yes|no) "no">
+  <!ATTLIST panel id ID #REQUIRED span NMTOKEN "1">
+  <!ATTLIST grid columns NMTOKEN #REQUIRED>
+  <!ATTLIST cell position NMTOKEN #REQUIRED severity (low|medium|high) "low">
+  <!ATTLIST value format (plain|decimal|percent) "plain">
+  <!ENTITY percent "&#37;">
+  <!ENTITY alert "threshold exceeded">
+]>
+<dashboard xmlns:ui="urn:interface">
+  <settings>
+    <setting name="refresh" value="30" locked="yes"/>
+    <setting name="theme" value="night"/>
+  </settings>
+  <widgets>
+    <panel id="sales" span="2">
+      <ui:title>Quarterly metrics</ui:title>
+      <grid columns="3">
+        <cell position="A1" severity="high">
+          <value format="decimal"><number>12450.75</number><unit>USD</unit></value>
+          <trend>up</trend>
+        </cell>
+        <cell position="B1">
+          <value format="percent">87<unit>&percent;</unit></value>
+          <trend>stable</trend>
+        </cell>
+        <cell position="C1" severity="medium">
+          <value>n/a</value>
+          <trend>&alert;</trend>
+        </cell>
+      </grid>
+    </panel>
+    <panel id="operations" span="1">
+      <title>Queue</title>
+      <grid columns="1">
+        <cell position="A1"><value>empty</value></cell>
+      </grid>
+    </panel>
+  </widgets>
+</dashboard>

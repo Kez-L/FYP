@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta, data)>
+  <!ELEMENT meta (item*)>
+  <!ELEMENT item EMPTY>
+  <!ELEMENT data (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST item key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+]>
+<envelope xmlns="urn:outer" xmlns:p="urn:payload" xmlns:q="urn:other">
+  <meta>
+    <item key="empty" value=""/>
+    <item key="quoted" value="a &quot; b &amp; c"/>
+    <item key="spaced" value="&#x9;left&#xA;right"/>
+  </meta>
+  <data>
+    <chunk index="000">plain</chunk>
+    <p:chunk index="001"><![CDATA[<not-an-element/> & ]]>tail</p:chunk>
+    <q:chunk index="two">mixed</q:chunk>
+  </data>
+</envelope>

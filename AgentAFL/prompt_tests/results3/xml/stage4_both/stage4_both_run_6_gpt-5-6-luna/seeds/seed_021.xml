@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body)>
+  <!ELEMENT header (sender, recipient, timestamp, property*)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST property name NMTOKEN #REQUIRED>
+  <!ELEMENT body (command|result|fault)>
+  <!ELEMENT command (argument*)>
+  <!ATTLIST command name NMTOKEN #REQUIRED async (true|false) "false">
+  <!ELEMENT argument (#PCDATA|value)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT result (value|item)*>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT fault (code, message)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT message (#PCDATA)>
+]>
+<envelope xmlns="urn:example:rpc" xmlns:meta="urn:example:metadata">
+  <header>
+    <sender>client-07</sender>
+    <recipient>compute-node</recipient>
+    <timestamp>2026-10-01T12:34:56Z</timestamp>
+    <property name="trace">a&amp;b-19</property>
+    <meta:property name="priority">high</meta:property>
+  </header>
+  <body>
+    <command name="replace" async="true">
+      <argument>path</argument>
+      <argument><value>/var/data/&lt;pending&gt;</value></argument>
+      <argument>payload</argument>
+      <argument><![CDATA[{"enabled":true,"threshold":0.75}]]></argument>
+    </command>
+  </body>
+</envelope>

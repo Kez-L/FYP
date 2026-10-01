@@ -1,0 +1,161 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (name, item*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT item (label, price, stock)>
+  <!ATTLIST item ref ID #REQUIRED related IDREF #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT stock (#PCDATA)>
+]>
+<catalog>
+  <section code="tools">
+    <name>Workshop Tools</name>
+    <item ref="hammer">
+      <label>Claw hammer</label>
+      <price currency="USD">19.95</price>
+      <stock>42</stock>
+    </item>
+    <item ref="mallet" related="hammer">
+      <label>Wooden mallet</label>
+      <price currency="USD">12.50</price>
+      <stock>7</stock>
+    </item>
+  </section>
+  <section code="supplies">
+    <name>Consumables</name>
+    <item ref="sandpaper" related="mallet">
+      <label>Fine abrasive sheets</label>
+      <price currency="USD">4.75</price>
+      <stock>128</stock>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:workflow xmlns:r="urn:workflow" xmlns:p="urn:people" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <r:phase number="1">
+    <r:task owner="p:alice" xlink:type="simple" xlink:href="#review">
+      <r:description>Collect input</r:description>
+      <r:checkpoint completed="false"/>
+    </r:task>
+  </r:phase>
+  <r:phase number="2">
+    <r:task owner="p:bob">
+      <r:description><![CDATA[Review <draft> & approve]]></r:description>
+      <r:dependency ref="collect"/>
+      <r:checkpoint completed="true"/>
+    </r:task>
+  </r:phase>
+  <p:directory>
+    <p:person id="p:alice"><p:name>Alice</p:name></p:person>
+    <p:person id="p:bob"><p:name>Bob</p:name></p:person>
+  </p:directory>
+</r:workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, payload)>
+  <!ELEMENT header (sender, recipient, subject?, flag*)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST flag name CDATA #REQUIRED>
+  <!ELEMENT payload (paragraph|quote|list|code)+>
+  <!ELEMENT paragraph (#PCDATA|strong|italic|br)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT italic (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ENTITY greeting "Hello">
+  <!ENTITY mark "&#x2605;">
+]>
+<message>
+  <header>
+    <sender>robot@example.invalid</sender>
+    <recipient>operator@example.invalid</recipient>
+    <subject>&greeting;, &mark;</subject>
+    <flag name="automated"/>
+    <flag name="priority"/>
+  </header>
+  <payload>
+    <paragraph>First <strong>important</strong> notice.<br/>Please read <italic>carefully</italic>.</paragraph>
+    <quote>Errors are data in disguise.</quote>
+    <list>
+      <item>Inspect the input</item>
+      <item>Record the result</item>
+      <item>Repeat when necessary</item>
+    </list>
+    <code>if (value &lt; limit) return value;</code>
+  </payload>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<geography>
+  <!-- Unicode names and escaped markup exercise character handling. -->
+  <continent id="café">
+    <country name="España" iso="ES">
+      <capital population="3223334">Madrid</capital>
+      <coordinates>
+        <latitude>40.4168</latitude>
+        <longitude>-3.7038</longitude>
+      </coordinates>
+      <neighbor direction="west">Portugal</neighbor>
+    </country>
+    <country name="日本" iso="JP">
+      <capital population="13960000">東京</capital>
+      <coordinates>
+        <latitude>35.6762</latitude>
+        <longitude>139.6503</longitude>
+      </coordinates>
+      <neighbor direction="north">北海道</neighbor>
+      <note>Symbols: € £ ¥ — ✓</note>
+    </country>
+  </continent>
+  <ocean name="Atlantic">
+    <![CDATA[Wave height: 2 < meters & rising]]>
+  </ocean>
+</geography>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+    path CDATA #REQUIRED
+    type (text|binary|image) "text"
+    compressed (yes|no) "no">
+  <!ELEMENT data (chunk*)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ENTITY one "alpha">
+  <!ENTITY two "&one;-beta">
+]>
+<package>
+  <manifest>
+    <file path="readme.txt" type="text" compressed="no"/>
+    <file path="assets/icon.svg" type="image" compressed="yes"/>
+    <file path="payload.bin" type="binary" compressed="yes"/>
+  </manifest>
+  <data>
+    <chunk id="a">&one;</chunk>
+    <chunk id="b">&two;</chunk>
+    <chunk id="c">&#x0A;line&#x0D;break</chunk>
+  </data>
+</package>
+```

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (h:header, body, h:trail)>
+  <!ELEMENT body (message|attachment|empty)>
+  <!ELEMENT message (#PCDATA|x:part)*>
+  <!ELEMENT x:part (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ELEMENT empty EMPTY>
+  <!ELEMENT h:header (h:source, h:destination, h:flags?)>
+  <!ELEMENT h:source (#PCDATA)>
+  <!ELEMENT h:destination (#PCDATA)>
+  <!ELEMENT h:flags (#PCDATA)>
+  <!ELEMENT h:trail (#PCDATA)>
+  <!ATTLIST envelope xmlns:h CDATA #FIXED "urn:header"
+                    xmlns:x CDATA #FIXED "urn:content"
+                    id ID #REQUIRED>
+  <!ATTLIST message xml:lang NMTOKEN #IMPLIED priority (low|normal|high) "normal">
+  <!ATTLIST attachment name CDATA #REQUIRED type CDATA #IMPLIED>
+]>
+<envelope xmlns:h="urn:header" xmlns:x="urn:content" id="env-7">
+  <h:header>
+    <h:source>alpha</h:source>
+    <h:destination>omega</h:destination>
+    <h:flags><![CDATA[a|b|c]]></h:flags>
+  </h:header>
+  <body>
+    <message xml:lang="en-GB" priority="high">Hello <x:part>world</x:part> &amp; all.</message>
+    <attachment name="data.bin" type="application/octet-stream"/>
+    <empty/>
+  </body>
+  <h:trail>checksum: &#x0A; none</h:trail>
+</envelope>

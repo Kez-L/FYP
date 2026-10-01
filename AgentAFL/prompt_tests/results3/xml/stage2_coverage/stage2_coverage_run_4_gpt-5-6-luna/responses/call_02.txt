@@ -1,0 +1,148 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY cover SYSTEM "cover.jpg" NDATA jpeg>
+  <!ELEMENT catalog (entry+, footer)>
+  <!ELEMENT entry (name, summary, metadata?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT metadata (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST catalog
+    edition CDATA #IMPLIED
+    featured ENTITY #IMPLIED
+  >
+  <!ATTLIST entry
+    key ID #REQUIRED
+    status (draft|published|retired) "draft"
+  >
+]>
+<catalog edition="winter" featured="cover">
+  <entry key="e-17" status="published">
+    <name>Résumé / archive</name>
+    <summary>Text <em>with</em> <code>&lt;tokens&gt;</code><br/>and &#x2026;</summary>
+    <metadata>
+      <tag>alpha</tag>
+      <tag>βeta</tag>
+    </metadata>
+  </entry>
+  <entry key="e-18">
+    <name>Unusual spacing</name>
+    <summary><![CDATA[ left ]]>middle<![CDATA[ right ]]></summary>
+  </entry>
+  <footer>End of catalog<!-- retained --><?audit level="low"?></footer>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE switchboard [
+  <!ELEMENT switchboard (channel*)>
+  <!ELEMENT channel (message|pause|message-ref)*>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT pause EMPTY>
+  <!ELEMENT message-ref EMPTY>
+  <!ATTLIST channel
+    name NMTOKEN #REQUIRED
+    enabled (yes|no) "yes"
+  >
+  <!ATTLIST pause duration CDATA "0">
+  <!ATTLIST message-ref target IDREF #IMPLIED>
+  <!ENTITY greeting "hello &amp; welcome">
+  <!ENTITY mark "&#x1F642;">
+]>
+<switchboard xml:lang="ja" xml:space="preserve">
+  <channel name="primary">
+    <message>&greeting;, 世界 &mark;</message>
+    <pause duration="12"/>
+    <message-ref target="unknown"/>
+    <message>line-one&#x85;line-two&#x2028;line-three</message>
+  </channel>
+  <channel name="backup" enabled="no">
+    <message><![CDATA[<not-an-element>&still-literal;</not-an-element>]]></message>
+    <?checkpoint value="2"?>
+  </channel>
+</switchboard>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY partA "<item code='a'>first</item>">
+  <!ENTITY partB "<item code='b'>second &amp; more</item>">
+  <!ENTITY wrapper "<group>&partA;&partB;</group>">
+  <!ELEMENT report (header, group, trailer)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT group (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST item code ID #REQUIRED>
+]>
+<report>
+  <header><![CDATA[generated]]></header>
+  &wrapper;
+  <trailer>after expansion: &lt;done&gt;</trailer>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE gallery [
+  <!ELEMENT gallery (caption, image, caption?, image*)>
+  <!ELEMENT caption (#PCDATA|strong|i)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT image EMPTY>
+  <!ATTLIST gallery xmlns CDATA #IMPLIED>
+  <!ATTLIST image
+    src CDATA #REQUIRED
+    width NMTOKEN #IMPLIED
+    height NMTOKEN #IMPLIED
+  >
+]>
+<gallery xmlns="urn:example:gallery" xml:base="./assets/">
+  <caption><strong>Snow</strong> <i>and</i> stone</caption>
+  <image src="snow&amp;stone.png" width="640" height="480"/>
+  <caption><![CDATA[ ]]></caption>
+  <image src="nested/é.png"/>
+  <image src="data.bin" width="0" height="000"/>
+  <!-- a comment between sibling empty elements -->
+  <?render profile="thumbnail" gamma="1.0"?>
+</gallery>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (namespace*, alias*, item*)>
+  <!ELEMENT namespace EMPTY>
+  <!ELEMENT alias EMPTY>
+  <!ELEMENT item (description?, value*)>
+  <!ELEMENT description (#PCDATA)>
+  <!ELEMENT value (#PCDATA|ref)*>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST namespace prefix NMTOKEN #REQUIRED uri CDATA #REQUIRED>
+  <!ATTLIST alias name NMTOKEN #REQUIRED target IDREF #IMPLIED>
+  <!ATTLIST item id ID #REQUIRED type (text|number|flag) "text">
+  <!ATTLIST value key NMTOKEN #REQUIRED>
+  <!ATTLIST ref idref IDREF #REQUIRED>
+]>
+<registry xmlns:p="urn:primary" xmlns:q="urn:secondary">
+  <namespace prefix="p" uri="urn:primary"/>
+  <namespace prefix="q" uri="urn:secondary"/>
+  <alias name="main" target="item-1"/>
+  <item id="item-1" type="text">
+    <description>mixed <ref idref="item-2"/> content &quot;here&quot;</description>
+    <value key="p:title">A</value>
+    <value key="q:note"><![CDATA[B]]></value>
+  </item>
+  <item id="item-2" type="number">
+    <value key="digits">00123</value>
+  </item>
+</registry>
+```

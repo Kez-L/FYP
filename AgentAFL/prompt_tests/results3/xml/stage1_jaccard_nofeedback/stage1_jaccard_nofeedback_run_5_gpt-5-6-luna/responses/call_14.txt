@@ -1,0 +1,205 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY publisher "Northwind &amp; Sons">
+  <!ENTITY copyright "&#xA9; 2026">
+  <!ELEMENT catalog (book+)>
+  <!ELEMENT book (title, author+, summary?, metadata)>
+  <!ATTLIST book
+    id ID #REQUIRED
+    genre (fiction|history|science) "fiction">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|emph|quote)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT metadata (year, publisher)>
+  <!ELEMENT year (#PCDATA)>
+  <!ELEMENT publisher (#PCDATA)>
+]>
+<catalog>
+  <book id="b-001" genre="science">
+    <title>Signals in the Dust</title>
+    <author>Ada Lovelace</author>
+    <author>Grace Hopper</author>
+    <summary><![CDATA[An account of <emph>unexpected</emph> discoveries]]> <emph>and</emph> <quote>patient observation</quote>.</summary>
+    <metadata>
+      <year>2026</year>
+      <publisher>&publisher; &copyright;</publisher>
+    </metadata>
+  </book>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (header, payload, checksum)>
+  <!ATTLIST entry key ID #REQUIRED status CDATA "new">
+  <!ELEMENT header (name, created, tags?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|line|binary)*>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT binary EMPTY>
+  <!ATTLIST binary encoding CDATA #REQUIRED size CDATA #IMPLIED>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+]>
+<archive>
+  <entry key="e01" status="sealed">
+    <header>
+      <name>delta-record</name>
+      <created>2026-10-01T00:00:00Z</created>
+      <tags><tag>alpha</tag><tag>βeta</tag><tag>archive</tag></tags>
+    </header>
+    <payload>
+      intro &left;quoted&right;
+      <line>first&#x0A;second</line>
+      <binary encoding="base64" size="12"/>
+      <![CDATA[raw <payload> bytes & symbols]]>
+    </payload>
+    <checksum>7f83b1657ff1fc53</checksum>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<scene xmlns="urn:example:scene"
+       xmlns:x="urn:example:extra"
+       xml:lang="fr"
+       xml:base="https://example.invalid/world/">
+  <x:coordinates x:system="polar">
+    <x:point angle="0" radius="10"/>
+    <x:point angle="1.57079632679" radius="5"/>
+  </x:coordinates>
+  <environment>
+    <weather type="storm">
+      <temperature unit="C">-3.5</temperature>
+      <wind direction="NW" speed="28"/>
+      <description xml:space="preserve">  cold  <strong>rain</strong>  </description>
+    </weather>
+    <landmarks>
+      <landmark id="lighthouse">
+        <name>Phare du Nord</name>
+        <location>
+          <latitude>48.8566</latitude>
+          <longitude>2.3522</longitude>
+        </location>
+      </landmark>
+      <landmark id="station" x:priority="high">
+        <name>Gare</name>
+        <location>
+          <latitude>48.8600</latitude>
+          <longitude>2.3400</longitude>
+        </location>
+      </landmark>
+    </landmarks>
+  </environment>
+</scene>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+)>
+  <!ELEMENT section (heading, block+)>
+  <!ATTLIST section number NMTOKEN #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT block (p|list|table|note)>
+  <!ELEMENT p (#PCDATA|link|code|break)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|p)*>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST cell colspan NMTOKEN "1">
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY dash "&#x2014;">
+]>
+<report>
+  <section number="1">
+    <heading>Input validation &amp; recovery</heading>
+    <block>
+      <p>Values are checked before storage<break/>and logged with a <code>trace_id</code>.</p>
+    </block>
+    <block>
+      <list>
+        <item>Parse the header</item>
+        <item><p>Normalize whitespace</p><p>Reject invalid bytes</p></item>
+        <item>Emit a diagnostic &dash; continue when safe</item>
+      </list>
+    </block>
+  </section>
+  <section number="2">
+    <heading>Results</heading>
+    <block>
+      <table>
+        <row><cell>case</cell><cell>status</cell><cell colspan="2">details</cell></row>
+        <row><cell>A-17</cell><cell>pass</cell><cell>stable</cell><cell>low</cell></row>
+      </table>
+    </block>
+    <block><note><![CDATA[<not-a-markup-element> remains literal]]></note></block>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (trigger, variables, stages, audit)>
+  <!ELEMENT trigger EMPTY>
+  <!ATTLIST trigger
+    event (create|update|delete) #REQUIRED
+    retry NMTOKEN "0">
+  <!ELEMENT variables (var*)>
+  <!ELEMENT var EMPTY>
+  <!ATTLIST var name NMTOKEN #REQUIRED value CDATA #IMPLIED secret (yes|no) "no">
+  <!ELEMENT stages (stage+)>
+  <!ELEMENT stage (step+)>
+  <!ATTLIST stage name NMTOKEN #REQUIRED enabled (true|false) "true">
+  <!ELEMENT step (action, condition?)>
+  <!ATTLIST step id ID #REQUIRED timeout NMTOKEN "30">
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT condition (#PCDATA)>
+  <!ELEMENT audit (event+)>
+  <!ELEMENT event EMPTY>
+  <!ATTLIST event
+    level (info|warn|error) #REQUIRED
+    message CDATA #REQUIRED>
+]>
+<workflow>
+  <trigger event="update" retry="3"/>
+  <variables>
+    <var name="region" value="eu-west" />
+    <var name="token" secret="yes" />
+    <var name="parallelism" value="4" />
+  </variables>
+  <stages>
+    <stage name="prepare">
+      <step id="fetch" timeout="15">
+        <action>download-manifest</action>
+        <condition>region != 'offline'</condition>
+      </step>
+      <step id="verify"><action>check-signature</action></step>
+    </stage>
+    <stage name="publish" enabled="false">
+      <step id="upload" timeout="120"><action>send-artifact</action></step>
+    </stage>
+  </stages>
+  <audit>
+    <event level="info" message="workflow loaded"/>
+    <event level="warn" message="optional stage disabled"/>
+    <event level="error" message="checksum mismatch"/>
+  </audit>
+</workflow>
+```

@@ -1,0 +1,23 @@
+{
+  "call": 4,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (folder*)>\n  <!ELEMENT folder (name, item*)>\n  <!ATTLIST folder path CDATA #IMPLIED>\n  <!ELEMENT name (#PCDATA)>\n  <!ELEMENT item (label, checksum?, metadata)>\n  <!ATTLIST item key ID #REQUIRED kind CDATA \"file\">\n  <!ELEMENT label (#PCDATA)>\n  <!ELEMENT checksum (#PCDATA)>\n  <!ELEMENT metadata (property*)>\n  <!ELEMENT property EMPTY>\n  <!ATTLIST property name CDATA #REQUIRED value CDATA #IMPLIED>\n]>\n<archive>\n  <folder path=\"/var/lib\">\n    <name>state</name>\n    <item key=\"f1\" kind=\"config\">\n      <label>settings.ini</label>\n      <checksum>sha256:7f83b165</checksum>\n      <metadata>\n        <property name=\"mode\" value=\"0644\"/>\n        <property name=\"owner\" value=\"service\"/>\n      </metadata>\n    </item>\n    <item key=\"f2\">\n      <label>empty.log</label>\n      <metadata/>\n    </item>\n  </folder>\n  <folder>\n    <name>temporary</name>\n  </folder>\n</archive>\n\n--- example 2 ---\n<?xml version=\"1.1\"?>\n<!DOCTYPE message [\n  <!ENTITY greeting \"Hello\">\n  <!ENTITY who \"world\">\n  <!ENTITY phrase \"&greeting;, &who;!\">\n]>\n<message xmlns=\"urn:message\" xmlns:x=\"urn:extra\">\n  <header x:priority=\"high\">\n    <subject>&phrase;</subject>\n  </header>\n  <body xml:space=\"preserve\">\n    <![CDATA[\n      line one\n      ]]> \n    <part kind=\"text\">alpha&#x0A;beta</part>\n    <!-- a comment containing -- must not be split -->\n    <part kind=\"empty\"/>\n  </body>\n</message>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-01T03:36:46.243295+00:00"
+}

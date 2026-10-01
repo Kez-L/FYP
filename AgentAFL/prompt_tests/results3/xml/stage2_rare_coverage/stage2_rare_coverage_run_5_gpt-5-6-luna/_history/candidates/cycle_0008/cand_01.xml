@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY company "A &amp; B">
+  <!ENTITY open "<![CDATA[">
+  <!ENTITY close "]]>">
+  <!ENTITY % common "id ID #IMPLIED status (new|old|void) 'new'">
+  <!ELEMENT report (metadata, record+, footer?)>
+  <!ELEMENT metadata (title, generated)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated EMPTY>
+  <!ATTLIST generated value CDATA #REQUIRED>
+  <!ELEMENT record (key, value, note*)>
+  <!ATTLIST record %common;>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|ref)*>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<report>
+  <metadata>
+    <title>&company; &amp; audit</title>
+    <generated value="2026-10-01T00:00:00Z"/>
+  </metadata>
+  <record id="r1" status="new">
+    <key>alpha</key>
+    <value>left<ref target="r2"/>right</value>
+    <note>literal &lt;markup&gt;</note>
+  </record>
+  <record id="r2" status="old">
+    <key>beta</key>
+    <value>&open;not parsed as an element&close;</value>
+  </record>
+  <footer>count=2</footer>
+</report>

@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE drawing [
+  <!ELEMENT drawing (defs, canvas)>
+  <!ELEMENT defs (gradient|pattern|clipPath)+>
+  <!ELEMENT gradient (stop+)>
+  <!ATTLIST gradient id ID #REQUIRED spread (pad|reflect|repeat) "pad">
+  <!ELEMENT stop EMPTY>
+  <!ATTLIST stop offset CDATA #REQUIRED color CDATA #REQUIRED>
+  <!ELEMENT pattern (tile+)>
+  <!ATTLIST pattern id ID #REQUIRED width CDATA #REQUIRED height CDATA #REQUIRED>
+  <!ELEMENT tile EMPTY>
+  <!ATTLIST tile x CDATA #REQUIRED y CDATA #REQUIRED fill CDATA #IMPLIED>
+  <!ELEMENT clipPath (circle|rect)+>
+  <!ATTLIST clipPath id ID #REQUIRED>
+  <!ELEMENT circle EMPTY>
+  <!ATTLIST circle cx CDATA #REQUIRED cy CDATA #REQUIRED r CDATA #REQUIRED>
+  <!ELEMENT rect EMPTY>
+  <!ATTLIST rect x CDATA #REQUIRED y CDATA #REQUIRED width CDATA #REQUIRED height CDATA #REQUIRED>
+  <!ELEMENT canvas (group|use|text|path)*>
+  <!ELEMENT group (use|text|path|rect|circle)*>
+  <!ATTLIST group transform CDATA #IMPLIED clip CDATA #IMPLIED>
+  <!ELEMENT use EMPTY>
+  <!ATTLIST use href CDATA #REQUIRED x CDATA "0" y CDATA "0">
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST text x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ELEMENT path EMPTY>
+  <!ATTLIST path d CDATA #REQUIRED fill CDATA #IMPLIED>
+]>
+<drawing>
+  <defs>
+    <gradient id="shade" spread="reflect">
+      <stop offset="0%" color="#000000"/>
+      <stop offset="50%" color="#7f7fff"/>
+      <stop offset="100%" color="#ffffff"/>
+    </gradient>
+    <pattern id="dots" width="8" height="8">
+      <tile x="0" y="0" fill="#ccc"/><tile x="4" y="4" fill="#888"/>
+    </pattern>
+    <clipPath id="window"><circle cx="40" cy="40" r="25"/><rect x="5" y="5" width="70" height="70"/></clipPath>
+  </defs>
+  <canvas>
+    <group transform="translate(10,20) rotate(-3)" clip="url(#window)">
+      <use href="#dots" x="2" y="3"/>
+      <path d="M0,0 C10,20 30,-5 60,40 Z" fill="url(#shade)"/>
+      <text x="12" y="64">vector &amp; text</text>
+    </group>
+  </canvas>
+</drawing>

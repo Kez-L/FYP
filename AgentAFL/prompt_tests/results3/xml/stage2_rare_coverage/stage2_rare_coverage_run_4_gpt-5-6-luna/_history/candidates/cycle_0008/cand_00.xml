@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (meta, widgets)>
+  <!ELEMENT meta (owner, generated, checksum)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT widgets (widget+)>
+  <!ELEMENT widget (label, config?, payload)>
+  <!ATTLIST widget
+    id ID #REQUIRED
+    kind (chart|table|map|gauge) #REQUIRED
+    enabled (true|false) "true">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT config EMPTY>
+  <!ATTLIST config
+    mode CDATA #IMPLIED
+    refresh CDATA "0">
+  <!ELEMENT payload (#PCDATA|value|axis|series)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT axis (#PCDATA)>
+  <!ELEMENT series (#PCDATA|point)*>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED>
+]>
+<dashboard>
+  <meta>
+    <owner>ops &amp; analytics</owner>
+    <generated>2026-10-01T12:34:56Z</generated>
+    <checksum><![CDATA[sha256:ab12<ef34>&5678]]></checksum>
+  </meta>
+  <widgets>
+    <widget id="w-main" kind="chart">
+      <label>Temperature &lt;24°C&gt;</label>
+      <config mode="rolling" refresh="00:00:05"/>
+      <payload>
+        <axis>time</axis>
+        <series>
+          <point x="0" y="-1.25"/>
+          <point x="1" y="0"/>
+          <point x="2" y="3.141592653589793"/>
+        </series>
+      </payload>
+    </widget>
+    <widget id="w-side" kind="gauge" enabled="false">
+      <label>Pressure</label>
+      <payload><value>101.325</value></payload>
+    </widget>
+  </widgets>
+</dashboard>

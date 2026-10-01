@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, signature?)>
+  <!ELEMENT header (sender, recipient, timestamp)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding (plain|base64|hex) "plain">
+  <!ENTITY left-bracket "&#x5B;">
+  <!ENTITY right-bracket "&#x5D;">
+  <!ENTITY amp "&#38;">
+]>
+<envelope>
+  <header>
+    <sender>node-&left-bracket;7&right-bracket;</sender>
+    <recipient>archive&amp;relay</recipient>
+    <timestamp>2026-10-01T12:34:56Z</timestamp>
+  </header>
+  <payload>
+    <chunk index="0" encoding="plain">A&amp;B &amp; C</chunk>
+    <chunk index="1">line one&#x0A;line two&#x0D;&#x0A;line three</chunk>
+    <chunk index="2" encoding="hex">&amp; leftover &amp;</chunk>
+  </payload>
+  <signature>sha256:&amp;unknown-looking-text</signature>
+</envelope>

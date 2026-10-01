@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<workflow xmlns:w="urn:workflow" xmlns:ext="urn:extensions">
+  <w:definition name="backup" revision="08">
+    <w:step id="prepare" kind="task">
+      <w:input name="root" value="/srv/data"/>
+      <w:output name="manifest" type="application/json"/>
+    </w:step>
+    <w:branch test="files &gt; 0">
+      <w:when value="true">
+        <w:step id="archive" kind="command">
+          <w:command><![CDATA[tar -cf archive.tar ./data]]></w:command>
+          <ext:limits cpu="2" memory="512M"/>
+        </w:step>
+      </w:when>
+      <w:otherwise>
+        <w:step id="empty" kind="notify">
+          <w:message>No files selected.</w:message>
+        </w:step>
+      </w:otherwise>
+    </w:branch>
+    <w:finally>
+      <w:cleanup preserve="manifest"/>
+    </w:finally>
+  </w:definition>
+  <w:metadata>
+    <w:tag>nightly</w:tag>
+    <w:tag>storage</w:tag>
+  </w:metadata>
+</workflow>

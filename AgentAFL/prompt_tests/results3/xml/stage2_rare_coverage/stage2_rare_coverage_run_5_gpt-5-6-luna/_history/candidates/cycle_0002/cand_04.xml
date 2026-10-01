@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (variables, (task|parallel|checkpoint)+)>
+  <!ELEMENT variables (var*)>
+  <!ELEMENT var EMPTY>
+  <!ATTLIST var name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT task (label, input*, output*)>
+  <!ATTLIST task id ID #REQUIRED depends IDREFS #IMPLIED enabled (true|false) "true">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT output (#PCDATA)>
+  <!ELEMENT parallel (task+)>
+  <!ELEMENT checkpoint (#PCDATA)>
+]>
+<workflow xmlns:ext="urn:workflow:extension">
+  <variables>
+    <var name="threshold" value="0"/>
+    <var name="path" value="C:\tmp\&quot;work&quot;"/>
+    <var name="unicode_名" value="π≈3.14159"/>
+  </variables>
+  <task id="prepare" enabled="true">
+    <label>Prepare data</label>
+    <input><![CDATA[a,b,c
+1,2,3]]></input>
+    <output>prepared.dat</output>
+  </task>
+  <parallel>
+    <task id="left" depends="prepare">
+      <label>Left branch</label>
+      <input>alpha</input>
+      <output>left.out</output>
+    </task>
+    <task id="right" depends="prepare" enabled="false">
+      <label>Right branch &amp; fallback</label>
+      <input>beta&#x0D;&#x0A;gamma</input>
+      <output>right.out</output>
+    </task>
+  </parallel>
+  <checkpoint>after parallel</checkpoint>
+  <task id="finish" depends="left right">
+    <label>Finish <ext:badge level="critical">now</ext:badge></label>
+    <input>left.out</input>
+    <input>right.out</input>
+    <output>final.out</output>
+  </task>
+</workflow>

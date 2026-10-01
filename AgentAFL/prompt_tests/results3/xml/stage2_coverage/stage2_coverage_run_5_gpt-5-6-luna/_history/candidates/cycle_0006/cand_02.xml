@@ -1,0 +1,29 @@
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (h:header, payload, trailer?)>
+  <!ELEMENT h:header (h:field*)>
+  <!ELEMENT h:field EMPTY>
+  <!ATTLIST h:field key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT payload (entry+)>
+  <!ELEMENT entry (key, data)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT data ANY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST envelope xmlns:h CDATA #FIXED "urn:headers">
+]>
+<envelope xmlns="urn:payload" xmlns:h="urn:headers">
+  <h:header>
+    <h:field key="content-type" value="application/xml"/>
+    <h:field key="x-test"/>
+  </h:header>
+  <payload>
+    <entry>
+      <key>first</key>
+      <data><p xmlns="">plain</p><p xmlns:q="urn:q">q:q</p></data>
+    </entry>
+    <entry>
+      <key>second</key>
+      <data><![CDATA[<&]]></data>
+    </entry>
+  </payload>
+  <trailer>done</trailer>
+</envelope>

@@ -1,0 +1,147 @@
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+, trailer?)>
+  <!ELEMENT entry (title, data)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT data (#PCDATA|chunk)*>
+  <!ELEMENT chunk EMPTY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST archive version NMTOKEN #REQUIRED>
+  <!ATTLIST entry id ID #REQUIRED kind (text|binary|other) "text">
+  <!ATTLIST chunk size CDATA #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY marker "&#x2063;[MARK]">
+]>
+<archive version="2.7">
+  <!-- an entry with adjacent character sections -->
+  <entry id="e01" kind="text">
+    <title>alpha &marker; omega</title>
+    <data>left<![CDATA[<literal>&raw;]]><chunk size="0"/>right</data>
+  </entry>
+  <entry id="e02">
+    <title>second</title>
+    <data><![CDATA[]]><![CDATA[split]]>tail</data>
+  </entry>
+  <trailer>done</trailer>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (book*)>
+  <!ELEMENT book (name, author+, note?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT note (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST catalog xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST book isbn ID #REQUIRED ref IDREFS #IMPLIED>
+  <!ATTLIST author role CDATA "writer">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY accent "&#x1F642;">
+]>
+<catalog xml:lang="fr">
+  <book isbn="b-001" ref="b-001">
+    <name>Éléments &nbsp; XML &accent;</name>
+    <author role="writer">A</author>
+    <author role="editor">B</author>
+    <note>line one<br/>line <em>two</em> &lt; three</note>
+  </book>
+  <book isbn="b-002">
+    <name><![CDATA[Names, commas, and ]]> brackets</name>
+    <author>anonymous</author>
+  </book>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE switchboard [
+  <!ENTITY % mode "IGNORE">
+  <![%mode;[
+    <!ELEMENT hidden EMPTY>
+    <!ATTLIST hidden secret CDATA "yes">
+  ]]>
+  <!ELEMENT switchboard (port|message|fault)*>
+  <!ELEMENT port EMPTY>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT fault (code, detail?)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|line)*>
+  <!ELEMENT line EMPTY>
+  <!ATTLIST switchboard xmlns:net CDATA #FIXED "urn:network">
+  <!ATTLIST port net:name NMTOKEN #REQUIRED net:enabled (yes|no) "yes">
+  <!ATTLIST message level (info|warn|error) "info">
+]>
+<switchboard xmlns:net="urn:network">
+  <port net:name="p0" net:enabled="no"/>
+  <message level="warn">packet &amp; signal</message>
+  <fault>
+    <code>504</code>
+    <detail>timeout<line/>retry</detail>
+  </fault>
+  <?route destination?>
+</switchboard>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header (item*)>
+  <!ELEMENT item EMPTY>
+  <!ELEMENT payload (text|list|blob)>
+  <!ELEMENT text (#PCDATA)>
+  <!ELEMENT list (value+)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT blob (#PCDATA)>
+  <!ATTLIST envelope xmlns CDATA #IMPLIED>
+  <!ATTLIST item key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST payload format (plain|encoded) "plain">
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+]>
+<envelope xmlns="urn:envelope">
+  <header>
+    <item key="trace" value="&left;abc&right;"/>
+    <item key="empty"/>
+  </header>
+  <payload format="encoded">
+    <blob><![CDATA[
+      QWxwaGE+JiBCZXRh
+      ]]></blob>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ATTLIST matrix rows NMTOKEN #REQUIRED>
+  <!ATTLIST row index CDATA #REQUIRED>
+  <!ATTLIST cell x CDATA #IMPLIED y CDATA #IMPLIED>
+  <!ENTITY quotemark "&quot;">
+]>
+<matrix rows="3">
+  <row index="001">
+    <cell x="0" y="0">zero</cell>
+    <cell x="1" y="0"><mark>A</mark> &quot;quoted&quot;</cell>
+  </row>
+  <row index="002">
+    <cell x="0" y="1"><![CDATA[a < b]]></cell>
+    <cell x="1" y="1">amp &amp; &quotemark;</cell>
+    <cell x="2" y="1">line
+break</cell>
+  </row>
+  <row index="003">
+    <cell x="0" y="2">last</cell>
+  </row>
+</matrix>
+```

@@ -1,0 +1,119 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, description?, price)>
+  <!ATTLIST entry id ID #REQUIRED status (active|archived) "active">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emph|code)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ENTITY currency "EUR">
+]>
+<catalog>
+  <entry id="p001" status="active">
+    <title>Tea &amp; Biscuits</title>
+    <description>Organic <emph>green</emph> tea in <code>250g</code> tins.</description>
+    <price>12.50 &currency;</price>
+  </entry>
+  <entry id="p002">
+    <title>Plain crackers</title>
+    <price>4.75 &currency;</price>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<r:record xmlns:r="urn:records" xmlns:m="urn:meta" xmlns="urn:default">
+  <r:key m:kind="composite">A&#x0D;B&#x85;C</r:key>
+  <r:value><![CDATA[<not-an-element>&still-text;</not-an-element>]]></r:value>
+  <r:items>
+    <item id="α" m:rank="1">first</item>
+    <item id="β" m:rank="2">
+      <nested xmlns:r="urn:records-alt">
+        <r:marker/>
+      </nested>
+    </item>
+  </r:items>
+  <r:empty></r:empty>
+</r:record>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, section*)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT section (heading, paragraph+)>
+  <!ATTLIST section code NMTOKEN #IMPLIED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|link|br)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ELEMENT br EMPTY>
+]>
+<?audit generated="false"?>
+<report>
+  <header>Quarterly &quot;status&quot;</header>
+  <section code="A-01">
+    <heading>Overview</heading>
+    <paragraph>Alpha <link href="urn:item:1">reference</link><br/> continues.</paragraph>
+  </section>
+  <section>
+    <heading>Notes</heading>
+    <paragraph>One paragraph.</paragraph>
+    <paragraph>Another paragraph with &#x1F642;.</paragraph>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<stream xmlns="urn:stream" xmlns:x="urn:extension">
+  <event time="2026-10-01T00:00:00Z" level="info">
+    <message>startup</message>
+    <data>
+      <x:field name="count" value="00000000000000000001"/>
+      <x:field name="ratio" value="-0.0"/>
+      <x:field name="flag" value="TRUE"/>
+    </data>
+  </event>
+  <event time="2026-10-01T00:00:01+05:30" level="warn">
+    <message xml:space="preserve">  delayed&#x0A;  response  </message>
+    <data/>
+  </event>
+  <event time="2026-10-01T00:00:02Z" level="error">
+    <message>invalid &lt;payload&gt;</message>
+    <details><![CDATA[
+line one
+line two
+]]></details>
+  </event>
+</stream>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (metadata, payload)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST metadata xmlns CDATA #IMPLIED created CDATA #REQUIRED>
+  <!ELEMENT payload ANY>
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+]>
+<envelope>
+  <metadata created="2026-10-01" xmlns="urn:meta"/>
+  <payload xmlns="urn:payload" kind="mixed">
+    <text><![CDATA[raw bytes: \x00 \x01]]></text>
+    <list>
+      <item index="1">one</item>
+      <item index="2">&left;two&right;</item>
+      <item index="3"><![CDATA[three]]></item>
+    </list>
+    <binary encoding="base64">AAEC/f7/</binary>
+  </payload>
+</envelope>
+```

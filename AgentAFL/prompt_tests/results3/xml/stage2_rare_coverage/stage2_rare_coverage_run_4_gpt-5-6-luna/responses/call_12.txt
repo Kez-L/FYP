@@ -1,0 +1,173 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, entry*)>
+  <!ATTLIST section code ID #REQUIRED xml:lang NMTOKEN "en">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (name, detail?, tag*)>
+  <!ATTLIST entry key ID #IMPLIED state (new|old|held) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|emph|link)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT tag EMPTY>
+  <!ATTLIST tag value CDATA #REQUIRED>
+  <!ENTITY marker "catalog-&amp;-item">
+]>
+<catalog>
+  <section code="s-main">
+    <title xml:space="preserve">  Primary &marker;  </title>
+    <entry key="e1" state="old">
+      <name>Alpha</name>
+      <detail>First <emph>important</emph> record with a <link>reference</link>.</detail>
+      <tag value="one"/>
+      <tag value="two"/>
+    </entry>
+  </section>
+  <section code="s-empty" xml:lang="fr">
+    <title>Éléments déjà vus</title>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<env:Envelope xmlns:env="urn:example:envelope" xmlns:m="urn:example:message" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <env:Header>
+    <m:Trace env:role="urn:example:receiver" env:mustUnderstand="1">
+      <m:Hop sequence="0001">edge-A</m:Hop>
+      <m:Hop sequence="0002">edge-B</m:Hop>
+    </m:Trace>
+  </env:Header>
+  <env:Body>
+    <m:Request xsi:type="m:BatchRequest" m:request-id="r-17">
+      <m:Arguments>
+        <m:Argument name="limit" xsi:nil="true"/>
+        <m:Argument name="query"><![CDATA[a < b && c > d]]></m:Argument>
+      </m:Arguments>
+      <m:Items>
+        <m:Item xmlns:m="urn:example:item" id="i1">
+          <m:Value>42</m:Value>
+        </m:Item>
+        <m:Item xmlns:m="urn:example:item" id="i2">
+          <m:Value xml:lang="ja">値</m:Value>
+        </m:Item>
+      </m:Items>
+    </m:Request>
+  </env:Body>
+</env:Envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, records)>
+  <!ELEMENT header (created, comment?)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT comment (#PCDATA)>
+  <!ELEMENT records (record+)>
+  <!ELEMENT record (key, payload, checksum)>
+  <!ATTLIST record kind (text|binary|empty) "text" version CDATA #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|line|chunk)*>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY nl "&#10;">
+  <!ENTITY quoted "&quot;quoted&quot;">
+]>
+<archive>
+  <header>
+    <created>2026-10-01T00:00:00Z</created>
+    <comment>Use &quoted; values.&nl;Second line.</comment>
+  </header>
+  <records>
+    <record kind="text" version="1.0">
+      <key>α-001</key>
+      <payload><line>one</line><line>two &amp; three</line><chunk><![CDATA[raw ]]> data</chunk></payload>
+      <checksum>00000000</checksum>
+    </record>
+    <record kind="empty">
+      <key>β-002</key>
+      <payload/>
+      <checksum>ffffffff</checksum>
+    </record>
+  </records>
+</archive>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<configuration xml:lang="en" xml:base="https://example.invalid/root/">
+  <profile name="default" enabled="true">
+    <paths>
+      <path type="input">./in/../input</path>
+      <path type="output">file:///tmp/result</path>
+      <path type="cache" xml:base="../cache/">./objects</path>
+    </paths>
+    <limits>
+      <memory unit="MiB">0</memory>
+      <workers>0004</workers>
+      <timeout unit="ms">-1</timeout>
+    </limits>
+  </profile>
+  <profile name="minimal" enabled="false">
+    <paths xmlns="">
+      <path type="input"/>
+    </paths>
+  </profile>
+  <extensions>
+    <extension name="urn:vendor:one">
+      <option key="a">true</option>
+      <option key="b"><![CDATA[<opaque/>]]></option>
+    </extension>
+    <extension name="urn:vendor:two">
+      <option key="quote">&apos;&quot;&lt;&gt;&amp;</option>
+    </extension>
+  </extensions>
+  <?reload now?>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (meta, section*)>
+  <!ATTLIST report generated CDATA #IMPLIED>
+  <!ELEMENT meta (field*)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT section (heading, paragraph+, table?)>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|code|br|quote)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT quote (#PCDATA|code)*>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ENTITY copyright "&#xA9;">
+]>
+<report generated="2026-10-01T12:34:56+00:00">
+  <meta>
+    <field name="author" value=""/>
+    <field name="locale" value="en_US.UTF-8"/>
+    <field name="title" value="A &amp; B"/>
+  </meta>
+  <section id="intro">
+    <heading>Résumé &#x1F4C4;</heading>
+    <paragraph>Text before <code>if (a &lt; b) return;</code><br/>text after.</paragraph>
+    <paragraph><quote>Nested <code>markup</code> &copyright;</quote></paragraph>
+    <table>
+      <row><cell>left</cell><cell>middle</cell><cell>right</cell></row>
+      <row><cell><![CDATA[x	y]]></cell><cell>2</cell><cell>3</cell></row>
+    </table>
+  </section>
+  <section id="tail">
+    <heading>End</heading>
+    <paragraph>Trailing content with &#10;line breaks.</paragraph>
+  </section>
+</report>
+```

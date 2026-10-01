@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (prefixes, nodes, edges)>
+  <!ELEMENT prefixes (prefix*)>
+  <!ELEMENT prefix EMPTY>
+  <!ATTLIST prefix name NMTOKEN #REQUIRED uri ANY>
+  <!ELEMENT nodes (node+)>
+  <!ELEMENT node (label?, property*)>
+  <!ATTLIST node id ID #REQUIRED class NMTOKEN #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA|value)*>
+  <!ATTLIST property key NMTOKEN #REQUIRED datatype CDATA #IMPLIED>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT edges (edge*)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED relation NMTOKEN #REQUIRED weight CDATA #IMPLIED>
+]>
+<graph xmlns:g="urn:graph:core" xmlns:v="urn:graph:value">
+  <prefixes>
+    <prefix name="g" uri="urn:graph:core"/>
+    <prefix name="v" uri="urn:graph:value"/>
+    <prefix name="x" uri="urn:vendor:x"/>
+  </prefixes>
+  <nodes>
+    <node id="n1" class="person">
+      <label>Ada</label>
+      <property key="active" datatype="boolean"><value>true</value></property>
+      <property key="note">line one
+line two
+line three</property>
+    </node>
+    <node id="n2" class="project">
+      <label><![CDATA[Research <phase> Ω]]></label>
+      <property key="budget" datatype="decimal"><value>12.50</value></property>
+    </node>
+    <node id="n3">
+      <property key="empty"/>
+    </node>
+  </nodes>
+  <edges>
+    <edge from="n1" to="n2" relation="leads" weight="0.75"/>
+    <edge from="n2" to="n3" relation="contains"/>
+  </edges>
+</graph>

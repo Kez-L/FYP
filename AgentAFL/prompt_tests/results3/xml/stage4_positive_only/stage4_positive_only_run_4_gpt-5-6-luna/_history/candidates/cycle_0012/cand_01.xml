@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<workflow xmlns="urn:workflow" xmlns:x="urn:extension" version="2.4">
+  <phase id="prepare">
+    <action timeout="30">
+      <command><![CDATA[printf '<input/>' | ./tool]]></command>
+      <environment>
+        <variable name="MODE">safe</variable>
+        <variable name="PATH">/tmp/bin:/usr/bin</variable>
+      </environment>
+    </action>
+  </phase>
+  <phase id="verify" depends="prepare">
+    <action timeout="0">
+      <command>test &lt; 5 &amp;&amp; echo ready</command>
+      <x:artifact x:kind="log">stdout</x:artifact>
+    </action>
+    <checkpoint/>
+  </phase>
+</workflow>

@@ -1,0 +1,147 @@
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE catalog [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY logo SYSTEM "logo.jpg" NDATA jpeg>
+  <!ENTITY nbsp "&#160;">
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, entry*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (name, description?, link)>
+  <!ATTLIST entry ref IDREF #IMPLIED status (new|old|archived) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link href CDATA #REQUIRED>
+]>
+<catalog>
+  <section code="main">
+    <title>Products &amp; Services</title>
+    <entry ref="item1">
+      <name>Alpha</name>
+      <description>First <emph>featured</emph> item&nbsp;</description>
+      <link href="https://example.invalid/a"/>
+    </entry>
+    <entry ref="item2" status="archived">
+      <name>Beta</name>
+      <link href="urn:example:beta"/>
+    </entry>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta, payload)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta version NMTOKEN #REQUIRED xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT payload (chunk*)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk id NMTOKEN #IMPLIED kind CDATA "text">
+  <!ENTITY open "<![CDATA[">
+  <!ENTITY close "]]>">
+]>
+<envelope>
+  <meta version="v2" xml:lang="x-klingon"/>
+  <payload>
+    <chunk id="c-01" kind="raw">&lt;alpha&gt; &amp; &quot;</chunk>
+    <chunk kind="text">line one
+line two
+line three</chunk>
+    <chunk id="c-03"><![CDATA[<nested attr='x'>raw & text</nested>]]></chunk>
+    <chunk id="c-04">&apos; &gt; &#x0A; &#x20;</chunk>
+  </payload>
+</envelope>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ENTITY % mode "INCLUDE">
+  <!ENTITY % declarations '
+    <!ELEMENT report (header, data)>
+    <!ELEMENT header (author, timestamp)>
+    <!ELEMENT author (#PCDATA)>
+    <!ELEMENT timestamp (#PCDATA)>
+    <!ELEMENT data (row+)>
+    <!ELEMENT row (cell, cell?, cell?)>
+    <!ATTLIST row number NMTOKEN #IMPLIED>
+    <!ELEMENT cell (#PCDATA)>
+  '>
+  %declarations;
+  <![%mode;[
+    <!ATTLIST report format (short|long) "long">
+  ]]>
+]>
+<report format="short">
+  <header>
+    <author>Δelta &amp; Co.</author>
+    <timestamp>2026-10-01T00:00:00Z</timestamp>
+  </header>
+  <data>
+    <row number="001"><cell>one</cell><cell>two</cell><cell>three</cell></row>
+    <row><cell><![CDATA[x < y && y > z]]></cell></row>
+    <row number="003"><cell>終</cell><cell>é</cell></row>
+  </data>
+</report>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<scene xmlns="urn:scene" xmlns:g="urn:geometry" xml:space="preserve">
+  <g:layer g:id="L1" visibility="visible">
+    <g:shape g:type="path" g:closed="true">
+      <g:point g:x="0" g:y="0"/>
+      <g:point g:x="10.5" g:y="-3"/>
+      <g:point g:x="∞" g:y="NaN"/>
+    </g:shape>
+    <label xml:lang="fr">
+      <![CDATA[<not-an-element/>]]>
+    </label>
+  </g:layer>
+  <foreign xmlns="">
+    <node a="&quot;" b="&#x1F600;">text</node>
+  </foreign>
+  <g:layer g:id="L2">
+    <g:shape g:type="circle">
+      <g:center g:x="5" g:y="5"/>
+      <g:radius>2</g:radius>
+    </g:shape>
+  </g:layer>
+</scene>
+```
+
+```xml
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, content)>
+  <!ELEMENT manifest (file*)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+    path CDATA #REQUIRED
+    checksum CDATA #IMPLIED
+    compressed (yes|no) "no">
+  <!ELEMENT content (section*)>
+  <!ELEMENT section (#PCDATA|section|ref)*>
+  <!ATTLIST section name CDATA #IMPLIED>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY mark "&#x2022;">
+]>
+<package>
+  <manifest>
+    <file path="a/b/c.txt" checksum="sha256:0000" compressed="yes"/>
+    <file path="./weird name.bin"/>
+    <file path="file://localhost/tmp/x"/>
+  </manifest>
+  <content>
+    <section name="intro">A &mark; B<section name="nested">deep</section></section>
+    <section name="empty"/>
+    <section name="links">
+      <ref target="missing"/>
+      <ref target="another"/>
+    </section>
+  </content>
+</package>
+```

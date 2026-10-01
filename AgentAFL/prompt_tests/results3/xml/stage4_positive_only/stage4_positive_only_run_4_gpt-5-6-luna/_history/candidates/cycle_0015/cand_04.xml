@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow id="deploy-42">
+  <trigger>
+    <schedule timezone="UTC">
+      <day>Monday</day>
+      <day>Thursday</day>
+      <at hour="02" minute="30"/>
+    </schedule>
+  </trigger>
+  <steps>
+    <step id="prepare" type="shell" continue-on-error="false">
+      <command>printf '%s\n' "prepare"</command>
+      <environment>
+        <variable name="MODE">safe</variable>
+        <variable name="COUNT">3</variable>
+      </environment>
+    </step>
+    <step id="publish" type="http" continue-on-error="true">
+      <request method="POST" url="https://deploy.example.invalid/start">
+        <header name="X-Run-ID">deploy-42</header>
+        <body media-type="application/json"><![CDATA[{"dry_run":true,"targets":["edge","core"]}]]></body>
+      </request>
+      <on-success>
+        <log level="info">publication requested</log>
+      </on-success>
+      <on-failure>
+        <retry attempts="2" backoff="250ms"/>
+      </on-failure>
+    </step>
+  </steps>
+</workflow>

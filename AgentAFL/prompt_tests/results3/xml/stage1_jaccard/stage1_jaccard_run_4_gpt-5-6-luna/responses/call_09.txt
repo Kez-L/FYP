@@ -1,0 +1,184 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!NOTATION svg SYSTEM "image/svg+xml">
+  <!ENTITY logo SYSTEM "logo.svg" NDATA svg>
+  <!ENTITY amp "&#38;">
+  <!ENTITY quote "&#34;">
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, metadata?, description, asset*)>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    status (draft|published|archived) "draft"
+    xmlns:meta CDATA #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST metadata
+    created CDATA #IMPLIED
+    updated CDATA #IMPLIED>
+  <!ELEMENT description (#PCDATA|link|em|code)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ELEMENT em (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT asset EMPTY>
+  <!ATTLIST asset source ENTITY #REQUIRED kind NOTATION #REQUIRED>
+]>
+<catalog xmlns="urn:example:catalog" xmlns:meta="urn:example:metadata">
+  <entry id="item-α" status="published" meta:revision="7">
+    <title>Markup &amp; Metadata</title>
+    <metadata created="2026-01-01T00:00:00Z" updated="2026-09-30T23:59:59Z"/>
+    <description>
+      Text with &amp; and &quot; entities, a
+      <link href="https://example.invalid/a?x=1&amp;y=2">link</link>,
+      <em>emphasis <code>&lt;token&gt;</code></em>.
+    </description>
+    <asset source="logo" kind="svg"/>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row*)>
+  <!ELEMENT row (cell*)>
+  <!ATTLIST row index NMTOKEN #IMPLIED>
+  <!ELEMENT cell (#PCDATA|value|ref)*>
+  <!ATTLIST cell
+    colspan NMTOKEN "1"
+    rowspan NMTOKEN "1">
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ATTLIST matrix active IDREFS #IMPLIED>
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+  <!ENTITY nested "<value>generated</value>">
+]>
+<matrix active="c1 c3">
+  <row index="0">
+    <cell id="c1" colspan="2">&left;<value>42</value>&right;</cell>
+    <cell><ref target="c1"/></cell>
+  </row>
+  <row index="1">
+    <cell rowspan="2"><![CDATA[
+      whitespace
+      <not-an-element/>
+      ]]></cell>
+    <cell id="c3">before&nested;after</cell>
+  </row>
+  <row index="2"/>
+</matrix>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (event*)>
+  <!ELEMENT event (timestamp, payload)>
+  <!ATTLIST event type CDATA #REQUIRED>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ENTITY open "<fragment kind='generated'>">
+  <!ENTITY close "</fragment>">
+]>
+<?processing instruction-data?>
+<stream>
+  <event type="start">
+    <timestamp>2026-10-01T12:34:56.123456789Z</timestamp>
+    <payload>
+      &open;
+      <item key="a&amp;b" value="&quot;quoted&quot;"/>
+      <![CDATA[ raw ]]> 
+      &close;
+    </payload>
+  </event>
+  <event type="empty">
+    <timestamp/>
+    <payload><![CDATA[]]></payload>
+  </event>
+  <event type="mixed">
+    <timestamp>+00:00</timestamp>
+    <payload>left<!-- hidden -->middle<?pi x?>right</payload>
+  </event>
+</stream>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ENTITY % declarations '
+    <!ELEMENT packet (header?, body, signature?)>
+    <!ATTLIST packet xmlns CDATA #IMPLIED>
+    <!ELEMENT header (property*)>
+    <!ELEMENT property EMPTY>
+    <!ATTLIST property name CDATA #REQUIRED value CDATA #IMPLIED>
+    <!ELEMENT body (chunk|![CDATA[section]]|checksum)*>
+    <!ELEMENT chunk (#PCDATA)>
+    <!ATTLIST chunk encoding (plain|base64|hex) #REQUIRED>
+    <!ELEMENT checksum (#PCDATA)>
+    <!ELEMENT signature EMPTY>
+    <!ATTLIST signature algorithm CDATA #REQUIRED value CDATA #REQUIRED>
+  '>
+  %declarations;
+  <!ENTITY marker "&#x1F;boundary">
+]>
+<packet xmlns="urn:wire:v2" xmlns:x="urn:extensions">
+  <header>
+    <property name="version" value="2"/>
+    <property name="flags" value="A&amp;B"/>
+    <property name="empty"/>
+  </header>
+  <body>
+    <chunk encoding="plain">first &marker; second</chunk>
+    <![CDATA[
+      <chunk encoding="base64">ZmFrZQ==</chunk>
+      unparsed-looking content
+    ]]>
+    <chunk encoding="hex">00ff10aa</chunk>
+    <checksum>sha256:00000000000000000000000000000000</checksum>
+    <x:extension x:mode="compat">
+      <x:item/>
+    </x:extension>
+  </body>
+  <signature algorithm="none" value=""/>
+</packet>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (directory)>
+  <!ELEMENT directory (folder|file|shortcut)*>
+  <!ELEMENT folder (folder|file|shortcut)*>
+  <!ELEMENT file (#PCDATA)>
+  <!ELEMENT shortcut EMPTY>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ATTLIST file
+    name CDATA #REQUIRED
+    size NMTOKEN #IMPLIED
+    executable (true|false) "false">
+  <!ATTLIST shortcut
+    name CDATA #REQUIRED
+    target IDREF #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY snowman "&#x2603;">
+]>
+<archive>
+  <directory>
+    <folder name="root">
+      <file name="readme.txt" size="12" executable="false">hello&nbsp;world</file>
+      <folder name="深い">
+        <file name="emoji-☃.txt" size="0" executable="true"><![CDATA[]]></file>
+        <shortcut name="alias" target="missing-id"/>
+      </folder>
+      <folder name="empty"></folder>
+    </folder>
+    <file name="outside" size="18446744073709551615" executable="true">
+      line one
+      line two
+    </file>
+  </directory>
+</archive>
+```

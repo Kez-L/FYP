@@ -1,0 +1,23 @@
+{
+  "call": 6,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (metadata, entry+)>\n  <!ELEMENT metadata (title, author, created)>\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT author (#PCDATA)>\n  <!ELEMENT created (#PCDATA)>\n  <!ELEMENT entry (summary, body, tag*)>\n  <!ATTLIST entry key ID #REQUIRED status (draft|published|retired) \"draft\">\n  <!ELEMENT summary (#PCDATA)>\n  <!ELEMENT body (#PCDATA|emphasis|link|break)*>\n  <!ELEMENT emphasis (#PCDATA)>\n  <!ELEMENT link (#PCDATA)>\n  <!ATTLIST link href CDATA #REQUIRED>\n  <!ELEMENT break EMPTY>\n  <!ELEMENT tag (#PCDATA)>\n  <!ENTITY legal \"All rights reserved.\">\n]>\n<archive>\n  <metadata>\n    <title>Field Notes</title>\n    <author>Ada Lovelace</author>\n    <created>1843-10-01</created>\n  </metadata>\n  <entry key=\"note-1\" status=\"published\">\n    <summary>Observations from the northern road</summary>\n    <body>The weather was <emphasis>unusually clear</emphasis>.<break/>\n      See <link href=\"https://example.invalid/route\">the route map</link>.\n      &legal;</body>\n    <tag>travel</tag>\n    <tag>weather</tag>\n  </entry>\n</archive>\n\n--- example 2 ---\n<?xml version=\"1.1\"?>\n<root xmlns=\"urn:default\" xmlns:x=\"urn:example:x\" xml:lang=\"fr\">\n  <x:branch data=\"&quot;&amp;&lt;&gt;\">\n    <leaf xml:space=\"preserve\">  text\n      <![CDATA[raw ]]> content]]>\n    </leaf>\n  </x:branch>\n  <empty xmlns=\"\" xmlns:x=\"urn:changed\" x:k=\"v\"/>\n</root>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-01T05:31:25.766533+00:00"
+}

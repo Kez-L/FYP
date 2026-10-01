@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+    path CDATA #REQUIRED
+    type (text|binary|image) "text"
+    compressed (yes|no) "no">
+  <!ELEMENT data (chunk*)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ENTITY one "alpha">
+  <!ENTITY two "&one;-beta">
+]>
+<package>
+  <manifest>
+    <file path="readme.txt" type="text" compressed="no"/>
+    <file path="assets/icon.svg" type="image" compressed="yes"/>
+    <file path="payload.bin" type="binary" compressed="yes"/>
+  </manifest>
+  <data>
+    <chunk id="a">&one;</chunk>
+    <chunk id="b">&two;</chunk>
+    <chunk id="c">&#x0A;line&#x0D;break</chunk>
+  </data>
+</package>

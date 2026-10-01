@@ -1,0 +1,135 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common "CDATA">
+  <!ELEMENT catalog (item+, note?)>
+  <!ELEMENT item (name, price, details*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST catalog xmlns CDATA #IMPLIED version NMTOKEN #REQUIRED>
+  <!ATTLIST item id ID #REQUIRED status (new|used|archived) "new">
+  <!ATTLIST price currency (%common;) "USD">
+  <!ENTITY euro "&#x20AC;">
+  <!ENTITY decorated "<em>special</em> &amp; <code>sale</code>">
+]>
+<catalog xmlns="urn:inventory:test" version="1.0">
+  <item id="i001" status="used">
+    <name>Widget &lt;A&gt;</name>
+    <price currency="EUR">19.95 &euro;</price>
+    <details>old <em>but</em> <code>reliable</code></details>
+  </item>
+  <item id="i002">
+    <name>Bundle</name>
+    <price>&decorated;</price>
+    <details><![CDATA[raw ]]> text <!-- embedded --> tail</details>
+  </item>
+  <note>End<?catalog instruction?>.</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header (source, destination, stamp)>
+  <!ELEMENT source EMPTY>
+  <!ELEMENT destination EMPTY>
+  <!ELEMENT stamp (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ATTLIST envelope xmlns:msg CDATA #FIXED "urn:message"
+                    xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST source msg:id ID #REQUIRED
+                  role (primary|backup) #REQUIRED>
+  <!ATTLIST destination msg:ref IDREF #REQUIRED>
+  <!ENTITY quote "He said &quot;ready&quot;">
+]>
+<envelope xmlns:msg="urn:message" xml:lang="en-US">
+  <header>
+    <source msg:id="origin-7" role="primary"/>
+    <destination msg:ref="origin-7"/>
+    <stamp>2026-10-01T00:00:00Z</stamp>
+  </header>
+  <payload>
+    <?route via="internal"?>
+    <msg:packet xmlns:msg="urn:message" msg:type="data">
+      <![CDATA[<not-an-element>&still-raw;</not-an-element>]]>
+      <msg:value>&quote;</msg:value>
+    </msg:packet>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE gallery [
+  <!NOTATION png SYSTEM "image/png">
+  <!NOTATION jpg PUBLIC "-//EXAMPLE//JPEG" "image/jpeg">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY photo SYSTEM "photo.jpg" NDATA jpg>
+  <!ELEMENT gallery (caption?, image*)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT image EMPTY>
+  <!ATTLIST gallery mode (compact|full) "full">
+  <!ATTLIST image src ENTITY #REQUIRED
+                 alt CDATA #IMPLIED
+                 sizes NMTOKENS #IMPLIED
+                 index NMTOKEN #IMPLIED>
+]>
+<gallery mode="compact">
+  <caption>Binary references &amp; metadata</caption>
+  <image src="logo" alt="logo" sizes="small medium" index="01"/>
+  <image src="photo" alt="sample &lt;image&gt;" sizes="large"/>
+</gallery>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA|cell)*>
+  <!ATTLIST matrix xmlns:m CDATA #IMPLIED count NMTOKEN #REQUIRED>
+  <!ATTLIST row number NMTOKEN #REQUIRED>
+  <!ATTLIST cell kind (text|formula|empty) "text">
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+  <!ENTITY nested "&left;inner&right;">
+]>
+<matrix xmlns:m="urn:matrix" count="2">
+  <row number="1">
+    <cell kind="text">alpha &amp; beta</cell>
+    <cell kind="formula">x &lt; y ? y : x</cell>
+  </row>
+  <row number="2">
+    <cell kind="empty"/>
+    <cell kind="text">before<cell kind="formula">&nested;</cell>after</cell>
+  </row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (chunk*)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST stream xmlns:s CDATA #IMPLIED>
+  <!ATTLIST chunk type CDATA #IMPLIED>
+  <!ENTITY a "A">
+  <!ENTITY b "&a;&a;&a;">
+]>
+<stream xmlns:s="urn:stream">
+  <chunk type="text">one</chunk>
+  <chunk type="cdata"><![CDATA[&a; <x> ]]>tail</chunk>
+  <chunk type="mixed">pre&amp;post&#x0A;line</chunk>
+  <chunk type="entity">&b;</chunk>
+  <chunk
+    type="split"
+    data-extra="&quot;unterminated-looking&quot;"
+  >value</chunk>
+  <?flush?>
+</stream>
+```

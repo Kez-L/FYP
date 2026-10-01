@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ENTITY % declarations '
+    <!ELEMENT packet (meta?, body)>
+    <!ELEMENT meta EMPTY>
+    <!ELEMENT body (chunk|binary|![IGNORE[
+      <!ELEMENT ignored (#PCDATA)>
+    ]]>)*
+    <!ELEMENT chunk (#PCDATA|mark)*>
+    <!ELEMENT mark (#PCDATA)>
+    <!ELEMENT binary (#PCDATA)>
+    <!ATTLIST packet kind (request|response) "request">
+    <!ATTLIST meta stamp CDATA #IMPLIED>
+  '>
+  %declarations;
+  <![INCLUDE[
+    <!ENTITY open "[">
+    <!ENTITY close "]">
+  ]]>
+]>
+<packet kind="response">
+  <meta stamp="2026-10-01T00:00:00Z"/>
+  <body>
+    <chunk>alpha<mark>mid</mark>omega</chunk>
+    <binary encoding="base64">AAECAwQF</binary>
+    <chunk>&lt;split&gt; &open;odd&close;</chunk>
+  </body>
+</packet>

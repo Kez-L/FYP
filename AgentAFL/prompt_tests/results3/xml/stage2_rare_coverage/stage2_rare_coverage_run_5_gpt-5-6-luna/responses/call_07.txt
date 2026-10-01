@@ -1,0 +1,138 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:catalog:v2" xmlns:p="urn:product" xml:lang="fr">
+  <section id="α" xml:space="preserve">
+    <!-- deliberately mixed content -->
+    Intro <emphasis level="2">texte</emphasis>
+    <item p:sku="SKU-000" p:active="true">
+      <p:name><![CDATA[<non-markup> & raw text]]></p:name>
+      <p:price currency="€">19.95</p:price>
+      <p:tags>
+        <p:tag>été</p:tag>
+        <p:tag>naïve</p:tag>
+        <p:tag>𐐷</p:tag>
+      </p:tags>
+    </item>
+    <item p:sku="SKU-001">
+      <p:name>line one&#x0A;line two&#x2028;line three</p:name>
+      <p:dimensions><p:w>0</p:w><p:h>-1</p:h><p:d>999999999999</p:d></p:dimensions>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY company "A &amp; B">
+  <!ENTITY open "<![CDATA[">
+  <!ENTITY close "]]>">
+  <!ENTITY % common "id ID #IMPLIED status (new|old|void) 'new'">
+  <!ELEMENT report (metadata, record+, footer?)>
+  <!ELEMENT metadata (title, generated)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated EMPTY>
+  <!ATTLIST generated value CDATA #REQUIRED>
+  <!ELEMENT record (key, value, note*)>
+  <!ATTLIST record %common;>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|ref)*>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<report>
+  <metadata>
+    <title>&company; &amp; audit</title>
+    <generated value="2026-10-01T00:00:00Z"/>
+  </metadata>
+  <record id="r1" status="new">
+    <key>alpha</key>
+    <value>left<ref target="r2"/>right</value>
+    <note>literal &lt;markup&gt;</note>
+  </record>
+  <record id="r2" status="old">
+    <key>beta</key>
+    <value>&open;not parsed as an element&close;</value>
+  </record>
+  <footer>count=2</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<frame id="root" xmlns:x="urn:x">
+  <a n="1"><b n="2"><c n="3"><d n="4"><e n="5">
+    <f n="6"><g n="7"><h n="8"><i n="9"><j n="10">
+      <k n="11"><l n="12"><m n="13"><n n="14"><o n="15">
+        <p n="16"><q n="17"><r n="18"><s n="19"><t n="20">
+          <u n="21"><v n="22"><w n="23"><x:node n="24">
+            <leaf xmlns="" data="&quot;&apos;&amp;&lt;&gt;" />
+          </x:node></w></v></u>
+        </t></s></r></q></p>
+      </o></n></m></l></k>
+    </j></i></h></g></f>
+  </e></d></c></b></a>
+  <?state phase="deep"?>
+</frame>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (pair | group)*>
+  <!ELEMENT pair (key, val)>
+  <!ELEMENT group (pair*, group?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT val (#PCDATA|br|raw)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT raw ANY>
+  <!ATTLIST pair type CDATA "text" uid NMTOKEN #IMPLIED>
+  <!ATTLIST group name CDATA #REQUIRED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data:application/octet-stream;base64,AAEC" NDATA bin>
+]>
+<map>
+  <group name="outer">
+    <pair uid="p-α" type="text">
+      <key>one</key>
+      <val>before<br/>after<raw><nested attr="x">payload</nested></raw></val>
+    </pair>
+    <group name="empty"/>
+    <pair type="&quot;quoted&quot;">
+      <key>two</key>
+      <val> A&#x9;B&#xA;C&#xD; </val>
+    </pair>
+  </group>
+  <pair uid="last">
+    <key>three</key>
+    <val><![CDATA[
+      ]]> inside text ]]></val>
+  </pair>
+</map>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="urn:one" xmlns:q="urn:two" xmlns:r="urn:three">
+  <q:branch q:a="1" r:b="2">
+    <leaf xmlns:q="urn:shadow" q:a="shadow">
+      <inner xmlns="urn:reset" xmlns:r="">
+        <node r:name="broken-prefix"/>
+      </inner>
+    </leaf>
+  </q:branch>
+  <mixed>
+    text-before
+    <![CDATA[ raw ]]> 
+    <!-- comment with -- forbidden? -->
+    <empty />
+    <?custom data with > and "quotes"?>
+    text-after
+  </mixed>
+  <attributes z="&amp;" y="&#x20;" x="&#x1F642;">
+    <child xmlns:q="urn:local" q:value="v"/>
+  </attributes>
+</root>
+```

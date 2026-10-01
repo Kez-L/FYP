@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (metadata, manifest, payloads)>
+  <!ELEMENT metadata (name, version, tags?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT version (#PCDATA)>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT payloads (payload+)>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST file path CDATA #REQUIRED media-type CDATA #REQUIRED checksum CDATA #IMPLIED>
+  <!ATTLIST payload id ID #REQUIRED encoding (base64|text|hex) #REQUIRED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!ENTITY % common "xml:space (default|preserve) 'preserve'">
+  <!ATTLIST payload %common;>
+  <!ENTITY left-bracket "[">
+  <!ENTITY right-bracket "]">
+]>
+<package xml:base="https://packages.invalid/archive/">
+  <metadata>
+    <name>nightly-tools</name>
+    <version>4.7.0-dev</version>
+    <tags><tag>diagnostic</tag><tag>portable</tag><tag>experimental</tag></tags>
+  </metadata>
+  <manifest>
+    <file path="bin/inspect" media-type="application/octet-stream" checksum="sha256:abc"/>
+    <file path="share/readme.txt" media-type="text/plain"/>
+    <file path="config/default.xml" media-type="application/xml" checksum="sha256:def"/>
+  </manifest>
+  <payloads>
+    <payload id="p1" encoding="text">
+      first line
+      <chunk index="0">middle &amp; marked</chunk>
+      last line
+    </payload>
+    <payload id="p2" encoding="hex">4A6F7920&lt;raw&gt;</payload>
+    <payload id="p3" encoding="base64"><![CDATA[AAECAwQFBgcICQ==]]></payload>
+  </payloads>
+</package>

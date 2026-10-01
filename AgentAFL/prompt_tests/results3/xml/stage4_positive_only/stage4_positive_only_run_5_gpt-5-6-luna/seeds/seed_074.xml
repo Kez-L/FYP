@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (defaults, profile+)>
+  <!ELEMENT defaults (option*)>
+  <!ELEMENT profile (inherit?, option*, remove*)>
+  <!ATTLIST profile name NMTOKEN #REQUIRED>
+  <!ELEMENT inherit EMPTY>
+  <!ATTLIST inherit from NMTOKEN #REQUIRED>
+  <!ELEMENT option (value|values)>
+  <!ATTLIST option key NMTOKEN #REQUIRED type (string|integer|boolean|list) "string">
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT values (value+)>
+  <!ELEMENT remove EMPTY>
+  <!ATTLIST remove key NMTOKEN #REQUIRED>
+]>
+<configuration>
+  <defaults>
+    <option key="timeout" type="integer"><value>30</value></option>
+    <option key="verbose" type="boolean"><value>false</value></option>
+  </defaults>
+  <profile name="minimal">
+    <option key="paths" type="list">
+      <values>
+        <value>/tmp</value>
+        <value>/var/lib/app</value>
+      </values>
+    </option>
+    <remove key="verbose"/>
+  </profile>
+  <profile name="production">
+    <inherit from="minimal"/>
+    <option key="timeout" type="integer"><value>86400</value></option>
+    <option key="banner"><value><![CDATA[<ready> & safe]]></value></option>
+  </profile>
+</configuration>

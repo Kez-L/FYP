@@ -1,0 +1,48 @@
+<?xml version="1.1"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (phase, checkpoint*, result)>
+  <!ELEMENT phase (step+)>
+  <!ELEMENT step (instruction, branch?)>
+  <!ELEMENT instruction (#PCDATA|token|break)*>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT branch (when, otherwise?)>
+  <!ELEMENT when (step*)>
+  <!ELEMENT otherwise (step*)>
+  <!ELEMENT checkpoint EMPTY>
+  <!ELEMENT result (message, metric*)>
+  <!ELEMENT message (#PCDATA|emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT metric (#PCDATA)>
+  <!ATTLIST workflow xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST phase name CDATA #REQUIRED>
+  <!ATTLIST step number NMTOKEN #REQUIRED>
+  <!ATTLIST checkpoint ref IDREF #IMPLIED status (open|closed) "open">
+  <!ATTLIST result code NMTOKEN #REQUIRED>
+  <!ENTITY intro "execute">
+  <!ENTITY open "<token>start</token>">
+]>
+<workflow xml:lang="en-US">
+  <?pipeline mode="diagnostic"?>
+  <phase name="bootstrap">
+    <step number="1">
+      <instruction>&intro; <token>prepare</token><break/>environment</instruction>
+    </step>
+    <step number="2">
+      <instruction>validate <token>&open;</token></instruction>
+      <branch>
+        <when>
+          <step number="2a"><instruction>retry</instruction></step>
+        </when>
+        <otherwise>
+          <step number="2b"><instruction>continue</instruction></step>
+        </otherwise>
+      </branch>
+    </step>
+  </phase>
+  <checkpoint ref="missing" status="closed"/>
+  <result code="OK">
+    <message>Finished with <emphasis>no fatal errors</emphasis>.</message>
+    <metric>elapsed=17ms</metric>
+  </result>
+</workflow>

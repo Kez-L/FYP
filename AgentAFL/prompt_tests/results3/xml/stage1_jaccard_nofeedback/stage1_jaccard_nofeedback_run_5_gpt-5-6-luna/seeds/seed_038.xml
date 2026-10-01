@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a|b|mixed)*>
+  <!ELEMENT a EMPTY>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT mixed (#PCDATA|a|b|c)*>
+  <!ELEMENT c ANY>
+  <!ATTLIST a x NMTOKENS #IMPLIED>
+  <!ATTLIST b ref IDREFS #IMPLIED>
+]>
+<root>
+  <a x="one two&#x9;three"/>
+  <b ref="id1 id2">numeric &#x31;&#x32;&#x33;</b>
+  <mixed>
+    leading
+    <a/>
+    middle
+    <b>tail</b>
+    <c><nested attr="&lt;value&gt;">payload</nested></c>
+  </mixed>
+  <unknown attr="unterminated">
+    <child/>
+  </unknown>
+</root>

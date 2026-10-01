@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow"
+          xmlns:x="urn:example:extension"
+          xmlns:html="http://www.w3.org/1999/xhtml"
+          version="2.0">
+  <definition name="nightly-maintenance">
+    <trigger kind="calendar">
+      <schedule tz="UTC">
+        <weekday>mon</weekday>
+        <weekday>wed</weekday>
+        <weekday>fri</weekday>
+        <time>02:30:00</time>
+      </schedule>
+    </trigger>
+    <steps>
+      <step id="prepare" action="mkdir" x:retry="2">
+        <parameter name="path" type="string">/var/tmp/work</parameter>
+      </step>
+      <step id="execute" action="run" depends-on="prepare">
+        <parameter name="command"><![CDATA[printf '%s\n' "<ready>"]]></parameter>
+        <environment>
+          <variable name="LANG">C.UTF-8</variable>
+          <variable name="LC_ALL">C</variable>
+        </environment>
+      </step>
+      <step id="report" action="notify" depends-on="execute">
+        <html:message>
+          <html:p>Maintenance completed.</html:p>
+          <html:ul><html:li>prepare</html:li><html:li>execute</html:li></html:ul>
+        </html:message>
+      </step>
+    </steps>
+  </definition>
+  <disabled name="legacy-task" reason="retired"/>
+</workflow>

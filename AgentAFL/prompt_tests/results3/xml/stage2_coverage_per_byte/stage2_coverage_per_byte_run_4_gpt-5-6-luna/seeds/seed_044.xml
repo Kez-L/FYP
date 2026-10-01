@@ -1,0 +1,27 @@
+<?xml version="1.1"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (metadata?, payload, checksum?)>
+  <!ELEMENT metadata (field*)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT payload ANY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST envelope mode (safe|raw|test) "test">
+  <!ATTLIST field key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY hex "&#x41;&#x42;&#x43;">
+]>
+<envelope mode="raw">
+  <metadata>
+    <field key="empty" value=""/>
+    <field key="symbols" value="&lt;&gt;&amp;&quot;&apos;"/>
+    <field key="unicode" value="snowman &#x2603;"/>
+  </metadata>
+  <payload>
+    <chunk index="0">start</chunk>
+    <chunk index="1"><![CDATA[
+      <not-a-tag attr='x'> & raw bytes
+    ]]></chunk>
+    <chunk index="2">end &hex;</chunk>
+    <empty/>
+  </payload>
+  <checksum>00ff&#x0D;&#x0A;17</checksum>
+</envelope>

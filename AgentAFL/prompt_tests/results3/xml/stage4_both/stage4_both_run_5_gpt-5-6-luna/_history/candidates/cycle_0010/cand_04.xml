@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:example:config">
+  <profiles>
+    <profile name="development" enabled="true">
+      <property key="endpoint"><![CDATA[https://dev.example.invalid/api?v=2&x=1]]></property>
+      <property key="timeout">00:00:30</property>
+      <property key="features">
+        <list>
+          <item>cache</item>
+          <item>metrics</item>
+          <item>trace</item>
+        </list>
+      </property>
+    </profile>
+    <profile name="production" enabled="false">
+      <property key="endpoint">https://prod.example.invalid/api</property>
+      <property key="timeout">00:02:00</property>
+    </profile>
+  </profiles>
+  <rules>
+    <rule priority="10">
+      <match path="/users/*" method="GET"/>
+      <action type="allow">
+        <header name="Cache-Control" value="no-store"/>
+      </action>
+    </rule>
+    <rule priority="20">
+      <match path="/admin/**" method="*"/>
+      <action type="deny">
+        <reason>restricted area</reason>
+      </action>
+    </rule>
+    <rule priority="30">
+      <match path="/search" method="POST">
+        <condition field="query" operator="contains">status</condition>
+      </match>
+      <action type="redirect" location="/status"/>
+    </rule>
+  </rules>
+  <secrets>
+    <token id="primary" encoding="base64">QWJjMTIzIT8=</token>
+  </secrets>
+</configuration>

@@ -1,0 +1,161 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (label, value?, note*)>
+  <!ATTLIST item id ID #REQUIRED status (new|old|archived) "new">
+  <!ELEMENT label (#PCDATA|b|i)*>
+  <!ELEMENT value (#PCDATA|unit)*>
+  <!ELEMENT unit (#PCDATA)>
+  <!ELEMENT note (#PCDATA|b|i)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ENTITY mark "&#x2605;">
+]>
+<catalog xmlns="urn:example:catalog" xmlns:m="urn:example:meta" xml:base="https://example.invalid/data/">
+  <?catalog mode="index"?>
+  <!-- namespace-aware mixed content -->
+  <section xml:lang="en">
+    <title>Measurements &amp; &mark;</title>
+    <item id="a1" status="new">
+      <label><b>Temperature</b> <i>ambient</i></label>
+      <value>21.5<unit>°C</unit></value>
+      <note>Collected <m:source code="A-7">north wing</m:source>.</note>
+    </item>
+    <item id="b2" status="archived">
+      <label>Pressure</label>
+      <note xml:space="preserve">  retired value  </note>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope"
+              xmlns:x="urn:example:inventory"
+              xmlns: xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <env:Header>
+    <x:Trace id="t-001" enabled="true">
+      <x:Hop>gateway</x:Hop>
+      <x:Hop>worker</x:Hop>
+    </x:Trace>
+  </env:Header>
+  <env:Body>
+    <x:Batch xsi:type="x:TransferBatch" count="2">
+      <x:Transfer from="A&amp;B" to="C">
+        <x:Payload><![CDATA[
+          <embedded kind="not-parsed"><value>1 & 2</value></embedded>
+        ]]></x:Payload>
+        <x:Amount currency="€">12&#x2E;50</x:Amount>
+      </x:Transfer>
+      <x:Transfer from="C" to="A" priority="high">
+        <x:Payload/>
+        <x:Amount currency="USD">0</x:Amount>
+      </x:Transfer>
+    </x:Batch>
+  </env:Body>
+</env:Envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % fields "
+    <!ELEMENT field (#PCDATA|key|value)*>
+    <!ATTLIST field name CDATA #REQUIRED>
+    <!ELEMENT key (#PCDATA)>
+    <!ELEMENT value (#PCDATA|emph)*>
+    <!ELEMENT emph (#PCDATA)>
+  ">
+  %fields;
+  <!ELEMENT report (metadata, record+)>
+  <!ELEMENT metadata (author, generated)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT record (field+)>
+  <!ATTLIST record number NMTOKEN #REQUIRED>
+  <!ENTITY open "[">
+  <!ENTITY close "]">
+]>
+<report>
+  <metadata>
+    <author>Δelta &amp; Team</author>
+    <generated>2026-10-01T00:00:00Z</generated>
+  </metadata>
+  <record number="001">
+    <field name="title"><key>name</key><value>First &open; draft &close;</value></field>
+    <field name="body"><key>text</key><value>plain <emph>bold-ish</emph> tail</value></field>
+  </record>
+  <record number="002">
+    <field name="title"><key>name</key><value><![CDATA[<untrusted/>]]></value></field>
+    <field name="empty"/>
+  </record>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<workflow xmlns="urn:example:workflow">
+  <pipeline id="p7">
+    <step id="fetch" type="source">
+      <config>
+        <url scheme="https">https://example.invalid/a?x=1&amp;y=2</url>
+        <header name="Accept">application/xml</header>
+      </config>
+    </step>
+    <step id="transform" type="xslt">
+      <config>
+        <parameter name="mode">strict</parameter>
+        <script><![CDATA[
+          for ($x in //item) {
+            <result>{data($x)}</result>
+          }
+        ]]></script>
+      </config>
+    </step>
+    <branch test="count(/workflow/pipeline/step) &gt; 2">
+      <then>
+        <step id="publish" type="sink"/>
+      </then>
+      <else>
+        <failure code="E_EMPTY">No publication step</failure>
+      </else>
+    </branch>
+  </pipeline>
+  <?checkpoint id="after-pipeline"?>
+</workflow>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE package [
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (entry*)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry
+    path CDATA #REQUIRED
+    media CDATA #IMPLIED
+    checksum CDATA #IMPLIED>
+  <!ELEMENT data (chunk+)>
+  <!ELEMENT chunk (#PCDATA|ref)*>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref href URI #REQUIRED>
+]>
+<package xml:lang="en">
+  <manifest>
+    <entry path="images/logo.png" media="image/png" checksum="sha256:00"/>
+    <entry path="notes/readme.txt" media="text/plain"/>
+  </manifest>
+  <data>
+    <chunk index="0">line-one&#x85;line-two<ref href="images/logo.png"/></chunk>
+    <chunk index="1"><![CDATA[raw <bytes> & markers]]></chunk>
+  </data>
+</package>
+```

@@ -1,0 +1,174 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE museum [
+  <!ENTITY % common "(painting|sculpture|installation)">
+  <!ELEMENT museum (wing+, curator?)>
+  <!ELEMENT wing (name, exhibit*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT exhibit (%common;)>
+  <!ELEMENT painting (#PCDATA)>
+  <!ELEMENT sculpture (#PCDATA)>
+  <!ELEMENT installation (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT curator (#PCDATA)>
+  <!ATTLIST wing code ID #REQUIRED>
+  <!ATTLIST exhibit year NMTOKEN #IMPLIED>
+  <!ENTITY ampersand "&amp;">
+  <!ENTITY note "catalog &amp; inventory">
+]>
+<museum>
+  <wing code="west">
+    <name xml:lang="en">Modern &amp; Contemporary</name>
+    <exhibit year="2024"><painting>Blue &amp; &quot;Gold&quot;</painting></exhibit>
+    <exhibit year="2025"><installation>assembled <part>north</part><part>south</part> &amp; east</installation></exhibit>
+  </wing>
+  <wing code="east">
+    <name><![CDATA[Classical <works>]]></name>
+    <exhibit><sculpture>&note; &#x2603;</sculpture></exhibit>
+  </wing>
+  <curator>R&amp;D &amp; preservation</curator>
+</museum>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry*)>
+  <!ELEMENT entry (title, author+, metadata?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT metadata (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST entry id ID #REQUIRED refs IDREFS #IMPLIED format (print|ebook|audio) "print">
+  <!ATTLIST author role NMTOKEN "primary">
+  <!ENTITY intro "A &quot;quoted&quot; fragment with &#xA; a newline">
+]>
+<catalog>
+  <entry id="bk-17" refs="bk-18 bk-19" format="ebook">
+    <title>Parsing &amp; Preservation</title>
+    <author role="primary">A. Reader</author>
+    <author role="editor">B. Compiler</author>
+    <metadata>
+      <tag>xml</tag>
+      <tag>fuzzing</tag>
+      <tag><![CDATA[semi<structured>]]></tag>
+    </metadata>
+  </entry>
+  <entry id="bk-18" format="audio">
+    <title>&intro;</title>
+    <author>Voice Unit</author>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (header, panel+)>
+  <!ELEMENT header (#PCDATA|status)*>
+  <!ELEMENT status EMPTY>
+  <!ELEMENT panel (label, metric*, graph?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT metric (#PCDATA)>
+  <!ELEMENT graph (point*)>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST status level (ok|warn|fail) "ok">
+  <!ATTLIST panel id ID #REQUIRED visible (yes|no) "yes">
+  <!ATTLIST metric unit (ms|bytes|count) #IMPLIED>
+  <!ATTLIST point x NMTOKEN #REQUIRED y NMTOKEN #REQUIRED>
+  <!ENTITY percent "&#37;">
+]>
+<dashboard xmlns="urn:dashboard:v2" xmlns:m="urn:metrics">
+  <header>Build <status level="warn"/> completed at 87&percent;</header>
+  <panel id="latency" visible="yes">
+    <label>Request latency</label>
+    <metric unit="ms">12.4</metric>
+    <metric unit="ms">18.9</metric>
+    <graph>
+      <point x="0" y="4"/>
+      <point x="1" y="9"/>
+      <point x="2" y="7"/>
+    </graph>
+  </panel>
+  <panel id="memory" visible="no">
+    <label><![CDATA[Resident <memory>]]></label>
+    <metric unit="bytes">65536</metric>
+  </panel>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload, signature?)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT payload (section*)>
+  <!ELEMENT section (text|binary|section)*>
+  <!ELEMENT text (#PCDATA)>
+  <!ELEMENT binary (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST package version NMTOKEN #FIXED "3.1">
+  <!ATTLIST file path CDATA #REQUIRED size NMTOKEN #IMPLIED digest CDATA #IMPLIED>
+  <!ATTLIST section name NMTOKEN #REQUIRED>
+  <!ENTITY open "<text>generated &amp; verified</text>">
+  <![IGNORE[
+    <!ELEMENT obsolete EMPTY>
+    <!ATTLIST obsolete reason CDATA #IMPLIED>
+  ]]>
+]>
+<package version="3.1">
+  <manifest>
+    <file path="bin/start" size="2048" digest="aa11"/>
+    <file path="share/info.txt" size="0"/>
+  </manifest>
+  <payload>
+    <section name="intro">
+      &open;
+      <binary>AAECAwQFBgcICQ==</binary>
+    </section>
+    <section name="nested">
+      <section name="inner"><text>one &lt; two</text></section>
+      <text><![CDATA[raw ]]> delimiter ]]&gt; preserved</text>
+    </section>
+  </payload>
+  <signature>sha256:deadbeef&amp;0011</signature>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE network [
+  <!ELEMENT network (node+, link*)>
+  <!ELEMENT node (hostname, address+, service*)>
+  <!ELEMENT hostname (#PCDATA)>
+  <!ELEMENT address (#PCDATA)>
+  <!ELEMENT service (name, endpoint?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT endpoint (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST node id ID #REQUIRED zone NMTOKEN #IMPLIED>
+  <!ATTLIST address family (v4|v6) #REQUIRED>
+  <!ATTLIST service port NMTOKEN #REQUIRED protocol (tcp|udp) "tcp">
+  <!ATTLIST link from IDREF #REQUIRED to IDREF #REQUIRED weight NMTOKEN "1">
+  <!ENTITY local "localhost">
+  <!ENTITY colon ":">
+]>
+<network xmlns:n="urn:network">
+  <node id="gateway" zone="edge">
+    <hostname>&local;</hostname>
+    <address family="v4">127.0.0.1</address>
+    <address family="v6">::1</address>
+    <service port="443" protocol="tcp">
+      <name>https</name>
+      <endpoint>https&colon;//[::1]/status</endpoint>
+    </service>
+  </node>
+  <node id="worker-1" zone="compute">
+    <hostname>worker-1.example</hostname>
+    <address family="v4">192.0.2.44</address>
+    <service port="9000"><name>queue</name></service>
+  </node>
+  <link from="gateway" to="worker-1" weight="10"/>
+</network>
+```

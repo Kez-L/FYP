@@ -1,0 +1,23 @@
+{
+  "call": 5,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ATTLIST koo xml:lang CDATA \"eng\">\n  <!ATTLIST foo bar CDATA \"&lt;&gt;)qrking Group (orisable oveuot;\">\n]>\n<root>\n  <foo xml:lang=\"ger\">Ja</fo\u0000\u0004\n</roos>\n\n\n--- example 2 ---\n<!DOCTYPE doc [\n<!ELEMENT doc EMPTY>\n<!ATTLIST doc\n defatt  (0|1)   \"0\"\n     xmlns:tst CDATA #FIXED \"http://example.org\"  tst:att  (0|1)   \"0\"\n    att (0|1)   \"1\">\n]>\n<doc att=\"1B/h12;&laugh12;&laugh12;&la>\n\n\nTried before \u2014 no new coverage, avoid repeating:\n--- 2 of your past seeds (cycles 3,5) drove the same already-covered path with 0 new edges ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE r [\n  <!ENTITY % switch \"INCLUDE\">\n  <![%switch;[\n    <!ELEMENT r (a|b)*>\n    <!ELEMENT a (#PCDATA|c)*>\n    <!ELEMENT c EMPTY>\n  ]]>\n  <!ELEMENT b EMPTY>\n  <!ATTLIST r state CDATA \"open\">\n]>\n<r state=\"closed\">\n  <a>left<c/>right</a>\n  <b/>\n  <a><![CDATA[x < y && y > z]]></a>\n</r>\n\n--- a seed you generated (cycle 5) added 0 new edges ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE report [\n  <!ELEMENT report (section*)>\n  <!ELEMENT section (heading, item*)>\n  <!ELEMENT heading (#PCDATA)>\n  <!ELEMENT item (#PCDATA|code|![CDATA[]]>)>\n  <!ELEMENT code (#PCDATA)>\n  <!ATTLIST report xmlns CDATA #IMPLIED>\n  <!ENTITY open \"{\">\n  <!ENTITY close \"}\">\n]>\n<?prepare mode=\"fuzz\"?>\n<report xmlns=\"urn:report\" xmlns:r=\"urn:row\" xml:lang=\"de\">\n  <section r:id=\"s1\">\n    <heading>\u00dcberblick</heading>\n    <item>before &open;<code>value</code>&close;</item>\n    <item><![CDATA[raw ]]> tail &lt; end</item>\n  </section>\n  <section r:id=\"s2\" xml:space=\"preserve\">\n    <heading><?inside instruction?></heading>\n    <item>mixed<code>123</code>text</item>\n  </section...[truncated, 711 chars total]\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage-per-byte",
+  "positive_feedback": false,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-01T03:26:50.249860+00:00"
+}

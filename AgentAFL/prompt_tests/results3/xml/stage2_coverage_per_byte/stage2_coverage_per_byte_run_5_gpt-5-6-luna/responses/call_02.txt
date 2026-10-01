@@ -1,0 +1,90 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+, audit?)>
+  <!ELEMENT section (entry*)>
+  <!ELEMENT entry (name, value?, note*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT note EMPTY>
+  <!ELEMENT audit (#PCDATA)>
+  <!ATTLIST catalog version NMTOKEN #REQUIRED>
+  <!ATTLIST section id ID #IMPLIED collapsed (yes|no) "no">
+  <!ATTLIST entry key ID #REQUIRED flags NMTOKENS #IMPLIED>
+  <!ATTLIST note who CDATA #IMPLIED>
+]>
+<catalog version="v&amp;1">
+  <section id="s0" collapsed="yes">
+    <entry key="e0" flags="a b c">
+      <name>alpha</name>
+      <value>left<emph>middle</emph>right</value>
+      <note who="nobody"/>
+    </entry>
+  </section>
+  <section id="s1">
+    <entry key="e1"><name><![CDATA[x<y&z]]></name></entry>
+  </section>
+  <audit>done</audit>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE r [
+  <!ELEMENT r (x, y)>
+  <!ELEMENT x (#PCDATA)>
+  <!ELEMENT y (#PCDATA)>
+  <!ENTITY q "quot=&quot; amp=&amp; lt=&lt;">
+]>
+<r>
+  <x><?inside data?><![CDATA[one]]>&q;</x>
+  <y>
+    <!-- comment with -- tricky? -->
+    text
+    <z/>
+  </y>
+</r>
+```
+
+```xml
+<!DOCTYPE image [
+  <!ELEMENT image EMPTY>
+  <!ATTLIST image
+    src ENTITY #REQUIRED
+    width NMTOKEN #IMPLIED
+    height NMTOKEN #IMPLIED
+    format (png|jpg|gif) "png">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.bin" NDATA png>
+]>
+<image src="logo" width="01" height="0" format="gif"/>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE outer [
+  <!ELEMENT outer ANY>
+  <!ENTITY open "<inner attr='a&amp;b'>">
+  <!ENTITY close "</inner>">
+  <!ENTITY percent "%broken;">
+  <!ENTITY nested "&open;payload&close;">
+]>
+<outer>
+  <item a="&quot;&apos;&amp;">&nested;</item>
+  <item><![CDATA[]]></item>
+  <?pi a='b' c="d"?>
+</outer>
+```
+
+```xml
+<root xmlns="urn:default" xmlns:p="urn:p" xmlns:q="urn:q">
+  <p:branch q:id="1" xmlns:q="">
+    <leaf xmlns="urn:leaf" p:x="a&#x0A;b">text</leaf>
+  </p:branch>
+  <branch xmlns:p="urn:shadow">
+    <p:leaf p:x="&amp;" xmlns=""/>
+  </branch>
+  <empty xmlns:p="urn:p2" p:v="v"/>
+</root>
+```

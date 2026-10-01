@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, body)>
+  <!ELEMENT header (version, checksum)>
+  <!ELEMENT version (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT body (chunk*)>
+  <!ELEMENT chunk (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!ENTITY open "<part>injected">
+]>
+<packet id="root">
+  <header>
+    <version>3</version>
+    <checksum>sha256:deadbeef</checksum>
+  </header>
+  <body>
+    <chunk index="0">start &open;</chunk>
+    <chunk index="1"><![CDATA[unterminated-looking ]]]]>tail</chunk>
+    <chunk index="2" id="a" id="b">duplicate attribute</chunk>
+  </body>
+</packet>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pipeline [
+  <!ENTITY % nodeAttrs ' xml:id ID #IMPLIED xml:space (default|preserve) "default" '>
+  <!ELEMENT pipeline (input, stages, result?)>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT stages (stage+)>
+  <!ELEMENT stage (parameter*)>
+  <!ELEMENT parameter (#PCDATA)>
+  <!ELEMENT result (summary, artifact*)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT artifact EMPTY>
+  <!ATTLIST stage
+    name NMTOKEN #REQUIRED
+    enabled (yes|no) "yes"
+    %nodeAttrs;
+  >
+  <!ATTLIST parameter
+    name NMTOKEN #REQUIRED
+    value CDATA #IMPLIED
+  >
+  <!ATTLIST artifact
+    href URI #REQUIRED
+    checksum CDATA #IMPLIED
+  >
+  <!ENTITY newline "&#xA;">
+]>
+<pipeline xml:id="run-17" xml:space="preserve">
+  <input>line-one&newline;line-two</input>
+  <stages>
+    <stage name="normalize" enabled="yes" xml:id="s1">
+      <parameter name="trim" value="true"/>
+      <parameter name="charset">UTF-8</parameter>
+    </stage>
+    <stage name="compress" enabled="no">
+      <parameter name="level" value="9"/>
+    </stage>
+  </stages>
+  <result>
+    <summary><![CDATA[status: <ok/>]]></summary>
+    <artifact href="urn:output:17" checksum="sha256:deadbeef"/>
+  </result>
+</pipeline>

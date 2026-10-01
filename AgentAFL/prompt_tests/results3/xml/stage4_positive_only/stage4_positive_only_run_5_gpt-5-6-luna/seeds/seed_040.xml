@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project [
+  <!ELEMENT project (metadata, module+)>
+  <!ATTLIST project xmlns CDATA #IMPLIED version CDATA #REQUIRED>
+  <!ELEMENT metadata (created, owner)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT module (summary, task*)>
+  <!ATTLIST module name NMTOKEN #REQUIRED status (active|paused|done) "active">
+  <!ELEMENT summary (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT task (description, dependency*)>
+  <!ATTLIST task id ID #REQUIRED priority (low|normal|high) "normal">
+  <!ELEMENT description (#PCDATA|em)*>
+  <!ELEMENT dependency EMPTY>
+  <!ATTLIST dependency ref IDREF #REQUIRED>
+  <!ENTITY product "XML toolkit">
+]>
+<project xmlns="urn:example:project" version="2.4">
+  <?build profile="fuzz-seed"?>
+  <metadata>
+    <created>2026-10-01</created>
+    <owner>&product; team</owner>
+  </metadata>
+  <module name="parser" status="active">
+    <summary>Handle <em>structured</em> input with <code>strict</code> checks.</summary>
+    <task id="compile" priority="high">
+      <description>Build the parser before running tests.</description>
+    </task>
+    <task id="test" priority="normal">
+      <description>Execute <em>all</em> regression cases.</description>
+      <dependency ref="compile"/>
+    </task>
+  </module>
+</project>

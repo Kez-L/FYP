@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE mixed [
+  <!ELEMENT mixed (head, data, data?, end)>
+  <!ELEMENT head (#PCDATA)>
+  <!ELEMENT data ANY>
+  <!ELEMENT end EMPTY>
+  <!ENTITY e1 "one">
+  <!ENTITY e2 "&e1;-&e1;">
+]>
+<mixed>
+  <head>start</head>
+  <data a="1" b="2">
+    <![CDATA[raw]]>&e2;
+    <nested xmlns="urn:n" xmlns:q="urn:q" q:v="&#xD;&#xA;"/>
+    <!-- comment with -- invalid-ish? -->
+  </data>
+  <data><![CDATA[split]]>tail</data>
+  <end/>
+</mixed>

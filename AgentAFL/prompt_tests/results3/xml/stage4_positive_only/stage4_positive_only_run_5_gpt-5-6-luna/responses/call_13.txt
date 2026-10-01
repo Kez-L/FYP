@@ -1,0 +1,170 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder|document|alias)*>
+  <!ATTLIST archive generated CDATA #IMPLIED>
+  <!ELEMENT folder (label, (folder|document|alias)*)>
+  <!ATTLIST folder id ID #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT document (title, body)>
+  <!ATTLIST document id ID #REQUIRED format (plain|markup) "plain">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (#PCDATA|code|br)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT alias EMPTY>
+  <!ATTLIST alias ref IDREF #REQUIRED>
+  <!ENTITY publisher "A&amp;B Research">
+]>
+<archive generated="2026-10-01">
+  <folder id="root">
+    <label>&publisher; records</label>
+    <document id="doc-1" format="markup">
+      <title>Conversion Notes</title>
+      <body>Use <code>--strict</code> before the first <br/>validation pass.</body>
+    </document>
+    <folder id="nested">
+      <label>Archived material</label>
+      <document id="doc-2">
+        <title>Empty Case</title>
+        <body/>
+      </document>
+      <alias ref="doc-1"/>
+    </folder>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow"
+          xmlns:task="urn:example:task"
+          xmlns:ext="urn:example:extension"
+          version="3.14">
+  <!-- Namespaced pipeline with mixed metadata and executable content. -->
+  <?run mode="simulation"?>
+  <metadata>
+    <owner>systems</owner>
+    <tag priority="high">nightly</tag>
+    <tag priority="low">reproducible</tag>
+  </metadata>
+  <task:sequence id="seq-A">
+    <task:step code="prepare">
+      <task:input name="source" encoding="utf-8"><![CDATA[alpha < beta && gamma > delta]]></task:input>
+      <task:output name="manifest" path="build/manifest.xml"/>
+    </task:step>
+    <task:step code="transform" retry="2">
+      <task:when test="count(/workflow/task:sequence/task:step) &gt; 1"/>
+      <ext:script language="xpath"><![CDATA[
+        for $item in /workflow/metadata/tag
+        return normalize-space($item)
+      ]]></ext:script>
+      <task:parameter key="mode">incremental</task:parameter>
+    </task:step>
+    <task:step code="publish">
+      <task:input name="channels">
+        <task:channel id="primary"/>
+        <task:channel id="mirror" disabled="true"/>
+      </task:input>
+    </task:step>
+  </task:sequence>
+</workflow>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (account+)>
+  <!ATTLIST ledger currency CDATA "USD">
+  <!ELEMENT account (owner, transaction*)>
+  <!ATTLIST account number ID #REQUIRED status (open|closed) "open">
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT transaction (date, amount, note?)>
+  <!ATTLIST transaction kind (credit|debit) #REQUIRED>
+  <!ELEMENT date (#PCDATA)>
+  <!ELEMENT amount (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY company "North &amp; South">
+]>
+<ledger currency="GBP">
+  <account number="acct-main" status="open">
+    <owner>&company;&nbsp;Operations</owner>
+    <transaction kind="credit">
+      <date>2026-09-30</date>
+      <amount>1000.00</amount>
+      <note>Monthly <emph>allocation</emph>.</note>
+    </transaction>
+    <transaction kind="debit">
+      <date>2026-10-01</date>
+      <amount>12.50</amount>
+      <note>Service charge</note>
+    </transaction>
+  </account>
+</ledger>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<grid xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:m="urn:example:matrix"
+      rows="3" columns="3">
+  <m:row index="0">
+    <m:cell coordinate="A1" type="integer">0</m:cell>
+    <m:cell coordinate="B1" type="integer">1</m:cell>
+    <m:cell coordinate="C1" type="integer">2</m:cell>
+  </m:row>
+  <m:row index="1">
+    <m:cell coordinate="A2" type="string"><![CDATA[<literal>]]></m:cell>
+    <m:cell coordinate="B2" xsi:nil="true"/>
+    <m:cell coordinate="C2" type="string">line one
+line two</m:cell>
+  </m:row>
+  <m:row index="2">
+    <m:cell coordinate="A3" type="boolean">true</m:cell>
+    <m:cell coordinate="B3" type="decimal">-0.000000</m:cell>
+    <m:cell coordinate="C3" type="string">A &amp; B</m:cell>
+  </m:row>
+  <?checksum algorithm="sha256"?>
+</grid>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<report xml:lang="fr" xml:base="https://example.invalid/reports/">
+  <header>
+    <title>Résumé annuel</title>
+    <issued year="2025" month="12" day="31"/>
+    <author id="u-17">
+      <name>Équipe d’analyse</name>
+      <contact type="email">team@example.invalid</contact>
+    </author>
+  </header>
+  <section id="overview">
+    <heading>Vue d’ensemble</heading>
+    <paragraph>Le résultat est <strong>stable</strong>, avec une variation de 4&nbsp;%.</paragraph>
+    <list ordered="false">
+      <item>Collecte</item>
+      <item>Normalisation</item>
+      <item>Contrôle qualité</item>
+    </list>
+  </section>
+  <section id="sources">
+    <heading>Sources</heading>
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+                href="data/source-fragment.xml"
+                parse="xml">
+      <xi:fallback>
+        <paragraph>Données indisponibles.</paragraph>
+      </xi:fallback>
+    </xi:include>
+  </section>
+  <appendix>
+    <table>
+      <tr><th>Code</th><th>Valeur</th></tr>
+      <tr><td>A-1</td><td><![CDATA[raw <sample> & bytes]]></td></tr>
+    </table>
+  </appendix>
+</report>
+```

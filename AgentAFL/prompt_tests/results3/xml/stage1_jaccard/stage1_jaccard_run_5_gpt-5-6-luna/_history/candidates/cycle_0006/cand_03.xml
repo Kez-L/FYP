@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, footer?)>
+  <!ELEMENT header (sender, recipient+, subject)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (paragraph|quote|list|break)*>
+  <!ELEMENT paragraph (#PCDATA|strong|code|link|break)*>
+  <!ELEMENT quote (#PCDATA|paragraph)*>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|paragraph)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST link href URI #REQUIRED rel CDATA #IMPLIED>
+  <!ENTITY intro "A message with &lt;markup&gt;">
+]>
+<message>
+  <header>
+    <sender>sender@example.test</sender>
+    <recipient>one@example.test</recipient>
+    <recipient>two@example.test</recipient>
+    <subject>&intro;</subject>
+  </header>
+  <body>
+    <paragraph>Hello <strong>world</strong><break/>This is <code>a &amp; b</code>.</paragraph>
+    <quote>
+      <paragraph>Quoted <link href="urn:test:item" rel="related">material</link>.</paragraph>
+    </quote>
+    <list>
+      <item>first</item>
+      <item><paragraph>second with <strong>emphasis</strong></paragraph></item>
+    </list>
+    <?processing instruction?>
+    <!-- comment between body nodes -->
+  </body>
+  <footer><![CDATA[End of message ]]>with trailing text</footer>
+</message>

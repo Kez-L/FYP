@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ENTITY % common "CDATA #IMPLIED">
+  <!ELEMENT dashboard (tabs, permissions, widget+)>
+  <!ELEMENT tabs (tab+)>
+  <!ELEMENT tab (label, content)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT content (#PCDATA|link)*>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT permissions (allow*, deny*)>
+  <!ELEMENT allow EMPTY>
+  <!ELEMENT deny EMPTY>
+  <!ELEMENT widget (caption?, data)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+  <!ATTLIST tab id ID #REQUIRED selected (yes|no) "no">
+  <!ATTLIST link href %common;>
+  <!ATTLIST allow role NMTOKEN #REQUIRED>
+  <!ATTLIST deny role NMTOKEN #REQUIRED>
+  <!ATTLIST widget class NMTOKEN #REQUIRED>
+]>
+<dashboard>
+  <tabs>
+    <tab id="home" selected="yes">
+      <label>Home</label>
+      <content>Welcome <link href="https://example.test/a?x=1&amp;y=2"/>!</content>
+    </tab>
+    <tab id="settings">
+      <label><![CDATA[Settings]]></label>
+      <content><link href="#fragment"/>configured</content>
+    </tab>
+  </tabs>
+  <permissions>
+    <allow role="admin"/>
+    <allow role="reader"/>
+    <deny role="guest"/>
+  </permissions>
+  <widget class="chart">
+    <caption>Usage</caption>
+    <data>12,18,7,&#x0D;&#x0A;22</data>
+  </widget>
+  <widget class="status">
+    <data><![CDATA[OK <pending> & retry]]></data>
+  </widget>
+</dashboard>

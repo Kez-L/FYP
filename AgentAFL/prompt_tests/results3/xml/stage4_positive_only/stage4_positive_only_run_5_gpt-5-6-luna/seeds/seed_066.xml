@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow"
+          xmlns:task="urn:example:task"
+          xmlns:ext="urn:example:extension"
+          version="3.14">
+  <!-- Namespaced pipeline with mixed metadata and executable content. -->
+  <?run mode="simulation"?>
+  <metadata>
+    <owner>systems</owner>
+    <tag priority="high">nightly</tag>
+    <tag priority="low">reproducible</tag>
+  </metadata>
+  <task:sequence id="seq-A">
+    <task:step code="prepare">
+      <task:input name="source" encoding="utf-8"><![CDATA[alpha < beta && gamma > delta]]></task:input>
+      <task:output name="manifest" path="build/manifest.xml"/>
+    </task:step>
+    <task:step code="transform" retry="2">
+      <task:when test="count(/workflow/task:sequence/task:step) &gt; 1"/>
+      <ext:script language="xpath"><![CDATA[
+        for $item in /workflow/metadata/tag
+        return normalize-space($item)
+      ]]></ext:script>
+      <task:parameter key="mode">incremental</task:parameter>
+    </task:step>
+    <task:step code="publish">
+      <task:input name="channels">
+        <task:channel id="primary"/>
+        <task:channel id="mirror" disabled="true"/>
+      </task:input>
+    </task:step>
+  </task:sequence>
+</workflow>

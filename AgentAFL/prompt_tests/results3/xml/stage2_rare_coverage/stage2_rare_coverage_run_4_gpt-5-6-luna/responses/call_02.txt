@@ -1,0 +1,135 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY company "Acme &amp; Sons">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY item "replacement text">
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, entry*)>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (name, price, description?, related*)>
+  <!ATTLIST entry sku ID #REQUIRED status (active|retired) "active">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT related EMPTY>
+  <!ATTLIST related ref IDREF #REQUIRED>
+]>
+<catalog>
+  <section id="hardware">
+    <title>&company; &nbsp; catalog</title>
+    <entry sku="p-001">
+      <name>Bracket</name>
+      <price>19.95</price>
+      <description>Heavy <em>steel</em> bracket for <code>R-17</code>.</description>
+      <related ref="p-002"/>
+    </entry>
+    <entry sku="p-002" status="retired">
+      <name>Washer</name>
+      <price>&item;</price>
+    </entry>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<root xmlns="urn:default" xmlns:q="urn:q" xml:base="https://example.invalid/a/">
+  <!-- mixed content surrounding nested namespaces -->
+  alpha
+  <q:record q:id="r-7" xml:space="preserve">
+    <![CDATA[ left <middle> right & not expanded ]]>
+    <q:field name="empty"/>
+    <q:field name="quotes">&quot;&apos;&amp;&lt;&gt;</q:field>
+    <q:branch>
+      <leaf xmlns="">plain</leaf>
+      <q:leaf xmlns:q="urn:other" q:kind="changed">value</q:leaf>
+    </q:branch>
+  </q:record>
+  omega
+  <?processing instruction-data?>
+</root>
+```
+
+```xml
+<!DOCTYPE graph [
+  <!ELEMENT graph (node*, edge*)>
+  <!ELEMENT node (label?, property*)>
+  <!ATTLIST node id ID #REQUIRED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA)>
+]>
+<graph>
+  <node id="n0">
+    <label><![CDATA[root]]></label>
+    <property>α</property>
+    <property>line
+break
+tab	inside</property>
+  </node>
+  <node id="n1"/>
+  <node id="n2">
+    <label>quot &quot; apostrophe &apos; slash /</label>
+  </node>
+  <edge from="n0" to="n1" weight="0"/>
+  <edge from="n1" to="n2" weight="-1.25"/>
+  <edge from="n2" to="n0" weight="INF"/>
+</graph>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:m="urn:metrics">
+  <soap:Header>
+    <m:trace id="00000000-0000-0000-0000-000000000000">
+      <m:hop uri="urn:one"/>
+      <m:hop uri="urn:two"/>
+    </m:trace>
+    <token xmlns="urn:auth" expires="never">aGVsbG8=</token>
+  </soap:Header>
+  <soap:Body>
+    <request xmlns="urn:service" method="POST" path="/v1/items?x=1&amp;y=2">
+      <arguments>
+        <argument key="null"/>
+        <argument key="multiline">first&#10;second&#13;third</argument>
+      </arguments>
+      <result xsi:type="service:Result"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns:service="urn:service">
+        <status code="204"/>
+        <data><![CDATA[]]></data>
+      </result>
+    </request>
+  </soap:Body>
+</envelope>
+```
+
+```xml
+<archive>
+  <entry path="a/b/c" mode="0755">
+    <name>a&amp;b.txt</name>
+    <content encoding="base64">SGVsbG8sIHdvcmxkIQ==</content>
+    <metadata>
+      <created>1970-01-01T00:00:00Z</created>
+      <tag/>
+      <tag>one</tag>
+      <tag>two &lt; three</tag>
+    </metadata>
+  </entry>
+  <entry path="" mode="" deleted="true">
+    <name/>
+    <content encoding="none"><![CDATA[
+      ]]> tricky ]]&gt; sequence
+    </content>
+  </entry>
+  <manifest>
+    <checksum algorithm="sha256">0000000000000000000000000000000000000000000000000000000000000000</checksum>
+    <?note ignored?>
+  </manifest>
+</archive>
+```

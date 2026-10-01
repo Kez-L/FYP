@@ -1,0 +1,90 @@
+```xml
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="view.xsl"?>
+<catalog xmlns="urn:example:catalog" xmlns:meta="urn:example:meta" xml:lang="en">
+  <!-- mixed content with CDATA and character references -->
+  <item id="A-01" meta:rank="&#x31;">
+    <title><![CDATA[5 < 7 && 9 > 3]]></title>
+    <description>alpha <em>beta</em> gamma &#x1F600;</description>
+    <meta:flags enabled="true" value="a:b/c?d#e"/>
+  </item>
+  <item id="A-02" xml:space="preserve">
+    <![CDATA[]]><note> leading and trailing </note>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, section+)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT section (entry*)>
+  <!ELEMENT entry (#PCDATA|value)*>
+  <!ELEMENT value EMPTY>
+  <!ATTLIST entry kind (short|long|other) "other">
+  <!ATTLIST value unit CDATA #IMPLIED>
+  <!ENTITY marker "&#x3C;marker&#x3E;">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "sample.bin" NDATA bin>
+]>
+<report>
+  <header>&marker;</header>
+  <section>
+    <entry kind="short">one<value unit="ms"/>two</entry>
+    <entry kind="other">&amp;&quot;&apos;</entry>
+  </section>
+</report>
+```
+
+```xml
+<envelope xmlns:a="urn:a" xmlns:b="urn:b">
+  <a:message><![CDATA[first]]]]><![CDATA[>second]]></a:message>
+  <b:items>
+    <b:item key="k&amp;1">
+      <b:name>north</b:name>
+      <b:name>south</b:name>
+      <b:data><![CDATA[
+        line-1
+        line-2
+      ]]></b:data>
+    </b:item>
+  </b:items>
+  <?audit id="42"?>
+  <!-- comment with -- unusual? -->
+</envelope>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE root [
+  <!ENTITY left "L">
+  <!ENTITY right "R">
+  <!ENTITY pair "&left;:&right;">
+]>
+<root xml:base="urn:test:base" xml:lang="x-zz">
+  <branch level="0">
+    <branch level="1">
+      <branch level="2">
+        <leaf>&pair;&#x0A;<![CDATA[x]]></leaf>
+      </branch>
+    </branch>
+  </branch>
+  <empty/>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<r xmlns="urn:default" xmlns:x="urn:x" xmlns:y="urn:y" x:flag="yes">
+  <x:node y:ref="urn:y:item">
+    <x:child attr="&lt;&gt;&amp;&quot;&apos;">text</x:child>
+    <x:child>
+      <inner xmlns="">
+        <value>unqualified</value>
+      </inner>
+    </x:child>
+  </x:node>
+  <mixed>before<![CDATA[<raw/>]]>after<empty /></mixed>
+</r>
+```

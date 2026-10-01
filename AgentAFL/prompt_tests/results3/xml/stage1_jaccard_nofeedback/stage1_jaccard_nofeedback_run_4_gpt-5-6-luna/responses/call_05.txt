@@ -1,0 +1,174 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (name, description?, price)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emph|code)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ATTLIST section id ID #REQUIRED category (hardware|software|mixed) "mixed">
+  <!ATTLIST item sku ID #REQUIRED related IDREFS #IMPLIED status CDATA "active">
+  <!ENTITY product "libxml2">
+  <!ENTITY mark "&#x2603;">
+]>
+<catalog>
+  <section id="s-main" category="software">
+    <title>&product; &mark; catalog</title>
+    <item sku="p-one" status="active">
+      <name>Parser</name>
+      <description>Handles <emph>nested</emph> markup and <code>CDATA</code>.</description>
+      <price>0.00</price>
+    </item>
+    <item sku="p-two" related="p-one">
+      <name>Validator</name>
+      <description>Checks mixed content, comments, and references.</description>
+      <price>17.5</price>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ELEMENT report (header, body, footer)>
+  <!ELEMENT header (meta*)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT body (paragraph|table|note)+>
+  <!ELEMENT paragraph (#PCDATA|bold|link|break)*>
+  <!ELEMENT bold (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST report xmlns CDATA #IMPLIED version NMTOKEN #REQUIRED>
+  <!ATTLIST meta key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST link href URI #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY % extras ' <!ELEMENT appendix (#PCDATA)> '>
+  %extras;
+]>
+<report xmlns="urn:example:report" version="2.0">
+  <header>
+    <meta key="author" value="fuzz"/>
+    <meta key="empty"/>
+  </header>
+  <body>
+    <paragraph>alpha <bold>beta</bold>&nbsp;<link href="urn:x:y">gamma</link><break/></paragraph>
+    <table>
+      <row><cell>r1c1</cell><cell>r1c2</cell></row>
+      <row><cell><![CDATA[r2 < raw & text]]></cell><cell>r2c2</cell></row>
+    </table>
+    <note>line one
+line two<!-- embedded comment -->line three</note>
+  </body>
+  <footer>done</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (sender, recipient+, subject?, content)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT content (#PCDATA|quote|attachment)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST message id ID #IMPLIED priority (low|normal|high) "normal">
+  <!ATTLIST recipient type (to|cc|bcc) "to">
+  <!ATTLIST attachment filename CDATA #REQUIRED media NMTOKEN #REQUIRED size NMTOKEN #IMPLIED>
+  <!ENTITY greeting "Hello, &amp; welcome!">
+  <!ENTITY qmark "&#x3F;">
+]>
+<message id="m-001" priority="high">
+  <sender>sender@example.test</sender>
+  <recipient type="to">receiver@example.test</recipient>
+  <recipient type="cc">archive@example.test</recipient>
+  <subject>&greeting; &qmark;</subject>
+  <content>
+    Start
+    <quote>Outer <quote>inner &lt;quoted&gt; text</quote> tail</quote>
+    <attachment filename="a&amp;b.bin" media="application/octet-stream" size="0"/>
+    End
+  </content>
+</message>
+```
+
+```xml
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (defaults, environment, service*)>
+  <!ELEMENT defaults (option*)>
+  <!ELEMENT environment (variable*)>
+  <!ELEMENT service (option*, endpoint+)>
+  <!ELEMENT option EMPTY>
+  <!ELEMENT variable (#PCDATA)>
+  <!ELEMENT endpoint (#PCDATA)>
+  <!ATTLIST option name NMTOKEN #REQUIRED value CDATA #IMPLIED enabled (yes|no) "yes">
+  <!ATTLIST variable name NMTOKEN #REQUIRED>
+  <!ATTLIST service name NMTOKEN #REQUIRED inherits IDREF #IMPLIED>
+  <!ATTLIST endpoint protocol (http|https|unix) #REQUIRED>
+  <!ENTITY path "/var/lib/example">
+  <!ENTITY host "localhost">
+  <!ENTITY % switches '<!ATTLIST endpoint port NMTOKEN "80">'>
+  %switches;
+]>
+<configuration>
+  <defaults>
+    <option name="root" value="&path;"/>
+    <option name="cache" value="false" enabled="no"/>
+  </defaults>
+  <environment>
+    <variable name="MODE">test&amp;debug</variable>
+    <variable name="EMPTY"/>
+  </environment>
+  <service name="api">
+    <option name="threads" value="4"/>
+    <endpoint protocol="http" port="8080">&host;</endpoint>
+    <endpoint protocol="unix">/run/example.sock</endpoint>
+  </service>
+  <service name="mirror" inherits="api">
+    <endpoint protocol="https">mirror.example.test</endpoint>
+  </service>
+</configuration>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (name, data, checksum?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST archive created CDATA #IMPLIED format (raw|compressed) "raw">
+  <!ATTLIST entry kind (file|directory|link) "file" mode NMTOKEN #IMPLIED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!NOTATION gzip SYSTEM "application/gzip">
+  <!ENTITY lf "&#10;">
+  <!ENTITY banner "archive-entry">
+]>
+<archive created="2026-10-01T00:00:00Z" format="compressed">
+  <entry kind="file" mode="0644">
+    <name>&banner;/one.txt</name>
+    <data><chunk index="0">first&lf;second</chunk><chunk index="1"><![CDATA[<binary-looking>&raw;]]></chunk></data>
+    <checksum>sha256:0000000000000000000000000000000000000000000000000000000000000000</checksum>
+  </entry>
+  <entry kind="link" mode="0777">
+    <name>current</name>
+    <data>target/path</data>
+  </entry>
+  <entry kind="directory">
+    <name>empty/</name>
+    <data/>
+  </entry>
+</archive>
+```

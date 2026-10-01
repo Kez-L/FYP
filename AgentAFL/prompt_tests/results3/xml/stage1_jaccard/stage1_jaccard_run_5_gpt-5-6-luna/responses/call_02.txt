@@ -1,0 +1,195 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (meta, entry+)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta
+    xml:lang CDATA #IMPLIED
+    generated CDATA #REQUIRED>
+  <!ELEMENT entry (title, creator+, description?, link*)>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    status (draft|published|archived) "draft"
+    related IDREFS #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT creator (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link
+    rel CDATA #REQUIRED
+    href URI #REQUIRED>
+]>
+<catalog xmlns="urn:example:catalog" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <meta xml:lang="en" generated="2026-10-01"/>
+  <entry id="e1" status="published" related="e2 e3">
+    <title>Namespaced &amp; linked</title>
+    <creator>Δelta</creator>
+    <description>Text with <em>emphasis</em>, <code>code()</code>, and a trailing fragment.</description>
+    <link rel="alternate" href="urn:item:e1"/>
+    <link rel="preview" href="http://example.invalid/a?b=1&amp;c=2"/>
+  </entry>
+  <entry id="e2">
+    <title>Second entry</title>
+    <creator>作者</creator>
+    <description><![CDATA[raw <markup> and ]]><em>split</em><![CDATA[ terminator-like text]]></description>
+  </entry>
+  <entry id="e3" status="archived">
+    <title>Third</title>
+    <creator>Ω</creator>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ENTITY % mode "INCLUDE">
+  <!ENTITY % declarations '
+    <!ELEMENT package (header, body)>
+    <!ELEMENT header (field+)>
+    <!ELEMENT field (#PCDATA)>
+    <!ATTLIST field name CDATA #REQUIRED>
+  '>
+  %declarations;
+  <![%mode;[
+    <!ELEMENT body (section|note|table)+>
+    <!ELEMENT section (heading, para+)>
+    <!ELEMENT heading (#PCDATA)>
+    <!ELEMENT para (#PCDATA|b|i|br)*>
+    <!ELEMENT b (#PCDATA)>
+    <!ELEMENT i (#PCDATA)>
+    <!ELEMENT br EMPTY>
+    <!ELEMENT note (#PCDATA)>
+    <!ELEMENT table (row+)>
+    <!ELEMENT row (cell+)>
+    <!ELEMENT cell (#PCDATA)>
+  ]]>
+  <!ATTLIST package revision NMTOKEN #IMPLIED>
+]>
+<package revision="r_0042">
+  <header>
+    <field name="producer">fuzz-seed</field>
+    <field name="flags">A B C</field>
+  </header>
+  <body>
+    <section>
+      <heading>Conditional declarations</heading>
+      <para>alpha<b>bold</b><i>italic</i><br/>omega</para>
+      <para>adjacent text with &lt; and &gt; characters</para>
+    </section>
+    <note>note before the table</note>
+    <table>
+      <row><cell>1</cell><cell>one</cell></row>
+      <row><cell>2</cell><cell>two</cell><cell>extra</cell></row>
+    </table>
+  </body>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<stream xmlns="urn:stream" xmlns:m="urn:meta" xml:space="preserve">
+  <?checkpoint stage="one"?>
+  <record key="α-01">
+    <m:header>
+      <m:timestamp>2026-10-01T00:00:00Z</m:timestamp>
+      <m:tags>
+        <m:tag>zero</m:tag>
+        <m:tag/>
+        <m:tag>終</m:tag>
+      </m:tags>
+    </m:header>
+    <payload>
+      <![CDATA[first segment]]><![CDATA[second segment]]>
+      <fragment>
+        <![CDATA[<not-an-element attr="&quot;">]]>
+        <leaf data="&#x1F642;"/>
+        <![CDATA[]]]]><![CDATA[> is represented across sections]]>
+      </fragment>
+      <empty></empty>
+    </payload>
+    <!-- comment containing -- almost, but not quite -->
+    <?instruction one="1" two='2'?>
+  </record>
+  <record key="β-02">
+    <payload>
+      leading
+      <nested a="&lt;&amp;&quot;" b="line&#10;break">
+        <nested-child>middle</nested-child>
+      </nested>
+      trailing
+    </payload>
+  </record>
+</stream>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (axis, values)>
+  <!ELEMENT axis (label, label)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT values (row*)>
+  <!ELEMENT row (cell*)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST row index NMTOKEN #REQUIRED>
+  <!ATTLIST cell
+    column NMTOKEN #REQUIRED
+    kind (number|string|empty) "string">
+]>
+<matrix xmlns:q="urn:unexpected">
+  <axis>
+    <label>left</label>
+    <label>right</label>
+  </axis>
+  <values>
+    <row index="0">
+      <cell column="a" kind="number">000</cell>
+      <cell column="b" kind="string">x&amp;y</cell>
+    </row>
+    <row index="1"></row>
+    <row index="2">
+      <cell column="a" kind="empty"/>
+      <cell column="b">line
+break</cell>
+    </row>
+  </values>
+  <q:unbound xmlns:q="">bad namespace binding</q:unbound>
+</matrix>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!NOTATION text SYSTEM "text/plain">
+  <!ELEMENT archive (manifest, data)>
+  <!ELEMENT manifest (asset+)>
+  <!ELEMENT asset EMPTY>
+  <!ATTLIST asset
+    name CDATA #REQUIRED
+    format NOTATION (gif|text) #REQUIRED
+    checksum NMTOKEN #IMPLIED>
+  <!ELEMENT data (chunk+)>
+  <!ELEMENT chunk (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ATTLIST part number NMTOKEN #REQUIRED>
+]>
+<archive>
+  <manifest>
+    <asset name="icon.gif" format="gif" checksum="00ff11"/>
+    <asset name="readme.txt" format="text"/>
+    <asset name="odd&amp;name" format="text" checksum="a_b-c"/>
+  </manifest>
+  <data>
+    <chunk>
+      <part number="1">first <![CDATA[raw & bytes]]></part>
+      interleaved
+      <part number="2">second</part>
+    </chunk>
+    <chunk><part number="3"/><![CDATA[tail]]></chunk>
+  </data>
+</archive>
+```

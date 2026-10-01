@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node*, edge*)>
+  <!ELEMENT node (data*)>
+  <!ATTLIST node id ID #REQUIRED kind CDATA #IMPLIED>
+  <!ELEMENT data (#PCDATA|value)*>
+  <!ATTLIST data key NMTOKEN #REQUIRED>
+  <!ELEMENT value (#PCDATA|item)*>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item name CDATA #REQUIRED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+]>
+<graph>
+  <node id="alpha" kind="service">
+    <data key="description">Entry point</data>
+    <data key="labels">
+      <value>
+        <item name="public"/>
+        <item name="stable"/>
+      </value>
+    </data>
+  </node>
+  <node id="beta" kind="worker">
+    <data key="description">Consumes &lt;tasks&gt; and emits results.</data>
+    <data key="labels"><value><item name="internal"/></value></data>
+  </node>
+  <node id="gamma">
+    <data key="description"><![CDATA[No labels]]></data>
+  </node>
+  <edge from="alpha" to="beta" weight="0.75"/>
+  <edge from="beta" to="gamma"/>
+  <edge from="gamma" to="alpha" weight="2"/>
+</graph>

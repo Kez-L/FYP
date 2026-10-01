@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta?, payload, signature?)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta xml:lang NMTOKEN #IMPLIED timestamp CDATA #IMPLIED>
+  <!ELEMENT payload (item*)>
+  <!ELEMENT item (key, value)>
+  <!ATTLIST item id NMTOKEN #REQUIRED enabled (yes|no) #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|list|itemref)*>
+  <!ELEMENT list (value*)>
+  <!ELEMENT itemref EMPTY>
+  <!ATTLIST itemref ref IDREF #REQUIRED>
+  <!ELEMENT signature (#PCDATA)>
+  <!ENTITY quote "&quot;">
+  <!ENTITY amp "&amp;">
+]>
+<envelope>
+  <meta xml:lang="x-klingon" timestamp="1970-01-01T00:00:00+00:00"/>
+  <payload>
+    <item id="a0" enabled="yes">
+      <key>path</key>
+      <value>/a/b</value>
+    </item>
+    <item id="b1" enabled="no">
+      <key>mixed</key>
+      <value>prefix<list><value>1</value><value>2</value></list>suffix</value>
+    </item>
+    <item id="c2">
+      <key>reference</key>
+      <value><itemref ref="a0"/> &quote;literal&quote; &amp;</value>
+    </item>
+  </payload>
+  <signature>-----BEGIN-----&#xD;&#xA;none&#xD;&#xA;-----END-----</signature>
+</envelope>

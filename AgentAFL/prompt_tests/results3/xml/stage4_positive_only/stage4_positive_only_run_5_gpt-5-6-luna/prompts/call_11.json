@@ -1,0 +1,23 @@
+{
+  "call": 11,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE glossary [\n  <!ELEMENT glossary (section+)>\n  <!ELEMENT section (term+)>\n  <!ATTLIST section name CDATA #REQUIRED>\n  <!ELEMENT term (definition, example?)>\n  <!ATTLIST term code ID #REQUIRED>\n  <!ELEMENT definition (#PCDATA|ref|em)*>\n  <!ELEMENT example (#PCDATA)>\n  <!ELEMENT ref EMPTY>\n  <!ATTLIST ref target IDREF #REQUIRED>\n  <!ELEMENT em (#PCDATA)>\n  <!ENTITY product \"parser\">\n]>\n<glossary>\n  <section name=\"syntax\">\n    <term code=\"t-xml\">\n      <definition>The &product; reads <em>well-formed</em> documents.</definition>\n      <example>Use &lt;item&gt; rather than an unclosed tag.</example>\n    </term>\n    <term code=\"t-dtd\">\n      <definition>Declarations describe document structure.</definition>\n      <example>Internal subsets are part of the prolog.</example>\n    </term>\n  </section>\n  <section name=\"links\">\n    <term code=\"t-ref\">\n      <definition>Cross references can point to another term.</definition>\n      <example><ref target=\"t-xml\"/></example>\n    </term>\n  </section>\n</glossary>\n\n--- example 2 ---\n<?xml version=\"1.1\"?>\n<root xmlns=\"urn:default\" xmlns:x=\"urn:example:x\" xml:lang=\"fr\">\n  <x:branch data=\"&quot;&amp;&lt;&gt;\">\n    <leaf xml:space=\"preserve\">  text\n      <![CDATA[raw ]]> content]]>\n    </leaf>\n  </x:branch>\n  <empty xmlns=\"\" xmlns:x=\"urn:changed\" x:k=\"v\"/>\n</root>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-01T05:32:54.580529+00:00"
+}

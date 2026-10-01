@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ENTITY % feature "<!ELEMENT audit (event|checkpoint)*>">
+  %feature;
+  <!ELEMENT envelope (header, audit, footer?)>
+  <!ELEMENT header (source, timestamp)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT event (#PCDATA|detail)*>
+  <!ELEMENT checkpoint EMPTY>
+  <!ELEMENT detail (#PCDATA)>
+  <!ELEMENT footer ANY>
+  <!ATTLIST envelope version NMTOKEN #IMPLIED>
+  <!ATTLIST event level (low|medium|high) "low" code ID #IMPLIED>
+  <!ATTLIST checkpoint at CDATA #REQUIRED>
+]>
+<envelope version="1.0">
+  <header><source>sensor-&amp;-west</source><timestamp>2026-10-01T00:00:00Z</timestamp></header>
+  <audit>
+    <event level="high" code="e7">start<detail><![CDATA[raw <payload> & bytes]]></detail>finish</event>
+    <checkpoint at="00:00:01"/>
+    <event level="unknown">tail</event>
+  </audit>
+  <footer><?meta value?><![CDATA[]]></footer>
+</envelope>

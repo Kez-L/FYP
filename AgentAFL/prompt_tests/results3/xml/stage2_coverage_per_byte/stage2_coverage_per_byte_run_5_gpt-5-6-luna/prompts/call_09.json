@@ -1,0 +1,23 @@
+{
+  "call": 9,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ATTLIST koo xml:lang CDATA \"eng\">\n  <!ATTLIST foo bar CDATA \"&lt;&gt;)qrking Group (orisable oveuot;\">\n]>\n<root>\n  <foo xml:lang=\"ger\">Ja</fo\u0000\u0004\n</roos>\n\n\n--- example 2 ---\n<!DOCTYPE doc [\n<!ELEMENT doc EMPTY>\n<!ATTLIST doc\n defatt  (0|1)   \"0\"\n     xmlns:tst CDATA #FIXED \"http://example.org\"  tst:att  (0|1)   \"0\"\n    att (0|1)   \"1\">\n]>\n<doc att=\"1B/h12;&laugh12;&laugh12;&la>\n\n\nTried before \u2014 no new coverage, avoid repeating:\n--- a seed you generated (cycle 9) added 0 new edges ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE warehouse [\n  <!ENTITY % commonAttrs \"<!ATTLIST bin zone CDATA #IMPLIED sealed (yes|no) 'no'>\">\n  <!ELEMENT warehouse (aisle+, audit?)>\n  <!ELEMENT aisle (bin+)>\n  <!ELEMENT bin (label, item*)>\n  <!ELEMENT label (#PCDATA)>\n  <!ELEMENT item (#PCDATA|serial|fragile)*>\n  <!ELEMENT serial (#PCDATA)>\n  <!ELEMENT fragile EMPTY>\n  <!ELEMENT audit (#PCDATA)>\n  %commonAttrs;\n  <!ATTLIST bin xml:space (default|preserve) 'preserve'>\n]>\n<warehouse xmlns=\"urn:warehouse\">\n  <aisle id=\"A-7\">\n    <bin zone=\"cold\" sealed=\"yes\">\n      <label><![CDATA[North <section> & reserved]]></label>\n      <item>\u03b1<serial>S-001</serial></item>\n      <item><fragile/>glass</it...[truncated, 785 chars total]\n\n--- a seed you generated (cycle 9) added 0 new edges ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE report [\n  <!ELEMENT report (section+)>\n  <!ELEMENT section (heading, body)>\n  <!ELEMENT heading (#PCDATA)>\n  <!ELEMENT body (#PCDATA|line|link|break)*>\n  <!ELEMENT line (#PCDATA|link)*>\n  <!ELEMENT link (#PCDATA)>\n  <!ELEMENT break EMPTY>\n  <!ATTLIST section number CDATA #REQUIRED>\n  <!ATTLIST link href CDATA #IMPLIED>\n  <!ENTITY open \"[[\">\n  <!ENTITY close \"]]\">\n]>\n<report>\n  <section number=\"01\">\n    <heading>Malformed boundary</heading>\n    <body>alpha<line>beta<link href=\"urn:x\">gamma</link></line><break/>delta</body>\n  </section>\n  <section number=\"02\">\n    <heading>unterminated\n    <body>text &open; not finished &close;</body>\n  </section>\n</report>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage-per-byte",
+  "positive_feedback": false,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-01T05:19:48.396340+00:00"
+}

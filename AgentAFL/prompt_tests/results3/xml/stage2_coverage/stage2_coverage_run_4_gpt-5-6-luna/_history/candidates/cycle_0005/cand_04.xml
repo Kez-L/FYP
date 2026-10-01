@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (start, step+, finish)>
+  <!ATTLIST workflow id ID #REQUIRED owner CDATA #IMPLIED>
+  <!ELEMENT start EMPTY>
+  <!ATTLIST start next IDREF #REQUIRED>
+  <!ELEMENT step (action, on-success?, on-failure?)>
+  <!ATTLIST step
+    id ID #REQUIRED
+    kind (task|decision|wait) #REQUIRED
+  >
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT on-success EMPTY>
+  <!ATTLIST on-success goto IDREF #REQUIRED>
+  <!ELEMENT on-failure EMPTY>
+  <!ATTLIST on-failure goto IDREF #REQUIRED>
+  <!ELEMENT finish (#PCDATA)>
+]>
+<workflow id="wf-main" owner="ops">
+  <start next="prepare"/>
+  <step id="prepare" kind="task">
+    <action>Prepare input</action>
+    <on-success goto="check"/>
+    <on-failure goto="abort"/>
+  </step>
+  <step id="check" kind="decision">
+    <action>Validate checksum</action>
+    <on-success goto="publish"/>
+    <on-failure goto="repair"/>
+  </step>
+  <step id="repair" kind="task">
+    <action>Repair &amp; requeue</action>
+    <on-success goto="check"/>
+    <on-failure goto="abort"/>
+  </step>
+  <step id="publish" kind="task">
+    <action>Publish result</action>
+    <on-success goto="done"/>
+    <on-failure goto="abort"/>
+  </step>
+  <step id="abort" kind="wait">
+    <action>Stop workflow</action>
+    <on-failure goto="abort"/>
+  </step>
+  <finish>completed</finish>
+</workflow>

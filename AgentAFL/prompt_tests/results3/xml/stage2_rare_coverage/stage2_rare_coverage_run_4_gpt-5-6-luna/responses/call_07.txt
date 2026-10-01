@@ -1,0 +1,221 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (meta, widgets)>
+  <!ELEMENT meta (owner, generated, checksum)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT widgets (widget+)>
+  <!ELEMENT widget (label, config?, payload)>
+  <!ATTLIST widget
+    id ID #REQUIRED
+    kind (chart|table|map|gauge) #REQUIRED
+    enabled (true|false) "true">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT config EMPTY>
+  <!ATTLIST config
+    mode CDATA #IMPLIED
+    refresh CDATA "0">
+  <!ELEMENT payload (#PCDATA|value|axis|series)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT axis (#PCDATA)>
+  <!ELEMENT series (#PCDATA|point)*>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED>
+]>
+<dashboard>
+  <meta>
+    <owner>ops &amp; analytics</owner>
+    <generated>2026-10-01T12:34:56Z</generated>
+    <checksum><![CDATA[sha256:ab12<ef34>&5678]]></checksum>
+  </meta>
+  <widgets>
+    <widget id="w-main" kind="chart">
+      <label>Temperature &lt;24°C&gt;</label>
+      <config mode="rolling" refresh="00:00:05"/>
+      <payload>
+        <axis>time</axis>
+        <series>
+          <point x="0" y="-1.25"/>
+          <point x="1" y="0"/>
+          <point x="2" y="3.141592653589793"/>
+        </series>
+      </payload>
+    </widget>
+    <widget id="w-side" kind="gauge" enabled="false">
+      <label>Pressure</label>
+      <payload><value>101.325</value></payload>
+    </widget>
+  </widgets>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ENTITY % declarations '
+    <!ELEMENT package (manifest, contents)>
+    <!ELEMENT manifest (entry+)>
+    <!ELEMENT entry EMPTY>
+    <!ATTLIST entry name NMTOKEN #REQUIRED size NMTOKEN #IMPLIED type CDATA #IMPLIED>
+    <!ELEMENT contents (file|directory|link)*>
+    <!ELEMENT file (#PCDATA)>
+    <!ELEMENT directory (file|directory|link)*>
+    <!ELEMENT link EMPTY>
+    <!ATTLIST link target CDATA #REQUIRED>
+  '>
+  %declarations;
+  <!ENTITY copyright "Copyright &#xA9; 2026">
+  <!NOTATION binary SYSTEM "application/octet-stream">
+]>
+<package>
+  <manifest>
+    <entry name="readme.txt" size="42" type="text/plain"/>
+    <entry name="blob.bin" size="65535" type="application/octet-stream"/>
+  </manifest>
+  <contents>
+    <directory>
+      <file>top-level</file>
+      <directory>
+        <file><![CDATA[raw bytes: ]]> &copyright; </file>
+        <link target="../readme.txt"/>
+      </directory>
+    </directory>
+    <link target="/dev/null"/>
+  </contents>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:request xmlns:r="urn:request:v2"
+           xmlns:m="urn:message"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           r:id="req-0007"
+           xsi:type="m:Batch">
+  <r:header>
+    <r:source>sensor-gateway</r:source>
+    <r:route m:priority="high">/ingest/Δ</r:route>
+    <?trace id="7f-00-a9"?>
+  </r:header>
+  <m:batch m:count="3">
+    <m:item m:key="α">
+      <m:value xsi:nil="true"/>
+      <m:annotation xml:lang="el">κενό</m:annotation>
+    </m:item>
+    <m:item m:key="β">
+      <m:value>line-1&#x0A;line-2</m:value>
+      <m:annotation xml:space="preserve">  padded  </m:annotation>
+    </m:item>
+    <m:item m:key="γ">
+      <m:value><![CDATA[<not-an-element attr="&">]]></m:value>
+      <m:annotation>
+        <m:tag xmlns:q="urn:qualifier" q:name="quoted"/>
+      </m:annotation>
+    </m:item>
+  </m:batch>
+  <r:footer>
+    <r:signature algorithm="ed25519">AAECAwQFBgcICQ==</r:signature>
+  </r:footer>
+</r:request>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE library [
+  <!ELEMENT library (shelf*)>
+  <!ELEMENT shelf (book|magazine|empty)*>
+  <!ATTLIST shelf code ID #REQUIRED>
+  <!ELEMENT book (title, author+, isbn?, summary?)>
+  <!ATTLIST book edition CDATA #IMPLIED>
+  <!ELEMENT magazine (title, issue, article+)>
+  <!ELEMENT empty EMPTY>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT isbn (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|quote|em)*>
+  <!ELEMENT issue (#PCDATA)>
+  <!ELEMENT article (heading, paragraph+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|em|quote|ref)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY open "<">
+]>
+<library>
+  <shelf code="fiction">
+    <book edition="2">
+      <title>Things &amp; Other Things</title>
+      <author>R. Example</author>
+      <author>A. Reader</author>
+      <isbn>978-0-00-000000-0</isbn>
+      <summary>A <em>short</em> summary&nbsp;<quote>with a quote</quote>.</summary>
+    </book>
+    <empty/>
+  </shelf>
+  <shelf code="periodicals">
+    <magazine>
+      <title>Signals</title>
+      <issue>10/2026</issue>
+      <article>
+        <heading>Boundary Cases</heading>
+        <paragraph>Use <ref target="fiction"/> when comparing <em>old</em> data.</paragraph>
+        <paragraph><![CDATA[Characters such as <, >, and & remain literal here.]]></paragraph>
+      </article>
+    </magazine>
+  </shelf>
+</library>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (open, event*, close)>
+  <!ELEMENT open EMPTY>
+  <!ATTLIST open token CDATA #REQUIRED>
+  <!ELEMENT event (timestamp, payload)>
+  <!ATTLIST event level (debug|info|warn|error) "info">
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT payload (text|number|flag|list|object)>
+  <!ELEMENT text (#PCDATA)>
+  <!ELEMENT number (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST flag value (yes|no) #REQUIRED>
+  <!ELEMENT list (item*)>
+  <!ELEMENT item (#PCDATA|object|list)*>
+  <!ELEMENT object (field*)>
+  <!ELEMENT field (text|number|flag|list|object)>
+  <!ATTLIST field name NMTOKEN #REQUIRED>
+  <!ELEMENT close EMPTY>
+  <!ATTLIST close token CDATA #REQUIRED>
+  <!ENTITY intro "stream-start">
+]>
+<stream>
+  <open token="&intro;"/>
+  <event level="debug">
+    <timestamp>2026-10-01T00:00:00.000000Z</timestamp>
+    <payload>
+      <object>
+        <field name="message"><text>hello&#x85;world</text></field>
+        <field name="attempt"><number>0000000000000000007</number></field>
+        <field name="flags">
+          <list>
+            <item><flag value="yes"/></item>
+            <item><object><field name="nested"><text>value</text></field></object></item>
+            <item><list><item>leaf</item><item>tail</item></list></item>
+          </list>
+        </field>
+      </object>
+    </payload>
+  </event>
+  <event level="error">
+    <timestamp>never</timestamp>
+    <payload><text><![CDATA[unterminated-looking ]] marker: ]]> is data only in this context</text></payload>
+  </event>
+  <close token="stream-start"/>
+</stream>
+```

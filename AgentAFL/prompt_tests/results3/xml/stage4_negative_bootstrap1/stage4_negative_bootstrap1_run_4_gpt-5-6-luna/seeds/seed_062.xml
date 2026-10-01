@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node*, edge*)>
+  <!ELEMENT node (label?, metadata?)>
+  <!ATTLIST node id ID #REQUIRED kind CDATA "normal">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT metadata (property*)>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST property name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREFS #REQUIRED weight CDATA #IMPLIED directed (true|false) "true">
+  <!ENTITY nested "one &amp; two &lt; three">
+]>
+<graph>
+  <node id="n0" kind="root">
+    <label>root</label>
+    <metadata>
+      <property name="empty" value=""/>
+      <property name="quote" value="&quot;&apos;&quot;"/>
+      <property name="entity" value="&nested;"/>
+    </metadata>
+  </node>
+  <node id="n1">
+    <label/>
+  </node>
+  <node id="n2" kind="isolated">
+    <metadata><property name="novalue"/></metadata>
+  </node>
+  <node id="n3"><label>comma, semicolon; slash / backslash \</label></node>
+  <edge from="n0" to="n1 n2" weight="NaN" directed="false"/>
+  <edge from="n1" to="n3" weight="-INF"/>
+  <edge from="n2" to="n0 n3" weight="0xFFFFFFFFFFFFFFFF"/>
+</graph>

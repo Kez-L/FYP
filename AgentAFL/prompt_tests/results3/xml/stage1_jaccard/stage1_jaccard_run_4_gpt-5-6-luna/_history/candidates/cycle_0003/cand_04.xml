@@ -1,0 +1,30 @@
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, content)>
+  <!ELEMENT manifest (file*)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+    path CDATA #REQUIRED
+    checksum CDATA #IMPLIED
+    compressed (yes|no) "no">
+  <!ELEMENT content (section*)>
+  <!ELEMENT section (#PCDATA|section|ref)*>
+  <!ATTLIST section name CDATA #IMPLIED>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY mark "&#x2022;">
+]>
+<package>
+  <manifest>
+    <file path="a/b/c.txt" checksum="sha256:0000" compressed="yes"/>
+    <file path="./weird name.bin"/>
+    <file path="file://localhost/tmp/x"/>
+  </manifest>
+  <content>
+    <section name="intro">A &mark; B<section name="nested">deep</section></section>
+    <section name="empty"/>
+    <section name="links">
+      <ref target="missing"/>
+      <ref target="another"/>
+    </section>
+  </content>
+</package>

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE pipeline [
+  <!ENTITY % declarations "
+    <!ELEMENT pipeline (stage+, result?)>
+    <!ELEMENT stage (input, action, output?)>
+    <!ELEMENT input (#PCDATA)>
+    <!ELEMENT action (#PCDATA)>
+    <!ELEMENT output (#PCDATA|warning)*>
+    <!ELEMENT warning (#PCDATA)>
+    <!ELEMENT result (#PCDATA)>
+  ">
+  %declarations;
+  <!ATTLIST pipeline name CDATA #REQUIRED>
+  <!ATTLIST stage number NMTOKEN #REQUIRED>
+  <!ENTITY arrow "&#x2192;">
+  <!ENTITY quoted "&#34;quoted&#34;">
+]>
+<pipeline name="nightly">
+  <stage number="1">
+    <input>source.xml</input>
+    <action>parse &amp; normalize</action>
+    <output>intermediate &arrow; tree</output>
+  </stage>
+  <stage number="2">
+    <input>&quoted;</input>
+    <action>validate</action>
+    <output>
+      <warning>missing optional field</warning>
+      <warning>default applied</warning>
+    </output>
+  </stage>
+  <result>complete</result>
+</pipeline>

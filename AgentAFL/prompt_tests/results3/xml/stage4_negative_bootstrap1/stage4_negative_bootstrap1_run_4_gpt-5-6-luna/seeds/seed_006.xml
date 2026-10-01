@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope"
+              xmlns:x="urn:example:inventory"
+              xmlns: xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <env:Header>
+    <x:Trace id="t-001" enabled="true">
+      <x:Hop>gateway</x:Hop>
+      <x:Hop>worker</x:Hop>
+    </x:Trace>
+  </env:Header>
+  <env:Body>
+    <x:Batch xsi:type="x:TransferBatch" count="2">
+      <x:Transfer from="A&amp;B" to="C">
+        <x:Payload><![CDATA[
+          <embedded kind="not-parsed"><value>1 & 2</value></embedded>
+        ]]></x:Payload>
+        <x:Amount currency="€">12&#x2E;50</x:Amount>
+      </x:Transfer>
+      <x:Transfer from="C" to="A" priority="high">
+        <x:Payload/>
+        <x:Amount currency="USD">0</x:Amount>
+      </x:Transfer>
+    </x:Batch>
+  </env:Body>
+</env:Envelope>

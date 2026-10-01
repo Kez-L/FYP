@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, note?)>
+  <!ELEMENT entry (title, creator*, payload)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT creator (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|part|ref)*>
+  <!ELEMENT part EMPTY>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST catalog xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST entry id ID #REQUIRED state (new|old|archived) "new">
+  <!ATTLIST part kind CDATA #REQUIRED>
+  <!ATTLIST ref target IDREF #IMPLIED>
+  <!ENTITY marker "A&amp;B&lt;C&gt;">
+  <!ENTITY wrapped "<part kind='generated'/>">
+]>
+<catalog xml:lang="en-US">
+  <entry id="e1" state="old">
+    <title>First &marker;</title>
+    <creator>alpha</creator>
+    <payload>prefix &wrapped; middle <part kind="literal"/> suffix</payload>
+  </entry>
+  <entry id="e2">
+    <title>Second</title>
+    <payload><ref target="e1"/><ref target="missing"/></payload>
+  </entry>
+  <note>tail</note>
+</catalog>

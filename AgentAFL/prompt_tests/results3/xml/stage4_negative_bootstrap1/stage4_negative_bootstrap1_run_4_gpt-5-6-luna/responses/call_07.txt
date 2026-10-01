@@ -1,0 +1,163 @@
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common "item | section">
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, (%common;)*)>
+  <!ATTLIST section xml:lang NMTOKEN #IMPLIED id ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|em|ref)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY euro "&#x20AC;">
+]>
+<catalog xml:lang="fr" id="root">
+  <section id="s1">
+    <title>Prix &euro;&nbsp; spécial</title>
+    <item>Texte <em>accentué</em> et <ref target="s1"/>.</item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE svg [
+  <!ELEMENT svg (defs?, g*)>
+  <!ATTLIST svg xmlns CDATA #IMPLIED viewBox CDATA #IMPLIED>
+  <!ELEMENT defs (linearGradient|path)*>
+  <!ELEMENT linearGradient (stop+)>
+  <!ATTLIST linearGradient id ID #REQUIRED x1 CDATA #IMPLIED y1 CDATA #IMPLIED>
+  <!ELEMENT stop EMPTY>
+  <!ATTLIST stop offset CDATA #REQUIRED stop-color CDATA #IMPLIED>
+  <!ELEMENT path EMPTY>
+  <!ATTLIST path id ID #IMPLIED d CDATA #REQUIRED>
+  <!ELEMENT g (use|path|text)*>
+  <!ATTLIST g transform CDATA #IMPLIED>
+  <!ELEMENT use EMPTY>
+  <!ATTLIST use href CDATA #IMPLIED xlink:href CDATA #IMPLIED>
+  <!ELEMENT text (#PCDATA)>
+]>
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="fade" x1="0%" y1="0%">
+      <stop offset="0" stop-color="#000"/>
+      <stop offset="1" stop-color="rgba(255,0,0,.5)"/>
+    </linearGradient>
+    <path id="curve" d="M0,0 C10,20 40,20 100,0"/>
+  </defs>
+  <g transform="rotate(7 50 50)">
+    <use xlink:href="#curve"/>
+    <path d="M1 1 L2 3 Z" fill="url(#fade)"/>
+    <text>embedded &lt;markup&gt; &amp; text</text>
+  </g>
+</svg>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE records [
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (key, value, metadata?)>
+  <!ATTLIST record id ID #REQUIRED state (new|old|deleted) "new">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT metadata (property*)>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST property name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY left "&#xAB;">
+  <!ENTITY right "&#xBB;">
+  <!ENTITY quote "&left;nested &amp; quoted&right;">
+]>
+<records>
+  <record id="r-é-1" state="new">
+    <key>αβγ</key>
+    <value>first<linebreak/>second<linebreak/>third</value>
+    <metadata>
+      <property name="empty" value=""/>
+      <property name="unicode" value="雪 ☃"/>
+      <property name="entity">&quote;</property>
+    </metadata>
+  </record>
+  <record id="r2" state="deleted">
+    <key>mixed</key>
+    <value><![CDATA[raw ]]> <![CDATA[ ]]> <![CDATA[characters & < >]]></value>
+  </record>
+</records>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, content)>
+  <!ATTLIST package xmlns CDATA #IMPLIED>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file path CDATA #REQUIRED media-type CDATA #REQUIRED>
+  <!ELEMENT content (section+)>
+  <!ELEMENT section (heading?, paragraph*, list?)>
+  <!ATTLIST section id ID #IMPLIED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|code|mark|br)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT list (li+)>
+  <!ELEMENT li (#PCDATA|paragraph|list)*>
+]>
+<package xmlns="urn:example:package">
+  <manifest>
+    <file path="doc/intro.xml" media-type="application/xml"/>
+    <file path="assets/a&amp;b.bin" media-type="application/octet-stream"/>
+  </manifest>
+  <content>
+    <section id="intro">
+      <heading>Introduction</heading>
+      <paragraph>One <mark>important</mark> point<br/>with <code>&lt;tag/&gt;</code>.</paragraph>
+      <list>
+        <li>alpha</li>
+        <li>beta
+          <list>
+            <li>nested item</li>
+          </list>
+        </li>
+      </list>
+    </section>
+  </content>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (event+)>
+  <!ELEMENT event (timestamp, source, payload)>
+  <!ATTLIST event id ID #REQUIRED type CDATA #IMPLIED>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT source EMPTY>
+  <!ATTLIST source host CDATA #REQUIRED port NMTOKEN #IMPLIED secure (yes|no) "no">
+  <!ELEMENT payload ANY>
+  <!ENTITY amp "&#38;">
+  <!ENTITY weird "]]&gt; and &amp; and &lt;">
+]>
+<stream>
+  <event id="e0" type="json">
+    <timestamp>2026-10-01T00:00:00.000Z</timestamp>
+    <source host="::1" port="0" secure="yes"/>
+    <payload><![CDATA[{"a":[null,true,false,1e-9],"s":"<&>"}]]></payload>
+  </event>
+  <event id="e1" type="mixed">
+    <timestamp>-0001-00-00T24:60:60Z</timestamp>
+    <source host="host.name" port="65535"/>
+    <payload>
+      <fragment><![CDATA[one]]></fragment>
+      &weird;
+      <fragment>tail &amp; <![CDATA[raw]]></fragment>
+    </payload>
+  </event>
+</stream>
+```

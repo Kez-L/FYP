@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:workflow" xmlns:sec="urn:security">
+  <pipeline id="deploy-prod">
+    <trigger type="manual">
+      <sec:principal role="release-manager">buildbot</sec:principal>
+    </trigger>
+    <step id="compile" retry="2">
+      <command><![CDATA[make all && make install]]></command>
+      <environment>
+        <variable name="MODE">production</variable>
+        <variable name="FLAGS">-O2 -Wall</variable>
+      </environment>
+    </step>
+    <step id="verify" retry="0">
+      <depends-on ref="compile"/>
+      <check><![CDATA[test "$STATUS" = "ready"]]></check>
+    </step>
+    <step id="publish" retry="1">
+      <depends-on ref="verify"/>
+      <artifact path="/srv/releases/app.tar.gz" checksum="sha256:abc123"/>
+    </step>
+  </pipeline>
+  <history>
+    <run started="2026-09-30T19:00:00Z" duration="PT4M">
+      <result>success</result>
+    </run>
+  </history>
+</workflow>

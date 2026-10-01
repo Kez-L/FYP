@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section*)>
+  <!ELEMENT section (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (#PCDATA|code|![CDATA[]]>)>
+  <!ELEMENT code (#PCDATA)>
+  <!ATTLIST report xmlns CDATA #IMPLIED>
+  <!ENTITY open "{">
+  <!ENTITY close "}">
+]>
+<?prepare mode="fuzz"?>
+<report xmlns="urn:report" xmlns:r="urn:row" xml:lang="de">
+  <section r:id="s1">
+    <heading>Überblick</heading>
+    <item>before &open;<code>value</code>&close;</item>
+    <item><![CDATA[raw ]]> tail &lt; end</item>
+  </section>
+  <section r:id="s2" xml:space="preserve">
+    <heading><?inside instruction?></heading>
+    <item>mixed<code>123</code>text</item>
+  </section>
+</report>

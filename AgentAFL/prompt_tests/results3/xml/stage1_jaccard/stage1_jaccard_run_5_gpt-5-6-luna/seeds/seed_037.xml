@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (context?, message, signature?)>
+  <!ELEMENT context (user|service|anonymous)>
+  <!ELEMENT user (#PCDATA)>
+  <!ELEMENT service (#PCDATA)>
+  <!ELEMENT anonymous EMPTY>
+  <!ELEMENT message (part+)>
+  <!ELEMENT part (#PCDATA|quote|break)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST part number CDATA #REQUIRED encoding (plain|base64) "plain">
+  <!ENTITY % switches "<!ENTITY feature \"enabled\">">
+  %switches;
+  <!ENTITY open "[[">
+  <!ENTITY close "]]">
+  <!ENTITY payload "A&amp;B&lt;C&gt;">
+]>
+<envelope>
+  <context><service>mail-gateway</service></context>
+  <message>
+    <part number="1">prefix <quote>&payload;</quote><break/>suffix</part>
+    <part number="2" encoding="base64">QUJDREVGRw==</part>
+    <part number="3">markers: &open; body &close;</part>
+  </message>
+  <signature>feature=&feature;</signature>
+</envelope>

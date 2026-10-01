@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding (raw|base64|hex) #REQUIRED>
+]>
+<envelope>
+  <header>
+    <field name="empty" value=""/>
+    <field name="quoted" value="&quot;&apos;&amp;&lt;&gt;"/>
+    <field name="unicode" value="λ/Ж/あ"/>
+  </header>
+  <payload>
+    <chunk index="0" encoding="base64">AAECAwQFBgcICQ==</chunk>
+    <chunk index="1" encoding="hex">00ff10deadbeef</chunk>
+    <chunk index="2" encoding="raw"><![CDATA[<not-an-element/>]]></chunk>
+  </payload>
+</envelope>

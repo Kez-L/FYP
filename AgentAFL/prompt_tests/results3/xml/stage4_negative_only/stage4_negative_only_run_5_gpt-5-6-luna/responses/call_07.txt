@@ -1,0 +1,179 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ATTLIST catalog generated CDATA #IMPLIED>
+  <!ELEMENT entry (title, description, metadata)>
+  <!ATTLIST entry code ID #REQUIRED status (draft|published|retired) "draft">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|term|br|![CDATA[]]>)*>
+  <!ELEMENT term (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT metadata (author*, keyword*)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ENTITY product "XML &amp; validation">
+]>
+<catalog generated="2026-10-01">
+  <entry code="a1" status="published">
+    <title>&product;</title>
+    <description>Text before <term>entities</term><br/>after <![CDATA[<literal markup> & bytes]]>.</description>
+    <metadata>
+      <author>Åsa</author>
+      <keyword>parser</keyword>
+      <keyword>schema</keyword>
+    </metadata>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (layer+, legend?)>
+  <!ELEMENT layer (name, bounds, point*)>
+  <!ATTLIST layer key NMTOKEN #REQUIRED visible (yes|no) "yes">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT bounds (south, west, north, east)>
+  <!ELEMENT south (#PCDATA)>
+  <!ELEMENT west (#PCDATA)>
+  <!ELEMENT north (#PCDATA)>
+  <!ELEMENT east (#PCDATA)>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST point lat CDATA #REQUIRED lon CDATA #REQUIRED label CDATA #IMPLIED>
+  <!ELEMENT legend (#PCDATA|item)*>
+  <!ELEMENT item (#PCDATA)>
+]>
+<map>
+  <layer key="terrain" visible="no">
+    <name>North Ridge</name>
+    <bounds>
+      <south>-12.50</south><west>44.10</west>
+      <north>18.25</north><east>77.90</east>
+    </bounds>
+    <point lat="0" lon="0" label="origin"/>
+    <point lat="51.5074" lon="-0.1278" label="London"/>
+  </layer>
+  <layer key="water">
+    <name>Inlet &amp; Estuary</name>
+    <bounds>
+      <south="-1"/>
+      <west="2"/>
+      <north="3"/>
+      <east="4"/>
+    </bounds>
+    <point lat="2.0" lon="3.0"/>
+  </layer>
+  <legend>Symbols: <item>ridge</item>, <item>water</item>.</legend>
+</map>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:acme:workflow" xmlns:ui="urn:acme:ui" xml:space="preserve">
+  <?pipeline stage="normalize"?>
+  <!-- Deliberately mixed content with significant whitespace. -->
+  <sequence name="nightly">
+    <task id="fetch" retry="3">
+      <label>Fetch records</label>
+      <command><![CDATA[curl --silent "https://example.invalid/feed?a=1&b=2"]]></command>
+      <ui:hint color="#334455">network</ui:hint>
+    </task>
+    <parallel>
+      <task id="index" depends-on="fetch">
+        <label>Build index</label>
+        <environment>
+          <variable name="MODE">incremental</variable>
+          <variable name="LIMIT">00042</variable>
+        </environment>
+      </task>
+      <task id="archive" depends-on="fetch">
+        <label>Archive <ui:strong>raw</ui:strong> output</label>
+        <artifact path="out/archive.tar" compression="zstd"/>
+      </task>
+    </parallel>
+    <decision expression="count(/workflow/sequence/task) &gt; 0">
+      <on-true>continue</on-true>
+      <on-false>abort</on-false>
+    </decision>
+  </sequence>
+</workflow>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE drawing [
+  <!ELEMENT drawing (defs, canvas)>
+  <!ELEMENT defs (gradient|pattern|clipPath)+>
+  <!ELEMENT gradient (stop+)>
+  <!ATTLIST gradient id ID #REQUIRED spread (pad|reflect|repeat) "pad">
+  <!ELEMENT stop EMPTY>
+  <!ATTLIST stop offset CDATA #REQUIRED color CDATA #REQUIRED>
+  <!ELEMENT pattern (tile+)>
+  <!ATTLIST pattern id ID #REQUIRED width CDATA #REQUIRED height CDATA #REQUIRED>
+  <!ELEMENT tile EMPTY>
+  <!ATTLIST tile x CDATA #REQUIRED y CDATA #REQUIRED fill CDATA #IMPLIED>
+  <!ELEMENT clipPath (circle|rect)+>
+  <!ATTLIST clipPath id ID #REQUIRED>
+  <!ELEMENT circle EMPTY>
+  <!ATTLIST circle cx CDATA #REQUIRED cy CDATA #REQUIRED r CDATA #REQUIRED>
+  <!ELEMENT rect EMPTY>
+  <!ATTLIST rect x CDATA #REQUIRED y CDATA #REQUIRED width CDATA #REQUIRED height CDATA #REQUIRED>
+  <!ELEMENT canvas (group|use|text|path)*>
+  <!ELEMENT group (use|text|path|rect|circle)*>
+  <!ATTLIST group transform CDATA #IMPLIED clip CDATA #IMPLIED>
+  <!ELEMENT use EMPTY>
+  <!ATTLIST use href CDATA #REQUIRED x CDATA "0" y CDATA "0">
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST text x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ELEMENT path EMPTY>
+  <!ATTLIST path d CDATA #REQUIRED fill CDATA #IMPLIED>
+]>
+<drawing>
+  <defs>
+    <gradient id="shade" spread="reflect">
+      <stop offset="0%" color="#000000"/>
+      <stop offset="50%" color="#7f7fff"/>
+      <stop offset="100%" color="#ffffff"/>
+    </gradient>
+    <pattern id="dots" width="8" height="8">
+      <tile x="0" y="0" fill="#ccc"/><tile x="4" y="4" fill="#888"/>
+    </pattern>
+    <clipPath id="window"><circle cx="40" cy="40" r="25"/><rect x="5" y="5" width="70" height="70"/></clipPath>
+  </defs>
+  <canvas>
+    <group transform="translate(10,20) rotate(-3)" clip="url(#window)">
+      <use href="#dots" x="2" y="3"/>
+      <path d="M0,0 C10,20 30,-5 60,40 Z" fill="url(#shade)"/>
+      <text x="12" y="64">vector &amp; text</text>
+    </group>
+  </canvas>
+</drawing>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder|file|link)*>
+  <!ATTLIST archive created CDATA #IMPLIED>
+  <!ELEMENT folder (folder|file|link)*>
+  <!ATTLIST folder name CDATA #REQUIRED permissions NMTOKENS #IMPLIED>
+  <!ELEMENT file (#PCDATA)>
+  <!ATTLIST file name CDATA #REQUIRED size NMTOKEN #IMPLIED hash CDATA #IMPLIED>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link name CDATA #REQUIRED target CDATA #REQUIRED>
+]>
+<archive created="2026-10-01T00:00:00Z">
+  <folder name="docs" permissions="read write">
+    <file name="empty.txt" size="0" hash=""/>
+    <file name="unicode.txt" size="17" hash="sha256:αβγ">Καλημέρα</file>
+    <folder name="nested" permissions="read">
+      <link name="latest" target="../unicode.txt"/>
+    </folder>
+  </folder>
+  <folder name="bin" permissions="read execute">
+    <file name="run.sh" size="24">#!/bin/sh
+printf '%s\n' "ok"</file>
+  </folder>
+</archive>
+```

@@ -1,0 +1,161 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, note?)>
+  <!ELEMENT item (title, details, payload)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT details (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT payload (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST item id ID #REQUIRED kind (alpha|beta|gamma) "alpha">
+  <!ATTLIST item ref IDREF #IMPLIED>
+  <!ENTITY mark "&#x2063;">
+  <!ENTITY amp "&amp;">
+  <!ENTITY phrase "left &mark; right">
+]>
+<catalog xml:lang="en" xml:base="urn:seed:one">
+  <item id="i1" kind="beta">
+    <title>Entities &amp; character references &#x41;</title>
+    <details xml:space="preserve">A<em>&phrase;</em><br/>B&amp;C</details>
+    <payload><![CDATA[<not-an-element attr="&mark;">]]></payload>
+  </item>
+  <item id="i2" ref="i1">
+    <title>Second item</title>
+    <details>mixed <em>content</em> with &amp; and &quot;quotes&quot;</details>
+    <payload>tail&mark;</payload>
+  </item>
+  <note>catalog-end</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT body (section*)>
+  <!ELEMENT section (entry|section)*>
+  <!ELEMENT entry (#PCDATA)>
+  <!ATTLIST header version CDATA #REQUIRED>
+  <!ATTLIST section name CDATA #IMPLIED>
+  <!ENTITY open "(">
+  <!ENTITY close ")">
+  <!ENTITY nested "&open;level&close;">
+]>
+<envelope>
+  <header version="1.1"/>
+  <body>
+    <section name="outer">
+      <entry>one &nested; &#x0A; two</entry>
+      <section name="inner">
+        <entry><![CDATA[raw ]]></entry>
+        <entry>three &lt; four &gt; two</entry>
+      </section>
+    </section>
+    <section>
+      <entry>last</entry>
+    </section>
+  </body>
+</envelope>
+```
+
+```xml
+<!DOCTYPE r:report [
+  <!ELEMENT r:report (r:meta, r:data)>
+  <!ELEMENT r:meta (r:source, r:stamp?)>
+  <!ELEMENT r:source (#PCDATA)>
+  <!ELEMENT r:stamp (#PCDATA)>
+  <!ELEMENT r:data (r:record*)>
+  <!ELEMENT r:record (r:key, r:value, r:blob?)>
+  <!ELEMENT r:key (#PCDATA)>
+  <!ELEMENT r:value (#PCDATA)>
+  <!ELEMENT r:blob (#PCDATA)>
+  <!ATTLIST r:report xmlns:r CDATA #FIXED "urn:report">
+  <!ATTLIST r:record n NMTOKEN #IMPLIED>
+  <!ENTITY euro "&#8364;">
+]>
+<r:report xmlns:r="urn:report" xmlns:x="urn:extra" x:mode="test">
+  <r:meta>
+    <r:source>sensor &euro;</r:source>
+    <r:stamp>2026-10-01T00:00:00Z</r:stamp>
+  </r:meta>
+  <r:data>
+    <r:record n="001">
+      <r:key><![CDATA[id]]></r:key>
+      <r:value>alpha&#x1F600;</r:value>
+      <r:blob>line1
+line2
+&amp; line3</r:blob>
+    </r:record>
+    <r:record n="002">
+      <r:key>beta</r:key>
+      <r:value>x:y/z</r:value>
+    </r:record>
+  </r:data>
+</r:report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST row index CDATA #IMPLIED>
+  <!ATTLIST cell colspan CDATA "1">
+  <!ENTITY quote "&quot;">
+  <!ENTITY lt "&lt;">
+]>
+<matrix>
+  <row index="0">
+    <cell colspan="2">a</cell>
+    <cell>b &quote; c</cell>
+    <cell><![CDATA[]]></cell>
+  </row>
+  <row index="1">
+    <cell>&lt;escaped&gt;</cell>
+    <cell colspan="0">zero</cell>
+  </row>
+  <row index="2">
+    <cell><![CDATA[split ]]]]><![CDATA[> marker]]></cell>
+    <cell>after</cell>
+  </row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, content)>
+  <!ELEMENT manifest (file*)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT content (section*)>
+  <!ELEMENT section (#PCDATA|line|item)*>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST file path CDATA #REQUIRED size NMTOKEN #IMPLIED>
+  <!ATTLIST section id ID #IMPLIED>
+  <!ENTITY tab "&#9;">
+  <!ENTITY newline "&#10;">
+  <!ENTITY sample "A&tab;B&newline;C">
+]>
+<package xml:space="default">
+  <manifest>
+    <file path="a&amp;b.txt" size="001"/>
+    <file path="dir/&quot;odd&quot;.dat" size="0"/>
+  </manifest>
+  <content>
+    <section id="s0">
+      pre<line>first &sample;</line>
+      <item><![CDATA[<item>literal</item>]]></item>
+      <line>last</line>post
+    </section>
+    <section id="s1">
+      <line>mixed &#x9; whitespace</line>
+      <item>entities: &amp; &lt; &gt; &apos;</item>
+    </section>
+  </content>
+</package>
+```

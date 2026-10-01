@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, trailer)>
+  <!ELEMENT header (field+)>
+  <!ELEMENT field (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST envelope xmlns:a CDATA #FIXED "urn:a"
+                    xmlns:b CDATA #FIXED "urn:b"
+                    a:mode (raw|parsed) "parsed">
+  <!ATTLIST field b:key NMTOKEN #REQUIRED>
+  <!ENTITY one "alpha">
+  <!ENTITY two "&one;-beta">
+  <!ENTITY % attrs "<!ATTLIST payload format CDATA 'fragment'>">
+  %attrs;
+]>
+<envelope xmlns:a="urn:a" xmlns:b="urn:b" a:mode="raw">
+  <header>
+    <field b:key="x1">&two;</field>
+    <field b:key="x2">line&#x0A;break</field>
+  </header>
+  <payload format="fragment">
+    <a:chunk xmlns:a="urn:other" b:flag="yes">
+      <![CDATA[<not-an-element/>]]>
+      <b:item a:value="&quot;quoted&quot;"/>
+    </a:chunk>
+  </payload>
+  <trailer/>
+</envelope>

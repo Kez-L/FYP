@@ -1,0 +1,130 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, records)>
+  <!ELEMENT header (title, created, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (key, value, tag*)>
+  <!ATTLIST record uid ID #REQUIRED state (new|ready|closed) "new">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|bold|code)*>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT bold (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+]>
+<archive>
+  <header>
+    <title>Configuration archive</title>
+    <created>2026-10-01T12:34:56Z</created>
+    <note>Values may contain <bold>mixed</bold> markup.</note>
+  </header>
+  <records>
+    <record uid="r1" state="ready">
+      <key>timeout</key>
+      <value>30 <code>seconds</code></value>
+      <tag>network</tag>
+      <tag>runtime</tag>
+    </record>
+    <record uid="r2">
+      <key>message</key>
+      <value>Hello &amp; goodbye</value>
+    </record>
+  </records>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<device xmlns="urn:acme:device" xmlns:cfg="urn:acme:config" xmlns:s="http://www.w3.org/2000/svg" id="dev-42">
+  <?profile name="portable"?>
+  <identity>
+    <manufacturer>Acme</manufacturer>
+    <model>Q-7</model>
+    <serial xml:space="preserve">  A7-0009  </serial>
+  </identity>
+  <cfg:settings version="2.5" cfg:locked="false">
+    <cfg:item name="threshold" type="decimal">-0.00001</cfg:item>
+    <cfg:item name="enabled" type="boolean">true</cfg:item>
+  </cfg:settings>
+  <visual>
+    <s:svg viewBox="0 0 10 10">
+      <s:g transform="translate(1,2)">
+        <s:path d="M0 0 L5 5 Z"/>
+      </s:g>
+    </s:svg>
+  </visual>
+</device>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<envelope xmlns="urn:example:envelope" xmlns:m="urn:example:message" xmlns:sec="urn:example:security">
+  <header>
+    <sec:token algorithm="sha256">a&amp;b&lt;c&gt;</sec:token>
+    <sec:signature><![CDATA[-----BEGIN SIGNATURE-----
+QkFTRTY0KQ==
+-----END SIGNATURE-----]]></sec:signature>
+  </header>
+  <body>
+    <m:request request-id="9f3e">
+      <m:query><![CDATA[
+        SELECT * FROM items
+        WHERE name LIKE '%<test>%'
+      ]]></m:query>
+      <m:arguments>
+        <m:argument key="limit">010</m:argument>
+        <m:argument key="offset">0</m:argument>
+      </m:arguments>
+    </m:request>
+    <!-- The response element is intentionally absent in this request. -->
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (module+, checksum)>
+  <!ELEMENT module EMPTY>
+  <!ATTLIST module
+    name CDATA #REQUIRED
+    version CDATA #IMPLIED
+    format NOTATION (bin|text) "text"
+    optional (yes|no) "no">
+  <!ELEMENT checksum (#PCDATA)>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!NOTATION text SYSTEM "text/plain">
+  <!ENTITY vendor "Example &amp; Sons">
+  <!ENTITY build "nightly-&#x0031;&#x0032;">
+]>
+<manifest generated-by="&vendor;" build="&build;">
+  <module name="core" version="4.0" format="bin"/>
+  <module name="locale" version="4.0" optional="yes"/>
+  <module name="diagnostics" format="text" optional="no"/>
+  <checksum>sha256:9f86d081884c7d659a2feaa0c55ad015</checksum>
+</manifest>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<scene xml:base="https://example.invalid/assets/" xml:lang="ja">
+  <?render quality="high"?>
+  <layer id="background" opacity="1.0">
+    <item kind="image" src="images/%E2%98%83.png" alt="雪"/>
+    <item kind="text" x="12.5" y="-3">
+      <content>こんにちは <span emphasis="strong">世界</span>！</content>
+    </item>
+  </layer>
+  <layer id="foreground">
+    <group transform="rotate(45)">
+      <marker shape="circle" radius="0"/>
+      <marker shape="polygon" points="0,0 1,0 1,1 0,1"/>
+    </group>
+    <empty/>
+  </layer>
+  <!-- A comment containing delimiters: <tag attr="x"> &amp; <![CDATA[not data]]> -->
+</scene>
+```

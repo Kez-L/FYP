@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, signatures)>
+  <!ELEMENT header (source, destination, timestamp)>
+  <!ELEMENT source EMPTY>
+  <!ELEMENT destination EMPTY>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT payload (entry*)>
+  <!ELEMENT entry (key, value, value?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|fragment)*>
+  <!ELEMENT fragment (#PCDATA)>
+  <!ELEMENT signatures (signature*)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST source id CDATA #REQUIRED>
+  <!ATTLIST destination id CDATA #REQUIRED>
+  <!ATTLIST entry ordinal CDATA #IMPLIED>
+  <!ENTITY ampersand "&amp;">
+  <!ENTITY brace "{&ampersand;">
+  <!ENTITY closebrace "}">
+]>
+<envelope>
+  <header>
+    <source id="node-α"/>
+    <destination id="node-β"/>
+    <timestamp>2026-10-01T12:34:56Z</timestamp>
+  </header>
+  <payload>
+    <entry ordinal="001">
+      <key>status</key>
+      <value>open<fragment>:</fragment>ready</value>
+      <value>&brace;state&closebrace;</value>
+    </entry>
+    <entry ordinal="002">
+      <key>payload</key>
+      <value><![CDATA[
+        { "items": [1, 2, 3], "valid": true }
+      ]]></value>
+    </entry>
+  </payload>
+  <signatures>
+    <signature>sha256:abc123</signature>
+    <signature><![CDATA[-----BEGIN SIGNATURE-----
+opaque== 
+-----END SIGNATURE-----]]></signature>
+  </signatures>
+</envelope>

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<workflow xmlns="urn:example:workflow">
+  <pipeline id="p7">
+    <step id="fetch" type="source">
+      <config>
+        <url scheme="https">https://example.invalid/a?x=1&amp;y=2</url>
+        <header name="Accept">application/xml</header>
+      </config>
+    </step>
+    <step id="transform" type="xslt">
+      <config>
+        <parameter name="mode">strict</parameter>
+        <script><![CDATA[
+          for ($x in //item) {
+            <result>{data($x)}</result>
+          }
+        ]]></script>
+      </config>
+    </step>
+    <branch test="count(/workflow/pipeline/step) &gt; 2">
+      <then>
+        <step id="publish" type="sink"/>
+      </then>
+      <else>
+        <failure code="E_EMPTY">No publication step</failure>
+      </else>
+    </branch>
+  </pipeline>
+  <?checkpoint id="after-pipeline"?>
+</workflow>

@@ -1,0 +1,116 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <item id="A-001" quantity="00000000000000000001">
+    <name><![CDATA[alpha < beta && gamma > delta]]></name>
+    <x:metadata>
+      <x:flag enabled="true"/>
+      <x:value>42</x:value>
+    </x:metadata>
+    <!-- comment with --? and entity-like text &amp; -->
+    <description>Line one&#10;Line two&#x0A;Line three</description>
+  </item>
+  <item id="A-002">
+    <name>mixed <emphasis>content</emphasis> tail</name>
+    <?processing instruction-data?>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.1" standalone="yes"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (key, value?, note*)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT note (#PCDATA|inner)*>
+  <!ELEMENT inner (#PCDATA)>
+  <!ATTLIST entry state (new|old|unknown) "unknown">
+]>
+<archive>
+  <entry state="new">
+    <key>k1</key>
+    <value>v1</value>
+    <note>plain <inner>nested</inner> text</note>
+  </entry>
+  <entry state="old">
+    <key>k2</key>
+    <note/>
+    <note><![CDATA[brackets ]]> and ampersands &amp;]]></note>
+  </entry>
+</archive>
+```
+
+```xml
+<!DOCTYPE r [
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+  <!ENTITY word "payload">
+]>
+<r>
+  <sequence>
+    <part>&left;</part>
+    <part><![CDATA[raw ]]> text</part>
+    <part>&word;&right;</part>
+  </sequence>
+  <matrix>
+    <row index="1"><cell/><cell>1</cell><cell>2</cell></row>
+    <row index="2"><cell>3</cell><cell>4</cell><cell><![CDATA[5]]></cell></row>
+  </matrix>
+</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body, trailer)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT body ANY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST header
+    sent CDATA #IMPLIED
+    priority NMTOKEN "normal"
+  >
+]>
+<envelope>
+  <header sent="2026-10-01T00:00:00Z" priority="high"/>
+  <body>
+    <data xmlns="urn:data" xmlns:q="urn:quoted">
+      <q:entry q:code="x:y:z">text</q:entry>
+      <q:entry q:code="&quot;quoted&quot;">&#65;&#x42;&#x43;</q:entry>
+    </data>
+    <![CDATA[
+      <not-an-element attr='value'/>
+      ]]> 
+  </body>
+  <trailer>done</trailer>
+</envelope>
+```
+
+```xml
+<session xmlns="urn:session">
+  <open id="s0">
+    <timestamp tz="+00:00">2026-10-01T12:34:56.789</timestamp>
+    <options>
+      <option name="compress" value="false"/>
+      <option name="window" value="0"/>
+    </options>
+  </open>
+  <events>
+    <event type="start">
+      <payload encoding="base64">QUJDREVGRw==</payload>
+    </event>
+    <event type="update">
+      <payload encoding="text">a&amp;b&lt;c&gt;</payload>
+      <details>
+        <field key="empty"></field>
+        <field key="space"> </field>
+        <field key="unicode">λЖ中</field>
+      </details>
+    </event>
+    <event type="end"/>
+  </events>
+  <?session-end complete?>
+</session>
+```

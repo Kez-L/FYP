@@ -1,0 +1,24 @@
+<?xml version="1.1"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, signature?)>
+  <!ELEMENT header (from, to, timestamp)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT signature EMPTY>
+  <!ATTLIST envelope xmlns:sec CDATA #IMPLIED>
+  <!ATTLIST signature sec:algorithm CDATA #REQUIRED sec:value CDATA #IMPLIED>
+]>
+<envelope xmlns:sec="urn:security">
+  <header>
+    <from>node-a</from>
+    <to>node-b</to>
+    <timestamp>2026-10-01T12:00:00Z</timestamp>
+  </header>
+  <payload>
+    <message priority="high">before &apos;quote&apos;</message>
+    <data><![CDATA[<not-an-element>&still raw</not-an-element>]]></data>
+  </payload>
+  <signature sec:algorithm="rsa-sha256" sec:value="abc"/>
+</envelope extra="unexpected">

@@ -1,0 +1,26 @@
+<!DOCTYPE vault [
+  <!ENTITY % declarations '
+    <!ELEMENT vault (record*)>
+    <!ELEMENT record (key, blob, link*)>
+    <!ELEMENT key (#PCDATA)>
+    <!ELEMENT blob (#PCDATA)>
+    <!ELEMENT link EMPTY>
+    <!ATTLIST record uid CDATA #IMPLIED>
+    <!ATTLIST link target CDATA #REQUIRED kind CDATA "soft">
+  '>
+  %declarations;
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+]>
+<vault>
+  <record uid="α-01">
+    <key>one</key>
+    <blob>&left;opaque&amp;encoded&right;</blob>
+    <link target="α-02"/>
+    <link target="missing" kind="hard"/>
+  </record>
+  <record uid="α-02">
+    <key>two</key>
+    <blob>line&#x0A;break&#x0D;carriage&#x09;tab</blob>
+  </record>
+</vault>

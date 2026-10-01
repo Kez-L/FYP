@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE exchange [
+  <!ELEMENT exchange (request, response)>
+  <!ELEMENT request (header*, payload)>
+  <!ELEMENT response (header*, payload|fault)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload ANY>
+  <!ELEMENT fault (code, reason, detail?)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT reason (#PCDATA)>
+  <!ELEMENT detail (#PCDATA)>
+  <!ATTLIST header name CDATA #REQUIRED value CDATA #REQUIRED>
+  <!ATTLIST payload format (xml|text|binary) #IMPLIED>
+  <!ENTITY quote "&quot;">
+  <!ENTITY apos "&apos;">
+  <!ENTITY nested "A&amp;B&lt;C&gt;">
+]>
+<exchange>
+  <request>
+    <header name="Accept" value="application/xml"/>
+    <header name="X-Flags" value="one&#x20;two&#x09;three"/>
+    <payload format="xml"><data xmlns="urn:p"><item key="1"/><item key="2">&nested;</item></data></payload>
+  </request>
+  <response>
+    <header name="Content-Type" value="text/plain"/>
+    <fault>
+      <code>422</code>
+      <reason>unprocessable &quote;input&quote;</reason>
+      <detail><![CDATA[expected </payload> but received ]]></detail>
+    </fault>
+  </response>
+</exchange>

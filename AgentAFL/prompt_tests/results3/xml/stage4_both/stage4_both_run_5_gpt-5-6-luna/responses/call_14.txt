@@ -1,0 +1,135 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?build profile="diagnostic"?>
+<message xmlns="urn:example:message" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="urn:example:message message.xsd"
+         id="m-204" priority="high">
+  <!-- A message containing mixed content and CDATA -->
+  <header>
+    <sender address="noreply@example.invalid">System Monitor</sender>
+    <recipient address="ops@example.invalid">Operations</recipient>
+    <sent-at tz="UTC">2026-10-01T23:59:59Z</sent-at>
+  </header>
+  <subject>Threshold notification</subject>
+  <content xml:space="preserve">The service reported <![CDATA[<latency> exceeds 250ms & requires review.]]></content>
+  <links>
+    <link rel="dashboard" href="https://example.invalid/dashboards/core"/>
+    <link rel="runbook" href="https://example.invalid/runbooks/latency"/>
+  </links>
+  <signature algorithm="sha256">4f8c9a</signature>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:example:library" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <branch code="NORTH" open="true">
+    <name>North Reading Room</name>
+    <location>
+      <address-line>14 Meridian Avenue</address-line>
+      <city>Riverton</city>
+      <postal-code>RV4 2QX</postal-code>
+    </location>
+    <hours>
+      <day name="Monday"><open>09:00</open><close>18:00</close></day>
+      <day name="Saturday"><open>10:00</open><close>14:00</close></day>
+    </hours>
+    <shelf aisle="7">
+      <book available="false">
+        <dc:title>Maps of Quiet Places</dc:title>
+        <dc:creator>J. Armitage</dc:creator>
+        <identifier type="isbn">9780000000001</identifier>
+        <loan due="2026-10-19">
+          <member category="visitor">guest-88</member>
+        </loan>
+      </book>
+      <book available="true">
+        <dc:title>Elemental Geometry</dc:title>
+        <dc:creator>A. Sen</dc:creator>
+        <identifier type="local">N-7-0042</identifier>
+      </book>
+    </shelf>
+  </branch>
+</library>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form [
+  <!ELEMENT form (field+, consent)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT consent (#PCDATA)>
+  <!ATTLIST form id ID #REQUIRED version CDATA #REQUIRED>
+  <!ATTLIST field name NMTOKEN #REQUIRED type (text|number|date|choice) #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST field required (yes|no) "no">
+  <!ATTLIST field options CDATA #IMPLIED>
+]>
+<form id="registration-7" version="3.1">
+  <field name="display_name" type="text" required="yes" value="Ada &amp; Co."/>
+  <field name="age" type="number" value="37"/>
+  <field name="start_date" type="date" value="2026-10-01"/>
+  <field name="color" type="choice" options="red|green|blue" value="green"/>
+  <consent>I accept the terms stated in the accompanying policy.</consent>
+</form>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<dashboard xmlns="urn:example:dashboard" xmlns:svg="http://www.w3.org/2000/svg"
+           updated="2026-10-01T12:00:00Z">
+  <panel id="cpu" collapsed="false">
+    <title>Processor load</title>
+    <metric unit="percent" min="0" max="100">
+      <sample at="2026-10-01T11:59:00Z">42.5</sample>
+      <sample at="2026-10-01T12:00:00Z">47.1</sample>
+    </metric>
+    <svg:svg width="120" height="30" viewBox="0 0 120 30" role="img">
+      <svg:polyline points="0,25 20,21 40,23 60,12 80,15 100,8 120,10"
+                    fill="none" stroke="#336699"/>
+    </svg:svg>
+  </panel>
+  <panel id="events" collapsed="true">
+    <title>Recent events</title>
+    <event severity="info">
+      <time>2026-10-01T11:58:02Z</time>
+      <message>Cache refresh completed</message>
+      <attributes>
+        <attribute key="nodes" value="12"/>
+        <attribute key="duration-ms" value="841"/>
+      </attributes>
+    </event>
+    <event severity="warning">
+      <time>2026-10-01T11:59:47Z</time>
+      <message>One worker exceeded its latency budget</message>
+    </event>
+  </panel>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="urn:example:package" xmlns:meta="urn:example:metadata"
+         name="sample-bundle" compression="none">
+  <manifest checksum="sha256:0000000000000000000000000000000000000000000000000000000000000000">
+    <entry path="docs/readme.txt" media-type="text/plain" size="128"/>
+    <entry path="data/values.csv" media-type="text/csv" size="512"/>
+    <entry path="images/icon.bin" media-type="application/octet-stream" size="16"/>
+  </manifest>
+  <metadata>
+    <meta:property name="author">build-service</meta:property>
+    <meta:property name="license">internal</meta:property>
+    <meta:property name="description"><![CDATA[Bundle for integration testing.]]></meta:property>
+  </metadata>
+  <payload>
+    <file path="docs/readme.txt"><![CDATA[
+      This archive contains three small resources.
+      Lines are intentionally preserved.
+    ]]></file>
+    <file path="data/values.csv">
+      <row><cell>name</cell><cell>value</cell></row>
+      <row><cell>alpha</cell><cell>1.25</cell></row>
+      <row><cell>beta</cell><cell>2.50</cell></row>
+    </file>
+  </payload>
+</package>
+```

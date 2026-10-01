@@ -1,0 +1,153 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, footer?)>
+  <!ELEMENT entry (title, summary?, tag*, payload)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT tag EMPTY>
+  <!ELEMENT payload ANY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST entry key ID #REQUIRED state (new|old|archived) "new">
+  <!ATTLIST tag name CDATA #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY mark "<em>generated</em>">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "blob.dat" NDATA bin>
+]>
+<catalog>
+  <entry key="e1">
+    <title>Alpha &amp; &quot;Omega&quot;</title>
+    <summary>Text &mark; with <code>markup &lt;x&gt;</code> and&nbsp;spacing.</summary>
+    <tag name="one"/>
+    <tag name="two"/>
+    <payload><![CDATA[
+      {"items":[null,true,false,{"n":-0.0e+12}]}
+    ]]></payload>
+  </entry>
+  <entry key="e2" state="archived">
+    <title>Second</title>
+    <payload>
+      <nested a="&apos;" b="&quot;">&lt;raw&gt;</nested>
+      <!-- a comment --><empty/>
+    </payload>
+  </entry>
+  <footer>tail</footer>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<packet xmlns="urn:packet" xmlns:x="urn:extension" xml:lang="zh-Hant" xml:space="preserve">
+  <header x:version="0000000000000000000000000000000001">
+    <sequence>0000000000000000000000000000000000000000000000000000000000000000</sequence>
+    <flag enabled="true"/>
+  </header>
+  <body>
+    <line id="a">before&#x85;after&#x2028;end</line>
+    <line id="b"><![CDATA[<not-an-element>&not-an-entity;</not-an-element>]]></line>
+    <line id="c">
+      <x:fragment x:empty="" xmlns:y="urn:other">
+        <y:item y:k="v"/>
+        <y:item xmlns:y="" />
+      </x:fragment>
+    </line>
+  </body>
+  <trailer xmlns="">
+    <value xml:lang="">unqualified</value>
+  </trailer>
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (meta, section*)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT section (heading, data)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT data (value|group)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT group (value*)>
+  <!ATTLIST meta
+    created CDATA #IMPLIED
+    mode NMTOKEN "test"
+    ref IDREF #IMPLIED>
+  <!ATTLIST value kind CDATA #IMPLIED>
+  <!ENTITY % common "kind CDATA #IMPLIED">
+  <!ENTITY % extra "<!ATTLIST group level NMTOKEN '0'>">
+  %extra;
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+]>
+<report>
+  <meta created="2026-10-01T00:00:00Z" mode="x:y" ref="missing"/>
+  <section>
+    <heading>One &lt; two &amp;&amp; three</heading>
+    <data>
+      <value kind="decimal">1.00000000000000000000000000000000000000001</value>
+      <group level="999999999999999999999999">
+        <value> </value>
+        <value kind="quoted"><![CDATA[]]></value>
+      </group>
+    </data>
+  </section>
+  <section>
+    <heading>Empty data</heading>
+    <data/>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:root xmlns:r="urn:r" xmlns:a="urn:a" xmlns:b="urn:b">
+  <r:container a:id="0" b:id="1">
+    <r:item xmlns:r="urn:shadow" r:name="shadowed">
+      <r:item xmlns:r="urn:deep" r:name="deep"/>
+    </r:item>
+    <a:item xmlns:a="urn:other-a" a:k="v">
+      <b:child xmlns:b="urn:other-b" b:k="&quot;"/>
+    </a:item>
+  </r:container>
+  <r:container xmlns:a="" xmlns:b="urn:b2">
+    <plain b:x="1">text</plain>
+  </r:container>
+  <r:tail xmlns="urn:default">
+    <leaf xmlns=""/>
+  </r:tail>
+</r:root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (chunk*)>
+  <!ELEMENT chunk (#PCDATA|part|break)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding (raw|base64|hex) "raw">
+  <!ENTITY amp "&#38;">
+  <!ENTITY quote "&#34;">
+]>
+<stream>
+  <chunk index="00" encoding="raw">
+    start<part><![CDATA[
+      binary-like: AAECAwQFBgcICQoLDA0ODw==
+    ]]></part>&amp;<break/>finish
+  </chunk>
+  <chunk index="01" encoding="base64">
+    <part>AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwd</part>
+    <part>&amp; &quot; &#x0A; &#x09;</part>
+  </chunk>
+  <chunk index="02" encoding="hex"><![CDATA[
+    000102030405060708090a0b0c0d0e0f
+  ]]></chunk>
+  <chunk index="03" encoding="raw">
+    <![CDATA[<a><b></b></a>]]>
+    <break/>
+  </chunk>
+</stream>
+```

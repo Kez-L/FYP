@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header (token, timestamp?)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ENTITY left-brace "{">
+  <!ENTITY right-brace "}">
+]>
+<envelope xmlns="urn:acme:message" xmlns:sec="urn:acme:security">
+  <header>
+    <token sec:scheme="opaque">&left-brace;abc-123&right-brace;</token>
+    <timestamp>2026-10-01T12:34:56Z</timestamp>
+  </header>
+  <payload>
+    <command name="rotate" priority="7">
+      <argument key="mode">safe</argument>
+      <argument key="scope">all</argument>
+    </command>
+    <result status="pending"/>
+  </payload>
+</envelope>

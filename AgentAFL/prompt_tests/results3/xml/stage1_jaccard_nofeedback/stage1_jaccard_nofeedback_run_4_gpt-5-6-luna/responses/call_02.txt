@@ -1,0 +1,96 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <x:item id="α-01" enabled="true">
+    <x:name><![CDATA[<not-an-element> & still text]]></x:name>
+    <x:price currency="€">12.50</x:price>
+    <!-- comment with brackets: ]]> and -- almost -->
+    <?process target="value &amp; data"?>
+  </x:item>
+  <item id="β-02">
+    <description>line one
+line two&#x0A;line three</description>
+    <empty/>
+  </item>
+</catalog>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ELEMENT report (section+, footer?)>
+  <!ELEMENT section (title, entry*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (#PCDATA|note)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST section key ID #IMPLIED>
+  <!ATTLIST entry ref IDREF #IMPLIED>
+  <!ENTITY local "replacement &amp; text">
+]>
+<report>
+  <section key="s1">
+    <title>First &local;</title>
+    <entry ref="s2">alpha<note>nested note</note>omega</entry>
+  </section>
+  <section key="s2">
+    <title>Second</title>
+    <entry>unreferenced</entry>
+  </section>
+  <footer><![CDATA[</report>]]></footer>
+</report>
+```
+
+```xml
+<?xml version="1.1"?>
+<r:root xmlns:r="urn:r" xmlns:a="urn:a">
+  <r:branch a:k="v">
+    <r:leaf><![CDATA[
+      ]]>]]><![CDATA[&amp; <tag> ]]></r:leaf>
+    <r:leaf a:k="&#x41;&#65;">
+      text &lt; text &gt; text &quot; text &apos;
+    </r:leaf>
+  </r:branch>
+  <r:branch xmlns:a="">
+    <r:leaf/>
+  </r:branch>
+</r:root>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ENTITY % common SYSTEM "about:invalid">
+  <!ENTITY header "H&amp;1">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "missing.dat" NDATA bin>
+]>
+<envelope>
+  <header id="h1">&header;</header>
+  <body>
+    <part name="one">before<!-- embedded --><![CDATA[inside]]>after</part>
+    <part name="two" external="payload"/>
+  </body>
+  <?audit level='verbose'?>
+</envelope>
+```
+
+```xml
+<stream>
+  <record date="2026-10-01T00:00:00Z">
+    <key>one</key>
+    <value>alpha</value>
+    <meta>
+      <flag>true</flag>
+      <flag>false</flag>
+    </meta>
+  </record>
+  <record date="invalid">
+    <key/>
+    <value xml:space="preserve">  mixed
+      whitespace  </value>
+    <nested>
+      <a><b><c><d><e>deep</e></d></c></b></a>
+    </nested>
+  </record>
+  <trailer status="ok"/>
+</stream>
+```

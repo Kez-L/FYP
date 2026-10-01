@@ -1,0 +1,25 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (sender, recipients, body)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipients (recipient+)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|attachment)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment href URI #REQUIRED media CDATA #IMPLIED>
+  <!ENTITY greeting "Hello">
+  <!ENTITY nested "&greeting;, reader">
+]>
+<message priority="urgent">
+  <sender>robot@example.invalid</sender>
+  <recipients>
+    <recipient>one@example.invalid</recipient>
+    <recipient>two@example.invalid</recipient>
+  </recipients>
+  <body>
+    &nested;.
+    <quote>Outer <quote>inner</quote> quote.</quote>
+    <attachment href="urn:file:report.txt" media="text/plain"/>
+  </body>
+</message>

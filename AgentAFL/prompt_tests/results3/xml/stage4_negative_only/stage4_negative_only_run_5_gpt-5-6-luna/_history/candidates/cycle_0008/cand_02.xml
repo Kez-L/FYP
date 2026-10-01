@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:acme:workflow" xmlns:ui="urn:acme:ui" xml:space="preserve">
+  <?pipeline stage="normalize"?>
+  <!-- Deliberately mixed content with significant whitespace. -->
+  <sequence name="nightly">
+    <task id="fetch" retry="3">
+      <label>Fetch records</label>
+      <command><![CDATA[curl --silent "https://example.invalid/feed?a=1&b=2"]]></command>
+      <ui:hint color="#334455">network</ui:hint>
+    </task>
+    <parallel>
+      <task id="index" depends-on="fetch">
+        <label>Build index</label>
+        <environment>
+          <variable name="MODE">incremental</variable>
+          <variable name="LIMIT">00042</variable>
+        </environment>
+      </task>
+      <task id="archive" depends-on="fetch">
+        <label>Archive <ui:strong>raw</ui:strong> output</label>
+        <artifact path="out/archive.tar" compression="zstd"/>
+      </task>
+    </parallel>
+    <decision expression="count(/workflow/sequence/task) &gt; 0">
+      <on-true>continue</on-true>
+      <on-false>abort</on-false>
+    </decision>
+  </sequence>
+</workflow>

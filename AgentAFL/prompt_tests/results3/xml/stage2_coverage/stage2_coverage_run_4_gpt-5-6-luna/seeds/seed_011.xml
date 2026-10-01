@@ -1,0 +1,28 @@
+<?xml version="1.1"?>
+<!DOCTYPE switchboard [
+  <!ELEMENT switchboard (channel*)>
+  <!ELEMENT channel (message|pause|message-ref)*>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT pause EMPTY>
+  <!ELEMENT message-ref EMPTY>
+  <!ATTLIST channel
+    name NMTOKEN #REQUIRED
+    enabled (yes|no) "yes"
+  >
+  <!ATTLIST pause duration CDATA "0">
+  <!ATTLIST message-ref target IDREF #IMPLIED>
+  <!ENTITY greeting "hello &amp; welcome">
+  <!ENTITY mark "&#x1F642;">
+]>
+<switchboard xml:lang="ja" xml:space="preserve">
+  <channel name="primary">
+    <message>&greeting;, 世界 &mark;</message>
+    <pause duration="12"/>
+    <message-ref target="unknown"/>
+    <message>line-one&#x85;line-two&#x2028;line-three</message>
+  </channel>
+  <channel name="backup" enabled="no">
+    <message><![CDATA[<not-an-element>&still-literal;</not-an-element>]]></message>
+    <?checkpoint value="2"?>
+  </channel>
+</switchboard>

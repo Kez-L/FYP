@@ -1,0 +1,149 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, author+, description?, price)>
+  <!ATTLIST entry code ID #REQUIRED status (active|archived) "active">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emphasis|reference)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT reference EMPTY>
+  <!ATTLIST reference href CDATA #REQUIRED>
+  <!ELEMENT price (#PCDATA)>
+]>
+<catalog>
+  <entry code="bk-001" status="active">
+    <title>The Glass Orchard</title>
+    <author>R. Sen</author>
+    <author>M. Vale</author>
+    <description>A study of <emphasis>seasonal memory</emphasis> and <reference href="notes.xml"/>.</description>
+    <price currency="USD">19.95</price>
+  </entry>
+  <entry code="bk-002">
+    <title>Null Islands</title>
+    <author>J. Ortega</author>
+    <description><![CDATA[Coordinates: 0°00'00"N, 0°00'00"E]]></description>
+    <price currency="EUR">0.00</price>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<simulation xmlns="urn:example:simulation" xmlns:geo="urn:example:geo">
+  <run started="2026-10-01T00:00:00Z">
+    <grid geo:datum="WGS84" rows="2" columns="3">
+      <row index="0">
+        <cell column="0">-1.0</cell>
+        <cell column="1">0</cell>
+        <cell column="2">1.0</cell>
+      </row>
+      <row index="1">
+        <cell column="0" nil="true"/>
+        <cell column="1">3.141592653589793</cell>
+        <cell column="2">NaN</cell>
+      </row>
+    </grid>
+    <events>
+      <event time="PT0S" type="start"/>
+      <event time="PT1.5S" type="sample">
+        <payload encoding="base64">AAEC/f8=</payload>
+      </event>
+      <event time="PT3S" type="stop"/>
+    </events>
+  </run>
+</simulation>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (step, step*, on-error?)>
+  <!ATTLIST workflow name CDATA #REQUIRED>
+  <!ELEMENT step (input*, action, output*)>
+  <!ATTLIST step number CDATA #REQUIRED optional (true|false) "false">
+  <!ELEMENT input EMPTY>
+  <!ATTLIST input key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT output EMPTY>
+  <!ATTLIST output key CDATA #REQUIRED>
+  <!ELEMENT on-error (action, notify?)>
+  <!ELEMENT notify (#PCDATA)>
+]>
+<workflow name="nightly-export">
+  <step number="1">
+    <input key="source" value="/var/lib/data"/>
+    <input key="mode" value="incremental"/>
+    <action>scan</action>
+    <output key="manifest"/>
+  </step>
+  <step number="2" optional="true">
+    <input key="manifest"/>
+    <action>transform &amp; compress</action>
+    <output key="archive"/>
+  </step>
+  <step number="3">
+    <input key="archive"/>
+    <action>publish</action>
+  </step>
+  <on-error>
+    <action>rollback</action>
+    <notify>ops@example.invalid</notify>
+  </on-error>
+</workflow>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE drawing [
+  <!ELEMENT drawing (layer+)>
+  <!ELEMENT layer (group|path|text|use)*>
+  <!ATTLIST layer id ID #REQUIRED opacity CDATA "1">
+  <!ELEMENT group (group|path|text|use)*>
+  <!ATTLIST group transform CDATA #IMPLIED>
+  <!ELEMENT path EMPTY>
+  <!ATTLIST path d CDATA #REQUIRED fill CDATA #IMPLIED stroke CDATA #IMPLIED>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST text x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ELEMENT use EMPTY>
+  <!ATTLIST use ref IDREF #REQUIRED>
+]>
+<drawing width="640" height="480" viewBox="0 0 640 480">
+  <layer id="background" opacity="0.25">
+    <path d="M0,0 L640,0 L640,480 L0,480 Z" fill="#102030"/>
+  </layer>
+  <layer id="foreground">
+    <group transform="translate(12.5,-4) rotate(7)">
+      <path d="M10 20 C 40 0, 80 0, 110 20 S 180 40, 210 20" stroke="url(#gradient)" fill="none"/>
+      <text x="24" y="96">caf&#xE9; &amp; tea</text>
+    </group>
+    <use ref="background"/>
+  </layer>
+</drawing>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+  <manifest>
+    <file name="README" media-type="text/plain" size="42"/>
+    <file name="data.bin" media-type="application/octet-stream" size="0" checksum=""/>
+    <file name="nested/item.xml" media-type="application/xml" compressed="false"/>
+  </manifest>
+  <metadata>
+    <field key="title">A &lt;small&gt; package</field>
+    <field key="keywords">
+      <value>xml</value>
+      <value>fuzzing</value>
+      <value>boundary&#x9;cases</value>
+    </field>
+    <field key="empty"/>
+  </metadata>
+  <payload>
+    <chunk sequence="00000000000000000001"><![CDATA[begin]]></chunk>
+    <chunk sequence="00000000000000000002"><![CDATA[]]></chunk>
+    <chunk sequence="00000000000000000003"><![CDATA[end]]></chunk>
+  </payload>
+</package>
+```

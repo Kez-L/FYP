@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!-- Message with nested envelopes and processing instructions -->
+<rpc:envelope xmlns:rpc="urn:example:rpc" xmlns:m="urn:example:message">
+  <?trace id="req-77"?>
+  <rpc:header>
+    <rpc:auth scheme="token">
+      <rpc:token><![CDATA[abc<opaque>&value]]></rpc:token>
+      <rpc:scope>read write</rpc:scope>
+    </rpc:auth>
+    <rpc:options>
+      <rpc:option name="locale">en-GB</rpc:option>
+      <rpc:option name="compress">false</rpc:option>
+    </rpc:options>
+  </rpc:header>
+  <rpc:body>
+    <m:batch transaction="atomic">
+      <m:operation id="op-a" verb="put">
+        <m:resource path="/accounts/7">
+          <m:field name="display">Ada &amp; Lovelace</m:field>
+          <m:field name="active">true</m:field>
+          <m:field name="note">Use &lt;careful&gt; escaping.</m:field>
+        </m:resource>
+      </m:operation>
+      <m:operation id="op-b" verb="delete">
+        <m:resource path="/sessions/expired"/>
+      </m:operation>
+      <m:operation id="op-c" verb="query">
+        <m:resource path="/events">
+          <m:filter>
+            <m:and>
+              <m:eq field="kind" value="warning"/>
+              <m:after field="created" value="2026-09-01"/>
+            </m:and>
+          </m:filter>
+        </m:resource>
+      </m:operation>
+    </m:batch>
+  </rpc:body>
+  <rpc:footer>
+    <rpc:signature algorithm="sha256">001122334455</rpc:signature>
+  </rpc:footer>
+</rpc:envelope>

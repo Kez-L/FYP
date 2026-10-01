@@ -1,0 +1,117 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, meta?, description)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT description (#PCDATA|note)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY quoted "&#x22; &amp; &#x3C;">
+]>
+<catalog>
+  <entry>
+    <title>alpha <![CDATA[<embedded>]]> omega</title>
+    <meta key="mode" value="quoted &quot; value"/>
+    <description>before<note>inside</note>after &quoted;</description>
+  </entry>
+  <entry>
+    <title>second</title>
+    <description><![CDATA[raw ]]> text ]]> tail</description>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<r xmlns="urn:root" xmlns:p="urn:payload" xml:lang="x-Ω">
+  <p:item p:id="&#x1F600;" xml:space="preserve">
+    <p:value><![CDATA[
+      line-one
+      ]]> 
+      <p:value><![CDATA[inner]]></p:value>
+    </p:value>
+    <empty xmlns="" a="&#x0;"/>
+  </p:item>
+  <p:item xmlns:q="urn:other" q:flag="yes">
+    <q:child>text &amp; more</q:child>
+  </p:item>
+</r>
+```
+
+```xml
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, footer?)>
+  <!ELEMENT header (from, to)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT body ANY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY local "local-value">
+]>
+<message>
+  <header>
+    <from>sender@example.test</from>
+    <to><![CDATA[receiver@example.test]]></to>
+  </header>
+  <body>
+    <section id="one">
+      <line>first &local;</line>
+      <line><![CDATA[second <line> not markup]]></line>
+    </section>
+    <section id="two"><![CDATA[]]></section>
+  </body>
+  <footer>done</footer>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a|b|mixed)*>
+  <!ELEMENT a EMPTY>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT mixed (#PCDATA|a|b|c)*>
+  <!ELEMENT c ANY>
+  <!ATTLIST a x NMTOKENS #IMPLIED>
+  <!ATTLIST b ref IDREFS #IMPLIED>
+]>
+<root>
+  <a x="one two&#x9;three"/>
+  <b ref="id1 id2">numeric &#x31;&#x32;&#x33;</b>
+  <mixed>
+    leading
+    <a/>
+    middle
+    <b>tail</b>
+    <c><nested attr="&lt;value&gt;">payload</nested></c>
+  </mixed>
+  <unknown attr="unterminated">
+    <child/>
+  </unknown>
+</root>
+```
+
+```xml
+<inventory xmlns:x="urn:x">
+  <item sku="A&amp;B">
+    <name>Widget</name>
+    <dimensions>
+      <width unit="mm">10</width>
+      <height unit="mm">20</height>
+      <depth unit="mm">30</depth>
+    </dimensions>
+    <tags>
+      <tag><![CDATA[one]]></tag>
+      <tag>two</tag>
+      <tag>three &quot;quoted&quot;</tag>
+    </tags>
+  </item>
+  <item sku="broken">
+    <name>Unclosed
+    <dimensions><width>NaN</height></dimensions>
+    <x:extension x:kind="opaque"><![CDATA[a]]></x:extension>
+  </item>
+</inventory>
+```

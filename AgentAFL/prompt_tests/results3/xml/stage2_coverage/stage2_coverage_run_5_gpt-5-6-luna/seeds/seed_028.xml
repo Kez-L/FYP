@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ELEMENT config (include*, setting+, choice?)>
+  <!ELEMENT include EMPTY>
+  <!ATTLIST include
+    href URI #REQUIRED
+    mode (merge|replace) "merge">
+  <!ELEMENT setting EMPTY>
+  <!ATTLIST setting
+    name NMTOKEN #REQUIRED
+    value CDATA #REQUIRED
+    locked (true|false) "false">
+  <!ELEMENT choice (option, option?)>
+  <!ELEMENT option (#PCDATA)>
+  <!ATTLIST option selected (0|1) "0">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data.bin" NDATA bin>
+]>
+<config>
+  <include href="file:///tmp/example.xml" mode="replace"/>
+  <setting name="path" value="/a/b/c" locked="true"/>
+  <setting name="quote" value="&quot;&apos;&gt;&lt;" />
+  <choice>
+    <option selected="1">first</option>
+    <option>second</option>
+  </choice>
+</config>

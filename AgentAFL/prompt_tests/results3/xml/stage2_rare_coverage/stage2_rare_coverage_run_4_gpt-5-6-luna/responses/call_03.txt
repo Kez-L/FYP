@@ -1,0 +1,113 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+, note?)>
+  <!ELEMENT section (item*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT item (label, value?, item*)>
+  <!ATTLIST item key CDATA #IMPLIED state (new|old|void) "new">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA|item)*>
+  <!ELEMENT note (#PCDATA)>
+]>
+<catalog>
+  <section code="root">
+    <item key="α" state="new">
+      <label>first</label>
+      <value><![CDATA[x < y && y > z]]></value>
+      <item key="nested" state="void">
+        <label>leaf</label>
+      </item>
+    </item>
+    <item key="empty">
+      <label/>
+      <value>left<item key="inside"><label>right</label></item>end</value>
+    </item>
+  </section>
+  <note>tail &amp; text</note>
+</catalog>
+```
+
+```xml
+<r xmlns="urn:outer" xmlns:p="urn:p" xmlns:q="urn:q">
+  <p:a xml:lang="en" xml:space="preserve">
+    <q:b p:k="1" q:k="2">
+      <c xmlns="urn:inner" xmlns:p="">
+        <p:item>alpha</p:item>
+        <item><![CDATA[beta]]></item>
+      </c>
+    </q:b>
+  </p:a>
+  <shadow xmlns="">
+    <x xmlns="urn:x"><y/></x>
+  </shadow>
+  <!-- comment with --? no -->
+  <?processing data="&quot;quoted&quot;"?>
+</r>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ENTITY local "replacement">
+  <!ENTITY pair "&local;:&local;">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY ext SYSTEM "missing-resource.txt">
+]>
+<root>
+  <literal>&lt;tag attr='x'/&gt;</literal>
+  <expanded>&pair;</expanded>
+  <mixed>before<![CDATA[<raw>&data;</raw>]]>after</mixed>
+  <empty>&#0;</empty>
+  <pi><?data a='1' b="2"?></pi>
+</root>
+```
+
+```xml
+<world>
+  <node id="0">
+    <node id="1">
+      <node id="2">
+        <node id="3">
+          <node id="4">
+            <node id="5">
+              <node id="6">
+                <node id="7">
+                  <node id="8">
+                    <node id="9">
+                      <value>深い階層 café 🚀</value>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+  </node>
+  <siblings>
+    <a/><b/><c/><d/><e/><f/><g/><h/>
+  </siblings>
+</world>
+```
+
+```xml
+<?xml version="1.0"?>
+<message>
+  <header>
+    <field name="from">alice@example.test</field>
+    <field name="to">bob@example.test</field>
+    <field name="subject">A &amp; B</field>
+  </header>
+  <body>
+    <part type="text/plain">line one
+line two&#xA;line three</part>
+    <part type="application/xml"><fragment><entry n="1"/><entry n="2"></part>
+  </body>
+  <attachments count="2">
+    <attachment name="a.bin" length="18446744073709551615"/>
+    <attachment name="" length="-1"><![CDATA[]]></attachment>
+  </attachments>
+</message>
+```

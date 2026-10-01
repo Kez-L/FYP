@@ -1,0 +1,159 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<canvas xmlns="urn:graphics:canvas" xmlns:ink="urn:graphics:ink" width="640" height="480" viewBox="0 0 640 480">
+  <?render profile="draft"?>
+  <metadata><![CDATA[<author>Δelta</author> & raw markup]]></metadata>
+  <layer id="background" opacity="0.875">
+    <rectangle x="0" y="0" width="640" height="480" fill="#102030"/>
+    <path ink:stroke="gold" ink:stroke-width="2" d="M 10,20 C 40,5 80,75 120,40 Z"/>
+  </layer>
+  <layer id="foreground">
+    <group transform="rotate(12 320 240)">
+      <text x="18" y="44" xml:space="preserve">  Café — 東京  </text>
+      <marker id="arrow" refX="7" refY="4">
+        <polygon points="0,0 8,4 0,8" fill="currentColor"/>
+      </marker>
+    </group>
+    <!-- an intentionally empty overlay -->
+    <overlay enabled="false"/>
+  </layer>
+</canvas>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (manifest, payload)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry path CDATA #REQUIRED kind (text|binary|link) "text" checksum CDATA #IMPLIED>
+  <!ELEMENT payload (section+)>
+  <!ELEMENT section (#PCDATA|section|item)*>
+  <!ATTLIST section name CDATA #REQUIRED>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item key ID #IMPLIED>
+  <!ENTITY greeting "hello &amp; welcome">
+  <!ENTITY stamp "2026-10-01">
+]>
+<archive>
+  <manifest>
+    <entry path="docs/readme.txt" kind="text" checksum="sha256:abc123"/>
+    <entry path="assets/logo.bin" kind="binary" checksum="sha256:def456"/>
+    <entry path="latest" kind="link"/>
+  </manifest>
+  <payload>
+    <section name="intro">
+      &greeting; — generated on &stamp;.
+      <item key="first">alpha</item>
+      <section name="nested">
+        <item>beta &lt; gamma</item>
+        <![CDATA[raw payload: ]]> <item>delta</item>
+      </section>
+    </section>
+    <section name="empty-content"/>
+  </payload>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns:pkg="urn:example:package" xmlns:xi="http://www.w3.org/2001/XInclude" xml:base="https://example.invalid/releases/">
+  <pkg:identity id="bundle-07">
+    <pkg:name>nightly-tools</pkg:name>
+    <pkg:version major="3" minor="14" patch="0"/>
+  </pkg:identity>
+  <pkg:resources>
+    <pkg:resource media-type="text/plain" path="CHANGELOG">
+      <xi:include href="changelog.xml" parse="text">
+        <xi:fallback>Changelog unavailable</xi:fallback>
+      </xi:include>
+    </pkg:resource>
+    <pkg:resource media-type="application/xml" path="settings.xml">
+      <xi:include href="settings.xml" parse="xml" xpointer="element(/1/1)">
+        <xi:fallback>
+          <pkg:missing reason="offline"/>
+        </xi:fallback>
+      </xi:include>
+    </pkg:resource>
+  </pkg:resources>
+  <pkg:commands>
+    <pkg:command name="install" shell="false">tool --target &quot;/opt/demo&quot;</pkg:command>
+    <pkg:command name="verify"><![CDATA[checksum --strict --all]]></pkg:command>
+  </pkg:commands>
+</package>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (opening, transaction*, closing)>
+  <!ELEMENT opening EMPTY>
+  <!ATTLIST opening currency CDATA #REQUIRED amount CDATA #REQUIRED>
+  <!ELEMENT transaction (when, party, debit, credit, memo?)>
+  <!ATTLIST transaction ref ID #REQUIRED status (posted|pending|void) "posted">
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT party (from, to)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT debit (#PCDATA)>
+  <!ELEMENT credit (#PCDATA)>
+  <!ELEMENT memo (#PCDATA)>
+  <!ELEMENT closing EMPTY>
+  <!ATTLIST closing balance CDATA #REQUIRED>
+]>
+<ledger>
+  <opening currency="EUR" amount="1250.00"/>
+  <transaction ref="t-α" status="posted">
+    <when>2026-09-30T23:59:59+02:00</when>
+    <party>
+      <from>acct:checking/primary</from>
+      <to>acct:vendor/42</to>
+    </party>
+    <debit>18.50</debit>
+    <credit>0.00</credit>
+    <memo>Replacement part; delivery &amp; handling</memo>
+  </transaction>
+  <transaction ref="t-β" status="pending">
+    <when>2026-10-01T00:00:01Z</when>
+    <party>
+      <from>acct:vendor/42</from>
+      <to>acct:checking/primary</to>
+    </party>
+    <debit>0.00</debit>
+    <credit>3.14159</credit>
+  </transaction>
+  <closing balance="1234.64159"/>
+</ledger>
+```
+
+```xml
+<?xml version="1.0"?>
+<registry xmlns="urn:device:registry" xmlns:sec="urn:device:security" xmlns:cal="urn:device:calibration">
+  <device serial="ZX-9000-0007" model="spectrometer" active="true">
+    <identity>
+      <label>Field Unit 7</label>
+      <location building="B" floor="−1" room="Δ-04"/>
+    </identity>
+    <capabilities>
+      <capability name="temperature" unit="K" range-min="0.1" range-max="2000"/>
+      <capability name="pressure" unit="Pa" range-min="1e-6" range-max="5e6"/>
+      <capability name="imaging" channels="red green blue infrared"/>
+    </capabilities>
+    <configuration>
+      <cal:profile id="cold-start">
+        <cal:point input="0" output="0.000"/>
+        <cal:point input="273.15" output="273.149"/>
+        <cal:point input="1000" output="1000.004"/>
+      </cal:profile>
+      <sec:credentials algorithm="argon2id">
+        <sec:key-id>key-2026-10</sec:key-id>
+        <sec:fingerprint>4A:7F:00:BC:19:EE:22:91</sec:fingerprint>
+      </sec:credentials>
+    </configuration>
+    <events>
+      <event severity="notice" code="BOOT">Initialized after <detail>firmware update</detail>.</event>
+      <event severity="warning" code="DRIFT"><![CDATA[sensor[2] deviation = 0.000004]]></event>
+    </events>
+  </device>
+</registry>
+```

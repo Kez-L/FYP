@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (item*)>
+  <!ELEMENT item EMPTY>
+  <!ELEMENT data ANY>
+  <!ATTLIST package xmlns:p CDATA #FIXED "urn:pkg">
+  <!ATTLIST manifest p:count CDATA #IMPLIED>
+  <!ATTLIST item path CDATA #REQUIRED size NMTOKEN #IMPLIED>
+  <!ENTITY left "{">
+  <!ENTITY right "}">
+]>
+<p:package xmlns:p="urn:pkg" xmlns:q="urn:other">
+  <manifest p:count="2">
+    <item path="&left;config&right;" size="17"/>
+    <item path="q:blob" size="0"/>
+  </manifest>
+  <data>
+    <?payload kind="opaque"?>
+    <![CDATA[
+      <embedded xmlns="urn:embedded">
+        <value q:x="1">&not-parsed;</value>
+      </embedded>
+    ]]>
+    <q:fragment q:mode="raw">text &amp; more</q:fragment>
+  </data>
+</p:package>

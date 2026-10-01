@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ENTITY a "&b;">
+  <!ENTITY b "&c;">
+  <!ENTITY c "cycle-&a;">
+  <!ENTITY % declaration "<!ELEMENT fragment (#PCDATA|node)*>">
+  %declaration;
+  <!ELEMENT root (fragment|node|empty)*>
+  <!ELEMENT node (#PCDATA)>
+  <!ELEMENT empty EMPTY>
+  <!ATTLIST root xmlns:q CDATA #IMPLIED>
+  <!ATTLIST node key CDATA #IMPLIED>
+]>
+<root xmlns:q="urn:q" q:flag="x">
+  <fragment>before &a; after</fragment>
+  <node key="&quot;quoted&quot;">text</node>
+  <empty></empty>
+  <node><![CDATA[unclosed-looking ]]> text</node>
+</root>

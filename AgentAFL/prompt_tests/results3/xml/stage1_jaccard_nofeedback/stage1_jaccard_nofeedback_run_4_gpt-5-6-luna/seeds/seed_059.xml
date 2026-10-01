@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ATTLIST archive format (zip|tar|raw) "raw">
+  <!ELEMENT entry (name, payload, checksum?)>
+  <!ATTLIST entry id ID #REQUIRED kind CDATA "file">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+]>
+<archive format="tar">
+  <entry id="e1" kind="file">
+    <name>dir/alpha.txt</name>
+    <payload>prefix<chunk><![CDATA[00ff00aa]]></chunk>suffix</payload>
+    <checksum>00000000000000000000000000000000</checksum>
+  </entry>
+  <entry id="e2">
+    <name>dir/beta&amp;gamma.bin</name>
+    <payload/>
+  </entry>
+  <entry id="e3" kind="directory">
+    <name>dir/sub/</name>
+    <payload><chunk>nested</chunk><chunk>content</chunk></payload>
+  </entry>
+</archive>

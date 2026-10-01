@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, records)>
+  <!ELEMENT header (created, comment?)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT comment (#PCDATA)>
+  <!ELEMENT records (record+)>
+  <!ELEMENT record (key, payload, checksum)>
+  <!ATTLIST record kind (text|binary|empty) "text" version CDATA #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|line|chunk)*>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY nl "&#10;">
+  <!ENTITY quoted "&quot;quoted&quot;">
+]>
+<archive>
+  <header>
+    <created>2026-10-01T00:00:00Z</created>
+    <comment>Use &quoted; values.&nl;Second line.</comment>
+  </header>
+  <records>
+    <record kind="text" version="1.0">
+      <key>α-001</key>
+      <payload><line>one</line><line>two &amp; three</line><chunk><![CDATA[raw ]]> data</chunk></payload>
+      <checksum>00000000</checksum>
+    </record>
+    <record kind="empty">
+      <key>β-002</key>
+      <payload/>
+      <checksum>ffffffff</checksum>
+    </record>
+  </records>
+</archive>

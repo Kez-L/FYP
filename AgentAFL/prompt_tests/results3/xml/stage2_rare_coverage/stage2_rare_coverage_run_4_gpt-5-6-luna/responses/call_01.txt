@@ -1,0 +1,158 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<warehouse xmlns="urn:inventory" xmlns:meta="urn:metadata">
+  <meta:batch code="Q4-Δ" meta:generated="2026-09-30T23:59:59Z"/>
+  <aisle number="07">
+    <bin code="A-1">
+      <sku>00042</sku>
+      <quantity unit="pieces">12</quantity>
+      <location>
+        <coordinates x="1.25" y="-0.0" z="4e2"/>
+      </location>
+    </bin>
+    <bin code="A-2" status="empty"/>
+  </aisle>
+  <aisle number="08">
+    <bin code="B-9">
+      <sku/>
+      <quantity unit="箱">0</quantity>
+    </bin>
+  </aisle>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE manuscript [
+  <!ELEMENT manuscript (frontmatter, body, appendix?)>
+  <!ELEMENT frontmatter (title, author+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT body (chapter+)>
+  <!ELEMENT chapter (heading, paragraph+, note*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|quote|code|br)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT appendix (entry*)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ATTLIST chapter id ID #REQUIRED>
+  <!ATTLIST note ref IDREF #IMPLIED>
+  <!ENTITY emdash "&#x2014;">
+  <!ENTITY sample "<code>&lt;token value='x'/&gt;</code>">
+]>
+<manuscript>
+  <frontmatter>
+    <title>Edges &amp; Boundaries</title>
+    <author>R. Parser</author>
+    <author>Σ. Node</author>
+  </frontmatter>
+  <body>
+    <chapter id="intro">
+      <heading>Opening &emdash; test</heading>
+      <paragraph>Before<quote>quoted &amp; escaped</quote>after<br/>again.</paragraph>
+      <paragraph>&sample;</paragraph>
+      <note ref="intro">A self-referential-looking identifier.</note>
+    </chapter>
+  </body>
+  <appendix>
+    <entry>one</entry>
+    <entry>two</entry>
+  </appendix>
+</manuscript>
+```
+
+```xml
+<?xml version="1.0"?>
+<message xmlns="urn:message" xmlns:x="urn:extension" xml:lang="ar">
+  <header>
+    <sender address="sender@example.invalid"/>
+    <recipient address="receiver@example.invalid" />
+    <routing>
+      <hop index="0">gateway-a</hop>
+      <hop index="1">gateway-b</hop>
+    </routing>
+  </header>
+  <payload type="application/xml">
+    <![CDATA[
+      <embedded>
+        <value>&not-an-entity;</value>
+      </embedded>
+    ]]>
+  </payload>
+  <x:attachments>
+    <x:attachment name="π.txt" size="0">
+      <x:checksum algorithm="none"></x:checksum>
+    </x:attachment>
+  </x:attachments>
+  <?delivery status="queued"?>
+  <signature algorithm="none">-----BEGIN-----</signature>
+</message>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node (label?, property*)>
+  <!ELEMENT edge EMPTY>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST node id ID #REQUIRED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+  <!ATTLIST property key NMTOKEN #REQUIRED>
+]>
+<graph>
+  <node id="n0">
+    <label>root</label>
+    <property key="empty"></property>
+    <property key="unicode">line one&#x85;line two</property>
+  </node>
+  <node id="n1">
+    <label><![CDATA[left < right && right > left]]></label>
+  </node>
+  <node id="n2"/>
+  <edge from="n0" to="n1" weight="0"/>
+  <edge from="n1" to="n2" weight="-3.14159"/>
+  <edge from="n2" to="n0" weight="NaN"/>
+</graph>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:config">
+  <profiles>
+    <profile name="minimal">
+      <inherits/>
+      <setting key="enabled" value="false"/>
+    </profile>
+    <profile name="production">
+      <inherits profile="minimal"/>
+      <setting key="endpoint">
+        <url scheme="https" host="example.invalid" port="443">
+          <path>/v1/resource</path>
+          <query>
+            <parameter name="a">1</parameter>
+            <parameter name="b">x&amp;y</parameter>
+          </query>
+        </url>
+      </setting>
+      <setting key="retries">
+        <values>
+          <value>0</value>
+          <value>1</value>
+          <value>2</value>
+        </values>
+      </setting>
+    </profile>
+  </profiles>
+  <overrides>
+    <override profile="production" key="endpoint">
+      <reason><![CDATA[temporary <maintenance> window]]></reason>
+      <expires at="2026-10-01T00:00:00Z"/>
+    </override>
+  </overrides>
+</configuration>
+```

@@ -1,0 +1,263 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ENTITY % feature "<!ELEMENT annotation (#PCDATA|mark|ref)*>">
+  %feature;
+  <![INCLUDE[
+    <!ELEMENT archive (header, record+, footer)>
+    <!ELEMENT header (created, owner)>
+    <!ELEMENT created (#PCDATA)>
+    <!ELEMENT owner (#PCDATA)>
+    <!ELEMENT record (key, value, annotation*)>
+    <!ELEMENT key (#PCDATA)>
+    <!ELEMENT value (#PCDATA|mark|ref|br)*>
+    <!ELEMENT mark (#PCDATA)>
+    <!ELEMENT ref EMPTY>
+    <!ATTLIST ref target IDREF #REQUIRED>
+    <!ELEMENT footer (#PCDATA)>
+  ]]>
+  <![IGNORE[
+    <!ELEMENT obsolete (#PCDATA)>
+    <!ATTLIST obsolete since CDATA #IMPLIED>
+  ]]>
+  <!ATTLIST archive version NMTOKEN #REQUIRED>
+  <!ATTLIST record id ID #REQUIRED kind (text|numeric|mixed) "text">
+  <!ENTITY dash "&#x2014;">
+  <!ENTITY notice "indexed &amp; verified">
+]>
+<archive version="v3">
+  <header>
+    <created>2026-10-01</created>
+    <owner>catalog-system</owner>
+  </header>
+  <record id="r-alpha" kind="mixed">
+    <key>alpha</key>
+    <value>left <mark>center</mark> right<ref target="r-beta"/><br/></value>
+    <annotation>Primary &notice; &dash; ready.</annotation>
+  </record>
+  <record id="r-beta" kind="numeric">
+    <key>count</key>
+    <value><![CDATA[42 < 100 && 7 > 3]]></value>
+  </record>
+  <footer>complete</footer>
+</archive>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (phase, checkpoint*, result)>
+  <!ELEMENT phase (step+)>
+  <!ELEMENT step (instruction, branch?)>
+  <!ELEMENT instruction (#PCDATA|token|break)*>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT branch (when, otherwise?)>
+  <!ELEMENT when (step*)>
+  <!ELEMENT otherwise (step*)>
+  <!ELEMENT checkpoint EMPTY>
+  <!ELEMENT result (message, metric*)>
+  <!ELEMENT message (#PCDATA|emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT metric (#PCDATA)>
+  <!ATTLIST workflow xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST phase name CDATA #REQUIRED>
+  <!ATTLIST step number NMTOKEN #REQUIRED>
+  <!ATTLIST checkpoint ref IDREF #IMPLIED status (open|closed) "open">
+  <!ATTLIST result code NMTOKEN #REQUIRED>
+  <!ENTITY intro "execute">
+  <!ENTITY open "<token>start</token>">
+]>
+<workflow xml:lang="en-US">
+  <?pipeline mode="diagnostic"?>
+  <phase name="bootstrap">
+    <step number="1">
+      <instruction>&intro; <token>prepare</token><break/>environment</instruction>
+    </step>
+    <step number="2">
+      <instruction>validate <token>&open;</token></instruction>
+      <branch>
+        <when>
+          <step number="2a"><instruction>retry</instruction></step>
+        </when>
+        <otherwise>
+          <step number="2b"><instruction>continue</instruction></step>
+        </otherwise>
+      </branch>
+    </step>
+  </phase>
+  <checkpoint ref="missing" status="closed"/>
+  <result code="OK">
+    <message>Finished with <emphasis>no fatal errors</emphasis>.</message>
+    <metric>elapsed=17ms</metric>
+  </result>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (layer+, legend?)>
+  <!ELEMENT layer (point|line|area)+>
+  <!ELEMENT point EMPTY>
+  <!ELEMENT line (point+)>
+  <!ELEMENT area (ring+)>
+  <!ELEMENT ring (point+)>
+  <!ELEMENT legend (entry+)>
+  <!ELEMENT entry (label, swatch)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT swatch EMPTY>
+  <!ATTLIST layer id ID #REQUIRED visible (true|false) "true">
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED role (vertex|marker) "vertex">
+  <!ATTLIST line id ID #IMPLIED closed (yes|no) "no">
+  <!ATTLIST area id ID #REQUIRED>
+  <!ATTLIST ring orientation (outer|inner) #REQUIRED>
+  <!ATTLIST entry code NMTOKEN #REQUIRED>
+  <!ATTLIST swatch color CDATA #REQUIRED>
+  <!ENTITY degree "&#176;">
+  <!ENTITY quote "&quot;">
+]>
+<map>
+  <layer id="terrain" visible="true">
+    <area id="lake">
+      <ring orientation="outer">
+        <point x="10.5" y="20.25"/>
+        <point x="14.0" y="21.75"/>
+        <point x="16.5" y="18.0"/>
+        <point x="10.5" y="20.25"/>
+      </ring>
+      <ring orientation="inner">
+        <point x="12" y="20"/>
+        <point x="13" y="20.5"/>
+        <point x="12" y="20"/>
+      </ring>
+    </area>
+  </layer>
+  <layer id="roads" visible="false">
+    <line id="route-7" closed="no">
+      <point x="0" y="0" role="marker"/>
+      <point x="3" y="8"/>
+      <point x="9" y="13"/>
+    </line>
+  </layer>
+  <legend>
+    <entry code="W">
+      <label>Water &degree; &quote;blue&quote;</label>
+      <swatch color="#2040c0"/>
+    </entry>
+  </legend>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, contents, signature)>
+  <!ELEMENT manifest (name, properties)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT properties (property+)>
+  <!ELEMENT property (#PCDATA)>
+  <!ELEMENT contents (folder|document|link)*>
+  <!ELEMENT folder (folder|document|link)*>
+  <!ELEMENT document (#PCDATA|metadata)*>
+  <!ELEMENT metadata EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT signature (digest, certificate?)>
+  <!ELEMENT digest (#PCDATA)>
+  <!ELEMENT certificate (#PCDATA)>
+  <!ATTLIST package id ID #REQUIRED format (alpha|beta) "alpha">
+  <!ATTLIST property name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ATTLIST document id ID #REQUIRED path CDATA #REQUIRED media CDATA #IMPLIED>
+  <!ATTLIST document refs IDREFS #IMPLIED>
+  <!ATTLIST metadata key NMTOKEN #REQUIRED value CDATA #REQUIRED>
+  <!ATTLIST link href URI #REQUIRED relation (parent|related|external) "related">
+  <!ATTLIST digest algorithm (sha256|sha512) #REQUIRED>
+  <!ENTITY ltmark "&lt;section&gt;">
+  <!ENTITY nbsp "&#160;">
+]>
+<package id="pkg-9" format="beta">
+  <manifest>
+    <name>portable-bundle</name>
+    <properties>
+      <property name="creator" value="buildbot"/>
+      <property name="revision">r&amp;d-17</property>
+    </properties>
+  </manifest>
+  <contents>
+    <folder name="docs">
+      <document id="doc-a" path="docs/readme.xml" media="application/xml">
+        Welcome &lt;reader&gt; &nbsp; <metadata key="visibility" value="public"/>
+      </document>
+      <document id="doc-b" path="docs/guide.txt" refs="doc-a">
+        The next fragment is encoded: &lt;section&gt;.
+        <metadata key="language" value="en"/>
+      </document>
+      <link href="https://example.test/archive" relation="external"/>
+    </folder>
+  </contents>
+  <signature>
+    <digest algorithm="sha512">8f00cafe</digest>
+    <certificate><![CDATA[-----BEGIN CERTIFICATE-----
+opaque-content
+-----END CERTIFICATE-----]]></certificate>
+  </signature>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (settings, widgets)>
+  <!ELEMENT settings (setting*)>
+  <!ELEMENT setting EMPTY>
+  <!ELEMENT widgets (panel+)>
+  <!ELEMENT panel (title, grid)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT grid (cell+)>
+  <!ELEMENT cell (value, trend?)>
+  <!ELEMENT value (#PCDATA|number|unit)*>
+  <!ELEMENT number (#PCDATA)>
+  <!ELEMENT unit (#PCDATA)>
+  <!ELEMENT trend (#PCDATA)>
+  <!ATTLIST dashboard xmlns:ui CDATA #IMPLIED>
+  <!ATTLIST setting name NMTOKEN #REQUIRED value CDATA #REQUIRED locked (yes|no) "no">
+  <!ATTLIST panel id ID #REQUIRED span NMTOKEN "1">
+  <!ATTLIST grid columns NMTOKEN #REQUIRED>
+  <!ATTLIST cell position NMTOKEN #REQUIRED severity (low|medium|high) "low">
+  <!ATTLIST value format (plain|decimal|percent) "plain">
+  <!ENTITY percent "&#37;">
+  <!ENTITY alert "threshold exceeded">
+]>
+<dashboard xmlns:ui="urn:interface">
+  <settings>
+    <setting name="refresh" value="30" locked="yes"/>
+    <setting name="theme" value="night"/>
+  </settings>
+  <widgets>
+    <panel id="sales" span="2">
+      <ui:title>Quarterly metrics</ui:title>
+      <grid columns="3">
+        <cell position="A1" severity="high">
+          <value format="decimal"><number>12450.75</number><unit>USD</unit></value>
+          <trend>up</trend>
+        </cell>
+        <cell position="B1">
+          <value format="percent">87<unit>&percent;</unit></value>
+          <trend>stable</trend>
+        </cell>
+        <cell position="C1" severity="medium">
+          <value>n/a</value>
+          <trend>&alert;</trend>
+        </cell>
+      </grid>
+    </panel>
+    <panel id="operations" span="1">
+      <title>Queue</title>
+      <grid columns="1">
+        <cell position="A1"><value>empty</value></cell>
+      </grid>
+    </panel>
+  </widgets>
+</dashboard>
+```

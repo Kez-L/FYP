@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ENTITY % declarations SYSTEM "missing-parameter-subset.dtd">
+  %declarations;
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+    path CDATA #REQUIRED
+    size NMTOKEN #IMPLIED
+    checksum CDATA #IMPLIED>
+  <!ELEMENT data (block*)>
+  <!ELEMENT block (#PCDATA)>
+  <!ATTLIST block index NMTOKEN #REQUIRED encoding CDATA "base64">
+]>
+<package xml:base="urn:pkg:root">
+  <?build profile="fuzz"?>
+  <!-- manifest deliberately contains unusual but legal whitespace -->
+  <manifest>
+    <file path="a&amp;b.bin" size="000"/>
+    <file path="space name.txt" checksum=""/>
+    <file path="unicode-π.dat" size="9"/>
+  </manifest>
+  <data>
+    <block index="0">AAECAwQ=</block>
+    <block index="1" encoding="hex"><![CDATA[00 ff 7f]]></block>
+    <block index="2">tail</block>
+  </data>
+</package>

@@ -1,0 +1,122 @@
+```xml
+<?xml version="1.0"?>
+<world xmlns="urn:world" xmlns:x="urn:extra" xml:lang="fr">
+  <!-- mixed content with namespace transitions -->
+  <x:region id="r1" xml:space="preserve">
+    <![CDATA[<not-an-element> & still text]]>
+    <place x:kind="coastal" xml:base="https://example.invalid/a/">
+      north <x:mark>é</x:mark> south
+      <details>
+        <x:item x:key="a:b">one</x:item>
+        <item xmlns="" xml:lang="en">two</item>
+      </details>
+    </place>
+  </x:region>
+  <?audit level="verbose"?>
+</world>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % structure "<!ELEMENT catalog (entry+)><!ELEMENT entry (title,value?,note*)>">
+  %structure;
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT note (#PCDATA|em)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ATTLIST entry code ID #REQUIRED status (new|old|held) "new">
+  <!ENTITY company "R&amp;D &quot;North&quot;">
+  <!NOTATION plain SYSTEM "text/plain">
+]>
+<catalog>
+  <entry code="first" status="new">
+    <title>&company;</title>
+    <value>42</value>
+    <note>alpha <em>beta</em> gamma</note>
+  </entry>
+  <entry code="second">
+    <title>delta</title>
+    <note><![CDATA[<literal/>]]></note>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns="urn:one" xmlns:p="urn:p" xmlns:q="urn:q">
+  <section p:id="A" q:flag="yes">
+    <p:node>
+      <inner xmlns="urn:two" xmlns:p="">
+        <leaf xml:lang="ja" xml:space="default">文字</leaf>
+        <leaf xmlns:q="urn:shadow" q:name="x"/>
+      </inner>
+    </p:node>
+    <empty xmlns="" data="&lt;&amp;&quot;&apos;&gt;"/>
+  </section>
+  <tail xmlns:p="urn:rebound">
+    <p:node p:value="1"/>
+  </tail>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header,section+,footer)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT section (label, line*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST section number NMTOKEN #REQUIRED>
+  <!ENTITY amp "&amp;">
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+  <!ENTITY phrase "A &amp; B">
+]>
+<report>
+  <header xml:space="preserve">  &phrase;  </header>
+  <section number="01">
+    <label>first</label>
+    <line>&left;tag attr="x"&right;</line>
+    <line>quotes: &quot;&apos; and hex &#x41;&#65;</line>
+  </section>
+  <section number="02">
+    <label><![CDATA[section <two>]]></label>
+    <line>&amp; &amp; &amp;</line>
+  </section>
+  <footer>done</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (record*)>
+  <!ELEMENT record (key, data, extra?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT extra ANY>
+  <!ATTLIST record kind CDATA #IMPLIED>
+]>
+<stream>
+  <record kind="broken">
+    <key>alpha</key>
+    <data><![CDATA[unterminated-looking ]]]]><![CDATA[> but valid]]></data>
+    <extra>
+      <nested a="1">text</nested>
+      <?pi?>
+    </extra>
+  </record>
+  <record>
+    <key>beta</key>
+    <data>before<!-- comment --><![CDATA[after]]></data>
+  </record>
+  <record kind="final">
+    <key>gamma</key>
+    <data>text
+      <not-closed>
+  </record>
+</stream>
+```

@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (header, widget+)>
+  <!ELEMENT header (title, timestamp, owner)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT widget (caption, value, threshold?, sparkline?)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT threshold (low, high)>
+  <!ELEMENT low (#PCDATA)>
+  <!ELEMENT high (#PCDATA)>
+  <!ELEMENT sparkline (point+)>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST dashboard version NMTOKEN #REQUIRED>
+  <!ATTLIST header mode (live|replay|offline) #REQUIRED>
+  <!ATTLIST widget id ID #REQUIRED type (gauge|counter|status) #REQUIRED enabled (true|false) "true">
+  <!ATTLIST value unit CDATA #IMPLIED state (normal|elevated|unknown) "unknown">
+  <!ATTLIST point x NMTOKEN #REQUIRED y CDATA #REQUIRED>
+  <!ENTITY percent "&#37;">
+  <!ENTITY product "Telemetry&nbsp;Core">
+  <!NOTATION csv SYSTEM "text/csv">
+]>
+<dashboard version="3.7">
+  <header mode="replay">
+    <title>&product;</title>
+    <timestamp>2026-09-30T23:59:59.999+05:30</timestamp>
+    <owner>ops@example.test</owner>
+  </header>
+  <widget id="cpu" type="gauge">
+    <caption>Processor load</caption>
+    <value unit="percent" state="elevated">87&percent;</value>
+    <threshold><low>10</low><high>80</high></threshold>
+    <sparkline>
+      <point x="0" y="31.5"/><point x="1" y="44"/><point x="2" y="87"/>
+    </sparkline>
+  </widget>
+  <widget id="queue" type="counter" enabled="false">
+    <caption>Pending jobs</caption>
+    <value unit="items">0</value>
+  </widget>
+  <widget id="health" type="status">
+    <caption>Service state</caption>
+    <value state="unknown">degraded &amp; awaiting probe</value>
+  </widget>
+</dashboard>

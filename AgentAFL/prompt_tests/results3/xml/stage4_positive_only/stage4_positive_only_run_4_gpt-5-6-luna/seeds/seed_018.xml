@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (step, step*, on-error?)>
+  <!ELEMENT step (input*, action, output*)>
+  <!ATTLIST step name NMTOKEN #REQUIRED depends CDATA #IMPLIED>
+  <!ELEMENT input EMPTY>
+  <!ATTLIST input ref IDREF #REQUIRED optional (true|false) "false">
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT output EMPTY>
+  <!ATTLIST output ref ID #REQUIRED format (xml|json|text) "text">
+  <!ELEMENT on-error (action+)>
+]>
+<workflow>
+  <step name="prepare">
+    <action>initialize workspace</action>
+    <output ref="prepared" format="text"/>
+  </step>
+  <step name="transform" depends="prepare">
+    <input ref="prepared"/>
+    <input ref="missing" optional="true"/>
+    <action>normalize and partition</action>
+    <output ref="result" format="json"/>
+  </step>
+  <step name="publish" depends="transform">
+    <input ref="result"/>
+    <action>send to queue &amp; record receipt</action>
+  </step>
+  <on-error>
+    <action>capture diagnostics</action>
+    <action>rollback</action>
+  </on-error>
+</workflow>

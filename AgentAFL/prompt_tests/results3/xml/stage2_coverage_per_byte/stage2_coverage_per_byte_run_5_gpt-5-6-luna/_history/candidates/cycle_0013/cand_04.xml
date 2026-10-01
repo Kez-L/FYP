@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE network [
+  <!ELEMENT network (node|link)*>
+  <!ELEMENT node (address, capability*)>
+  <!ELEMENT address (#PCDATA)>
+  <!ELEMENT capability (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST node id ID #REQUIRED role (router|host|sensor) "host">
+  <!ATTLIST capability name CDATA #REQUIRED>
+  <!ATTLIST link from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA #IMPLIED>
+]>
+<network>
+  <node id="r1" role="router">
+    <address>2001:db8::1</address>
+    <capability name="routing">ospf</capability>
+  </node>
+  <node id="h1" role="host">
+    <address><![CDATA[fe80::abcd%eth0]]></address>
+    <capability name="os">unix</capability>
+    <capability name="note">a &lt; b</capability>
+  </node>
+  <link from="r1" to="h1" weight="0.75"/>
+  <?trace packet="disabled"?>
+</network>

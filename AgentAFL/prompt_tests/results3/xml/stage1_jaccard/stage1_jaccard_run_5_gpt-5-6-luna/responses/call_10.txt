@@ -1,0 +1,166 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY logo SYSTEM "logo.jpg" NDATA jpeg>
+  <!ENTITY company "North &amp; South">
+  <!ENTITY token "A&lt;B&gt;C&quot;D&apos;E">
+  <!ELEMENT catalog (entry+, index?)>
+  <!ELEMENT entry (title, description, asset*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT asset EMPTY>
+  <!ELEMENT index (ref*)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST catalog
+    id ID #REQUIRED
+    mode (compact|expanded|archived) "expanded">
+  <!ATTLIST entry
+    key ID #REQUIRED
+    parent IDREF #IMPLIED
+    status NMTOKEN #IMPLIED>
+  <!ATTLIST asset
+    src ENTITY #IMPLIED
+    format NOTATION (jpeg) #IMPLIED>
+  <!ATTLIST ref target IDREF #REQUIRED>
+]>
+<catalog id="c-main" mode="compact">
+  <entry key="e-one" status="new">
+    <title>&company; &token;</title>
+    <description>Use <em>markup</em> around <code>literal &lt;data&gt;</code>.</description>
+    <asset src="logo" format="jpeg"/>
+  </entry>
+  <entry key="e-two" parent="e-one">
+    <title><![CDATA[raw ]]> content ]]&gt; and more</title>
+    <description>left<!-- embedded comment -->right</description>
+  </entry>
+  <index>
+    <ref target="e-one"/>
+    <ref target="e-two"/>
+  </index>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<archive xmlns="urn:example:archive"
+         xmlns:m="urn:example:meta"
+         xml:lang="fr"
+         xml:space="preserve">
+  <?build profile="fuzz"?>
+  <!-- whitespace and namespace transitions -->
+  <folder name="racine" xml:base="https://example.invalid/a/">
+    <m:metadata m:version="2" m:empty="">
+      <m:label>été &amp; hiver</m:label>
+      <m:value><![CDATA[<not-an-element a="1"/>]]></m:value>
+    </m:metadata>
+    <item xmlns="" id="α-1" xml:lang="de">
+      <name>größe &#x1F600; café</name>
+      <link xmlns:xlink="http://www.w3.org/1999/xlink"
+            xlink:href="../objects?id=7"
+            xlink:actuate="onRequest"/>
+      <?inside data?>
+    </item>
+    <item xmlns="urn:example:archive" id="two">
+      <name>mixed <b xmlns="urn:example:bold">text</b> tail</name>
+    </item>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % common
+    "<!ATTLIST report category (daily|weekly|adhoc) 'daily'
+                       revision CDATA #IMPLIED>">
+  %common;
+  <!ENTITY % fields
+    "<!ELEMENT report (header, section+, footer?)>
+     <!ELEMENT header (#PCDATA)>
+     <!ELEMENT section (heading, field*)>
+     <!ELEMENT heading (#PCDATA)>
+     <!ELEMENT field (#PCDATA|value)*>
+     <!ELEMENT value (#PCDATA)>
+     <!ELEMENT footer (#PCDATA)>
+     <!ATTLIST section name CDATA #REQUIRED>
+     <!ATTLIST field key CDATA #REQUIRED>">
+  %fields;
+  <!ENTITY nl "&#xA;">
+  <!ENTITY quoted "&quot;quoted&quot;">
+]>
+<report category="adhoc" revision="r&amp;7">
+  <header>Generated&nl;header: &quoted;</header>
+  <section name="alpha">
+    <heading>First section</heading>
+    <field key="x">plain <value>42</value> after</field>
+    <field key="y"><![CDATA[value with <tags> and ]] characters]]></field>
+  </section>
+  <section name="beta">
+    <heading>Second &lt;section&gt;</heading>
+    <field key="z"><value>one</value><value>two</value></field>
+  </section>
+  <footer>done</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, checksum)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload (record*)>
+  <!ELEMENT record (key, data, data?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT data (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST header
+    sent CDATA #REQUIRED
+    urgent (yes|no) "no">
+  <!ATTLIST record
+    number NMTOKEN #REQUIRED>
+  <!ENTITY open "[[">
+  <!ENTITY close "]]">
+]>
+<envelope>
+  <header sent="2026-10-01T00:00:00Z" urgent="yes"/>
+  <payload>
+    <record number="0001">
+      <key>alpha</key>
+      <data>&open;<part>inside</part>&close;</data>
+    </record>
+    <record number="2">
+      <key>beta</key>
+      <data><![CDATA[ text ]]> <part>fragment &amp; fragment</part> tail</data>
+      <data/>
+    </record>
+  </payload>
+  <checksum>00ff:&#x0D;&#x0A;ab12</checksum>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE broken [
+  <!ELEMENT broken (node|node2)*>
+  <!ELEMENT node (#PCDATA)>
+  <!ELEMENT node2 EMPTY>
+  <!ATTLIST node
+    a CDATA #IMPLIED
+    b CDATA #IMPLIED>
+  <!ENTITY amp "&amp;">
+  <!ENTITY nested "x&amp;y">
+]>
+<broken>
+  <node a="one" a="two" b="&nested;">text &amp; &#0; <![CDATA[unterminated-looking]]></node>
+  <node2 flag="&amp;"/>
+  <node>
+    <node2/>
+    <node>nested where text was expected
+  </node>
+  <node a="&unknown;">&amp;&nested;
+</broken>
+```

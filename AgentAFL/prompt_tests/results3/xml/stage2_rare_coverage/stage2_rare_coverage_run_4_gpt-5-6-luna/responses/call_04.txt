@@ -1,0 +1,100 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?catalog mode="incremental"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record | note)*>
+  <!ELEMENT record (key, payload, checksum?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST record state (new|old|archived) "new" ref ID #IMPLIED>
+  <!ENTITY marker "&#x2026; &amp; <![CDATA[raw]]>">
+]>
+<archive>
+  <!-- mixed content around elements -->
+  <record state="archived" ref="r-7">
+    <key>alpha</key>
+    <payload>left &marker; right</payload>
+    <checksum><![CDATA[sha256:00<11>22]]></checksum>
+  </record>
+  <note>tail<?hint value="42"?>text</note>
+</archive>
+```
+
+```xml
+<root xmlns="urn:outer" xmlns:x="urn:x" xmlns:y="urn:y">
+  <x:branch id="A">
+    <leaf xmlns="urn:inner" x:flag="true">
+      <y:item y:k="v">one</y:item>
+      <item xmlns:y="">two</item>
+    </leaf>
+  </x:branch>
+  <branch xmlns:x="urn:shadow">
+    <x:leaf/>
+    <leaf x:flag="false"/>
+  </branch>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (meta, data, trailer)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT data ANY>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST packet version CDATA "1">
+  <!ATTLIST meta created CDATA #REQUIRED>
+  <!ATTLIST trailer ok (yes|no) "no">
+]>
+<packet version="00000000000000000000000000000000000000000000000001">
+  <meta created="1970-01-01T00:00:00Z"/>
+  <data>
+    <![CDATA[
+      <not-an-element attr="&invalid;"> 
+      ]]>
+    <chunk index="0"/>
+    text between
+    <chunk index="9223372036854775808"/>
+    <chunk index=""/>
+  </data>
+  <trailer ok="maybe"/>
+</packet>
+```
+
+```xml
+<scene>
+  <matrix rows="2" cols="3">
+    <row><cell>1</cell><cell>2</cell><cell>3</cell></row>
+    <row><cell>4</cell><cell>5</cell><cell>6</cell></row>
+  </matrix>
+  <events>
+    <event when="2026-10-01T00:00:00Z"><![CDATA[first]]></event>
+    <event when="not-a-date"/>
+    <event when="&#x0A;&#x09;">
+      <![CDATA[]]><![CDATA[split]]><![CDATA[content]]>
+    </event>
+  </events>
+  <empty/>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<configuration>
+  <include href="memory://missing.xml"/>
+  <map>
+    <entry key="a:b:c"><value><![CDATA[x]]></value></entry>
+    <entry key="quote&quot;apos&apos;"><value> &lt; &gt; &amp; </value></entry>
+  </map>
+  <switch>
+    <case test="1 &lt; 2">yes</case>
+    <case test="0">no</case>
+    <default/>
+  </switch>
+  <broken>
+    <unclosed attribute="value">
+  </broken>
+</configuration>
+```

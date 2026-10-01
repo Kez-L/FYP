@@ -1,0 +1,133 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, note?)>
+  <!ELEMENT item (name, price, tags)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ATTLIST catalog edition NMTOKEN #REQUIRED>
+  <!ATTLIST item code ID #REQUIRED related IDREFS #IMPLIED>
+  <!ENTITY currency "&#x20AC;">
+]>
+<catalog edition="r&amp;d">
+  <item code="i1" related="i2 i3">
+    <name>Tea &apos;blend&apos;</name>
+    <price>12 &currency;</price>
+    <tags><tag>herbal</tag><tag>loose</tag></tags>
+  </item>
+  <item code="i2">
+    <name>Empty &quot;box&quot;</name>
+    <price>0</price>
+    <tags/>
+  </item>
+  <note>before <emph>after</emph> and <!-- hidden --> end</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, payload, trailer)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload (#PCDATA|section|br)*>
+  <!ELEMENT section (#PCDATA|section)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST header version NMTOKEN #FIXED "1.1">
+  <!ATTLIST section level (one|two|three) "one">
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+]>
+<packet>
+  <header version="1.1"/>
+  <payload>&left;<section level="two">alpha<br/><section>nested</section>omega</section>&right;<![CDATA[ raw ]]></payload>
+  <trailer>done&#x85;line</trailer>
+</packet>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ENTITY % declarations "
+    <!ELEMENT report (entry*)>
+    <!ATTLIST report mode (brief|full) 'full'>
+  ">
+  %declarations;
+  <!ELEMENT entry (title, value|title, value, detail)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|ref)*>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST entry key ID #IMPLIED>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <![IGNORE[
+    <!ELEMENT discarded ANY>
+    <!ENTITY never "not-expanded">
+  ]]>
+  <!ENTITY amp "&amp;">
+]>
+<report mode="brief">
+  <entry key="first">
+    <title>A</title>
+    <value>one &amp; two</value>
+  </entry>
+  <entry key="second">
+    <title>B</title>
+    <value>&amp;</value>
+    <detail>see <ref target="first"/> &amp; repeat</detail>
+  </entry>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<r xmlns="urn:default" xmlns:a="urn:a" xmlns:b="urn:b" xml:space="preserve">
+  <a:node a:x="1" b:y="&quot;two&quot;" xmlns:c="urn:c">
+    <c:leaf><![CDATA[<not-an-element/> & ]]>tail</c:leaf>
+    <empty xmlns="" xmlns:a="urn:shadow" a:x="2"/>
+  </a:node>
+  <b:node xmlns:b="">
+    text
+    <?state key='value'?>
+    <!-- comment with -- invalid-looking text -->
+  </b:node>
+  <mixed xml:lang="fr" data="&#x0D;&#x0A;&#x09;">été &lt; fini</mixed>
+</r>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta, body)>
+  <!ELEMENT meta (field*)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT body (line|block|token)*>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT block (#PCDATA|line|token)*>
+  <!ELEMENT token EMPTY>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST block id ID #IMPLIED>
+  <!ATTLIST token kind NOTATION (plain|quoted) "plain">
+  <!NOTATION plain SYSTEM "text/plain">
+  <!NOTATION quoted PUBLIC "-//example//NOTATION quoted//EN">
+  <!ENTITY quote "&quot;">
+  <!ENTITY nested "A&quote;B">
+]>
+<envelope>
+  <meta>
+    <field name="empty"/>
+    <field name="quoted" value="&nested;"/>
+    <field name="spaces" value="&#x20;  x&#x20;"/>
+  </meta>
+  <body>
+    <line>first</line>
+    <block id="b1">outer <line>inner &lt; line</line><token kind="plain"/> tail</block>
+    <token kind="quoted"/>
+    <block id="b2"><![CDATA[]]></block>
+    <line>last &apos;line&apos;</line>
+  </body>
+</envelope>
+```

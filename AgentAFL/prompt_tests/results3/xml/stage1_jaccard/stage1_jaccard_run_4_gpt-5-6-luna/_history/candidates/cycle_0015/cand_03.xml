@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ENTITY % declarations '
+    <!ELEMENT configuration (defaults, profiles)>
+    <!ELEMENT defaults (option*)>
+    <!ELEMENT profiles (profile+)>
+    <!ELEMENT profile (inherits?, option*, limits?)>
+    <!ELEMENT inherits EMPTY>
+    <!ELEMENT option (#PCDATA)>
+    <!ELEMENT limits (memory?, threads?)>
+    <!ELEMENT memory (#PCDATA)>
+    <!ELEMENT threads (#PCDATA)>
+    <!ATTLIST profile name NMTOKEN #REQUIRED>
+    <!ATTLIST option key CDATA #REQUIRED scope (local|global) "local">
+  '>
+  %declarations;
+  <!ENTITY % extra '
+    <!ELEMENT feature (switch|path|pattern)*>
+    <!ELEMENT switch EMPTY>
+    <!ELEMENT path (#PCDATA)>
+    <!ELEMENT pattern (#PCDATA)>
+    <!ATTLIST feature enabled (yes|no) "yes">
+  '>
+  %extra;
+]>
+<configuration>
+  <defaults>
+    <option key="color" scope="global">auto</option>
+    <option key="log-level">debug</option>
+  </defaults>
+  <profiles>
+    <profile name="fast">
+      <inherits from="defaults"/>
+      <option key="workers">8</option>
+      <limits><memory>512M</memory><threads>16</threads></limits>
+      <feature enabled="yes">
+        <switch name="cache"/>
+        <path>/var/tmp/cache</path>
+        <pattern><![CDATA[[A-Z]+(?:_[0-9]+)?]]></pattern>
+      </feature>
+    </profile>
+  </profiles>
+</configuration>

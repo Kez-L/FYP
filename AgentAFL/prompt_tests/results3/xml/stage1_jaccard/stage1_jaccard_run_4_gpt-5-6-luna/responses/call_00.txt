@@ -1,0 +1,106 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:fuzz:catalog" xmlns:x="urn:fuzz:extra">
+  <x:item id="a&amp;quot;" enabled="yes">
+    <name><![CDATA[alpha ]]>]]><![CDATA[ beta]]></name>
+    <price currency="&#x24;">1.00</price>
+    <metadata>
+      <empty/>
+      <value>left &lt; middle &amp; right &gt;</value>
+    </metadata>
+  </x:item>
+  <item id="b">
+    <name>second</name>
+    <metadata><value xml:space="preserve">  padded&#x0A;text  </value></metadata>
+  </item>
+</catalog>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, trailer?)>
+  <!ELEMENT header (token, token?)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST payload mode (raw|encoded|mixed) "mixed">
+  <!ENTITY greeting "hello">
+]>
+<envelope>
+  <header>
+    <token>&greeting;</token>
+    <token><![CDATA[&greeting;]]></token>
+  </header>
+  <payload mode="raw">
+    <section level="1"><![CDATA[
+      <nested fake="markup">&amp;</nested>
+    ]]></section>
+    <section level="2">
+      <data key="k1">one</data>
+      <data key="k2">two</data>
+    </section>
+  </payload>
+  <trailer/>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:root xmlns:r="urn:root" xmlns:a="urn:a" xmlns:b="urn:b">
+  <r:branch a:id="001" b:flag="true">
+    <a:leaf>text</a:leaf>
+    <b:leaf>
+      <r:inner xmlns:r="">
+        invalid namespace undeclaration attempt
+      </r:inner>
+    </b:leaf>
+  </r:branch>
+  <r:branch a:id="002">
+    <a:leaf><![CDATA[unterminated-looking ]]> marker</a:leaf>
+    <a:leaf attr="&quot;&apos;&amp;&lt;&gt;">&#x1F; &#xD800;</a:leaf>
+  </r:branch>
+</r:root>
+```
+
+```xml
+<!DOCTYPE stream [
+  <!ENTITY one "ONE">
+  <!ENTITY two "&one;-TWO">
+  <!NOTATION bin SYSTEM "urn:binary">
+  <!ENTITY external SYSTEM "file:///tmp/nonexistent-fuzz-entity" NDATA bin>
+]>
+<stream>
+  <record sequence="0" ref="&two;" />
+  <record sequence="1">
+    <field name="a">A</field>
+    <field name="b"><![CDATA[x]]></field>
+    <field name="c">before &external; after</field>
+  </record>
+  <record sequence="2"><![CDATA[
+    multiline
+    content
+  ]]></record>
+</stream>
+```
+
+```xml
+<?xml version="1.1"?>
+<warehouse>
+  <aisle code="A">
+    <bin>
+      <item sku="1">first</item>
+      <bin>
+        <item sku="2">nested</item>
+        <item sku="3" note="line&#x85;break">third</item>
+      </bin>
+    </bin>
+  </aisle>
+  <aisle code="B">
+    <bin count="2">
+      <item sku="4">one</item>
+      <item sku="5">two</item>
+    </bin>
+  </aisle>
+  <footer><![CDATA[checksum: ]]]]><![CDATA[> not markup]]></footer>
+</warehouse>
+```

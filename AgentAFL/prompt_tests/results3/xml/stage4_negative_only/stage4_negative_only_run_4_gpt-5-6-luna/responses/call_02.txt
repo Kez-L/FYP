@@ -1,0 +1,140 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, description, metadata)>
+  <!ATTLIST entry id ID #REQUIRED status (active|retired) "active">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT metadata (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ENTITY company "Northstar &amp; Co.">
+  <!ENTITY greeting "Welcome to &company;">
+]>
+<catalog>
+  <entry id="e1" status="active">
+    <title>Field Notes</title>
+    <description>A <em>compact</em> guide<br/>for observers.</description>
+    <metadata>
+      <tag>&greeting;</tag>
+      <tag><![CDATA[alpha < beta && gamma > delta]]></tag>
+    </metadata>
+  </entry>
+  <entry id="e2">
+    <title>Retrospective</title>
+    <description>Archived material<!-- preserved --></description>
+    <metadata/>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<workspace xmlns="urn:acme:workspace"
+           xmlns:svg="http://www.w3.org/2000/svg"
+           xmlns:meta="urn:acme:metadata"
+           xml:space="preserve">
+  <?workspace mode="inspection"?>
+  <canvas xml:id="main-canvas" width="640" height="480">
+    <svg:svg viewBox="0 0 640 480" version="1.1">
+      <svg:g id="layer-1" transform="translate(4.5,-2)">
+        <svg:path d="M0,0 C10,20 30,20 40,0" fill="none"/>
+        <svg:text x="12" y="36"><svg:tspan>sample</svg:tspan></svg:text>
+      </svg:g>
+    </svg:svg>
+    <meta:properties>
+      <meta:property key="theme">dark</meta:property>
+      <meta:property key="labels"><![CDATA[one | two | three]]></meta:property>
+    </meta:properties>
+  </canvas>
+  <notes>
+    Leading
+    <mark xmlns=""> whitespace and <b>mixed</b> content.
+  </notes>
+</workspace>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE records [
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (key, value, history?)>
+  <!ATTLIST record keyref NMTOKEN #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT history (event+)>
+  <!ELEMENT event (#PCDATA)>
+  <!ATTLIST event at CDATA #REQUIRED by CDATA #IMPLIED>
+]>
+<records>
+  <record keyref="r_001">
+    <key>temperature</key>
+    <value>18.5<linebreak/>°C</value>
+    <history>
+      <event at="2024-02-29T23:59:59Z" by="sensor-A">calibrated</event>
+      <event at="2025-01-01T00:00:00Z">reset <![CDATA[reason: "manual"]]></event>
+    </history>
+  </record>
+  <record>
+    <key>quote</key>
+    <value><![CDATA[
+      A literal ]]> sequence cannot appear here, so this section ends early.
+    ]]></value>
+  </record>
+</records>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+  <!ENTITY stamp "2026-10-01T12:34:56Z">
+]>
+<envelope xmlns="urn:test:envelope" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <header>
+    <id>&left;packet-0007&right;</id>
+    <created>&stamp;</created>
+    <flags enabled="true" retries="0"/>
+  </header>
+  <payload encoding="base64">
+    <chunk index="0">AAECAwQFBgcICQ==</chunk>
+    <chunk index="1" xlink:type="simple" xlink:href="#chunk-2"/>
+    <chunk xml:id="chunk-2"><![CDATA[//8AAP8A]]></chunk>
+  </payload>
+  <footer>
+    <checksum algorithm="sha1">0000000000000000000000000000000000000000</checksum>
+  </footer>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:a="urn:a" xmlns:b="urn:b">
+  <a:level-0>
+    <b:level-1>
+      <a:level-2>
+        <b:level-3>
+          <a:level-4>
+            <b:level-5>
+              <a:level-6>
+                <b:level-7>
+                  <a:leaf value="&quot;&amp;&lt;&gt;"/>
+                </b:level-7>
+              </a:level-6>
+            </b:level-5>
+          </a:level-4>
+        </b:level-3>
+      </a:level-2>
+    </b:level-1>
+  </a:level-0>
+  <empty xmlns="" xmlns:a="">
+    <item a:shadow="x" local="y"/>
+  </empty>
+  <?processing instruction?>
+  <!-- comment with -- interior avoided -->
+</root>
+```

@@ -1,0 +1,121 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY company "Northwind &amp; Sons">
+  <!ENTITY slogan "Quality &quot;first&quot;">
+]>
+<catalog>
+  <section code="A-01">
+    <title>Hardware</title>
+    <item sku="x-1" available="yes">
+      <name>Widget</name>
+      <description>Small &amp; durable; made by &company;.</description>
+      <price currency="USD">19.95</price>
+      <tags><tag>metal</tag><tag>compact</tag></tags>
+    </item>
+  </section>
+  <section code="B-02">
+    <title>Services</title>
+    <item sku="svc-9" available="no">
+      <name>&slogan;</name>
+      <description><![CDATA[<service>inspection</service>]]></description>
+      <price currency="EUR">0</price>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<message xmlns="urn:message" xmlns:h="urn:header" xmlns:b="urn:body">
+  <h:header>
+    <h:sender id="node-7">alpha</h:sender>
+    <h:recipient id="node-8">beta</h:recipient>
+    <h:flags urgent="false">
+      <h:flag>audit</h:flag>
+      <h:flag>retry</h:flag>
+    </h:flags>
+  </h:header>
+  <b:body xml:space="preserve">before
+    <b:paragraph>First <b:emphasis>important</b:emphasis> line.</b:paragraph>
+    <b:paragraph>Second line with <b:link href="urn:item:42">a link</b:link>.</b:paragraph>
+    <b:attachment content-type="application/octet-stream">
+      <![CDATA[
+        A0B1C2D3E4F5
+        ]]>
+    </b:attachment>
+  </b:body>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (alpha, beta?, gamma*)>
+  <!ELEMENT alpha (#PCDATA|leaf)*>
+  <!ELEMENT beta ANY>
+  <!ELEMENT gamma EMPTY>
+  <!ELEMENT leaf (#PCDATA)>
+  <!ATTLIST root mode (cold|warm|hot) "cold">
+  <!ATTLIST leaf ref ID #IMPLIED>
+]>
+<root mode="hot">
+  <alpha>
+    text
+    <leaf ref="one">left</leaf>
+    <leaf>right &amp; center</leaf>
+  </alpha>
+  <beta>
+    <wrapper level="3">
+      <inner><![CDATA[x<y && y>z]]></inner>
+      <!-- interleaved comment -->
+      <?local data?>
+    </wrapper>
+  </beta>
+  <gamma/>
+  <gamma></gamma>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<archive xmlns:a="urn:archive" xmlns:m="urn:meta" xml:lang="en">
+  <a:entry xml:id="e0" xml:base="https://example.invalid/root/">
+    <m:meta>
+      <m:date>2026-10-01</m:date>
+      <m:author><![CDATA[<anonymous>]]></m:author>
+    </m:meta>
+    <a:path>one/two/three</a:path>
+    <a:content>
+      <a:line n="1"/>
+      <a:line n="2">text</a:line>
+      <a:line n="3"><![CDATA[]]></a:line>
+    </a:content>
+  </a:entry>
+  <a:entry xml:id="e1" xml:base="../other">
+    <a:content>
+      <a:link rel="next" href="#e0">back</a:link>
+      <a:link rel="self" href="urn:x:y?z=1&amp;q=2"/>
+    </a:content>
+  </a:entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE form [
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY left "<node>">
+]>
+<form>
+  <field name="empty"></field>
+  <field name="mixed">start<break/>middle<!-- note -->end</field>
+  <field name="entities">&nbsp; &lt;raw&gt; &quot;quoted&quot;</field>
+  <field name="markup">&left;payload</node></field>
+  <matrix rows="2" cols="2">
+    <row index="0"><cell>0,0</cell><cell>0,1</cell></row>
+    <row index="1"><cell>1,0</cell><cell><![CDATA[1,1]]></cell></row>
+  </matrix>
+  <footer><?build stage="fuzz"?>done</footer>
+</form>
+```

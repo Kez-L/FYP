@@ -1,0 +1,23 @@
+{
+  "call": 8,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE archive [\n  <!ENTITY publisher \"North &amp; South Press\">\n  <!ENTITY release \"2026-10-01T00:00:00Z\">\n  <!ELEMENT archive (header, item+, footer)>\n  <!ELEMENT header (title, publisher, released)>\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT publisher (#PCDATA)>\n  <!ELEMENT released (#PCDATA)>\n  <!ELEMENT item (label, summary?, attachment*)>\n  <!ELEMENT label (#PCDATA)>\n  <!ELEMENT summary (#PCDATA)>\n  <!ELEMENT attachment EMPTY>\n  <!ELEMENT footer (#PCDATA)>\n  <!ATTLIST item code ID #REQUIRED ref IDREF #IMPLIED priority (low|normal|high) \"normal\">\n  <!ATTLIST attachment media CDATA #REQUIRED checksum CDATA #IMPLIED>\n]>\n<archive>\n  <header>\n    <title>Quarterly Index</title>\n    <publisher>&publisher;</publisher>\n    <released>&release;</released>\n  </header>\n  <item code=\"a17\" priority=\"high\">\n    <label>First record</label>\n    <summary>Characters such as &lt;, &gt;, and &amp; remain escaped.</summary>\n    <attachment media=\"application/octet-stream\" checksum=\"00ff11\"/>\n  </item>\n  <item code=\"b42\" ref=\"a17\">\n    <label>Linked record</label>\n    <attachment media=\"text/plain\"/>\n    <attachment media=\"image/svg+xml\" checksum=\"abc123\"/>\n  </item>\n  <footer>End of archive.</footer>\n</archive>\n\n--- example 2 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<registry xmlns:r=\"urn:registry\" xmlns:m=\"urn:meta\" xml:lang=\"en\">\n  <?index mode=\"incremental\"?>\n  <r:entry r:key=\"alpha\" m:created=\"2026-10-01\">\n    <r:name>Alpha</r:name>\n    <r:aliases>\n      <r:alias>first</r:alias>\n      <r:alias xml:space=\"default\">A</r:alias>\n    </r:aliases>\n    <r:data><![CDATA[\n      {\"enabled\":true,\"limits\":[0,1,2,3],\"note\":\"<not markup>\"}\n    ]]></r:data>\n  </r:entry>\n  <r:entry r:key=\"beta\">\n    <r:name>Beta</r:name>\n    <r:aliases/>\n    <r:data>\n      <m:integer base=\"16\">DEADBEEF</m:integer>\n      <m:boolean>true</m:boolean>\n      <m:null/>\n    </r:data>\n  </r:entry>\n  <!-- terminal record -->\n  <r:entry r:key=\"gamma\" r:deprecated=\"yes\">\n    <r:name>Gamma &amp; Delta</r:name>\n  </r:entry>\n</registry>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-01T03:37:50.818329+00:00"
+}

@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (label, record*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT record (key, value, note?)>
+  <!ATTLIST record ref IDREF #IMPLIED state (new|old|unknown) "unknown">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|link)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target IDREF #REQUIRED>
+  <!ENTITY left-bracket "[">
+  <!ENTITY right-bracket "]">
+  <!ENTITY percent "%25;">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "blob.bin" NDATA bin>
+]>
+<catalog>
+  <section code="sec-a">
+    <label>Primary &left-bracket;section&right-bracket;</label>
+    <record ref="rec-2" state="new">
+      <key>threshold</key>
+      <value>15&percent;<link target="rec-2"/></value>
+      <note>line&#x0D;break</note>
+    </record>
+  </section>
+  <section code="sec-b">
+    <label>Secondary</label>
+    <record ref="rec-2">
+      <key>orphan-reference</key>
+      <value><![CDATA[opaque <value> &entity;]]></value>
+    </record>
+  </section>
+</catalog>

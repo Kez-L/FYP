@@ -1,0 +1,216 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE timeline [
+  <!ELEMENT timeline (caption, event+)>
+  <!ELEMENT caption (#PCDATA|em)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT event (when, title, detail?, relation*)>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|em|link)*>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT relation EMPTY>
+  <!ATTLIST timeline id ID #REQUIRED>
+  <!ATTLIST event id ID #REQUIRED category (milestone|warning|note) "note">
+  <!ATTLIST relation target IDREF #REQUIRED kind (before|after|blocks) #REQUIRED>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ENTITY dash "—">
+  <!ENTITY note "archival record">
+]>
+<timeline id="t-17">
+  <caption>Migration history &dash; <em>revised</em> &note;</caption>
+  <event id="e-alpha" category="milestone">
+    <when>2024-02-29T23:59:60Z</when>
+    <title>Initial import</title>
+    <detail>Records were copied from the <em>legacy</em> system.<link href="urn:log:alpha"/></detail>
+    <relation target="e-beta" kind="before"/>
+  </event>
+  <event id="e-beta" category="warning">
+    <when>2024-03-01</when>
+    <title>Checksum discrepancy</title>
+    <detail>Three files contained unexpected &quot;holes&quot;.</detail>
+    <relation target="e-gamma" kind="blocks"/>
+  </event>
+  <event id="e-gamma">
+    <when>2024-03-04</when>
+    <title>Verification</title>
+    <detail>Manual review completed.</detail>
+    <relation target="e-beta" kind="after"/>
+  </event>
+</timeline>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     xmlns:ink="http://example.org/ink"
+     version="1.1" width="240" height="120" viewBox="0 0 240 120"
+     xml:base="https://assets.example.test/drawings/">
+  <title xml:lang="en">A small annotated diagram</title>
+  <desc>Shapes, gradients, foreign content, and a linked label.</desc>
+  <defs>
+    <linearGradient id="shade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#336699"/>
+    </linearGradient>
+    <path id="curve" d="M 8 80 C 45 5, 95 115, 150 35"/>
+  </defs>
+  <g id="layer-main" transform="translate(4,7)" ink:layer="foreground">
+    <rect x="0" y="0" width="220" height="100" rx="12" fill="url(#shade)"/>
+    <use xlink:href="#curve" fill="none" stroke="#111111" stroke-width="2"/>
+    <circle cx="72" cy="53" r="14" fill="#f0b400">
+      <title>Control point</title>
+    </circle>
+    <a xlink:href="pages/next.xml" target="_blank">
+      <text x="18" y="94" font-size="12">continue</text>
+    </a>
+  </g>
+  <foreignObject x="155" y="12" width="55" height="35">
+    <html xmlns="http://www.w3.org/1999/xhtml">
+      <body><p class="tiny"><strong>note</strong></p></body>
+    </html>
+  </foreignObject>
+</svg>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE questionnaire [
+  <!ELEMENT questionnaire (metadata, page+)>
+  <!ELEMENT metadata (owner, revision, keywords)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT revision (#PCDATA)>
+  <!ELEMENT keywords (keyword+)>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ELEMENT page (heading, instruction?, question+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT instruction (#PCDATA|strong|br)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT question (prompt, option*, answer?)>
+  <!ELEMENT prompt (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT option (#PCDATA)>
+  <!ELEMENT answer (#PCDATA)>
+  <!ATTLIST questionnaire version NMTOKEN #REQUIRED>
+  <!ATTLIST page number NMTOKEN #REQUIRED>
+  <!ATTLIST question id ID #REQUIRED type (single|multiple|text) #REQUIRED required (yes|no) "no">
+  <!ATTLIST option value NMTOKEN #REQUIRED correct (yes|no) "no">
+  <!ENTITY product "Form&nbsp;Engine">
+  <!ENTITY nbsp "&#160;">
+]>
+<questionnaire version="7.0">
+  <metadata>
+    <owner>Quality &amp; Safety</owner>
+    <revision>2026-09-30</revision>
+    <keywords>
+      <keyword>inspection</keyword>
+      <keyword>handover</keyword>
+    </keywords>
+  </metadata>
+  <page number="1">
+    <heading>Before departure</heading>
+    <instruction>Read each <strong>required</strong> item.<br/>Use &product; &nbsp; carefully.</instruction>
+    <question id="q-weather" type="single" required="yes">
+      <prompt>Which signal indicates safe visibility?</prompt>
+      <option value="green" correct="yes">Green</option>
+      <option value="amber">Amber</option>
+      <option value="red">Red</option>
+    </question>
+    <question id="q-comment" type="text">
+      <prompt>Enter the <code>route-id</code> assigned to this trip.</prompt>
+      <answer><![CDATA[route-Δ-42 / west]]></answer>
+    </question>
+  </page>
+  <page number="2">
+    <heading>Final confirmation</heading>
+    <question id="q-tools" type="multiple" required="yes">
+      <prompt>Which tools were inspected?</prompt>
+      <option value="radio">Radio</option>
+      <option value="lamp">Lamp</option>
+      <option value="beacon">Beacon</option>
+    </question>
+  </page>
+</questionnaire>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (header, artifact*)>
+  <!ELEMENT header (generator, created, signature)>
+  <!ELEMENT generator (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ELEMENT artifact (name, digest, chunk*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT digest (#PCDATA)>
+  <!ELEMENT chunk EMPTY>
+  <!ATTLIST manifest mode (full|incremental) #REQUIRED>
+  <!ATTLIST artifact id ID #REQUIRED path CDATA #REQUIRED state (new|changed|removed) #REQUIRED>
+  <!ATTLIST chunk offset NMTOKEN #REQUIRED length NMTOKEN #REQUIRED checksum CDATA #IMPLIED>
+  <!ENTITY hex "0123456789abcdef">
+]>
+<manifest mode="incremental">
+  <header>
+    <generator>delta-packager &hex;</generator>
+    <created>2026-10-01T00:00:00+00:00</created>
+    <signature><![CDATA[
+-----BEGIN SIGNATURE-----
+mF8q2x==/test+payload
+-----END SIGNATURE-----
+]]></signature>
+  </header>
+  <artifact id="a1" path="bin/worker" state="changed">
+    <name>worker</name>
+    <digest algorithm="sha-256">6f1ed002ab5595859014ebf0951522d9</digest>
+    <chunk offset="0" length="4096" checksum="aa00"/>
+    <chunk offset="4096" length="17" checksum="bb11"/>
+  </artifact>
+  <artifact id="a2" path="docs/old.txt" state="removed">
+    <name>old.txt</name>
+    <digest algorithm="sha-256">00000000000000000000000000000000</digest>
+  </artifact>
+  <artifact id="a3" path="etc/blank&amp;safe.conf" state="new">
+    <name>blank&amp;safe.conf</name>
+    <digest algorithm="sha-256">fedcba98765432100123456789abcdef</digest>
+    <chunk offset="0" length="0"/>
+  </artifact>
+</manifest>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<graph xmlns="urn:example:graph"
+       xmlns:x="urn:example:extension"
+       xml:lang="pl">
+  <label>Knowledge <x:mark>network</x:mark></label>
+  <node id="n1" kind="person">
+    <name>Ada Lovelace</name>
+    <property name="role">mathematician</property>
+    <property name="active">true</property>
+    <edge rel="knows" to="n2" confidence="0.75"/>
+    <edge rel="created" to="n3" confidence="1"/>
+  </node>
+  <node id="n2" kind="institution">
+    <name>Analytical Society</name>
+    <property name="founded">1813</property>
+    <x:metadata>
+      <x:source href="urn:archive:box-19"/>
+      <x:review status="pending"/>
+    </x:metadata>
+    <edge rel="located-in" to="n4"/>
+  </node>
+  <node id="n3" kind="text">
+    <name>Notes on the Analytical Engine</name>
+    <content xml:space="preserve">The engine could manipulate <em xmlns="http://www.w3.org/1999/xhtml">symbols</em>
+without changing their meaning.</content>
+    <edge rel="mentions" to="n1"/>
+  </node>
+  <node id="n4" kind="place">
+    <name>London</name>
+    <coordinates lat="51.5072" lon="-0.1276"/>
+  </node>
+</graph>
+```

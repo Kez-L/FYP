@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (record*)>
+  <!ELEMENT record (key, value, flag?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST record
+    uid ID #REQUIRED
+    parent IDREF #IMPLIED
+    state (new|open|closed) #FIXED "open">
+  <!ATTLIST flag
+    enabled (yes|no) "yes"
+    code CDATA #IMPLIED>
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+]>
+<registry>
+  <record uid="r0" state="open">
+    <key>&left;root&right;</key>
+    <value>one &lt; two &gt; zero</value>
+    <flag code="A B"/>
+  </record>
+  <record uid="r1" parent="r0">
+    <key>mixed</key>
+    <value>line
+break&#xA;next&#x9;tab</value>
+    <flag enabled="no"/>
+  </record>
+  <record uid="r2" parent="r1">
+    <key>empty</key>
+    <value/>
+  </record>
+</registry>

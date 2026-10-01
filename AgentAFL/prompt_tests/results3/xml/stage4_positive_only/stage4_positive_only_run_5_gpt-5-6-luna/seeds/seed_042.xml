@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (routing, body, attachment*)>
+  <!ELEMENT routing (sender, recipients)>
+  <!ELEMENT sender EMPTY>
+  <!ATTLIST sender address CDATA #REQUIRED>
+  <!ELEMENT recipients (recipient+)>
+  <!ELEMENT recipient EMPTY>
+  <!ATTLIST recipient address CDATA #REQUIRED type (to|cc|bcc) "to">
+  <!ELEMENT body (heading?, paragraph+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|strong|link|linebreak)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT attachment (filename, checksum)>
+  <!ATTLIST attachment media CDATA #IMPLIED>
+  <!ELEMENT filename (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY warning "Use &lt;care&gt; when editing this message.">
+]>
+<message xmlns:m="urn:mail">
+  <routing>
+    <sender address="sender@example.test"/>
+    <recipients>
+      <recipient address="one@example.test"/>
+      <recipient address="two@example.test" type="cc"/>
+    </recipients>
+  </routing>
+  <body>
+    <heading>Delivery instructions</heading>
+    <paragraph>Read the <strong>entire</strong> message.<linebreak/> &warning;</paragraph>
+    <paragraph><![CDATA[Preserve this fragment: <x data="1"/>]]> See
+      <link href="https://example.test/path?a=1&amp;b=2">documentation</link>.
+    </paragraph>
+  </body>
+  <attachment media="text/plain">
+    <filename>notes.txt</filename>
+    <checksum>abc123&#x0A;def456</checksum>
+  </attachment>
+</message>

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, signature?)>
+  <!ELEMENT header (sender, receiver, stamp)>
+  <!ELEMENT sender EMPTY>
+  <!ELEMENT receiver EMPTY>
+  <!ELEMENT stamp (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST envelope xmlns:s CDATA #FIXED "urn:secure"
+                    s:version CDATA #IMPLIED>
+  <!ATTLIST sender s:id NMTOKEN #REQUIRED
+                  address CDATA #IMPLIED>
+  <!ATTLIST receiver s:id NMTOKEN #REQUIRED>
+  <!ATTLIST payload format (text|binary|mixed) "mixed">
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+]>
+<envelope xmlns:s="urn:secure" s:version="2">
+  <header>
+    <sender s:id="alice" address="a@example.invalid"/>
+    <receiver s:id="bob"/>
+    <stamp>2026-10-01T00:00:00Z</stamp>
+  </header>
+  <payload format="mixed"><data>&left;raw&right;</data><chunk><![CDATA[a]]></chunk></payload>
+  <signature>none</signature>
+</envelope>

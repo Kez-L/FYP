@@ -1,0 +1,131 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, metadata?, payload)>
+  <!ATTLIST entry id ID #REQUIRED state (new|old|x) "new">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST metadata owner CDATA #IMPLIED flags NMTOKENS #IMPLIED>
+  <!ELEMENT payload (#PCDATA|item|![CDATA[broken]];)*>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY amp "&#38;">
+  <!ENTITY nested "left &amp; middle &amp; right">
+]>
+<catalog>
+  <entry id="e0" state="x">
+    <title>alpha &amp; &lt;omega&gt;</title>
+    <metadata owner="a:b" flags="one two  three"/>
+    <payload><![CDATA[raw ]]> text <item><![CDATA[&amp;]]></item>&nested;&amp;</payload>
+  </entry>
+  <entry id="e1">
+    <title>line
+break&#x0A;tail</title>
+    <payload>before<item>inside</item>after</payload>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<r xmlns="urn:root" xmlns:p="urn:prefixed" xmlns:q="urn:other">
+  <p:branch q:key="v&#x9;w" p:flag="&#xD;&#xA;">
+    <leaf xmlns="">
+      <q:node xmlns:q="urn:shadow">
+        <q:child p:x="one" xmlns:p="urn:rebound">text</q:child>
+      </q:node>
+    </leaf>
+    <empty a="&quot;" b="&apos;" c="&amp;" d="&lt;" e="&gt;"/>
+  </p:branch>
+  <mixed>one<p:item/>two<q:item xmlns:q="urn:x">three</q:item>four</mixed>
+</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, attachment*)>
+  <!ELEMENT header (from, to, subject)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|br)*>
+  <!ELEMENT quote (#PCDATA|quote|br)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT attachment ANY>
+  <!ATTLIST attachment encoding CDATA "base64">
+  <!ENTITY euro "&#x20AC;">
+  <!ENTITY % common "GOOD">
+]>
+<message>
+  <header>
+    <from>sender@example.test</from>
+    <to>receiver@example.test</to>
+    <subject>status &euro; %common;</subject>
+  </header>
+  <body>start<quote level="1">nested<quote level="2">deep<br/>end</quote></quote>finish</body>
+  <attachment encoding="quoted-printable"><![CDATA[
+QmFzZTY0IGxpa2U6ID0gPz8gJg==
+]]></attachment>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ELEMENT config (section*)>
+  <!ELEMENT section (setting|section)*>
+  <!ATTLIST section name CDATA #REQUIRED>
+  <!ELEMENT setting EMPTY>
+  <!ATTLIST setting
+    key CDATA #REQUIRED
+    value CDATA #IMPLIED
+    enabled (yes|no) "yes"
+  >
+  <!ENTITY quotemark "&quot;">
+]>
+<config>
+  <section name="outer">
+    <setting key="path" value="/tmp/a&amp;b" enabled="no"/>
+    <section name="inner">
+      <setting key="empty"/>
+      <setting key="quote" value="&quot;quoted&quot;"/>
+      <setting key="unicode" value="caf&#xE9; &#x1F600;"/>
+    </section>
+  </section>
+  <section name="&#x0A;whitespace&#x0D;">
+    <setting key="spaces" value="  leading and trailing  "/>
+  </section>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (name, data, checksum?)>
+  <!ATTLIST record id ID #IMPLIED ref IDREF #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY chunk "<part>entity-content</part>">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY external SYSTEM "missing-resource.bin" NDATA bin>
+]>
+<archive>
+  <record id="first">
+    <name>one</name>
+    <data><![CDATA[<<< >>> ]]> &chunk; <![CDATA[]]></data>
+    <checksum>00000000</checksum>
+  </record>
+  <record id="second" ref="first">
+    <name>two</name>
+    <data>text &amp; more &#35; <![CDATA[raw]]></data>
+    <checksum/>
+  </record>
+  <record>
+    <name>third</name>
+    <data>&external;</data>
+  </record>
+</archive>
+```

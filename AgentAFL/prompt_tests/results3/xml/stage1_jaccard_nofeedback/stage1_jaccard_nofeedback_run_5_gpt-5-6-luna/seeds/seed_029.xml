@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta?, data, tail?)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta
+            xmlns CDATA #IMPLIED
+            version CDATA #REQUIRED
+            flags NMTOKENS #IMPLIED>
+  <!ELEMENT data (record*)>
+  <!ELEMENT record (key, value, value?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT tail (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+]>
+<envelope xmlns="urn:example:envelope" xmlns:x="urn:example:extra">
+  <meta version="2.0" flags="a b c"/>
+  <data>
+    <record x:type="primary">
+      <key>one</key>
+      <value>alpha<part>middle</part>omega</value>
+      <value><![CDATA[raw ]]> &nbsp; <![CDATA[data]]></value>
+    </record>
+    <record>
+      <key>two</key>
+      <value>empty?</value>
+    </record>
+  </data>
+  <tail><?finish status="ok"?></tail>
+</envelope>

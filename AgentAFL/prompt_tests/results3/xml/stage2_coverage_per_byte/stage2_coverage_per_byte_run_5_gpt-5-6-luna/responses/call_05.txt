@@ -1,0 +1,163 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ENTITY % feature "<!ELEMENT audit (event|checkpoint)*>">
+  %feature;
+  <!ELEMENT envelope (header, audit, footer?)>
+  <!ELEMENT header (source, timestamp)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT event (#PCDATA|detail)*>
+  <!ELEMENT checkpoint EMPTY>
+  <!ELEMENT detail (#PCDATA)>
+  <!ELEMENT footer ANY>
+  <!ATTLIST envelope version NMTOKEN #IMPLIED>
+  <!ATTLIST event level (low|medium|high) "low" code ID #IMPLIED>
+  <!ATTLIST checkpoint at CDATA #REQUIRED>
+]>
+<envelope version="1.0">
+  <header><source>sensor-&amp;-west</source><timestamp>2026-10-01T00:00:00Z</timestamp></header>
+  <audit>
+    <event level="high" code="e7">start<detail><![CDATA[raw <payload> & bytes]]></detail>finish</event>
+    <checkpoint at="00:00:01"/>
+    <event level="unknown">tail</event>
+  </audit>
+  <footer><?meta value?><![CDATA[]]></footer>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE warehouse [
+  <!ELEMENT warehouse (bin+, note?)>
+  <!ELEMENT bin (item*, alias?)>
+  <!ELEMENT item (name, quantity, tag*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT quantity (#PCDATA)>
+  <!ELEMENT tag EMPTY>
+  <!ELEMENT alias (#PCDATA)>
+  <!ELEMENT note (#PCDATA|br)*>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST warehouse xmlns:x CDATA #FIXED "urn:warehouse">
+  <!ATTLIST bin id ID #REQUIRED zone NMTOKEN #IMPLIED>
+  <!ATTLIST item sku ID #REQUIRED state (new|used|held) #IMPLIED>
+  <!ATTLIST tag key CDATA #REQUIRED value CDATA #IMPLIED>
+]>
+<warehouse xmlns:x="urn:warehouse" x:mode="scan">
+  <bin id="b-1" zone="A_9">
+    <item sku="sku1" state="new">
+      <name>bolt</name><quantity>12</quantity>
+      <tag key="color" value="red"/>
+    </item>
+    <alias>overflow &amp; returns</alias>
+  </bin>
+  <bin id="b-2">
+    <item sku="sku2">
+      <name><![CDATA[washer ]]> <![CDATA[<x>&y]]></name>
+      <quantity>NaN</quantity>
+      <tag key="x" value="&quot;&apos;"/>
+    </item>
+  </bin>
+  <note>line one<br/>line two<br></note>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ENTITY open "<![CDATA[">
+  <!ENTITY close "]]>">
+  <!ENTITY amp "&#38;">
+  <!ELEMENT message (routing, body)>
+  <!ELEMENT routing (from, to, reply?)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT reply (#PCDATA)>
+  <!ELEMENT body (paragraph|quote|attachment)*>
+  <!ELEMENT paragraph (#PCDATA|em|mark)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT quote (paragraph+)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST message id ID #REQUIRED priority CDATA "normal">
+  <!ATTLIST attachment href URI #REQUIRED media CDATA #IMPLIED>
+]>
+<message id="m42" priority="urgent">
+  <routing>
+    <from>alice@example.test</from>
+    <to>bob@example.test</to>
+    <reply>none</reply>
+  </routing>
+  <body>
+    <paragraph>Hello <em>there</em> and <mark>again</mark>.</paragraph>
+    <quote><paragraph>nested <em>text</em></paragraph><paragraph>second</paragraph></quote>
+    <attachment href="urn:file:one" media="application/octet-stream"/>
+    <paragraph>&open;literal markup &amp; odd boundary&close;</paragraph>
+  </body>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node*, edge*)>
+  <!ELEMENT node (label?, property*)>
+  <!ELEMENT edge EMPTY>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST graph directed (yes|no) "yes">
+  <!ATTLIST node id ID #REQUIRED type NMTOKEN #IMPLIED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+  <!ATTLIST property name NMTOKEN #REQUIRED>
+  <!ENTITY marker "&#x1F;not-a-valid-XML-character">
+]>
+<graph directed="maybe">
+  <node id="n1" type="entry">
+    <label>one</label>
+    <property name="empty"></property>
+    <property name="symbols">a &lt; b &amp;&amp; c &gt; d</property>
+  </node>
+  <node id="n2"><label><![CDATA[ two ]]>]]></label></node>
+  <edge from="n1" to="n2" weight="+Inf"/>
+  <edge from="n2" to="missing" weight="0x10"/>
+  <node id="n3"><property name="marker">&marker;</property></node>
+</graph>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section, section?, appendix*)>
+  <!ELEMENT section (heading, table|listing, conclusion?)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA|br)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT listing (#PCDATA)>
+  <!ELEMENT conclusion (#PCDATA)>
+  <!ELEMENT appendix (heading, listing)>
+  <!ATTLIST report date CDATA #REQUIRED>
+  <!ATTLIST section number NMTOKEN #REQUIRED>
+  <!ATTLIST row index NMTOKEN #IMPLIED>
+  <!ATTLIST cell colspan NMTOKEN "1" rowspan NMTOKEN "1">
+  <!NOTATION csv SYSTEM "text/csv">
+]>
+<report date="2026-10-01">
+  <section number="01">
+    <heading>Results &amp; Exceptions</heading>
+    <table>
+      <row index="1"><cell colspan="2">A<br/>B</cell><cell rowspan="0"/></row>
+      <row><cell>unterminated-ish <![CDATA[ data ]]> tail</cell></row>
+    </table>
+    <conclusion>ok</conclusion>
+  </section>
+  <section number="02">
+    <heading>Listing</heading>
+    <listing>alpha
+beta &lt; gamma
+  </listing>
+  </section>
+  <appendix><heading>Notes</heading><listing><![CDATA[ ]]>]]></listing></appendix>
+</report>
+```

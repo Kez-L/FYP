@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE federation [
+  <!ELEMENT federation (node*)>
+  <!ELEMENT node (identity, capability*, relation*)>
+  <!ATTLIST node uid ID #REQUIRED role CDATA #IMPLIED>
+  <!ELEMENT identity (#PCDATA)>
+  <!ELEMENT capability EMPTY>
+  <!ATTLIST capability name CDATA #REQUIRED level NMTOKEN #IMPLIED>
+  <!ELEMENT relation (node-ref, annotation?)>
+  <!ATTLIST relation type (parent|peer|child) "peer">
+  <!ELEMENT node-ref EMPTY>
+  <!ATTLIST node-ref target IDREF #REQUIRED>
+  <!ELEMENT annotation (#PCDATA)>
+]>
+<federation>
+  <node uid="n-root" role="anchor">
+    <identity>urn:node:root</identity>
+    <capability name="read" level="high"/>
+    <capability name="write" level="low"/>
+    <relation type="child">
+      <node-ref target="n-leaf"/>
+      <annotation>delegated &amp; audited</annotation>
+    </relation>
+  </node>
+  <node uid="n-leaf">
+    <identity><![CDATA[urn:node:leaf?x=1&y=2]]></identity>
+    <relation type="parent">
+      <node-ref target="n-root"/>
+    </relation>
+  </node>
+</federation>

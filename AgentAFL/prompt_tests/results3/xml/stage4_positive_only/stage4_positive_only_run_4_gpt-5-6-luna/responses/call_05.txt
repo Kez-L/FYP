@@ -1,0 +1,194 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (metadata, item*)>
+  <!ELEMENT metadata (title, generated, source?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT item (name, price, tags?, description?)>
+  <!ATTLIST item sku ID #REQUIRED status (active|archived) "active">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT description (#PCDATA | emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+]>
+<catalog>
+  <metadata>
+    <title>Component inventory</title>
+    <generated>2026-10-01T12:30:00Z</generated>
+    <source>warehouse-7</source>
+  </metadata>
+  <item sku="part-001">
+    <name>Temperature sensor</name>
+    <price currency="USD">19.95</price>
+    <tags>
+      <tag>analog</tag>
+      <tag>outdoor</tag>
+    </tags>
+    <description>Weatherproof housing with <emphasis>calibrated</emphasis> output.</description>
+  </item>
+  <item sku="part-002" status="archived">
+    <name>Mounting bracket</name>
+    <price currency="EUR">4.50</price>
+    <description>Fits rails &amp; panels.</description>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ENTITY owner "operations">
+  <!ENTITY arrow "&#x2192;">
+  <!ELEMENT workflow (step+)>
+  <!ELEMENT step (label, action, transition*)>
+  <!ATTLIST step id ID #REQUIRED role CDATA #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT action (#PCDATA | command)*>
+  <!ELEMENT command (#PCDATA)>
+  <!ELEMENT transition EMPTY>
+  <!ATTLIST transition to IDREF #REQUIRED condition CDATA #IMPLIED>
+]>
+<workflow>
+  <step id="start" role="&owner;">
+    <label>Initialize</label>
+    <action>Load configuration <command>prepare --safe</command></action>
+    <transition to="validate"/>
+  </step>
+  <step id="validate">
+    <label>Validate input</label>
+    <action>Check the payload &arrow; record diagnostics.</action>
+    <transition to="finish" condition="valid"/>
+    <transition to="reject" condition="invalid"/>
+  </step>
+  <step id="reject">
+    <label>Reject request</label>
+    <action><command>notify-admin</command> and preserve evidence.</action>
+  </step>
+  <step id="finish">
+    <label>Complete</label>
+    <action><![CDATA[status = "done"; emit("finished");]]></action>
+  </step>
+</workflow>
+```
+
+```xml
+<?xml version="1.0"?>
+<library xmlns="urn:library" xmlns:bk="urn:book" xmlns:meta="urn:metadata">
+  <meta:profile>
+    <meta:name>Digital archive</meta:name>
+    <meta:revision>007</meta:revision>
+  </meta:profile>
+  <shelf id="north" xml:lang="en">
+    <bk:volume available="true">
+      <bk:title>Parsing &amp; Preservation</bk:title>
+      <bk:author>
+        <bk:family>Rivers</bk:family>
+        <bk:given>Alex</bk:given>
+      </bk:author>
+      <bk:identifier type="isbn">978-0-00-000000-0</bk:identifier>
+      <bk:excerpt><![CDATA[
+        <chapter>Markup is data</chapter>
+        <warning>Do not interpret this fragment.</warning>
+      ]]></bk:excerpt>
+    </bk:volume>
+    <bk:volume available="false">
+      <bk:title>Signals in Winter</bk:title>
+      <bk:author>
+        <bk:family>Chen</bk:family>
+        <bk:given>Rae</bk:given>
+      </bk:author>
+    </bk:volume>
+  </shelf>
+  <shelf id="south">
+    <empty/>
+  </shelf>
+</library>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder+)>
+  <!ELEMENT folder (folder* | document*)>
+  <!ATTLIST folder name CDATA #REQUIRED hidden (yes|no) "no">
+  <!ELEMENT document (heading, body, checksum?)>
+  <!ATTLIST document path CDATA #REQUIRED media CDATA #IMPLIED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT body (#PCDATA | line | link)*>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+]>
+<archive>
+  <folder name="2025" hidden="no">
+    <folder name="drafts">
+      <document path="drafts/plan.xml" media="application/xml">
+        <heading>Migration plan</heading>
+        <body>
+          Phase one<line>Back up all records.</line>
+          Phase two<line>Verify restored copies.</line>
+          See <link>appendix-A</link>.
+        </body>
+        <checksum>sha256:abc123</checksum>
+      </document>
+    </folder>
+    <folder name="exports">
+      <document path="exports/data.csv" media="text/csv">
+        <heading>Comma-separated export</heading>
+        <body><![CDATA[id,name
+1,"A < B"
+2,"C & D"]]></body>
+      </document>
+    </folder>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY product "Telemetry">
+  <!ELEMENT dashboard (title, panel+)>
+  <!ATTLIST dashboard generated CDATA #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT panel (caption, metric+, footer?)>
+  <!ATTLIST panel key ID #REQUIRED collapsed (true|false) "false">
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT metric (name, value, trend)>
+  <!ATTLIST metric unit CDATA #IMPLIED severity (info|warning|critical) "info">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT trend (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<dashboard generated="2026-10-01">
+  <title>&product; status&nbsp;report</title>
+  <panel key="cpu">
+    <caption>Compute nodes</caption>
+    <metric unit="percent">
+      <name>Utilization</name>
+      <value>73.4</value>
+      <trend>rising</trend>
+    </metric>
+    <metric unit="count" severity="warning">
+      <name>Throttled workers</name>
+      <value>4</value>
+      <trend>stable</trend>
+    </metric>
+    <footer>Last sample: 12:00:00Z</footer>
+  </panel>
+  <panel key="storage" collapsed="true">
+    <caption>Storage</caption>
+    <metric unit="bytes" severity="critical">
+      <name>Free capacity</name>
+      <value>0x1f4</value>
+      <trend><![CDATA[falling -> falling -> falling]]></trend>
+    </metric>
+  </panel>
+</dashboard>
+```

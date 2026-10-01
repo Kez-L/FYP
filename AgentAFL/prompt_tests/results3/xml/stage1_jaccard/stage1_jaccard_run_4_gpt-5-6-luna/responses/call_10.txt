@@ -1,0 +1,143 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry*, footer)>
+  <!ELEMENT entry (#PCDATA | link | br)*>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST catalog xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST entry id ID #REQUIRED ref IDREFS #IMPLIED xml:space (default|preserve) "default">
+  <!ATTLIST link href URI #REQUIRED rel NMTOKEN #IMPLIED>
+  <!NOTATION gif SYSTEM "image/gif">
+  <!ENTITY picture SYSTEM "cover.gif" NDATA gif>
+  <!ENTITY nbsp "&#160;">
+]>
+<catalog xml:lang="en">
+  <entry id="first" xml:space="preserve"> leading &nbsp; text <link href="urn:item:1" rel="alternate"/><br/></entry>
+  <entry id="second" ref="first">plain text<link href="https://example.invalid/a?b=1&amp;c=2"/></entry>
+  <footer>finished</footer>
+</catalog>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ENTITY % optional "INCLUDE">
+  <!ENTITY % rowattrs 'id ID #IMPLIED class NMTOKENS #IMPLIED'>
+  <!ELEMENT report (meta, row*, appendix?)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT row (#PCDATA | cell)*>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST row %rowattrs;>
+  <!ATTLIST cell name NMTOKEN #IMPLIED>
+  <![%optional;[
+    <!ELEMENT appendix (item+)>
+    <!ELEMENT item (#PCDATA)>
+  ]]>
+  <!ENTITY marker "&#x41;&#65;">
+]>
+<report>
+  <meta/>
+  <row id="r1" class="odd highlighted"><cell name="a">one</cell>&marker;<cell name="b">two</cell></row>
+  <row class="even">tail <![CDATA[<not-an-element>]]></row>
+  <appendix><item>extra</item><item><![CDATA[raw & text]]></item></appendix>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<dashboard xmlns="urn:example:dashboard"
+           xmlns:x="urn:example:extension"
+           xmlns:svg="http://www.w3.org/2000/svg"
+           xml:base="https://example.invalid/root/">
+  <!-- namespace-rich mixed content -->
+  <title xml:lang="fr">Résumé &amp; état</title>
+  <x:panel x:priority="high" x:enabled="true">
+    <x:value unit="ms">12</x:value>
+    <svg:svg viewBox="0 0 10 10" width="10">
+      <svg:g id="g1"><svg:rect x="0" y="0" width="5" height="5"/></svg:g>
+    </svg:svg>
+    <x:payload><![CDATA[
+      <embedded xmlns="urn:embedded"><node key="v"/></embedded>
+    ]]></x:payload>
+  </x:panel>
+  <?refresh interval="5"?>
+  <links>
+    <link href="urn:a" x:rel="self"/>
+    <link href="urn:b"><![CDATA[text < & >]]></link>
+  </links>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header?, chunk+, checksum)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT chunk (data | chunk)*>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT checksum EMPTY>
+  <!ATTLIST archive version NMTOKEN #REQUIRED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED compressed (yes|no) "no">
+  <!ATTLIST data encoding (text|base64|hex) "text">
+  <!ATTLIST checksum algorithm NMTOKEN #REQUIRED value CDATA #REQUIRED>
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+]>
+<archive version="2.7">
+  <header>metadata &left;v1&right;</header>
+  <chunk index="0" compressed="yes">
+    <data encoding="base64">AAECAwQFBgcICQ==</data>
+    <chunk index="0.1">
+      <data encoding="hex">00ff10ab</data>
+    </chunk>
+  </chunk>
+  <chunk index="1">
+    <data><![CDATA[line one
+line two
+]]></data>
+  </chunk>
+  <checksum algorithm="sha256" value=""/>
+</archive>
+```
+
+```xml
+<!DOCTYPE exchange [
+  <!ELEMENT exchange (request, response?, fault?)>
+  <!ELEMENT request (method, headers, body)>
+  <!ELEMENT response (status, headers?, body?)>
+  <!ELEMENT fault (code, message, detail?)>
+  <!ELEMENT method (#PCDATA)>
+  <!ELEMENT headers (header*)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT body ANY>
+  <!ELEMENT status (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT detail ANY>
+  <!ATTLIST exchange transaction CDATA #REQUIRED>
+  <!ATTLIST header name CDATA #REQUIRED folded (yes|no) "no">
+  <!ENTITY amp "&amp;">
+  <!ENTITY quoted "&quot;">
+]>
+<exchange transaction="txn-&#x31;&#x32;&#x33;">
+  <request>
+    <method>POST</method>
+    <headers>
+      <header name="Content-Type" folded="yes">application/xml</header>
+      <header name="X-Trace">&quoted;abc&quoted;</header>
+    </headers>
+    <body>
+      <message xmlns="urn:message">
+        <part id="a">one&amp;two</part>
+        <part id="b"><![CDATA[<part id="fake"/>]]></part>
+      </message>
+      <?audit level="debug"?>
+    </body>
+  </request>
+  <response>
+    <status>202</status>
+    <body><accepted xmlns="urn:result" next="urn:item"/></body>
+  </response>
+</exchange>
+```

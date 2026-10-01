@@ -1,0 +1,28 @@
+<?xml version="1.1"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT body (section*)>
+  <!ELEMENT section (entry|section)*>
+  <!ELEMENT entry (#PCDATA)>
+  <!ATTLIST header version CDATA #REQUIRED>
+  <!ATTLIST section name CDATA #IMPLIED>
+  <!ENTITY open "(">
+  <!ENTITY close ")">
+  <!ENTITY nested "&open;level&close;">
+]>
+<envelope>
+  <header version="1.1"/>
+  <body>
+    <section name="outer">
+      <entry>one &nested; &#x0A; two</entry>
+      <section name="inner">
+        <entry><![CDATA[raw ]]></entry>
+        <entry>three &lt; four &gt; two</entry>
+      </section>
+    </section>
+    <section>
+      <entry>last</entry>
+    </section>
+  </body>
+</envelope>

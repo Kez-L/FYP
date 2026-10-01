@@ -1,0 +1,25 @@
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node|edge)*>
+  <!ELEMENT node (label?,data*)>
+  <!ELEMENT edge EMPTY>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT data (#PCDATA|![CDATA[not-a-declaration]])*>
+  <!ATTLIST node id ID #REQUIRED role NMTOKENS #IMPLIED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED directed (yes|no) "yes">
+  <!ATTLIST data key CDATA #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quote "&quot;">
+]>
+<graph>
+  <node id="n0" role="root primary">
+    <label>Start &quote;point&quote;</label>
+    <data key="empty"></data>
+    <data key="mixed">left <![CDATA[center <raw> & bytes]]> right&nbsp;</data>
+  </node>
+  <edge from="n0" to="n1" directed="no"/>
+  <node id="n1">
+    <data key="payload">A&#x0A;B&#x0D;C&#x20;D</data>
+  </node>
+  <edge from="n1" to="n0"/>
+</graph>

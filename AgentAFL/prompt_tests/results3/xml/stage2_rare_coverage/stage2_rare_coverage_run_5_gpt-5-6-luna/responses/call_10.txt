@@ -1,0 +1,112 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % grammar "<!ELEMENT root (item|empty)*>">
+  %grammar;
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT empty EMPTY>
+  <!ATTLIST item kind NMTOKENS #IMPLIED ref IDREFS #IMPLIED>
+  <!NOTATION blob SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "payload.bin" NDATA blob>
+]>
+<root>
+  <item kind="alpha beta" ref="missing">left &lt; middle &amp; right</item>
+  <empty/>
+  <item kind="gamma">&#x41;&#65;&#x1F642;</item>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xml:lang="fr" xml:base="urn:example:base">
+  <section id="A" xmlns="urn:one" xmlns:p="urn:primary">
+    <p:title xml:space="preserve">  Alpha  </p:title>
+    <entry xmlns="">
+      <name>unqualified</name>
+      <value xml:lang="en">42</value>
+    </entry>
+    <p:entry xmlns:p="urn:secondary" p:flag="yes">
+      <p:name>rebound</p:name>
+      <p:value xml:base="../child">text</p:value>
+    </p:entry>
+  </section>
+  <section id="B" xmlns:q="urn:query">
+    <?select from="section" where="id &quot;B&quot;"?>
+    <!-- comment containing <tags> and &amp; text -->
+    <q:item q:key="x:y">payload</q:item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, data)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT data (row+)>
+  <!ELEMENT row (name, value?, note*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST row code ID #REQUIRED>
+  <!ENTITY one "1">
+  <!ENTITY two "&one;&one;">
+  <!ENTITY three "&two;&one;">
+]>
+<report>
+  <header>generated &three; times</header>
+  <data>
+    <row code="r1">
+      <name>first</name>
+      <value>before&#x9;after&#xA;line</value>
+      <note>one</note>
+      <note>two &quot;quoted&quot;</note>
+    </row>
+    <row code="r2">
+      <name>second &amp; alternate</name>
+      <note/>
+    </row>
+  </data>
+</report>
+```
+
+```xml
+<?xml version="1.1"?>
+<Δοκιμή xmlns:σ="urn:greek" xmlns:数字="urn:numbers" xml:lang="el">
+  <σ:Κόμβος σ:κλειδί="αβγ" 数字:值="零">
+    <σ:περιεχόμενο>Καλημέρα &#x20AC; &#x1F600;</σ:περιεχόμενο>
+    <σ:περιεχόμενο xml:space="default"/>
+  </σ:Κόμβος>
+  <数字:項目 数字:名="項目一">
+    <数字:値>東京</数字:値>
+  </数字:項目>
+  <?πράξη δεδομένα="α&#x0A;β"?>
+</Δοκιμή>
+```
+
+```xml
+<!DOCTYPE packet [
+  <!ELEMENT packet (meta, payload, trailer?)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT payload (chunk*)>
+  <!ELEMENT chunk (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST meta
+    version CDATA #IMPLIED
+    enabled (yes|no) "yes"
+  >
+  <!ATTLIST chunk index CDATA #REQUIRED>
+]>
+<packet>
+  <meta version="2&amp;3"/>
+  <payload>
+    <chunk index="000">
+      prefix<part>nested</part>suffix
+    </chunk>
+    <chunk index="001">text<part/>tail<part>final</part></chunk>
+    <chunk index="002"/>
+  </payload>
+  <trailer>checksum: &#x30;&#x31;&#x32;</trailer>
+</packet>
+```

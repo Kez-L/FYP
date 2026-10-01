@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, footer?)>
+  <!ELEMENT item (title, meta?, blob)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT blob (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST item
+    id ID #REQUIRED
+    ref IDREFS #IMPLIED
+    mode (short|long) "short"
+    asset ENTITY #IMPLIED>
+  <!ATTLIST meta
+    priority NMTOKEN "normal"
+    tags NMTOKENS #IMPLIED>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY twice "ha&amp;ha">
+  <!ENTITY nested "A &twice; B">
+]>
+<catalog>
+  <item id="one" mode="long" asset="logo">
+    <title>&nested;</title>
+    <meta priority="high" tags="alpha beta"/>
+    <blob>left &lt; middle &amp; right</blob>
+  </item>
+  <item id="two" ref="one" mode="short">
+    <title>second</title>
+    <blob>&#x41;&#65;&#00000042;</blob>
+  </item>
+  <footer>done</footer>
+</catalog>

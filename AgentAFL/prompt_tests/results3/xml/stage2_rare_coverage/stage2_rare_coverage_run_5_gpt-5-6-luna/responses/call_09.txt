@@ -1,0 +1,90 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common "<!ELEMENT catalog (entry+)><!ELEMENT entry (key,value?,note*)>">
+  %common;
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|item)*>
+  <!ELEMENT item EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST entry id ID #IMPLIED status (new|old|archived) "new">
+  <!ATTLIST item ref IDREF #IMPLIED flag NMTOKENS #IMPLIED>
+]>
+<catalog>
+  <entry id="e1" status="new">
+    <key>alpha</key>
+    <value>left<item ref="e2" flag="x y z"/>right</value>
+    <note>first</note>
+  </entry>
+  <entry id="e2">
+    <key>beta</key>
+    <note><![CDATA[embedded ]]> text &amp; more]]></note>
+  </entry>
+</catalog>
+```
+
+```xml
+<r xmlns="urn:outer" xmlns:x="urn:x">
+  <x:a xml:lang="en">
+    <b xmlns="urn:inner" xmlns:x="">
+      <c x:y="1"/>
+    </b>
+  </x:a>
+  <x:a xmlns:x="urn:changed">
+    <x:c xmlns="urn:last" xml:space="preserve">  a
+	b  </x:c>
+  </x:a>
+</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ENTITY open "<part>">
+  <!ENTITY close "</part>">
+  <!ENTITY quoted "A &quot; B &apos; C">
+]>
+<envelope>
+  <header><![CDATA[raw <header> & bytes]]></header>
+  <body>&open;one &quoted;&close;</body>
+  <body>&open;two<!-- inside entity-shaped content -->&close;</body>
+  <?process mode="a&#x0A;b"?>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<stream>
+  <record><![CDATA[
+    <![CDATA[nested-looking]]>
+    ]]]]><![CDATA[> tail
+  ]]></record>
+  <record>
+    <![CDATA[&amp; &#xD800; <x/>]]>
+  </record>
+  <!-- line one
+       line two
+       -- not actually closed here -->
+  <end/>
+</stream>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item
+    token ID #IMPLIED
+    links IDREFS #IMPLIED
+    mode (a|b|c) "a"
+    fixed CDATA #FIXED "constant">
+  <!ENTITY ext SYSTEM "file:///tmp/nonexistent.xml">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+]>
+<root>
+  <item token="i0" links="i0 missing" mode="c" fixed="constant"/>
+  <item token="i1" links="i0" mode="a" fixed="wrong"/>
+  &ext;
+  <unknown><![CDATA[x]]></unknown>
+</root>
+```

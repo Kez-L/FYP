@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scene xmlns="urn:render:scene"
+       xmlns:geo="urn:render:geometry"
+       xmlns:mat="urn:render:material"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="scene.xsd">
+  <camera id="main" projection="orthographic">
+    <position x="0" y="-1.25" z="4.000"/>
+    <orientation quaternion="0,0,0,1"/>
+    <clipping near="0.001" far="Infinity"/>
+  </camera>
+  <materials>
+    <mat:material name="glass" transparent="true" opacity="0.125">
+      <mat:channel type="baseColor" value="#80a0c0"/>
+      <mat:channel type="roughness" value="NaN"/>
+      <mat:texture slot="normal" uri="textures/normals%20final.png"/>
+    </mat:material>
+    <mat:material name="checker">
+      <mat:procedural type="checkerboard">
+        <mat:cell width="0.5" height="0.5"/>
+        <mat:colors>
+          <mat:color index="0">#000000</mat:color>
+          <mat:color index="1">#ffffff</mat:color>
+        </mat:colors>
+      </mat:procedural>
+    </mat:material>
+  </materials>
+  <world>
+    <geo:mesh id="mesh-1" vertices="4" faces="2" material="glass">
+      <geo:vertices><![CDATA[
+        0,0,0
+        1,0,0
+        1,1,0
+        0,1,0
+      ]]></geo:vertices>
+      <geo:faces>
+        <geo:triangle a="0" b="1" c="2"/>
+        <geo:triangle a="0" b="2" c="3"/>
+      </geo:faces>
+      <geo:bounds min="0 0 0" max="1 1 0"/>
+    </geo:mesh>
+    <instance ref="#mesh-1" transform="1,0,0,0,1,0,0,0,1,0,0,0,1">
+      <metadata key="label">plane &amp; shadow</metadata>
+    </instance>
+  </world>
+  <render-settings samples="0" denoise="false">
+    <output format="image/svg+xml" width="001" height="000"/>
+    <background color="transparent"/>
+  </render-settings>
+</scene>

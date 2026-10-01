@@ -1,0 +1,229 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (header, collection+)>
+  <!ELEMENT header (title, generated, summary?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT collection (item+)>
+  <!ELEMENT item (name, description, metadata, link*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|code|strong|em)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT metadata (tag*)>
+  <!ELEMENT tag EMPTY>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST catalog xmlns CDATA #IMPLIED xmlns:meta CDATA #IMPLIED>
+  <!ATTLIST item id ID #REQUIRED status (draft|published|retired) "draft">
+  <!ATTLIST tag key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST link rel CDATA #REQUIRED href CDATA #REQUIRED>
+  <!ENTITY product "parser">
+]>
+<catalog xmlns="urn:example:catalog" xmlns:meta="urn:example:metadata">
+  <?index priority="high"?>
+  <!-- The collection contains deliberately mixed textual content. -->
+  <header>
+    <title>Compatibility &amp; &product; notes</title>
+    <generated>2026-10-01T14:07:03Z</generated>
+    <summary><![CDATA[Input containing <literal> markup and ]] characters.]]></summary>
+  </header>
+  <collection>
+    <item id="entry-1" status="published">
+      <name>Boundary cases</name>
+      <description>Preserve <strong>all</strong> <em>delimiters</em> around <code>&lt;tokens&gt;</code>.</description>
+      <metadata>
+        <tag key="owner" value="qa"/>
+        <tag key="priority" value="3"/>
+      </metadata>
+      <link rel="self" href="urn:item:entry-1">record</link>
+    </item>
+    <item id="entry-2">
+      <name>CDATA sample</name>
+      <description><![CDATA[alpha & beta < gamma > delta]]></description>
+      <metadata>
+        <tag key="format"/>
+      </metadata>
+    </item>
+  </collection>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE drawing [
+  <!ELEMENT drawing (layer+)>
+  <!ELEMENT layer (shape+)>
+  <!ELEMENT shape (geometry, paint?, label?)>
+  <!ELEMENT geometry EMPTY>
+  <!ELEMENT paint (fill?, stroke?)>
+  <!ELEMENT fill (#PCDATA)>
+  <!ELEMENT stroke (#PCDATA)>
+  <!ELEMENT label (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ATTLIST drawing width NMTOKEN #REQUIRED height NMTOKEN #REQUIRED>
+  <!ATTLIST layer name CDATA #REQUIRED visible (yes|no) "yes">
+  <!ATTLIST shape id ID #REQUIRED kind (rect|circle|path|text) #REQUIRED>
+  <!ATTLIST geometry x CDATA #IMPLIED y CDATA #IMPLIED w CDATA #IMPLIED h CDATA #IMPLIED d CDATA #IMPLIED>
+  <!ATTLIST paint opacity CDATA "1.0">
+  <!ENTITY star "&#9733;">
+]>
+<drawing width="640" height="480">
+  <layer name="background" visible="yes">
+    <shape id="s0" kind="rect">
+      <geometry x="0" y="0" w="640" h="480"/>
+      <paint opacity="0.25">
+        <fill>#101820</fill>
+        <stroke>#000000</stroke>
+      </paint>
+    </shape>
+  </layer>
+  <layer name="foreground">
+    <shape id="s1" kind="path">
+      <geometry d="M 10,20 C 30,40 50,10 80,25 Z"/>
+      <paint>
+        <fill><![CDATA[url(#gradient-1)]]></fill>
+      </paint>
+      <label>curve <linebreak/> &star; sample</label>
+    </shape>
+    <shape id="s2" kind="text">
+      <geometry x="24" y="96"/>
+      <label>Text containing &lt;angles&gt; and &amp; symbols</label>
+    </shape>
+  </layer>
+</drawing>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<envelope xmlns="urn:example:envelope"
+          xmlns:h="urn:example:header"
+          xmlns:p="urn:example:payload"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="urn:example:envelope envelope.xsd">
+  <h:header>
+    <h:request-id>req-20261001-0007</h:request-id>
+    <h:flags retry="false" compressed="true">
+      <h:flag>audit</h:flag>
+      <h:flag>trace</h:flag>
+    </h:flags>
+    <h:timestamp>2026-10-01T14:07:03.125Z</h:timestamp>
+  </h:header>
+  <p:payload type="batch">
+    <p:operation name="merge" mode="transactional">
+      <p:target namespace="urn:records" path="/records/customer"/>
+      <p:arguments>
+        <p:argument key="customer-id" xsi:type="p:integer">0042</p:argument>
+        <p:argument key="active" xsi:type="p:boolean">true</p:argument>
+        <p:argument key="comment"><![CDATA[Use <literal> content here.]]></p:argument>
+      </p:arguments>
+    </p:operation>
+    <p:attachment media-type="application/octet-stream" encoding="base64">
+      QkFTRTY0LURBVEEtMTIzNDU2Nzg5MA==
+    </p:attachment>
+  </p:payload>
+  <h:signature algorithm="sha256">
+    <h:digest>4f2a9c7e00d1b83a</h:digest>
+  </h:signature>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (manifest, record*)>
+  <!ELEMENT manifest (source, checksum, media)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT media EMPTY>
+  <!ELEMENT record (key, timestamp, content, reference*)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT content (#PCDATA)>
+  <!ELEMENT reference EMPTY>
+  <!ATTLIST archive version NMTOKEN #REQUIRED>
+  <!ATTLIST manifest format CDATA #REQUIRED>
+  <!ATTLIST media notation NOTATION (binary|text) #REQUIRED>
+  <!ATTLIST record id ID #REQUIRED kind CDATA #IMPLIED>
+  <!ATTLIST reference target IDREF #REQUIRED type (parent|related|attachment) "related">
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!NOTATION text SYSTEM "text/plain">
+  <!ENTITY payload SYSTEM "archive.dat" NDATA binary>
+]>
+<archive version="2.1">
+  <manifest format="chunked">
+    <source>sensor-grid-7</source>
+    <checksum algorithm="sha256">d41d8cd98f00b204e9800998ecf8427e</checksum>
+    <media notation="binary"/>
+  </manifest>
+  <record id="r-001" kind="measurement">
+    <key>temperature</key>
+    <timestamp>2026-10-01T14:07:03+00:00</timestamp>
+    <content><![CDATA[23.75 +/- 0.05 C]]></content>
+  </record>
+  <record id="r-002" kind="annotation">
+    <key>operator-note</key>
+    <timestamp>2026-10-01T14:08:11+00:00</timestamp>
+    <content>Calibration completed; see related record.</content>
+    <reference target="r-001" type="related"/>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (parameters, stages)>
+  <!ELEMENT parameters (parameter*)>
+  <!ELEMENT parameter EMPTY>
+  <!ELEMENT stages (stage+)>
+  <!ELEMENT stage (input*, action+, output*)>
+  <!ELEMENT input EMPTY>
+  <!ELEMENT action (command, environment?, condition?)>
+  <!ELEMENT output EMPTY>
+  <!ELEMENT command (#PCDATA)>
+  <!ELEMENT environment (variable*)>
+  <!ELEMENT variable EMPTY>
+  <!ELEMENT condition (#PCDATA)>
+  <!ATTLIST workflow id ID #REQUIRED>
+  <!ATTLIST parameter name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST stage id ID #REQUIRED depends IDREFS #IMPLIED>
+  <!ATTLIST input path CDATA #REQUIRED optional (true|false) "false">
+  <!ATTLIST action id ID #REQUIRED timeout CDATA #IMPLIED>
+  <!ATTLIST variable name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST output path CDATA #REQUIRED status (temporary|persistent) "temporary">
+]>
+<workflow id="wf-main">
+  <parameters>
+    <parameter name="root" value="/var/tmp/run"/>
+    <parameter name="mode" value="strict"/>
+    <parameter name="workers" value="4"/>
+  </parameters>
+  <stages>
+    <stage id="prepare">
+      <input path="input/source.xml"/>
+      <action id="normalize" timeout="00:00:30">
+        <command><![CDATA[normalize --mode "$mode" "$root/input/source.xml"]]></command>
+        <environment>
+          <variable name="LANG" value="C.UTF-8"/>
+          <variable name="TRACE" value="1"/>
+        </environment>
+        <condition>file.exists(root + "/input/source.xml")</condition>
+      </action>
+      <output path="work/normalized.xml" status="persistent"/>
+    </stage>
+    <stage id="analyze" depends="prepare">
+      <input path="work/normalized.xml"/>
+      <action id="scan">
+        <command>scan --format &quot;xml&quot; --emit &lt;report&gt;</command>
+      </action>
+      <action id="summarize">
+        <command>summarize --stdin</command>
+      </action>
+      <output path="reports/summary.txt" status="persistent"/>
+    </stage>
+  </stages>
+</workflow>
+```

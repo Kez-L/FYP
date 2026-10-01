@@ -1,0 +1,127 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+, note?)>
+  <!ELEMENT section (title, entry*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (#PCDATA | code | link)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST section key ID #REQUIRED hidden (yes|no) "no">
+  <!ATTLIST entry rank CDATA #IMPLIED>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ENTITY copyright "&#169;">
+]>
+<catalog>
+  <section key="s-main">
+    <title>Mixed content &amp; entities</title>
+    <entry rank="1">Use <code>xmllint</code> with <link href="urn:test:α"/> &copyright;</entry>
+    <entry><![CDATA[raw <markup> and ]]> characters]]></entry>
+  </section>
+  <section key="s-hidden" hidden="yes">
+    <title>Secondary</title>
+  </section>
+  <note xml:lang="en">end<!-- embedded comment --><?trace value?></note>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record*)>
+  <!ELEMENT record (name, value, value?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST record id ID #IMPLIED ref IDREFS #IMPLIED state CDATA "new">
+]>
+<archive xml:base="urn:archive/" xml:lang="fr">
+  <record id="r0" state="closed">
+    <name>zero</name>
+    <value>line one&#x85;line two</value>
+  </record>
+  <record id="r1" ref="r0 missing" state="pending">
+    <name><![CDATA[name with ]]> bracket]]></name>
+    <value>0x00? &quot;quoted&quot;</value>
+    <value/>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header (from, to, flags?)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT flags (#PCDATA)>
+  <!ELEMENT payload (item+)>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item kind NMTOKEN #REQUIRED data CDATA #IMPLIED>
+  <!ENTITY % common "kind NMTOKEN #REQUIRED data CDATA #IMPLIED">
+]>
+<envelope>
+  <header>
+    <from>urn:sender</from>
+    <to>urn:receiver</to>
+    <flags><![CDATA[a|b|c]]></flags>
+  </header>
+  <payload>
+    <item kind="α" data="&lt;encoded&gt;"/>
+    <item kind="binary" data="&#x0A;&#x0D;&#x09;"/>
+    <item kind="empty"/>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<world xmlns="urn:world" xmlns:g="urn:geo" xmlns:m="urn:meta">
+  <m:metadata>
+    <m:created>2026-10-01T00:00:00Z</m:created>
+    <m:tag value="one"/>
+    <m:tag value="two"/>
+  </m:metadata>
+  <continent name="A">
+    <g:point lat="+90.000" lon="-180.000"/>
+    <country code="XX">
+      <city>Alpha &amp; Omega</city>
+      <city xmlns:g="urn:alternate-geo">
+        <g:point lat="NaN" lon="INF"/>
+      </city>
+    </country>
+  </continent>
+  <continent name="B" xmlns="">
+    <plain xmlns="urn:world" xml:space="preserve">  padded
+text  </plain>
+  </continent>
+</world>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a, b, c?)>
+  <!ELEMENT a (x|y|z)>
+  <!ELEMENT b (#PCDATA|x|y)*>
+  <!ELEMENT c ANY>
+  <!ELEMENT x EMPTY>
+  <!ELEMENT y EMPTY>
+  <!ELEMENT z EMPTY>
+  <!ATTLIST root mode (fast|slow|other) "other">
+  <!ATTLIST x n CDATA #IMPLIED>
+  <!ATTLIST y n CDATA #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "urn:local:blob" NDATA bin>
+]>
+<root mode="fast">
+  <a><z n="3"/></a>
+  <b>text<x n="1"/>more<![CDATA[<b>not markup</b>]]><y n="2"/></b>
+  <c>
+    <nested level="1">
+      <nested level="2"><leaf/></nested>
+    </nested>
+  </c>
+</root>
+```

@@ -1,0 +1,35 @@
+<?xml version="1.1"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (route, payload, extensions?)>
+  <!ELEMENT route (source, destination)>
+  <!ELEMENT source EMPTY>
+  <!ELEMENT destination EMPTY>
+  <!ATTLIST source name NMTOKEN #REQUIRED>
+  <!ATTLIST destination name NMTOKEN #REQUIRED>
+  <!ELEMENT payload (#PCDATA|fragment|binary)*>
+  <!ELEMENT fragment (#PCDATA)>
+  <!ELEMENT binary EMPTY>
+  <!ATTLIST binary encoding (base64|hex) #REQUIRED length NMTOKEN #IMPLIED>
+  <!ELEMENT extensions (extension*)>
+  <!ELEMENT extension ANY>
+  <!ATTLIST extension xmlns CDATA #IMPLIED>
+]>
+<packet>
+  <route>
+    <source name="node_A"/>
+    <destination name="node_B"/>
+  </route>
+  <payload>
+    prefix
+    <fragment><![CDATA[<&]]></fragment>
+    middle&#x85;section
+    <binary encoding="hex" length="4"/>
+    suffix
+  </payload>
+  <extensions>
+    <extension xmlns="urn:x-ext" kind="opaque">
+      <x:item xmlns:x="urn:item" x:code="7">value</x:item>
+      <?extension data?>
+    </extension>
+  </extensions>
+</packet>

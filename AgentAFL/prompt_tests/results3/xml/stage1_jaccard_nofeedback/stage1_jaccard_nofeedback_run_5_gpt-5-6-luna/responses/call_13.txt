@@ -1,0 +1,75 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (item*)>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ELEMENT item (#PCDATA|name|price)*>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ENTITY currency "EUR">
+]>
+<catalog xmlns="urn:example:catalog" generated="yes">
+  <section id="s1">
+    <item status="active"><name>Alpha</name><price>19.95 &currency;</price></item>
+    <item status="archived"><name>Beta</name><price>0</price></item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<message>
+  Before<!-- embedded comment -->middle
+  <?dispatch mode="compact"?>
+  <payload><![CDATA[
+    <not-an-element attr="&amp;"> raw ]]> text
+  </payload>
+  <tail><![CDATA[ ]]]]><![CDATA[>]]>end</tail>
+</message>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ENTITY header "X-Trace">
+  <!ENTITY value "A&amp;B&lt;C&gt;">
+  <!ENTITY pair "&header;: &value;">
+]>
+<envelope>
+  <meta key="&header;" value="&value;"/>
+  <body>
+    <entry>&pair;</entry>
+    <entry><![CDATA[&pair;]]></entry>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.1"?>
+<r:report xmlns:r="urn:report" xmlns:x="urn:extra" xml:lang="en">
+  <r:header>
+    <r:title x:kind="primary">Quarterly report</r:title>
+    <r:date>2026-10-01</r:date>
+  </r:header>
+  <r:rows>
+    <r:row index="1"><x:value>one</x:value><x:value>two</x:value></r:row>
+    <r:row index="2"><x:value xml:space="preserve">  three  </x:value></r:row>
+  </r:rows>
+</r:report>
+```
+
+```xml
+<root>
+  <a>
+    <b>
+      <c id="0"/>
+      <c id="1"><d><![CDATA[x]]></d></c>
+    </b>
+    <mixed>left<emphasis>center</emphasis>right</mixed>
+  </a>
+  <empty/>
+  <?instruction?>
+  <!-- comment with --? no, nearly tricky -->
+  <quoted first="&quot;single&apos;quoted&quot;" second="&#x1F600;"/>
+</root>
+```

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE network [
+  <!ELEMENT network (cluster+)>
+  <!ELEMENT cluster (name, node+, policy?)>
+  <!ATTLIST cluster id ID #REQUIRED region CDATA #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT node (address, capability*)>
+  <!ATTLIST node id ID #REQUIRED role (leader|worker|observer) #REQUIRED>
+  <!ELEMENT address (#PCDATA)>
+  <!ELEMENT capability (#PCDATA)>
+  <!ELEMENT policy (rule*)>
+  <!ELEMENT rule (#PCDATA)>
+  <!ATTLIST rule effect (allow|deny) #REQUIRED>
+]>
+<network xmlns="urn:example:network" xmlns:n="urn:example:node">
+  <cluster id="alpha" region="eu-west">
+    <name>Alpha <n:label>Control Plane</n:label></name>
+    <node id="n1" role="leader">
+      <address>https://[2001:db8::1]:8443/api</address>
+      <capability>schedule</capability>
+      <capability>replicate</capability>
+    </node>
+    <node id="n2" role="worker">
+      <address>https://worker-2.example.invalid/api?mode=fast&amp;raw=1</address>
+      <capability><![CDATA[compute<gpu>]]></capability>
+    </node>
+    <policy>
+      <rule effect="allow">read:metrics</rule>
+      <rule effect="deny">write:secrets</rule>
+    </policy>
+  </cluster>
+  <cluster id="beta" region="us-central">
+    <name>Beta</name>
+    <node id="n3" role="observer">
+      <address>unix:///var/run/observer.sock</address>
+    </node>
+  </cluster>
+</network>

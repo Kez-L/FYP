@@ -1,0 +1,91 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % itemDecl "<!ELEMENT item (title,meta?,value)>">
+  %itemDecl;
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (item*)>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta key CDATA #IMPLIED value CDATA #IMPLIED>
+  <!ELEMENT value (#PCDATA|item)*>
+  <!ENTITY left "alpha &amp; ">
+  <!ENTITY right "omega &quot;end&quot;">
+]>
+<catalog>
+  <section id="s0">
+    <item>
+      <title>&left;middle;&right;</title>
+      <meta key="state" value="&lt;unset&gt;"/>
+      <value>one<item><title>nested</title><value>two</value></item>three</value>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<root xmlns="urn:default" xmlns:a="urn:a" xml:lang="fr" xml:base="urn:base/">
+  <a:branch a:id="α" xmlns:b="urn:b">
+    <b:leaf xml:space="preserve">  text  <a:empty/></b:leaf>
+    <shadow xmlns=""/>
+    <a:branch xmlns:a="urn:replacement">
+      <a:leaf a:flag="yes">rebound</a:leaf>
+    </a:branch>
+  </a:branch>
+  <?processing instruction?>
+  <!-- comment with -- forbidden? -->
+  <tail><![CDATA[raw <markup> & characters]]></tail>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<levels>
+  <l01 a="1"><l02 b="2"><l03 c="3"><l04 d="4">
+    <l05><l06><l07><l08><l09><l10>
+      <payload><![CDATA[<l11><l12>opaque</l12></l11>]]></payload>
+    </l10></l09></l08></l07></l06></l05>
+  </l04></l03></l02></l01>
+  <mixed>prefix<em>bold</em>middle<emphasis><x/>suffix</emphasis>end</mixed>
+</levels>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE document [
+  <!ELEMENT document (header, body, footer?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT body (record*)>
+  <!ELEMENT record (key, data, data?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT data (#PCDATA|br)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST record code NMTOKEN #REQUIRED>
+]>
+<document>
+  <header>line&#x85;break</header>
+  <body>
+    <record code="A-1"><key>k&amp;1</key><data>first<br/>second</data></record>
+    <record code="B_2"><key><![CDATA[]]></key><data>left<br/><br/>right</data><data>extra</data></record>
+  </body>
+  <footer>done</footer>
+</document>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<packet xmlns:n="urn:n">
+  <n:item id="1" id2="&quot;quoted&quot;" mode="a&amp;b">
+    <n:name>café ∑ 漢字</n:name>
+    <n:value>before &lt;![CDATA[ not cdata ]]&gt; <![CDATA[actual ]]]]><![CDATA[> boundary]]> after</n:value>
+  </n:item>
+  <empty></empty>
+  <n:item id="2">
+    <n:name>line
+break&#x0A;tab&#9;</n:name>
+    <n:value>&#65;&#x42;&apos;&quot;&amp;</n:value>
+  </n:item>
+</packet>
+```

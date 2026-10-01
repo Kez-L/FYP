@@ -1,0 +1,131 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION image SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA image>
+  <!ELEMENT catalog (entry+, footer?)>
+  <!ELEMENT entry (title, description, asset*)>
+  <!ATTLIST entry id ID #REQUIRED status (new|old|archived) "new">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT asset EMPTY>
+  <!ATTLIST asset href ENTITY #REQUIRED>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<catalog>
+  <entry id="e1">
+    <title>One</title>
+    <description>Plain <em>mixed</em> text<br/>after.</description>
+    <asset href="logo"/>
+  </entry>
+  <footer>End</footer>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE warehouse [
+  <!ENTITY % switches "<!ATTLIST warehouse mode CDATA 'closed'>">
+  %switches;
+  <![INCLUDE[
+    <!ELEMENT warehouse (zone*)>
+    <!ELEMENT zone (bin+)>
+    <!ATTLIST zone code NMTOKEN #REQUIRED>
+    <!ELEMENT bin (item*)>
+    <!ATTLIST bin label CDATA #IMPLIED>
+    <!ELEMENT item (#PCDATA)>
+    <!ATTLIST item sku ID #IMPLIED>
+  ]]>
+  <![IGNORE[
+    <!ELEMENT discarded EMPTY>
+    <!ENTITY unused "ignored">
+  ]]>
+]>
+<warehouse mode="open">
+  <zone code="A-1">
+    <bin label="upper"><item sku="x1">bolt</item><item>nut</item></bin>
+    <bin label="lower"/>
+  </zone>
+  <zone code="B-7"><bin><item sku="x2">washer</item></bin></zone>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (layer*)>
+  <!ELEMENT layer (shape|group)*>
+  <!ATTLIST layer xmlns CDATA #IMPLIED name CDATA #REQUIRED>
+  <!ELEMENT group (shape|group)*>
+  <!ATTLIST group id ID #IMPLIED>
+  <!ELEMENT shape EMPTY>
+  <!ATTLIST shape kind (circle|path|text) #REQUIRED points CDATA #IMPLIED>
+]>
+<scene xmlns="urn:graphics:scene" xmlns:g="urn:graphics:geometry">
+  <layer name="background">
+    <g:shape kind="path" g:points="0,0 10,0 10,10"/>
+    <group id="foreground">
+      <shape kind="circle" points="5,5"/>
+      <g:shape kind="text" points="2,8"/>
+    </group>
+  </layer>
+  <layer name="labels"><shape kind="text" points="&quot;A&quot;"/></layer>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY open "<section>">
+  <!ENTITY close "</section>">
+  <!ENTITY mark "&#x2026;">
+  <!ELEMENT report (meta, section*)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta generated CDATA #REQUIRED>
+  <!ELEMENT section (heading, paragraph*)>
+  <!ATTLIST section number NMTOKEN #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|code|link)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link target CDATA #REQUIRED>
+]>
+<report>
+  <meta generated="2026-10-01"/>
+  <section number="1">
+    <heading>Introduction &mark;</heading>
+    <paragraph>Use <code>&lt;tag&gt;</code> or <link target="urn:ref">this link</link>.</paragraph>
+  </section>
+  <section number="2">
+    <heading>Details</heading>
+    <paragraph><![CDATA[Raw characters: < & > and ]]> are preserved.</paragraph>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record*)>
+  <!ELEMENT record (key, value, note?)>
+  <!ATTLIST record xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ATTLIST part index NMTOKEN #REQUIRED>
+  <!ELEMENT note (#PCDATA)>
+]>
+<archive xml:base="urn:archive" xmlns:x="urn:extra">
+  <record xml:lang="fr">
+    <key>café</key>
+    <value>Début <part index="1">αβγ</part> fin &#x1F642;</value>
+    <note><?audit checked?> <![CDATA[semi-raw]]></note>
+  </record>
+  <record xml:lang="ja">
+    <key>x:名前</key>
+    <value><part index="01">値</part></value>
+  </record>
+</archive>
+```

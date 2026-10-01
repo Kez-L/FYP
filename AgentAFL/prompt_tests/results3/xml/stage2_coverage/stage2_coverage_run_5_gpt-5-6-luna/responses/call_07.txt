@@ -1,0 +1,132 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % itemdecl "<!ELEMENT item (name,price,details?)><!ATTLIST item code ID #REQUIRED status (new|used|refurbished) 'new'>">
+  %itemdecl;
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title,item+)>
+  <!ATTLIST section id ID #REQUIRED xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|em|strong)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT strong (#PCDATA)>
+  <!ENTITY mark "A &amp; B">
+]>
+<catalog>
+  <section id="s1" xml:lang="en">
+    <title>Inventory</title>
+    <item code="i1" status="new">
+      <name>&mark;</name>
+      <price>19.95</price>
+      <details>boxed <strong>and</strong> <em>sealed</em></details>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (meta,entry*)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta generated CDATA #FIXED "yes" source CDATA #IMPLIED>
+  <!ELEMENT entry (key,value)>
+  <!ATTLIST entry level (low|medium|high) "medium">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ENTITY lf "&#10;">
+  <!ENTITY quote "&quot;">
+]>
+<report>
+  <meta source="sensor-α"/>
+  <entry level="high">
+    <key>threshold</key>
+    <value>first&lf;second<linebreak/>third &quote;quoted&quote;</value>
+  </entry>
+  <entry level="low">
+    <key>empty</key>
+    <value/>
+  </entry>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a|b|c)*>
+  <!ELEMENT a ANY>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c (leaf+)>
+  <!ELEMENT leaf EMPTY>
+  <!ATTLIST root xmlns:xsd CDATA #FIXED "http://www.w3.org/2001/XMLSchema"
+                xsd:type CDATA #IMPLIED>
+  <!NOTATION txt SYSTEM "text/plain">
+  <!ENTITY external SYSTEM "urn:missing:resource" NDATA txt>
+]>
+<root xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsd:type="xsd:string">
+  <a><![CDATA[<opaque>&data;</opaque>]]></a>
+  <b>literal &lt; markup &gt; and &#x1F600;</b>
+  <c>
+    <leaf/>
+    <leaf/>
+  </c>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (layer+)>
+  <!ELEMENT layer (group|object|text)*>
+  <!ATTLIST layer name CDATA #REQUIRED visible (true|false) "true">
+  <!ELEMENT group (object|group)*>
+  <!ATTLIST group transform CDATA #IMPLIED>
+  <!ELEMENT object EMPTY>
+  <!ATTLIST object id ID #REQUIRED kind CDATA #IMPLIED>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST text xml:space (default|preserve) "default">
+]>
+<scene>
+  <layer name="background" visible="false"/>
+  <layer name="foreground">
+    <group transform="translate(1,2) rotate(45)">
+      <object id="o1" kind="circle"/>
+      <group transform="">
+        <text xml:space="preserve">  padded
+text  </text>
+        <object id="o2"/>
+      </group>
+    </group>
+  </layer>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (chunk+)>
+  <!ELEMENT chunk (header,payload,checksum?)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED compressed (yes|no) "no">
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header size NMTOKEN #REQUIRED type CDATA #IMPLIED>
+  <!ELEMENT payload (#PCDATA|fragment)*>
+  <!ELEMENT fragment (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY amp "&amp;">
+  <!ENTITY nested "left &amp; right &amp; center">
+]>
+<stream>
+  <chunk index="000" compressed="yes">
+    <header size="0" type="binary"/>
+    <payload/>
+    <checksum>00000000</checksum>
+  </chunk>
+  <chunk index="001">
+    <header size="17" type="text"/>
+    <payload>start<fragment>&nested;</fragment>middle<![CDATA[end ]]>tail</payload>
+  </chunk>
+</stream>
+```

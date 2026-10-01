@@ -1,0 +1,129 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item|group)*>
+  <!ELEMENT group (item+)>
+  <!ELEMENT item (#PCDATA|tag)*>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST item code NMTOKEN #IMPLIED
+                 kind (a|b|c) "a"
+                 refs IDREFS #IMPLIED>
+  <!ATTLIST tag xml:lang NMTOKEN #IMPLIED>
+  <!ENTITY amp "A &amp; B">
+  <!ENTITY quoted "&quot;inside&quot;">
+  <!ENTITY % extra "<!ATTLIST group label CDATA #IMPLIED>">
+  %extra;
+]>
+<catalog>
+  <item code="one" kind="a">plain <tag xml:lang="en">alpha</tag> &amp; &amp;</item>
+  <group label="nested">
+    <item code="two" refs="one">before<tag>middle</tag>after</item>
+  </group>
+  <item code="three">&amp;quoted;</item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns="urn:app:root"
+             xmlns:u="urn:users"
+             xmlns:m="urn:meta"
+             xml:lang="fr"
+             xml:space="preserve">
+  <!-- leading document metadata -->
+  <m:header m:version="2.7">
+    <m:flag enabled="true"/>
+    <?trace level="verbose"?>
+  </m:header>
+  <user u:id="u-001" u:role="editor">
+    <name>Zoë &amp; R&amp;D</name>
+    <u:alias xml:space="default"><![CDATA[<temporary>]]></u:alias>
+    <details xmlns="" type="profile">
+      <field key="timezone">UTC+01:00</field>
+      <field key="empty"/>
+    </details>
+    <u:contact>
+      <u:email>user@example.invalid</u:email>
+      <u:phone><![CDATA[+1 (555) 010-2020]]></u:phone>
+    </u:contact>
+  </user>
+  <m:footer><![CDATA[raw ]]> text &lt;end&gt;</m:footer>
+</application>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (subject, body, attachment*)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|br|link|em)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT em (#PCDATA|em)*>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST link href URI #REQUIRED>
+  <!ATTLIST attachment name CDATA #REQUIRED size NMTOKEN #IMPLIED>
+  <!ENTITY greeting "Hello, &amp; welcome">
+  <!ENTITY nbsp "&#160;">
+]>
+<message>
+  <subject>&greeting;</subject>
+  <body>
+    Start <em>important <em>nested</em> text</em><br/>
+    Visit <link href="https://example.invalid/a?x=1&amp;y=2">the site</link>
+    &nbsp;<![CDATA[<not-an-element/>]]> finish.
+  </body>
+  <attachment name="data.bin" size="4096"/>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive SYSTEM "missing-archive-subset.dtd" [
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (key, value, checksum?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value ANY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST entry
+            id ID #REQUIRED
+            state (new|stored|removed) "new"
+            timestamp CDATA #IMPLIED>
+]>
+<archive>
+  <entry id="e1" state="stored" timestamp="2026-10-01T12:34:56Z">
+    <key>alpha</key>
+    <value>
+      <chunk index="0">A</chunk>
+      <chunk index="1">B</chunk>
+      text between elements
+    </value>
+    <checksum><![CDATA[sha256:00000000000000000000000000000000]]></checksum>
+  </entry>
+  <entry id="e2">
+    <key>βeta</key>
+    <value/>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.1" standalone="yes"?>
+<packet xmlns:p="urn:packet" xmlns:q="urn:query" xml:base="urn:root/">
+  <?route p:q?>
+  <p:header>
+    <p:sequence value="0001"/>
+    <p:source q:id="源"/>
+  </p:header>
+  <p:payload encoding="text">
+    <p:data><![CDATA[
+      line one
+      line two
+    ]]></p:data>
+    <p:control value="&#x1;"/>
+    <p:empty xmlns:p="urn:alternate"/>
+  </p:payload>
+  <!-- a comment containing --? no -->
+  <p:signature algorithm="none">&lt;unsigned/&gt;</p:signature>
+</packet>
+```

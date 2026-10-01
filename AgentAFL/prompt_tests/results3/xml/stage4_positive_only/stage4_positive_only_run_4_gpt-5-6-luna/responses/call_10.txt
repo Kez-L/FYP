@@ -1,0 +1,224 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?render profile="thumbnail"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 320 120"
+     preserveAspectRatio="xMidYMid meet">
+  <!-- layered vector content -->
+  <defs>
+    <linearGradient id="fade" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0" stop-color="#112233"/>
+      <stop offset="1" stop-color="#ddeeff" stop-opacity=".25"/>
+    </linearGradient>
+    <path id="curve" d="M5,95 C40,5 80,115 125,30"/>
+  </defs>
+  <g id="scene" transform="translate(8,10)">
+    <rect width="300" height="100" rx="7" fill="url(#fade)"/>
+    <use xlink:href="#curve" fill="none" stroke="white" stroke-width="2"/>
+    <text x="18" y="42" font-family="sans-serif" font-size="16">
+      vector <tspan font-weight="bold">signal</tspan>
+    </text>
+    <g opacity="0.8">
+      <circle cx="44" cy="78" r="9"/>
+      <ellipse cx="92" cy="78" rx="18" ry="7"/>
+      <polygon points="145,68 160,92 130,92"/>
+    </g>
+    <foreignObject x="180" y="55" width="100" height="35">
+      <div xmlns="http://www.w3.org/1999/xhtml" lang="en">
+        <![CDATA[<b>embedded</b> markup]]>
+      </div>
+    </foreignObject>
+  </g>
+</svg>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (collection+)>
+  <!ELEMENT collection (title, entry*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (name, metadata, payload?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT metadata (author*, date?, keyword*)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT date (#PCDATA)>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|fragment)*>
+  <!ELEMENT fragment (#PCDATA)>
+  <!ATTLIST collection code NMTOKEN #REQUIRED>
+  <!ATTLIST entry ref ID #REQUIRED relation IDREFS #IMPLIED>
+  <!ATTLIST entry compressed (yes|no) "no">
+  <!ENTITY separator " / ">
+]>
+<archive>
+  <collection code="alpha">
+    <title>Research notes</title>
+    <entry ref="e1" compressed="yes">
+      <name>Protocol &separator; draft</name>
+      <metadata>
+        <author>Li</author>
+        <author>O'Neil</author>
+        <date>2026-09-30</date>
+        <keyword>parsing</keyword>
+        <keyword>recovery</keyword>
+      </metadata>
+      <payload>
+        Introductory text
+        <fragment><![CDATA[<not-an-element>]]></fragment>
+        trailing text
+      </payload>
+    </entry>
+    <entry ref="e2" relation="e1">
+      <name>Appendix</name>
+      <metadata>
+        <keyword>Δ</keyword>
+      </metadata>
+    </entry>
+  </collection>
+  <collection code="β">
+    <title>Empty collection</title>
+  </collection>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+              xmlns:m="urn:example:metrics"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <env:Header>
+    <m:Trace id="9f2e" sampled="true">
+      <m:hop>gateway</m:hop>
+      <m:hop>worker</m:hop>
+      <m:note xsi:nil="true"/>
+    </m:Trace>
+    <env:Credentials>
+      <env:User>guest</env:User>
+      <env:Token encoding="base64"><![CDATA[YWJjMTIzIT8=]]></env:Token>
+    </env:Credentials>
+  </env:Header>
+  <env:Body>
+    <m:Batch request-id="req-0007">
+      <m:operation name="measure">
+        <m:argument kind="string">temperature</m:argument>
+        <m:argument kind="integer">-00042</m:argument>
+        <m:argument kind="list">
+          <m:value>north</m:value>
+          <m:value>south</m:value>
+          <m:value>east</m:value>
+        </m:argument>
+      </m:operation>
+      <m:result status="partial">
+        <m:sample at="2026-10-01T14:22:09Z" unit="°C">18.75</m:sample>
+        <m:warning code="M-17">sensor unavailable</m:warning>
+      </m:result>
+    </m:Batch>
+  </env:Body>
+</env:Envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE manuscript [
+  <!ELEMENT manuscript (frontmatter, section+, bibliography)>
+  <!ELEMENT frontmatter (title, subtitle?, epigraph?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT subtitle (#PCDATA)>
+  <!ELEMENT epigraph (#PCDATA)>
+  <!ELEMENT section (heading, paragraph+, equation*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|em|code|break)*>
+  <!ELEMENT em (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT equation (lhs, rhs)>
+  <!ELEMENT lhs (#PCDATA)>
+  <!ELEMENT rhs (#PCDATA)>
+  <!ELEMENT bibliography (reference*)>
+  <!ELEMENT reference (author, citation)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT citation (#PCDATA)>
+  <!ATTLIST section number NMTOKEN #REQUIRED>
+  <!ENTITY alpha "α">
+  <!ENTITY beta "β">
+]>
+<manuscript xml:lang="en" xml:space="preserve">
+  <frontmatter>
+    <title>Limits and &alpha;-paths</title>
+    <subtitle>A compact note</subtitle>
+    <epigraph>“Measure twice, parse once.”</epigraph>
+  </frontmatter>
+  <section number="1">
+    <heading>Notation</heading>
+    <paragraph>
+      Let <em>x</em> vary over <code>R&amp;D</code> values.<break/>
+      Whitespace is intentionally retained.
+    </paragraph>
+    <equation>
+      <lhs>f(&beta;)</lhs>
+      <rhs>lim<tspan>?</tspan></rhs>
+    </equation>
+  </section>
+  <section number="2.1">
+    <heading>Observations</heading>
+    <paragraph>Unicode: 漢字, кириллица, and emoji 🧭.</paragraph>
+    <paragraph><![CDATA[Literal markup: <tag attr="value"/>]]></paragraph>
+  </section>
+  <bibliography>
+    <reference>
+      <author>Álvarez</author>
+      <citation>Collected fragments, vol. 2</citation>
+    </reference>
+  </bibliography>
+</manuscript>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (widget*)>
+  <!ELEMENT widget (config, data)>
+  <!ELEMENT config EMPTY>
+  <!ELEMENT data (row*)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA|value)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST dashboard generated CDATA #IMPLIED>
+  <!ATTLIST widget id ID #REQUIRED type (chart|table|status) #REQUIRED>
+  <!ATTLIST config refresh CDATA #IMPLIED theme CDATA "light">
+  <!ATTLIST row key CDATA #IMPLIED>
+  <!ATTLIST cell colspan CDATA "1" role CDATA #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quoted "&quot;quoted&quot;">
+]>
+<dashboard generated="2026-10-01T14:22:09Z">
+  <widget id="w-chart" type="chart">
+    <config refresh="15s" theme="dark"/>
+    <data>
+      <row key="jan">
+        <cell role="label">January</cell>
+        <cell colspan="2"><value>17</value> &nbsp;</cell>
+      </row>
+      <row key="feb">
+        <cell role="label">February</cell>
+        <cell><value>23</value></cell>
+        <cell><value>19</value></cell>
+      </row>
+    </data>
+  </widget>
+  <widget id="w-status" type="status">
+    <config theme="contrast"/>
+    <data>
+      <row>
+        <cell role="message">System is &quoted;</cell>
+      </row>
+    </data>
+  </widget>
+  <widget id="w-empty" type="table">
+    <config/>
+    <data/>
+  </widget>
+</dashboard>
+```

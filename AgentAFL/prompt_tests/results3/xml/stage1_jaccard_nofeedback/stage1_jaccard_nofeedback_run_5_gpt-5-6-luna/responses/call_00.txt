@@ -1,0 +1,113 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, audit?)>
+  <!ELEMENT item (name, description, meta)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT audit (#PCDATA)>
+  <!ATTLIST item id ID #REQUIRED status (new|old|archived) "new">
+  <!ATTLIST meta created CDATA #IMPLIED checksum CDATA #IMPLIED>
+]>
+<catalog xmlns="urn:example:catalog" xmlns:m="urn:example:meta">
+  <item id="i-001" status="new">
+    <name>Sample &amp; Entry</name>
+    <description><![CDATA[Text containing <tags>, ]] and ampersands]]><em>now</em><br/></description>
+    <meta created="2026-10-01" checksum="a1b2c3"/>
+  </item>
+  <item id="i-002">
+    <name>Second item</name>
+    <description>before<em>inside</em>after</description>
+    <meta m:created="never" checksum="&#x1F642;"/>
+  </item>
+  <audit>generated &#x9; document</audit>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % common "<!ELEMENT note (#PCDATA)><!ATTLIST note xml:lang CDATA #IMPLIED>">
+  %common;
+  <!ELEMENT report (section*)>
+  <!ELEMENT section (title,note?)>
+  <!ELEMENT title (#PCDATA)>
+  <![IGNORE[
+    <!ELEMENT discarded (anything)>
+    <!ATTLIST discarded mode CDATA "ignored">
+  ]]>
+  <!ELEMENT anything (#PCDATA)>
+]>
+<report>
+  <section>
+    <title>Alpha</title>
+    <note xml:lang="en">A short note.</note>
+  </section>
+  <section>
+    <title>Beta &amp; Gamma</title>
+    <note xml:lang="x-private">Line one
+Line two</note>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?scanner mode="incremental"?>
+<packet xmlns="urn:packet" xmlns:q="urn:query" q:id="42">
+  <!-- deliberately unusual but well-formed prefix -->
+  <header length="0007" flags="a&#xD;&#xA;b"/>
+  <payload><![CDATA[
+    {"key":"value","items":[1,2,3]}
+  ]]></payload>
+  <trailer>
+    <checksum>deadbeef</checksum>
+    <empty/>
+  </trailer>
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<document xml:space="preserve"
+          xmlns:x="urn:one"
+          xmlns:y="urn:two"
+          x:version="7"
+          y:state="open">
+  leading text
+  <?instruction data="a&#x0A;b"?>
+  <x:section>
+    <x:title>Namespaced title</x:title>
+    <x:body>left &lt; middle &amp; right &#x20AC;</x:body>
+    <x:body><![CDATA[raw ]]> content]]></x:body>
+  </x:section>
+  <!-- comment with punctuation: ! -- not allowed here -->
+  <y:section y:empty="true"/>
+  trailing text
+</document>
+```
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE manifest [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!NOTATION txt PUBLIC "-//EXAMPLE//NOTATION Plain Text//EN">
+  <!ENTITY logo SYSTEM "images/logo.gif" NDATA gif>
+  <!ELEMENT manifest (file+, image?, link*)>
+  <!ELEMENT file (#PCDATA)>
+  <!ELEMENT image EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST file id ID #REQUIRED kind CDATA "text">
+  <!ATTLIST image source ENTITY #REQUIRED alt CDATA #IMPLIED>
+  <!ATTLIST link target IDREF #IMPLIED rel (next|prev|related) "related">
+]>
+<manifest>
+  <file id="f1" kind="text">readme&#xA;contents</file>
+  <file id="f2">secondary file</file>
+  <image source="logo" alt="brand"/>
+  <link target="f1" rel="related"/>
+</manifest>
+```

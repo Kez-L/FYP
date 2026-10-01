@@ -1,0 +1,23 @@
+{
+  "call": 14,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<!DOCTYPE  somedoc [\n  <!ENTITY a  NTITY b    \"something\">\n  <!ENTITY b   \"&a;\">\n]>\n\n<somedoc>\n\n<somebeacon s8672093846347259794686720938463omeattr bute=\"&b\u0000\u0000\u0000\u0000\n\n&a; sho~ld app version=\"1.0\n  ear after colon: &a;\n&b; should appear after colon: &a;\n&a; should appear after colon: &b;\n&b; shou47259794686720938463omeattributld appear after colon: &b\u001b\n\n</somedoc>\n\n\n--- example 2 ---\n<!DOCTYPE doc [\n    <!ENTITY % z '\n        &#37;z; &#37;z; &#37;z; &#37;z; &#37;z;\n        &#37;z; &#37;z; &#37;z; &#37;z; somebeacon someattribu;`&#37;z; &#37;z; &#37;z; &#37;z#37;z; &#37;z; &#37;z;\n        &#37;z; &#37;z; &#37;z; &#37;z; &#37;z;\n        &#37;z;`&#37;z; &#37;z; &#37;z; &#37;\n        &#37;z; &#37;z; &#37;z; &#37;z; &#37;z;\n        &#37;z; &lt;&gt;&quot;\">\n]>\n<root>\n ;z;\n    '>\n    %z;\n]>\n<doc/>\n\n\nTried before \u2014 no new coverage, avoid repeating:\n--- 2 of your past seeds (cycles 9,14) drove the same already-covered path with 0 new edges ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE report [\n  <!ENTITY % common \"<!ELEMENT label (#PCDATA)> <!ELEMENT value (#PCDATA|label)*>\">\n  %common;\n  <!ELEMENT report (meta, record*)>\n  <!ELEMENT meta (label, value)>\n  <!ELEMENT record (label?, value, record?)>\n  <!ATTLIST record key CDATA #IMPLIED>\n  <!ENTITY left \"[\">\n  <!ENTITY right \"]\">\n  <!ENTITY nested \"L&amp;R\">\n  <![IGNORE[\n    <!ELEMENT ignored (nothing)>\n    <!ENTITY hidden \"not expanded\">\n  ]]>\n]>\n<report>\n  <meta>\n    <label>status</label>\n    <value>ready <label>&nested;</label> &left;inside&right;</value>\n  </meta>\n  <record key=\"alpha\">\n    <label>outer</label>\n    <value><![CDATA[raw <xml> and ]] brackets]]></value>\n    <record key=\"bet...[truncated, 847 chars total]\n\n--- 2 of your past seeds (cycles 1,13) drove the same already-covered path with 0 new edges ---\n<?xml version=\"1.0\"?>\n<r:root xmlns:r=\"urn:root\" xmlns:a=\"urn:a\" xmlns:b=\"urn:b\">\n  <r:branch a:id=\"001\" b:flag=\"true\">\n    <a:leaf>text</a:leaf>\n    <b:leaf>\n      <r:inner xmlns:r=\"\">\n        invalid namespace undeclaration attempt\n      </r:inner>\n    </b:leaf>\n  </r:branch>\n  <r:branch a:id=\"002\">\n    <a:leaf><![CDATA[unterminated-looking ]]> marker</a:leaf>\n    <a:leaf attr=\"&quot;&apos;&amp;&lt;&gt;\">&#x1F; &#xD800;</a:leaf>\n  </r:branch>\n</r:root>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "stage1-jaccard",
+  "positive_feedback": false,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-01T03:19:03.931848+00:00"
+}

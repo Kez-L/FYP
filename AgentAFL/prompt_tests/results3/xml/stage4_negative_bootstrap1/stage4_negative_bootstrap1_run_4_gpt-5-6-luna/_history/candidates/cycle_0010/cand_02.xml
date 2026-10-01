@@ -1,0 +1,33 @@
+<?xml version="1.1"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (variables, steps)>
+  <!ELEMENT variables (var*)>
+  <!ELEMENT var EMPTY>
+  <!ATTLIST var name ID #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT steps (step+)>
+  <!ELEMENT step (input*, output*)>
+  <!ATTLIST step id ID #REQUIRED after IDREFS #IMPLIED state (pending|ready|done) "pending">
+  <!ELEMENT input EMPTY>
+  <!ATTLIST input ref IDREF #REQUIRED>
+  <!ELEMENT output (#PCDATA)>
+]>
+<workflow>
+  <variables>
+    <var name="source" value="a&#x85;b"/>
+    <var name="threshold" value="10"/>
+  </variables>
+  <steps>
+    <step id="prepare" after="source" state="done">
+      <input ref="source"/>
+      <output>ready&#x2028;for processing</output>
+    </step>
+    <step id="transform" after="prepare">
+      <input ref="threshold"/>
+      <output>result&#x0D;&#x0A;pending</output>
+    </step>
+    <step id="publish" after="prepare transform" state="ready">
+      <input ref="source"/>
+      <output>destination: archive</output>
+    </step>
+  </steps>
+</workflow>

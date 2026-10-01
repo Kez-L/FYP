@@ -1,0 +1,181 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (metadata, item*)>
+  <!ELEMENT metadata (created, source)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT item (name, price, tags?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST item
+    sku ID #REQUIRED
+    status (active|archived|pending) "active"
+  >
+  <!ATTLIST tag xml:lang NMTOKEN #IMPLIED>
+]>
+<catalog>
+  <metadata>
+    <created>2026-10-01T00:00:00Z</created>
+    <source>inventory &amp; reconciliation</source>
+  </metadata>
+  <item sku="A-01" status="pending">
+    <name>Bracket &lt;left&gt;</name>
+    <price>0.000</price>
+    <tags>
+      <tag xml:lang="en">fragile</tag>
+      <tag xml:lang="x-private">αβγ</tag>
+    </tags>
+  </item>
+  <item sku="B-02">
+    <name><![CDATA[raw ]]>]]&gt; text]]></name>
+    <price>NaN</price>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (panel+)>
+  <!ELEMENT panel (caption, metric*)>
+  <!ELEMENT caption (#PCDATA|em|strong)*>
+  <!ELEMENT metric EMPTY>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT strong (#PCDATA)>
+  <!ATTLIST panel
+    key NMTOKEN #REQUIRED
+    hidden (yes|no) "no"
+  >
+  <!ATTLIST metric
+    name CDATA #REQUIRED
+    value CDATA #IMPLIED
+    unit CDATA "none"
+  >
+]>
+<dashboard xmlns="urn:dashboard" xmlns:v="urn:value">
+  <panel key="cpu" hidden="no">
+    <caption>Load <strong>critical</strong> at <em>midnight</em></caption>
+    <metric name="user" value="99.9" unit="%"/>
+    <metric name="system" v:value="kernel" unit="ticks"/>
+  </panel>
+  <panel key="empty">
+    <caption/>
+  </panel>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE exchange [
+  <!ELEMENT exchange (request, response)>
+  <!ELEMENT request (header*, payload)>
+  <!ELEMENT response (header*, payload)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA|chunk)*>
+  <!ATTLIST header
+    name CDATA #REQUIRED
+    value CDATA #REQUIRED
+  >
+  <!ATTLIST chunk
+    depth NMTOKEN #IMPLIED
+  >
+  <!ENTITY start "begin">
+  <!ENTITY finish "end">
+]>
+<exchange>
+  <request>
+    <header name="Accept" value="application/xml"/>
+    <header name="X-Trace" value="&quot;quoted&quot; &amp; escaped"/>
+    <payload>&start;<chunk depth="1">a<chunk depth="2">b<chunk depth="3">c</chunk></chunk></chunk>&finish;</payload>
+  </request>
+  <response>
+    <header name="Status" value="204"/>
+    <payload><![CDATA[
+      <not-an-element attr="&amp;">opaque</not-an-element>
+    ]]></payload>
+  </response>
+</exchange>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ELEMENT data (blob*)>
+  <!ELEMENT blob (#PCDATA)>
+  <!ATTLIST entry
+    path CDATA #REQUIRED
+    kind (text|binary) #REQUIRED
+    checksum CDATA #IMPLIED
+  >
+  <!ATTLIST blob
+    id ID #IMPLIED
+    encoding (base64|hex|plain) "plain"
+  >
+  <!NOTATION gif SYSTEM "image/gif">
+  <!ENTITY logo SYSTEM "logo.gif" NDATA gif>
+]>
+<package>
+  <manifest>
+    <entry path="readme.txt" kind="text" checksum=""/>
+    <entry path="image.gif" kind="binary" checksum="0x00ff"/>
+  </manifest>
+  <data>
+    <blob id="b0" encoding="hex">00ff7f</blob>
+    <blob encoding="base64">SGVsbG8=</blob>
+    <blob><![CDATA[unterminated-looking ]]> marker]]></blob>
+  </data>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (step, (branch|loop)*)>
+  <!ELEMENT step (action?, note*)>
+  <!ELEMENT branch (when, then, otherwise?)>
+  <!ELEMENT loop (body)>
+  <!ELEMENT action EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT then (step*)>
+  <!ELEMENT otherwise (step*)>
+  <!ELEMENT body (step*)>
+  <!ATTLIST step
+    id ID #IMPLIED
+    result (ok|fail|skip) "ok"
+  >
+  <!ATTLIST action
+    type CDATA #REQUIRED
+    timeout CDATA "0"
+  >
+]>
+<workflow>
+  <step id="start">
+    <action type="initialize" timeout="0"/>
+    <note>state &lt;pending&gt;</note>
+  </step>
+  <branch>
+    <when>count &gt; 0 &amp;&amp; ready</when>
+    <then>
+      <step id="process" result="ok">
+        <action type="transform" timeout="9223372036854775808"/>
+      </step>
+    </then>
+    <otherwise>
+      <step result="skip"><note>no input</note></step>
+    </otherwise>
+  </branch>
+  <loop>
+    <body>
+      <step><action type="retry" timeout="-1"/></step>
+    </body>
+  </loop>
+</workflow>
+```

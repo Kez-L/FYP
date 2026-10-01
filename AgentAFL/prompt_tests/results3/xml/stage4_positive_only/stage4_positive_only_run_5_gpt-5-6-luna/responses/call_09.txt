@@ -1,0 +1,164 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, entries, footer?)>
+  <!ATTLIST report xml:lang NMTOKEN #IMPLIED generated CDATA #IMPLIED>
+  <!ELEMENT header (title, timestamp)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT entries (entry+)>
+  <!ELEMENT entry (label, value, note?)>
+  <!ATTLIST entry key ID #REQUIRED category NMTOKEN #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA|strong|br)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY mark "&#x2022;">
+]>
+<report xml:lang="en" generated="2026-10-01">
+  <header>
+    <title>Diagnostic &amp; Inventory</title>
+    <timestamp>2026-10-01T12:34:56Z</timestamp>
+  </header>
+  <entries>
+    <entry key="cpu" category="hardware">
+      <label>Processor</label>
+      <value>64 <strong>logical</strong> units<br/>available</value>
+      <note>&mark; measured during startup</note>
+    </entry>
+    <entry key="memory">
+      <label>Memory</label>
+      <value><![CDATA[16 <units> GiB]]></value>
+    </entry>
+  </entries>
+  <footer>End of report.</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<warehouse xmlns="urn:example:warehouse" xmlns:p="urn:example:product" xml:base="https://example.invalid/data/">
+  <!-- deliberately mixed namespace content -->
+  <zone id="north" p:code="N-7">
+    <name>North &amp; East</name>
+    <bins>
+      <bin capacity="0">
+        <p:item sku="A-01" quantity="3"/>
+        <p:item sku="B-02" quantity="0">
+          <p:description><![CDATA[Fragile <glass> component]]></p:description>
+        </p:item>
+      </bin>
+      <bin capacity="unlimited">
+        <p:item sku="C-03" quantity="9"/>
+      </bin>
+    </bins>
+  </zone>
+  <?warehouse mode="audit"?>
+  <zone id="south">
+    <name>South</name>
+    <bins/>
+  </zone>
+</warehouse>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (sender, recipients, body)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipients (recipient+)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|attachment)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment href URI #REQUIRED media CDATA #IMPLIED>
+  <!ENTITY greeting "Hello">
+  <!ENTITY nested "&greeting;, reader">
+]>
+<message priority="urgent">
+  <sender>robot@example.invalid</sender>
+  <recipients>
+    <recipient>one@example.invalid</recipient>
+    <recipient>two@example.invalid</recipient>
+  </recipients>
+  <body>
+    &nested;.
+    <quote>Outer <quote>inner</quote> quote.</quote>
+    <attachment href="urn:file:report.txt" media="text/plain"/>
+  </body>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:x="urn:example:config" xmlns:y="urn:example:extension">
+  <x:defaults>
+    <x:option name="retries" value="3"/>
+    <x:option name="timeout" value="0"/>
+  </x:defaults>
+  <x:profiles>
+    <x:profile name="minimal">
+      <x:include href="defaults.xml"/>
+      <y:feature enabled="true">
+        <y:flag>safe-mode</y:flag>
+        <y:flag><![CDATA[raw&unescaped]]></y:flag>
+      </y:feature>
+    </x:profile>
+    <x:profile name="full">
+      <x:include href="defaults.xml"/>
+      <x:option name="cache" value="yes">
+        <x:value>volatile</x:value>
+      </x:option>
+    </x:profile>
+  </x:profiles>
+  <x:plugins>
+    <x:plugin id="alpha" class="core"/>
+  </x:plugins>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record*)>
+  <!ATTLIST archive created CDATA #IMPLIED>
+  <!ELEMENT record (key, payload, history)>
+  <!ATTLIST record id ID #REQUIRED state (new|open|closed) "new">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (text|binary|empty)>
+  <!ELEMENT text (#PCDATA)>
+  <!ELEMENT binary (#PCDATA)>
+  <!ELEMENT empty EMPTY>
+  <!ELEMENT history (change*)>
+  <!ELEMENT change (actor, details?)>
+  <!ATTLIST change at CDATA #REQUIRED>
+  <!ELEMENT actor (#PCDATA)>
+  <!ELEMENT details (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ENTITY nbsp "&#160;">
+]>
+<archive created="2026-10-01">
+  <record id="r-001" state="open">
+    <key>Résumé&nbsp;A</key>
+    <payload>
+      <text>Line one<linebreak/>Line two</text>
+    </payload>
+    <history>
+      <change at="2026-09-30T23:59:59Z">
+        <actor>α-team</actor>
+        <details>Initial import<linebreak/>Validated checksum.</details>
+      </change>
+      <change at="2026-10-01T00:00:01Z">
+        <actor>β-team</actor>
+      </change>
+    </history>
+  </record>
+  <record id="r-002">
+    <key>Binary sample</key>
+    <payload><binary>AAECAwQFBgcICQ==</binary></payload>
+    <history/>
+  </record>
+</archive>
+```

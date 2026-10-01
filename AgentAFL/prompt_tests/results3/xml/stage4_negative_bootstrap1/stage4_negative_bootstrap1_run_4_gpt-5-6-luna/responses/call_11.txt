@@ -1,0 +1,134 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (product+, note?)>
+  <!ELEMENT product (title, price, metadata)>
+  <!ATTLIST product id ID #REQUIRED status (active|retired) "active">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST metadata ref IDREF #IMPLIED xml:space (default|preserve) "default">
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY currency "€">
+  <!ENTITY quoted "&lt;price&gt;">
+]>
+<catalog>
+  <product id="p001">
+    <title>café &amp; thé</title>
+    <price>19.95 &currency;</price>
+    <metadata ref="p001"/>
+  </product>
+  <product id="p002" status="retired">
+    <title>&quot;legacy&quot;</title>
+    <price>0.00 &currency;</price>
+    <metadata/>
+  </product>
+  <note>Displayed as &quoted;.</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns="urn:one" xmlns:a="urn:two" xmlns:b="urn:three" xml:space="preserve">
+  <!-- namespace transitions and mixed content -->
+  <a:item a:key="alpha" b:flag="yes">
+    leading
+    <inner xmlns="" xml:lang="en">
+      <a:foreign xmlns:a="urn:changed" a:key="β">text</a:foreign>
+      <empty xmlns:b="urn:local" b:value=""/>
+    </inner>
+    trailing
+  </a:item>
+  <section xmlns:q="urn:qualified">
+    <q:entry q:id="7">
+      <q:value><![CDATA[line one
+line two
+]]></q:value>
+    </q:entry>
+  </section>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, body, footer)>
+  <!ELEMENT header (generated, source)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT body (item*)>
+  <!ELEMENT item (#PCDATA|mark|break)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY amp "&#38;">
+  <!ENTITY nbsp "&#160;">
+]>
+<report>
+  <header>
+    <generated>2026-10-01T00:00:00Z</generated>
+    <source>sensor&amp;node</source>
+  </header>
+  <body>
+    <item>alpha<mark>bold &lt;value&gt;</mark><break/>omega</item>
+    <item><![CDATA[raw ]]> data &amp; symbols &nbsp;</item>
+  </body>
+  <footer>checksum: A&#x0A;B&#x20;C</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ENTITY % switches "<!ELEMENT feature EMPTY><!ATTLIST feature enabled (true|false) 'false'>">
+  %switches;
+  <!ELEMENT configuration (environment, feature*, credentials)>
+  <!ELEMENT environment (#PCDATA)>
+  <!ELEMENT credentials (username, token)>
+  <!ELEMENT username (#PCDATA)>
+  <!ELEMENT token (#PCDATA)>
+  <!ATTLIST configuration version NMTOKEN #IMPLIED>
+  <!ATTLIST credentials method (basic|bearer|none) "none">
+  <![IGNORE[
+    <!ELEMENT discarded ANY>
+    <!ENTITY hidden "not expanded">
+  ]]>
+]>
+<configuration version="v2.0-beta">
+  <environment>staging</environment>
+  <feature enabled="true"/>
+  <feature/>
+  <credentials method="bearer">
+    <username>build-agent</username>
+    <token><![CDATA[abc.def.ghi]]></token>
+  </credentials>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?processing instruction-data?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry
+            path CDATA #REQUIRED
+            type CDATA #IMPLIED
+            size NMTOKEN #IMPLIED>
+  <!ELEMENT data (chunk*)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "blob.bin" NDATA bin>
+]>
+<package>
+  <manifest>
+    <entry path="readme.txt" type="text/plain" size="12"/>
+    <entry path="blob.bin" type="application/octet-stream" size="0"/>
+  </manifest>
+  <data>
+    <chunk>first&#xD;&#xA;second</chunk>
+    <chunk>left &lt; right &gt; center</chunk>
+  </data>
+</package>
+```

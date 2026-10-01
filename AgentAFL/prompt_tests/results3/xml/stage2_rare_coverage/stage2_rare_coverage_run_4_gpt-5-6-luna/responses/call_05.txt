@@ -1,0 +1,108 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ENTITY greeting "hello">
+  <!ENTITY twice "&greeting; &greeting;">
+  <!ELEMENT archive (header, record+)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT record (key, value, note?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|em|br)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST record state (open|closed) "open">
+]>
+<archive>
+  <header>&twice;</header>
+  <record state="closed">
+    <key>α&amp;β</key>
+    <value>left<em>middle</em>right<br/>tail</value>
+    <note>contains &lt;markup&gt;</note>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map ANY>
+  <!ELEMENT node ANY>
+  <!ATTLIST node id ID #IMPLIED ref IDREF #IMPLIED>
+]>
+<map>
+  <node id="n0">
+    <node id="n1" ref="n0">
+      <node id="n2">
+        <value><![CDATA[]]></value>
+        <value><![CDATA[x]]><![CDATA[y]]><![CDATA[&lt;]]></value>
+      </node>
+    </node>
+  </node>
+  <alias ref="n2"/>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section*)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|item)*>
+  <!ATTLIST section xml:lang NMTOKEN #IMPLIED>
+]>
+<report xml:space="preserve">
+  <section xml:lang="zh-Hant">
+    <title>資料&nbsp;集</title>
+    <item>one<item>nested<item>deep</item></item></item>
+    <item>line
+break&#x0A;next&#xD;&#x9;end</item>
+  </section>
+  <section xml:lang="">
+    <title>empty</title>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (svg:canvas)>
+  <!ELEMENT svg:canvas (svg:group+)>
+  <!ELEMENT svg:group (svg:path|html:label|foreign)*>
+  <!ELEMENT svg:path EMPTY>
+  <!ELEMENT html:label (#PCDATA)>
+  <!ELEMENT foreign ANY>
+]>
+<scene xmlns:svg="http://www.w3.org/2000/svg"
+       xmlns:html="http://www.w3.org/1999/xhtml"
+       xmlns:q="urn:q">
+  <svg:canvas viewBox="0 0 10 10">
+    <svg:group q:mode="outer">
+      <svg:path d="M0 0L1 1" stroke-width="0"/>
+      <html:label xml:lang="en">vector</html:label>
+      <foreign xmlns="urn:foreign">
+        <q:payload xmlns:q="">text</q:payload>
+      </foreign>
+    </svg:group>
+  </svg:canvas>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE broken [
+  <!ENTITY open "<part>">
+  <!ENTITY close "</part>">
+  <!ELEMENT broken ANY>
+]>
+<broken>
+  &open;
+  <part a="1" b="&quot;" c="&amp;">
+    <![CDATA[unterminated-looking ]]> content
+    <empty />
+  </part>
+  &close;
+  <tail>text
+```

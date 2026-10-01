@@ -1,0 +1,246 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, section+, appendix?)>
+  <!ELEMENT header (title, generated, owner)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT section (heading, paragraph+, table?)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|strong|code|link|br)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT appendix (item*)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST section name NMTOKEN #REQUIRED>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ATTLIST cell colspan NMTOKEN "1">
+  <!ENTITY product "Atlas">
+  <!ENTITY note "Generated for internal review">
+]>
+<report>
+  <header>
+    <title>&product; status &amp; findings</title>
+    <generated>2026-10-01T12:00:00Z</generated>
+    <owner>systems-team</owner>
+  </header>
+  <section name="overview">
+    <heading>Overview</heading>
+    <paragraph>The <strong>primary</strong> service is <code>ready</code>.<br/>See <link href="https://example.invalid/status">the dashboard</link>.</paragraph>
+    <paragraph>&note; &lt;reviewed&gt;.</paragraph>
+    <table>
+      <row><cell>Region</cell><cell>State</cell><cell colspan="2">Comment</cell></row>
+      <row><cell>north</cell><cell>ok</cell><cell>steady</cell></row>
+      <row><cell>south</cell><cell>degraded</cell><cell>retrying</cell></row>
+    </table>
+  </section>
+  <section name="empty">
+    <heading>Deferred</heading>
+    <paragraph><![CDATA[No additional narrative was supplied.]]></paragraph>
+  </section>
+  <appendix>
+    <item>alpha</item>
+    <item>beta</item>
+  </appendix>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE canvas [
+  <!ELEMENT canvas (layer+)>
+  <!ELEMENT layer (group|shape|text|use)*>
+  <!ELEMENT group (group|shape|text|use)*>
+  <!ELEMENT shape EMPTY>
+  <!ELEMENT text (#PCDATA|tspan)*>
+  <!ELEMENT tspan (#PCDATA)>
+  <!ELEMENT use EMPTY>
+  <!ATTLIST canvas width CDATA #REQUIRED height CDATA #REQUIRED>
+  <!ATTLIST layer name CDATA #IMPLIED locked (true|false) "false">
+  <!ATTLIST group id ID #IMPLIED transform CDATA #IMPLIED>
+  <!ATTLIST shape id ID #IMPLIED type (rect|circle|path) #REQUIRED>
+  <!ATTLIST text x CDATA #IMPLIED y CDATA #IMPLIED>
+  <!ATTLIST tspan dx CDATA #IMPLIED dy CDATA #IMPLIED>
+  <!ATTLIST use href IDREF #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+]>
+<canvas xmlns="urn:example:graphics" width="800" height="600">
+  <layer name="background">
+    <shape id="frame" type="rect" x="0" y="0" width="800" height="600" fill="#101820"/>
+  </layer>
+  <layer name="foreground" locked="true">
+    <group id="legend" transform="translate(40,32)">
+      <shape id="marker" type="circle" cx="12" cy="12" r="12" fill="gold"/>
+      <text x="34" y="18">Signal<tspan dx="4" dy="2">&nbsp;online</tspan></text>
+      <use href="frame"/>
+    </group>
+    <group transform="scale(0.5)">
+      <shape type="path" d="M0,0 L10,20 L30,5 Z" fill="none" stroke="white"/>
+      <text x="20" y="80"><tspan>nested</tspan> labels</text>
+    </group>
+  </layer>
+</canvas>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (metadata, manifest, payloads)>
+  <!ELEMENT metadata (name, version, tags?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT version (#PCDATA)>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT payloads (payload+)>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST file path CDATA #REQUIRED media-type CDATA #REQUIRED checksum CDATA #IMPLIED>
+  <!ATTLIST payload id ID #REQUIRED encoding (base64|text|hex) #REQUIRED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!ENTITY % common "xml:space (default|preserve) 'preserve'">
+  <!ATTLIST payload %common;>
+  <!ENTITY left-bracket "[">
+  <!ENTITY right-bracket "]">
+]>
+<package xml:base="https://packages.invalid/archive/">
+  <metadata>
+    <name>nightly-tools</name>
+    <version>4.7.0-dev</version>
+    <tags><tag>diagnostic</tag><tag>portable</tag><tag>experimental</tag></tags>
+  </metadata>
+  <manifest>
+    <file path="bin/inspect" media-type="application/octet-stream" checksum="sha256:abc"/>
+    <file path="share/readme.txt" media-type="text/plain"/>
+    <file path="config/default.xml" media-type="application/xml" checksum="sha256:def"/>
+  </manifest>
+  <payloads>
+    <payload id="p1" encoding="text">
+      first line
+      <chunk index="0">middle &amp; marked</chunk>
+      last line
+    </payload>
+    <payload id="p2" encoding="hex">4A6F7920&lt;raw&gt;</payload>
+    <payload id="p3" encoding="base64"><![CDATA[AAECAwQFBgcICQ==]]></payload>
+  </payloads>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (participants, thread)>
+  <!ELEMENT participants (person+)>
+  <!ELEMENT person EMPTY>
+  <!ELEMENT thread (message+)>
+  <!ELEMENT message (from, to+, body, attachment*)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT body (#PCDATA|mention|quote|newline)*>
+  <!ELEMENT mention (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT newline EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST person uid ID #REQUIRED role (human|bot|service) "human">
+  <!ATTLIST message id ID #REQUIRED reply-to IDREF #IMPLIED edited (yes|no) "no">
+  <!ATTLIST mention uid IDREF #REQUIRED>
+  <!ATTLIST attachment name CDATA #REQUIRED size CDATA #IMPLIED>
+  <!ENTITY greeting "Welcome, &quot;team&quot;">
+]>
+<conversation xmlns:p="urn:example:people" xmlns:m="urn:example:messages">
+  <participants>
+    <person uid="u-alex" role="human" p:timezone="UTC"/>
+    <person uid="u-bot" role="bot" p:timezone="Europe/London"/>
+    <person uid="u-build" role="service"/>
+  </participants>
+  <thread>
+    <message id="m-1">
+      <from>u-alex</from>
+      <to>u-bot</to>
+      <body>&greeting; <mention uid="u-bot"/>.<newline/>Please inspect <quote>the failed build</quote>.</body>
+      <attachment name="trace.log" size="2048"/>
+    </message>
+    <message id="m-2" reply-to="m-1" edited="yes">
+      <from>u-bot</from>
+      <to>u-alex</to>
+      <to>u-build</to>
+      <body><![CDATA[The parser accepted:
+<synthetic>
+  <value>42</value>
+</synthetic>]]></body>
+    </message>
+  </thread>
+</conversation>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE observatory [
+  <!ELEMENT observatory (station*, alert?)>
+  <!ELEMENT station (identity, instruments, readings)>
+  <!ELEMENT identity (name, coordinates)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT coordinates (latitude, longitude, elevation?)>
+  <!ELEMENT latitude (#PCDATA)>
+  <!ELEMENT longitude (#PCDATA)>
+  <!ELEMENT elevation (#PCDATA)>
+  <!ELEMENT instruments (instrument+)>
+  <!ELEMENT instrument EMPTY>
+  <!ELEMENT readings (reading*)>
+  <!ELEMENT reading (value, quality?, note?)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT quality (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT alert (message, affected*)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT affected (#PCDATA)>
+  <!ATTLIST station code ID #REQUIRED active (true|false) #REQUIRED>
+  <!ATTLIST instrument serial CDATA #REQUIRED kind NMTOKEN #REQUIRED>
+  <!ATTLIST reading timestamp CDATA #REQUIRED unit CDATA #IMPLIED>
+  <!ATTLIST quality score CDATA #IMPLIED>
+  <!ATTLIST alert severity (low|medium|high|critical) #REQUIRED>
+  <!ENTITY degree "&#x00B0;">
+  <!ENTITY micro "&#x00B5;">
+]>
+<observatory xmlns="urn:example:observatory" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <?calibration revision="17"?>
+  <station code="st-aurora" active="true">
+    <identity>
+      <name>Aurora Ridge</name>
+      <coordinates>
+        <latitude>64.1466&degree; N</latitude>
+        <longitude>21.9426&degree; W</longitude>
+        <elevation>118</elevation>
+      </coordinates>
+    </identity>
+    <instruments>
+      <instrument serial="AR-001" kind="magnetometer"/>
+      <instrument serial="AR-009" kind="spectrometer"/>
+      <instrument serial="AR-014" kind="thermometer"/>
+    </instruments>
+    <readings>
+      <reading timestamp="2026-09-30T23:00:00Z" unit="nT">
+        <value>-42.7</value>
+        <quality score="0.98">verified</quality>
+      </reading>
+      <reading timestamp="2026-09-30T23:05:00Z" unit="&micro;K">
+        <value>271.3</value>
+        <quality score="0.71">estimated</quality>
+        <note>sensor drift suspected &lt; threshold</note>
+      </reading>
+    </readings>
+  </station>
+  <alert severity="medium">
+    <message>Maintenance window pending.</message>
+    <affected>AR-009</affected>
+    <affected>AR-014</affected>
+  </alert>
+</observatory>
+```

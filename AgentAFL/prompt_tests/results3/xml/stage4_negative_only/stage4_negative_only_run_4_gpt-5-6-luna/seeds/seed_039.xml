@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header version NMTOKEN #REQUIRED>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+]>
+<envelope>
+  <header version="v2.0"/>
+  <payload>
+    <chunk>&left;escaped-element&right;</chunk>
+    <chunk><![CDATA[
+      ]]> tricky text with brackets ]]>
+    </chunk>
+    <chunk>alpha&#13;&#10;beta &amp; gamma</chunk>
+  </payload>
+</envelope>

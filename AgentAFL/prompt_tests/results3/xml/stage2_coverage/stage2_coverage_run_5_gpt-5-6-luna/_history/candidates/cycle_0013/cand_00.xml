@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, note?)>
+  <!ELEMENT item (title, price, details)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|link|ref)*>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST item
+    sku ID #REQUIRED
+    state (new|used|retired) "new"
+    xmlns:shop CDATA #FIXED "urn:shop:v2">
+  <!ATTLIST link href URI #IMPLIED>
+  <!ATTLIST ref target IDREF #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data.bin" NDATA bin>
+  <!ENTITY mark "&#x3C;synthetic&#x3E;">
+]>
+<catalog>
+  <item sku="p-001" state="used">
+    <title>alpha &amp; omega</title>
+    <price>19.99</price>
+    <details>
+      before &mark;
+      <link href="urn:x?y=1&amp;z=2"/>
+      <ref target="p-001"/>
+      after
+    </details>
+  </item>
+  <item sku="p-002" state="retired">
+    <title><![CDATA[x]]]]><![CDATA[>y]]></title>
+    <price>0</price>
+    <details><link/><ref/></details>
+  </item>
+  <note>catalog-end</note>
+</catalog>

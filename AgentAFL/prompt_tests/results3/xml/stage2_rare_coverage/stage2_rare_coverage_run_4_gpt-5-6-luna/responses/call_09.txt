@@ -1,0 +1,160 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:archive xmlns:r="urn:records" xmlns:m="urn:meta" xml:lang="fr">
+  <!-- mixed content, namespaces, and processing instructions -->
+  <?audit level="verbose"?>
+  <r:header m:id="h-01" xml:base="urn:example:base">
+    <![CDATA[before <literal/> after]]>
+    <m:timestamp zone="UTC">2026-10-01T00:00:00Z</m:timestamp>
+    <r:flag enabled="true"/>
+    text between elements
+  </r:header>
+  <r:entries count="2">
+    <r:entry m:key="α&amp;β">
+      <r:title>Résumé &amp; notes</r:title>
+      <r:body>line one&#10;line two</r:body>
+    </r:entry>
+    <r:entry m:key="empty">
+      <r:body><![CDATA[]]></r:body>
+    </r:entry>
+  </r:entries>
+</r:archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (account+, trailer)>
+  <!ELEMENT account (owner, transaction*)>
+  <!ATTLIST account number ID #REQUIRED currency CDATA "EUR">
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT transaction (debit|credit)>
+  <!ATTLIST transaction date CDATA #IMPLIED ref ID #IMPLIED>
+  <!ELEMENT debit (#PCDATA)>
+  <!ELEMENT credit (#PCDATA)>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST trailer checksum CDATA #IMPLIED>
+  <!ENTITY euro "&#x20AC;">
+  <!ENTITY stamp "&#x2026; generated">
+]>
+<ledger>
+  <account number="acct-1">
+    <owner>Ada &amp; Lin</owner>
+    <transaction date="2026-09-30" ref="tx-1">
+      <credit>100 &euro;</credit>
+    </transaction>
+    <transaction date="2026-10-01">
+      <debit>25 &euro;</debit>
+    </transaction>
+  </account>
+  <account number="acct-2" currency="JPY">
+    <owner>東京</owner>
+    <transaction><credit>5000</credit></transaction>
+  </account>
+  <trailer checksum="&stamp;"/>
+</ledger>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (route, payload, extensions?)>
+  <!ELEMENT route (source, destination)>
+  <!ELEMENT source EMPTY>
+  <!ELEMENT destination EMPTY>
+  <!ATTLIST source name NMTOKEN #REQUIRED>
+  <!ATTLIST destination name NMTOKEN #REQUIRED>
+  <!ELEMENT payload (#PCDATA|fragment|binary)*>
+  <!ELEMENT fragment (#PCDATA)>
+  <!ELEMENT binary EMPTY>
+  <!ATTLIST binary encoding (base64|hex) #REQUIRED length NMTOKEN #IMPLIED>
+  <!ELEMENT extensions (extension*)>
+  <!ELEMENT extension ANY>
+  <!ATTLIST extension xmlns CDATA #IMPLIED>
+]>
+<packet>
+  <route>
+    <source name="node_A"/>
+    <destination name="node_B"/>
+  </route>
+  <payload>
+    prefix
+    <fragment><![CDATA[<&]]></fragment>
+    middle&#x85;section
+    <binary encoding="hex" length="4"/>
+    suffix
+  </payload>
+  <extensions>
+    <extension xmlns="urn:x-ext" kind="opaque">
+      <x:item xmlns:x="urn:item" x:code="7">value</x:item>
+      <?extension data?>
+    </extension>
+  </extensions>
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (vertex*, edge*)>
+  <!ELEMENT vertex (label?, attribute*)>
+  <!ATTLIST vertex id ID #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT attribute (#PCDATA)>
+  <!ATTLIST attribute key NMTOKEN #REQUIRED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA #IMPLIED>
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data.bin" NDATA binary>
+]>
+<graph>
+  <vertex id="v0">
+    <label><![CDATA[root]]></label>
+    <attribute key="kind">hub</attribute>
+  </vertex>
+  <vertex id="v1"><label>leaf &lt; one</label></vertex>
+  <vertex id="v2"/>
+  <edge from="v0" to="v1" weight="0.0"/>
+  <edge from="v1" to="v2" weight="-1.25"/>
+  <edge from="v2" to="v0" weight="NaN"/>
+</graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE form [
+  <!ELEMENT form (section*)>
+  <!ATTLIST form version NMTOKEN #FIXED "2">
+  <!ELEMENT section (heading?, field*)>
+  <!ATTLIST section name CDATA #IMPLIED collapsed (yes|no) "no">
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT field (label?, value?, help?)>
+  <!ATTLIST field key NMTOKEN #REQUIRED required (true|false) "false">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA|line|mark)*>
+  <!ELEMENT line EMPTY>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT help (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quote "&quot;">
+]>
+<form version="2">
+  <section name="identity" collapsed="yes">
+    <heading>Profile</heading>
+    <field key="display-name" required="true">
+      <label>Name</label>
+      <value>A&nbsp;B<line/>C<mark>&quote;quoted&quote;</mark></value>
+      <help>Use a public name.</help>
+    </field>
+  </section>
+  <section name="preferences">
+    <field key="theme">
+      <value>dark</value>
+    </field>
+    <field key="locale" required="false">
+      <label>Locale</label>
+      <value><![CDATA[en-US]]></value>
+    </field>
+  </section>
+</form>
+```

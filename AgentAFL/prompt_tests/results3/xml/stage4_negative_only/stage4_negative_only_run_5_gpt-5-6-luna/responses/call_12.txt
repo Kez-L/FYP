@@ -1,0 +1,160 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+)>
+  <!ATTLIST catalog generated CDATA #IMPLIED>
+  <!ELEMENT item (title, description?, price)>
+  <!ATTLIST item sku ID #REQUIRED status (active|archived) "active">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ENTITY company "Northwind &amp; Sons">
+  <!ENTITY currency "¤">
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY thumbnail SYSTEM "thumb.dat" NDATA binary>
+]>
+<catalog generated="2026-10-01">
+  <item sku="A-001">
+    <title>&company; toolkit</title>
+    <description>Includes <em>portable</em> utilities and <code>nwctl</code>.</description>
+    <price>19.95 &currency;</price>
+  </item>
+  <item sku="B-002" status="archived">
+    <title>Legacy archive</title>
+    <price>0.00 &currency;</price>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<mesh xmlns="urn:mesh:core" xmlns:g="urn:mesh:geometry" xmlns:m="urn:mesh:metadata" xml:lang="fr">
+  <m:header xml:id="hdr-α">
+    <m:revision>00000000000000000007</m:revision>
+    <m:author xml:space="preserve">  équipe delta  </m:author>
+  </m:header>
+  <g:vertices count="4">
+    <g:vertex id="v0" x="0" y="0" z="0"/>
+    <g:vertex id="v1" x="1.0" y="-0.0" z="3.1415926535"/>
+    <g:vertex id="v2" x="NaN" y="INF" z="-INF"/>
+    <g:vertex id="v3" x="0.0000000000000001" y="2" z="4"/>
+  </g:vertices>
+  <g:faces>
+    <g:face material="glass">
+      <g:corner ref="v0"/>
+      <g:corner ref="v1"/>
+      <g:corner ref="v2"/>
+    </g:face>
+    <g:face material="opaque">
+      <g:corner ref="v0"/>
+      <g:corner ref="v2"/>
+      <g:corner ref="v3"/>
+    </g:face>
+  </g:faces>
+  <m:notes>
+    <m:note key="empty"></m:note>
+    <m:note key="symbols">àéîø漢字 ∑ ∞ &#x1F642;</m:note>
+  </m:notes>
+</mesh>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE registry [
+  <!ENTITY % commonAttrs "xml:lang CDATA #IMPLIED xml:space (default|preserve) 'default'">
+  <!ENTITY % entryModel "(key, value, alias*)">
+  <!ELEMENT registry (namespace*, entry*)>
+  <!ATTLIST registry %commonAttrs;>
+  <!ELEMENT namespace EMPTY>
+  <!ATTLIST namespace prefix NMTOKEN #REQUIRED uri CDATA #REQUIRED>
+  <!ELEMENT entry %entryModel;>
+  <!ATTLIST entry id ID #REQUIRED kind NMTOKEN #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|ref)*>
+  <!ELEMENT alias (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+]>
+<registry xml:lang="en" xml:space="preserve">
+  <namespace prefix="x" uri="urn:x"/>
+  <namespace prefix="y" uri="urn:y?mode=compact&amp;v=2"/>
+  <entry id="root" kind="primary">
+    <key>root.path</key>
+    <value>/srv/data<ref target="cache"/></value>
+    <alias>ROOT_PATH</alias>
+  </entry>
+  <entry id="cache" kind="derived">
+    <key>cache.path</key>
+    <value>./cache</value>
+    <alias>CACHE_DIR</alias>
+    <alias>cache.dir</alias>
+  </entry>
+</registry>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<transcript>
+  <!-- comment before the first event -->
+  <event sequence="0" timestamp="1970-01-01T00:00:00Z">
+    <speaker id="u-0"/>
+    <utterance/>
+  </event>
+  <event sequence="1" timestamp="2026-10-01T23:59:59.999999+14:00">
+    <speaker id="u-1">A&amp;B</speaker>
+    <utterance>left <mark kind="strong">right</mark> and <mark kind="code">x&lt;y</mark>.</utterance>
+    <attachment media="application/octet-stream" length="0"/>
+  </event>
+  <event sequence="-9223372036854775808" timestamp="unknown">
+    <speaker id="u-2">
+      <name>O'Connor</name>
+      <name>李</name>
+    </speaker>
+    <utterance xml:space="preserve">
+
+      leading and trailing whitespace
+
+    </utterance>
+  </event>
+  <?checkpoint id="final"?>
+</transcript>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns:w="urn:workflow" xmlns:sec="urn:security">
+  <w:definition name="recovery" version="0.0.0">
+    <w:trigger type="manual">
+      <w:parameter name="reason" required="false"/>
+      <w:parameter name="attempts" required="true" default="0"/>
+    </w:trigger>
+    <w:branch expression="status = 'failed'">
+      <w:step id="prepare" timeout="PT0S">
+        <w:command>/bin/true</w:command>
+        <w:environment>
+          <w:variable name="EMPTY" value=""/>
+          <w:variable name="QUOTED" value="&quot;&apos;&amp;&lt;&gt;"/>
+        </w:environment>
+      </w:step>
+      <w:step id="notify" depends-on="prepare">
+        <sec:credentials scheme="none">
+          <sec:token/>
+        </sec:credentials>
+        <w:recipients>
+          <w:recipient channel="email">nobody@example.invalid</w:recipient>
+        </w:recipients>
+      </w:step>
+    </w:branch>
+    <w:branch expression="status != 'failed'">
+      <w:step id="finish">
+        <w:result code="0">ok</w:result>
+      </w:step>
+    </w:branch>
+  </w:definition>
+  <w:run id="run-00000000-0000-0000-0000-000000000000" state="pending">
+    <w:log><![CDATA[not interpreted: <step id="fake"/> & raw]]></w:log>
+  </w:run>
+</workflow>
+```

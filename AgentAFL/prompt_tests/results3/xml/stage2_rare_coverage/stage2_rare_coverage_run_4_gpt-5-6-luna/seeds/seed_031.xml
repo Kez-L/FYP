@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry
+    path CDATA #REQUIRED
+    kind (text|binary|link) "text"
+    refs IDREFS #IMPLIED>
+  <!ELEMENT payload (chunk|separator|chunk)+>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ATTLIST separator id ID #IMPLIED>
+  <!ENTITY left "&#x5B;">
+  <!ENTITY right "&#x5D;">
+]>
+<package>
+  <manifest>
+    <entry path="a/b.txt" kind="text" refs="sep1"/>
+    <entry path="c.bin" kind="binary"/>
+  </manifest>
+  <payload>
+    <chunk>&left;one&amp;two&right;</chunk>
+    <separator id="sep1"/>
+    <chunk><![CDATA[
+      <not-an-element attr="&invalid;">
+    ]]></chunk>
+    <separator/>
+    <chunk>final&#13;&#10;line</chunk>
+  </payload>
+</package>

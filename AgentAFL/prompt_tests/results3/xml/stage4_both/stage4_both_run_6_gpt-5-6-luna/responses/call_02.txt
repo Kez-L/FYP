@@ -1,0 +1,179 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ENTITY product "A &amp; B">
+  <!ENTITY quoted "&quot;quoted&quot;">
+  <!ENTITY greeting "Hello, &product; — &quoted;">
+  <!ELEMENT report (header, section+, footer?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT section (heading, paragraph+)>
+  <!ATTLIST section code NMTOKEN #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|strong|code|br)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<report>
+  <header>&greeting;</header>
+  <section code="intro">
+    <heading>Overview</heading>
+    <paragraph>This is <strong>important</strong>, with <code>R&amp;D</code> details<br/>inline.</paragraph>
+    <paragraph>Symbols: &#x2192; &#x2603; and escaped &lt;markup&gt;.</paragraph>
+  </section>
+  <section code="empty-text">
+    <heading/>
+    <paragraph><![CDATA[Literal entity text: &product;]]></paragraph>
+  </section>
+  <footer>End of report.</footer>
+</report>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (warehouse*)>
+  <!ELEMENT warehouse (label, bin*)>
+  <!ATTLIST warehouse xmlns CDATA #IMPLIED location CDATA #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT bin (item*)>
+  <!ATTLIST bin number NMTOKEN #REQUIRED>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item
+            sku ID #REQUIRED
+            quantity NMTOKEN #REQUIRED
+            state (new|used|held) "new">
+]>
+<inventory xmlns="urn:stock" xmlns:x="urn:extra">
+  <warehouse location="north">
+    <label>North &amp; Main</label>
+    <bin number="A-01">
+      <item sku="sku-001" quantity="4"/>
+      <item sku="sku-002" quantity="0" state="held"/>
+    </bin>
+    <bin number="B-07">
+      <item sku="sku-003" quantity="12" state="used"/>
+    </bin>
+  </warehouse>
+  <warehouse location="south">
+    <label xml:lang="fr">Dépôt sud</label>
+    <bin number="C-02"/>
+    <x:note x:priority="low">Outside the default vocabulary</x:note>
+  </warehouse>
+</inventory>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (entry*)>
+  <!ELEMENT entry (key, value)>
+  <!ATTLIST entry id ID #REQUIRED parent IDREF #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|list|pair)*>
+  <!ELEMENT list (value*)>
+  <!ELEMENT pair (key, value)>
+]>
+<map>
+  <entry id="root">
+    <key>configuration</key>
+    <value>
+      <pair>
+        <key>mode</key>
+        <value>strict</value>
+      </pair>
+      <pair>
+        <key>paths</key>
+        <value>
+          <list>
+            <value>/usr/local/bin</value>
+            <value>/opt/tools</value>
+            <value><![CDATA[/tmp/<transient>]]></value>
+          </list>
+        </value>
+      </pair>
+    </value>
+  </entry>
+  <entry id="child" parent="root">
+    <key>notes</key>
+    <value>left <pair><key>flag</key><value>true</value></pair> right</value>
+  </entry>
+</map>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE document [
+  <!ENTITY % common "xmlns:meta CDATA #IMPLIED xml:space (default|preserve) 'default'">
+  <!ELEMENT document (title, body, attachment*)>
+  <!ATTLIST document %common; version NMTOKEN #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (section+)>
+  <!ELEMENT section (heading?, content)>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT content (#PCDATA|section|br|note)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment href URI #REQUIRED media CDATA #IMPLIED>
+]>
+<document xmlns:meta="urn:metadata" version="2.0" meta:format="text" xml:space="preserve">
+  <title>Release &amp; Change Log</title>
+  <body>
+    <section id="s1">
+      <heading>Added</heading>
+      <content>
+        New parser behavior<note>experimental</note><br/>
+        Nested material:
+        <section id="s1a">
+          <heading>Details</heading>
+          <content>Handles whitespace, tabs&#x9;, and line endings.</content>
+        </section>
+      </content>
+    </section>
+    <section id="s2">
+      <content><![CDATA[Raw payload: ]]>]]&gt;<![CDATA[ preserved]]></content>
+    </section>
+  </body>
+  <attachment href="urn:example:changelog" media="text/plain"/>
+</document>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node*, edge*)>
+  <!ELEMENT node (data*)>
+  <!ATTLIST node id ID #REQUIRED kind CDATA #IMPLIED>
+  <!ELEMENT data (#PCDATA|value)*>
+  <!ATTLIST data key NMTOKEN #REQUIRED>
+  <!ELEMENT value (#PCDATA|item)*>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item name CDATA #REQUIRED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+]>
+<graph>
+  <node id="alpha" kind="service">
+    <data key="description">Entry point</data>
+    <data key="labels">
+      <value>
+        <item name="public"/>
+        <item name="stable"/>
+      </value>
+    </data>
+  </node>
+  <node id="beta" kind="worker">
+    <data key="description">Consumes &lt;tasks&gt; and emits results.</data>
+    <data key="labels"><value><item name="internal"/></value></data>
+  </node>
+  <node id="gamma">
+    <data key="description"><![CDATA[No labels]]></data>
+  </node>
+  <edge from="alpha" to="beta" weight="0.75"/>
+  <edge from="beta" to="gamma"/>
+  <edge from="gamma" to="alpha" weight="2"/>
+</graph>
+```

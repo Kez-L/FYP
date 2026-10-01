@@ -1,0 +1,31 @@
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE registry [
+  <!ENTITY % commonAttrs "xml:lang CDATA #IMPLIED xml:space (default|preserve) 'default'">
+  <!ENTITY % entryModel "(key, value, alias*)">
+  <!ELEMENT registry (namespace*, entry*)>
+  <!ATTLIST registry %commonAttrs;>
+  <!ELEMENT namespace EMPTY>
+  <!ATTLIST namespace prefix NMTOKEN #REQUIRED uri CDATA #REQUIRED>
+  <!ELEMENT entry %entryModel;>
+  <!ATTLIST entry id ID #REQUIRED kind NMTOKEN #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|ref)*>
+  <!ELEMENT alias (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+]>
+<registry xml:lang="en" xml:space="preserve">
+  <namespace prefix="x" uri="urn:x"/>
+  <namespace prefix="y" uri="urn:y?mode=compact&amp;v=2"/>
+  <entry id="root" kind="primary">
+    <key>root.path</key>
+    <value>/srv/data<ref target="cache"/></value>
+    <alias>ROOT_PATH</alias>
+  </entry>
+  <entry id="cache" kind="derived">
+    <key>cache.path</key>
+    <value>./cache</value>
+    <alias>CACHE_DIR</alias>
+    <alias>cache.dir</alias>
+  </entry>
+</registry>

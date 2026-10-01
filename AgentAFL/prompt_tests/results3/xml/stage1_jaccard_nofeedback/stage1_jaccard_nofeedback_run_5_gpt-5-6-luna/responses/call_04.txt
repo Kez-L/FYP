@@ -1,0 +1,104 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <!-- mixed content, namespaces, CDATA, and processing instructions -->
+  <?build profile="fuzz"?>
+  <x:item id="A-001" enabled="true" x:kind="special">
+    <title>North &amp; South</title>
+    <description><![CDATA[Text containing <tags>, quotes, and ]]> fragments]]></description>
+    <metadata>
+      <x:flag value="0"/>
+      <x:flag value="1"/>
+    </metadata>
+    <summary>before<emphasis>inside</emphasis>after</summary>
+  </x:item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header,section+,footer?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT section (title,para*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT para (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST section level (low|medium|high) "low">
+  <!ENTITY notice "A &amp; B &lt; C">
+  <!ENTITY % common "xml:space CDATA #IMPLIED">
+  <!ATTLIST para %common;>
+]>
+<report>
+  <header>&notice;</header>
+  <section level="high">
+    <title>One</title>
+    <para xml:space="preserve">alpha<link href="urn:test">beta</link>gamma</para>
+  </section>
+  <section>
+    <title>Two</title>
+    <para>delta</para>
+    <para>epsilon</para>
+  </section>
+  <footer><![CDATA[closing text]]></footer>
+</report>
+```
+
+```xml
+<?xml version="1.1"?>
+<r:root xmlns:r="urn:root" xmlns:a="urn:attributes" a:empty="" r:version="1">
+  <r:branch>
+    <r:leaf a:value="&#x0A;" a:other="&#x20;&#x09;"/>
+    <r:leaf a:value="&#xD;&#10;"/>
+  </r:branch>
+  <r:branch a:map="one&#x20;two">
+    <r:leaf>left &lt; middle &amp; right</r:leaf>
+    <r:leaf><![CDATA[
+      line one
+      line two
+    ]]></r:leaf>
+  </r:branch>
+  <r:tail><?data key="value"?></r:tail>
+</r:root>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (sender,receiver,payload)>
+  <!ELEMENT sender EMPTY>
+  <!ELEMENT receiver EMPTY>
+  <!ELEMENT payload ANY>
+  <!ATTLIST sender id ID #REQUIRED>
+  <!ATTLIST receiver id ID #REQUIRED ref IDREF #IMPLIED>
+  <!ENTITY open "<part name='generated'>">
+  <!ENTITY close "</part>">
+]>
+<envelope>
+  <sender id="s1"/>
+  <receiver id="r1" ref="s1"/>
+  <payload>
+    &open;
+      <value><![CDATA[&open; is literal here]]></value>
+    &close;
+    <part name="ordinary">
+      <value>123</value>
+    </part>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <mixed>text<![CDATA[]]><?pi?><node a="1">x</node><!--comment--><node a="2"/></mixed>
+  <empty/>
+  <data>
+    <item key="&quot;&apos;&amp;&lt;&gt;" status="&#65;&#x42;">AB</item>
+    <item key="line&#10;break">first&#x0D;&#x0A;second</item>
+  </data>
+  <trailing>
+    <level1><level2><level3><level4><level5>deep</level5></level4></level3></level2></level1>
+  </trailing>
+</root>
+```

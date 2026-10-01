@@ -1,0 +1,132 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE warehouse [
+  <!ENTITY % commonAttrs "<!ATTLIST bin zone CDATA #IMPLIED sealed (yes|no) 'no'>">
+  <!ELEMENT warehouse (aisle+, audit?)>
+  <!ELEMENT aisle (bin+)>
+  <!ELEMENT bin (label, item*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT item (#PCDATA|serial|fragile)*>
+  <!ELEMENT serial (#PCDATA)>
+  <!ELEMENT fragile EMPTY>
+  <!ELEMENT audit (#PCDATA)>
+  %commonAttrs;
+  <!ATTLIST bin xml:space (default|preserve) 'preserve'>
+]>
+<warehouse xmlns="urn:warehouse">
+  <aisle id="A-7">
+    <bin zone="cold" sealed="yes">
+      <label><![CDATA[North <section> & reserved]]></label>
+      <item>α<serial>S-001</serial></item>
+      <item><fragile/>glass</item>
+    </bin>
+  </aisle>
+  <audit>checked<?trace revision="β"?></audit>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE media [
+  <!ELEMENT media (track|image|clip)*>
+  <!ELEMENT track EMPTY>
+  <!ELEMENT image EMPTY>
+  <!ELEMENT clip (#PCDATA)>
+  <!ATTLIST track src ENTITY #REQUIRED kind (audio|video) #IMPLIED>
+  <!ATTLIST image src ENTITY #REQUIRED alt CDATA #IMPLIED>
+  <!NOTATION png SYSTEM "image/png">
+  <!NOTATION ogg PUBLIC "-//Example//NOTATION Ogg//EN" "audio/ogg">
+  <!ENTITY cover SYSTEM "cover.png" NDATA png>
+  <!ENTITY tune SYSTEM "sound.ogg" NDATA ogg>
+  <!ENTITY broken "A &amp; B &lt; C">
+]>
+<media>
+  <image src="cover" alt="&broken;"/>
+  <track src="tune" kind="audio"/>
+  <clip><![CDATA[raw ]]> ]]> content</clip>
+</media>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (entry*)>
+  <!ELEMENT entry (key, value, value?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|ref|mark)*>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT mark (#PCDATA)>
+  <!ATTLIST entry id ID #IMPLIED parent IDREF #IMPLIED>
+  <!ATTLIST ref target IDREFS #REQUIRED>
+  <!ATTLIST map version NMTOKEN #FIXED "v2">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY arrow "&#x2192;">
+]>
+<map version="v2" xmlns="urn:map" xmlns:x="urn:extra">
+  <entry id="root">
+    <key>start</key>
+    <value>one&nbsp;<mark>two</mark><ref target="leaf branch"/></value>
+  </entry>
+  <entry id="branch" parent="root">
+    <key>x:key</key>
+    <value xml:lang="ja"><x:tag>&arrow; 終了</x:tag></value>
+  </entry>
+  <entry id="leaf" parent="branch">
+    <key><![CDATA[key]]></key>
+    <value><ref target="root"/></value>
+  </entry>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+)>
+  <!ELEMENT section (heading, body)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT body (#PCDATA|line|link|break)*>
+  <!ELEMENT line (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ATTLIST section number CDATA #REQUIRED>
+  <!ATTLIST link href CDATA #IMPLIED>
+  <!ENTITY open "[[">
+  <!ENTITY close "]]">
+]>
+<report>
+  <section number="01">
+    <heading>Malformed boundary</heading>
+    <body>alpha<line>beta<link href="urn:x">gamma</link></line><break/>delta</body>
+  </section>
+  <section number="02">
+    <heading>unterminated
+    <body>text &open; not finished &close;</body>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.1" standalone="no"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node*)>
+  <!ELEMENT node (name, edge*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST node uid ID #REQUIRED>
+  <!ATTLIST edge to IDREF #REQUIRED weight NMTOKEN "1">
+  <!ENTITY ampersand "&#38;">
+  <!ENTITY nested "left &ampersand; right">
+]>
+<graph xmlns:g="urn:graph" xml:base="http://example.test/root/">
+  <node uid="n0">
+    <name>origin</name>
+    <edge to="n1" weight="01"/>
+    <edge to="missing" weight="∞"/>
+  </node>
+  <node uid="n1">
+    <name>middle &nested;</name>
+    <edge to="n0"/>
+  </node>
+  <node uid="n2"><name xml:space="default">tail</name></node>
+</graph>
+```

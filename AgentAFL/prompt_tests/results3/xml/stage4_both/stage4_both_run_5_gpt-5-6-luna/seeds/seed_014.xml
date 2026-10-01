@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, trailer)>
+  <!ELEMENT header (sender, receiver, sequence, flags?)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT receiver (#PCDATA)>
+  <!ELEMENT sequence (#PCDATA)>
+  <!ELEMENT flags (flag*)>
+  <!ELEMENT flag EMPTY>
+  <!ELEMENT payload (command|batch|text)>
+  <!ELEMENT command (argument*)>
+  <!ELEMENT argument (#PCDATA)>
+  <!ELEMENT batch (command+)>
+  <!ELEMENT text (#PCDATA)>
+  <!ELEMENT trailer (checksum, signature?)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST envelope id ID #REQUIRED protocol NMTOKEN #REQUIRED>
+  <!ATTLIST header priority (low|normal|high) "normal">
+  <!ATTLIST flag name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST command name NMTOKEN #REQUIRED async (true|false) "false">
+  <!ATTLIST argument name NMTOKEN #REQUIRED encoding (plain|base64|hex) "plain">
+  <!ATTLIST batch count NMTOKEN #REQUIRED>
+  <!ATTLIST trailer algorithm (none|crc32|sha1) #REQUIRED>
+  <!ENTITY nl "&#xA;">
+  <!ENTITY amp "&amp;">
+]>
+<envelope id="env-77" protocol="x-bridge-2">
+  <?trace id="9f2a" sampled="true"?>
+  <header priority="high">
+    <sender>node://east/β</sender>
+    <receiver>node://west/δ</receiver>
+    <sequence>0000000000042</sequence>
+    <flags>
+      <flag name="compressed" value="false"/>
+      <flag name="encrypted"/>
+      <flag name="charset" value="UTF-8"/>
+    </flags>
+  </header>
+  <payload>
+    <batch count="2">
+      <command name="sync" async="true">
+        <argument name="path">/var/lib/data</argument>
+        <argument name="mode">incremental</argument>
+      </command>
+      <command name="emit">
+        <argument name="message">line-one&nl;line-two &amp; verified</argument>
+        <argument name="blob" encoding="hex">00ff7e</argument>
+      </command>
+    </batch>
+  </payload>
+  <trailer algorithm="sha1">
+    <checksum>deadbeefcafebabe</checksum>
+    <signature><![CDATA[signature bytes: /+7dzA==]]></signature>
+  </trailer>
+</envelope>

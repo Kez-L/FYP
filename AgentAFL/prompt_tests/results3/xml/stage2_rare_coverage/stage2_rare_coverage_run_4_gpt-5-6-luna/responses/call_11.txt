@@ -1,0 +1,112 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY company "Example &amp; Sons">
+  <!ENTITY greeting "Welcome to &company;">
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (item*, note?)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT item (#PCDATA|detail)*>
+  <!ATTLIST item ref IDREF #IMPLIED state (new|used|archived) "new">
+  <!ELEMENT detail EMPTY>
+  <!ATTLIST detail key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT note (#PCDATA)>
+]>
+<catalog>
+  <section code="s1">
+    <item ref="i2">First <detail key="kind" value="primary"/> entry</item>
+    <item ref="i1" state="archived">Second entry</item>
+    <note>&greeting;</note>
+  </section>
+  <section code="s2">
+    <item ref="i1">Referenced item</item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<outer xmlns="urn:level:zero" xmlns:a="urn:alpha" xmlns:b="urn:beta">
+  <a:unit a:id="u0">
+    <inner xmlns="urn:level:one" xmlns:a="urn:shadow">
+      <a:unit a:id="u1" b:kind="nested">
+        <leaf xmlns="" b:kind="plain">zero namespace</leaf>
+        <b:leaf xmlns:b="urn:local-beta" b:value="v"/>
+      </a:unit>
+      <branch xmlns="urn:level:two">
+        <node xmlns:a="urn:rebound" a:mark="x">
+          <a:item/>
+        </node>
+      </branch>
+    </inner>
+  </a:unit>
+  <tail xmlns="urn:level:zero" a:count="3">
+    <part/><part xmlns=""/><part xmlns:b="urn:tail-beta" b:name="last"/>
+  </tail>
+</outer>
+```
+
+```xml
+<?xml version="1.0"?>
+<message>
+  <![CDATA[<not-an-element attr="&amp;">]]>
+  <payload>
+    text-before
+    <!-- -- ordinary-looking comment with punctuation: [] >< -->
+    <![CDATA[]]>
+    <line>alpha&#x0A;beta&#13;gamma&#x9;delta</line>
+    <?instruction data with > and quotes " ' ?>
+    <escaped>&lt;tag&gt;&amp;&quot;&apos;</escaped>
+    text-after
+  </payload>
+  <?empty?>
+</message>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (record*)>
+  <!ELEMENT record (key, value, blob?)>
+  <!ATTLIST record seq CDATA #REQUIRED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT blob (#PCDATA)>
+]>
+<stream>
+  <record seq="000">
+    <key>&#x85;start</key>
+    <value>line&#x2028;break</value>
+  </record>
+  <record seq="001">
+    <key>middle</key>
+    <value>right&#x9;aligned</value>
+    <blob><![CDATA[data with ]] ]]> and brackets]]></blob>
+  </record>
+</stream>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "payload.bin" NDATA bin>
+  <!ELEMENT package (manifest, resources)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry name NMTOKEN #REQUIRED href ENTITY #IMPLIED>
+  <!ELEMENT resources (resource*)>
+  <!ELEMENT resource (#PCDATA)>
+  <!ATTLIST resource id ID #REQUIRED format NOTATION #IMPLIED>
+]>
+<package>
+  <manifest>
+    <entry name="alpha" href="payload"/>
+    <entry name="beta"/>
+  </manifest>
+  <resources>
+    <resource id="r0" format="bin">inline metadata</resource>
+    <resource id="r1">text</resource>
+  </resources>
+</package>
+```

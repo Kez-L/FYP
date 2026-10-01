@@ -1,0 +1,136 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!ENTITY cover SYSTEM "cover.gif" NDATA gif>
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, entry*)>
+  <!ATTLIST section
+    id ID #REQUIRED
+    status (draft|published|archived) "draft"
+    cover ENTITY #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (#PCDATA|emphasis|link)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+]>
+<catalog>
+  <section id="s-01" status="published" cover="cover">
+    <title>Notation sample</title>
+    <entry>Plain <emphasis>mixed</emphasis> text with <link href="urn:item:7">a link</link>.</entry>
+  </section>
+  <section id="s-02">
+    <title>Empty section</title>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle xmlns="urn:bundle" xmlns:x="urn:extra" xml:lang="fr" xml:base="https://example.invalid/root/">
+  <x:metadata x:flag="yes">
+    <x:property name="alpha" value="&quot;quoted&quot;"/>
+    <x:property name="beta" value="&#x1F600;"/>
+  </x:metadata>
+  <payload>
+    <include xmlns="http://www.w3.org/2001/XInclude"
+             href="fragment.xml"
+             parse="xml"
+             xpointer="element(/1/2)"/>
+    <include xmlns="http://www.w3.org/2001/XInclude"
+             href="text.txt"
+             parse="text"
+             encoding="UTF-8"/>
+  </payload>
+  <x:tail xml:space="preserve">  spaced
+  content  </x:tail>
+</bundle>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE vessel [
+  <!ENTITY ocean "Atlantic &amp; Pacific">
+  <!ENTITY mark "&#x3C;marker&#x3E;">
+  <!ELEMENT vessel (name, route, note?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT route (point, point, point)>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST point
+    lat CDATA #REQUIRED
+    lon CDATA #REQUIRED
+    kind CDATA "waypoint">
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST vessel
+    code NMTOKEN #REQUIRED
+    label CDATA "&ocean;">
+]>
+<vessel code="VX_17" label="custom">
+  <name>&ocean;</name>
+  <route>
+    <point lat="51.4778" lon="-0.0015"/>
+    <point lat="0" lon="180" kind="dateline"/>
+    <point lat="-33.8568" lon="151.2153"/>
+  </route>
+  <note>Literal entity text: &mark; and numeric &#10; newline.</note>
+</vessel>
+```
+
+```xml
+<?xml version="1.0"?>
+<geometry xmlns="urn:geom" xmlns:p="urn:point">
+  <shape id="poly-9" dimensions="3">
+    <p:vertex index="0">
+      <p:coordinate axis="x">0</p:coordinate>
+      <p:coordinate axis="y">0</p:coordinate>
+      <p:coordinate axis="z">1.25</p:coordinate>
+    </p:vertex>
+    <p:vertex index="1">
+      <p:coordinate axis="x">1</p:coordinate>
+      <p:coordinate axis="y">2</p:coordinate>
+      <p:coordinate axis="z">-4.5</p:coordinate>
+    </p:vertex>
+    <transform type="matrix">
+      <row>1 0 0</row>
+      <row>0 1 0</row>
+      <row>0 0 1</row>
+    </transform>
+  </shape>
+  <annotation xml:space="preserve"><![CDATA[
+    <not-an-element attr="still-cdata"/>
+    ]]>after-cdata</annotation>
+</geometry>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (opening, transaction*, closing)>
+  <!ELEMENT opening (#PCDATA)>
+  <!ELEMENT transaction (debit?, credit?, memo)>
+  <!ELEMENT debit EMPTY>
+  <!ELEMENT credit EMPTY>
+  <!ELEMENT memo (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT closing (#PCDATA)>
+  <!ATTLIST transaction
+    ref ID #REQUIRED
+    date CDATA #REQUIRED
+    cleared (yes|no) "no">
+  <!ATTLIST debit amount CDATA #REQUIRED account CDATA #IMPLIED>
+  <!ATTLIST credit amount CDATA #REQUIRED account CDATA #IMPLIED>
+]>
+<ledger>
+  <opening>1000.00</opening>
+  <transaction ref="t001" date="2026-09-30" cleared="yes">
+    <debit amount="12.50" account="fees"/>
+    <memo>Service charge<linebreak/>monthly adjustment</memo>
+  </transaction>
+  <transaction ref="t002" date="2026-10-01">
+    <credit amount="250.00" account="refund"/>
+    <memo>Reimbursement</memo>
+  </transaction>
+  <closing>1237.50</closing>
+</ledger>
+```

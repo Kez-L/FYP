@@ -1,0 +1,166 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (name, price, note?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emph|code)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ATTLIST section key ID #REQUIRED>
+  <!ATTLIST item sku ID #REQUIRED status (new|used|archived) "new">
+  <!ENTITY currency "€">
+  <!ENTITY stamp "&#x2605;">
+]>
+<catalog>
+  <section key="s1">
+    <title>Tools &amp; Parts</title>
+    <item sku="p1">
+      <name>Hex driver</name>
+      <price>&currency;12.50</price>
+      <note>&stamp; <emph>limited</emph> stock; use <code>--fast</code>.</note>
+    </item>
+  </section>
+  <section key="s2">
+    <title>Miscellaneous</title>
+    <item sku="p2" status="used">
+      <name>Gauge</name>
+      <price>&currency;7.00</price>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, footer)>
+  <!ELEMENT header (from, to, subject)>
+  <!ELEMENT from EMPTY>
+  <!ELEMENT to EMPTY>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|br|link)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST from address CDATA #REQUIRED>
+  <!ATTLIST to address CDATA #REQUIRED>
+  <!ATTLIST link href URI #REQUIRED>
+  <!ENTITY intro "The following text contains &lt;markup&gt; and a tab&#x9;.">
+]>
+<message xml:lang="fr" xml:space="preserve">
+  <header>
+    <from address="alpha@example.test"/>
+    <to address="beta@example.test"/>
+    <subject>&quot;Re: status&quot;</subject>
+  </header>
+  <body>
+    &intro;
+    <br/>
+    <quote>Outer <quote>nested quotation</quote> end.</quote>
+    <link href="https://example.test/a?x=1&amp;y=2">follow-up</link>
+  </body>
+  <footer>— fin —</footer>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE drawing [
+  <!ELEMENT drawing (layer+)>
+  <!ELEMENT layer (group|shape|text)*>
+  <!ELEMENT group (group|shape|text)*>
+  <!ELEMENT shape EMPTY>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST drawing width NMTOKEN #REQUIRED height NMTOKEN #REQUIRED>
+  <!ATTLIST layer name CDATA #REQUIRED visible (yes|no) "yes">
+  <!ATTLIST group id ID #IMPLIED transform CDATA #IMPLIED>
+  <!ATTLIST shape kind (rect|circle|path) #REQUIRED data CDATA #REQUIRED>
+  <!ATTLIST text x NMTOKEN #REQUIRED y NMTOKEN #REQUIRED>
+]>
+<drawing xmlns:g="urn:geometry" width="800" height="600">
+  <layer name="background" visible="no">
+    <shape kind="rect" data="0,0,800,600"/>
+  </layer>
+  <layer name="foreground">
+    <g:group id="grp-main" transform="translate(4 8)">
+      <shape kind="circle" data="40,40,18"/>
+      <g:group transform="scale(2)">
+        <shape kind="path" data="M0 0 L10 20 Z"/>
+        <text x="12" y="30">A &amp; B</text>
+      </g:group>
+    </g:group>
+  </layer>
+</drawing>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (meta, payload)>
+  <!ELEMENT meta (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk|![CDATA[]])*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST entry id ID #REQUIRED checksum CDATA #IMPLIED>
+  <!ENTITY open "[[">
+  <!ENTITY close "]]">
+  <!ENTITY sample "&open;not a real section&close;">
+]>
+<archive>
+  <entry id="e001" checksum="sha256:00ff">
+    <meta>
+      <tag>binary</tag>
+      <tag>compressed</tag>
+    </meta>
+    <payload>
+      prefix
+      <![CDATA[ raw <bytes> & entities ]]>
+      <chunk>middle &#x1F; fragment</chunk>
+      &sample;
+      suffix
+    </payload>
+  </entry>
+  <entry id="e002">
+    <meta/>
+    <payload><![CDATA[]]></payload>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (widget+)>
+  <!ELEMENT widget (label?, value?, action*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA|unit)*>
+  <!ELEMENT unit (#PCDATA)>
+  <!ELEMENT action (#PCDATA)>
+  <!ATTLIST dashboard refresh NMTOKEN "30">
+  <!ATTLIST widget id ID #REQUIRED type CDATA #REQUIRED enabled (true|false) "true">
+  <!ATTLIST action event (click|hover|submit) #REQUIRED target IDREF #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quote "&#34;">
+]>
+<dashboard xmlns:x="urn:widgets" refresh="005">
+  <widget id="cpu" type="gauge">
+    <label>CPU usage</label>
+    <value>87<unit>%</unit></value>
+    <action event="hover" target="cpu">details</action>
+  </widget>
+  <widget id="msg" type="text" enabled="false">
+    <label>Notice&nbsp;</label>
+    <value>Use &quote;safe mode&quote; &amp; retry</value>
+  </widget>
+  <x:widget id="submit" type="button">
+    <x:label>Send</x:label>
+    <x:action event="click">dispatch</x:action>
+  </x:widget>
+</dashboard>
+```

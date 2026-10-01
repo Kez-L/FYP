@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (source, body, signature?)>
+  <!ELEMENT source EMPTY>
+  <!ELEMENT body (message|attachment|message)*>
+  <!ELEMENT message (#PCDATA|link)*>
+  <!ELEMENT attachment EMPTY>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST source
+            system CDATA #FIXED "scanner"
+            version NMTOKEN "1">
+  <!ATTLIST message
+            id ID #IMPLIED
+            priority (low|normal|urgent) "normal">
+  <!ATTLIST attachment
+            type NOTATION (text|binary) "text"
+            href CDATA #REQUIRED>
+  <!NOTATION text SYSTEM "text/plain">
+  <!NOTATION binary SYSTEM "application/octet-stream">
+]>
+<envelope>
+  <source/>
+  <body>
+    <message id="m1" priority="urgent">Review <link>https://example.invalid/a?x=1&amp;y=2</link></message>
+    <attachment type="binary" href="blob://payload-7"/>
+    <message id="m2">Closing message.</message>
+  </body>
+  <signature>sha256:0000000000000000000000000000000000000000000000000000000000000000</signature>
+</envelope>

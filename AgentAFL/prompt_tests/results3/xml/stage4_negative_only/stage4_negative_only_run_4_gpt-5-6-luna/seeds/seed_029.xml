@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow>
+  <step id="start" type="input">
+    <next to="validate"/>
+    <payload>
+      <field name="message">hello</field>
+      <field name="empty"></field>
+    </payload>
+  </step>
+  <step id="validate" type="transform">
+    <when test="count(items) &gt; 0 and ready = &quot;yes&quot;"/>
+    <mapping from="source" to="destination">
+      <rule priority="10">
+        <match pattern="a/*"/>
+        <replace with="b"/>
+      </rule>
+    </mapping>
+  </step>
+  <step id="finish" type="output">
+    <result><![CDATA[done & safe]]></result>
+  </step>
+</workflow>

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ELEMENT config (defaults, profile+)>
+  <!ELEMENT defaults (option*)>
+  <!ELEMENT profile (inherits?, option*, path*)>
+  <!ELEMENT inherits EMPTY>
+  <!ELEMENT option (#PCDATA)>
+  <!ELEMENT path (#PCDATA)>
+  <!ATTLIST profile name ID #REQUIRED>
+  <!ATTLIST option key NMTOKEN #REQUIRED enabled (true|false) "true">
+  <!ATTLIST path kind (input|output|cache) #REQUIRED>
+  <!ATTLIST inherits ref IDREF #REQUIRED>
+  <!ENTITY nl "&#10;">
+  <!ENTITY tab "&#9;">
+]>
+<config>
+  <defaults>
+    <option key="verbose" enabled="false">off</option>
+    <option key="retries">3</option>
+  </defaults>
+  <profile name="base">
+    <option key="format">xml&nl;compact</option>
+    <path kind="cache">/var/tmp/app</path>
+  </profile>
+  <profile name="child">
+    <inherits ref="base"/>
+    <option key="format">pretty&tab;utf8</option>
+    <option key="escaped">a&lt;b&gt;c&amp;d</option>
+    <path kind="input">./data/</path>
+    <path kind="output">./out/</path>
+  </profile>
+</config>

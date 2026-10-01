@@ -1,0 +1,93 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <x:metadata xml:lang="en" xml:space="preserve">
+    <![CDATA[<not-an-element>&still-text;</not-an-element>]]>
+  </x:metadata>
+  <book id="b-001" available="true">
+    <title>Angles &amp; Ampersands</title>
+    <author>
+      <name>O'Reilly</name>
+      <contact email="author@example.invalid"/>
+    </author>
+    <price currency="EUR">19.95</price>
+  </book>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, section+, footer?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST section level (low|medium|high) "low">
+  <!ENTITY notice "Use &quot;quoted&quot; text &amp; symbols.">
+]>
+<report>
+  <header>&notice;</header>
+  <section level="high">
+    <title>First section</title>
+    <item>alpha</item>
+    <item><![CDATA[beta < gamma && delta > epsilon]]></item>
+  </section>
+  <section level="medium">
+    <title>Second section</title>
+  </section>
+  <footer>End</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<filesystem xmlns="urn:fs" xmlns:link="urn:link">
+  <directory name="/">
+    <directory name="var" hidden="false">
+      <file name="log.txt" size="0">
+        <checksum algorithm="sha256"/>
+        <link:alternate href="https://example.invalid/log.txt" rel="self"/>
+      </file>
+      <directory name="empty"/>
+    </directory>
+    <file name="weird&amp;name" size="-1" hidden="true">
+      <data><![CDATA[]]></data>
+    </file>
+  </directory>
+</filesystem>
+```
+
+```xml
+<?xml version="1.0"?>
+<?processing instruction-data?>
+<message id="42" xmlns:a="urn:a" xmlns:b="urn:b">
+  <a:header>
+    <a:from><![CDATA[user@example.invalid]]></a:from>
+    <a:to>b:destination</a:to>
+  </a:header>
+  <a:body>
+    <b:paragraph xml:lang="fr">Bonjour, <b:emphasis>monde</b:emphasis>!</b:paragraph>
+    <b:paragraph xml:space="default">line one&#x0A;line two&#x9;end</b:paragraph>
+  </a:body>
+  <?inside node?>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY logo SYSTEM "logo.jpeg" NDATA jpeg>
+  <!ELEMENT envelope (payload, attachment*)>
+  <!ELEMENT payload EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST payload type CDATA #IMPLIED>
+  <!ATTLIST attachment href ENTITY #REQUIRED>
+]>
+<envelope>
+  <payload type="application/octet-stream"/>
+  <attachment href="logo"/>
+</envelope>
+```

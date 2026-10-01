@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<?audit mode="strict" source="fuzz-seed"?>
+<conversation xml:base="urn:example:conversation/">
+  <message id="m0" xml:lang="en">
+    <sender><name>Root</name><address>root@example.test</address></sender>
+    <body>
+      <p>Hello <b>there</b>,<br/>line two.</p>
+      <quote who="m1">
+        <p>Nested <i>quoted</i> content</p>
+        <quote who="m2"><p>Deep quote</p></quote>
+      </quote>
+    </body>
+    <attachments count="2">
+      <attachment filename="a&amp;b.txt" content-type="text/plain">
+        <![CDATA[one
+two
+three]]>
+      </attachment>
+      <attachment filename="empty.bin" content-type="application/octet-stream"/>
+    </attachments>
+  </message>
+  <!-- comment containing -- is not allowed, so this remains ordinary -->
+  <message id="m1" reply-to="m0" xml:space="default">
+    <sender><name>Réponse</name></sender>
+    <body><p>Text with &lt; angle brackets &gt; and &#x2028; separator.</p></body>
+    <attachments count="0"/>
+  </message>
+</conversation>

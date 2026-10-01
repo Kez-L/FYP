@@ -1,0 +1,127 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ELEMENT packet (header, body, attachment?)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT body (#PCDATA|line|br)*>
+  <!ELEMENT line (#PCDATA|b|i)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment source ENTITY #REQUIRED media CDATA #IMPLIED>
+]>
+<packet>
+  <header>
+    <field name="x-trace" value="αβγ"/>
+    <field name="empty"/>
+  </header>
+  <body>before<line><b>bold</b><br/><i>italic &amp; plain</i></line>after</body>
+  <attachment source="logo" media="image/png"/>
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE warehouse [
+  <!ELEMENT warehouse (zone+)>
+  <!ELEMENT zone (label, bin*)>
+  <!ATTLIST zone code ID #REQUIRED xml:space (default|preserve) "default">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT bin (slot*)>
+  <!ATTLIST bin number NMTOKEN #REQUIRED sealed (true|false) "false">
+  <!ELEMENT slot (#PCDATA|mark)*>
+  <!ATTLIST slot key CDATA #IMPLIED>
+  <!ELEMENT mark EMPTY>
+  <!ATTLIST mark type CDATA #REQUIRED>
+]>
+<warehouse xmlns="urn:inventory:v2" xmlns:x="urn:extra" xml:lang="ja">
+  <zone code="north" xml:space="preserve">
+    <label>  北側  </label>
+    <bin number="A-01" sealed="true">
+      <slot key="δ">one<x:mark type="fragile"/></slot>
+      <slot key="ε"><mark type="cold"/>two</slot>
+    </bin>
+  </zone>
+  <zone code="south">
+    <label>south</label>
+    <bin number="B_02"><slot>three</slot></bin>
+  </zone>
+</warehouse>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE report [
+  <!ENTITY open "<section>">
+  <!ENTITY close "</section>">
+  <!ENTITY twice "&open;copy&close;&open;copy&close;">
+  <!ELEMENT report (meta, section*)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta generated CDATA #IMPLIED>
+  <!ELEMENT section (heading?, paragraph*)>
+  <!ATTLIST section level NMTOKEN #IMPLIED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|code|link)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href URI #REQUIRED>
+]>
+<report>
+  <meta generated="2026-10-01T00:00:00Z"/>
+  <section level="1">
+    <heading>Expansion test</heading>
+    <paragraph>literal &lt; text &amp; entities</paragraph>
+    <paragraph><code>if (x &lt; 1) return;</code><link href="urn:x">ref</link></paragraph>
+  </section>
+  &twice;
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (chunk*)>
+  <!ELEMENT chunk (#PCDATA|![CDATA[invalid]]>)*>
+  <!ATTLIST chunk index CDATA #IMPLIED final (yes|no) "no">
+]>
+<stream>
+  <!-- comment with -- forbidden only at the end? -->
+  <?producer mode="burst"?>
+  <chunk index="0">alpha<![CDATA[ &lt; beta ]]><?inside?></chunk>
+  <chunk index="1" final="yes"><![CDATA[]]]]><![CDATA[>]]></chunk>
+  <chunk index="2">line&#x0A;break&#x9;tab</chunk>
+</stream>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (profile | include | override)*>
+  <!ELEMENT profile (property*)>
+  <!ATTLIST profile name CDATA #REQUIRED inherits IDREF #IMPLIED>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST property key CDATA #REQUIRED readonly (0|1) "0">
+  <!ELEMENT include EMPTY>
+  <!ATTLIST include href CDATA #REQUIRED parse (xml|text) "xml">
+  <!ELEMENT override (property+)>
+  <!ATTLIST override target ID #REQUIRED>
+]>
+<configuration xmlns:xi="http://www.w3.org/2001/XInclude">
+  <profile name="base" id="p0">
+    <property key="path">/tmp/a</property>
+    <property key="flags" readonly="1">--safe --verbose</property>
+  </profile>
+  <include href="defaults.xml" parse="xml"/>
+  <override target="p0">
+    <property key="path">/var/lib/app</property>
+  </override>
+  <xi:include href="fragment.xml" parse="xml">
+    <xi:fallback><property key="fallback">enabled</property></xi:fallback>
+  </xi:include>
+</configuration>
+```

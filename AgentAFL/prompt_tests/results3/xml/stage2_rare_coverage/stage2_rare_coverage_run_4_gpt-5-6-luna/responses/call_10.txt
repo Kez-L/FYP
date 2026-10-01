@@ -1,0 +1,150 @@
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (section+, trailer?)>
+  <!ELEMENT section (item*, note?)>
+  <!ELEMENT item (#PCDATA|ref|empty)*>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT empty EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST manifest version NMTOKEN #REQUIRED>
+  <!ATTLIST section id ID #IMPLIED kind (alpha|beta|other) "other">
+  <!ATTLIST item code CDATA #IMPLIED>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY greeting "hello &amp; goodbye">
+  <!NOTATION plain SYSTEM "text/plain">
+]>
+<manifest version="1.1">
+  <section id="s1" kind="alpha">
+    <item code="A">&greeting;<ref target="s2"/><empty/></item>
+    <item code="B">line one&#x85;line two</item>
+    <note xml:space="preserve">  padded
+text  </note>
+  </section>
+  <section id="s2">
+    <item code="C">tail</item>
+  </section>
+  <trailer>done</trailer>
+</manifest>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns="urn:outer" xmlns:p="urn:primary" xmlns:q="urn:secondary"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:type="p:Envelope">
+  <p:header xml:lang="en-US">
+    <p:token p:id="t-1">A&amp;B</p:token>
+    <q:token q:id="t-2" p:ref="t-1">value</q:token>
+  </p:header>
+  <branch xmlns="" xmlns:p="urn:shadow">
+    <p:leaf p:flag="yes">unqualified parent</p:leaf>
+    <leaf xmlns:q="" q:broken="still-name"/>
+  </branch>
+  <mixed>before <p:inline xmlns:p="urn:inline">inside</p:inline> after</mixed>
+  <!-- comment containing --? no, deliberately ordinary -->
+  <?state phase="two"?>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, body, checksum)>
+  <!ELEMENT header (source, destination)>
+  <!ELEMENT source EMPTY>
+  <!ELEMENT destination EMPTY>
+  <!ELEMENT body (record*)>
+  <!ELEMENT record (key, value?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|blob)*>
+  <!ELEMENT blob (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST source address CDATA #REQUIRED>
+  <!ATTLIST destination address CDATA #REQUIRED>
+  <!ATTLIST record index NMTOKEN #IMPLIED>
+  <!ENTITY marker "]]&gt;">
+]>
+<packet>
+  <header>
+    <source address="urn:one"/>
+    <destination address="urn:two"/>
+  </header>
+  <body>
+    <record index="000">
+      <key>alpha</key>
+      <value>left<![CDATA[<raw>&bytes]]>right</value>
+    </record>
+    <record index="001"><key>beta</key></record>
+    <record><key>gamma</key><value><blob>&marker;</blob></value></record>
+  </body>
+  <checksum>7f-00-ff</checksum>
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node|edge)*>
+  <!ELEMENT node (label?, property*)>
+  <!ELEMENT edge EMPTY>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA|value)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST graph xmlns CDATA #IMPLIED>
+  <!ATTLIST node id ID #REQUIRED role (source|sink|middle) #IMPLIED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+  <!ATTLIST property name NMTOKEN #REQUIRED>
+  <!ENTITY one "1">
+  <!ENTITY two "&one;&one;">
+  <!ENTITY four "&two;&two;">
+]>
+<graph xmlns="urn:graph">
+  <node id="n0" role="source">
+    <label>origin</label>
+    <property name="depth"><value>&four;</value></property>
+  </node>
+  <edge from="n0" to="n1" weight="0.25"/>
+  <node id="n1" role="middle">
+    <property name="payload">a<![CDATA[b<c]]>d</property>
+    <property name="empty"><value/></property>
+  </node>
+  <edge from="n1" to="n2"/>
+  <node id="n2" role="sink"><label>finish</label></node>
+</graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE document [
+  <!ELEMENT document (before, include, after)>
+  <!ELEMENT before (#PCDATA|item)*>
+  <!ELEMENT include (xi:include|fallback|item)*>
+  <!ELEMENT after ANY>
+  <!ELEMENT item (#PCDATA|item)*>
+  <!ELEMENT fallback (#PCDATA|item)*>
+  <!ATTLIST item level NMTOKEN #IMPLIED>
+  <!ATTLIST fallback mode CDATA #IMPLIED>
+  <!ENTITY local "entity-text">
+]>
+<document xmlns:xi="http://www.w3.org/2001/XInclude"
+          xmlns:meta="urn:metadata" xml:base="file:///tmp/base/">
+  <before>start &local;<item level="1">nested<item level="2">deep</item></item></before>
+  <include>
+    <xi:include href="missing.xml" parse="xml">
+      <xi:fallback mode="continue">
+        <item level="fallback">replacement</item>
+      </xi:fallback>
+    </xi:include>
+    <xi:include href="fragment.txt" parse="text"/>
+    <item xmlns="urn:payload" meta:kind="tail"><![CDATA[raw ]]> content</item>
+  </include>
+  <after>
+    <?processing instruction?>
+    <!-- preserved -->
+    <meta:record xmlns:meta="urn:metadata" meta:id="x1"/>
+    text &amp; more
+  </after>
+</document>
+```

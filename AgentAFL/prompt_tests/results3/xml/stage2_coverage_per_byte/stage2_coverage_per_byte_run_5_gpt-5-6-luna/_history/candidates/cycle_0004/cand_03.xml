@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, footer?)>
+  <!ELEMENT header (from, to, subject)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (line|quote|attachment)*>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT quote (#PCDATA|line)*>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment
+    type (text|binary) "text"
+    checksum CDATA #IMPLIED>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY amp "&amp;">
+  <!ENTITY quoted "She said &quot;parse this&quot;">
+]>
+<message>
+  <header>
+    <from>sender@example.test</from>
+    <to>receiver@example.test</to>
+    <subject>&quoted;</subject>
+  </header>
+  <body>
+    <line>One &amp; two &amp; three.</line>
+    <quote>
+      <line>Nested quotation</line>
+      <line>Another line</line>
+    </quote>
+    <attachment type="binary" checksum="00ff11"/>
+  </body>
+  <footer>End &amp; done</footer>
+</message>

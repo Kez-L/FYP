@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT data (chunk*)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST package xmlns:p CDATA #FIXED "urn:pkg">
+  <!ATTLIST file p:name CDATA #REQUIRED size CDATA #IMPLIED checksum CDATA #IMPLIED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding (plain|base64) "plain">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY percent "&#37;">
+]>
+<p:package xmlns:p="urn:pkg" xmlns:m="urn:meta" m:version="0.0">
+  <manifest>
+    <file p:name="a&amp;b.txt" size="0" checksum=""/>
+    <file p:name="unicode-&#x03BB;.bin" size="18446744073709551615"/>
+  </manifest>
+  <data>
+    <chunk index="0">hello&nbsp;world</chunk>
+    <chunk index="1" encoding="base64"><![CDATA[AAEC/f8=]]></chunk>
+    <chunk index="2">100&percent;</chunk>
+  </data>
+</p:package>

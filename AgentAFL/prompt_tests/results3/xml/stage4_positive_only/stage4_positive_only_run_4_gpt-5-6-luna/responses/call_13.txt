@@ -1,0 +1,187 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE warehouse [
+  <!ELEMENT warehouse (location*)>
+  <!ELEMENT location (aisle*)>
+  <!ELEMENT aisle (bin*)>
+  <!ELEMENT bin (product*)>
+  <!ELEMENT product EMPTY>
+  <!ATTLIST location code CDATA #REQUIRED>
+  <!ATTLIST aisle number CDATA #REQUIRED>
+  <!ATTLIST bin label CDATA #IMPLIED>
+  <!ATTLIST product sku CDATA #REQUIRED quantity NMTOKEN #REQUIRED fragile (yes|no) "no">
+]>
+<warehouse>
+  <location code="north">
+    <aisle number="01">
+      <bin label="A-01">
+        <product sku="AX-7" quantity="0003"/>
+        <product sku="BX-2" quantity="12" fragile="yes"/>
+      </bin>
+      <bin label="A-02"/>
+    </aisle>
+  </location>
+  <location code="overflow">
+    <aisle number="99">
+      <bin>
+        <product sku="Z-0" quantity="1"/>
+      </bin>
+    </aisle>
+  </location>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (from, to, subject, body, attachment*)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|paragraph|quote|list)*>
+  <!ELEMENT paragraph (#PCDATA|emphasis|break)*>
+  <!ELEMENT quote (#PCDATA|paragraph)*>
+  <!ELEMENT list (entry+)>
+  <!ELEMENT entry (#PCDATA|link)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST message id ID #REQUIRED priority CDATA "normal">
+  <!ATTLIST attachment name CDATA #REQUIRED media CDATA #IMPLIED>
+  <!ENTITY signature "— automated archive">
+]>
+<message id="m-204" priority="urgent">
+  <from>robot@example.invalid</from>
+  <to>reader@example.invalid</to>
+  <subject>Nested content &amp; status</subject>
+  <body>
+    Introductory text.
+    <paragraph>First <emphasis>important</emphasis> paragraph<break/>continues.</paragraph>
+    <quote>
+      <paragraph>Quoted material with &lt;escaped&gt; boundaries.</paragraph>
+      <paragraph>Second quote &signature;</paragraph>
+    </quote>
+    <list>
+      <entry>One</entry>
+      <entry>Two <link>https://example.invalid/two</link></entry>
+    </list>
+    Final text.
+  </body>
+  <attachment name="report.txt" media="text/plain"/>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<scene xmlns="urn:demo:scene" xmlns:x="urn:demo:extra" id="s-17">
+  <layer name="background" visible="true">
+    <shape type="rectangle" x="0" y="0" width="640" height="480">
+      <fill color="#101820" opacity="0.875"/>
+    </shape>
+  </layer>
+  <layer name="foreground" visible="false">
+    <group transform="translate(12.5,-4)">
+      <shape type="path" closed="yes">
+        <point x="1" y="2"/>
+        <point x="3" y="5"/>
+        <point x="8" y="13"/>
+      </shape>
+      <x:annotation xml:lang="fr">élément <x:mark>masqué</x:mark></x:annotation>
+    </group>
+  </layer>
+  <metadata>
+    <created xml:space="preserve">  2026-10-01  </created>
+    <tags>
+      <tag>test</tag>
+      <tag><![CDATA[vector & raster]]></tag>
+    </tags>
+  </metadata>
+</scene>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder*)>
+  <!ELEMENT folder (folder|file|note)*>
+  <!ELEMENT file (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ATTLIST file name CDATA #REQUIRED size NMTOKEN #IMPLIED checksum CDATA #IMPLIED>
+  <!ATTLIST note author CDATA #IMPLIED>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<archive>
+  <folder name="root">
+    <file name="readme.md" size="418" checksum="sha256:abc123">
+      <![CDATA[# Archive
+
+A deliberately multiline payload.
+]]>
+    </file>
+    <folder name="empty"/>
+    <folder name="nested">
+      <folder name="deep">
+        <note author="system">Missing file &left;placeholder&right;</note>
+        <file name="data.bin" size="0"/>
+      </folder>
+    </folder>
+    <note>Trailing note with &amp; and &lt;markup&gt;.</note>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (entry+)>
+  <!ELEMENT entry (key, value, history?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (scalar|array|object|nil)>
+  <!ELEMENT scalar (#PCDATA)>
+  <!ELEMENT array (scalar|array|object|nil)*>
+  <!ELEMENT object (property*)>
+  <!ELEMENT property (key, value)>
+  <!ELEMENT nil EMPTY>
+  <!ELEMENT history (change+)>
+  <!ELEMENT change (#PCDATA)>
+  <!ATTLIST entry name CDATA #REQUIRED readonly (true|false) "false">
+  <!ATTLIST scalar type (string|integer|boolean|decimal) "string">
+  <!ATTLIST change when CDATA #REQUIRED by CDATA #IMPLIED>
+]>
+<registry>
+  <entry name="features" readonly="true">
+    <key>enabled</key>
+    <value>
+      <object>
+        <property>
+          <key>beta</key>
+          <value><scalar type="boolean">false</scalar></value>
+        </property>
+        <property>
+          <key>limits</key>
+          <value>
+            <array>
+              <scalar type="integer">0</scalar>
+              <scalar type="integer">128</scalar>
+              <object>
+                <property>
+                  <key>unit</key>
+                  <value><scalar>items</scalar></value>
+                </property>
+              </object>
+              <nil/>
+            </array>
+          </value>
+        </property>
+      </object>
+    </value>
+    <history>
+      <change when="2026-09-30T22:10:00Z" by="sync">Imported</change>
+      <change when="2026-10-01T01:02:03Z">Reviewed &amp; retained</change>
+    </history>
+  </entry>
+</registry>
+```

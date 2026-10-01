@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ENTITY % declarations '
+    <!ELEMENT packet (header?, body, signature?)>
+    <!ATTLIST packet xmlns CDATA #IMPLIED>
+    <!ELEMENT header (property*)>
+    <!ELEMENT property EMPTY>
+    <!ATTLIST property name CDATA #REQUIRED value CDATA #IMPLIED>
+    <!ELEMENT body (chunk|![CDATA[section]]|checksum)*>
+    <!ELEMENT chunk (#PCDATA)>
+    <!ATTLIST chunk encoding (plain|base64|hex) #REQUIRED>
+    <!ELEMENT checksum (#PCDATA)>
+    <!ELEMENT signature EMPTY>
+    <!ATTLIST signature algorithm CDATA #REQUIRED value CDATA #REQUIRED>
+  '>
+  %declarations;
+  <!ENTITY marker "&#x1F;boundary">
+]>
+<packet xmlns="urn:wire:v2" xmlns:x="urn:extensions">
+  <header>
+    <property name="version" value="2"/>
+    <property name="flags" value="A&amp;B"/>
+    <property name="empty"/>
+  </header>
+  <body>
+    <chunk encoding="plain">first &marker; second</chunk>
+    <![CDATA[
+      <chunk encoding="base64">ZmFrZQ==</chunk>
+      unparsed-looking content
+    ]]>
+    <chunk encoding="hex">00ff10aa</chunk>
+    <checksum>sha256:00000000000000000000000000000000</checksum>
+    <x:extension x:mode="compat">
+      <x:item/>
+    </x:extension>
+  </body>
+  <signature algorithm="none" value=""/>
+</packet>

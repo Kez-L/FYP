@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE observatory [
+  <!ELEMENT observatory (station*, alert?)>
+  <!ELEMENT station (identity, instruments, readings)>
+  <!ELEMENT identity (name, coordinates)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT coordinates (latitude, longitude, elevation?)>
+  <!ELEMENT latitude (#PCDATA)>
+  <!ELEMENT longitude (#PCDATA)>
+  <!ELEMENT elevation (#PCDATA)>
+  <!ELEMENT instruments (instrument+)>
+  <!ELEMENT instrument EMPTY>
+  <!ELEMENT readings (reading*)>
+  <!ELEMENT reading (value, quality?, note?)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT quality (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT alert (message, affected*)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT affected (#PCDATA)>
+  <!ATTLIST station code ID #REQUIRED active (true|false) #REQUIRED>
+  <!ATTLIST instrument serial CDATA #REQUIRED kind NMTOKEN #REQUIRED>
+  <!ATTLIST reading timestamp CDATA #REQUIRED unit CDATA #IMPLIED>
+  <!ATTLIST quality score CDATA #IMPLIED>
+  <!ATTLIST alert severity (low|medium|high|critical) #REQUIRED>
+  <!ENTITY degree "&#x00B0;">
+  <!ENTITY micro "&#x00B5;">
+]>
+<observatory xmlns="urn:example:observatory" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <?calibration revision="17"?>
+  <station code="st-aurora" active="true">
+    <identity>
+      <name>Aurora Ridge</name>
+      <coordinates>
+        <latitude>64.1466&degree; N</latitude>
+        <longitude>21.9426&degree; W</longitude>
+        <elevation>118</elevation>
+      </coordinates>
+    </identity>
+    <instruments>
+      <instrument serial="AR-001" kind="magnetometer"/>
+      <instrument serial="AR-009" kind="spectrometer"/>
+      <instrument serial="AR-014" kind="thermometer"/>
+    </instruments>
+    <readings>
+      <reading timestamp="2026-09-30T23:00:00Z" unit="nT">
+        <value>-42.7</value>
+        <quality score="0.98">verified</quality>
+      </reading>
+      <reading timestamp="2026-09-30T23:05:00Z" unit="&micro;K">
+        <value>271.3</value>
+        <quality score="0.71">estimated</quality>
+        <note>sensor drift suspected &lt; threshold</note>
+      </reading>
+    </readings>
+  </station>
+  <alert severity="medium">
+    <message>Maintenance window pending.</message>
+    <affected>AR-009</affected>
+    <affected>AR-014</affected>
+  </alert>
+</observatory>

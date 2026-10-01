@@ -1,0 +1,133 @@
+```xml
+<?xml version="1.1" standalone="no"?>
+<!DOCTYPE catalog [
+  <!ENTITY % itemdecl "<!ELEMENT item (name,price,meta?)>">
+  %itemdecl;
+  <!ELEMENT catalog (header?,item+,tail?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT name (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT tail (#PCDATA)>
+  <!ATTLIST catalog xmlns CDATA #IMPLIED version NMTOKEN #REQUIRED>
+  <!ATTLIST item sku ID #REQUIRED state (new|used|archived) "new">
+  <!ATTLIST meta key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+]>
+<catalog xmlns="urn:catalog:test" version="v2">
+  <header>Inventory <emph>snapshot</emph></header>
+  <item sku="i-α" state="used">
+    <name>Bracket <emph>&lt;special&gt;</emph> part</name>
+    <price>12.50</price>
+    <meta key="condition" value="refurbished"/>
+  </item>
+  <item sku="i-β">
+    <name><![CDATA[Raw ]]> text <![CDATA[with ]]> markers</name>
+    <price>0</price>
+  </item>
+  <tail>checksum=&amp;pending</tail>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, signature)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload (chunk*)>
+  <!ELEMENT chunk (#PCDATA|part|gap)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT gap EMPTY>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST envelope xmlns:x CDATA #FIXED "urn:x">
+  <!ATTLIST header x:id ID #IMPLIED stamp CDATA #IMPLIED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding (raw|base64|hex) "raw">
+  <!ENTITY left "[[">
+  <!ENTITY right "]]">
+]>
+<envelope xmlns:x="urn:x">
+  <header x:id="h0" stamp="2026-10-01T00:00:00Z"/>
+  <payload>
+    <chunk index="000" encoding="raw">alpha &left; one</chunk>
+    <chunk index="001" encoding="base64">QUJDREVGRw==</chunk>
+    <chunk index="002"><part>nested</part><gap/><part>tail</part></chunk>
+    <chunk index="003">line
+break&#13;carriage&#10;return</chunk>
+  </payload>
+  <signature>sha256:unknown&amp;unverified</signature>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE media [
+  <!ELEMENT media (title, asset+, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT asset EMPTY>
+  <!ELEMENT note (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST media xmlns:m CDATA #IMPLIED>
+  <!ATTLIST asset
+    m:type NMTOKEN #REQUIRED
+    src ENTITY #REQUIRED
+    width NMTOKEN #IMPLIED
+    height NMTOKEN #IMPLIED
+  >
+  <!NOTATION png SYSTEM "image/png">
+  <!NOTATION svg SYSTEM "image/svg+xml">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY icon SYSTEM "icon.svg" NDATA svg>
+]>
+<media xmlns:m="urn:media">
+  <title>Assets &quot;A/B&quot;</title>
+  <asset m:type="raster" src="logo" width="001024" height="000768"/>
+  <asset m:type="vector" src="icon" width="auto" height="auto"/>
+  <note>See <link>external references</link> and <![CDATA[CDATA boundaries]]>.</note>
+</media>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node|edge)*>
+  <!ELEMENT node (label?,data*)>
+  <!ELEMENT edge EMPTY>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT data (#PCDATA|![CDATA[not-a-declaration]])*>
+  <!ATTLIST node id ID #REQUIRED role NMTOKENS #IMPLIED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED directed (yes|no) "yes">
+  <!ATTLIST data key CDATA #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quote "&quot;">
+]>
+<graph>
+  <node id="n0" role="root primary">
+    <label>Start &quote;point&quote;</label>
+    <data key="empty"></data>
+    <data key="mixed">left <![CDATA[center <raw> & bytes]]> right&nbsp;</data>
+  </node>
+  <edge from="n0" to="n1" directed="no"/>
+  <node id="n1">
+    <data key="payload">A&#x0A;B&#x0D;C&#x20;D</data>
+  </node>
+  <edge from="n1" to="n0"/>
+</graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE broken [
+  <!ELEMENT broken (a?,b*)>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b EMPTY>
+  <!ATTLIST broken mode (fast|slow) "fast">
+  <!ATTLIST b flag CDATA #IMPLIED>
+  <!ENTITY amp "&amp;">
+]>
+<broken mode="slow">
+  <a>unfinished &amp; entity &unknown;</a>
+  <b flag="one"/>
+  <b flag='two &amp; three'/>
+  <b flag="unterminated>
+</broken>
+```

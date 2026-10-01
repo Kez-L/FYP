@@ -1,0 +1,106 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY company "A &amp; B">
+  <!ENTITY % common "CDATA #IMPLIED">
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, description?, tag*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST entry id ID #REQUIRED status (new|old|archived) "new">
+  <!ATTLIST entry owner %common;>
+]>
+<catalog>
+  <entry id="e-1" owner="&company;">
+    <title>Résumé &amp; notes</title>
+    <description>alpha <em>bold</em> beta<br/>gamma</description>
+    <tag>one</tag>
+    <tag>two &lt; three</tag>
+  </entry>
+</catalog>
+```
+
+```xml
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row*)>
+  <!ELEMENT row (cell*)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST matrix width NMTOKEN #IMPLIED>
+  <!ATTLIST row index NMTOKEN #REQUIRED>
+  <!ATTLIST cell kind NMTOKENS #IMPLIED span ENTITY #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data.bin" NDATA bin>
+]>
+<matrix width="03">
+  <row index="0">
+    <cell kind="numeric integer">1</cell>
+    <cell span="blob">2</cell>
+  </row>
+  <row index="1"><cell>3</cell><cell kind="">4</cell></row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16" standalone="no"?>
+<!DOCTYPE bundle [
+  <!ENTITY % declarations SYSTEM "missing-subset.dtd">
+  %declarations;
+  <!ELEMENT bundle (part|separator)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ATTLIST part xml:space (default|preserve) "default">
+  <!ATTLIST separator marker CDATA "&#x2028;">
+]>
+<bundle xml:lang="zh-Hant">
+  <part xml:space="preserve"> leading &#xD800; trailing </part>
+  <separator marker="&#x0;"/>
+  <part><![CDATA[raw ]]]]><![CDATA[> split]]></part>
+</bundle>
+```
+
+```xml
+<!DOCTYPE network [
+  <!ELEMENT network (node, edge*)>
+  <!ELEMENT node EMPTY>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST network xmlns CDATA #IMPLIED>
+  <!ATTLIST node key ID #REQUIRED class CDATA #FIXED "router">
+  <!ATTLIST edge from IDREF #REQUIRED to IDREFS #REQUIRED weight NMTOKEN "0">
+  <!ENTITY amp "&amp;">
+]>
+<network xmlns="urn:graph">
+  <node key="n0" class="router"/>
+  <node key="n1" class="router"/>
+  <edge from="n0" to="n1 n2" weight="1&amp;2"/>
+  <edge from="missing" to="n0" weight="&amp;amp;"/>
+</network>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (header, payload)>
+  <!ELEMENT header (item*)>
+  <!ELEMENT item EMPTY>
+  <!ELEMENT payload (chunk|chunk|tail)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT tail (#PCDATA)>
+  <!ATTLIST package version CDATA #REQUIRED>
+  <!ATTLIST header count NMTOKEN #IMPLIED>
+  <!ATTLIST item key CDATA #IMPLIED value CDATA #IMPLIED>
+  <!ATTLIST chunk id ID #IMPLIED>
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+]>
+<package version="&left;v2&right;">
+  <header count="2"><item key="a" value="1"/><item key="b" value="2"/></header>
+  <payload>
+    <chunk id="c1">&left;escaped&right;</chunk>
+    <chunk id="c1">duplicate-id</chunk>
+    <tail>unfinished &amp; entity &quot;quote</tail>
+  </payload>
+</package>
+```

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?processing instruction-data?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload, signature?)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry
+    path CDATA #REQUIRED
+    kind (file|directory|link) "file"
+    mode NMTOKEN #IMPLIED
+  >
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding (base64|text) "text">
+  <!ELEMENT signature (#PCDATA)>
+  <!ENTITY copyright "© 2026 Example Systems">
+]>
+<package xml:base="https://example.invalid/releases/" xmlns="urn:example:package">
+  <manifest>
+    <entry path="bin/" kind="directory" mode="0755"/>
+    <entry path="bin/runner" mode="0755"/>
+    <entry path="README.txt" mode="0644"/>
+  </manifest>
+  <payload>
+    <chunk index="0" encoding="text">alpha&#x0A;beta &amp; gamma</chunk>
+    <chunk index="1" encoding="base64"><![CDATA[AAECAwQFBgcICQ==]]></chunk>
+  </payload>
+  <signature algorithm="sha256">sha256:deadbeef</signature>
+</package>

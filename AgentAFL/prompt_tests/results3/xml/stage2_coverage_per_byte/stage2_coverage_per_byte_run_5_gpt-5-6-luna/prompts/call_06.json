@@ -1,0 +1,23 @@
+{
+  "call": 6,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ATTLIST koo xml:lang CDATA \"eng\">\n  <!ATTLIST foo bar CDATA \"&lt;&gt;)qrking Group (orisable oveuot;\">\n]>\n<root>\n  <foo xml:lang=\"ger\">Ja</fo\u0000\u0004\n</roos>\n\n\n--- example 2 ---\n<!DOCTYPE doc [\n<!ELEMENT doc EMPTY>\n<!ATTLIST doc\n defatt  (0|1)   \"0\"\n     xmlns:tst CDATA #FIXED \"http://example.org\"  tst:att  (0|1)   \"0\"\n    att (0|1)   \"1\">\n]>\n<doc att=\"1B/h12;&laugh12;&laugh12;&la>\n\n\nTried before \u2014 no new coverage, avoid repeating:\n--- a seed you generated (cycle 6) added 0 new edges ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE message [\n  <!ENTITY open \"<![CDATA[\">\n  <!ENTITY close \"]]>\">\n  <!ENTITY amp \"&#38;\">\n  <!ELEMENT message (routing, body)>\n  <!ELEMENT routing (from, to, reply?)>\n  <!ELEMENT from (#PCDATA)>\n  <!ELEMENT to (#PCDATA)>\n  <!ELEMENT reply (#PCDATA)>\n  <!ELEMENT body (paragraph|quote|attachment)*>\n  <!ELEMENT paragraph (#PCDATA|em|mark)*>\n  <!ELEMENT em (#PCDATA)>\n  <!ELEMENT mark (#PCDATA)>\n  <!ELEMENT quote (paragraph+)>\n  <!ELEMENT attachment EMPTY>\n  <!ATTLIST message id ID #REQUIRED priority CDATA \"normal\">\n  <!ATTLIST attachment href URI #REQUIRED media CDATA #IMPLIED>\n]>\n<message id=\"m42\" priority=\"urgent\">\n  <routing>\n    <from>alice@example.test</from>\n  ...[truncated, 1103 chars total]\n\n--- a seed you generated (cycle 6) added 0 new edges ---\n<?xml version=\"1.0\" standalone=\"yes\"?>\n<!DOCTYPE report [\n  <!ELEMENT report (section, section?, appendix*)>\n  <!ELEMENT section (heading, table|listing, conclusion?)>\n  <!ELEMENT heading (#PCDATA)>\n  <!ELEMENT table (row+)>\n  <!ELEMENT row (cell+)>\n  <!ELEMENT cell (#PCDATA|br)*>\n  <!ELEMENT br EMPTY>\n  <!ELEMENT listing (#PCDATA)>\n  <!ELEMENT conclusion (#PCDATA)>\n  <!ELEMENT appendix (heading, listing)>\n  <!ATTLIST report date CDATA #REQUIRED>\n  <!ATTLIST section number NMTOKEN #REQUIRED>\n  <!ATTLIST row index NMTOKEN #IMPLIED>\n  <!ATTLIST cell colspan NMTOKEN \"1\" rowspan NMTOKEN \"1\">\n  <!NOTATION csv SYSTEM \"text/csv\">\n]>\n<report date=\"2026-10-01\">\n  <section number=\"01\">\n    <heading>Re...[truncated, 1161 chars total]\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage-per-byte",
+  "positive_feedback": false,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-01T05:19:00.667919+00:00"
+}

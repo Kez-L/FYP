@@ -1,0 +1,160 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, footer?)>
+  <!ELEMENT entry (title, meta?, description)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT description (#PCDATA|em|ref)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST catalog xmlns CDATA #IMPLIED version NMTOKEN #REQUIRED>
+  <!ATTLIST entry id ID #REQUIRED kind (book|media|other) "other">
+  <!ATTLIST meta key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY mark "&#x2026;">
+  <!ENTITY quoted "&lt;tag&gt;">
+]>
+<catalog xmlns="urn:catalog:v2" version="3">
+  <entry id="e1" kind="book">
+    <title>Signals &amp; Noise</title>
+    <meta key="lang" value="en"/>
+    <description>alpha <em>beta</em> gamma <ref target="e2"/></description>
+  </entry>
+  <entry id="e2">
+    <title>&quoted; &mark;</title>
+    <description><![CDATA[line one
+line two ]]>tail</description>
+  </entry>
+  <?catalog-check mode="strict"?>
+  <footer>done</footer>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, signature?)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT payload ANY>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST envelope id ID #IMPLIED sealed (yes|no) "no">
+  <!ATTLIST field name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY left "[[">
+  <!ENTITY right "]]">
+  <!ENTITY percent "%">
+]>
+<envelope id="packet-7" sealed="yes">
+  <header>
+    <field name="A" value="1"/>
+    <field name="B" value="&amp;&quot;"/>
+  </header>
+  <payload xmlns:x="urn:x">
+    &left;<x:chunk x:level="0">one</x:chunk>&right;
+    <chunk xmlns="urn:payload"><![CDATA[<not-markup/>]]></chunk>
+    <?payload data?>
+  </payload>
+  <signature>sha256:abc&amp;def</signature>
+</envelope>
+```
+
+```xml
+<!DOCTYPE graph [
+  <!ELEMENT graph (node*)>
+  <!ELEMENT node (label?, edge*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST graph xmlns:g CDATA #FIXED "urn:graph">
+  <!ATTLIST node id ID #REQUIRED rank NMTOKEN #IMPLIED>
+  <!ATTLIST edge to IDREF #REQUIRED weight CDATA "1">
+  <!ENTITY % optional "<!ELEMENT annotation (#PCDATA)>">
+  %optional;
+  <!ENTITY nbsp "&#160;">
+]>
+<graph xmlns:g="urn:graph" xmlns:a="urn:annotation">
+  <node id="n0" rank="root">
+    <label>start&nbsp;&amp;nbsp;</label>
+    <edge to="n1" weight="0"/>
+    <edge to="n2" weight="1.5"/>
+  </node>
+  <node id="n1">
+    <label>middle</label>
+    <annotation xmlns="">detached</annotation>
+  </node>
+  <node id="n2" rank="leaf">
+    <g:edge to="n0" weight="&quot;"/>
+  </node>
+</graph>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT data (record*)>
+  <!ELEMENT record (key, value, blob?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT blob (#PCDATA)>
+  <!ATTLIST package mode (read|write) "read">
+  <!ATTLIST file path CDATA #REQUIRED type NMTOKEN "text">
+  <!ATTLIST record rid ID #REQUIRED>
+  <!ATTLIST blob encoding (base64|hex) #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY sample SYSTEM "missing.dat" NDATA bin>
+]>
+<package mode="write">
+  <manifest>
+    <file path="a/b.txt" type="text"/>
+    <file path="image.bin" type="binary"/>
+  </manifest>
+  <data>
+    <record rid="r1">
+      <key>name</key>
+      <value>one<part>+</part>two</value>
+    </record>
+    <record rid="r2">
+      <key>raw</key>
+      <value><![CDATA[&not-expanded;]]></value>
+      <blob encoding="hex">00ff10aa</blob>
+    </record>
+  </data>
+</package>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ELEMENT root (item|group|empty)*>
+  <!ELEMENT item (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT group (item+, note?)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT empty EMPTY>
+  <!ATTLIST root xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST item code CDATA #IMPLIED>
+  <!ATTLIST group name CDATA #REQUIRED>
+  <!ENTITY amp "&amp;">
+  <!ENTITY nested "a&amp;b&lt;c&gt;">
+  <!ENTITY % mode "INCLUDE">
+  <![%mode;[
+    <!ATTLIST note priority (low|high) "low">
+  ]]>
+]>
+<root xml:lang="x-test">
+  <group name="g&amp;1">
+    <item code="A">one<mark>two</mark>&nested;</item>
+    <note priority="high">note &amp; trail</note>
+  </group>
+  <empty/>
+  <item><![CDATA[<x>]]><?p?>after</item>
+  <group name="second">
+    <item code="B">left</item>
+    <item code="C"><mark/></item>
+  </group>
+</root>
+```

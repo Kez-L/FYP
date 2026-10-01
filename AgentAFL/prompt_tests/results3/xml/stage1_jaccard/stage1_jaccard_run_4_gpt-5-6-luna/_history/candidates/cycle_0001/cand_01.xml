@@ -1,0 +1,25 @@
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, trailer?)>
+  <!ELEMENT header (token, token?)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST payload mode (raw|encoded|mixed) "mixed">
+  <!ENTITY greeting "hello">
+]>
+<envelope>
+  <header>
+    <token>&greeting;</token>
+    <token><![CDATA[&greeting;]]></token>
+  </header>
+  <payload mode="raw">
+    <section level="1"><![CDATA[
+      <nested fake="markup">&amp;</nested>
+    ]]></section>
+    <section level="2">
+      <data key="k1">one</data>
+      <data key="k2">two</data>
+    </section>
+  </payload>
+  <trailer/>
+</envelope>

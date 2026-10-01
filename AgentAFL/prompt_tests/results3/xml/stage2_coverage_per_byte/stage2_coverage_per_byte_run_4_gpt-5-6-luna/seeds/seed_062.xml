@@ -1,0 +1,30 @@
+<!DOCTYPE report [
+  <!ENTITY % declarations "
+    <!ELEMENT report (entry*)>
+    <!ATTLIST report mode (brief|full) 'full'>
+  ">
+  %declarations;
+  <!ELEMENT entry (title, value|title, value, detail)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|ref)*>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST entry key ID #IMPLIED>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <![IGNORE[
+    <!ELEMENT discarded ANY>
+    <!ENTITY never "not-expanded">
+  ]]>
+  <!ENTITY amp "&amp;">
+]>
+<report mode="brief">
+  <entry key="first">
+    <title>A</title>
+    <value>one &amp; two</value>
+  </entry>
+  <entry key="second">
+    <title>B</title>
+    <value>&amp;</value>
+    <detail>see <ref target="first"/> &amp; repeat</detail>
+  </entry>
+</report>

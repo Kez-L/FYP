@@ -1,0 +1,144 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common "<!ELEMENT entry (title,meta?,body)>">
+  %common;
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (entry|section)*>
+  <!ATTLIST section code ID #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta
+    key NMTOKEN #REQUIRED
+    value CDATA #IMPLIED>
+  <!ELEMENT body (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA|em)*>
+  <!ELEMENT br EMPTY>
+  <!ENTITY mark "&#x2063;">
+]>
+<catalog>
+  <section code="root">
+    <entry>
+      <title>Alpha &mark; report</title>
+      <meta key="status" value="draft"/>
+      <body>left<em>nested <em>emphasis</em></em><br/>right</body>
+    </entry>
+    <section>
+      <entry>
+        <title><![CDATA[<literal> & boundaries]]></title>
+        <body><![CDATA[first]]>&amp;<![CDATA[second]]></body>
+      </entry>
+    </section>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ENTITY % switch "INCLUDE">
+  <![%switch;[
+    <!ELEMENT packet (header, payload, trailer?)>
+    <!ELEMENT header (field+)>
+    <!ELEMENT field EMPTY>
+    <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+    <!ELEMENT payload (chunk+)>
+    <!ELEMENT chunk (#PCDATA)>
+    <!ATTLIST chunk index NMTOKEN #IMPLIED>
+    <!ELEMENT trailer EMPTY>
+    <!ATTLIST trailer checksum CDATA #IMPLIED>
+  ]]>
+  <![IGNORE[
+    <!ELEMENT discarded ANY>
+    <!ENTITY ghost "not expanded">
+  ]]>
+]>
+<packet>
+  <header>
+    <field name="type" value="binary"/>
+    <field name="flags" value="a&amp;b"/>
+  </header>
+  <payload>
+    <chunk index="0">A</chunk>
+    <chunk index="1"><![CDATA[B]]></chunk>
+    <chunk index="2">C&#13;&#10;D</chunk>
+  </payload>
+  <trailer checksum="00ff"/>
+</packet>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (widget*)>
+  <!ELEMENT widget (label, value, note?)>
+  <!ATTLIST widget
+    id ID #REQUIRED
+    refs IDREFS #IMPLIED
+    class (gauge|text|spark) #REQUIRED
+    xml:space (default|preserve) "default">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA|unit)*>
+  <!ELEMENT unit EMPTY>
+  <!ATTLIST unit name CDATA #REQUIRED>
+  <!ELEMENT note (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+]>
+<dashboard xmlns="urn:dash" xmlns:x="urn:extra">
+  <widget id="w0" class="gauge" refs="w2 w3" x:mode="live">
+    <label xml:lang="fr">Température</label>
+    <value>21<unit name="C"/></value>
+    <note>stable<linebreak/>within range</note>
+  </widget>
+  <widget id="w2" class="text" xml:space="preserve">
+    <label> spaced </label>
+    <value><![CDATA[<42 & rising>]]></value>
+  </widget>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope SYSTEM "urn:unavailable:envelope.dtd">
+<envelope xmlns:p="urn:packet" xmlns:q="urn:query">
+  <?route p:q?>
+  <p:header>
+    <p:origin><![CDATA[node-7]]></p:origin>
+    <p:hop count="03"/>
+  </p:header>
+  <p:body>
+    <q:query method="select">
+      <q:term>name</q:term>
+      <q:term><![CDATA[a < b && c > d]]></q:term>
+    </q:query>
+    <!-- comment with -- and unusual punctuation - -->
+  </p:body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ATTLIST row number NMTOKEN #REQUIRED>
+  <!ELEMENT cell (#PCDATA|formula)*>
+  <!ATTLIST cell
+    coordinate CDATA #IMPLIED
+    kind (input|output|empty) "input">
+  <!ELEMENT formula (#PCDATA)>
+]>
+<matrix>
+  <row number="A">
+    <cell coordinate="A1" kind="input">7</cell>
+    <cell coordinate="B1"><formula><![CDATA[sum(A1:A3)]]></formula></cell>
+  </row>
+  <row number="B">
+    <cell kind="empty"/>
+    <cell coordinate="B2" kind="output">x<formula>+</formula>y</cell>
+  </row>
+  <row number="C">
+    <cell coordinate="C3"><![CDATA[]]><![CDATA[tail]]></cell>
+  </row>
+</matrix>
+```

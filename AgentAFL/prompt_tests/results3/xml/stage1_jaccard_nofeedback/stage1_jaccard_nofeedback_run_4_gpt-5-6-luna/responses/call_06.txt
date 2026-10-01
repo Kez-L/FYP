@@ -1,0 +1,115 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (title, payload, metadata)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|fragment)*>
+  <!ELEMENT fragment (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST record id ID #REQUIRED status (new|old|pending) "new">
+  <!ATTLIST metadata source CDATA #IMPLIED>
+  <!ENTITY marker "A&amp;B&lt;C&gt;">
+]>
+<archive>
+  <record id="r-001" status="pending">
+    <title>Boundary &marker;</title>
+    <payload><![CDATA[<not-an-element attr="x">]]><fragment>inside</fragment><!-- split --></payload>
+    <metadata source="generated"/>
+  </record>
+  <record id="r-002">
+    <title>Second &#x1F642; title</title>
+    <payload>left<fragment><![CDATA[middle &marker;]]></fragment>right</payload>
+    <metadata/>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common ' <!ELEMENT catalog (section*)> <!ELEMENT section (item|section)*> '>
+  %common;
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST section key NMTOKEN #IMPLIED>
+  <!ATTLIST item code CDATA #REQUIRED>
+  <!ENTITY quoted "line one&#10;line two">
+]>
+<catalog>
+  <section key="α">
+    <item code="A1">&quoted;</item>
+    <section key="nested">
+      <item code="A2">text &amp; <![CDATA[data]]> tail</item>
+      <item code="A3"><![CDATA[]]></item>
+    </section>
+  </section>
+  <section>
+    <item code="A4">trailing</item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<scene xmlns="urn:scene" xmlns:x="urn:extra" xml:lang="en" xml:space="preserve">
+  <?render mode="wireframe"?>
+  <x:layer x:id="L0" enabled="true">
+    <object name="mesh" transform="0,0,0">
+      <vertex x="0" y="0" z="0"/>
+      <vertex x="1" y="0" z="0"/>
+      <vertex x="0" y="1" z="0"/>
+      <material><![CDATA[
+        diffuse = "red & blue"
+        roughness = 0.25
+      ]]></material>
+    </object>
+    <!-- comment containing markup-looking text: </object> -->
+  </x:layer>
+  <layer xmlns="" xml:space="default">
+    <label>plain namespace</label>
+    <value><![CDATA[<layer/>]]></value>
+  </layer>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<message xmlns:h="urn:header" xmlns:b="urn:body">
+  <h:header>
+    <h:from address="a@example.invalid"/>
+    <h:to address="b@example.invalid"/>
+    <h:flags urgent="yes">A&amp;B</h:flags>
+  </h:header>
+  <b:body>
+    <b:paragraph>first <b:emphasis>nested</b:emphasis> paragraph</b:paragraph>
+    <b:attachment mime="application/octet-stream" size="0"><![CDATA[
+AAECAwQFBgcICQoLDA0ODw==
+]]></b:attachment>
+  </b:body>
+  <?audit checksum="unknown"?>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, data)>
+  <!ELEMENT header (name, note?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT data (row+)>
+  <!ELEMENT row (cell*)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST row index CDATA #IMPLIED>
+]>
+<report>
+  <header>
+    <name>broken-boundary</name>
+    <note><![CDATA[unterminated-looking text ]]> and entities &amp; symbols</note>
+  </header>
+  <data>
+    <row index="0"><cell>a</cell><cell>b</cell><cell><![CDATA[c<d>e]]></cell></row>
+    <row index="1"><cell>one</cell><cell>two</cell></row>
+  </data>
+</report>
+```

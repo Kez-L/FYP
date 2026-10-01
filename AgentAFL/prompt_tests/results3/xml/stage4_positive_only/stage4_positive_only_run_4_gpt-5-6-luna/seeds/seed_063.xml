@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (manifest, record*)>
+  <!ELEMENT manifest (source, checksum, media)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT media EMPTY>
+  <!ELEMENT record (key, timestamp, content, reference*)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT content (#PCDATA)>
+  <!ELEMENT reference EMPTY>
+  <!ATTLIST archive version NMTOKEN #REQUIRED>
+  <!ATTLIST manifest format CDATA #REQUIRED>
+  <!ATTLIST media notation NOTATION (binary|text) #REQUIRED>
+  <!ATTLIST record id ID #REQUIRED kind CDATA #IMPLIED>
+  <!ATTLIST reference target IDREF #REQUIRED type (parent|related|attachment) "related">
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!NOTATION text SYSTEM "text/plain">
+  <!ENTITY payload SYSTEM "archive.dat" NDATA binary>
+]>
+<archive version="2.1">
+  <manifest format="chunked">
+    <source>sensor-grid-7</source>
+    <checksum algorithm="sha256">d41d8cd98f00b204e9800998ecf8427e</checksum>
+    <media notation="binary"/>
+  </manifest>
+  <record id="r-001" kind="measurement">
+    <key>temperature</key>
+    <timestamp>2026-10-01T14:07:03+00:00</timestamp>
+    <content><![CDATA[23.75 +/- 0.05 C]]></content>
+  </record>
+  <record id="r-002" kind="annotation">
+    <key>operator-note</key>
+    <timestamp>2026-10-01T14:08:11+00:00</timestamp>
+    <content>Calibration completed; see related record.</content>
+    <reference target="r-001" type="related"/>
+  </record>
+</archive>

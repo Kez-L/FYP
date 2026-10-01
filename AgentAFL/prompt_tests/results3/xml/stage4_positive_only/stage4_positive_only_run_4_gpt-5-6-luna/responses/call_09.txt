@@ -1,0 +1,174 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (header, item+, footer?)>
+  <!ELEMENT header (generated, source)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT item (label, quantity, dimensions?, tags?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT quantity (#PCDATA)>
+  <!ELEMENT dimensions (width, height, unit)>
+  <!ELEMENT width (#PCDATA)>
+  <!ELEMENT height (#PCDATA)>
+  <!ELEMENT unit (#PCDATA)>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST item sku ID #REQUIRED state (new|used|held) "new">
+  <!ATTLIST tag key NMTOKEN #REQUIRED>
+  <!ENTITY warehouse "north &amp; west">
+]>
+<inventory>
+  <header>
+    <generated>2026-10-01T14:22:09Z</generated>
+    <source>&warehouse; depot</source>
+  </header>
+  <item sku="p-17" state="held">
+    <label>folding &lt;crate&gt;</label>
+    <quantity>0000000000000000003</quantity>
+    <dimensions>
+      <width>12.5</width>
+      <height>0</height>
+      <unit>cm</unit>
+    </dimensions>
+    <tags>
+      <tag key="fragile">glass</tag>
+      <tag key="route">R&amp;D</tag>
+    </tags>
+  </item>
+  <item sku="p-18">
+    <label>café–mug ☕</label>
+    <quantity>1</quantity>
+  </item>
+  <footer>checksum=&quot;unverified&quot;</footer>
+</inventory>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE canvas [
+  <!ELEMENT canvas (layer*)>
+  <!ELEMENT layer (shape*)>
+  <!ELEMENT shape EMPTY>
+  <!ATTLIST canvas width CDATA #REQUIRED height CDATA #REQUIRED>
+  <!ATTLIST layer name CDATA #IMPLIED visible (yes|no) "yes">
+  <!ATTLIST shape type (line|circle|path) #REQUIRED>
+  <!ATTLIST shape x CDATA #IMPLIED y CDATA #IMPLIED data CDATA #IMPLIED>
+  <!ATTLIST shape stroke CDATA #IMPLIED>
+]>
+<canvas width="640" height="480">
+  <layer name="background">
+    <shape type="path" data="M0 0 H640 V480 H0 Z" stroke="#000000"/>
+  </layer>
+  <layer name="guides" visible="no">
+    <shape type="line" x="0" y="0" data="640,480"/>
+    <shape type="circle" x="320" y="240" y="0" stroke="none"/>
+  </layer>
+  <layer>
+    <shape type="path" data="M10&#x9;20&#xA;L30 40 &amp; 50"/>
+  </layer>
+</canvas>
+```
+
+```xml
+<?xml version="1.0"?>
+<message xmlns="urn:example:mail" xmlns:m="urn:example:meta" xml:lang="fr">
+  <?route priority="urgent"?>
+  <sender>
+    <m:identity verified="true">zoë@example.test</m:identity>
+    <address><![CDATA[12 Rue des Fleurs <Paris>]]></address>
+  </sender>
+  <recipients>
+    <recipient role="to">alpha@example.test</recipient>
+    <recipient role="cc">beta@example.test</recipient>
+  </recipients>
+  <subject>Résumé &amp; confirmation</subject>
+  <body format="flowed">
+    Bonjour,
+    <section title="État">
+      <paragraph>La commande est prête.</paragraph>
+      <paragraph>Référence: <code>Q-7/π</code>.</paragraph>
+    </section>
+    <attachment m:size="0" filename="empty.bin"/>
+  </body>
+  <!-- trailing annotation -->
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE telemetry [
+  <!ELEMENT telemetry (device, readings)>
+  <!ELEMENT device (model, firmware)>
+  <!ELEMENT model (#PCDATA)>
+  <!ELEMENT firmware (#PCDATA)>
+  <!ELEMENT readings (reading*)>
+  <!ELEMENT reading (timestamp, value, note?)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST reading channel NMTOKEN #REQUIRED unit CDATA #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+]>
+<telemetry>
+  <device>
+    <model>µSense/2</model>
+    <firmware>0.0.0-beta</firmware>
+  </device>
+  <readings>
+    <reading channel="temp" unit="°C">
+      <timestamp>2026-09-30T23:59:59.999999Z</timestamp>
+      <value>-273.1500000001</value>
+      <note>below expected&nbsp;range</note>
+    </reading>
+    <reading channel="pressure" unit="kPa">
+      <timestamp>not-a-date</timestamp>
+      <value>NaN</value>
+      <note><![CDATA[raw: </reading> & <tag>]]></note>
+    </reading>
+    <reading channel="counter">
+      <timestamp></timestamp>
+      <value>18446744073709551616</value>
+    </reading>
+  </readings>
+</telemetry>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (section+)>
+  <!ELEMENT section (title, entry*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (heading?, body)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT body (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST section key ID #REQUIRED>
+  <!ATTLIST entry date CDATA #IMPLIED>
+  <!ENTITY mark "&#x2605;">
+]>
+<archive>
+  <section key="a">
+    <title>Notes &amp; fragments</title>
+    <entry date="2024-02-29">
+      <heading>First</heading>
+      <body>alpha <em>bold &lt;text&gt;</em><br/>omega &mark;</body>
+    </entry>
+    <entry>
+      <body><![CDATA[
+        whitespace
+        <not-an-element/>
+        ]]></body>
+    </entry>
+  </section>
+  <section key="b">
+    <title>Empty edges</title>
+    <entry date="">
+      <body><br/><em></em><br/></body>
+    </entry>
+  </section>
+</archive>
+```

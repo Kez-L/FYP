@@ -1,0 +1,23 @@
+{
+  "call": 1,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE library [\n  <!ELEMENT library (book+, shelf?)>\n  <!ELEMENT book (title, author+, summary?, chapter*)>\n  <!ATTLIST book\n    id ID #REQUIRED\n    available (yes|no) \"yes\">\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT author (#PCDATA)>\n  <!ELEMENT summary (#PCDATA|em|code)*>\n  <!ELEMENT chapter (#PCDATA|section)*>\n  <!ELEMENT section (#PCDATA|em|code)*>\n  <!ELEMENT em (#PCDATA)>\n  <!ELEMENT code (#PCDATA)>\n  <!ELEMENT shelf EMPTY>\n]>\n<library>\n  <book id=\"b1\" available=\"no\">\n    <title>Parsing &amp; Recovery</title>\n    <author>Ada Example</author>\n    <author>Lin Parser</author>\n    <summary>Text with <em>mixed</em> content and <code>&lt;tokens&gt;</code>.</summary>\n    <chapter><section>First section</section><section>Second section</section></chapter>\n  </book>\n  <shelf/>\n</library>\n\n--- example 2 ---\n<?xml version=\"1.1\"?>\n<!DOCTYPE root [\n  <!ELEMENT root (item*)>\n  <!ELEMENT item (#PCDATA|x:item)*>\n  <!ATTLIST item xml:lang NMTOKEN #IMPLIED>\n  <!ENTITY nbsp \"&#160;\">\n  <!ENTITY greeting \"hello &nbsp; world\">\n]>\n<root xmlns:x=\"urn:example:items\" xml:space=\"preserve\">\n  <item xml:lang=\"en\">A <![CDATA[raw ]]> fragment &greeting;.</item>\n  <item><x:item>nested</x:item><![CDATA[ & < > ]]></item>\n</root>\n\nTried before \u2014 no new coverage, avoid repeating:\n--- a seed you generated (cycle 1) added 0 new edges ---\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (entry*)>\n  <!ELEMENT entry (name, metadata, payload)>\n  <!ELEMENT name (#PCDATA)>\n  <!ELEMENT metadata (tag*)>\n  <!ELEMENT tag EMPTY>\n  <!ATTLIST tag\n    key CDATA #REQUIRED\n    value CDATA #IMPLIED>\n  <!ELEMENT payload ANY>\n  <!ENTITY % commonAttrs ' xml:id ID #IMPLIED xml:base URI #IMPLIED '>\n  <!ATTLIST entry %commonAttrs; status (new|old|archived) \"new\">\n  <!NOTATION bin SYSTEM \"application/octet-stream\">\n  <!ENTITY data SYSTEM \"data.bin\" NDATA bin>\n]>\n<catalog>\n  <entry xml:id=\"e-1\" xml:base=\"urn:base/\" status=\"archived\">\n    <name>Binary reference</name>\n    <metadata>\n      <tag key=\"format\" value=\"bin\"/>\n      <tag key=\"empty\"/>\n    </metadata...[truncated, 753 chars total]\n\n--- a seed you generated (cycle 1) added 0 new edges ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE message [\n  <!ELEMENT message (header, body)>\n  <!ELEMENT header (to, from, subject)>\n  <!ELEMENT to (#PCDATA)>\n  <!ELEMENT from (#PCDATA)>\n  <!ELEMENT subject (#PCDATA)>\n  <!ELEMENT body (#PCDATA|quote|list)*>\n  <!ELEMENT quote (#PCDATA|quote)*>\n  <!ELEMENT list (li+)>\n  <!ELEMENT li (#PCDATA|link)*>\n  <!ELEMENT link (#PCDATA)>\n  <!ATTLIST link href CDATA #REQUIRED>\n  <!ENTITY left \"&lt;\">\n  <!ENTITY right \"&gt;\">\n]>\n<message xmlns=\"urn:mail\">\n  <header>\n    <to>reader@example.test</to>\n    <from>parser@example.test</from>\n    <subject>Nested &left;markup&right;</subject>\n  </header>\n  <body>\n    Intro\n    <quote>Outer <quote>inner</quote> qu...[truncated, 829 chars total]\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-01T03:39:58.840401+00:00"
+}

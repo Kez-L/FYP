@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload, signature?)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT payload (section*)>
+  <!ELEMENT section (text|binary|section)*>
+  <!ELEMENT text (#PCDATA)>
+  <!ELEMENT binary (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST package version NMTOKEN #FIXED "3.1">
+  <!ATTLIST file path CDATA #REQUIRED size NMTOKEN #IMPLIED digest CDATA #IMPLIED>
+  <!ATTLIST section name NMTOKEN #REQUIRED>
+  <!ENTITY open "<text>generated &amp; verified</text>">
+  <![IGNORE[
+    <!ELEMENT obsolete EMPTY>
+    <!ATTLIST obsolete reason CDATA #IMPLIED>
+  ]]>
+]>
+<package version="3.1">
+  <manifest>
+    <file path="bin/start" size="2048" digest="aa11"/>
+    <file path="share/info.txt" size="0"/>
+  </manifest>
+  <payload>
+    <section name="intro">
+      &open;
+      <binary>AAECAwQFBgcICQ==</binary>
+    </section>
+    <section name="nested">
+      <section name="inner"><text>one &lt; two</text></section>
+      <text><![CDATA[raw ]]> delimiter ]]&gt; preserved</text>
+    </section>
+  </payload>
+  <signature>sha256:deadbeef&amp;0011</signature>
+</package>

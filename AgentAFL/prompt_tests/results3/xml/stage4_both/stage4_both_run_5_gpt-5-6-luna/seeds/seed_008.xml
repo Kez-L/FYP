@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, contents, signature)>
+  <!ELEMENT manifest (name, properties)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT properties (property+)>
+  <!ELEMENT property (#PCDATA)>
+  <!ELEMENT contents (folder|document|link)*>
+  <!ELEMENT folder (folder|document|link)*>
+  <!ELEMENT document (#PCDATA|metadata)*>
+  <!ELEMENT metadata EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT signature (digest, certificate?)>
+  <!ELEMENT digest (#PCDATA)>
+  <!ELEMENT certificate (#PCDATA)>
+  <!ATTLIST package id ID #REQUIRED format (alpha|beta) "alpha">
+  <!ATTLIST property name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ATTLIST document id ID #REQUIRED path CDATA #REQUIRED media CDATA #IMPLIED>
+  <!ATTLIST document refs IDREFS #IMPLIED>
+  <!ATTLIST metadata key NMTOKEN #REQUIRED value CDATA #REQUIRED>
+  <!ATTLIST link href URI #REQUIRED relation (parent|related|external) "related">
+  <!ATTLIST digest algorithm (sha256|sha512) #REQUIRED>
+  <!ENTITY ltmark "&lt;section&gt;">
+  <!ENTITY nbsp "&#160;">
+]>
+<package id="pkg-9" format="beta">
+  <manifest>
+    <name>portable-bundle</name>
+    <properties>
+      <property name="creator" value="buildbot"/>
+      <property name="revision">r&amp;d-17</property>
+    </properties>
+  </manifest>
+  <contents>
+    <folder name="docs">
+      <document id="doc-a" path="docs/readme.xml" media="application/xml">
+        Welcome &lt;reader&gt; &nbsp; <metadata key="visibility" value="public"/>
+      </document>
+      <document id="doc-b" path="docs/guide.txt" refs="doc-a">
+        The next fragment is encoded: &lt;section&gt;.
+        <metadata key="language" value="en"/>
+      </document>
+      <link href="https://example.test/archive" relation="external"/>
+    </folder>
+  </contents>
+  <signature>
+    <digest algorithm="sha512">8f00cafe</digest>
+    <certificate><![CDATA[-----BEGIN CERTIFICATE-----
+opaque-content
+-----END CERTIFICATE-----]]></certificate>
+  </signature>
+</package>

@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node (name, metadata?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT metadata (entry*)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ELEMENT edge (label?, weight?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT weight (#PCDATA)>
+  <!ATTLIST graph directed (yes|no) "yes">
+  <!ATTLIST node id ID #REQUIRED kind CDATA #IMPLIED>
+  <!ATTLIST metadata format (plain|json|yaml) "plain">
+  <!ATTLIST entry key NMTOKEN #REQUIRED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED type (tree|cross|back) "cross">
+  <!ATTLIST weight scale NMTOKEN #IMPLIED>
+  <!ENTITY left "[";
+  <!ENTITY right "]">
+  <!ENTITY jsonStart "{&quot;source&quot;:&quot;">
+]>
+<graph directed="yes">
+  <node id="n-root" kind="root">
+    <name>Root</name>
+    <metadata format="json">
+      <entry key="payload">&jsonStart;n-root&quot;}</entry>
+      <entry key="symbols">&left;alpha&right;</entry>
+    </metadata>
+  </node>
+  <node id="n-a" kind="leaf"><name>A &amp; B</name></node>
+  <node id="n-b" kind="leaf"><name><![CDATA[<opaque>value</opaque>]]></name></node>
+  <edge from="n-root" to="n-a" type="tree">
+    <label>primary</label><weight scale="log">1.0</weight>
+  </edge>
+  <edge from="n-root" to="n-b" type="cross"/>
+  <edge from="n-b" to="n-root" type="back"><label>return</label></edge>
+</graph>

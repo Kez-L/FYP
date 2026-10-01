@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (header, transaction+, footer)>
+  <!ELEMENT header (title, generated)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT transaction (from, to, amount, note?)>
+  <!ATTLIST transaction id ID #REQUIRED status (pending|posted|void) "pending">
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT amount (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY currency "¤">
+]>
+<ledger>
+  <header>
+    <title>Reconciliation &amp; Exceptions</title>
+    <generated>2026-10-01T00:00:00Z</generated>
+  </header>
+  <transaction id="t-001" status="posted">
+    <from>vault/alpha</from>
+    <to>branch-7</to>
+    <amount>&currency;100.00</amount>
+    <note>Manual <emphasis>review</emphasis> required.</note>
+  </transaction>
+  <transaction id="t-002">
+    <from>branch-7</from>
+    <to>vault/omega</to>
+    <amount>&currency;0.00</amount>
+    <note><![CDATA[adjustment <pending/> & unresolved]]></note>
+  </transaction>
+  <footer>2 transactions</footer>
+</ledger>

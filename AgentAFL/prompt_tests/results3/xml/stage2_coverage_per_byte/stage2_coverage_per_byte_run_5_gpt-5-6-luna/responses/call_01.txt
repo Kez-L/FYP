@@ -1,0 +1,122 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common "<!ELEMENT catalog (item+, note?)><!ELEMENT item (name, price, details?)><!ELEMENT name (#PCDATA)><!ELEMENT price (#PCDATA)><!ELEMENT details (#PCDATA)><!ELEMENT note (#PCDATA)>">
+  %common;
+  <!ATTLIST catalog version NMTOKEN "v1">
+  <!ATTLIST item sku ID #REQUIRED status (new|used|backorder) "new">
+  <!ENTITY euro "&#x20AC;">
+]>
+<catalog version="v2">
+  <item sku="i-1" status="backorder">
+    <name>Widget &euro;</name>
+    <price>12.50</price>
+    <details><![CDATA[<unparsed> & characters]]></details>
+  </item>
+  <item sku="i-2">
+    <name>Gadget</name>
+    <price>0</price>
+  </item>
+  <note>inventory &#13; update</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section|section-ref)*>
+  <!ELEMENT section (title, entry*)>
+  <!ELEMENT section-ref EMPTY>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST section id ID #IMPLIED>
+  <!ATTLIST section-ref target IDREF #REQUIRED>
+  <!ENTITY % feature "INCLUDE">
+  <![%feature;[
+    <!ENTITY marker "included">
+  ]]>
+]>
+<report>
+  <section id="intro">
+    <title>First</title>
+    <entry>alpha<em>bold</em>omega<br/>tail</entry>
+  </section>
+  <section-ref target="intro"/>
+  <section id="tail">
+    <title>&marker;</title>
+    <entry><![CDATA[]]></entry>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE media [
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ELEMENT media (asset*, caption?)>
+  <!ELEMENT asset EMPTY>
+  <!ELEMENT caption (#PCDATA)>
+  <!ATTLIST asset name CDATA #REQUIRED kind NOTATION (png) #REQUIRED data ENTITY #IMPLIED>
+]>
+<media>
+  <asset name="icon" kind="png" data="logo"/>
+  <asset name="empty" kind="png"/>
+  <caption>binary-like &#x0D; content &amp; symbols</caption>
+</media>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header (from, to, trace?)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT trace (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ATTLIST envelope xmlns CDATA #IMPLIED>
+  <!ATTLIST header priority (low|normal|high) "normal">
+]>
+<envelope xmlns="urn:mail" xmlns:a="urn:aux" xmlns:b="urn:aux">
+  <header priority="high">
+    <from a:kind="service">a@example</from>
+    <to b:kind="user">b@example</to>
+    <trace xmlns:a="urn:trace" a:id="t-1">x</trace>
+  </header>
+  <payload xmlns="">
+    <data xmlns="urn:data" a:unused="yes">
+      <a:item xmlns:a="urn:item">one</a:item>
+      <b:item>two</b:item>
+    </data>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell*)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST matrix rows CDATA #IMPLIED cols CDATA #IMPLIED>
+  <!ATTLIST row index NMTOKEN #IMPLIED>
+  <!ATTLIST cell r NMTOKEN #IMPLIED c NMTOKEN #IMPLIED formula CDATA #IMPLIED>
+  <!ENTITY amp "&amp;">
+  <!ENTITY quote "&quot;">
+]>
+<matrix rows="2" cols="3">
+  <row index="01">
+    <cell r="1" c="1" formula="&quot;A&amp;B&quot;">&amp;</cell>
+    <cell r="1" c="2"><![CDATA[1 < 2 && 3 > 2]]></cell>
+    <cell r="1" c="3">line&#xA;break</cell>
+  </row>
+  <row index="02">
+    <cell r="2" c="1" formula="sum(A1:C1)">42</cell>
+    <cell r="2" c="2">&quote;quoted&quote;</cell>
+    <cell r="2" c="3"/>
+  </row>
+</matrix>
+```

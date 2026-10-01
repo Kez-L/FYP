@@ -1,0 +1,27 @@
+<!DOCTYPE envelope [
+  <!ELEMENT envelope ANY>
+  <!ENTITY % declarations '
+    <!ELEMENT packet (header?, body, checksum?)>
+    <!ELEMENT header (#PCDATA)>
+    <!ELEMENT body (chunk*)>
+    <!ELEMENT chunk (#PCDATA)>
+    <!ELEMENT checksum EMPTY>
+    <!ATTLIST checksum algorithm NMTOKEN #IMPLIED>
+  '>
+  %declarations;
+  <!ENTITY % conditional "INCLUDE">
+  <![%conditional;[
+    <!ENTITY marker "inside-section">
+  ]]>
+]>
+<envelope>
+  <packet>
+    <header>&marker;</header>
+    <body>
+      <chunk>first</chunk>
+      <chunk>second <![CDATA[ raw <data> ]]></chunk>
+      <chunk>third &quot;value&quot;</chunk>
+    </body>
+    <checksum algorithm="sha256"/>
+  </packet>
+</envelope>

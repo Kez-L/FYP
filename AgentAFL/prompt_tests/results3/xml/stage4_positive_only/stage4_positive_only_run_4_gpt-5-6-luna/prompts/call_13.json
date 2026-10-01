@@ -1,0 +1,23 @@
+{
+  "call": 13,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (header, collection+)>\n  <!ELEMENT header (title, generated, summary?)>\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT generated (#PCDATA)>\n  <!ELEMENT summary (#PCDATA)>\n  <!ELEMENT collection (item+)>\n  <!ELEMENT item (name, description, metadata, link*)>\n  <!ELEMENT name (#PCDATA)>\n  <!ELEMENT description (#PCDATA|code|strong|em)*>\n  <!ELEMENT code (#PCDATA)>\n  <!ELEMENT strong (#PCDATA)>\n  <!ELEMENT em (#PCDATA)>\n  <!ELEMENT metadata (tag*)>\n  <!ELEMENT tag EMPTY>\n  <!ELEMENT link (#PCDATA)>\n  <!ATTLIST catalog xmlns CDATA #IMPLIED xmlns:meta CDATA #IMPLIED>\n  <!ATTLIST item id ID #REQUIRED status (draft|published|retired) \"draft\">\n  <!ATTLIST tag key CDATA #REQUIRED value CDATA #IMPLIED>\n  <!ATTLIST link rel CDATA #REQUIRED href CDATA #REQUIRED>\n  <!ENTITY product \"parser\">\n]>\n<catalog xmlns=\"urn:example:catalog\" xmlns:meta=\"urn:example:metadata\">\n  <?index priority=\"high\"?>\n  <!-- The collection contains deliberately mixed textual content. -->\n  <header>\n    <title>Compatibility &amp; &product; notes</title>\n    <generated>2026-10-01T14:07:03Z</generated>\n    <summary><![CDATA[Input containing <literal> markup and ]] characters.]]></summary>\n  </header>\n  <collection>\n    <item id=\"entry-1\" status=\"published\">\n      <name>Boundary cases</name>\n      <description>Preserve <strong>all</strong> <em>delimiters</em> around <code>&lt;tokens&gt;</code>.</description>\n      <metadata>\n        <tag key=\"owner\" value=\"qa\"/>\n        <tag key=\"priority\" value=\"3\"/>\n      </metadata>\n      <link rel=\"self\" href=\"urn:item:entry-1\">record</link>\n    </item>\n    <item id=\"entry-2\">\n      <name>CDATA sample</name>\n      <description><![CDATA[alpha & beta < gamma > delta]]></description>\n      <metadata>\n        <tag key=\"format\"/>\n      </metadata>\n    </item>\n  </collection>\n</catalog>\n\n--- example 2 ---\n<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n<!DOCTYPE catalog [\n  <!ELEMENT catalog (section+)>\n  <!ELEMENT section (heading, item*)>\n  <!ELEMENT heading (#PCDATA)>\n  <!ELEMENT item (label, price, tags?)>\n  <!ELEMENT label (#PCDATA)>\n  <!ELEMENT price (#PCDATA)>\n  <!ELEMENT tags (tag+)>\n  <!ELEMENT tag (#PCDATA)>\n  <!ATTLIST item sku ID #IMPLIED currency CDATA \"EUR\">\n]>\n<catalog>\n  <section>\n    <heading>Oddments</heading>\n    <item sku=\"p-01\">\n      <label>Glass &quot;orb&quot;</label>\n      <price>12.50</price>\n      <tags>\n        <tag>fragile</tag>\n        <tag>round</tag>\n      </tags>\n    </item>\n    <item currency=\"JPY\">\n      <label>\u6298\u308a\u7d19</label>\n      <price>\u00a5800</price>\n    </item>\n  </section>\n</catalog>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-01T03:39:11.734741+00:00"
+}

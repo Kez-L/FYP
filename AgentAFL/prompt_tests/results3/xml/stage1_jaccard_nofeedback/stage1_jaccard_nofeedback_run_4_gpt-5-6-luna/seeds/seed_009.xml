@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, content)>
+  <!ELEMENT manifest (file*)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT content (section*)>
+  <!ELEMENT section (#PCDATA|line|item)*>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST file path CDATA #REQUIRED size NMTOKEN #IMPLIED>
+  <!ATTLIST section id ID #IMPLIED>
+  <!ENTITY tab "&#9;">
+  <!ENTITY newline "&#10;">
+  <!ENTITY sample "A&tab;B&newline;C">
+]>
+<package xml:space="default">
+  <manifest>
+    <file path="a&amp;b.txt" size="001"/>
+    <file path="dir/&quot;odd&quot;.dat" size="0"/>
+  </manifest>
+  <content>
+    <section id="s0">
+      pre<line>first &sample;</line>
+      <item><![CDATA[<item>literal</item>]]></item>
+      <line>last</line>post
+    </section>
+    <section id="s1">
+      <line>mixed &#x9; whitespace</line>
+      <item>entities: &amp; &lt; &gt; &apos;</item>
+    </section>
+  </content>
+</package>

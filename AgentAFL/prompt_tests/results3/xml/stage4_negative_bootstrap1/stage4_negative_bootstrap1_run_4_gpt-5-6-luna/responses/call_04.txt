@@ -1,0 +1,147 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, footer?)>
+  <!ELEMENT item (title, meta?, blob)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT blob (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST item
+    id ID #REQUIRED
+    ref IDREFS #IMPLIED
+    mode (short|long) "short"
+    asset ENTITY #IMPLIED>
+  <!ATTLIST meta
+    priority NMTOKEN "normal"
+    tags NMTOKENS #IMPLIED>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY twice "ha&amp;ha">
+  <!ENTITY nested "A &twice; B">
+]>
+<catalog>
+  <item id="one" mode="long" asset="logo">
+    <title>&nested;</title>
+    <meta priority="high" tags="alpha beta"/>
+    <blob>left &lt; middle &amp; right</blob>
+  </item>
+  <item id="two" ref="one" mode="short">
+    <title>second</title>
+    <blob>&#x41;&#65;&#00000042;</blob>
+  </item>
+  <footer>done</footer>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<world xmlns="urn:example:world" xmlns:m="urn:example:map" xml:lang="fr" xml:space="preserve">
+  <m:region m:id="r-01" m:kind="coast">
+    <m:name>Île &amp; mer</m:name>
+    <m:point m:x="0" m:y="-0"/>
+    <m:point m:x="18446744073709551615" m:y="NaN"/>
+  </m:region>
+  <plain xmlns="" xml:lang="en">
+    <note xmlns:q="urn:example:quote" q:type="aside">A <q:mark>small</q:mark> note</note>
+    <empty xmlns:m="urn:example:other" m:flag="yes"/>
+  </plain>
+  <m:region m:id="r-02">
+    <!-- namespace shadowing and whitespace -->
+    <m:name>北&amp;南</m:name>
+  </m:region>
+</world>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, section*, conclusion)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT section (heading, paragraph+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|link|br)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT conclusion (#PCDATA)>
+  <!ATTLIST section number NMTOKEN #REQUIRED>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ENTITY greeting "Hello, ">
+  <!ENTITY quoted "&quot;inside&quot;">
+]>
+<?audit generated="seed"?>
+<report>
+  <header>&greeting;world &quoted;</header>
+  <section number="01">
+    <heading>First &amp; only</heading>
+    <paragraph>alpha<link href="urn:x">link text</link><br/>omega</paragraph>
+    <paragraph>numeric: &#x1F642; &#x20AC; &#169;</paragraph>
+  </section>
+  <section number="02">
+    <heading>Trailing spaces</heading>
+    <paragraph xml:space="default">  padded text  </paragraph>
+  </section>
+  <conclusion>finished</conclusion>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (record*)>
+  <!ELEMENT record (key, value, flag?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST record
+    uid ID #REQUIRED
+    parent IDREF #IMPLIED
+    state (new|open|closed) #FIXED "open">
+  <!ATTLIST flag
+    enabled (yes|no) "yes"
+    code CDATA #IMPLIED>
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+]>
+<registry>
+  <record uid="r0" state="open">
+    <key>&left;root&right;</key>
+    <value>one &lt; two &gt; zero</value>
+    <flag code="A B"/>
+  </record>
+  <record uid="r1" parent="r0">
+    <key>mixed</key>
+    <value>line
+break&#xA;next&#x9;tab</value>
+    <flag enabled="no"/>
+  </record>
+  <record uid="r2" parent="r1">
+    <key>empty</key>
+    <value/>
+  </record>
+</registry>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (data)>
+  <!ELEMENT data (chunk|tail)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT tail (#PCDATA)>
+  <!ATTLIST chunk id CDATA #IMPLIED>
+]>
+<envelope xmlns:p="urn:payload" xml:base="urn:seed:root">
+  <data>
+    <chunk id="a" p:mode="raw">prefix &amp; &lt; entity &#x0A;</chunk>
+    <p:chunk xmlns:p="urn:payload:v2" p:mode="nested">
+      <p:item>one</p:item>
+      <p:item>two</p:item>
+    </p:chunk>
+    <tail>after</tail>
+  </data>
+  <broken xmlns:unused="urn:unused">
+    <child attr="unterminated></child>
+  </broken>
+</envelope>
+```

@@ -1,0 +1,25 @@
+<!DOCTYPE graph [
+  <!ELEMENT graph (vertex*, edge*)>
+  <!ELEMENT vertex (label?, property*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST graph xmlns:g CDATA #IMPLIED>
+  <!ATTLIST vertex id ID #REQUIRED type CDATA #IMPLIED>
+  <!ATTLIST property name CDATA #REQUIRED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+  <!ENTITY quote "&#34;">
+]>
+<graph xmlns:g="urn:graph">
+  <vertex id="v1" type="source">
+    <label>Start</label>
+    <property name="empty"></property>
+    <property name="quoted">&quote;A&amp;B&quote;</property>
+  </vertex>
+  <vertex id="v2">
+    <property name="payload"><![CDATA[a<b>c]]></property>
+  </vertex>
+  <edge from="v1" to="v2" weight="NaN"/>
+  <edge from="v2" to="missing" weight="-0"/>
+  <edge from="v1" to="v1" />
+</graph>

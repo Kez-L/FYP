@@ -1,0 +1,174 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, metadata, description, tags?)>
+  <!ATTLIST entry sku ID #REQUIRED status (active|retired) "active">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT metadata (published, price)>
+  <!ELEMENT published (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA|em)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ENTITY company "Northwind &amp; Sons">
+]>
+<catalog>
+  <entry sku="p-001">
+    <title>XML &amp; Parser Toolkit</title>
+    <metadata>
+      <published>2026-09-30</published>
+      <price currency="USD">19.95</price>
+    </metadata>
+    <description>Compact <em>validation</em> tools<br/>for &company;.</description>
+    <tags><tag>xml</tag><tag>testing</tag></tags>
+  </entry>
+  <entry sku="p-002" status="retired">
+    <title><![CDATA[Legacy <reader> / v1]]></title>
+    <metadata>
+      <published>2001-01-01</published>
+      <price currency="EUR">0</price>
+    </metadata>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<mesh xmlns="urn:geometry:mesh" xmlns:m="urn:geometry:meta">
+  <m:origin latitude="+00.0000" longitude="-000.0000">
+    <m:label xml:space="preserve">  equator / prime meridian  </m:label>
+  </m:origin>
+  <vertices count="4">
+    <vertex id="v0"><position x="0" y="0" z="0"/></vertex>
+    <vertex id="v1"><position x="1.0" y="0" z="0"/></vertex>
+    <vertex id="v2"><position x="1.0" y="1.0" z="-0.25"/></vertex>
+    <vertex id="v3"><position x="0" y="1.0" z="0"/></vertex>
+  </vertices>
+  <faces>
+    <face winding="ccw"><corner ref="v0"/><corner ref="v1"/><corner ref="v2"/></face>
+    <face winding="ccw"><corner ref="v0"/><corner ref="v2"/><corner ref="v3"/></face>
+  </faces>
+  <extensions>
+    <m:note><![CDATA[
+      Coordinates may contain scientific notation:
+      6.022e23, -1.0E-9, and 0x10 are text.
+    ]]></m:note>
+    <?mesh generated-by="seed"?>
+  </extensions>
+</mesh>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder+)>
+  <!ELEMENT folder (name, folder*, file*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT file (name, checksum?, content)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT content (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ATTLIST file kind (text|binary) "text">
+]>
+<archive>
+  <folder>
+    <name>root</name>
+    <folder>
+      <name>α</name>
+      <folder>
+        <name>empty</name>
+      </folder>
+      <file kind="text">
+        <name>readme.txt</name>
+        <checksum algorithm="sha256">0000000000000000000000000000000000000000000000000000000000000000</checksum>
+        <content>first line<linebreak/>second line<linebreak/>last line</content>
+      </file>
+    </folder>
+    <folder>
+      <name>symbols &amp; spaces</name>
+      <file kind="binary">
+        <name>blob.dat</name>
+        <content><![CDATA[AAECAwQFBgcICQoLDA0ODw==]]></content>
+      </file>
+    </folder>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns:w="urn:workflow" xmlns:task="urn:workflow:task" xmlns:env="urn:workflow:environment">
+  <w:pipeline id="nightly" enabled="true">
+    <w:inputs>
+      <w:input name="source" type="directory" optional="false"/>
+      <w:input name="mode" type="enum" default="strict">
+        <w:choice>strict</w:choice>
+        <w:choice>permissive</w:choice>
+      </w:input>
+    </w:inputs>
+    <w:stages>
+      <task:stage id="scan" retries="2">
+        <task:executor env="linux">
+          <env:variable name="LC_ALL">C.UTF-8</env:variable>
+          <env:variable name="FLAGS"><![CDATA[-Wall -Wextra --define=x>y]]></env:variable>
+        </task:executor>
+        <task:command><![CDATA[
+          find "$source" -type f -print0 | sort -z
+        ]]></task:command>
+        <task:artifacts>
+          <task:artifact pattern="**/*.xml" compression="none"/>
+        </task:artifacts>
+      </task:stage>
+      <task:stage id="publish" depends-on="scan">
+        <task:condition><![CDATA[status == "success" && count > 0]]></task:condition>
+        <task:command>emit-report --format="xml"</task:command>
+      </task:stage>
+    </w:stages>
+    <w:notifications>
+      <w:notify channel="email" when="failure">ops@example.invalid</w:notify>
+      <w:notify channel="log" when="always"/>
+    </w:notifications>
+  </w:pipeline>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<ledger>
+  <account number="0000000000000001" closed="false">
+    <owner>
+      <name family="O'Neil" given="Zoë">Zoë O'Neil</name>
+      <address>
+        <line>42 &lt;Market&gt; Lane</line>
+        <line>São Tomé — 1010</line>
+      </address>
+    </owner>
+    <transactions>
+      <transaction id="t-α" kind="credit" timestamp="2026-09-30T23:59:59.999+14:00">
+        <amount currency="JPY">1</amount>
+        <memo xml:space="default">refund &amp; adjustment</memo>
+        <reference>
+          <external system="bank"><![CDATA[REF-<2026>-001]]></external>
+        </reference>
+      </transaction>
+      <transaction id="t-β" kind="debit" timestamp="2026-10-01T00:00:00Z">
+        <amount currency="USD">-0.00000001</amount>
+        <memo xml:space="preserve">  fee  </memo>
+      </transaction>
+    </transactions>
+    <balance as-of="2026-10-01">999999999999999999999999.000000</balance>
+  </account>
+  <audit>
+    <event severity="warning">
+      <message>Counterparty name contains a non-ASCII character: é</message>
+      <details>
+        <field name="routing">000001</field>
+        <field name="verified">false</field>
+      </details>
+    </event>
+  </audit>
+</ledger>
+```

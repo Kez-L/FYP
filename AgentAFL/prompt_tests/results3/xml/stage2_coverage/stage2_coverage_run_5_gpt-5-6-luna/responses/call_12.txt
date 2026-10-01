@@ -1,0 +1,153 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, note?)>
+  <!ELEMENT item (title, price, details)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|link|ref)*>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST item
+    sku ID #REQUIRED
+    state (new|used|retired) "new"
+    xmlns:shop CDATA #FIXED "urn:shop:v2">
+  <!ATTLIST link href URI #IMPLIED>
+  <!ATTLIST ref target IDREF #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data.bin" NDATA bin>
+  <!ENTITY mark "&#x3C;synthetic&#x3E;">
+]>
+<catalog>
+  <item sku="p-001" state="used">
+    <title>alpha &amp; omega</title>
+    <price>19.99</price>
+    <details>
+      before &mark;
+      <link href="urn:x?y=1&amp;z=2"/>
+      <ref target="p-001"/>
+      after
+    </details>
+  </item>
+  <item sku="p-002" state="retired">
+    <title><![CDATA[x]]]]><![CDATA[>y]]></title>
+    <price>0</price>
+    <details><link/><ref/></details>
+  </item>
+  <note>catalog-end</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % declarations '
+    <!ELEMENT root (header, body, footer)>
+    <!ELEMENT header EMPTY>
+    <!ATTLIST header xml:lang NMTOKEN "und" mode (a|b|c) "b">
+  '>
+  %declarations;
+  <!ELEMENT body (section+)>
+  <!ELEMENT section (heading, paragraph*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quote "&quot;">
+]>
+<root xmlns="urn:root" xmlns:x="urn:extra">
+  <header xml:lang="en-US" mode="c"/>
+  <body>
+    <section>
+      <heading>One</heading>
+      <paragraph>hello <em>world</em>&nbsp;<br/>again</paragraph>
+      <paragraph>&quote;quoted&#x2F;text&quot;</paragraph>
+    </section>
+    <section>
+      <heading>x:y</heading>
+      <paragraph><![CDATA[ ]]>tail</paragraph>
+    </section>
+  </body>
+  <footer>done</footer>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ENTITY % feature "INCLUDE">
+  <![%feature;[
+    <!ELEMENT envelope (command, payload)>
+    <!ELEMENT command EMPTY>
+    <!ATTLIST command action CDATA #REQUIRED flags NMTOKENS #IMPLIED>
+    <!ELEMENT payload (text|fragment|data)*>
+    <!ELEMENT text (#PCDATA)>
+    <!ELEMENT fragment (#PCDATA|text)*>
+    <!ELEMENT data EMPTY>
+    <!ATTLIST data value ENTITY #IMPLIED>
+    <!ENTITY literal "A&amp;B&lt;C">
+  ]]>
+  <![IGNORE[
+    <!ELEMENT discarded (never)>
+    <!ENTITY hidden "not expanded">
+  ]]>
+  <!ENTITY sample "&literal;::&#65;&#x42;">
+]>
+<envelope>
+  <command action="run" flags="fast safe"/>
+  <payload>
+    <text>prefix</text>
+    <fragment>inside <text>nested</text> tail</fragment>
+    <data value="sample"/>
+    <text>&sample;</text>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE Ω-root [
+  <!ELEMENT Ω-root (α:node*, empty)>
+  <!ELEMENT α:node (β:leaf|γ:leaf|mixed)*>
+  <!ELEMENT β:leaf (#PCDATA)>
+  <!ELEMENT γ:leaf (#PCDATA)>
+  <!ELEMENT mixed (#PCDATA|β:leaf|γ:leaf)*>
+  <!ELEMENT empty EMPTY>
+  <!ATTLIST Ω-root
+    xmlns:α CDATA #FIXED "urn:alpha"
+    xmlns:β CDATA #FIXED "urn:beta"
+    xmlns:γ CDATA #FIXED "urn:gamma"
+    xml:space (default|preserve) "preserve">
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+]>
+<Ω-root xmlns:α="urn:alpha" xmlns:β="urn:beta" xmlns:γ="urn:gamma" xml:space="preserve">
+  <α:node>
+    <β:leaf>π &amp; λ</β:leaf>
+    <γ:leaf><![CDATA[raw ]]></γ:leaf>
+    <mixed>a<β:leaf>b</β:leaf>c<γ:leaf>d</γ:leaf>e</mixed>
+  </α:node>
+  <α:node xml:lang="x">
+    &left;not markup&right;
+  </α:node>
+  <empty/>
+</Ω-root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE broken [
+  <!ELEMENT broken (a, b)>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b EMPTY>
+  <!ATTLIST b first CDATA #IMPLIED second CDATA #IMPLIED>
+  <!ENTITY amp "&amp;">
+]>
+<broken>
+  <a>start &amp; &#x41; &#65; <![CDATA[unterminated-looking ]] text]]> &amp;</a>
+  <b first="one" second="two" third="three"/>
+  <b/>
+</broken>
+```

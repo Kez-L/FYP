@@ -1,0 +1,149 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, note?)>
+  <!ELEMENT entry (title, creator*, payload)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT creator (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|part|ref)*>
+  <!ELEMENT part EMPTY>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST catalog xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST entry id ID #REQUIRED state (new|old|archived) "new">
+  <!ATTLIST part kind CDATA #REQUIRED>
+  <!ATTLIST ref target IDREF #IMPLIED>
+  <!ENTITY marker "A&amp;B&lt;C&gt;">
+  <!ENTITY wrapped "<part kind='generated'/>">
+]>
+<catalog xml:lang="en-US">
+  <entry id="e1" state="old">
+    <title>First &marker;</title>
+    <creator>alpha</creator>
+    <payload>prefix &wrapped; middle <part kind="literal"/> suffix</payload>
+  </entry>
+  <entry id="e2">
+    <title>Second</title>
+    <payload><ref target="e1"/><ref target="missing"/></payload>
+  </entry>
+  <note>tail</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, body, trailer)>
+  <!ELEMENT header (field+)>
+  <!ELEMENT field (#PCDATA)>
+  <!ELEMENT body (section*)>
+  <!ELEMENT section (line|section)*>
+  <!ELEMENT line (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST packet version CDATA #FIXED "1.1">
+  <!ATTLIST field name NMTOKEN #REQUIRED>
+  <!ATTLIST section level NMTOKEN #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quote "&quot;">
+]>
+<packet version="1.1">
+  <header>
+    <field name="source">sensor &quote;A&quote;</field>
+    <field name="flags">x&nbsp;y</field>
+  </header>
+  <body>
+    <section level="1">
+      <line>one <emph>bold</emph> two</line>
+      <section level="2">
+        <line><![CDATA[raw ]]> text <emph>inside</emph></line>
+      </section>
+    </section>
+    <section>
+      <line>last</line>
+    </section>
+  </body>
+  <trailer/>
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta, data)>
+  <!ELEMENT meta (item*)>
+  <!ELEMENT item EMPTY>
+  <!ELEMENT data (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST item key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+]>
+<envelope xmlns="urn:outer" xmlns:p="urn:payload" xmlns:q="urn:other">
+  <meta>
+    <item key="empty" value=""/>
+    <item key="quoted" value="a &quot; b &amp; c"/>
+    <item key="spaced" value="&#x9;left&#xA;right"/>
+  </meta>
+  <data>
+    <chunk index="000">plain</chunk>
+    <p:chunk index="001"><![CDATA[<not-an-element/> & ]]>tail</p:chunk>
+    <q:chunk index="two">mixed</q:chunk>
+  </data>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a, b, c?)>
+  <!ELEMENT a EMPTY>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c (x|y)>
+  <!ELEMENT x EMPTY>
+  <!ELEMENT y (#PCDATA)>
+  <!ATTLIST a one CDATA #IMPLIED two CDATA #IMPLIED>
+]>
+<root>
+  <a one="&amp;" two="&#xD;&#xA;"/>
+  <b>text <![CDATA[unterminated-looking ]]]]><![CDATA[> data]]> end</b>
+  <c><y>choice</y></c>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % base "CDATA #IMPLIED">
+  <!ELEMENT report (summary, rows)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT rows (row*)>
+  <!ELEMENT row (cell, cell, cell?)>
+  <!ELEMENT cell (#PCDATA|value)*>
+  <!ELEMENT value EMPTY>
+  <!ATTLIST report format (brief|full) "full">
+  <!ATTLIST row key ID #IMPLIED>
+  <!ATTLIST cell role NMTOKEN #IMPLIED>
+  <!ATTLIST value %base;>
+  <![IGNORE[
+    <!ELEMENT ignored EMPTY>
+    <!ENTITY hidden "not expanded">
+  ]]>
+  <![INCLUDE[
+    <!ENTITY visible "visible &amp; text">
+  ]]>
+]>
+<report format="brief">
+  <summary>&visible;</summary>
+  <rows>
+    <row key="r1">
+      <cell role="name">A<value/>B</cell>
+      <cell role="count">1</cell>
+      <cell/>
+    </row>
+    <row>
+      <cell role="name">C</cell>
+      <cell role="count">&lt;2&gt;</cell>
+    </row>
+  </rows>
+</report>
+```

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (opening, transaction*, closing)>
+  <!ELEMENT opening (#PCDATA)>
+  <!ELEMENT transaction (debit?, credit?, memo)>
+  <!ELEMENT debit EMPTY>
+  <!ELEMENT credit EMPTY>
+  <!ELEMENT memo (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT closing (#PCDATA)>
+  <!ATTLIST transaction
+    ref ID #REQUIRED
+    date CDATA #REQUIRED
+    cleared (yes|no) "no">
+  <!ATTLIST debit amount CDATA #REQUIRED account CDATA #IMPLIED>
+  <!ATTLIST credit amount CDATA #REQUIRED account CDATA #IMPLIED>
+]>
+<ledger>
+  <opening>1000.00</opening>
+  <transaction ref="t001" date="2026-09-30" cleared="yes">
+    <debit amount="12.50" account="fees"/>
+    <memo>Service charge<linebreak/>monthly adjustment</memo>
+  </transaction>
+  <transaction ref="t002" date="2026-10-01">
+    <credit amount="250.00" account="refund"/>
+    <memo>Reimbursement</memo>
+  </transaction>
+  <closing>1237.50</closing>
+</ledger>

@@ -1,0 +1,108 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+)>
+  <!ELEMENT entry (title,body)>
+  <!ATTLIST entry id ID #REQUIRED status (draft|final) "draft">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (#PCDATA|em|ref)*>
+  <!ELEMENT em (#PCDATA|ref)*>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY copyright "&#xA9; 2026">
+]>
+<archive>
+  <entry id="e1" status="final">
+    <title>Encoded &amp; Referenced</title>
+    <body>Text <em>with <ref target="e1"/> markup</em> &copyright;.</body>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.1"?>
+<catalog xmlns="urn:catalog:v3"
+         xmlns:m="urn:meta"
+         xmlns:q="urn:query"
+         xml:space="preserve">
+  <record m:key="α-01" q:rank="0">
+    <field name="title">  spaced
+      value  </field>
+    <field name="notes"><![CDATA[line one ]]>]]&gt;<![CDATA[ line two]]></field>
+    <empty m:flag="true"/>
+  </record>
+  <record m:key="β-02" q:rank="1">
+    <field name="title">second</field>
+    <field name="notes">A&#x85;B&#x2028;C</field>
+  </record>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node (label?, property*)>
+  <!ATTLIST node id ID #REQUIRED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED kind CDATA #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST property name NMTOKEN #REQUIRED>
+]>
+<graph>
+  <node id="root">
+    <label>Root &lt;entry&gt;</label>
+    <property name="weight">1</property>
+  </node>
+  <node id="leaf">
+    <property name="weight">0</property>
+  </node>
+  <edge from="root" to="leaf" kind="directed"/>
+</graph>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?processing instruction-data?>
+<dialogue xmlns:html="http://www.w3.org/1999/xhtml"
+          xmlns:svg="http://www.w3.org/2000/svg">
+  <!-- mixed content with foreign vocabularies -->
+  <turn speaker="a">Before <html:b>the diagram</html:b> appears:
+    <svg:svg width="12" height="8" viewBox="0 0 12 8">
+      <svg:rect x="1" y="1" width="10" height="6"/>
+      <svg:title>tiny image</svg:title>
+    </svg:svg>
+  </turn>
+  <turn speaker="b"><![CDATA[raw characters: < & > " ']]></turn>
+  <?note preserve-this?>
+</dialogue>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (header, payload, trailer)>
+  <!ELEMENT header (item*)>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding (base64|plain) "plain">
+  <!ELEMENT trailer (#PCDATA)>
+  <!ENTITY marker "END">
+]>
+<package>
+  <header>
+    <item name="format" value="stream"/>
+    <item name="version" value="2"/>
+    <item name="empty"/>
+  </header>
+  <payload>
+    <chunk index="0" encoding="base64">AAECAwQF</chunk>
+    <chunk index="1">line&#x0A;break &amp; delimiter</chunk>
+    <chunk index="2" encoding="plain">tail</chunk>
+  </payload>
+  <trailer>&marker;</trailer>
+</package>
+```

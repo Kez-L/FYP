@@ -1,0 +1,153 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY company "Northwind &amp; Sons">
+  <!ENTITY note "Use &quot;verified&quot; status only after review.">
+]>
+<catalog xmlns="urn:example:catalog" xmlns:m="urn:example:meta" xml:lang="en">
+  <m:header generated="2026-10-01">
+    <m:title>Inventory &amp; Archives</m:title>
+    <m:description>&company; maintains the &note;</m:description>
+  </m:header>
+  <item id="A-17" state="verified">
+    <name>Signal Lantern</name>
+    <tags>
+      <tag primary="yes">field</tag>
+      <tag>optical</tag>
+    </tags>
+    <quantity unit="pieces">0042</quantity>
+  </item>
+  <item id="B-03" state="pending">
+    <name>Wave Meter</name>
+    <quantity unit="pieces">7</quantity>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<report xmlns="urn:reports" xmlns:x="urn:extra">
+  <!-- Text containing markup-like characters remains character data. -->
+  <section name="alpha" xml:space="preserve">
+    <![CDATA[
+      <not-an-element data="raw & text">
+        left < right > middle
+      </not-an-element>
+    ]]>
+    <?audit action="retain" source="seed?>
+    <x:table x:mode="compact">
+      <x:row><x:cell>one</x:cell><x:cell><![CDATA[two & three]]></x:cell></x:row>
+      <x:row><x:cell>four</x:cell><x:cell>five</x:cell></x:row>
+    </x:table>
+  </section>
+  <section name="beta">
+    <entry key="empty"/>
+    <entry key="mixed">prefix<emphasis>inside</emphasis>suffix</entry>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, signature?)>
+  <!ELEMENT header (sender, recipient, timestamp)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding (plain|base64|hex) "plain">
+  <!ENTITY left-bracket "&#x5B;">
+  <!ENTITY right-bracket "&#x5D;">
+  <!ENTITY amp "&#38;">
+]>
+<envelope>
+  <header>
+    <sender>node-&left-bracket;7&right-bracket;</sender>
+    <recipient>archive&amp;relay</recipient>
+    <timestamp>2026-10-01T12:34:56Z</timestamp>
+  </header>
+  <payload>
+    <chunk index="0" encoding="plain">A&amp;B &amp; C</chunk>
+    <chunk index="1">line one&#x0A;line two&#x0D;&#x0A;line three</chunk>
+    <chunk index="2" encoding="hex">&amp; leftover &amp;</chunk>
+  </payload>
+  <signature>sha256:&amp;unknown-looking-text</signature>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ENTITY north "N">
+  <!ENTITY south "S">
+  <!ENTITY east "E">
+  <!ENTITY west "W">
+]>
+<map xmlns:g="http://www.example.org/geo" projection="local">
+  <g:metadata>
+    <g:origin lat="0.000000" lon="0.000000"/>
+    <g:bounds>
+      <g:point role="north">&north; 90&#x2E;0</g:point>
+      <g:point role="south">&south; -90&#x2E;0</g:point>
+      <g:point role="east">&east; 180&#x2E;0</g:point>
+      <g:point role="west">&west; -180&#x2E;0</g:point>
+    </g:bounds>
+  </g:metadata>
+  <layer id="roads" visible="true">
+    <feature type="polyline">
+      <g:coordinates>
+        <g:pair x="12.5" y="8.25"/>
+        <g:pair x="13.0" y="8.75"/>
+        <g:pair x="14.125" y="9.0"/>
+      </g:coordinates>
+    </feature>
+  </layer>
+  <layer id="labels" visible="false">
+    <feature type="point"><g:coordinates><g:pair x="-0.5" y="2.75"/></g:coordinates></feature>
+  </layer>
+</map>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ENTITY status-open "open">
+  <!ENTITY status-closed "closed">
+  <!ENTITY % commonAttrs 'owner CDATA #IMPLIED priority NMTOKEN "normal"'>
+  <!ELEMENT workflow (parameters, stages, history)>
+  <!ELEMENT parameters (parameter*)>
+  <!ELEMENT parameter EMPTY>
+  <!ATTLIST parameter name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT stages (stage+)>
+  <!ELEMENT stage (transition*)>
+  <!ATTLIST stage id ID #REQUIRED state (initial|active|final) #REQUIRED %commonAttrs;>
+  <!ELEMENT transition (#PCDATA)>
+  <!ATTLIST transition to IDREF #REQUIRED condition CDATA #IMPLIED>
+  <!ELEMENT history (event*)>
+  <!ELEMENT event (#PCDATA)>
+  <!ATTLIST event stage IDREF #REQUIRED result (success|failure|skipped) #REQUIRED>
+]>
+<workflow>
+  <parameters>
+    <parameter name="retries" value="3"/>
+    <parameter name="window" value="09:00-17:00"/>
+  </parameters>
+  <stages>
+    <stage id="start" state="initial" owner="ops">
+      <transition to="review" condition="input != ''">begin</transition>
+    </stage>
+    <stage id="review" state="active" priority="high">
+      <transition to="finish" condition="approved = true">accept</transition>
+      <transition to="start">return</transition>
+    </stage>
+    <stage id="finish" state="final" owner="&status-closed;"/>
+  </stages>
+  <history>
+    <event stage="start" result="success">created</event>
+    <event stage="review" result="skipped">no reviewer assigned</event>
+  </history>
+</workflow>
+```

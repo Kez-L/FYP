@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (step+)>
+  <!ELEMENT step (input*, output?, failure?)>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT output (#PCDATA)>
+  <!ELEMENT failure (message, detail*)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT detail (#PCDATA)>
+  <!ATTLIST step id ID #REQUIRED state (queued|running|done|failed) "queued">
+  <!ATTLIST input name NMTOKEN #REQUIRED>
+  <!ATTLIST output code NMTOKEN #IMPLIED>
+]>
+<workflow xmlns:x="urn:workflow:ext">
+  <step id="prepare" state="done">
+    <input name="source">alpha</input>
+    <output code="0">ready</output>
+  </step>
+  <step id="execute" state="failed">
+    <input name="source">beta &amp; gamma</input>
+    <failure>
+      <message>operation aborted</message>
+      <detail>x:reason="timeout"</detail>
+      <detail><![CDATA[retry <later>]]></detail>
+    </failure>
+  </step>
+  <step id="cleanup">
+    <input name="source">omega</input>
+  </step>
+</workflow>

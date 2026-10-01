@@ -1,0 +1,142 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common "CDATA #IMPLIED">
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (item*, note?)>
+  <!ATTLIST section
+    name NMTOKEN #REQUIRED
+    active (yes|no) "yes">
+  <!ELEMENT item (#PCDATA|label|value)*>
+  <!ATTLIST item
+    id ID #REQUIRED
+    ref IDREFS #IMPLIED
+    kind (alpha|numeric|mixed) "mixed">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST note %common;>
+]>
+<catalog>
+  <section name="main">
+    <item id="i1" kind="alpha">
+      <label>A</label>
+      <value>left<emph>middle</emph>right</value>
+    </item>
+    <item id="i2" ref="i1" kind="numeric">
+      <label>42</label>
+      <value>1&amp;2&lt;3</value>
+    </item>
+    <note>tail</note>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE r [
+  <!ELEMENT r (a|b|c)>
+  <!ELEMENT a EMPTY>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c (d+)>
+  <!ELEMENT d (#PCDATA)>
+  <!ENTITY text "one &amp; two &#x1F; three">
+  <!ENTITY nested "&text; / <![CDATA[raw <tag>]]>">
+]>
+<r>
+  <c>
+    <d>&nested;</d>
+    <d><![CDATA[]]></d>
+  </c>
+</r>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (h:header, payload, trailer?)>
+  <!ELEMENT h:header (h:field*)>
+  <!ELEMENT h:field EMPTY>
+  <!ATTLIST h:field key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT payload (entry+)>
+  <!ELEMENT entry (key, data)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT data ANY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST envelope xmlns:h CDATA #FIXED "urn:headers">
+]>
+<envelope xmlns="urn:payload" xmlns:h="urn:headers">
+  <h:header>
+    <h:field key="content-type" value="application/xml"/>
+    <h:field key="x-test"/>
+  </h:header>
+  <payload>
+    <entry>
+      <key>first</key>
+      <data><p xmlns="">plain</p><p xmlns:q="urn:q">q:q</p></data>
+    </entry>
+    <entry>
+      <key>second</key>
+      <data><![CDATA[<&]]></data>
+    </entry>
+  </payload>
+  <trailer>done</trailer>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ELEMENT config (include*, setting+, choice?)>
+  <!ELEMENT include EMPTY>
+  <!ATTLIST include
+    href URI #REQUIRED
+    mode (merge|replace) "merge">
+  <!ELEMENT setting EMPTY>
+  <!ATTLIST setting
+    name NMTOKEN #REQUIRED
+    value CDATA #REQUIRED
+    locked (true|false) "false">
+  <!ELEMENT choice (option, option?)>
+  <!ELEMENT option (#PCDATA)>
+  <!ATTLIST option selected (0|1) "0">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data.bin" NDATA bin>
+]>
+<config>
+  <include href="file:///tmp/example.xml" mode="replace"/>
+  <setting name="path" value="/a/b/c" locked="true"/>
+  <setting name="quote" value="&quot;&apos;&gt;&lt;" />
+  <choice>
+    <option selected="1">first</option>
+    <option>second</option>
+  </choice>
+</config>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST cell
+    col NMTOKEN #REQUIRED
+    span NMTOKEN "1">
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+]>
+<?build phase="fuzz"?>
+<matrix>
+  <row>
+    <cell col="a" span="2">&left;one&right;</cell>
+    <cell col="c"><![CDATA[unterminated ]]> marker]]></cell>
+  </row>
+  <row>
+    <cell col="a">x&#0;y</cell>
+    <cell col="b">line1
+line2&#xD;</cell>
+    <cell col="c"><?inner data?><![CDATA[&amp;]]></cell>
+  </row>
+</matrix>
+```

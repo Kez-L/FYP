@@ -1,0 +1,117 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry*)>
+  <!ELEMENT entry (title, meta?, value)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT value (#PCDATA|emph|br)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST entry id ID #REQUIRED status (new|old|archived) "new">
+  <!ATTLIST meta key CDATA #IMPLIED>
+]>
+<catalog>
+  <entry id="e1">
+    <title>α &amp; Ω</title>
+    <meta key="empty"/>
+    <value>left<emph>middle</emph><br/>right</value>
+  </entry>
+  <entry id="e2" status="archived">
+    <title><![CDATA[x < y && y > z]]></title>
+    <value>one<emph><![CDATA[two]]></emph>three</value>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % common "<!ELEMENT root (item|wrapper)+>">
+  %common;
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item ref IDREF #IMPLIED>
+  <!ELEMENT wrapper (item*, text)>
+  <!ELEMENT text (#PCDATA)>
+  <!ENTITY quote "A &quot;quoted&quot; value">
+]>
+<root>
+  <wrapper>
+    <item ref="i"/>
+    <text>&quote; &#x41; &#65;</text>
+  </wrapper>
+  <item id="i"/>
+  <item/>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:report xmlns:r="urn:report" xmlns:x="urn:extended" xml:lang="fr">
+  <r:header>
+    <r:date>2026-10-01</r:date>
+    <x:flag x:mode="sparse">true</x:flag>
+  </r:header>
+  <r:body>
+    <r:section name="a:b">
+      <r:item xml:space="preserve">  padded&#x9;text  </r:item>
+      <x:item>
+        <![CDATA[
+          <fake attr="&not-an-entity;"/>
+        ]]>
+      </x:item>
+    </r:section>
+    <r:section>
+      <r:item/>
+    </r:section>
+  </r:body>
+</r:report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (record+)>
+  <!ELEMENT record (key, data?, checksum)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT data (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST record seq NMTOKEN #REQUIRED>
+  <!ENTITY one "1">
+  <!ENTITY two "&one;&one;">
+]>
+<stream>
+  <record seq="0001">
+    <key>alpha</key>
+    <data><part>A</part><![CDATA[B]]><part>C]]&gt;</part></data>
+    <checksum>&two;2</checksum>
+  </record>
+  <record seq="0002">
+    <key>beta</key>
+    <checksum>0&#x0D;&#x0A;</checksum>
+  </record>
+</stream>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST row index CDATA #IMPLIED>
+  <!ATTLIST cell col CDATA #REQUIRED kind (number|string|empty) "string">
+]>
+<matrix>
+  <row index="0">
+    <cell col="0" kind="number">-0</cell>
+    <cell col="1" kind="empty"></cell>
+  </row>
+  <row index="1">
+    <cell col="0"><![CDATA[ ]]>42</cell>
+    <cell col="1" kind="string">line1&#10;line2</cell>
+    <cell col="2">a &lt; b &amp;&amp; b &gt; c</cell>
+  </row>
+</matrix>
+```

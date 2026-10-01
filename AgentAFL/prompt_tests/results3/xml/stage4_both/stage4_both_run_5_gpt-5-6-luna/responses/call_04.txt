@@ -1,0 +1,227 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<envelope xmlns="urn:example:message" xmlns:sec="urn:example:security" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- A namespaced request with headers, attributes, and mixed payload content. -->
+  <header messageId="msg-7f31" timestamp="2026-10-01T12:45:00Z">
+    <sender>robotics-lab</sender>
+    <receiver>archive-gateway</receiver>
+    <sec:credentials algorithm="sha256">
+      <sec:keyId>lab-key-04</sec:keyId>
+      <sec:digest>9f2a1c7e55d0</sec:digest>
+    </sec:credentials>
+  </header>
+  <body xsi:type="MeasurementBatch">
+    <request priority="high" retry="2">
+      <operation name="capture">
+        <parameter name="exposure" type="integer">240</parameter>
+        <parameter name="filter" type="string">infrared</parameter>
+        <parameter name="enabled" type="boolean">true</parameter>
+      </operation>
+      <targets>
+        <target ref="north-01" active="yes">
+          <location lat="61.2181" lon="-149.9003"/>
+          <channels>
+            <channel id="a" gain="1.25"/>
+            <channel id="b" gain="0.875"/>
+          </channels>
+        </target>
+        <target ref="south-02" active="no">
+          <location lat="34.0522" lon="-118.2437"/>
+        </target>
+      </targets>
+      <note>Capture after <emphasis>local midnight</emphasis>; preserve raw samples.</note>
+    </request>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (title, namespace+, bundle?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT namespace (prefix, uri, entry*)>
+  <!ELEMENT prefix (#PCDATA)>
+  <!ELEMENT uri (#PCDATA)>
+  <!ELEMENT entry (symbol, description, alias*)>
+  <!ELEMENT symbol (#PCDATA)>
+  <!ELEMENT description (#PCDATA|code|term)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT term (#PCDATA)>
+  <!ELEMENT alias (#PCDATA)>
+  <!ELEMENT bundle (member+)>
+  <!ELEMENT member EMPTY>
+  <!ATTLIST registry release NMTOKEN #REQUIRED>
+  <!ATTLIST namespace status (active|retired|draft) "active">
+  <!ATTLIST entry key ID #REQUIRED kind (element|attribute|type) #REQUIRED>
+  <!ATTLIST member ref IDREF #REQUIRED>
+  <!ENTITY trademark "™">
+]>
+<registry release="4.2">
+  <title>Interchange Vocabulary &trademark;</title>
+  <namespace status="active">
+    <prefix>geo</prefix>
+    <uri>urn:example:geo</uri>
+    <entry key="geo-point" kind="element">
+      <symbol>point</symbol>
+      <description>A location expressed as <code>latitude</code> and <code>longitude</code>.</description>
+      <alias>coordinate</alias>
+      <alias>position</alias>
+    </entry>
+    <entry key="geo-crs" kind="type">
+      <symbol>coordinate-reference-system</symbol>
+      <description>Reference frame used by a <term>point</term>.</description>
+    </entry>
+  </namespace>
+  <namespace status="draft">
+    <prefix>obs</prefix>
+    <uri>urn:example:observation</uri>
+    <entry key="obs-reading" kind="element">
+      <symbol>reading</symbol>
+      <description>Scalar observation with optional uncertainty.</description>
+    </entry>
+  </namespace>
+  <bundle>
+    <member ref="geo-point"/>
+    <member ref="geo-crs"/>
+    <member ref="obs-reading"/>
+  </bundle>
+</registry>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow" xmlns:ext="urn:example:workflow:extension" version="3">
+  <definition id="wf-204" owner="night-shift">
+    <trigger>
+      <schedule timezone="UTC">
+        <window start="22:00:00" end="23:30:00"/>
+        <days>
+          <day>monday</day>
+          <day>wednesday</day>
+          <day>friday</day>
+        </days>
+      </schedule>
+      <condition operator="all">
+        <test path="/sensor/status" equals="ready"/>
+        <test path="/queue/length" greater-than="0"/>
+      </condition>
+    </trigger>
+    <steps>
+      <step id="prepare" action="allocate" timeout="PT30S">
+        <resource class="gpu" count="2"/>
+        <resource class="memory" amount="8GiB"/>
+      </step>
+      <step id="execute" action="run" depends-on="prepare">
+        <command><![CDATA[
+          ./analyze --input "$SOURCE" --format json
+        ]]></command>
+        <environment>
+          <variable name="MODE">batch</variable>
+          <variable name="VERBOSE">1</variable>
+        </environment>
+        <on-failure>
+          <retry limit="3" delay="PT10S"/>
+          <notify channel="pager">operator@example.test</notify>
+        </on-failure>
+      </step>
+      <step id="publish" action="transfer" depends-on="execute">
+        <destination protocol="sftp" host="drop.example.test" path="/incoming/results"/>
+        <ext:checksum algorithm="sha512">required</ext:checksum>
+      </step>
+    </steps>
+  </definition>
+  <history>
+    <run started="2026-09-30T22:01:04Z" finished="2026-09-30T22:08:19Z" result="success">
+      <artifact name="summary.json" bytes="18420"/>
+      <artifact name="trace.log" bytes="9021"/>
+    </run>
+  </history>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<collection xml:lang="ar" xmlns="urn:example:collection">
+  <introduction dir="rtl">سجل القطع المحفوظة في المخزن القديم.</introduction>
+  <section number="I" label="مواد">
+    <item code="M-001" condition="stable">
+      <name>مخطوطة بحرية</name>
+      <origin country="المغرب" century="XVIII"/>
+      <dimensions unit="cm">
+        <length>31.4</length>
+        <width>22.0</width>
+        <thickness>0.8</thickness>
+      </dimensions>
+      <description>خريطة مرسومة بالحبر على ورق قطني.</description>
+      <marks>
+        <mark type="stamp">ختم أزرق</mark>
+        <mark type="inscription"><![CDATA[North archive / shelf 8]]></mark>
+      </marks>
+    </item>
+    <item code="M-002" condition="needs-review">
+      <name xml:lang="fr">Boîte en cuivre</name>
+      <origin country="Tunisie" century="XIX"/>
+      <dimensions unit="mm">
+        <length>180</length>
+        <width>95</width>
+        <thickness>42</thickness>
+      </dimensions>
+      <description xml:space="preserve">Surface oxydée; charnière
+à examiner avant déplacement.</description>
+    </item>
+  </section>
+  <section number="II" label="مواد غير مصنفة">
+    <item code="U-017" condition="unknown">
+      <name>قطعة زجاجية</name>
+      <provenance>
+        <claim source="donor">تم العثور عليها قرب البئر</claim>
+        <claim source="cataloguer">قد تكون جزءاً من مصباح</claim>
+      </provenance>
+    </item>
+  </section>
+</collection>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (metadata, payload, signature)>
+  <!ELEMENT metadata (source, sequence, flags)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT sequence (#PCDATA)>
+  <!ELEMENT flags (flag*)>
+  <!ELEMENT flag (#PCDATA)>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT signature (algorithm, value)>
+  <!ELEMENT algorithm (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST packet format (binary|text|mixed) #REQUIRED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding (base64|hex|plain) "plain">
+  <!ATTLIST chunk last (true|false) "false">
+  <!ATTLIST flag name NMTOKEN #REQUIRED>
+  <!ENTITY separator "&#x1F;">
+]>
+<packet format="mixed">
+  <metadata>
+    <source>telemetry-node-19</source>
+    <sequence>000000004281</sequence>
+    <flags>
+      <flag name="compressed"/>
+      <flag name="encrypted"/>
+      <flag name="priority">low</flag>
+    </flags>
+  </metadata>
+  <payload>
+    <chunk index="0" encoding="plain">BEGIN-RECORD&separator;node=19&separator;mode=idle</chunk>
+    <chunk index="1" encoding="hex">7B22636F756E74223A31322C2274656D70223A32312E37357D</chunk>
+    <chunk index="2" encoding="base64">VGltZXN0YW1wPTIwMjYtMTAtMDFUMTI6MDA6MDBa</chunk>
+    <chunk index="3" encoding="plain" last="true">END-RECORD</chunk>
+  </payload>
+  <signature>
+    <algorithm>ed25519</algorithm>
+    <value>e3b0c44298fc1c149afbf4c8996fb92427ae41e4</value>
+  </signature>
+</packet>
+```

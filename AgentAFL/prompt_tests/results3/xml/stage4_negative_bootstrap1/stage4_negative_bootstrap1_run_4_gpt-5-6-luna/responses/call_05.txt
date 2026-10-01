@@ -1,0 +1,167 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (label, price?, description?)>
+  <!ATTLIST item sku ID #REQUIRED status (active|retired|draft) "active">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+]>
+<catalog>
+  <section code="hardware">
+    <title xml:lang="en">Tools &amp; Components</title>
+    <item sku="s-001">
+      <label>Socket set</label>
+      <price>19.95</price>
+      <description>Metric sizes <em>and</em> imperial sizes<br/>included.</description>
+    </item>
+    <item sku="s-002" status="draft">
+      <label>Δοκιμή — набор</label>
+      <description><![CDATA[unescaped <markup> with ]]]]><![CDATA[> split]]></description>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ENTITY company "North &amp; South">
+  <!ENTITY greeting "Hello, &company;!">
+  <!ELEMENT message (header, body, footer)>
+  <!ELEMENT header (from, to, subject)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (paragraph|quote|attachment)*>
+  <!ELEMENT paragraph (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment name CDATA #REQUIRED media CDATA #IMPLIED>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<message>
+  <header>
+    <from>sender@example.invalid</from>
+    <to>receiver@example.invalid</to>
+    <subject>&greeting;</subject>
+  </header>
+  <body>
+    <paragraph>First line<link href="mailto:a&amp;b@example.invalid">contact</link>after.</paragraph>
+    <quote xml:space="preserve">
+      "A quoted &lt;fragment&gt;"
+    </quote>
+    <attachment name="résumé.txt" media="text/plain"/>
+    <paragraph>Numeric characters: &#65; &#x1F642; &#x20AC;.</paragraph>
+  </body>
+  <footer>-- end --</footer>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<scene xmlns="urn:example:scene" xmlns:g="urn:example:graphics" xmlns:xlink="http://www.w3.org/1999/xlink" version="2.0">
+  <?render profile="preview"?>
+  <g:canvas width="640" height="480" viewBox="0 0 640 480">
+    <g:layer id="background">
+      <g:rect x="0" y="0" width="640" height="480" fill="#102030"/>
+      <g:group transform="translate(12.5,-4) rotate(15)">
+        <g:path d="M0,0 C10,20 40,20 50,0 Z" stroke-width="0.25"/>
+        <g:text x="8" y="42" xml:lang="ja">色と звук</g:text>
+      </g:group>
+    </g:layer>
+    <g:layer id="embedded">
+      <foreignObject xmlns="http://www.w3.org/1999/xhtml" x="4" y="5">
+        <div data-kind="note" style="white-space:pre">alpha<br/>beta<!-- preserved --></div>
+      </foreignObject>
+      <image xlink:href="data:image/svg+xml,%3Csvg%3E" preserveAspectRatio="none"/>
+    </g:layer>
+  </g:canvas>
+  <metadata><![CDATA[
+    {"query":"a < b && c > d","values":[null,true,false]}
+  ]]></metadata>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, resources, content)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry path NMTOKEN #REQUIRED type CDATA #REQUIRED size NMTOKEN #IMPLIED>
+  <!ELEMENT resources (resource*)>
+  <!ELEMENT resource (data|reference)>
+  <!ATTLIST resource id ID #REQUIRED>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT reference EMPTY>
+  <!ATTLIST reference href URI #REQUIRED>
+  <!ELEMENT content (section+)>
+  <!ELEMENT section (heading, block*)>
+  <!ATTLIST section xml:id ID #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT block (#PCDATA|list|itemref)*>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT itemref EMPTY>
+  <!ATTLIST itemref ref IDREF #REQUIRED>
+]>
+<package xml:base="https://example.invalid/archive/">
+  <manifest>
+    <entry path="index.xml" type="application/xml" size="2048"/>
+    <entry path="assets/data.bin" type="application/octet-stream"/>
+  </manifest>
+  <resources>
+    <resource id="intro">
+      <data>first&#x0D;&#x0A;second</data>
+    </resource>
+    <resource id="remote">
+      <reference href="../shared.xml#part-7"/>
+    </resource>
+  </resources>
+  <content>
+    <section xml:id="main">
+      <heading>Package overview</heading>
+      <block>Before <itemref ref="intro"/> and after.</block>
+      <block>
+        <list>
+          <item>one</item>
+          <item>two &amp; three</item>
+        </list>
+      </block>
+    </section>
+  </content>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<records xmlns:r="urn:records" xmlns:m="urn:meta" xmlns:ns0="">
+  <r:record r:key="0001" m:created="2026-10-01T00:00:00Z">
+    <r:field name="empty"></r:field>
+    <r:field name="whitespace">
+    	
+    </r:field>
+    <r:field name="mixed">left<r:mark>middle</r:mark>right</r:field>
+    <r:field name="symbols">	&#9; &#10; &#13; &quot; &apos; &amp;</r:field>
+  </r:record>
+  <r:record r:key="0002">
+    <r:field name="cdata"><![CDATA[]]></r:field>
+    <r:field name="split"><![CDATA[one]]><![CDATA[two]]><![CDATA[three]]></r:field>
+    <!-- comment containing punctuation: -- not allowed here? -->
+    <?audit action="merge" target="r:record"?>
+  </r:record>
+  <r:record r:key="0003" m:flag="true">
+    <r:field name="long">αβγδεζηθικλμνξοπρστυφχψω</r:field>
+    <r:field name="entity-like">&lt;![CDATA[not markup]]&gt; &amp;unknown;</r:field>
+  </r:record>
+</records>
+```

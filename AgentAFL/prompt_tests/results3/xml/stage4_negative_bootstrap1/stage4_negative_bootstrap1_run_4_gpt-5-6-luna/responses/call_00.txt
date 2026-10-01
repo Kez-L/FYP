@@ -1,0 +1,118 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|link|note)*>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link href CDATA #REQUIRED target (local|external) "local">
+  <!ELEMENT note (#PCDATA)>
+]>
+<catalog>
+  <section id="one">
+    <title>Primary &amp; Reference</title>
+    <item>Plain text <link href="urn:item:1" target="external"/> tail</item>
+    <item><note><![CDATA[<embedded markup & symbols>]]></note></item>
+  </section>
+  <section id="two">
+    <title>Secondary</title>
+    <item>Mixed <note>nested note</note> content</item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node EMPTY>
+  <!ATTLIST node id ID #REQUIRED label CDATA #IMPLIED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight NMTOKEN "1">
+]>
+<graph>
+  <node id="n0" label="root"/>
+  <node id="n1" label="left"/>
+  <node id="n2" label="right"/>
+  <edge from="n0" to="n1" weight="0"/>
+  <edge from="n0" to="n2" weight="18446744073709551615"/>
+</graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ENTITY header "BEGIN">
+  <!ENTITY footer "END">
+  <!ELEMENT message (header, body, footer)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT body (paragraph|list|break)*>
+  <!ELEMENT paragraph (#PCDATA|em|quote)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT quote (#PCDATA|em)*>
+  <!ELEMENT list (entry+)>
+  <!ELEMENT entry (#PCDATA|em)*>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<message>
+  <header>&header;</header>
+  <body>
+    <paragraph>Alpha <em>emphasis</em> and <quote>quoted <em>text</em></quote>.</paragraph>
+    <list>
+      <entry>First</entry>
+      <entry>Second &amp; <em>more</em></entry>
+    </list>
+    <break/>
+    <paragraph><![CDATA[raw ]]> data <![CDATA[ ]]> after</paragraph>
+  </body>
+  <footer>&footer;</footer>
+</message>
+```
+
+```xml
+<?xml version="1.1"?>
+<configuration xmlns="urn:example:config" xmlns:x="urn:example:extra">
+  <x:metadata x:created="2026-10-01">
+    <x:tag>alpha</x:tag>
+    <x:tag><![CDATA[beta<gamma>]]></x:tag>
+  </x:metadata>
+  <profile name="default" enabled="true">
+    <parameter key="path">/var/tmp/data</parameter>
+    <parameter key="threshold">0</parameter>
+    <group>
+      <parameter key="unicode">λ雪🙂</parameter>
+      <x:parameter key="foreign">value</x:parameter>
+    </group>
+  </profile>
+  <profile name="empty" enabled="false"/>
+</configuration>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (name, timestamp, payload)>
+  <!ATTLIST entry kind (text|binary|unknown) "text" checksum CDATA #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT payload ANY>
+]>
+<archive>
+  <entry kind="text" checksum="00000000">
+    <name>empty</name>
+    <timestamp>1970-01-01T00:00:00Z</timestamp>
+    <payload/>
+  </entry>
+  <entry kind="binary">
+    <name>boundary &lt; sample</name>
+    <timestamp>9999-12-31T23:59:59+14:00</timestamp>
+    <payload><![CDATA[
+      ]]]]><![CDATA[>]]>
+      <![CDATA[&not-an-entity;]]>
+    </payload>
+  </entry>
+</archive>
+```

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE broken [
+  <!ELEMENT broken (node|node2)*>
+  <!ELEMENT node (#PCDATA)>
+  <!ELEMENT node2 EMPTY>
+  <!ATTLIST node
+    a CDATA #IMPLIED
+    b CDATA #IMPLIED>
+  <!ENTITY amp "&amp;">
+  <!ENTITY nested "x&amp;y">
+]>
+<broken>
+  <node a="one" a="two" b="&nested;">text &amp; &#0; <![CDATA[unterminated-looking]]></node>
+  <node2 flag="&amp;"/>
+  <node>
+    <node2/>
+    <node>nested where text was expected
+  </node>
+  <node a="&unknown;">&amp;&nested;
+</broken>

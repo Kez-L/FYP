@@ -1,0 +1,41 @@
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (header, transaction*, footer)>
+  <!ELEMENT header (issuer, period)>
+  <!ELEMENT issuer (#PCDATA)>
+  <!ELEMENT period EMPTY>
+  <!ATTLIST period from CDATA #REQUIRED to CDATA #REQUIRED>
+  <!ELEMENT transaction (debit|credit, memo?, link*)>
+  <!ATTLIST transaction
+    number NMTOKEN #REQUIRED
+    cleared (yes|no) "no"
+  >
+  <!ELEMENT debit EMPTY>
+  <!ATTLIST debit amount CDATA #REQUIRED account CDATA #REQUIRED>
+  <!ELEMENT credit EMPTY>
+  <!ATTLIST credit amount CDATA #REQUIRED account CDATA #REQUIRED>
+  <!ELEMENT memo (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link rel CDATA #REQUIRED href CDATA #REQUIRED>
+  <!ELEMENT footer (total)>
+  <!ELEMENT total (#PCDATA)>
+  <!ENTITY currency "EUR">
+]>
+<ledger>
+  <header>
+    <issuer>Example Cooperative</issuer>
+    <period from="2026-01-01" to="2026-03-31"/>
+  </header>
+  <transaction number="TX-001" cleared="yes">
+    <debit amount="19.95 &currency;" account="4100"/>
+    <memo><![CDATA[Quarterly service <fee>]]></memo>
+    <link rel="receipt" href="urn:receipt:001"/>
+  </transaction>
+  <transaction number="TX-002">
+    <credit amount="125.00 &currency;" account="7001"/>
+    <link rel="source" href="urn:import:batch-7"/>
+  </transaction>
+  <footer>
+    <total>105.05 EUR</total>
+  </footer>
+</ledger>

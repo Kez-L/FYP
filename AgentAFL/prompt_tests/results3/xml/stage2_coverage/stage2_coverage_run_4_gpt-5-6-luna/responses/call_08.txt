@@ -1,0 +1,163 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY brand "A&amp;B">
+  <!ENTITY quote "&#34;quoted&#34;">
+  <!ENTITY % metadata "<!ATTLIST catalog version NMTOKEN #IMPLIED source CDATA #IMPLIED>">
+  %metadata;
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, entry*)>
+  <!ATTLIST section id ID #REQUIRED xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (name, value, note?)>
+  <!ATTLIST entry key ID #IMPLIED kind (text|number|flag) "text">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+]>
+<catalog version="2" source="&brand;">
+  <section id="main" xml:lang="en">
+    <title>&quote;Primary&#x20;values</title>
+    <entry key="e1"><name>alpha</name><value>one <emph>important</emph> value</value><note>line&#xA;break</note></entry>
+    <entry key="e2" kind="number"><name>count</name><value>00042</value></entry>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body, trailer)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST field name CDATA #REQUIRED>
+  <!ELEMENT body (record+)>
+  <!ELEMENT record (key, data)>
+  <!ATTLIST record status (new|old|locked) "new">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT data (#PCDATA|part|gap)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT gap EMPTY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ENTITY open "(">
+  <!ENTITY close ")">
+  <!ENTITY pair "&open;payload&close;">
+]>
+<envelope>
+  <header>
+    <field name="&quot;mode&quot;">safe</field>
+    <field name="checksum">a&#x09;b&#x0D;c</field>
+  </header>
+  <body>
+    <record status="locked"><key>K&amp;1</key><data>&pair;<part><![CDATA[x<y && z>q]]></part><gap/></data></record>
+    <record><key>K2</key><data>tail</data></record>
+  </body>
+  <trailer>done</trailer>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ENTITY % common "
+    <!ELEMENT property EMPTY>
+    <!ATTLIST property name CDATA #REQUIRED value CDATA #IMPLIED enabled (yes|no) 'yes'>
+  ">
+  %common;
+  <!ENTITY % optional "<!ELEMENT extension (property*)>">
+  %optional;
+  <!ELEMENT configuration (defaults, profile*, extension?)>
+  <!ATTLIST configuration xmlns CDATA #IMPLIED>
+  <!ELEMENT defaults (property*)>
+  <!ELEMENT profile (inherits?, property*)>
+  <!ATTLIST profile id ID #REQUIRED>
+  <!ELEMENT inherits EMPTY>
+  <!ATTLIST inherits ref IDREF #REQUIRED>
+  <!ENTITY slash "/">
+  <![IGNORE[
+    <!ELEMENT obsolete ANY>
+    <!ATTLIST obsolete reason CDATA #IMPLIED>
+  ]]>
+]>
+<configuration xmlns="urn:cfg">
+  <defaults>
+    <property name="path" value="c&slash;temp"/>
+    <property name="verbose" enabled="no"/>
+  </defaults>
+  <profile id="base">
+    <property name="timeout" value="30"/>
+  </profile>
+  <profile id="child">
+    <inherits ref="base"/>
+    <property name="message" value="&lt;ready&gt;"/>
+  </profile>
+  <extension>
+    <property name="extra" value="yes"/>
+  </extension>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section*)>
+  <!ATTLIST report xml:space (default|preserve) "default">
+  <!ELEMENT section (heading, paragraph+, list?)>
+  <!ATTLIST section number NMTOKEN #REQUIRED>
+  <!ELEMENT heading (#PCDATA|mark)*>
+  <!ELEMENT paragraph (#PCDATA|mark|break)*>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY amp "&#38;">
+]>
+<report xml:space="preserve">
+  <section number="01">
+    <heading>Use <mark>carefully</mark>&nbsp;</heading>
+    <paragraph>First line<break/>second line &amp; more.</paragraph>
+    <paragraph><![CDATA[raw <markup> remains literal]]> and <mark>ends</mark>.</paragraph>
+    <list>
+      <item>one</item>
+      <item>two &amp; three</item>
+    </list>
+  </section>
+  <section number="02">
+    <heading>Empty list boundary</heading>
+    <paragraph>text</paragraph>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node*, edge*)>
+  <!ATTLIST graph directed (true|false) "true">
+  <!ELEMENT node (label?, meta*)>
+  <!ATTLIST node id ID #REQUIRED type CDATA #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT meta (#PCDATA)>
+  <!ATTLIST meta key NMTOKEN #REQUIRED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA #IMPLIED>
+  <!ENTITY arrow "&#x2192;">
+  <!ENTITY % edgeinfo "<!ATTLIST edge note CDATA #IMPLIED>">
+  %edgeinfo;
+]>
+<graph directed="false">
+  <node id="n1" type="entry">
+    <label>Start &arrow;</label>
+    <meta key="color">red</meta>
+    <meta key="empty"></meta>
+  </node>
+  <node id="n2">
+    <label><![CDATA[Middle <node>]]></label>
+  </node>
+  <node id="n3"><meta key="quoted">&quot;end&quot;</meta></node>
+  <edge from="n1" to="n2" weight="1.0" note="first"/>
+  <edge from="n2" to="n3" weight="2&amp;3"/>
+</graph>
+```

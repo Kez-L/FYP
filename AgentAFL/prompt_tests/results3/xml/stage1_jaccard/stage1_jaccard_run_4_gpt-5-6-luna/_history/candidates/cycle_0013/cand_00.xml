@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry*)>
+  <!ELEMENT entry (title, meta?, blob)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT blob (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST entry id ID #REQUIRED ref IDREFS #IMPLIED>
+  <!ATTLIST meta key NMTOKEN #IMPLIED value CDATA #IMPLIED>
+  <!ENTITY leftBracket "&#60;">
+  <!ENTITY rightBracket "&#62;">
+  <!ENTITY quote "&#34;">
+]>
+<catalog>
+  <entry id="e1" ref="e2 e3">
+    <title>&leftBracket;encoded&rightBracket; &quote;title&quote;</title>
+    <meta key="a:b" value="x&amp;y"/>
+    <blob>alpha<chunk><![CDATA[<raw>&stuff;</raw>]]></chunk>omega</blob>
+  </entry>
+  <entry id="e2">
+    <title>second</title>
+    <blob><![CDATA[]]><chunk>tail</chunk></blob>
+  </entry>
+  <entry id="e3">
+    <title>third</title>
+    <blob>line1&#x0A;line2&#x9;line3</blob>
+  </entry>
+</catalog>

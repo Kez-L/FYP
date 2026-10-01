@@ -1,0 +1,99 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:inventory" xmlns:x="urn:extra">
+  <x:item id="α-01" enabled="true">
+    <x:name><![CDATA[<unexpected>&payload]]></x:name>
+    <x:price currency="€">0.0000000000000000001</x:price>
+    <x:tags>
+      <x:tag>x</x:tag>
+      <x:tag>line
+break</x:tag>
+      <x:tag><![CDATA[]]></x:tag>
+    </x:tags>
+  </x:item>
+  <entry ref="x:item" data="&#x0A;&#65;&#x1F600;"/>
+</catalog>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ELEMENT report (section*, footer?)>
+  <!ELEMENT section (title, paragraph+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|link|emph)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST section level NMTOKEN #IMPLIED>
+  <!ENTITY company "A &amp; B &lt;systems&gt;">
+]>
+<report>
+  <section level="01">
+    <title>Entities &company;</title>
+    <paragraph>alpha <emph>beta</emph> gamma <link>https://example.invalid/a?x=1&amp;y=2</link></paragraph>
+    <paragraph><![CDATA[mixed ]]> text <![CDATA[with ]]> boundaries</paragraph>
+  </section>
+  <section level="">
+    <title>second</title>
+    <paragraph>tail</paragraph>
+  </section>
+  <footer>done</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns:a="urn:a" xmlns:b="urn:b" xmlns="urn:default">
+  <a:container xmlns:a="">
+    <item xmlns="urn:inner" a="literal">
+      <b:value xmlns:b="urn:shadow">42</b:value>
+    </item>
+  </a:container>
+  <mixed>text<a:node/><![CDATA[more]]><?custom instruction?></mixed>
+  <!-- comment with --? and entities &amp; &lt; -->
+  <empty xmlns=""/>
+</root>
+```
+
+```xml
+<!DOCTYPE stream [
+  <!ELEMENT stream (record*)>
+  <!ELEMENT record (key, value, value?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+]>
+<stream>
+  <record>
+    <key>one</key>
+    <value>&left;<chunk>nested</chunk>&right;</value>
+    <value>before&#x9;after&#xD;&#xA;end</value>
+  </record>
+  <record>
+    <key><![CDATA[key]]></key>
+    <value>unclosed-looking ]]&gt; text</value>
+  </record>
+</stream>
+```
+
+```xml
+<?xml version="1.0"?>
+<?build mode="fuzz" stage="late"?>
+<application>
+  <config name="edge" value="&quot; &#x26; &apos;"/>
+  <matrix rows="2" cols="3">
+    <row index="0"><cell/><cell>1</cell><cell><![CDATA[2]]></cell></row>
+    <row index="1"><cell>-1</cell><cell>NaN</cell><cell>∞</cell></row>
+  </matrix>
+  <payload>
+    <![CDATA[
+      <not-an-element attr='x'>
+        raw ]]> sequence
+      </not-an-element>
+    ]]>
+  </payload>
+  <?hook a="1"?>
+</application>
+```

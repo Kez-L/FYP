@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta, body)>
+  <!ELEMENT meta (field*)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT body (line|block|token)*>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT block (#PCDATA|line|token)*>
+  <!ELEMENT token EMPTY>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST block id ID #IMPLIED>
+  <!ATTLIST token kind NOTATION (plain|quoted) "plain">
+  <!NOTATION plain SYSTEM "text/plain">
+  <!NOTATION quoted PUBLIC "-//example//NOTATION quoted//EN">
+  <!ENTITY quote "&quot;">
+  <!ENTITY nested "A&quote;B">
+]>
+<envelope>
+  <meta>
+    <field name="empty"/>
+    <field name="quoted" value="&nested;"/>
+    <field name="spaces" value="&#x20;  x&#x20;"/>
+  </meta>
+  <body>
+    <line>first</line>
+    <block id="b1">outer <line>inner &lt; line</line><token kind="plain"/> tail</block>
+    <token kind="quoted"/>
+    <block id="b2"><![CDATA[]]></block>
+    <line>last &apos;line&apos;</line>
+  </body>
+</envelope>

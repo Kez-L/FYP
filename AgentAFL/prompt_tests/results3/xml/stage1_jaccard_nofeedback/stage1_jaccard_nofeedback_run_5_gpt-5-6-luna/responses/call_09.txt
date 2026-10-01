@@ -1,0 +1,144 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section id ID #REQUIRED xml:lang NMTOKEN "en">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (name, price, description?)>
+  <!ATTLIST item sku CDATA #IMPLIED status (new|used|archived) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ENTITY currency "€">
+]>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <section id="s-main" xml:lang="fr">
+    <title>Éléments récents</title>
+    <item sku="A-001" status="new">
+      <name>Crème brûlée</name>
+      <price>12 &currency;</price>
+      <description>Servie avec <em>vanille</em><br/>et caramel.</description>
+    </item>
+    <item sku="B-002">
+      <name>Thé vert</name>
+      <price>8 &currency;</price>
+      <description><![CDATA[Notes florales & minérales <à conserver>]]></description>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ENTITY left  "«">
+  <!ENTITY right "»">
+  <!ENTITY stamp "2026-10-01T12:34:56Z">
+  <!ENTITY warning "&left;attention&right;">
+]>
+<message xmlns="urn:example:message" xmlns:meta="urn:example:metadata" priority="high">
+  <meta:created>&stamp;</meta:created>
+  <meta:flags>
+    <meta:flag key="urgent" value="true"/>
+    <meta:flag key="retry" value="3"/>
+  </meta:flags>
+  <body>
+    <paragraph>Transmission &warning;: use &lt;CDATA&gt; when needed.</paragraph>
+    <paragraph><![CDATA[
+      payload = {"a": [1, 2, 3], "text": "x < y && y > z"};
+    ]]></paragraph>
+  </body>
+  <?audit level="verbose"?>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (layer+)>
+  <!ELEMENT layer (object*)>
+  <!ATTLIST layer z CDATA #REQUIRED visible (yes|no) "yes">
+  <!ELEMENT object (geometry, transform?, properties?)>
+  <!ATTLIST object type CDATA #REQUIRED>
+  <!ELEMENT geometry EMPTY>
+  <!ATTLIST geometry x CDATA #REQUIRED y CDATA #REQUIRED w CDATA #REQUIRED h CDATA #REQUIRED>
+  <!ELEMENT transform EMPTY>
+  <!ATTLIST transform rotate CDATA "0" scale CDATA "1,1">
+  <!ELEMENT properties (property*)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST property name CDATA #REQUIRED>
+]>
+<scene xmlns="urn:example:scene" units="px">
+  <layer z="0" visible="yes">
+    <object type="rectangle">
+      <geometry x="-1.25" y="4e2" w="640" h="480"/>
+      <transform rotate="359.99" scale="-1,0.5"/>
+      <properties>
+        <property name="fill">#00ff7f</property>
+        <property name="label">edge &amp; corner</property>
+      </properties>
+    </object>
+    <object type="path">
+      <geometry x="0" y="0" w="0" h="0"/>
+    </object>
+  </layer>
+  <layer z="10" visible="no"/>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<records xmlns="urn:example:records" xmlns:r="urn:example:relation">
+  <record r:id="root" kind="container">
+    <field name="alpha" type="integer">00000000000000000042</field>
+    <field name="beta" type="boolean">false</field>
+    <field name="gamma" type="text">line one&#x0A;line two&#x09;終</field>
+    <record r:id="child-1" kind="leaf" parent="root">
+      <field name="empty"/>
+      <field name="quoted">a &quot;b&quot; c &apos;d&apos;</field>
+    </record>
+    <record r:id="child-2" kind="leaf" parent="root">
+      <field name="symbols">&#x1F642; &#x00A9; &#x03BB;</field>
+    </record>
+  </record>
+  <checksum algorithm="sha256">0000000000000000000000000000000000000000000000000000000000000000</checksum>
+</records>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ENTITY % declarations '
+    <!ELEMENT envelope (header, payload, trailer)>
+    <!ELEMENT header (source, destination, token)>
+    <!ELEMENT source (#PCDATA)>
+    <!ELEMENT destination (#PCDATA)>
+    <!ELEMENT token (#PCDATA)>
+    <!ELEMENT payload (chunk+)>
+    <!ELEMENT chunk (#PCDATA)>
+    <!ATTLIST chunk index CDATA #REQUIRED encoding CDATA "base64">
+    <!ELEMENT trailer EMPTY>
+    <!ATTLIST trailer status (ok|failed|unknown) "unknown">
+  '>
+  %declarations;
+  <!ENTITY amp "&#38;">
+]>
+<envelope>
+  <header>
+    <source>node-A</source>
+    <destination>node-B</destination>
+    <token>tkn-&amp;-42</token>
+  </header>
+  <payload>
+    <chunk index="0">QUJDREVGRw==</chunk>
+    <chunk index="1" encoding="hex">00ff10aa&amp;amp;</chunk>
+    <chunk index="2"><![CDATA[raw
+multiline
+content]]></chunk>
+  </payload>
+  <trailer status="ok"/>
+</envelope>
+```

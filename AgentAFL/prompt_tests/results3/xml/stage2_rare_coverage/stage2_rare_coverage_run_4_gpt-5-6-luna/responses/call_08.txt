@@ -1,0 +1,167 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ENTITY % feature "INCLUDE">
+  <![%feature;[
+    <!ELEMENT config (meta?, setting*, payload)>
+    <!ELEMENT meta EMPTY>
+    <!ATTLIST meta
+      generated CDATA #IMPLIED
+      mode (safe|fast|diagnostic) "safe">
+  ]]>
+  <!ELEMENT setting (value|list|map)>
+  <!ATTLIST setting name NMTOKEN #REQUIRED>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT list (entry*)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ELEMENT map (pair*)>
+  <!ELEMENT pair (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk|![CDATA[not-a-declaration]])*>
+  <!ELEMENT chunk ANY>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<config>
+  <meta generated="yes" mode="diagnostic"/>
+  <setting name="threshold"><value>0&amp;1</value></setting>
+  <setting name="paths">
+    <list><entry>/tmp</entry><entry>&left;cache&right;</entry></list>
+  </setting>
+  <setting name="attributes">
+    <map><pair><key>empty</key><value/></pair></map>
+  </setting>
+  <payload>start<chunk><![CDATA[x<y && z>q]]></chunk>end</payload>
+</config>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY logo SYSTEM "logo.jpeg" NDATA jpeg>
+  <!ELEMENT message (header, body, attachment*)>
+  <!ELEMENT header (from, to, subject?)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|link|break)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED rel CDATA #IMPLIED>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment
+    name CDATA #REQUIRED
+    content ENTITY #IMPLIED>
+]>
+<message>
+  <header>
+    <from>alice@example.test</from>
+    <to>bob@example.test</to>
+    <subject>Re: &quot;status&quot;</subject>
+  </header>
+  <body>
+    Intro
+    <quote>quoted <quote>nested</quote> material</quote>
+    <link href="https://example.test/a?x=1&amp;y=2" rel="next">continue</link>
+    <break/>
+    <![CDATA[raw ]]> text
+  </body>
+  <attachment name="picture" content="logo"/>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE tree [
+  <!ELEMENT tree (node)>
+  <!ELEMENT node (label?, node*)>
+  <!ATTLIST node
+    id ID #IMPLIED
+    parent IDREF #IMPLIED
+    kind NMTOKENS #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+]>
+<tree>
+  <node id="root" kind="top root">
+    <label>root</label>
+    <node id="left" parent="root" kind="branch">
+      <label>left</label>
+      <node id="leaf1" parent="left" kind="terminal"/>
+      <node id="leaf2" parent="left" kind="terminal">
+        <label>line&#x0A;break</label>
+      </node>
+    </node>
+    <node id="right" parent="root" kind="branch">
+      <node id="leaf3" parent="right" kind="terminal"/>
+    </node>
+  </node>
+</tree>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ENTITY % declarations SYSTEM "missing-parameter-subset.dtd">
+  %declarations;
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+    path CDATA #REQUIRED
+    size NMTOKEN #IMPLIED
+    checksum CDATA #IMPLIED>
+  <!ELEMENT data (block*)>
+  <!ELEMENT block (#PCDATA)>
+  <!ATTLIST block index NMTOKEN #REQUIRED encoding CDATA "base64">
+]>
+<package xml:base="urn:pkg:root">
+  <?build profile="fuzz"?>
+  <!-- manifest deliberately contains unusual but legal whitespace -->
+  <manifest>
+    <file path="a&amp;b.bin" size="000"/>
+    <file path="space name.txt" checksum=""/>
+    <file path="unicode-π.dat" size="9"/>
+  </manifest>
+  <data>
+    <block index="0">AAECAwQ=</block>
+    <block index="1" encoding="hex"><![CDATA[00 ff 7f]]></block>
+    <block index="2">tail</block>
+  </data>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE form [
+  <!ELEMENT form (field*, choice, result?)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field
+    name CDATA #REQUIRED
+    value CDATA #IMPLIED
+    disabled (yes|no) "no">
+  <!ELEMENT choice (option+)>
+  <!ATTLIST choice selected IDREF #IMPLIED>
+  <!ELEMENT option (#PCDATA)>
+  <!ATTLIST option id ID #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT result (#PCDATA|error|value)*>
+  <!ELEMENT error (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+]>
+<form>
+  <field name="query" value="&lt;tag attr='x'&gt;"/>
+  <field name="empty" disabled="yes"/>
+  <field name="quote" value="a&quot;b&apos;c"/>
+  <choice selected="opt-b">
+    <option id="opt-a" value="1">One</option>
+    <option id="opt-b" value="2">Two &amp; more</option>
+    <option id="opt-c">Three</option>
+  </choice>
+  <result>
+    <value>accepted</value>
+    <error><![CDATA[warning: <not-an-element>]]></error>
+    trailing text
+  </result>
+</form>
+```

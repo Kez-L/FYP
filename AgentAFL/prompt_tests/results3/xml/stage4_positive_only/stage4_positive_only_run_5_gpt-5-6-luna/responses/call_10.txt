@@ -1,0 +1,154 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:m="urn:example:meta">
+  <collection id="c-17" status="active">
+    <name>Field Equipment</name>
+    <item sku="A-100" available="true">
+      <m:metadata>
+        <m:origin country="NO"/>
+        <m:rating scale="5">4.5</m:rating>
+      </m:metadata>
+      <description>Portable sensor kit</description>
+      <components>
+        <component quantity="2" unit="piece">
+          <part>probe</part>
+          <specifications>
+            <spec key="range" value="-40..125"/>
+            <spec key="interface">I²C</spec>
+          </specifications>
+        </component>
+        <component quantity="1" unit="piece">
+          <part>adapter</part>
+        </component>
+      </components>
+    </item>
+  </collection>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<scene xmlns="http://example.org/scene">
+  <canvas width="640" height="480" color="#101820">
+    <layer name="background" opacity="1">
+      <shape type="polygon" fill="gold">
+        <point x="0" y="0"/>
+        <point x="640" y="0"/>
+        <point x="320" y="480"/>
+      </shape>
+    </layer>
+    <layer name="foreground">
+      <group transform="translate(32,48) rotate(-3)">
+        <circle cx="128" cy="96" r="48" stroke="white" fill="none"/>
+        <path d="M10 20 C30 40 60 40 90 20" stroke="cyan"/>
+        <text x="12" y="180">Δx = 12; θ = π/4</text>
+      </group>
+    </layer>
+  </canvas>
+</scene>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE glossary [
+  <!ELEMENT glossary (section+)>
+  <!ELEMENT section (term+)>
+  <!ATTLIST section name CDATA #REQUIRED>
+  <!ELEMENT term (definition, example?)>
+  <!ATTLIST term code ID #REQUIRED>
+  <!ELEMENT definition (#PCDATA|ref|em)*>
+  <!ELEMENT example (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ELEMENT em (#PCDATA)>
+  <!ENTITY product "parser">
+]>
+<glossary>
+  <section name="syntax">
+    <term code="t-xml">
+      <definition>The &product; reads <em>well-formed</em> documents.</definition>
+      <example>Use &lt;item&gt; rather than an unclosed tag.</example>
+    </term>
+    <term code="t-dtd">
+      <definition>Declarations describe document structure.</definition>
+      <example>Internal subsets are part of the prolog.</example>
+    </term>
+  </section>
+  <section name="links">
+    <term code="t-ref">
+      <definition>Cross references can point to another term.</definition>
+      <example><ref target="t-xml"/></example>
+    </term>
+  </section>
+</glossary>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+              xmlns:api="urn:example:api"
+              xmlns:sec="urn:example:security">
+  <env:Header>
+    <!-- authentication metadata -->
+    <sec:Token issued="2026-10-01T12:00:00Z" scope="read write">
+      <sec:Value>abc-123-Δ</sec:Value>
+    </sec:Token>
+    <?trace id="request-77"?>
+  </env:Header>
+  <env:Body>
+    <api:BatchRequest transaction="tx-9001">
+      <api:Operation name="replace">
+        <api:Resource path="/devices/7">
+          <api:Property name="enabled" type="boolean">true</api:Property>
+          <api:Property name="label" type="string">north &amp; east</api:Property>
+          <api:Property name="limits">
+            <api:List>
+              <api:Value>10</api:Value>
+              <api:Value>20</api:Value>
+              <api:Value xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+            </api:List>
+          </api:Property>
+        </api:Resource>
+      </api:Operation>
+    </api:BatchRequest>
+  </env:Body>
+</env:Envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<archive xmlns="urn:example:archive" created="2026-10-01">
+  <entry>
+    <identifier type="urn">urn:uuid:7f3a-22b1</identifier>
+    <payload encoding="base64"><![CDATA[AAECAwQFBgcICQ==]]></payload>
+    <events>
+      <event at="2026-09-30T23:59:59Z" kind="created">
+        <actor system="import">外部システム</actor>
+      </event>
+      <event at="2026-10-01T00:00:01Z" kind="verified">
+        <actor system="human">
+          <name>Zoë O'Neil</name>
+          <roles>
+            <role>reviewer</role>
+            <role>approver</role>
+          </roles>
+        </actor>
+        <result>
+          <checksum algorithm="sha256">e3b0c44298fc1c149afbf4c8996fb924</checksum>
+          <warnings count="0"/>
+        </result>
+      </event>
+    </events>
+    <relations>
+      <relation type="derived-from">
+        <target href="urn:uuid:0000-0000"/>
+      </relation>
+    </relations>
+  </entry>
+  <entry>
+    <identifier type="local">二番目</identifier>
+    <payload media-type="text/plain">line one&#x0A;line two&#x0A;終わり</payload>
+    <events/>
+  </entry>
+</archive>
+```

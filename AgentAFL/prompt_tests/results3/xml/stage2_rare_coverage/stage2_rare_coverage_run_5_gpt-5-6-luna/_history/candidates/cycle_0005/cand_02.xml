@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (metadata, object*)>
+  <!ELEMENT metadata (owner, created)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT object (name, link?, checksum)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST archive id ID #REQUIRED>
+  <!ATTLIST object id ID #REQUIRED ref IDREF #IMPLIED kind (text|binary|image) "text">
+  <!ATTLIST link target ENTITY #IMPLIED>
+  <!ATTLIST checksum algorithm CDATA #FIXED "sha256">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY quote "The value is &quot;opaque&quot;">
+]>
+<archive id="root">
+  <metadata>
+    <owner>&quote;</owner>
+    <created>2026-10-01T00:00:00Z</created>
+  </metadata>
+  <object id="first" kind="text">
+    <name>alpha.txt</name>
+    <checksum algorithm="sha256">000000</checksum>
+  </object>
+  <object id="second" ref="first" kind="binary">
+    <name>logo.bin</name>
+    <link target="logo"/>
+    <checksum algorithm="sha256"><![CDATA[deadbeef]]></checksum>
+  </object>
+</archive>

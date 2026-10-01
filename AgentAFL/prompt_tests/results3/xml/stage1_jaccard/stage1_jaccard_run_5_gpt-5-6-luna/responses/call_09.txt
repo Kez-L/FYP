@@ -1,0 +1,94 @@
+```xml
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="urn:style:test" alternate="yes"?>
+<r:catalog xmlns:r="urn:root" xmlns:x="urn:extra" xml:lang="en-US" xml:base="urn:base/">
+  <!-- boundary -->
+  <r:entry x:id="A&amp;B" xml:space="preserve">
+    <![CDATA[<not-an-element>&still-text;</not-an-element>]]>
+    <r:name>alpha&#x0A;beta</r:name>
+    <?custom a="1"?>
+    <x:meta xmlns:x="">value</x:meta>
+  </r:entry>
+  <r:entry xmlns="urn:default" xmlns:r="urn:shadow">
+    <r:item r:k="v"/>
+  </r:entry>
+</r:catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a|b|c)*>
+  <!ELEMENT a EMPTY>
+  <!ELEMENT b (#PCDATA|a)*>
+  <!ELEMENT c ANY>
+  <!ATTLIST root mode (one|two|three) "two" ref IDREFS #IMPLIED>
+  <!ATTLIST a n NMTOKEN #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY nested "&nbsp;&amp;&lt;&quot;&apos;">
+  <!ENTITY % declarations "<!ELEMENT injected (#PCDATA)>">
+  %declarations;
+]>
+<root mode="three" ref="x y">
+  <a n="x"/>
+  <b>left &nested; <a n="y"/> right</b>
+  <c><![CDATA[<a n="z"/>]]></c>
+  <injected>late declaration use</injected>
+</root>
+```
+
+```xml
+<!DOCTYPE outer [
+  <!ENTITY % switch "INCLUDE">
+  <![%switch;[
+    <!ELEMENT outer (inner, tail?)>
+    <!ELEMENT inner (#PCDATA)>
+    <!ELEMENT tail EMPTY>
+    <!ATTLIST inner kind CDATA #IMPLIED>
+  ]]>
+  <![IGNORE[
+    <!ELEMENT ignored (nothing)>
+    <!ENTITY gone "not-expanded">
+  ]]>
+  <!ENTITY quote "A &quot; B &apos; C">
+]>
+<outer>
+  <inner kind="&quot;odd&quot;">&quote;</inner>
+  <tail></tail>
+</outer>
+```
+
+```xml
+<?xml version="1.1"?>
+<stream xmlns="urn:stream">
+  <frame id="0" length="3">one</frame>
+  <frame id="1"><![CDATA[]]></frame>
+  <group>
+    <frame id="2">two<sub><![CDATA[x]]></sub></frame>
+    <?checkpoint?>
+  </group>
+  <empty xmlns:p="urn:p" p:a="&amp;">&#x85;</empty>
+</stream>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE mixed [
+  <!ELEMENT mixed (head, data, data?, end)>
+  <!ELEMENT head (#PCDATA)>
+  <!ELEMENT data ANY>
+  <!ELEMENT end EMPTY>
+  <!ENTITY e1 "one">
+  <!ENTITY e2 "&e1;-&e1;">
+]>
+<mixed>
+  <head>start</head>
+  <data a="1" b="2">
+    <![CDATA[raw]]>&e2;
+    <nested xmlns="urn:n" xmlns:q="urn:q" q:v="&#xD;&#xA;"/>
+    <!-- comment with -- invalid-ish? -->
+  </data>
+  <data><![CDATA[split]]>tail</data>
+  <end/>
+</mixed>
+```

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE maze [
+  <!ELEMENT maze (node)>
+  <!ELEMENT node (branch|leaf|node)*>
+  <!ATTLIST node
+    name CDATA #IMPLIED
+    depth NMTOKEN #IMPLIED>
+  <!ELEMENT branch (node|leaf)+>
+  <!ATTLIST branch choice (left|right|both) #REQUIRED>
+  <!ELEMENT leaf (#PCDATA)>
+  <!ENTITY open "<mark>">
+  <!ENTITY close "</mark>">
+]>
+<maze xmlns="urn:maze" xmlns:m="urn:marker">
+  <node name="root" depth="0">
+    <branch choice="both">
+      <node name="left" depth="1">
+        <leaf>plain</leaf>
+        <branch choice="left">
+          <leaf>&open;tagged&close;</leaf>
+        </branch>
+      </node>
+      <node name="right" depth="1">
+        <leaf m:state="terminal" xmlns:m="urn:marker">right-side</leaf>
+        <node name="nested">
+          <leaf><![CDATA[<branch>literal</branch>]]></leaf>
+        </node>
+      </node>
+    </branch>
+    <leaf xml:space="preserve">  trailing whitespace  </leaf>
+  </node>
+</maze>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (chunk*)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST stream xmlns:s CDATA #IMPLIED>
+  <!ATTLIST chunk type CDATA #IMPLIED>
+  <!ENTITY a "A">
+  <!ENTITY b "&a;&a;&a;">
+]>
+<stream xmlns:s="urn:stream">
+  <chunk type="text">one</chunk>
+  <chunk type="cdata"><![CDATA[&a; <x> ]]>tail</chunk>
+  <chunk type="mixed">pre&amp;post&#x0A;line</chunk>
+  <chunk type="entity">&b;</chunk>
+  <chunk
+    type="split"
+    data-extra="&quot;unterminated-looking&quot;"
+  >value</chunk>
+  <?flush?>
+</stream>

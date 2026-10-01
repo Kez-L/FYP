@@ -1,0 +1,161 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ELEMENT catalog (header, product*, footer)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT product (name, price, image?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT image EMPTY>
+  <!ATTLIST product
+    sku ID #REQUIRED
+    status (new|used|archived) "new">
+  <!ATTLIST image
+    src ENTITY #REQUIRED
+    alt CDATA #IMPLIED>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<catalog>
+  <header xml:lang="en">Inventory &amp; availability</header>
+  <product sku="p001" status="new">
+    <name>Glass &lt;Bottle&gt;</name>
+    <price currency="EUR">19.95</price>
+    <image src="logo" alt="brand mark"/>
+  </product>
+  <product sku="p002" status="used">
+    <name><![CDATA[Vintage ]]>Radio</name>
+    <price currency="JPY">&#x5186;4200</price>
+  </product>
+  <footer>End of catalog</footer>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|note|br)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST section xml:id ID #REQUIRED level NMTOKEN #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+]>
+<report>
+  <section xml:id="intro" level="1">
+    <title>Control characters and names</title>
+    <item>alpha<note role="aside">nested annotation</note>omega<br/>tail</item>
+    <item>space&nbsp;boundary</item>
+  </section>
+  <section xml:id="details" level="2">
+    <title>Second section</title>
+    <item><![CDATA[x & y ]]> <note>literal &lt;markup&gt;</note></item>
+    <item xml:space="preserve">  padded
+text  </item>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node EMPTY>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST node
+    id ID #REQUIRED
+    label CDATA #IMPLIED
+    refs IDREFS #IMPLIED>
+  <!ATTLIST edge
+    from IDREF #REQUIRED
+    to IDREF #REQUIRED
+    weight CDATA "1">
+]>
+<graph xmlns="urn:graph" xmlns:x="urn:extra" x:version="v1">
+  <node id="root" label="A&amp;B"/>
+  <node id="leaf" label="&quot;quoted&quot;" refs="root"/>
+  <node id="isolated" refs="root leaf"/>
+  <edge from="root" to="leaf" weight="0"/>
+  <edge from="leaf" to="root" weight="-3.14"/>
+</graph>
+```
+
+```xml
+<!DOCTYPE stream [
+  <!ELEMENT stream (record*)>
+  <!ELEMENT record (key, value, metadata?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|fragment)*>
+  <!ELEMENT fragment (#PCDATA)>
+  <!ELEMENT metadata (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST record timestamp CDATA #IMPLIED type CDATA "event">
+  <!ENTITY open "<fragment>expanded">
+  <!ENTITY close "</fragment>">
+]>
+<stream>
+  <record timestamp="1970-01-01T00:00:00Z" type="text">
+    <key>alpha</key>
+    <value>before &open; middle &close; after</value>
+    <metadata>
+      <tag>one</tag>
+      <tag><![CDATA[two <three>]]></tag>
+    </metadata>
+  </record>
+  <record timestamp="now">
+    <key><![CDATA[k&y]]></key>
+    <value><fragment>explicit</fragment>tail</value>
+  </record>
+</stream>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ENTITY % common "CDATA #IMPLIED">
+  <!ELEMENT dashboard (tabs, permissions, widget+)>
+  <!ELEMENT tabs (tab+)>
+  <!ELEMENT tab (label, content)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT content (#PCDATA|link)*>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT permissions (allow*, deny*)>
+  <!ELEMENT allow EMPTY>
+  <!ELEMENT deny EMPTY>
+  <!ELEMENT widget (caption?, data)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+  <!ATTLIST tab id ID #REQUIRED selected (yes|no) "no">
+  <!ATTLIST link href %common;>
+  <!ATTLIST allow role NMTOKEN #REQUIRED>
+  <!ATTLIST deny role NMTOKEN #REQUIRED>
+  <!ATTLIST widget class NMTOKEN #REQUIRED>
+]>
+<dashboard>
+  <tabs>
+    <tab id="home" selected="yes">
+      <label>Home</label>
+      <content>Welcome <link href="https://example.test/a?x=1&amp;y=2"/>!</content>
+    </tab>
+    <tab id="settings">
+      <label><![CDATA[Settings]]></label>
+      <content><link href="#fragment"/>configured</content>
+    </tab>
+  </tabs>
+  <permissions>
+    <allow role="admin"/>
+    <allow role="reader"/>
+    <deny role="guest"/>
+  </permissions>
+  <widget class="chart">
+    <caption>Usage</caption>
+    <data>12,18,7,&#x0D;&#x0A;22</data>
+  </widget>
+  <widget class="status">
+    <data><![CDATA[OK <pending> & retry]]></data>
+  </widget>
+</dashboard>
+```

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ENTITY % feature "INCLUDE">
+  <![%feature;[
+    <!ELEMENT envelope (command, payload)>
+    <!ELEMENT command EMPTY>
+    <!ATTLIST command action CDATA #REQUIRED flags NMTOKENS #IMPLIED>
+    <!ELEMENT payload (text|fragment|data)*>
+    <!ELEMENT text (#PCDATA)>
+    <!ELEMENT fragment (#PCDATA|text)*>
+    <!ELEMENT data EMPTY>
+    <!ATTLIST data value ENTITY #IMPLIED>
+    <!ENTITY literal "A&amp;B&lt;C">
+  ]]>
+  <![IGNORE[
+    <!ELEMENT discarded (never)>
+    <!ENTITY hidden "not expanded">
+  ]]>
+  <!ENTITY sample "&literal;::&#65;&#x42;">
+]>
+<envelope>
+  <command action="run" flags="fast safe"/>
+  <payload>
+    <text>prefix</text>
+    <fragment>inside <text>nested</text> tail</fragment>
+    <data value="sample"/>
+    <text>&sample;</text>
+  </payload>
+</envelope>

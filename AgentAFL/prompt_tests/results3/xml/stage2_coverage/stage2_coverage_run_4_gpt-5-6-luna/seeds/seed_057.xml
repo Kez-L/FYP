@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE exchange [
+  <!ELEMENT exchange (request, response)>
+  <!ELEMENT request (header*, payload)>
+  <!ELEMENT response (header*, payload)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA|chunk)*>
+  <!ATTLIST header
+    name CDATA #REQUIRED
+    value CDATA #REQUIRED
+  >
+  <!ATTLIST chunk
+    depth NMTOKEN #IMPLIED
+  >
+  <!ENTITY start "begin">
+  <!ENTITY finish "end">
+]>
+<exchange>
+  <request>
+    <header name="Accept" value="application/xml"/>
+    <header name="X-Trace" value="&quot;quoted&quot; &amp; escaped"/>
+    <payload>&start;<chunk depth="1">a<chunk depth="2">b<chunk depth="3">c</chunk></chunk></chunk>&finish;</payload>
+  </request>
+  <response>
+    <header name="Status" value="204"/>
+    <payload><![CDATA[
+      <not-an-element attr="&amp;">opaque</not-an-element>
+    ]]></payload>
+  </response>
+</exchange>

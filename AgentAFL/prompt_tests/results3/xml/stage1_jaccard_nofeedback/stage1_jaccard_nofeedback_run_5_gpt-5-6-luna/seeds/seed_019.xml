@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ENTITY status-open "open">
+  <!ENTITY status-closed "closed">
+  <!ENTITY % commonAttrs 'owner CDATA #IMPLIED priority NMTOKEN "normal"'>
+  <!ELEMENT workflow (parameters, stages, history)>
+  <!ELEMENT parameters (parameter*)>
+  <!ELEMENT parameter EMPTY>
+  <!ATTLIST parameter name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT stages (stage+)>
+  <!ELEMENT stage (transition*)>
+  <!ATTLIST stage id ID #REQUIRED state (initial|active|final) #REQUIRED %commonAttrs;>
+  <!ELEMENT transition (#PCDATA)>
+  <!ATTLIST transition to IDREF #REQUIRED condition CDATA #IMPLIED>
+  <!ELEMENT history (event*)>
+  <!ELEMENT event (#PCDATA)>
+  <!ATTLIST event stage IDREF #REQUIRED result (success|failure|skipped) #REQUIRED>
+]>
+<workflow>
+  <parameters>
+    <parameter name="retries" value="3"/>
+    <parameter name="window" value="09:00-17:00"/>
+  </parameters>
+  <stages>
+    <stage id="start" state="initial" owner="ops">
+      <transition to="review" condition="input != ''">begin</transition>
+    </stage>
+    <stage id="review" state="active" priority="high">
+      <transition to="finish" condition="approved = true">accept</transition>
+      <transition to="start">return</transition>
+    </stage>
+    <stage id="finish" state="final" owner="&status-closed;"/>
+  </stages>
+  <history>
+    <event stage="start" result="success">created</event>
+    <event stage="review" result="skipped">no reviewer assigned</event>
+  </history>
+</workflow>

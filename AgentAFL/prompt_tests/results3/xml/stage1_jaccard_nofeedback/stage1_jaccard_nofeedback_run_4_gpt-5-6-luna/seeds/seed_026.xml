@@ -1,0 +1,37 @@
+<!DOCTYPE report [
+  <!ELEMENT report (header, body, footer)>
+  <!ELEMENT header (meta*)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT body (paragraph|table|note)+>
+  <!ELEMENT paragraph (#PCDATA|bold|link|break)*>
+  <!ELEMENT bold (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST report xmlns CDATA #IMPLIED version NMTOKEN #REQUIRED>
+  <!ATTLIST meta key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST link href URI #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY % extras ' <!ELEMENT appendix (#PCDATA)> '>
+  %extras;
+]>
+<report xmlns="urn:example:report" version="2.0">
+  <header>
+    <meta key="author" value="fuzz"/>
+    <meta key="empty"/>
+  </header>
+  <body>
+    <paragraph>alpha <bold>beta</bold>&nbsp;<link href="urn:x:y">gamma</link><break/></paragraph>
+    <table>
+      <row><cell>r1c1</cell><cell>r1c2</cell></row>
+      <row><cell><![CDATA[r2 < raw & text]]></cell><cell>r2c2</cell></row>
+    </table>
+    <note>line one
+line two<!-- embedded comment -->line three</note>
+  </body>
+  <footer>done</footer>
+</report>

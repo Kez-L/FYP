@@ -1,0 +1,163 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (item+, note?)>
+  <!ELEMENT item (title, price, details)>
+  <!ATTLIST item id ID #REQUIRED format (digital|physical) "physical" image ENTITY #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|feature)*>
+  <!ELEMENT feature (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY cover SYSTEM "cover.png" NDATA png>
+  <!ENTITY company "North &amp; South">
+  <!ENTITY mark "&#x2605;">
+]>
+<inventory>
+  <item id="bk-001" format="physical" image="cover">
+    <title>&company; &mark; Handbook</title>
+    <price currency="EUR">19.95</price>
+    <details>Compact <feature>reference</feature> with <feature>examples</feature>.</details>
+  </item>
+  <item id="bk-002" format="digital">
+    <title>Signals &amp; Systems</title>
+    <price currency="USD">0.00</price>
+    <details><feature>PDF</feature><feature>EPUB</feature></details>
+  </item>
+  <note>Availability changes weekly.</note>
+</inventory>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<message xmlns="urn:example:message"
+         xmlns:h="urn:example:header"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xml:lang="fr">
+  <h:header>
+    <h:sender code="A-17">atelier</h:sender>
+    <h:recipient>réception</h:recipient>
+    <h:flags urgent="false" acknowledged="true"/>
+  </h:header>
+  <body xml:base="https://example.invalid/archive/">
+    <paragraph>Une entrée avec <emphasis>texte mixte</emphasis> et une référence.</paragraph>
+    <attachment xlink:type="simple"
+                xlink:href="files/résumé.txt"
+                xlink:show="embed"
+                media-type="text/plain"/>
+    <table>
+      <row><cell>clé</cell><cell>valeur &lt; test</cell></row>
+      <row><cell>π</cell><cell>3.14159</cell></row>
+    </table>
+  </body>
+</message>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (variables, steps)>
+  <!ELEMENT variables (var*)>
+  <!ELEMENT var EMPTY>
+  <!ATTLIST var name ID #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT steps (step+)>
+  <!ELEMENT step (input*, output*)>
+  <!ATTLIST step id ID #REQUIRED after IDREFS #IMPLIED state (pending|ready|done) "pending">
+  <!ELEMENT input EMPTY>
+  <!ATTLIST input ref IDREF #REQUIRED>
+  <!ELEMENT output (#PCDATA)>
+]>
+<workflow>
+  <variables>
+    <var name="source" value="a&#x85;b"/>
+    <var name="threshold" value="10"/>
+  </variables>
+  <steps>
+    <step id="prepare" after="source" state="done">
+      <input ref="source"/>
+      <output>ready&#x2028;for processing</output>
+    </step>
+    <step id="transform" after="prepare">
+      <input ref="threshold"/>
+      <output>result&#x0D;&#x0A;pending</output>
+    </step>
+    <step id="publish" after="prepare transform" state="ready">
+      <input ref="source"/>
+      <output>destination: archive</output>
+    </step>
+  </steps>
+</workflow>
+```
+
+```xml
+<?xml version="1.0"?>
+<scene xmlns="http://www.w3.org/2000/svg"
+       xmlns:meta="urn:scene:metadata"
+       viewBox="-10.5 -20 640.75 480.25"
+       preserveAspectRatio="xMidYMin meet">
+  <title>Layered composition</title>
+  <desc>Shapes grouped by depth and opacity.</desc>
+  <defs>
+    <linearGradient id="shade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#001122"/>
+      <stop offset="50%" stop-color="rgb(128,64,32)" stop-opacity=".75"/>
+      <stop offset="100%" stop-color="none"/>
+    </linearGradient>
+    <path id="curve" d="M0,0 C20,40 80,-30 120,10"/>
+  </defs>
+  <g id="background" style="mix-blend-mode:multiply">
+    <rect x="-10.5" y="-20" width="640.75" height="480.25" fill="url(#shade)"/>
+  </g>
+  <g id="foreground" transform="translate(12.5,18) rotate(-7 80 40)">
+    <use href="#curve" fill="none" stroke="#fff" stroke-width="2.25"/>
+    <path d="M5 5h40v30H5z" fill="#f0a" fill-rule="evenodd"/>
+    <meta:label key="owner" value="Δοκιμή"/>
+  </g>
+</scene>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, section*, conclusion)>
+  <!ATTLIST report revision NMTOKEN #REQUIRED generated CDATA #IMPLIED>
+  <!ELEMENT header (organization, period, contact)>
+  <!ELEMENT organization (#PCDATA)>
+  <!ELEMENT period EMPTY>
+  <!ATTLIST period from NMTOKEN #REQUIRED to NMTOKEN #REQUIRED>
+  <!ELEMENT contact (#PCDATA)>
+  <!ELEMENT section (heading, metric+, observation?)>
+  <!ATTLIST section code NMTOKEN #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT metric EMPTY>
+  <!ATTLIST metric key NMTOKEN #REQUIRED value CDATA #REQUIRED unit CDATA #IMPLIED confidence NMTOKEN "unknown">
+  <!ELEMENT observation (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT conclusion (recommendation*)>
+  <!ELEMENT recommendation (#PCDATA)>
+  <!ENTITY legal "All values are provisional.">
+]>
+<report revision="r-04" generated="2026-09-30T23:59:59Z">
+  <header>
+    <organization>Observatory &amp; Co.</organization>
+    <period from="2026-Q3" to="2026-Q3"/>
+    <contact>ops@example.invalid</contact>
+  </header>
+  <section code="latency">
+    <heading>Response distribution</heading>
+    <metric key="p50" value="12.4" unit="ms" confidence="0.98"/>
+    <metric key="p99" value="803" unit="ms" confidence="0.81"/>
+    <observation>Outliers correlate with <link>batch windows</link>.</observation>
+  </section>
+  <section code="capacity">
+    <heading>Resource use</heading>
+    <metric key="storage" value="71" unit="%"/>
+    <metric key="queue" value="0" unit="items"/>
+  </section>
+  <conclusion>
+    <recommendation>&legal;</recommendation>
+    <recommendation>Review the high-percentile latency before expansion.</recommendation>
+  </conclusion>
+</report>
+```

@@ -1,0 +1,40 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (opening, transaction*, closing)>
+  <!ELEMENT opening EMPTY>
+  <!ATTLIST opening currency CDATA #REQUIRED amount CDATA #REQUIRED>
+  <!ELEMENT transaction (when, party, debit, credit, memo?)>
+  <!ATTLIST transaction ref ID #REQUIRED status (posted|pending|void) "posted">
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT party (from, to)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT debit (#PCDATA)>
+  <!ELEMENT credit (#PCDATA)>
+  <!ELEMENT memo (#PCDATA)>
+  <!ELEMENT closing EMPTY>
+  <!ATTLIST closing balance CDATA #REQUIRED>
+]>
+<ledger>
+  <opening currency="EUR" amount="1250.00"/>
+  <transaction ref="t-α" status="posted">
+    <when>2026-09-30T23:59:59+02:00</when>
+    <party>
+      <from>acct:checking/primary</from>
+      <to>acct:vendor/42</to>
+    </party>
+    <debit>18.50</debit>
+    <credit>0.00</credit>
+    <memo>Replacement part; delivery &amp; handling</memo>
+  </transaction>
+  <transaction ref="t-β" status="pending">
+    <when>2026-10-01T00:00:01Z</when>
+    <party>
+      <from>acct:vendor/42</from>
+      <to>acct:checking/primary</to>
+    </party>
+    <debit>0.00</debit>
+    <credit>3.14159</credit>
+  </transaction>
+  <closing balance="1234.64159"/>
+</ledger>

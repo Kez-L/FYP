@@ -1,0 +1,200 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ENTITY company "Northwind &amp; Sons">
+  <!ENTITY note "A &lt;small&gt; sample with &quot;quoted&quot; text.">
+  <!ELEMENT archive (header, entry+, footer)>
+  <!ELEMENT header (title, generated)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT entry (summary, detail?, link*)>
+  <!ATTLIST entry
+    key ID #REQUIRED
+    state (new|held|closed) "new"
+    ref IDREF #IMPLIED>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link
+    rel CDATA #REQUIRED
+    target URI #IMPLIED>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<archive>
+  <header>
+    <title>&company; — &note;</title>
+    <generated>2026-10-01T00:00:00Z</generated>
+  </header>
+  <entry key="item-a" state="closed">
+    <summary>First &amp; final</summary>
+    <detail xml:space="preserve">before<em>inside</em><br/><code>&lt;token/&gt;</code>after</detail>
+    <link rel="self" target="urn:item:item-a"/>
+  </entry>
+  <entry key="item-b" ref="item-a">
+    <summary>Referenced record</summary>
+    <!-- deliberately mixed whitespace -->
+    <detail><![CDATA[x < y && y > z]]></detail>
+    <link rel="parent" target="#item-a"/>
+    <link rel="alternate"/>
+  </entry>
+  <footer>done</footer>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<mesh xmlns="urn:mesh:root"
+      xmlns:m="urn:mesh:meta"
+      xmlns:p="urn:mesh:point"
+      xmlns:q="urn:mesh:query">
+  <m:manifest version="1.0" checksum="sha256:">
+    <m:item href="urn:data:α" media="application/xml"/>
+    <m:item href="urn:data:β" media="text/plain" optional="yes"/>
+  </m:manifest>
+  <layer id="L0">
+    <p:vertex index="0" x="0" y="0" z="0"/>
+    <p:vertex index="1" x="-1.25" y="4e-2" z="∞"/>
+    <p:vertex index="2" x="NaN" y="&#x1F600;" z="&#x85;"/>
+    <q:select select="p:vertex[@index &gt; 0]">
+      <q:result xmlns="">unqualified result</q:result>
+      <q:result xmlns="urn:mesh:root" p:kind="edge">qualified result</q:result>
+    </q:select>
+  </layer>
+  <layer id="L1" xmlns:p="urn:mesh:alternate-point">
+    <p:vertex p:flag="true"><![CDATA[raw ]]> text</p:vertex>
+    <container xmlns="urn:other">
+      <leaf xmlns="" q:mark="reset">local</leaf>
+    </container>
+  </layer>
+</mesh>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dossier [
+  <!ENTITY open "<section type='generated'>">
+  <!ENTITY close "</section>">
+  <!ENTITY nested "alpha &amp; beta">
+  <!ELEMENT dossier (preamble, section+, appendix)>
+  <!ELEMENT preamble (#PCDATA|remark)*>
+  <!ELEMENT section (heading, paragraph*, table?)>
+  <!ATTLIST section type CDATA "normal">
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|remark|term)*>
+  <!ELEMENT remark (#PCDATA)>
+  <!ELEMENT term (#PCDATA)>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT appendix (item*)>
+  <!ELEMENT item (#PCDATA)>
+]>
+<dossier>
+  <preamble>
+    Intro <remark priority="high">without a declared attribute</remark>
+    &nested;
+  </preamble>
+  <section type="manual">
+    <heading>Literal markup</heading>
+    <paragraph>Use <term>escape</term> rules<remark>!</remark>.</paragraph>
+    <paragraph><![CDATA[
+      line one
+      ]]><![CDATA[line two]]></paragraph>
+    <table>
+      <row><cell>r1c1</cell><cell>r1c2</cell></row>
+      <row><cell>r2c1 &amp; more</cell><cell>r2c2</cell><cell/></row>
+    </table>
+  </section>
+  &open;
+    <heading>Entity section</heading>
+    <paragraph>Created through replacement text.</paragraph>
+  &close;
+  <appendix>
+    <item>zero</item>
+    <item>one&#x0A;two</item>
+  </appendix>
+</dossier>
+```
+
+```xml
+<?xml version="1.0"?>
+<?audit mode="strict" source="fuzz-seed"?>
+<conversation xml:base="urn:example:conversation/">
+  <message id="m0" xml:lang="en">
+    <sender><name>Root</name><address>root@example.test</address></sender>
+    <body>
+      <p>Hello <b>there</b>,<br/>line two.</p>
+      <quote who="m1">
+        <p>Nested <i>quoted</i> content</p>
+        <quote who="m2"><p>Deep quote</p></quote>
+      </quote>
+    </body>
+    <attachments count="2">
+      <attachment filename="a&amp;b.txt" content-type="text/plain">
+        <![CDATA[one
+two
+three]]>
+      </attachment>
+      <attachment filename="empty.bin" content-type="application/octet-stream"/>
+    </attachments>
+  </message>
+  <!-- comment containing -- is not allowed, so this remains ordinary -->
+  <message id="m1" reply-to="m0" xml:space="default">
+    <sender><name>Réponse</name></sender>
+    <body><p>Text with &lt; angle brackets &gt; and &#x2028; separator.</p></body>
+    <attachments count="0"/>
+  </message>
+</conversation>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (variables, (task|parallel|checkpoint)+)>
+  <!ELEMENT variables (var*)>
+  <!ELEMENT var EMPTY>
+  <!ATTLIST var name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT task (label, input*, output*)>
+  <!ATTLIST task id ID #REQUIRED depends IDREFS #IMPLIED enabled (true|false) "true">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT output (#PCDATA)>
+  <!ELEMENT parallel (task+)>
+  <!ELEMENT checkpoint (#PCDATA)>
+]>
+<workflow xmlns:ext="urn:workflow:extension">
+  <variables>
+    <var name="threshold" value="0"/>
+    <var name="path" value="C:\tmp\&quot;work&quot;"/>
+    <var name="unicode_名" value="π≈3.14159"/>
+  </variables>
+  <task id="prepare" enabled="true">
+    <label>Prepare data</label>
+    <input><![CDATA[a,b,c
+1,2,3]]></input>
+    <output>prepared.dat</output>
+  </task>
+  <parallel>
+    <task id="left" depends="prepare">
+      <label>Left branch</label>
+      <input>alpha</input>
+      <output>left.out</output>
+    </task>
+    <task id="right" depends="prepare" enabled="false">
+      <label>Right branch &amp; fallback</label>
+      <input>beta&#x0D;&#x0A;gamma</input>
+      <output>right.out</output>
+    </task>
+  </parallel>
+  <checkpoint>after parallel</checkpoint>
+  <task id="finish" depends="left right">
+    <label>Finish <ext:badge level="critical">now</ext:badge></label>
+    <input>left.out</input>
+    <input>right.out</input>
+    <output>final.out</output>
+  </task>
+</workflow>
+```

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (trigger, variables?, steps, on-error?)>
+  <!ELEMENT trigger EMPTY>
+  <!ATTLIST trigger event (push|timer|manual) #REQUIRED schedule CDATA #IMPLIED>
+  <!ELEMENT variables (var*)>
+  <!ELEMENT var (#PCDATA)>
+  <!ATTLIST var name NMTOKEN #REQUIRED secret (true|false) "false">
+  <!ELEMENT steps (step+)>
+  <!ELEMENT step (input*, action, output*)>
+  <!ATTLIST step id ID #REQUIRED retry CDATA "0" if IDREF #IMPLIED>
+  <!ELEMENT input (#PCDATA|expression)*>
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT output (#PCDATA|expression)*>
+  <!ELEMENT expression (#PCDATA)>
+  <!ATTLIST expression language (xpath|shell|template) #REQUIRED>
+  <!ELEMENT on-error (notify|fallback)>
+  <!ELEMENT notify (#PCDATA)>
+  <!ELEMENT fallback EMPTY>
+  <!ATTLIST fallback step IDREF #REQUIRED>
+  <!ENTITY open "${">
+  <!ENTITY close "}">
+]>
+<workflow xmlns="urn:automation:workflow" xmlns:log="urn:automation:log">
+  <trigger event="timer" schedule="0 */6 * * *"/>
+  <variables>
+    <var name="REGION">eu-west-1</var>
+    <var name="TOKEN" secret="true"><![CDATA[redacted&value]]></var>
+  </variables>
+  <steps>
+    <step id="collect" retry="2">
+      <input>service=&open;REGION&close;</input>
+      <action>fetch-metrics</action>
+      <output><expression language="xpath">/metrics/total</expression></output>
+    </step>
+    <step id="publish" if="collect">
+      <input>topic</input>
+      <input><expression language="template">metric-&open;REGION&close;</expression></input>
+      <action>send</action>
+      <output>accepted</output>
+    </step>
+  </steps>
+  <on-error>
+    <fallback step="collect"/>
+  </on-error>
+</workflow>

@@ -1,0 +1,23 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder|file|alias)*>
+  <!ELEMENT folder (folder|file|alias)*>
+  <!ELEMENT file (#PCDATA)>
+  <!ELEMENT alias EMPTY>
+  <!ATTLIST folder path CDATA #REQUIRED>
+  <!ATTLIST file path CDATA #REQUIRED checksum CDATA #IMPLIED>
+  <!ATTLIST alias path CDATA #REQUIRED points-to IDREF #REQUIRED>
+  <!ENTITY slash "/">
+  <!ENTITY root "var&slash;lib">
+  <!ENTITY note "line one&#xA;line two">
+]>
+<archive>
+  <folder path="&root;">
+    <file path="&root;&slash;state.db" checksum="a&amp;b">&note;</file>
+    <folder path="&root;&slash;cache">
+      <file path="entry&amp;1">cached &lt;data&gt;</file>
+    </folder>
+  </folder>
+  <alias path="latest" points-to="missing"/>
+  <file path="quoted" checksum="&quot;single&apos;double&quot;">&#x20;&#x9;text</file>
+</archive>

@@ -1,0 +1,116 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, description?, price)>
+  <!ATTLIST entry id ID #REQUIRED status (active|archived) "active">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emph|br)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT price (#PCDATA)>
+  <!ENTITY currency "&#x20AC;">
+]>
+<catalog>
+  <entry id="item-α" status="active">
+    <title>Tea &amp; Biscuits</title>
+    <description xml:space="preserve">Small <emph>ceramic</emph> cup<br/>with a lid.</description>
+    <price>&currency;12.50</price>
+  </entry>
+  <entry id="item-β">
+    <title><![CDATA[Seasonal <special>]]></title>
+    <price>0</price>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section*)>
+  <!ELEMENT section (heading, item*)>
+  <!ATTLIST section xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <!NOTATION svg SYSTEM "image/svg+xml">
+  <!ENTITY logo SYSTEM "logo.svg" NDATA svg>
+]>
+<report xml:lang="en-US">
+  <!-- intentionally includes an external-entity declaration without using it -->
+  <?build tool="generator" version="0.0"?>
+  <section xml:lang="ja">
+    <heading>Résumé &amp; &nbsp;</heading>
+    <item>東京 — 東京</item>
+    <item><![CDATA[line one
+line two
+line three]]></item>
+  </section>
+  <section>
+    <heading>Empty section</heading>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns="urn:alpha" xmlns:a="urn:alpha" xmlns:b="urn:beta">
+  <a:branch a:code="A&amp;1" b:code="B&lt;2">
+    <a:leaf/>
+    <b:leaf b:flag="true">text</b:leaf>
+    <wrapper xmlns="">
+      <plain xml:id="p-1" xml:space="default">outside the namespace</plain>
+      <a:reenter xmlns:a="urn:alternate">
+        <a:item/>
+      </a:reenter>
+    </wrapper>
+  </a:branch>
+  <mixed>before<a:mark>inside</a:mark>after<!--gap--><?note value?>end</mixed>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder)>
+  <!ELEMENT folder (folder|file|link)*>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ELEMENT file (#PCDATA)>
+  <!ATTLIST file name CDATA #REQUIRED size NMTOKEN #IMPLIED>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target IDREF #REQUIRED>
+]>
+<archive>
+  <folder name=".">
+    <folder name="docs">
+      <file name="readme.txt" size="0007">alpha
+beta
+gamma</file>
+      <link target="missing-target"/>
+    </folder>
+    <folder name="data">
+      <file name="empty.bin" size="0"></file>
+    </folder>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<stream xmlns="urn:stream">
+  <header>
+    <timestamp>2026-10-01T00:00:00Z</timestamp>
+    <sequence>18446744073709551615</sequence>
+    <flags>0x00</flags>
+  </header>
+  <payload encoding="base64"><![CDATA[
+AAECAwQFBgcICQoLDA0ODw==
+]]></payload>
+  <records>
+    <record kind="text"><![CDATA[<not-an-element>& still text]]></record>
+    <record kind="empty"/>
+    <record kind="mixed">left<value unit="µs">3.14159265358979323846</value>right</record>
+  </records>
+  <?checkpoint id="final"?>
+</stream>
+```

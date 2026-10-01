@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta, payload, signature?)>
+  <!ELEMENT meta (created, creator)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT creator (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST envelope mode (plain|sealed|chunked) "plain" version NMTOKEN #REQUIRED>
+  <!ATTLIST payload encoding (base64|hex|none) #IMPLIED>
+  <!ENTITY left "[[">
+  <!ENTITY right "]]">
+]>
+<envelope version="v2" mode="chunked">
+  <meta>
+    <created>2026-10-01T12:34:56Z</created>
+    <creator xml:lang="en-US">fuzz&amp;lab</creator>
+  </meta>
+  <payload encoding="none">
+    <chunk index="0">&left;one&right;</chunk>
+    <chunk index="1"><![CDATA[<not-an-element attr="x">]]></chunk>
+    <chunk index="2">tail</chunk>
+  </payload>
+  <?checkpoint phase="payload"?>
+  <signature>unverified</signature>
+</envelope>

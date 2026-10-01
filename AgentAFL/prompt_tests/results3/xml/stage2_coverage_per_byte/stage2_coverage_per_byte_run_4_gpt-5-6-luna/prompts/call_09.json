@@ -1,0 +1,23 @@
+{
+  "call": 9,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE root [\n  <!ATTLIST koo xml:lang CDATA \"eng\">\n  <!ATTLIST foo bar CDATA \"&lt;&gt;)qrking Group (orisable oveuot;\">\n]>\n<root>\n  <foo xml:lang=\"ger\">Ja</fo\u0000\u0004\n</roos>\n\n\n--- example 2 ---\n<!DOCTYPE doc [\n<!ELEMENT doc EMPTY>\n<!ATTLIST doc\n defatt  (0|1)   \"0\"\n     xmlns:tst CDATA #FIXED \"http://example.org\"  tst:att  (0|1)   \"0\"\n    att (0|1)   \"1\">\n]>\n<doc att=\"1B/h12;&laugh12;&laugh12;&la>\n\n\nTried before \u2014 no new coverage, avoid repeating:\n--- 3 of your past seeds (cycles 3,5,7) drove the same already-covered path with 0 new edges ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE r [\n  <!ENTITY % switch \"INCLUDE\">\n  <![%switch;[\n    <!ELEMENT r (a|b)*>\n    <!ELEMENT a (#PCDATA|c)*>\n    <!ELEMENT c EMPTY>\n  ]]>\n  <!ELEMENT b EMPTY>\n  <!ATTLIST r state CDATA \"open\">\n]>\n<r state=\"closed\">\n  <a>left<c/>right</a>\n  <b/>\n  <a><![CDATA[x < y && y > z]]></a>\n</r>\n\n--- a seed you generated (cycle 9) added 0 new edges ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE report [\n  <!ELEMENT report (title, section*)>\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT section (heading?, paragraph*, list?)>\n  <!ELEMENT heading (#PCDATA)>\n  <!ELEMENT paragraph (#PCDATA|bold|italic|code|ref)*>\n  <!ELEMENT bold (#PCDATA)>\n  <!ELEMENT italic (#PCDATA)>\n  <!ELEMENT code (#PCDATA)>\n  <!ELEMENT ref EMPTY>\n  <!ELEMENT list (entry+)>\n  <!ELEMENT entry (#PCDATA|paragraph)*>\n  <!ATTLIST report generated CDATA #IMPLIED>\n  <!ATTLIST section name CDATA #REQUIRED>\n  <!ATTLIST ref target CDATA #REQUIRED>\n  <!ENTITY nbsp \"&#160;\">\n  <!ENTITY mark \"<bold>important</bold>\">\n]>\n<report generated=\"true\">\n  <title>Parser &amp; token boundaries</title>\n  <secti...[truncated, 1174 chars total]\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage-per-byte",
+  "positive_feedback": false,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-01T03:27:49.346411+00:00"
+}

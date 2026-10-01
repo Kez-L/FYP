@@ -1,0 +1,135 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, metadata?, description)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ELEMENT description (#PCDATA|em)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ATTLIST entry key ID #REQUIRED status (draft|published|archived) "draft">
+  <!ATTLIST metadata created CDATA #IMPLIED>
+  <!ENTITY brand "A&amp;B Research">
+  <!ENTITY mark "&#x2603;">
+]>
+<catalog>
+  <entry key="e1" status="published">
+    <title>&brand; &mark;</title>
+    <metadata created="2026-10-01"/>
+    <description><![CDATA[raw <markup> and ]]> characters]]> <em>outside</em> CDATA.</description>
+  </entry>
+  <entry key="e2">
+    <title>Second entry</title>
+    <description>alpha <em>beta</em> gamma</description>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<window xmlns="urn:ui:window" xmlns:evt="urn:ui:event" id="main" xml:space="preserve">
+  <!-- mixed content with significant whitespace -->
+  <layout orientation="horizontal">
+    <panel role="navigation" collapsed="false">
+      <label><![CDATA[Files & Folders]]></label>
+      <items>
+        <item value="one" selected="1">One</item>
+        <item value="two"><![CDATA[Two <raw>]]></item>
+      </items>
+    </panel>
+    <panel role="content">
+      <evt:handler evt:type="activate" evt:phase="capture">
+        <evt:script language="text">return "ok";</evt:script>
+      </evt:handler>
+      <message severity="warning">A <strong>notice</strong> with <br/> a break.</message>
+    </panel>
+  </layout>
+  <state>
+    <value name="zoom">1.25</value>
+    <value name="theme">dark</value>
+  </state>
+</window>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, record*)>
+  <!ELEMENT header (owner, checksum)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT record (key, value, note?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST record type CDATA "text">
+  <!ENTITY nbsp "&#160;">
+]>
+<archive>
+  <header>
+    <owner>ops-team</owner>
+    <checksum>sha256:00000000000000000000000000000000</checksum>
+  </header>
+  <record type="binary">
+    <key>payload</key>
+    <value><![CDATA[AAECAwQFBgcICQ==]]></value>
+    <note>bytes&nbsp;encoded</note>
+  </record>
+  <record type="text">
+    <key>message</key>
+    <value>line one
+line two&#x0A;line three</value>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.1"?>
+<manifest xmlns:m="urn:manifest">
+  <m:entry path="/" kind="directory">
+    <m:permissions owner="root" group="wheel">
+      <m:mode>0755</m:mode>
+    </m:permissions>
+    <m:entry path="bin" kind="directory">
+      <m:item name="runner" executable="true" size="0"/>
+      <m:item name="helper&amp;tool" executable="false" size="18446744073709551615"/>
+    </m:entry>
+    <m:entry path="var/log" kind="directory">
+      <m:item name="app.log" executable="false">
+        <m:digest algorithm="urn:sha1">0000000000000000000000000000000000000000</m:digest>
+      </m:item>
+    </m:entry>
+  </m:entry>
+  <m:signature algorithm="none"><![CDATA[-----BEGIN-----]]></m:signature>
+</manifest>
+```
+
+```xml
+<?xml version="1.0"?>
+<conversation>
+  <turn speaker="user" time="00:00:00Z">
+    <text>Is <q>this</q> escaped?</text>
+    <attachment content-type="application/octet-stream" length="3">
+      <![CDATA[
+        A
+        B
+        C
+      ]]>
+    </attachment>
+  </turn>
+  <turn speaker="assistant">
+    <text xml:lang="ja">こんにちは &amp; привет</text>
+    <actions>
+      <action name="lookup">
+        <argument key="query">a=b&amp;c=d</argument>
+        <argument key="limit">0</argument>
+      </action>
+      <action name="close"/>
+    </actions>
+  </turn>
+  <?checkpoint id="42"?>
+  <turn speaker="system" priority="-1">
+    <text><![CDATA[unterminated-looking ] bracket sequence: ]]]]><![CDATA[>]]></text>
+  </turn>
+</conversation>
+```

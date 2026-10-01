@@ -1,0 +1,117 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <x:item id="A-001" status="active">
+    <x:name><![CDATA[alpha < beta & gamma]]></x:name>
+    <x:meta>
+      <x:value><![CDATA[]]></x:value>
+      <x:value>line one&#x0A;line two&#13;line three</x:value>
+    </x:meta>
+  </x:item>
+  <item id="A-002">
+    <!-- comment with brackets: ]]> and -- are intentionally represented as text -->
+    <name xml:lang="fr">café &amp; thé</name>
+    <?catalog-hint mode="compact"?>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header,section*,footer?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT section (title,entry+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (#PCDATA|note)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST section key ID #IMPLIED>
+  <!ATTLIST entry level (low|medium|high) "medium">
+]>
+<report>
+  <header>daily &amp; internal</header>
+  <section key="s1">
+    <title>First section</title>
+    <entry level="high">text<note>nested note</note>tail</entry>
+    <entry>second entry</entry>
+  </section>
+  <section key="s2">
+    <title><![CDATA[<encoded-title>]]></title>
+    <entry level="low"><note>only a note</note></entry>
+  </section>
+  <footer>2026-10-01</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ENTITY logo "&#x1F4E6;">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "data:text/plain,external" NDATA bin>
+  <!ELEMENT package (manifest,content)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+    name CDATA #REQUIRED
+    size NMTOKEN #IMPLIED
+    type NOTATION (bin) #IMPLIED>
+  <!ELEMENT content (#PCDATA)>
+]>
+<package>
+  <manifest>
+    <file name="a&amp;b.txt" size="0007"/>
+    <file name="blob.bin" type="bin"/>
+    <file name="empty" size="0"></file>
+  </manifest>
+  <content>package &logo; &#x3C;end&#x3E;</content>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<root xmlns="urn:r" xmlns:a="urn:a" xmlns:b="urn:b" xml:base="urn:base/">
+  <a:branch a:k="v" b:k="w" xmlns:a="">
+    <leaf xmlns="urn:leaf" xml:space="preserve">  padded
+text	</leaf>
+    <b:branch xmlns:b="urn:replacement">
+      <b:item xml:id="node-1" xml:lang="en-US">one</b:item>
+      <b:item xml:id="node-2" xml:lang="zh-Hant">二</b:item>
+    </b:branch>
+  </a:branch>
+  <mixed>before<![CDATA[<&]]><?pi data?><child/>after</mixed>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (record*)>
+  <!ELEMENT record (key,value,raw?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT raw (#PCDATA)>
+  <!ATTLIST record index NMTOKEN #REQUIRED>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<stream>
+  <record index="1">
+    <key>alpha</key>
+    <value>&left;one&amp;two&right;</value>
+    <raw><![CDATA[
+      <![CDATA[ not nested ]]>
+      ]]></raw>
+  </record>
+  <record index="0000000000000000000000000000000000000001">
+    <key>line&#10;break</key>
+    <value><![CDATA[quotes: " ' &lt; &gt;]]></value>
+    <raw> leading and trailing spaces </raw>
+  </record>
+  <record index="3">
+    <key>empty</key>
+    <value/>
+  </record>
+</stream>
+```

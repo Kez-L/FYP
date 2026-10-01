@@ -1,0 +1,224 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?processing instruction-data?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload, signature?)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry
+    path CDATA #REQUIRED
+    kind (file|directory|link) "file"
+    mode NMTOKEN #IMPLIED
+  >
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding (base64|text) "text">
+  <!ELEMENT signature (#PCDATA)>
+  <!ENTITY copyright "© 2026 Example Systems">
+]>
+<package xml:base="https://example.invalid/releases/" xmlns="urn:example:package">
+  <manifest>
+    <entry path="bin/" kind="directory" mode="0755"/>
+    <entry path="bin/runner" mode="0755"/>
+    <entry path="README.txt" mode="0644"/>
+  </manifest>
+  <payload>
+    <chunk index="0" encoding="text">alpha&#x0A;beta &amp; gamma</chunk>
+    <chunk index="1" encoding="base64"><![CDATA[AAECAwQFBgcICQ==]]></chunk>
+  </payload>
+  <signature algorithm="sha256">sha256:deadbeef</signature>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE feed [
+  <!ELEMENT feed (channel)>
+  <!ATTLIST feed version CDATA #IMPLIED>
+  <!ELEMENT channel (title, link, updated, item*)>
+  <!ELEMENT title (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link rel NMTOKEN #REQUIRED href CDATA #REQUIRED>
+  <!ELEMENT updated (#PCDATA)>
+  <!ELEMENT item (title, link+, summary?, tags?)>
+  <!ATTLIST item id ID #REQUIRED status (new|read|archived) "new">
+  <!ELEMENT summary (#PCDATA|code|br)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ENTITY warning "Use &lt;strong&gt; with care.">
+]>
+<feed version="3" xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+  <channel>
+    <title>Signals <mark>2026</mark></title>
+    <link rel="self" href="/signals.xml"/>
+    <updated>2026-10-01T12:34:56+00:00</updated>
+    <item id="item-a" status="read">
+      <title>Parser &amp; token boundaries</title>
+      <link rel="alternate" href="/signals/a"/>
+      <link rel="enclosure" href="/data/a.bin"/>
+      <summary>Text before <code>while (x &lt; y)</code><br/>Text after.</summary>
+      <tags><tag>xml</tag><tag>fuzzing</tag><tag>☃</tag></tags>
+    </item>
+    <item id="item-b">
+      <title>Entity note</title>
+      <summary>&warning;</summary>
+    </item>
+  </channel>
+</feed>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (prefixes, nodes, edges)>
+  <!ELEMENT prefixes (prefix*)>
+  <!ELEMENT prefix EMPTY>
+  <!ATTLIST prefix name NMTOKEN #REQUIRED uri ANY>
+  <!ELEMENT nodes (node+)>
+  <!ELEMENT node (label?, property*)>
+  <!ATTLIST node id ID #REQUIRED class NMTOKEN #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA|value)*>
+  <!ATTLIST property key NMTOKEN #REQUIRED datatype CDATA #IMPLIED>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT edges (edge*)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED relation NMTOKEN #REQUIRED weight CDATA #IMPLIED>
+]>
+<graph xmlns:g="urn:graph:core" xmlns:v="urn:graph:value">
+  <prefixes>
+    <prefix name="g" uri="urn:graph:core"/>
+    <prefix name="v" uri="urn:graph:value"/>
+    <prefix name="x" uri="urn:vendor:x"/>
+  </prefixes>
+  <nodes>
+    <node id="n1" class="person">
+      <label>Ada</label>
+      <property key="active" datatype="boolean"><value>true</value></property>
+      <property key="note">line one
+line two
+line three</property>
+    </node>
+    <node id="n2" class="project">
+      <label><![CDATA[Research <phase> Ω]]></label>
+      <property key="budget" datatype="decimal"><value>12.50</value></property>
+    </node>
+    <node id="n3">
+      <property key="empty"/>
+    </node>
+  </nodes>
+  <edges>
+    <edge from="n1" to="n2" relation="leads" weight="0.75"/>
+    <edge from="n2" to="n3" relation="contains"/>
+  </edges>
+</graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE drawing [
+  <!NOTATION png SYSTEM "image/png">
+  <!NOTATION jpeg PUBLIC "-//Example//NOTATION JPEG 1.0//EN" "image/jpeg">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ELEMENT drawing (defs, viewport, layer*)>
+  <!ELEMENT defs (gradient|pattern|image)*>
+  <!ELEMENT gradient (stop+)>
+  <!ATTLIST gradient id ID #REQUIRED spread (pad|reflect|repeat) "pad">
+  <!ELEMENT stop EMPTY>
+  <!ATTLIST stop offset CDATA #REQUIRED color CDATA #REQUIRED>
+  <!ELEMENT pattern EMPTY>
+  <!ATTLIST pattern id ID #REQUIRED width CDATA #REQUIRED height CDATA #REQUIRED>
+  <!ELEMENT image EMPTY>
+  <!ATTLIST image id ID #IMPLIED src ENTITY #REQUIRED>
+  <!ELEMENT viewport EMPTY>
+  <!ATTLIST viewport left CDATA #REQUIRED top CDATA #REQUIRED right CDATA #REQUIRED bottom CDATA #REQUIRED>
+  <!ELEMENT layer (item*)>
+  <!ATTLIST layer name CDATA #REQUIRED blend (normal|multiply|screen) "normal">
+  <!ELEMENT item (rect|ellipse|path|label)>
+  <!ATTLIST item id ID #IMPLIED opacity CDATA #IMPLIED>
+  <!ELEMENT rect EMPTY>
+  <!ATTLIST rect x CDATA #REQUIRED y CDATA #REQUIRED width CDATA #REQUIRED height CDATA #REQUIRED fill CDATA #IMPLIED>
+  <!ELEMENT ellipse EMPTY>
+  <!ATTLIST ellipse cx CDATA #REQUIRED cy CDATA #REQUIRED rx CDATA #REQUIRED ry CDATA #REQUIRED>
+  <!ELEMENT path (#PCDATA)>
+  <!ELEMENT label (#PCDATA)>
+]>
+<drawing xmlns="urn:example:drawing" xmlns:ink="urn:example:ink">
+  <defs>
+    <gradient id="sunset" spread="reflect">
+      <stop offset="0%" color="#ffcc66"/>
+      <stop offset="100%" color="#663399"/>
+    </gradient>
+    <pattern id="grid" width="8" height="8"/>
+    <image id="stamp" src="logo"/>
+  </defs>
+  <viewport left="-10" top="-5" right="800" bottom="600"/>
+  <layer name="backdrop" blend="multiply">
+    <item id="r1" opacity="0.8"><rect x="0" y="0" width="800" height="600" fill="url(#sunset)"/></item>
+    <item><ellipse cx="400" cy="240" rx="120" ry="90"/></item>
+  </layer>
+  <layer name="foreground">
+    <item id="curve"><path>M 10,20 C 40,5 80,55 120,30 Z</path></item>
+    <item><label>Δ rendering test — café</label></item>
+  </layer>
+</drawing>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (environment, modules, rules)>
+  <!ELEMENT environment (variable*)>
+  <!ELEMENT variable EMPTY>
+  <!ATTLIST variable name NMTOKEN #REQUIRED value CDATA #IMPLIED sensitive (true|false) "false">
+  <!ELEMENT modules (module*)>
+  <!ELEMENT module (depends*, option*)>
+  <!ATTLIST module id ID #REQUIRED state (enabled|disabled|experimental) "enabled">
+  <!ELEMENT depends EMPTY>
+  <!ATTLIST depends ref IDREF #REQUIRED optional (yes|no) "no">
+  <!ELEMENT option (#PCDATA|list|map)*>
+  <!ATTLIST option name NMTOKEN #REQUIRED type (string|integer|boolean|json) "string">
+  <!ELEMENT list (item*)>
+  <!ELEMENT item (#PCDATA|map)*>
+  <!ELEMENT map (pair*)>
+  <!ELEMENT pair (#PCDATA|list|map)*>
+  <!ATTLIST pair key NMTOKEN #REQUIRED>
+  <!ELEMENT rules (rule+)>
+  <!ELEMENT rule (match, action, comment?)>
+  <!ATTLIST rule id ID #REQUIRED priority CDATA "0">
+  <!ELEMENT match (#PCDATA)>
+  <!ELEMENT action EMPTY>
+  <!ATTLIST action name NMTOKEN #REQUIRED target IDREF #IMPLIED>
+  <!ELEMENT comment (#PCDATA)>
+]>
+<configuration xml:space="preserve" xmlns:c="urn:config">
+  <environment>
+    <variable name="MODE" value="staging"/>
+    <variable name="TOKEN" sensitive="true"/>
+  </environment>
+  <modules>
+    <module id="core">
+      <option name="threads" type="integer">4</option>
+      <option name="features" type="json"><list><item>fast</item><item>safe</item></list></option>
+    </module>
+    <module id="cache" state="experimental">
+      <depends ref="core"/>
+      <option name="limits"><map><pair key="soft">128</pair><pair key="hard">256</pair></map></option>
+    </module>
+  </modules>
+  <rules>
+    <rule id="r-main" priority="10">
+      <match><![CDATA[path =~ "^/api/(v1|v2)/"]]></match>
+      <action name="route" target="core"/>
+      <comment>Apply only after normalization &amp; decoding.</comment>
+    </rule>
+    <rule id="r-fallback">
+      <match>otherwise()</match>
+      <action name="cache" target="cache"/>
+    </rule>
+  </rules>
+</configuration>
+```

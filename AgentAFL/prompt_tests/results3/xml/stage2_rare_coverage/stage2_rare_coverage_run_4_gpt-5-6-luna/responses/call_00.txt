@@ -1,0 +1,104 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+  <item id="A-001" status="active">
+    <name>α &amp; β</name>
+    <description><![CDATA[<not-an-element> & raw text]]></description>
+    <tags>
+      <tag priority="1">one</tag>
+      <tag priority="2">two</tag>
+    </tags>
+    <price currency="EUR">19.95</price>
+  </item>
+  <item id="B-002">
+    <name>Mixed <emphasis>content</emphasis> and text</name>
+    <!-- comment between children -->
+    <?process instruction?>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY title "Quarterly &amp; Results">
+  <!ENTITY note "A &lt;b&gt;literal&lt;/b&gt; fragment">
+  <!ELEMENT report (header,section+)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT section (heading,paragraph*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+]>
+<report>
+  <header>&title;</header>
+  <section id="first">
+    <heading>Overview</heading>
+    <paragraph>Text with &note; and a <linebreak/> continuation.</paragraph>
+  </section>
+  <section id="second">
+    <heading>Details</heading>
+    <paragraph><![CDATA[&title; remains uninterpreted here]]></paragraph>
+  </section>
+</report>
+```
+
+```xml
+<r:root xmlns:r="urn:root" xmlns:x="urn:extra" xml:lang="fr">
+  <r:branch>
+    <x:leaf x:kind="empty"/>
+    <x:leaf>
+      <x:value>42</x:value>
+      <x:value><![CDATA[
+        whitespace
+        spanning lines
+      ]]></x:value>
+    </x:leaf>
+  </r:branch>
+  <r:branch xml:space="preserve">  padded <r:inner>text</r:inner>  </r:branch>
+  <r:metadata>
+    <r:entry key="a&amp;b">A&lt;B</r:entry>
+    <r:entry key="quote&quot;apos&apos;">" '</r:entry>
+  </r:metadata>
+</r:root>
+```
+
+```xml
+<?xml version="1.1"?>
+<envelope>
+  <level n="0">
+    <level n="1">
+      <level n="2">
+        <level n="3">
+          <level n="4">
+            <payload><![CDATA[]]></payload>
+            <payload><![CDATA[brackets ]]]]><![CDATA[> split]]></payload>
+          </level>
+        </level>
+      </level>
+    </level>
+  </level>
+  <?target data with spaces?>
+  <!-- hyphens -- are ordinary inside this comment -->
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE data [
+  <!ENTITY % common "<!ELEMENT value (#PCDATA)>">
+  <!ENTITY % fields "<!ELEMENT data (value,group?)>">
+  %fields;
+  %common;
+  <!ELEMENT group (value*)>
+  <!ATTLIST data mode CDATA #IMPLIED>
+  <!ATTLIST value kind CDATA "text">
+]>
+<data mode="mixed">
+  <value kind="numeric">00042</value>
+  <group>
+    <value>first</value>
+    <value kind="quoted">&quot;second&quot;</value>
+  </group>
+</data>
+```

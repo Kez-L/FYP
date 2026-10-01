@@ -1,0 +1,120 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:m="urn:example:meta">
+  <m:header xml:lang="en" xml:space="preserve">
+    <m:title><![CDATA[Inventory <snapshot> & pending]]></m:title>
+    <m:created>2026-10-01T12:34:56Z</m:created>
+  </m:header>
+  <item id="A-001" status="active">
+    <name>Tea &amp; Biscuits</name>
+    <description>Mixed <emphasis>content</emphasis> with a <link href="urn:x">reference</link>.</description>
+    <price currency="EUR">12.50</price>
+    <!-- a comment between sibling elements -->
+    <?audit action="verify"?>
+  </item>
+  <item id="B-002" status="retired">
+    <name><![CDATA[<legacy> & unescaped markup]]></name>
+    <tags>
+      <tag>archive</tag>
+      <tag>2026</tag>
+    </tags>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+, checksum?)>
+  <!ELEMENT section (title, entry*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY logo SYSTEM "logo.bin" NDATA bin>
+]>
+<report generated="false">
+  <section id="north">
+    <title>North &amp; West</title>
+    <entry><![CDATA[raw ]]> data <![CDATA[ ]]> fragment</entry>
+    <entry>Line one&#10;Line two&#x0A;Line three</entry>
+  </section>
+  <section id="south">
+    <title>South</title>
+    <entry>quoted &quot;text&quot; and apostrophe &apos;</entry>
+  </section>
+  <checksum>sha256:00000000000000000000000000000000</checksum>
+</report>
+```
+
+```xml
+<graph xmlns="urn:graph">
+  <node key="root">
+    <edge kind="branch" to="left">
+      <node key="left">
+        <value><![CDATA[alpha]]></value>
+        <edge kind="leaf" to="left-1">
+          <node key="left-1">
+            <value>42</value>
+          </node>
+        </edge>
+        <edge kind="leaf" to="left-2">
+          <node key="left-2">
+            <value>0</value>
+          </node>
+        </edge>
+      </node>
+    </edge>
+    <edge kind="branch" to="right">
+      <node key="right">
+        <value>βeta</value>
+        <metadata>
+          <flag enabled="yes"/>
+          <flag enabled="no"/>
+        </metadata>
+      </node>
+    </edge>
+  </node>
+  <?graph incomplete="maybe"?>
+</graph>
+```
+
+```xml
+<?xml version="1.1"?>
+<message xmlns:x="urn:ext" priority="high">
+  <x:route>
+    <x:hop host="first.example" port="443"/>
+    <x:hop host="second.example" port="8443"/>
+  </x:route>
+  <payload><![CDATA[
+    ]]>]]><![CDATA[<
+    & not markup
+  ]]></payload>
+  <headers>
+    <header name="X-Test" value="one"/>
+    <header name="X-Test" value="two"/>
+    <header name="empty" value=""/>
+  </headers>
+  <body>
+    <paragraph>Before <b>bold</b> after.</paragraph>
+    <paragraph>Unicode: café, snowman ☃, 漢字.</paragraph>
+  </body>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<archive>
+  <record id="r1">
+    <field name="a">ok</field>
+    <field name="b">unterminated &amp; entity</field>
+    <field name="c"><![CDATA[split ]]> cdata ]]> tail</field>
+  </record>
+  <record id="r2" flag="1" flag="2">
+    <field name="x">duplicate attribute</field>
+  </record>
+  <orphan>
+    <nested>
+      text
+  </archive>
+```

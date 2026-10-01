@@ -1,0 +1,24 @@
+<?xml version="1.1"?>
+<!DOCTYPE report [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!NOTATION text PUBLIC "-//Example//TEXT Plain//EN">
+  <!ENTITY logo SYSTEM "logo.gif" NDATA gif>
+  <!ENTITY phrase "left &lt; middle &amp; right">
+  <!ENTITY quoted "A &quot; B &apos; C">
+  <!ENTITY nested "&phrase; / &quoted; / &#x1F642;">
+  <!ELEMENT report (section+)>
+  <!ELEMENT section (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (#PCDATA|ref)*>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST report cover ENTITY #IMPLIED>
+  <!ATTLIST section number NMTOKEN #REQUIRED>
+  <!ATTLIST ref target IDREF #REQUIRED kind CDATA #IMPLIED>
+]>
+<report cover="logo">
+  <section number="α-1">
+    <heading>&nested;</heading>
+    <item>before<ref target="missing" kind="cross"/>after</item>
+    <item><![CDATA[unescaped <markup> and ]] ]]> tail</item>
+  </section>
+</report>

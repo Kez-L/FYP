@@ -1,0 +1,185 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope"
+               xmlns:env="urn:example:envelope"
+               xml:lang="en">
+  <soap:Header>
+    <env:Trace correlation="7f3a" priority="high">
+      <env:Hop index="0" role="gateway"/>
+      <env:Hop index="1" role="service"/>
+    </env:Trace>
+    <env:Capabilities>
+      <env:Feature name="compression">gzip</env:Feature>
+      <env:Feature name="compression">br</env:Feature>
+    </env:Capabilities>
+  </soap:Header>
+  <soap:Body>
+    <env:Dispatch xml:base="https://example.invalid/api/">
+      <env:Request id="r-001" method="POST">
+        <env:Path>/v2/items</env:Path>
+        <env:Headers>
+          <env:Header name="Accept">application/xml</env:Header>
+          <env:Header name="X-Mode">dry-run</env:Header>
+        </env:Headers>
+        <env:Payload>
+          <env:Item code="A&amp;B">
+            Before <env:Emphasis>validation</env:Emphasis> and after.
+          </env:Item>
+        </env:Payload>
+      </env:Request>
+    </env:Dispatch>
+  </soap:Body>
+</soap:Envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE drawing [
+  <!ELEMENT drawing (metadata, layer+)>
+  <!ELEMENT metadata (title, author?, dimensions)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT dimensions EMPTY>
+  <!ELEMENT layer (group|path|text|use)*>
+  <!ELEMENT group (group|path|text|use)*>
+  <!ELEMENT path EMPTY>
+  <!ELEMENT text (#PCDATA)>
+  <!ELEMENT use EMPTY>
+  <!ATTLIST layer name CDATA #REQUIRED>
+  <!ATTLIST dimensions width CDATA #REQUIRED height CDATA #REQUIRED unit CDATA #IMPLIED>
+  <!ATTLIST path d CDATA #REQUIRED fill CDATA #IMPLIED stroke CDATA #IMPLIED>
+  <!ATTLIST text x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ATTLIST use href CDATA #REQUIRED>
+]>
+<drawing xmlns="http://www.w3.org/2000/svg"
+         xmlns:ink="http://www.inkscape.org/namespaces/inkscape"
+         viewBox="0 0 640 480">
+  <metadata>
+    <title>Curves &amp; corners</title>
+    <author><![CDATA[vector-team]]></author>
+    <dimensions width="640" height="480" unit="px"/>
+  </metadata>
+  <layer name="background" ink:label="Backdrop">
+    <path d="M0,0 H640 V480 H0 Z" fill="#101820"/>
+  </layer>
+  <layer name="shapes">
+    <group>
+      <path d="M12.5,20 C40,4 90,4 120,20" fill="none" stroke="white"/>
+      <text x="24" y="96">A <![CDATA[<curve>]]> &amp; a line</text>
+      <use href="#missing-symbol"/>
+    </group>
+  </layer>
+</drawing>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (namespace+, binding*)>
+  <!ELEMENT namespace (prefix, uri, documentation?)>
+  <!ELEMENT prefix (#PCDATA)>
+  <!ELEMENT uri (#PCDATA)>
+  <!ELEMENT documentation (#PCDATA)>
+  <!ELEMENT binding (name, target, parameter*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT target EMPTY>
+  <!ELEMENT parameter (#PCDATA)>
+  <!ATTLIST namespace id ID #REQUIRED>
+  <!ATTLIST binding namespace IDREF #REQUIRED kind (read|write|admin) "read">
+  <!ATTLIST target href URI #REQUIRED>
+  <!ATTLIST parameter key NMTOKEN #REQUIRED>
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "data.bin" NDATA binary>
+]>
+<registry>
+  <namespace id="core">
+    <prefix>c</prefix>
+    <uri>urn:vendor:core</uri>
+    <documentation>Primary service namespace.</documentation>
+  </namespace>
+  <namespace id="aux">
+    <prefix>a</prefix>
+    <uri>urn:vendor:auxiliary</uri>
+  </namespace>
+  <binding namespace="core" kind="write">
+    <name>upload</name>
+    <target href="urn:action:upload"/>
+    <parameter key="format">binary</parameter>
+    <parameter key="checksum">sha256</parameter>
+  </binding>
+  <binding namespace="aux" kind="admin">
+    <name>inspect</name>
+    <target href="urn:action:inspect"/>
+    <parameter key="scope">all</parameter>
+  </binding>
+</registry>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="urn:example:package"
+         xmlns:m="urn:example:manifest"
+         xmlns:s="urn:example:signature"
+         xml:space="preserve">
+  <manifest m:format="delta" m:version="3">
+    <entry path="docs/readme.txt" operation="replace">
+      <checksum algorithm="sha-256">9f86d081884c7d659a2feaa0c55ad015</checksum>
+      <content><![CDATA[
+        A line with leading spaces.
+        Another line with ]]> inside text.
+      ]]></content>
+    </entry>
+    <entry path="images/logo.svg" operation="delete">
+      <checksum algorithm="none"/>
+    </entry>
+  </manifest>
+  <signatures>
+    <s:signature s:id="sig-17" s:algorithm="ed25519">
+      <s:key>
+        <s:fingerprint>AA:BB:CC:DD:EE:FF</s:fingerprint>
+      </s:key>
+      <s:value>YXNkZmdoaWo=</s:value>
+    </s:signature>
+  </signatures>
+  <metadata>
+    <created>2026-10-01T12:34:56Z</created>
+    <labels>
+      <label>nightly</label>
+      <label xml:lang="fr">révision</label>
+    </labels>
+    <empty/>
+  </metadata>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<archive xmlns="urn:example:archive"
+         xmlns:meta="urn:example:metadata"
+         xmlns:xlink="http://www.w3.org/1999/xlink">
+  <collection id="c0">
+    <item id="i1" status="active">
+      <title>Nested records</title>
+      <description>Text <mark>with emphasis</mark>, a break<br/>and a reference.</description>
+      <relation type="parent" ref="i2"/>
+      <relation type="external" xlink:href="https://example.invalid/object/42"/>
+      <attributes>
+        <attribute name="alpha" value="1"/>
+        <attribute name="beta" value=""/>
+        <attribute name="gamma">
+          <value>left</value>
+          <value>right</value>
+        </attribute>
+      </attributes>
+    </item>
+    <item id="i2" status="archived">
+      <title>Second record</title>
+      <description><![CDATA[Literal markup: <not-an-element/> & not an entity.]]></description>
+      <meta:properties>
+        <meta:property meta:key="retention">P30D</meta:property>
+        <meta:property meta:key="encrypted">false</meta:property>
+      </meta:properties>
+    </item>
+  </collection>
+</archive>
+```

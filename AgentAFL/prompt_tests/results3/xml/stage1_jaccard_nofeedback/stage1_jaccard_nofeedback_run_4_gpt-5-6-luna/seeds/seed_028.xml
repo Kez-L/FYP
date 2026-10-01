@@ -1,0 +1,35 @@
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (defaults, environment, service*)>
+  <!ELEMENT defaults (option*)>
+  <!ELEMENT environment (variable*)>
+  <!ELEMENT service (option*, endpoint+)>
+  <!ELEMENT option EMPTY>
+  <!ELEMENT variable (#PCDATA)>
+  <!ELEMENT endpoint (#PCDATA)>
+  <!ATTLIST option name NMTOKEN #REQUIRED value CDATA #IMPLIED enabled (yes|no) "yes">
+  <!ATTLIST variable name NMTOKEN #REQUIRED>
+  <!ATTLIST service name NMTOKEN #REQUIRED inherits IDREF #IMPLIED>
+  <!ATTLIST endpoint protocol (http|https|unix) #REQUIRED>
+  <!ENTITY path "/var/lib/example">
+  <!ENTITY host "localhost">
+  <!ENTITY % switches '<!ATTLIST endpoint port NMTOKEN "80">'>
+  %switches;
+]>
+<configuration>
+  <defaults>
+    <option name="root" value="&path;"/>
+    <option name="cache" value="false" enabled="no"/>
+  </defaults>
+  <environment>
+    <variable name="MODE">test&amp;debug</variable>
+    <variable name="EMPTY"/>
+  </environment>
+  <service name="api">
+    <option name="threads" value="4"/>
+    <endpoint protocol="http" port="8080">&host;</endpoint>
+    <endpoint protocol="unix">/run/example.sock</endpoint>
+  </service>
+  <service name="mirror" inherits="api">
+    <endpoint protocol="https">mirror.example.test</endpoint>
+  </service>
+</configuration>

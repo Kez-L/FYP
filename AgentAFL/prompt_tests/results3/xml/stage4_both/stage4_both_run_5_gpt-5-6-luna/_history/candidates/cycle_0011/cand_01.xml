@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:acme:workflow"
+          xmlns:sec="urn:acme:security"
+          xmlns:ui="urn:acme:interface">
+  <trigger kind="schedule">
+    <cron>0 15 * * 1-5</cron>
+    <timezone>UTC</timezone>
+  </trigger>
+  <steps>
+    <step name="collect" retry="2">
+      <input ref="sensor://east"/>
+      <output name="snapshot" format="json"/>
+    </step>
+    <step name="approve" depends-on="collect">
+      <sec:requirement role="operator" level="mfa"/>
+      <ui:prompt title="Review">
+        Confirm the collected values before publishing.
+      </ui:prompt>
+    </step>
+    <step name="publish" depends-on="approve" mode="transactional">
+      <destination>archive://2026/10</destination>
+      <on-error>
+        <action type="notify">ops@example.invalid</action>
+        <action type="rollback"/>
+      </on-error>
+    </step>
+  </steps>
+  <metadata>
+    <entry key="owner">platform</entry>
+    <entry key="labels">nightly,verified</entry>
+  </metadata>
+</workflow>

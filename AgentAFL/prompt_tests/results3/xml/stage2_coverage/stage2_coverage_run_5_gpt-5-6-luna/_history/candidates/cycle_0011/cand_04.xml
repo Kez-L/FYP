@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (namespace, record*)>
+  <!ATTLIST registry version NMTOKEN #REQUIRED>
+  <!ELEMENT namespace (prefix, uri)>
+  <!ELEMENT prefix (#PCDATA)>
+  <!ELEMENT uri (#PCDATA)>
+  <!ELEMENT record (key, value, metadata?)>
+  <!ATTLIST record id ID #REQUIRED type (text|number|boolean|list) "text" link IDREFS #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|entry|flag|number)*>
+  <!ELEMENT metadata (created, modified?, tag*)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT modified (#PCDATA)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT entry (#PCDATA|flag|number)*>
+  <!ATTLIST entry name NMTOKEN #REQUIRED>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST flag name NMTOKEN #REQUIRED state (on|off) "on">
+  <!ELEMENT number (#PCDATA)>
+]>
+<registry version="2.0" xmlns:r="urn:registry" xmlns:m="urn:meta">
+  <namespace>
+    <prefix>r</prefix>
+    <uri>urn:registry</uri>
+  </namespace>
+  <record id="alpha" type="list">
+    <key>features</key>
+    <value>
+      <entry name="fast">enabled</entry>
+      <entry name="safe"><flag name="checks" state="on"/><number>42</number></entry>
+    </value>
+    <metadata>
+      <created>2026-01-01</created>
+      <tag xml:lang="en">primary</tag>
+      <tag xml:lang="ja">主</tag>
+    </metadata>
+  </record>
+  <record id="beta" type="text" link="alpha">
+    <key>message</key>
+    <value>Use &quot;quoted&quot; text, &#x1F600;, and &#13; markers.</value>
+    <metadata>
+      <created>2026-02-02</created>
+      <modified>2026-09-30</modified>
+    </metadata>
+  </record>
+</registry>

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (name, data, checksum?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST archive created CDATA #IMPLIED format (raw|compressed) "raw">
+  <!ATTLIST entry kind (file|directory|link) "file" mode NMTOKEN #IMPLIED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!NOTATION gzip SYSTEM "application/gzip">
+  <!ENTITY lf "&#10;">
+  <!ENTITY banner "archive-entry">
+]>
+<archive created="2026-10-01T00:00:00Z" format="compressed">
+  <entry kind="file" mode="0644">
+    <name>&banner;/one.txt</name>
+    <data><chunk index="0">first&lf;second</chunk><chunk index="1"><![CDATA[<binary-looking>&raw;]]></chunk></data>
+    <checksum>sha256:0000000000000000000000000000000000000000000000000000000000000000</checksum>
+  </entry>
+  <entry kind="link" mode="0777">
+    <name>current</name>
+    <data>target/path</data>
+  </entry>
+  <entry kind="directory">
+    <name>empty/</name>
+    <data/>
+  </entry>
+</archive>

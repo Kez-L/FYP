@@ -1,0 +1,23 @@
+{
+  "call": 14,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Tried before \u2014 no new coverage, avoid repeating:\n--- 3 of your past seeds (cycles 1,11) drove the same already-covered path with 0 new edges ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (entry*)>\n  <!ELEMENT entry (name, timestamp, payload)>\n  <!ATTLIST entry kind (text|binary|unknown) \"text\" checksum CDATA #IMPLIED>\n  <!ELEMENT name (#PCDATA)>\n  <!ELEMENT timestamp (#PCDATA)>\n  <!ELEMENT payload ANY>\n]>\n<archive>\n  <entry kind=\"text\" checksum=\"00000000\">\n    <name>empty</name>\n    <timestamp>1970-01-01T00:00:00Z</timestamp>\n    <payload/>\n  </entry>\n  <entry kind=\"binary\">\n    <name>boundary &lt; sample</name>\n    <timestamp>9999-12-31T23:59:59+14:00</timestamp>\n    <payload><![CDATA[\n      ]]]]><![CDATA[>]]>\n      <![CDATA[&not-an-entity;]]>\n    </payload>\n  </entry>\n</archive>\n\n--- a seed you generated (cycle 14) added 0 new edges ---\n<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<!DOCTYPE envelope [\n  <!ELEMENT envelope (header, body)>\n  <!ELEMENT header EMPTY>\n  <!ATTLIST header from CDATA #REQUIRED to CDATA #REQUIRED>\n  <!ELEMENT body ANY>\n]>\n<envelope>\n  <header from=\"sender@example.invalid\" to=\"receiver@example.invalid\"/>\n  <body>\n    <![CDATA[\n      --boundary-A\n      Content-Type: multipart/alternative; charset=\"utf-8\"\n\n      <html><body><p>Not markup to the XML parser</p></body></html>\n      --boundary-A--\n    ]]>\n    <attachment name=\"\u0442\u0435\u0441\u0442.bin\" media-type=\"application/octet-stream\">\n      AAECAwQFBgcICQoLDA0ODw==\n    </attachment>\n    <event type=\"\u0394\" time=\"2026-10-01T23:59:59.999999-00:00\">\n      <detail key=\"newli...[truncated, 845 chars total]\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 0,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": false,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": true,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-01T03:48:32.327136+00:00"
+}

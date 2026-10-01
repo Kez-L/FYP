@@ -1,0 +1,151 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="view.xsl"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, meta?, description, tags?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT description (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST catalog xmlns CDATA #IMPLIED>
+  <!ATTLIST entry id ID #REQUIRED status (new|old|archived) "new">
+  <!ATTLIST meta created CDATA #IMPLIED revised CDATA #IMPLIED>
+]>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <entry id="e-1" status="archived">
+    <title>Namespaced &amp; mixed content</title>
+    <meta created="2024-02-29" revised="2026-10-01"/>
+    <description><![CDATA[before <literal>]]><em>emphasis</em><code>x &lt; y</code><br/>after</description>
+    <tags><tag>x</tag><tag>unicode-π</tag></tags>
+  </entry>
+  <entry id="e-2"><title>x:prefixed</title><description><x:note x:kind="hint">hello</x:note></description></entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+)>
+  <!ELEMENT section (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST section id ID #IMPLIED>
+  <!ENTITY % optional '
+    <!ELEMENT appendix (item*)>
+    <!ELEMENT item (#PCDATA|link)*>
+  '>
+  %optional;
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+  <![IGNORE[
+    <!ELEMENT never-used (ghost*)>
+    <!ENTITY hidden "discarded">
+  ]]>
+]>
+<report>
+  <section id="main">
+    <heading>&left;Overview&right;</heading>
+    <item>alpha<link>https://example.test/a?x=1&amp;y=2</link></item>
+    <item><![CDATA[raw ]]> text</item>
+  </section>
+  <section>
+    <heading>Second</heading>
+    <item>one<link>two</link>three<link>four</link></item>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE measurements [
+  <!ELEMENT measurements (sample*)>
+  <!ELEMENT sample (value, value?, note?)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST sample key NMTOKEN #REQUIRED unit CDATA #IMPLIED>
+  <!ENTITY deg "&#x00B0;">
+  <!ENTITY euro "&#x20AC;">
+  <!ENTITY nbsp "&#160;">
+]>
+<measurements>
+  <sample key="A_01" unit="°C">
+    <value>+000.0001&nbsp;</value>
+    <value>-INF</value>
+    <note>temperature &lt; limit &amp; rising</note>
+  </sample>
+  <sample key="B.02" unit="m/s">
+    <value>3.141592653589793</value>
+    <note>cost: &euro;42 &deg;</note>
+  </sample>
+  <sample key="C-03">
+    <value>&#x1F600; &#x03B1; &#x4E2D;</value>
+  </sample>
+</measurements>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE tree [
+  <!ELEMENT tree (node)>
+  <!ELEMENT node (node*, leaf*)>
+  <!ELEMENT leaf (#PCDATA)>
+  <!ATTLIST node level CDATA #IMPLIED kind CDATA #IMPLIED>
+  <!ATTLIST leaf id ID #IMPLIED>
+  <!-- declaration containing unusual spacing and quoted characters -->
+]>
+<tree>
+  <node level="0" kind="root">
+    <node level="1" kind="branch">
+      <node level="2" kind="branch">
+        <leaf id="l1"><![CDATA[deep <content> & untouched]]></leaf>
+        <!-- comment between recursive children -->
+        <leaf id="l2">line
+break&#x0A;tab&#x09;end</leaf>
+      </node>
+      <?trace node="branch"?>
+    </node>
+    <node level="1" kind="empty"/>
+  </node>
+</tree>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE exchange [
+  <!ELEMENT exchange (request, response)>
+  <!ELEMENT request (header*, payload)>
+  <!ELEMENT response (header*, payload|fault)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload ANY>
+  <!ELEMENT fault (code, reason, detail?)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT reason (#PCDATA)>
+  <!ELEMENT detail (#PCDATA)>
+  <!ATTLIST header name CDATA #REQUIRED value CDATA #REQUIRED>
+  <!ATTLIST payload format (xml|text|binary) #IMPLIED>
+  <!ENTITY quote "&quot;">
+  <!ENTITY apos "&apos;">
+  <!ENTITY nested "A&amp;B&lt;C&gt;">
+]>
+<exchange>
+  <request>
+    <header name="Accept" value="application/xml"/>
+    <header name="X-Flags" value="one&#x20;two&#x09;three"/>
+    <payload format="xml"><data xmlns="urn:p"><item key="1"/><item key="2">&nested;</item></data></payload>
+  </request>
+  <response>
+    <header name="Content-Type" value="text/plain"/>
+    <fault>
+      <code>422</code>
+      <reason>unprocessable &quote;input&quote;</reason>
+      <detail><![CDATA[expected </payload> but received ]]></detail>
+    </fault>
+  </response>
+</exchange>
+```

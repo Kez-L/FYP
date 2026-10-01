@@ -1,0 +1,32 @@
+<?xml version="1.1"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, attachment*)>
+  <!ELEMENT header (sender, recipient, subject)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|linebreak)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST message priority (low|normal|high) "normal">
+  <!ATTLIST attachment kind NOTATION (text|binary) #REQUIRED>
+  <!NOTATION text SYSTEM "text/plain">
+  <!NOTATION binary PUBLIC "urn:example:binary">
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+]>
+<message priority="high">
+  <header>
+    <sender>alice@example.test</sender>
+    <recipient>bob@example.test</recipient>
+    <subject>Boundary &left;check&right;</subject>
+  </header>
+  <body>
+    Intro
+    <quote>Nested <quote>quoted</quote> material</quote>
+    <linebreak/>
+    <![CDATA[raw ]]> characters
+  </body>
+  <attachment kind="binary" />
+</message>

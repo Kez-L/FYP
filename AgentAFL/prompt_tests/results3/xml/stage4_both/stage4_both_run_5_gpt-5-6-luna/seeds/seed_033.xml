@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (profile+, defaults)>
+  <!ELEMENT profile (name, setting+, include*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT setting (#PCDATA|strong|literal)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT literal (#PCDATA)>
+  <!ELEMENT include EMPTY>
+  <!ELEMENT defaults (setting+)>
+  <!ATTLIST configuration id ID #REQUIRED>
+  <!ATTLIST profile id ID #REQUIRED inherits IDREF #IMPLIED>
+  <!ATTLIST setting name NMTOKEN #REQUIRED type (string|integer|boolean) "string">
+  <!ATTLIST include ref IDREF #REQUIRED>
+  <!ENTITY open "<strong>">
+  <!ENTITY close "</strong>">
+  <!ENTITY product "Orion">
+  <!ENTITY nbsp "&#160;">
+]>
+<configuration id="cfg-root">
+  <profile id="base">
+    <name>&product; base profile</name>
+    <setting name="label">Default&nbsp;workspace</setting>
+    <setting name="retries" type="integer">03</setting>
+    <setting name="enabled" type="boolean">true</setting>
+    <include ref="shared"/>
+  </profile>
+  <profile id="secure" inherits="base">
+    <name>Secure profile</name>
+    <setting name="warning">Use &open;encrypted storage&close; only.</setting>
+    <setting name="path" type="string"><literal>/var/lib/orion &amp; cache</literal></setting>
+  </profile>
+  <defaults>
+    <setting name="timeout" type="integer">30</setting>
+    <setting name="separator">A&nbsp;B</setting>
+  </defaults>
+</configuration>

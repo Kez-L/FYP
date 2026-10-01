@@ -1,0 +1,157 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<svg:svg xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:ink="http://www.inkscape.org/namespaces/inkscape"
+         width="640" height="360" viewBox="0 0 640 360"
+         xml:base="https://example.test/art/">
+  <svg:metadata>
+    <svg:title>Layered Geometry</svg:title>
+    <svg:desc>A compact vector scene with nested namespaces.</svg:desc>
+  </svg:metadata>
+  <svg:g id="background" ink:label="Backdrop" transform="translate(12,18)">
+    <svg:rect width="616" height="324" rx="14" fill="#182030"/>
+    <svg:circle cx="510" cy="88" r="42" fill="#f4d35e" opacity="0.86"/>
+  </svg:g>
+  <svg:g id="content" transform="rotate(-3 320 180)">
+    <svg:path id="ridge"
+              d="M40 290 C120 210, 155 250, 230 180 S360 130, 430 205 S540 260, 600 150"
+              fill="none" stroke="#63c5da" stroke-width="9"
+              stroke-linecap="round" stroke-linejoin="round"/>
+    <svg:image x="72" y="48" width="96" height="96"
+               xlink:href="icons/compass.svg" preserveAspectRatio="xMidYMid meet"/>
+    <svg:foreignObject x="230" y="226" width="300" height="72">
+      <html:div xmlns:html="http://www.w3.org/1999/xhtml"
+                style="font: 18px sans-serif; color: white">
+        <html:span>north / </html:span><html:strong>west</html:strong>
+      </html:div>
+    </svg:foreignObject>
+  </svg:g>
+</svg:svg>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+)>
+  <!ELEMENT entry (label, body)>
+  <!ATTLIST entry key ID #REQUIRED
+                ref IDREF #IMPLIED
+                status (draft|final|held) "draft">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT body (#PCDATA|mark|link|br)*>
+  <!ELEMENT mark (#PCDATA|mark)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ENTITY notice "This text came from an internal entity.">
+  <!ENTITY stamp "2026-10-01T12:00:00Z">
+]>
+<archive>
+  <entry key="e-a" status="final">
+    <label>Primary record</label>
+    <body>
+      &notice;
+      <mark>Indexed</mark>
+      <br/>
+      <link>urn:example:primary</link>
+    </body>
+  </entry>
+  <entry key="e-b" ref="e-a" status="held">
+    <label>Follow-up</label>
+    <body>Received at <mark>&stamp;</mark>; awaiting review.</body>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<transcript session="σ-17" xml:space="preserve">
+  <?trace channel="parser" level="verbose"?>
+  <!-- Deliberately retained whitespace and markup-like payload. -->
+  <turn speaker="operator" sequence="0001">
+    <text><![CDATA[Input begins with <tag attr="&not-an-entity;"> and ends here.]]></text>
+    <tokens>
+      <token kind="word">alpha</token>
+      <token kind="symbol">&lt;</token>
+      <token kind="quoted"><![CDATA["βeta"]]></token>
+      <token kind="linebreak">&#xA;</token>
+    </tokens>
+  </turn>
+  <turn speaker="engine" sequence="0002">
+    <text>Result: <emphasis>accepted</emphasis> <br/> with no rewrite.</text>
+    <diagnostics count="2">
+      <item code="W-001">trailing spaces preserved</item>
+      <item code="I-α">non-ASCII identifier observed</item>
+    </diagnostics>
+  </turn>
+  <?checkpoint id="cp-2"?>
+</transcript>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+              xmlns:sec="urn:example:security"
+              xmlns:msg="urn:example:message"
+              env:encodingStyle="urn:example:encoding">
+  <env:Header>
+    <sec:Credentials sec:scheme="token">
+      <sec:Subject>service-reader</sec:Subject>
+      <sec:Token expires="2027-01-15T00:00:00Z">redacted</sec:Token>
+    </sec:Credentials>
+    <msg:Trace env:mustUnderstand="0" msg:id="t-91">
+      <msg:Hop>gateway</msg:Hop>
+      <msg:Hop>worker</msg:Hop>
+    </msg:Trace>
+  </env:Header>
+  <env:Body>
+    <msg:Batch msg:requestId="r-008">
+      <msg:Operation name="merge" mode="preview">
+        <msg:Source xml:lang="en-US">
+          <msg:Path>/records/alpha</msg:Path>
+          <msg:Checksum algorithm="sha256">00aa11bb22cc33dd</msg:Checksum>
+        </msg:Source>
+        <msg:Options>
+          <msg:Option key="preserve-order" value="true"/>
+          <msg:Option key="conflict-policy" value="manual"/>
+        </msg:Options>
+      </msg:Operation>
+      <msg:Operation name="delete" mode="disabled">
+        <msg:Source><msg:Path>/records/obsolete</msg:Path></msg:Source>
+      </msg:Operation>
+    </msg:Batch>
+  </env:Body>
+</env:Envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<package xmlns="urn:example:package"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:m="urn:example:manifest"
+         xml:lang="fr">
+  <manifest m:version="3" generated="2026-10-01">
+    <item id="intro" media-type="text/plain" optional="false">
+      <location href="parts/intro.txt" checksum="sha-256:abc123"/>
+    </item>
+    <item id="diagram" media-type="image/svg+xml" optional="true">
+      <location href="parts/diagram.svg"/>
+    </item>
+  </manifest>
+  <content xml:base="https://cdn.example.test/releases/42/">
+    <section id="overview" role="main">
+      <heading>Vue d’ensemble</heading>
+      <xi:include href="parts/overview.xml" parse="xml" xpointer="xpointer(/section)">
+        <xi:fallback>
+          <notice>Section unavailable; using embedded fallback.</notice>
+        </xi:fallback>
+      </xi:include>
+    </section>
+    <section id="notes" role="supplement">
+      <heading>Notes</heading>
+      <paragraph>Les données sont <m:highlight>provisoires</m:highlight>.</paragraph>
+      <resource href="parts/notes.txt" type="text/plain"/>
+    </section>
+  </content>
+</package>
+```

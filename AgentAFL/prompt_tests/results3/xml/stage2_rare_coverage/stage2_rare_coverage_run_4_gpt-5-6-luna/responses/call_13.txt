@@ -1,0 +1,107 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|label|ref)*>
+  <!ELEMENT label EMPTY>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ATTLIST item kind (plain|linked|marked) "plain">
+  <!ATTLIST label key CDATA #IMPLIED>
+  <!ATTLIST ref target IDREF #IMPLIED>
+]>
+<catalog>
+  <section code="s-alpha">
+    <title>Mixed <label key="x"/> content</title>
+    <item kind="linked">before<ref target="s-alpha"/>after</item>
+    <item kind="marked"><![CDATA[<not-an-element>&still-data]]></item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="urn:outer" xmlns:p="urn:prefix">
+  <p:branch p:flag="yes">
+    <leaf xmlns="" id="L0">text</leaf>
+    <p:branch xmlns:p="urn:alternate" p:flag="no">
+      <p:leaf p:value="&amp;">A<!--inside--><?step data?></p:leaf>
+    </p:branch>
+  </p:branch>
+  <empty xmlns="urn:outer" xmlns:q="urn:q" q:x="1" />
+</root>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE stream [
+  <!ENTITY open "[">
+  <!ENTITY close "]">
+  <!ENTITY payload "&open;alpha&amp;beta&close;">
+  <!ELEMENT stream (chunk, chunk?, tail)>
+  <!ELEMENT chunk (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT tail EMPTY>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+]>
+<stream>
+  <chunk index="01">&payload;<part>one</part>middle</chunk>
+  <chunk index="02"><part><![CDATA[two]]></part></chunk>
+  <tail/>
+</stream>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+)>
+  <!ELEMENT node (name, edge*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST node ident ID #REQUIRED>
+  <!ATTLIST edge to IDREF #IMPLIED weight NMTOKEN "0">
+]>
+<graph>
+  <node ident="n1">
+    <name>root</name>
+    <edge to="n2" weight="1"/>
+    <edge to="missing" weight=""/>
+  </node>
+  <node ident="n2">
+    <name>child &quot;quoted&quot;</name>
+    <edge to="n1" weight="0x10"/>
+  </node>
+</graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload, trailer?)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ELEMENT payload (data|data-group)+>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT data-group (data*)>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST entry path CDATA #REQUIRED size CDATA #IMPLIED>
+  <!ATTLIST data encoding (raw|base64|hex) "raw">
+]>
+<package>
+  <manifest>
+    <entry path="a/../b" size="000"/>
+    <entry path="x&amp;y" size="NaN"/>
+  </manifest>
+  <payload>
+    <data encoding="raw">line1
+line2&#x0A;line3</data>
+    <data-group>
+      <data encoding="hex"><![CDATA[00ff7e]]></data>
+      <data encoding="base64">QUJDREVGRw==</data>
+    </data-group>
+  </payload>
+  <trailer>after payload<?mark?></trailer>
+</package>
+```

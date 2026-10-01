@@ -1,0 +1,209 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section id ID #REQUIRED xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (label, price?, description?)>
+  <!ATTLIST item sku ID #REQUIRED status (new|used|archived) "new">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ENTITY currency "€">
+]>
+<catalog xml:base="https://example.invalid/catalog/">
+  <section id="s-main" xml:lang="en">
+    <title>Tools &amp; Components</title>
+    <item sku="sku-17" status="new">
+      <label>Hexagonal &lt;driver&gt;</label>
+      <price>&currency; 12.50</price>
+      <description>Compact <em>manual</em> tool with <code>0x2a</code> marking.</description>
+    </item>
+    <item sku="sku-18" status="used">
+      <label>Replacement handle</label>
+      <description/>
+    </item>
+  </section>
+  <section id="s-empty" xml:lang="fr">
+    <title>Échantillons</title>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, attachments?)>
+  <!ELEMENT header (from, to, subject)>
+  <!ELEMENT from EMPTY>
+  <!ATTLIST from address CDATA #REQUIRED>
+  <!ELEMENT to EMPTY>
+  <!ATTLIST to address CDATA #REQUIRED>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|br|link)*>
+  <!ELEMENT quote (#PCDATA|quote|br)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href URI #REQUIRED rel CDATA #IMPLIED>
+  <!ELEMENT attachments (attachment+)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment name CDATA #REQUIRED media CDATA #IMPLIED size NMTOKEN #IMPLIED>
+]>
+<message>
+  <header>
+    <from address="sender@example.invalid"/>
+    <to address="receiver@example.invalid"/>
+    <subject>Re: &quot;quoted&quot; subject</subject>
+  </header>
+  <body>Hello,<br/>please review <quote>the nested <quote>reply</quote></quote>
+    and visit <link href="mailto:test@example.invalid" rel="contact">this address</link>.
+  </body>
+  <attachments>
+    <attachment name="report&amp;1.txt" media="text/plain" size="0"/>
+    <attachment name="image.bin" media="application/octet-stream" size="4294967295"/>
+  </attachments>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (metadata, layers)>
+  <!ELEMENT metadata (author?, keywords?)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT keywords (keyword*)>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ELEMENT layers (layer+)>
+  <!ELEMENT layer (extent, feature*)>
+  <!ATTLIST layer name NMTOKEN #REQUIRED visible (true|false) "true">
+  <!ELEMENT extent (west, south, east, north)>
+  <!ELEMENT west (#PCDATA)>
+  <!ELEMENT south (#PCDATA)>
+  <!ELEMENT east (#PCDATA)>
+  <!ELEMENT north (#PCDATA)>
+  <!ELEMENT feature (point|line|polygon)>
+  <!ATTLIST feature id ID #REQUIRED type CDATA #IMPLIED>
+  <!ELEMENT point (coordinates)>
+  <!ELEMENT line (coordinates)>
+  <!ELEMENT polygon (ring+)>
+  <!ELEMENT ring (coordinates)>
+  <!ELEMENT coordinates (#PCDATA)>
+]>
+<map xmlns="urn:example:geo" xmlns:gml="http://www.opengis.net/gml">
+  <metadata>
+    <author>Δημήτρης</author>
+    <keywords>
+      <keyword>latitude</keyword>
+      <keyword>longitude</keyword>
+      <keyword>WGS84</keyword>
+    </keywords>
+  </metadata>
+  <layers>
+    <layer name="roads" visible="false">
+      <extent>
+        <west>-180.000000</west>
+        <south>-90</south>
+        <east>180.000000</east>
+        <north>90</north>
+      </extent>
+      <feature id="f-point" type="marker">
+        <point><coordinates>0,0,0</coordinates></point>
+      </feature>
+      <feature id="f-line">
+        <line><coordinates>-0.1,51.5 2.35,48.86 139.69,35.68</coordinates></line>
+      </feature>
+      <feature id="f-poly">
+        <polygon>
+          <ring><coordinates>0,0 1,0 1,1 0,1 0,0</coordinates></ring>
+          <ring><coordinates>0.2,0.2 0.8,0.2 0.8,0.8 0.2,0.8 0.2,0.2</coordinates></ring>
+        </polygon>
+      </feature>
+    </layer>
+  </layers>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (defaults, profiles)>
+  <!ELEMENT defaults (option*)>
+  <!ELEMENT profiles (profile+)>
+  <!ELEMENT profile (inherits?, option*, module*)>
+  <!ATTLIST profile name NMTOKEN #REQUIRED enabled (yes|no) "yes">
+  <!ELEMENT inherits EMPTY>
+  <!ATTLIST inherits profile NMTOKEN #REQUIRED>
+  <!ELEMENT option (#PCDATA)>
+  <!ATTLIST option key NMTOKEN #REQUIRED type (string|integer|boolean|path) "string">
+  <!ELEMENT module (setting*)>
+  <!ATTLIST module name NMTOKEN #REQUIRED>
+  <!ELEMENT setting (#PCDATA)>
+  <!ATTLIST setting key NMTOKEN #REQUIRED>
+  <!NOTATION ini SYSTEM "application/ini">
+  <!ENTITY nbsp "&#160;">
+]>
+<configuration>
+  <defaults>
+    <option key="timeout" type="integer">30</option>
+    <option key="verbose" type="boolean">false</option>
+    <option key="root" type="path">/var/lib/app/&nbsp;</option>
+  </defaults>
+  <profiles>
+    <profile name="development" enabled="yes">
+      <option key="timeout" type="integer">0</option>
+      <option key="banner">dev &lt;local&gt;</option>
+      <module name="storage">
+        <setting key="driver">sqlite</setting>
+        <setting key="file">./data/test.db</setting>
+      </module>
+    </profile>
+    <profile name="production" enabled="no">
+      <inherits profile="development"/>
+      <option key="verbose" type="boolean">true</option>
+      <module name="logging">
+        <setting key="format">[%Y-%m-%dT%H:%M:%S%z] %p %m</setting>
+      </module>
+    </profile>
+  </profiles>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry path CDATA #REQUIRED kind (file|directory|symlink) #REQUIRED mode NMTOKEN #IMPLIED>
+  <!ELEMENT data (directory*)>
+  <!ELEMENT directory (file|directory)*>
+  <!ATTLIST directory name CDATA #REQUIRED>
+  <!ELEMENT file (#PCDATA)>
+  <!ATTLIST file name CDATA #REQUIRED encoding (base64|text|hex) "text">
+]>
+<package xmlns:p="urn:example:package" p:format="2">
+  <manifest>
+    <entry path="." kind="directory" mode="0755"/>
+    <entry path="docs/readme.txt" kind="file" mode="0644"/>
+    <entry path="bin/run" kind="file" mode="0755"/>
+    <entry path="current" kind="symlink" mode="0777"/>
+  </manifest>
+  <data>
+    <directory name="docs">
+      <file name="readme.txt" encoding="text">Line one&#10;Line two&#10;Trailing &amp; marker</file>
+      <file name="empty" encoding="hex"/>
+    </directory>
+    <directory name="bin">
+      <file name="run" encoding="base64">
+        SGVsbG8sIHdvcmxkIQo=
+      </file>
+      <directory name="nested">
+        <file name="payload" encoding="hex">00ff10aB</file>
+      </directory>
+    </directory>
+  </data>
+</package>
+```

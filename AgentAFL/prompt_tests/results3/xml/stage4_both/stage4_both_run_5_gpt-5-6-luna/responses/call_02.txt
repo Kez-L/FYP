@@ -1,0 +1,231 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE museum [
+  <!ELEMENT museum (exhibit+, curator?, note*)>
+  <!ELEMENT exhibit (title, artifact+, provenance?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT artifact (#PCDATA|label|image)*>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT image EMPTY>
+  <!ELEMENT provenance (origin, date?, transfer*)>
+  <!ELEMENT origin (#PCDATA)>
+  <!ELEMENT date (#PCDATA)>
+  <!ELEMENT transfer (#PCDATA)>
+  <!ELEMENT curator (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST museum xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST exhibit accession ID #REQUIRED era CDATA #IMPLIED>
+  <!ATTLIST artifact kind (painting|sculpture|textile|unknown) "unknown">
+  <!ATTLIST image src URI #REQUIRED width NMTOKEN #IMPLIED height NMTOKEN #IMPLIED>
+  <!ATTLIST transfer from CDATA #IMPLIED to CDATA #IMPLIED>
+  <!ENTITY curatorName "Dr. Élodie Varga">
+  <!ENTITY citation "Collected during the winter survey.">
+]>
+<museum xml:lang="fr">
+  <curator>&curatorName;</curator>
+  <exhibit accession="A-0042" era="late-antique">
+    <title>Fragments and Light</title>
+    <artifact kind="painting">Pigment <label>vermillion</label> and mineral dust <image src="urn:image:0042" width="640" height="480"/></artifact>
+    <artifact kind="textile"><![CDATA[warp / weft / unfinished edge]]></artifact>
+    <provenance>
+      <origin>North gallery</origin>
+      <date>1897-11-03</date>
+      <transfer from="estate" to="museum">Acquired by exchange</transfer>
+    </provenance>
+  </exhibit>
+  <note>&citation;</note>
+</museum>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+, appendix*)>
+  <!ELEMENT section (heading, paragraph+, table?)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|term|quote|linebreak)*>
+  <!ELEMENT term (#PCDATA)>
+  <!ELEMENT quote (#PCDATA|term)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT table (columns, row+)>
+  <!ELEMENT columns (column+)>
+  <!ELEMENT column (#PCDATA)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT appendix (heading, paragraph*)>
+  <!ATTLIST report generated CDATA #IMPLIED>
+  <!ATTLIST section number NMTOKEN #REQUIRED>
+  <!ATTLIST paragraph role (summary|detail|warning) "detail">
+  <!ATTLIST term id ID #IMPLIED>
+  <!ATTLIST quote source CDATA #IMPLIED>
+  <!ATTLIST row key ID #IMPLIED>
+  <!ATTLIST cell type (text|integer|decimal|date) "text">
+  <!ENTITY dash "&#x2014;">
+  <!ENTITY warning "<term id='t-warning'>caution</term>">
+]>
+<report generated="2026-10-01T12:34:56Z">
+  <section number="I">
+    <heading>Observations</heading>
+    <paragraph role="summary">The instrument recorded a stable signal<linebreak/>across three intervals.</paragraph>
+    <paragraph>Use the term &warning; when the reading exceeds <term id="t-limit">threshold</term>.</paragraph>
+    <paragraph role="detail"><quote source="field log">No visible drift</quote> &dash; the enclosure remained sealed.</paragraph>
+    <table>
+      <columns><column>sample</column><column>value</column><column>collected</column></columns>
+      <row key="r1"><cell type="text">alpha</cell><cell type="decimal">0.125</cell><cell type="date">2026-09-30</cell></row>
+      <row key="r2"><cell type="text">beta</cell><cell type="integer">17</cell><cell type="date">2026-10-01</cell></row>
+    </table>
+  </section>
+  <appendix>
+    <heading>Methods</heading>
+    <paragraph>Samples were sealed before transport.</paragraph>
+  </appendix>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (header, widget+)>
+  <!ELEMENT header (title, timestamp, owner)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT widget (caption, value, threshold?, sparkline?)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT threshold (low, high)>
+  <!ELEMENT low (#PCDATA)>
+  <!ELEMENT high (#PCDATA)>
+  <!ELEMENT sparkline (point+)>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST dashboard version NMTOKEN #REQUIRED>
+  <!ATTLIST header mode (live|replay|offline) #REQUIRED>
+  <!ATTLIST widget id ID #REQUIRED type (gauge|counter|status) #REQUIRED enabled (true|false) "true">
+  <!ATTLIST value unit CDATA #IMPLIED state (normal|elevated|unknown) "unknown">
+  <!ATTLIST point x NMTOKEN #REQUIRED y CDATA #REQUIRED>
+  <!ENTITY percent "&#37;">
+  <!ENTITY product "Telemetry&nbsp;Core">
+  <!NOTATION csv SYSTEM "text/csv">
+]>
+<dashboard version="3.7">
+  <header mode="replay">
+    <title>&product;</title>
+    <timestamp>2026-09-30T23:59:59.999+05:30</timestamp>
+    <owner>ops@example.test</owner>
+  </header>
+  <widget id="cpu" type="gauge">
+    <caption>Processor load</caption>
+    <value unit="percent" state="elevated">87&percent;</value>
+    <threshold><low>10</low><high>80</high></threshold>
+    <sparkline>
+      <point x="0" y="31.5"/><point x="1" y="44"/><point x="2" y="87"/>
+    </sparkline>
+  </widget>
+  <widget id="queue" type="counter" enabled="false">
+    <caption>Pending jobs</caption>
+    <value unit="items">0</value>
+  </widget>
+  <widget id="health" type="status">
+    <caption>Service state</caption>
+    <value state="unknown">degraded &amp; awaiting probe</value>
+  </widget>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node (name, metadata?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT metadata (entry*)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ELEMENT edge (label?, weight?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT weight (#PCDATA)>
+  <!ATTLIST graph directed (yes|no) "yes">
+  <!ATTLIST node id ID #REQUIRED kind CDATA #IMPLIED>
+  <!ATTLIST metadata format (plain|json|yaml) "plain">
+  <!ATTLIST entry key NMTOKEN #REQUIRED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED type (tree|cross|back) "cross">
+  <!ATTLIST weight scale NMTOKEN #IMPLIED>
+  <!ENTITY left "[";
+  <!ENTITY right "]">
+  <!ENTITY jsonStart "{&quot;source&quot;:&quot;">
+]>
+<graph directed="yes">
+  <node id="n-root" kind="root">
+    <name>Root</name>
+    <metadata format="json">
+      <entry key="payload">&jsonStart;n-root&quot;}</entry>
+      <entry key="symbols">&left;alpha&right;</entry>
+    </metadata>
+  </node>
+  <node id="n-a" kind="leaf"><name>A &amp; B</name></node>
+  <node id="n-b" kind="leaf"><name><![CDATA[<opaque>value</opaque>]]></name></node>
+  <edge from="n-root" to="n-a" type="tree">
+    <label>primary</label><weight scale="log">1.0</weight>
+  </edge>
+  <edge from="n-root" to="n-b" type="cross"/>
+  <edge from="n-b" to="n-root" type="back"><label>return</label></edge>
+</graph>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, trailer)>
+  <!ELEMENT header (sender, receiver, sequence, flags?)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT receiver (#PCDATA)>
+  <!ELEMENT sequence (#PCDATA)>
+  <!ELEMENT flags (flag*)>
+  <!ELEMENT flag EMPTY>
+  <!ELEMENT payload (command|batch|text)>
+  <!ELEMENT command (argument*)>
+  <!ELEMENT argument (#PCDATA)>
+  <!ELEMENT batch (command+)>
+  <!ELEMENT text (#PCDATA)>
+  <!ELEMENT trailer (checksum, signature?)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST envelope id ID #REQUIRED protocol NMTOKEN #REQUIRED>
+  <!ATTLIST header priority (low|normal|high) "normal">
+  <!ATTLIST flag name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST command name NMTOKEN #REQUIRED async (true|false) "false">
+  <!ATTLIST argument name NMTOKEN #REQUIRED encoding (plain|base64|hex) "plain">
+  <!ATTLIST batch count NMTOKEN #REQUIRED>
+  <!ATTLIST trailer algorithm (none|crc32|sha1) #REQUIRED>
+  <!ENTITY nl "&#xA;">
+  <!ENTITY amp "&amp;">
+]>
+<envelope id="env-77" protocol="x-bridge-2">
+  <?trace id="9f2a" sampled="true"?>
+  <header priority="high">
+    <sender>node://east/β</sender>
+    <receiver>node://west/δ</receiver>
+    <sequence>0000000000042</sequence>
+    <flags>
+      <flag name="compressed" value="false"/>
+      <flag name="encrypted"/>
+      <flag name="charset" value="UTF-8"/>
+    </flags>
+  </header>
+  <payload>
+    <batch count="2">
+      <command name="sync" async="true">
+        <argument name="path">/var/lib/data</argument>
+        <argument name="mode">incremental</argument>
+      </command>
+      <command name="emit">
+        <argument name="message">line-one&nl;line-two &amp; verified</argument>
+        <argument name="blob" encoding="hex">00ff7e</argument>
+      </command>
+    </batch>
+  </payload>
+  <trailer algorithm="sha1">
+    <checksum>deadbeefcafebabe</checksum>
+    <signature><![CDATA[signature bytes: /+7dzA==]]></signature>
+  </trailer>
+</envelope>
+```

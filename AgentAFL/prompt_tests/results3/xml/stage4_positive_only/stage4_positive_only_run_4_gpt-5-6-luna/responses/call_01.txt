@@ -1,0 +1,235 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (metadata, folder+)>
+  <!ELEMENT metadata (created, owner, checksum)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT owner EMPTY>
+  <!ATTLIST owner name CDATA #REQUIRED team CDATA #IMPLIED>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT folder (folder|document|link)*>
+  <!ATTLIST folder path CDATA #REQUIRED hidden (yes|no) "no">
+  <!ELEMENT document (heading, paragraph+, tag*)>
+  <!ATTLIST document id ID #REQUIRED format (text|binary|unknown) "text">
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|code|quote|br)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT quote (#PCDATA|code)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target IDREF #REQUIRED relation CDATA #IMPLIED>
+]>
+<archive>
+  <metadata>
+    <created>2026-09-30T23:59:59Z</created>
+    <owner name="Ada" team="systems"/>
+    <checksum>sha256:00ff11aa</checksum>
+  </metadata>
+  <folder path="/" hidden="no">
+    <folder path="/manuals" hidden="yes">
+      <document id="d1" format="text">
+        <heading>Migration Notes</heading>
+        <paragraph>Move the <code>cache</code> directory first.<br/>Then verify the <quote>read-only</quote> marker.</paragraph>
+        <tag>maintenance</tag>
+      </document>
+    </folder>
+    <link target="d1" relation="references"/>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ENTITY open "[" >
+  <!ENTITY close "]" >
+  <!NOTATION png SYSTEM "image/png">
+  <!ELEMENT workflow (trigger, stage+, result?)>
+  <!ATTLIST workflow name CDATA #REQUIRED enabled (true|false) "true">
+  <!ELEMENT trigger (schedule|event)>
+  <!ELEMENT schedule (#PCDATA)>
+  <!ELEMENT event EMPTY>
+  <!ATTLIST event source CDATA #REQUIRED action CDATA #REQUIRED>
+  <!ELEMENT stage (input*, task+, output*)>
+  <!ATTLIST stage number NMTOKEN #REQUIRED>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT task (command, argument*, environment?)>
+  <!ATTLIST task id ID #REQUIRED critical (yes|no) "no">
+  <!ELEMENT command (#PCDATA)>
+  <!ELEMENT argument (#PCDATA)>
+  <!ELEMENT environment (variable+)>
+  <!ELEMENT variable EMPTY>
+  <!ATTLIST variable key NMTOKEN #REQUIRED value CDATA #REQUIRED>
+  <!ELEMENT output (#PCDATA)>
+  <!ELEMENT result (status, message?)>
+  <!ELEMENT status (#PCDATA)>
+  <!ELEMENT message (#PCDATA)>
+]>
+<workflow name="nightly-build" enabled="false">
+  <trigger>
+    <event source="queue" action="release"/>
+  </trigger>
+  <stage number="01">
+    <input>source.tar</input>
+    <task id="extract" critical="yes">
+      <command>unpack</command>
+      <argument>&open;src&close;</argument>
+      <environment>
+        <variable key="MODE" value="safe"/>
+      </environment>
+    </task>
+    <output>workspace/</output>
+  </stage>
+  <stage number="02">
+    <task id="verify">
+      <command>check</command>
+      <argument>--all</argument>
+    </task>
+  </stage>
+  <result>
+    <status>pending</status>
+    <message>Awaiting approval.</message>
+  </result>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<geography xmlns="urn:geo" xmlns:meta="urn:metadata" xml:base="https://example.invalid/maps/">
+  <meta:revision meta:number="7" meta:by="survey-team"/>
+  <continent code="OC">
+    <island name="Aster" inhabited="1">
+      <point lat="-17.123456" lon="149.654321">
+        <label xml:lang="fr">Port d'été</label>
+        <elevation unit="m">12.5</elevation>
+      </point>
+      <boundary closed="true">
+        <vertex index="0" lat="-17.1" lon="149.6"/>
+        <vertex index="1" lat="-17.2" lon="149.7"/>
+        <vertex index="2" lat="-17.1" lon="149.8"/>
+      </boundary>
+      <feature type="reef">
+        <description>Shallow water &amp; coral shelf.</description>
+        <coordinate>-17.15,149.72</coordinate>
+      </feature>
+    </island>
+    <island name="Beryl" inhabited="0">
+      <point lat="-18" lon="150">
+        <label xml:lang="en">North marker</label>
+        <elevation unit="m">0</elevation>
+      </point>
+    </island>
+  </continent>
+</geography>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (account+)>
+  <!ELEMENT account (identity, opening, entry*, closing)>
+  <!ATTLIST account number CDATA #REQUIRED currency NMTOKEN "EUR">
+  <!ELEMENT identity (name, contact?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT contact (email|phone)+>
+  <!ELEMENT email (#PCDATA)>
+  <!ELEMENT phone (#PCDATA)>
+  <!ELEMENT opening (#PCDATA)>
+  <!ELEMENT entry (date, debit?, credit?, memo?)>
+  <!ATTLIST entry ref ID #REQUIRED reconciled (yes|no) "no">
+  <!ELEMENT date (#PCDATA)>
+  <!ELEMENT debit (#PCDATA)>
+  <!ELEMENT credit (#PCDATA)>
+  <!ELEMENT memo (#PCDATA)>
+  <!ELEMENT closing (#PCDATA)>
+]>
+<ledger>
+  <account number="A-009" currency="GBP">
+    <identity>
+      <name>R&amp;D &quot;Reserve&quot;</name>
+      <contact>
+        <email>finance@example.invalid</email>
+        <phone>+44-000-1234</phone>
+      </contact>
+    </identity>
+    <opening>1000.00</opening>
+    <entry ref="r1" reconciled="yes">
+      <date>2026-01-03</date>
+      <credit>250.00</credit>
+      <memo>Refund for damaged equipment.</memo>
+    </entry>
+    <entry ref="r2">
+      <date>2026-01-04</date>
+      <debit>17.5</debit>
+      <memo>Stationery &#x26; labels</memo>
+    </entry>
+    <entry ref="r3" reconciled="no">
+      <date>2026-01-05</date>
+      <credit>0</credit>
+    </entry>
+    <closing>1232.50</closing>
+  </account>
+</ledger>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE laboratory [
+  <!ELEMENT laboratory (protocol, sample-set)>
+  <!ELEMENT protocol (name, version, step+)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT version (#PCDATA)>
+  <!ELEMENT step (instruction, reagent*, duration?)>
+  <!ATTLIST step index NMTOKEN #REQUIRED>
+  <!ELEMENT instruction (#PCDATA|warning|math)*>
+  <!ELEMENT warning (#PCDATA)>
+  <!ELEMENT math (#PCDATA)>
+  <!ELEMENT reagent EMPTY>
+  <!ATTLIST reagent id ID #REQUIRED volume CDATA #REQUIRED unit (ml|ul|g) "ml">
+  <!ELEMENT duration (#PCDATA)>
+  <!ELEMENT sample-set (sample+)>
+  <!ELEMENT sample (label, property*)>
+  <!ATTLIST sample id ID #REQUIRED kind CDATA #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+]>
+<laboratory>
+  <protocol>
+    <name>Thermal Cycle</name>
+    <version>3.0-beta</version>
+    <step index="1">
+      <instruction>Place the vessel at <math>20 &lt; T &lt; 25</math> degrees.</instruction>
+      <reagent id="buffer" volume="500" unit="ul"/>
+      <duration>00:05:00</duration>
+    </step>
+    <step index="2">
+      <instruction>Raise temperature slowly.<warning>Do not seal the container.</warning></instruction>
+      <reagent id="catalyst" volume="0.25" unit="g"/>
+      <duration>PT2H</duration>
+    </step>
+  </protocol>
+  <sample-set>
+    <sample id="S-α" kind="control">
+      <label>Blank sample</label>
+      <property>
+        <key>matrix</key>
+        <value><![CDATA[H2O / trace salts]]></value>
+      </property>
+    </sample>
+    <sample id="S-β">
+      <label>Unknown &amp; replicate</label>
+      <property>
+        <key>temperature</key>
+        <value>22.000</value>
+      </property>
+      <property>
+        <key>notes</key>
+        <value>contains π and café</value>
+      </property>
+    </sample>
+  </sample-set>
+</laboratory>
+```

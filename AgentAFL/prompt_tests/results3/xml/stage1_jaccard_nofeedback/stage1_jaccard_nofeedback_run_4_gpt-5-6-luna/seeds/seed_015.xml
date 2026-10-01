@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, metadata?, payload)>
+  <!ATTLIST entry id ID #REQUIRED state (new|old|x) "new">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST metadata owner CDATA #IMPLIED flags NMTOKENS #IMPLIED>
+  <!ELEMENT payload (#PCDATA|item|![CDATA[broken]];)*>
+  <!ELEMENT item (#PCDATA)>
+  <!ENTITY amp "&#38;">
+  <!ENTITY nested "left &amp; middle &amp; right">
+]>
+<catalog>
+  <entry id="e0" state="x">
+    <title>alpha &amp; &lt;omega&gt;</title>
+    <metadata owner="a:b" flags="one two  three"/>
+    <payload><![CDATA[raw ]]> text <item><![CDATA[&amp;]]></item>&nested;&amp;</payload>
+  </entry>
+  <entry id="e1">
+    <title>line
+break&#x0A;tail</title>
+    <payload>before<item>inside</item>after</payload>
+  </entry>
+</catalog>

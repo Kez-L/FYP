@@ -1,0 +1,131 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (continent*)>
+  <!ELEMENT continent (country+)>
+  <!ELEMENT country (city*, note?)>
+  <!ELEMENT city (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST continent label CDATA #REQUIRED>
+  <!ATTLIST country iso NMTOKEN #IMPLIED>
+  <!ENTITY mark "&#x2605;">
+]>
+<map>
+  <continent label="north">
+    <country iso="NO">
+      <city>Oslo</city>
+      <city>Bergen</city>
+      <note>Harbor &mark; district</note>
+    </country>
+    <country iso="IS">
+      <city>Reykjavik</city>
+    </country>
+  </continent>
+  <continent label="south"/>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<workflow xmlns="urn:workflow" xmlns:x="urn:extension" version="2.4">
+  <phase id="prepare">
+    <action timeout="30">
+      <command><![CDATA[printf '<input/>' | ./tool]]></command>
+      <environment>
+        <variable name="MODE">safe</variable>
+        <variable name="PATH">/tmp/bin:/usr/bin</variable>
+      </environment>
+    </action>
+  </phase>
+  <phase id="verify" depends="prepare">
+    <action timeout="0">
+      <command>test &lt; 5 &amp;&amp; echo ready</command>
+      <x:artifact x:kind="log">stdout</x:artifact>
+    </action>
+    <checkpoint/>
+  </phase>
+</workflow>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (label, price, tags?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST item sku ID #IMPLIED currency CDATA "EUR">
+]>
+<catalog>
+  <section>
+    <heading>Oddments</heading>
+    <item sku="p-01">
+      <label>Glass &quot;orb&quot;</label>
+      <price>12.50</price>
+      <tags>
+        <tag>fragile</tag>
+        <tag>round</tag>
+      </tags>
+    </item>
+    <item currency="JPY">
+      <label>折り紙</label>
+      <price>¥800</price>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<message xmlns:env="http://example.invalid/envelope" xmlns:tx="http://example.invalid/text">
+  <env:header>
+    <env:trace>
+      <env:id>0000-ffff-7</env:id>
+      <env:hop index="1"/>
+      <env:hop index="2"/>
+    </env:trace>
+  </env:header>
+  <env:body>
+    <tx:paragraph xml:lang="fr">Café, naïve façade.</tx:paragraph>
+    <tx:paragraph>
+      Before
+      <tx:emphasis level="strong">inside</tx:emphasis>
+      after
+      <tx:break/>
+      final.
+    </tx:paragraph>
+    <env:attachment encoding="base64">AAEC/f8=</env:attachment>
+  </env:body>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE geometry [
+  <!ELEMENT geometry (shape*)>
+  <!ELEMENT shape (point+)>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST shape kind (line|polygon|path) #REQUIRED>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+]>
+<geometry>
+  <shape kind="line">
+    <point x="0" y="0"/>
+    <point x="10" y="20"/>
+  </shape>
+  <shape kind="polygon">
+    <point x="-1.5" y="2.75"/>
+    <point x="3" y="4"/>
+    <point x="0" y="-9"/>
+  </shape>
+  <shape kind="path">
+    <point x="NaN" y="INF"/>
+  </shape>
+  <description>Measurements&nbsp;complete</description>
+</geometry>
+```

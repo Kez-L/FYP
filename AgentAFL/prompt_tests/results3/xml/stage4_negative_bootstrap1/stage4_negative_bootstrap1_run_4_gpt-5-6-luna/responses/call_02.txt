@@ -1,0 +1,148 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common
+    "<!ELEMENT item (title,meta?,value)>
+     <!ATTLIST item code ID #REQUIRED format CDATA 'plain'>">
+  %common;
+  <!ELEMENT catalog (item+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta source CDATA #IMPLIED>
+  <!ELEMENT value (#PCDATA)>
+  <!ENTITY hello "A &amp; B">
+  <!ENTITY nested "left &hello; right">
+]>
+<catalog>
+  <item code="i-one">
+    <title>First &nested;</title>
+    <meta source="generated"/>
+    <value>line one
+line two&#x0A;line three</value>
+  </item>
+  <item code="i-two" format="quoted">
+    <title><![CDATA[<literal> & untouched]]></title>
+    <value>before &hello; after</value>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8" standalone="yes"?>
+<configuration xmlns="urn:acme:config"
+               xmlns:c="urn:acme:common"
+               xml:lang="fr"
+               xml:base="https://example.invalid/config/">
+  <?audit level="verbose"?>
+  <!-- Namespace changes and XML 1.1 character references. -->
+  <c:header c:id="h-7" xml:space="preserve">
+    <c:name>café&#x85;réglage</c:name>
+    <c:flags enabled="true"><![CDATA[
+      alpha
+      beta
+    ]]></c:flags>
+  </c:header>
+  <section xmlns="" xml:id="local-section">
+    <label>unqualified</label>
+    <value><![CDATA[<not-an-element> & still text]]></value>
+    <item xmlns="urn:acme:config" kind="rebound">
+      <description>back in the default namespace</description>
+    </item>
+  </section>
+</configuration>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, records, footer)>
+  <!ELEMENT header (generated, note?)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (key, data, link*)>
+  <!ATTLIST record state (new|open|closed) "new"
+                  priority NMTOKEN #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT data (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link rel CDATA #REQUIRED href CDATA #REQUIRED>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY mark "&lt;record&gt;">
+]>
+<report>
+  <header>
+    <generated>2026-10-01T12:34:56Z</generated>
+    <note>status&nbsp;=&nbsp;ready</note>
+  </header>
+  <records>
+    <record state="open" priority="P1">
+      <key>α-001</key>
+      <data>prefix<part>embedded</part>suffix &mark;</data>
+      <link rel="self" href="urn:item:α-001"/>
+      <link rel="alternate" href="https://example.invalid/?a=1&amp;b=2"/>
+    </record>
+    <record state="closed">
+      <key>β-002</key>
+      <data><![CDATA[raw ]]><part><![CDATA[x & y]]></part><![CDATA[ tail]]></data>
+    </record>
+  </records>
+  <footer>complete</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<scene xmlns="http://www.w3.org/2000/svg"
+       xmlns:xlink="http://www.w3.org/1999/xlink"
+       viewBox="0 0 320 180"
+       preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#000000"/>
+      <stop offset="100%" stop-color="rgb(255, 0, 127)"/>
+    </linearGradient>
+    <path id="curve" d="M0,0 C10,20 40,-5 80,10"/>
+  </defs>
+  <g id="layer-main" transform="translate(4.5 -2)">
+    <title xml:space="preserve">A &lt;drawn&gt; scene</title>
+    <use xlink:href="#curve" x="12" y="18" fill="none"
+         stroke="url(#g)" stroke-width="2.25"/>
+    <text x="10" y="90" dx="1 2 3" rotate="0 15 -5">Hello <![CDATA[& world]]></text>
+    <foreignObject x="0" y="100" width="300" height="60">
+      <html xmlns="http://www.w3.org/1999/xhtml">
+        <body><p data-kind="mixed">embedded <b>markup</b></p></body>
+      </html>
+    </foreignObject>
+  </g>
+  <?render profile="preview"?>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, body)>
+  <!ELEMENT header (version, checksum)>
+  <!ELEMENT version (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT body (chunk*)>
+  <!ELEMENT chunk (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!ENTITY open "<part>injected">
+]>
+<packet id="root">
+  <header>
+    <version>3</version>
+    <checksum>sha256:deadbeef</checksum>
+  </header>
+  <body>
+    <chunk index="0">start &open;</chunk>
+    <chunk index="1"><![CDATA[unterminated-looking ]]]]>tail</chunk>
+    <chunk index="2" id="a" id="b">duplicate attribute</chunk>
+  </body>
+</packet>
+```

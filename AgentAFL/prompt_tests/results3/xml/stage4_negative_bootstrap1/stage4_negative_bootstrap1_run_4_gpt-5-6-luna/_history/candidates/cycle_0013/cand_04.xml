@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE labyrinth [
+  <!ELEMENT labyrinth (level)>
+  <!ELEMENT level (room)>
+  <!ATTLIST level number NMTOKEN #REQUIRED>
+  <!ELEMENT room (door|room|note|empty)*>
+  <!ATTLIST room id CDATA #IMPLIED exit IDREFS #IMPLIED>
+  <!ELEMENT door (label, destination?)>
+  <!ATTLIST door locked (true|false) "false">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT destination (#PCDATA)>
+  <!ELEMENT note (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT empty EMPTY>
+]>
+<labyrinth>
+  <level number="0000000000000000000000000000000000000000000000000000000000000007">
+    <room id="outer" exit="r1 r2">
+      <door locked="false">
+        <label>north &amp; west</label>
+        <destination>r1</destination>
+      </door>
+      <room id="r1">
+        <note>nested <mark>room</mark> with <![CDATA[]]></note>
+        <empty/>
+        <room id="r1a">
+          <door locked="true"><label>sealed</label></door>
+          <room id="r1a-i"><note><![CDATA[<xml>]]></note></room>
+        </room>
+      </room>
+      <room id="r2" exit="">
+        <door locked="true"><label>south</label><destination/></door>
+        <note><mark/><mark>split</mark>tail</note>
+      </room>
+      <room>
+        <empty/><empty/><empty/>
+      </room>
+    </room>
+  </level>
+</labyrinth>

@@ -1,0 +1,150 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, metadata, description, price)>
+  <!ATTLIST entry sku ID #REQUIRED status (active|retired) "active">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT metadata (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT description (#PCDATA|b|i|br)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT price (#PCDATA)>
+  <!ENTITY trademark "™">
+]>
+<catalog>
+  <entry sku="item-001">
+    <title>Portable &trademark; Parser</title>
+    <metadata><tag>xml</tag><tag>fuzzing</tag></metadata>
+    <description><![CDATA[Raw text with <markup> and ]]]]><![CDATA[> delimiters.]]>
+      <b>fast</b><br/><i>experimental</i>
+    </description>
+    <price currency="USD">19.95</price>
+  </entry>
+  <entry sku="item-002" status="retired">
+    <title>Legacy Kit</title>
+    <metadata/>
+    <description>Discontinued</description>
+    <price currency="EUR">0</price>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<root xmlns="urn:alpha" xmlns:q="urn:beta" xmlns:r="urn:gamma">
+  <?build mode="stress"?>
+  <!-- comment containing -- unusual text -->
+  <q:matrix q:rows="2" q:cols="3">
+    <q:row index="0">
+      <q:cell r:key="a">0</q:cell>
+      <q:cell r:key="b">-1.25</q:cell>
+      <q:cell r:key="c">INF</q:cell>
+    </q:row>
+    <q:row index="1">
+      <q:cell r:key="a">true</q:cell>
+      <q:cell r:key="b"><![CDATA[]]></q:cell>
+      <q:cell r:key="c">𐀀</q:cell>
+    </q:row>
+  </q:matrix>
+  <r:alternate>
+    <r:item enabled="yes"/>
+    <r:item enabled="no"><r:value xml:space="preserve">  padded
+text  </r:value></r:item>
+  </r:alternate>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, signature?)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header
+    from CDATA #IMPLIED
+    to CDATA #IMPLIED
+    timestamp CDATA #IMPLIED>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk number NMTOKEN #REQUIRED encoding CDATA "base64">
+  <!ELEMENT signature (#PCDATA)>
+]>
+<envelope>
+  <header from="alice@example.invalid"
+          to="bob@example.invalid"
+          timestamp="2026-10-01T00:00:00Z"/>
+  <payload>
+    <chunk number="001">SGVsbG8sIHdvcmxkIQ==</chunk>
+    <chunk number="002">AAEC/f7/</chunk>
+    <chunk number="003"><![CDATA[not-base64-but-character-data]]></chunk>
+  </payload>
+  <signature algorithm="sha256">deadbeef</signature>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<scene xmlns="urn:scene" xmlns:geo="urn:geo">
+  <layer name="background" visible="false"/>
+  <layer name="foreground" opacity="0.75">
+    <group transform="translate(10,20) rotate(-3.5)">
+      <path id="outline" d="M0,0 L10,0 L10,10 Z">
+        <geo:bounds minx="0" miny="0" maxx="10" maxy="10"/>
+      </path>
+      <text x="5" y="6" style="font-size:12px">A &lt; B &amp; C</text>
+      <image href="data:image/svg+xml,%3Csvg%3E" width="0" height="-1"/>
+    </group>
+    <group>
+      <clip-path ref="../missing">
+        <rect x="NaN" y="Infinity" width="1e309" height="-0"/>
+      </clip-path>
+    </group>
+  </layer>
+  <?render quality="high"?>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE query [
+  <!ELEMENT query (select, from, where?, order?, limit?)>
+  <!ELEMENT select (field+)>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST field alias CDATA #IMPLIED>
+  <!ELEMENT from (table+)>
+  <!ELEMENT table (#PCDATA)>
+  <!ELEMENT where (and|or|not|eq|in|literal|field)+>
+  <!ELEMENT and (and|or|not|eq|in|literal|field)+>
+  <!ELEMENT or (and|or|not|eq|in|literal|field)+>
+  <!ELEMENT not (and|or|not|eq|in|literal|field)+>
+  <!ELEMENT eq (field|literal)+>
+  <!ELEMENT in (field|literal)+>
+  <!ELEMENT literal (#PCDATA)>
+  <!ELEMENT order (by+)>
+  <!ELEMENT by (#PCDATA)>
+  <!ELEMENT limit (#PCDATA)>
+]>
+<query>
+  <select>
+    <field alias="identifier">id</field>
+    <field>COALESCE(name, 'unknown')</field>
+  </select>
+  <from>
+    <table>users</table>
+    <table>profiles</table>
+  </from>
+  <where>
+    <and>
+      <eq><field>users.active</field><literal>true</literal></eq>
+      <or>
+        <in><field>profiles.region</field><literal>EU</literal><literal>APAC</literal></in>
+        <not><eq><field>users.deleted</field><literal>1</literal></eq></not>
+      </or>
+    </and>
+  </where>
+  <order><by descending="true">created_at</by></order>
+  <limit>18446744073709551615</limit>
+</query>
+```

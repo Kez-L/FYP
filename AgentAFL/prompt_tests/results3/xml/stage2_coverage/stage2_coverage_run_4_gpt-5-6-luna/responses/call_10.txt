@@ -1,0 +1,193 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common "id ID #REQUIRED xml:lang NMTOKEN 'en'">
+  <!ELEMENT catalog (entry+, note?)>
+  <!ELEMENT entry (name, summary, details?, link*)>
+  <!ATTLIST entry
+    %common;
+    category (book|film|music|other) "other"
+  >
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|em|code)*>
+  <!ELEMENT details (#PCDATA|em|code|br)*>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link href URI #REQUIRED rel CDATA "related">
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY mark "&#x2022;">
+  <!ENTITY quoted "&quot;catalog&quot;">
+]>
+<catalog xml:base="https://example.invalid/root/">
+  <entry id="e1" category="book">
+    <name>Symbols &amp; Names</name>
+    <summary>Alpha &mark; <em>beta</em> <code>&quoted;</code></summary>
+    <details><![CDATA[raw <text> with ] characters]]><br/>tail</details>
+    <link href="one.xml"/>
+    <link href="two.xml" rel="alternate"/>
+  </entry>
+  <entry id="e2" xml:lang="de" category="other">
+    <name>Überraschung</name>
+    <summary>line one
+line two&#x0A;line three</summary>
+  </entry>
+  <note>after entries</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY greeting "hello">
+  <!ENTITY nested "(&greeting;,&greeting;)">
+  <!ELEMENT scene (actor*, prop*, caption)>
+  <!ELEMENT actor EMPTY>
+  <!ATTLIST actor
+    name CDATA #REQUIRED
+    role (lead|extra|silent) "extra"
+    portrait ENTITY #IMPLIED
+  >
+  <!ELEMENT prop (#PCDATA)>
+  <!ELEMENT caption (#PCDATA|span)*>
+  <!ELEMENT span (#PCDATA)>
+  <!ATTLIST span class NMTOKEN #IMPLIED>
+]>
+<scene xmlns="urn:stage" xmlns:x="urn:props">
+  <actor name="Ada" role="lead" portrait="logo"/>
+  <actor name="Echo" role="silent"/>
+  <prop x:type="set">&nested;</prop>
+  <prop x:type="number">42</prop>
+  <caption>Opening <span class="quiet">(&greeting;)</span> scene</caption>
+</scene>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (meta, panel+)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta
+    version NMTOKEN #FIXED "v1"
+    generated CDATA #IMPLIED
+  >
+  <!ELEMENT panel (heading?, widget*)>
+  <!ATTLIST panel
+    key ID #REQUIRED
+    hidden (true|false) "false"
+  >
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT widget (value, threshold?)>
+  <!ATTLIST widget
+    type (gauge|text|spark) #REQUIRED
+    ref IDREF #IMPLIED
+  >
+  <!ELEMENT value (#PCDATA|unit)*>
+  <!ELEMENT unit (#PCDATA)>
+  <!ELEMENT threshold (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY open-brace "{">
+  <!ENTITY close-brace "}">
+]>
+<dashboard>
+  <meta version="v1" generated="2026-10-01T00:00:00Z"/>
+  <panel key="main">
+    <heading>Health &amp; Status</heading>
+    <widget type="gauge" ref="secondary">
+      <value>98<unit>%</unit>&nbsp;</value>
+      <threshold>80</threshold>
+    </widget>
+    <widget type="text"><value><![CDATA[<unescaped> & bytes]]></value></widget>
+  </panel>
+  <panel key="secondary" hidden="true">
+    <widget type="spark"><value>&open-brace;x=1&close-brace;</value></widget>
+  </panel>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload, signature?)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+    path CDATA #REQUIRED
+    size NMTOKEN #IMPLIED
+    checksum CDATA #IMPLIED
+  >
+  <!ELEMENT payload (chunk*)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk
+    number NMTOKEN #REQUIRED
+    encoding (plain|base64|hex) "plain"
+  >
+  <!ELEMENT signature (#PCDATA)>
+  <!ENTITY lf "&#xA;">
+  <![IGNORE[
+    <!ELEMENT obsolete EMPTY>
+    <!ATTLIST obsolete reason CDATA #IMPLIED>
+  ]]>
+  <![INCLUDE[
+    <!ENTITY % extra "format CDATA 'binary'">
+    <!ATTLIST package %extra;>
+  ]]>
+]>
+<package format="binary">
+  <manifest>
+    <file path="a&amp;b.txt" size="17" checksum="sha256:00"/>
+    <file path="nested/item.bin" size="0"/>
+  </manifest>
+  <payload>
+    <chunk number="1" encoding="plain">first&lf;second</chunk>
+    <chunk number="2" encoding="base64"><![CDATA[AAEC/f4=]]></chunk>
+  </payload>
+  <signature>-----BEGIN DATA-----
+abc
+-----END DATA-----</signature>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE network [
+  <!ELEMENT network (node+, route*)>
+  <!ELEMENT node (label, address*)>
+  <!ATTLIST node
+    id ID #REQUIRED
+    state (up|down|unknown) "unknown"
+  >
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT address (#PCDATA)>
+  <!ATTLIST address family (v4|v6|dns) #REQUIRED>
+  <!ELEMENT route EMPTY>
+  <!ATTLIST route
+    from IDREF #REQUIRED
+    to IDREF #REQUIRED
+    metric NMTOKEN "1"
+  >
+  <!ENTITY colon ":">
+  <!ENTITY hash "#">
+  <!ENTITY ipv6 "2001&colon;db8&colon;&hash;&hash;1">
+]>
+<network xmlns:n="urn:network" xmlns:m="urn:metadata">
+  <node id="gateway" state="up">
+    <label xml:space="preserve">Gateway &#x9; A</label>
+    <address family="v4">192.0.2.1</address>
+    <address family="v6">&ipv6;</address>
+  </node>
+  <node id="client" state="unknown">
+    <label>Client &lt;one&gt;</label>
+    <address family="dns">client.example.invalid</address>
+  </node>
+  <node id="backup" state="down">
+    <label><![CDATA[backup & node]]></label>
+  </node>
+  <route from="client" to="gateway" metric="010"/>
+  <route from="backup" to="gateway" metric="0"/>
+  <m:annotation n:for="gateway">maintenance &amp; testing</m:annotation>
+</network>
+```

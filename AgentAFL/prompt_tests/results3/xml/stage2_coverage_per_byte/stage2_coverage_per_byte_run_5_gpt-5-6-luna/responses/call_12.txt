@@ -1,0 +1,135 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aquarium [
+  <!ELEMENT aquarium (tank+, caretaker?)>
+  <!ELEMENT tank (water, inhabitant*)>
+  <!ELEMENT water (#PCDATA)>
+  <!ELEMENT inhabitant EMPTY>
+  <!ELEMENT caretaker (#PCDATA)>
+  <!ATTLIST aquarium location NMTOKEN #REQUIRED>
+  <!ATTLIST tank volume NMTOKEN #IMPLIED>
+  <!ATTLIST inhabitant species NMTOKEN #REQUIRED depth CDATA "0">
+]>
+<aquarium location="north-wing">
+  <tank volume="240L">
+    <water><![CDATA[pH < 7 && salinity > 0]]></water>
+    <inhabitant species="axolotl" depth="12"/>
+    <inhabitant species="snail" depth="4"></inhabitant>
+  </tank>
+  <caretaker>Zoë<!--shift change--></caretaker>
+</aquarium>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder*)>
+  <!ELEMENT folder (name, item*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT item (label, digest, note?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT digest (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST folder key ID #IMPLIED parent IDREF #IMPLIED>
+  <!ATTLIST item type NOTATION (text|binary) "text" checksum CDATA #REQUIRED>
+  <!NOTATION text SYSTEM "text/plain">
+  <!NOTATION binary SYSTEM "application/octet-stream">
+]>
+<archive>
+  <folder key="root">
+    <name>incoming</name>
+    <item type="text" checksum="sha256:0000">
+      <label>résumé.txt</label>
+      <digest><![CDATA[abc<def>ghi]]></digest>
+      <note>line one
+line two</note>
+    </item>
+  </folder>
+  <folder key="backup" parent="root">
+    <name>old</name>
+    <item type="binary" checksum="sha256:ffff">
+      <label>image.bin</label>
+      <digest>deadbeef</digest>
+    </item>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<scene xmlns="urn:example:scene" xmlns:x="urn:example:extra" xml:base="https://example.invalid/assets/">
+  <?render quality="high" passes="3"?>
+  <layer id="L0" x:visible="yes">
+    <title>Glass &amp; Light</title>
+    <object x:type="mesh" x:ref="m-17">
+      <position>
+        <x>0.0</x>
+        <y>-1.25</y>
+        <z>3e2</z>
+      </position>
+      <metadata xml:lang="ja"><![CDATA[東京 / 東京]]></metadata>
+    </object>
+    <!-- an intentionally empty layer -->
+  </layer>
+  <layer id="L1" x:visible="no"/>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (opening, transaction*, closing)>
+  <!ELEMENT opening (#PCDATA)>
+  <!ELEMENT transaction (date, account, amount, memo?)>
+  <!ELEMENT date (#PCDATA)>
+  <!ELEMENT account (#PCDATA)>
+  <!ELEMENT amount (#PCDATA)>
+  <!ELEMENT memo (#PCDATA)>
+  <!ELEMENT closing (#PCDATA)>
+  <!ATTLIST transaction code ID #REQUIRED cleared (true|false) #REQUIRED>
+  <!ENTITY euro "&#x20AC;">
+  <!ENTITY nbsp "&#160;">
+]>
+<ledger>
+  <opening>1000.00</opening>
+  <transaction code="t01" cleared="true">
+    <date>2026-09-30</date>
+    <account>cash</account>
+    <amount>&euro;25.50</amount>
+    <memo>coffee &amp; supplies</memo>
+  </transaction>
+  <transaction code="t02" cleared="false">
+    <date>2026-10-01</date>
+    <account>reserve</account>
+    <amount>-10.00&nbsp;</amount>
+  </transaction>
+  <closing>1015.50</closing>
+</ledger>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE network [
+  <!ELEMENT network (node|link)*>
+  <!ELEMENT node (address, capability*)>
+  <!ELEMENT address (#PCDATA)>
+  <!ELEMENT capability (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST node id ID #REQUIRED role (router|host|sensor) "host">
+  <!ATTLIST capability name CDATA #REQUIRED>
+  <!ATTLIST link from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA #IMPLIED>
+]>
+<network>
+  <node id="r1" role="router">
+    <address>2001:db8::1</address>
+    <capability name="routing">ospf</capability>
+  </node>
+  <node id="h1" role="host">
+    <address><![CDATA[fe80::abcd%eth0]]></address>
+    <capability name="os">unix</capability>
+    <capability name="note">a &lt; b</capability>
+  </node>
+  <link from="r1" to="h1" weight="0.75"/>
+  <?trace packet="disabled"?>
+</network>
+```

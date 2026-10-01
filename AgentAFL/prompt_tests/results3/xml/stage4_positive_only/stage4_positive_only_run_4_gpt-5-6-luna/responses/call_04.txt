@@ -1,0 +1,137 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?processing mode="diagnostic"?>
+<catalog xmlns="urn:catalog" xmlns:book="urn:book">
+  <catalog-header>
+    <title>Reference Shelf</title>
+    <generated-at>2026-10-01T12:34:56Z</generated-at>
+  </catalog-header>
+  <book:volume isbn="9780000000001" edition="3">
+    <book:title>Parsing &amp; Models</book:title>
+    <book:authors>
+      <book:author id="a-1">Ada Example</book:author>
+      <book:author id="a-2">Lin Parser</book:author>
+    </book:authors>
+    <book:chapters>
+      <book:chapter number="1">
+        <book:heading>Nodes</book:heading>
+        <book:paragraph>Elements contain <emphasis>ordered</emphasis> content.</book:paragraph>
+      </book:chapter>
+      <book:chapter number="2" status="draft">
+        <book:heading>References</book:heading>
+        <book:paragraph>Use &lt; and &gt; when writing markup.</book:paragraph>
+      </book:chapter>
+    </book:chapters>
+  </book:volume>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+)>
+  <!ELEMENT section (heading, entry*)>
+  <!ATTLIST section code NMTOKEN #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT entry (#PCDATA | note)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST note level (low|normal|high) "normal">
+]>
+<report>
+  <section code="A1">
+    <heading>Observations</heading>
+    <entry>First result <note level="high">requires review</note> before release.</entry>
+    <entry>Second result contains an embedded <note>annotation</note> and trailing text.</entry>
+  </section>
+  <section code="B-2">
+    <heading>Empty section</heading>
+  </section>
+  <section code="C3">
+    <heading>Escaped values</heading>
+    <entry><![CDATA[raw <text> with ]]> characters]]></entry>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<network xmlns="urn:net" xmlns:addr="urn:address">
+  <device id="router-01" enabled="true">
+    <identity>
+      <hostname>edge.example.test</hostname>
+      <addr:mac>00:11:22:33:44:55</addr:mac>
+    </identity>
+    <interfaces>
+      <interface name="wan" mtu="1500">
+        <addr:ipv4>192.0.2.10</addr:ipv4>
+        <addr:ipv6>2001:db8::10</addr:ipv6>
+        <routes>
+          <route destination="0.0.0.0/0" gateway="192.0.2.1"/>
+          <route destination="2001:db8:1::/64" gateway="2001:db8::1"/>
+        </routes>
+      </interface>
+      <interface name="lan" mtu="9000">
+        <addr:ipv4>198.51.100.1</addr:ipv4>
+        <routes/>
+      </interface>
+    </interfaces>
+  </device>
+</network>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ENTITY copyright "&#xA9; 2026">
+  <!ENTITY company "Example Labs">
+]>
+<package>
+  <manifest version="2.0">
+    <entry name="readme.txt" media-type="text/plain" size="42"/>
+    <entry name="data.bin" media-type="application/octet-stream" size="0" compressed="yes"/>
+  </manifest>
+  <payload>
+    <text name="readme.txt">Created by &company; &copyright;.</text>
+    <binary name="data.bin" encoding="base64">
+      AAEC/f7/AA==
+    </binary>
+  </payload>
+  <signatures>
+    <signature algorithm="sha256" key-id="key:demo">
+      <digest>00010203040506070809</digest>
+    </signature>
+  </signatures>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:workflow">
+  <variables>
+    <variable name="attempts" type="integer">3</variable>
+    <variable name="notify" type="boolean">false</variable>
+  </variables>
+  <pipeline id="nightly">
+    <step id="prepare" action="create">
+      <input ref="source"/>
+      <output name="workspace"/>
+    </step>
+    <step id="transform" action="convert" depends-on="prepare">
+      <options>
+        <option key="format">compact</option>
+        <option key="strict">true</option>
+      </options>
+      <on-error>
+        <retry count="2" delay="PT5S"/>
+        <abort code="E_TRANSFORM"/>
+      </on-error>
+    </step>
+    <step id="publish" action="upload" depends-on="transform" optional="true">
+      <destination scheme="https" host="upload.example.test" path="/incoming/"/>
+    </step>
+  </pipeline>
+  <audit>
+    <event timestamp="2026-10-01T00:00:00Z" actor="scheduler">started</event>
+  </audit>
+</workflow>
+```

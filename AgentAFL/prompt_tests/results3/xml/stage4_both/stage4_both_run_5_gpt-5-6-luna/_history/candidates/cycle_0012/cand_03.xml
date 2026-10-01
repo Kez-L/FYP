@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (participants, thread)>
+  <!ELEMENT participants (person+)>
+  <!ELEMENT person EMPTY>
+  <!ELEMENT thread (message+)>
+  <!ELEMENT message (from, to+, body, attachment*)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT body (#PCDATA|mention|quote|newline)*>
+  <!ELEMENT mention (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT newline EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST person uid ID #REQUIRED role (human|bot|service) "human">
+  <!ATTLIST message id ID #REQUIRED reply-to IDREF #IMPLIED edited (yes|no) "no">
+  <!ATTLIST mention uid IDREF #REQUIRED>
+  <!ATTLIST attachment name CDATA #REQUIRED size CDATA #IMPLIED>
+  <!ENTITY greeting "Welcome, &quot;team&quot;">
+]>
+<conversation xmlns:p="urn:example:people" xmlns:m="urn:example:messages">
+  <participants>
+    <person uid="u-alex" role="human" p:timezone="UTC"/>
+    <person uid="u-bot" role="bot" p:timezone="Europe/London"/>
+    <person uid="u-build" role="service"/>
+  </participants>
+  <thread>
+    <message id="m-1">
+      <from>u-alex</from>
+      <to>u-bot</to>
+      <body>&greeting; <mention uid="u-bot"/>.<newline/>Please inspect <quote>the failed build</quote>.</body>
+      <attachment name="trace.log" size="2048"/>
+    </message>
+    <message id="m-2" reply-to="m-1" edited="yes">
+      <from>u-bot</from>
+      <to>u-alex</to>
+      <to>u-build</to>
+      <body><![CDATA[The parser accepted:
+<synthetic>
+  <value>42</value>
+</synthetic>]]></body>
+    </message>
+  </thread>
+</conversation>

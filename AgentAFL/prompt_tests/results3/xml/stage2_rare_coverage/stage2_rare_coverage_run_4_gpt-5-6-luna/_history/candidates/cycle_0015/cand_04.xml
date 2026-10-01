@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:workflow" xmlns:a="urn:action" xmlns:b="urn:branch">
+  <start id="s0" next="choice"/>
+  <b:choice id="choice" test="enabled">
+    <a:invoke name="prepare" timeout="PT0S">
+      <a:argument name="input">αβγ</a:argument>
+      <a:argument name="mode">safe</a:argument>
+    </a:invoke>
+    <b:when equals="true" next="finish">
+      <b:result><![CDATA[{ "ok": true, "items": [] }]]></b:result>
+    </b:when>
+    <b:otherwise next="failure">
+      <b:result><![CDATA[<not-escaped>]]></b:result>
+    </b:otherwise>
+  </b:choice>
+  <finish id="finish" status="done"/>
+  <failure id="failure" status="error"><![CDATA[reason & details]]></failure>
+</workflow>

@@ -1,0 +1,136 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ledger [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY stamp "2026-10-01T00:00:00Z">
+  <!ENTITY blob SYSTEM "payload.bin" NDATA bin>
+  <!ELEMENT ledger (entry*)>
+  <!ELEMENT entry (key, value, audit?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|linebreak|quote)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT audit EMPTY>
+  <!ATTLIST entry seq NMTOKEN #REQUIRED kind (text|binary) "text" ref ENTITY #IMPLIED>
+  <!ATTLIST audit by CDATA #IMPLIED at CDATA "&stamp;">
+]>
+<ledger>
+  <entry seq="000" kind="text">
+    <key>alpha</key>
+    <value>left<linebreak/>middle<quote>“quoted”</quote>right</value>
+    <audit by="system"/>
+  </entry>
+  <entry seq="001" kind="binary" ref="blob">
+    <key>omega</key>
+    <value><![CDATA[<not-an-element>&still-data;]]></value>
+  </entry>
+</ledger>
+```
+
+```xml
+<?xml version="1.1"?>
+<r:report xmlns:r="urn:report" xmlns:x="urn:ext" xmlns="urn:default">
+  <r:header x:flag="yes">
+    <r:id>R-𐐷-09</r:id>
+    <r:tags>
+      <tag xmlns="">plain</tag>
+      <tag xmlns="urn:default" x:kind="a&amp;b"/>
+    </r:tags>
+  </r:header>
+  <r:body>
+    <x:section xml:base="../archive/" xml:space="preserve">
+      <![CDATA[
+        whitespace   and   delimiters ]]]]><![CDATA[> remain
+      ]]>
+      <x:item x:code="A&#x2D;1">one</x:item>
+      <x:item x:code="A&#x2D;2"><![CDATA[ two < three ]]></x:item>
+    </x:section>
+    <r:tail xmlns:r="urn:shadow"><r:note>shadowed prefix</r:note></r:tail>
+  </r:body>
+</r:report>
+```
+
+```xml
+<!DOCTYPE archive [
+  <!ENTITY % common "<!ELEMENT archive (folder+)><!ELEMENT folder (name, object*)><!ELEMENT name (#PCDATA)><!ELEMENT object EMPTY>">
+  <!ENTITY % attrs "<!ATTLIST object id ID #REQUIRED type NOTATION #IMPLIED path CDATA #IMPLIED>">
+  %common;
+  %attrs;
+  <!NOTATION jpeg PUBLIC "image/jpeg">
+  <!NOTATION text SYSTEM "text/plain">
+  <!ATTLIST archive version CDATA #FIXED "3">
+  <!ATTLIST folder hidden (true|false) "false">
+  <!ENTITY apos "&#39;">
+]>
+<archive version="3">
+  <folder hidden="true">
+    <name>root&apos;s &apos;cache&apos;</name>
+    <object id="o1" type="jpeg" path="img/one.jpg"/>
+    <object id="o2" type="text" path="notes&amp;more.txt"/>
+  </folder>
+  <folder>
+    <name><![CDATA[secondary]]></name>
+    <object id="o3" path="plain"/>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST matrix rows CDATA #REQUIRED cols CDATA #REQUIRED>
+  <!ATTLIST row index NMTOKEN #REQUIRED>
+  <!ATTLIST cell index NMTOKEN #REQUIRED formula CDATA #IMPLIED>
+]>
+<matrix rows="2" cols="3">
+  <row index="A">
+    <cell index="1" formula="=SUM(B1:C1)">1</cell>
+    <cell index="2">2</cell>
+    <cell index="3"><![CDATA[3]]></cell>
+  </row>
+  <row index="B">
+    <cell index="1" formula="&quot;=&quot;&amp;A1">x &lt; y</cell>
+    <cell index="2">0</cell>
+    <cell index="3">∞</cell>
+  </row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (message|separator)*>
+  <!ELEMENT message (sender, recipients?, content, attachment*)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipients (recipient+)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT content (#PCDATA|mention|link|br)*>
+  <!ELEMENT mention (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ELEMENT separator EMPTY>
+  <!ATTLIST message id ID #REQUIRED reply IDREF #IMPLIED state (open|closed) "open">
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ATTLIST attachment name CDATA #REQUIRED media CDATA #IMPLIED>
+]>
+<conversation>
+  <message id="m1" state="closed">
+    <sender>alice@example.test</sender>
+    <recipients>
+      <recipient>bob@example.test</recipient>
+      <recipient>carol@example.test</recipient>
+    </recipients>
+    <content>Hello <mention>@bob</mention><br/>See <link href="https://example.test/?a=1&amp;b=2">this</link>.</content>
+    <attachment name="résumé.pdf" media="application/pdf"/>
+  </message>
+  <separator/>
+  <message id="m2" reply="m1">
+    <sender>bob@example.test</sender>
+    <content><![CDATA[reply with ]]> and markup <mention>@alice</mention></content>
+  </message>
+</conversation>
+```

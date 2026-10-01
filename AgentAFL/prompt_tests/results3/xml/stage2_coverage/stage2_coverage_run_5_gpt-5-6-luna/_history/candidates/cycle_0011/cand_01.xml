@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ENTITY greeting "Hello, &quot;client&quot;">
+  <!ENTITY payload "<data kind='embedded'>sample</data>">
+  <!ELEMENT envelope (header, body, trailer)>
+  <!ELEMENT header (transaction, timestamp)>
+  <!ELEMENT transaction (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT body (request|response|fault)+>
+  <!ELEMENT request (method, parameter*)>
+  <!ELEMENT response (result|warning)*>
+  <!ELEMENT fault (code, message)>
+  <!ELEMENT method (#PCDATA)>
+  <!ELEMENT parameter (#PCDATA)>
+  <!ELEMENT result (#PCDATA|item)*>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT warning (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST request id ID #IMPLIED xmlns:x CDATA #FIXED "urn:example:x">
+  <!ATTLIST response request IDREF #IMPLIED>
+  <!ATTLIST item key NMTOKEN #REQUIRED>
+]>
+<envelope xmlns="urn:example:envelope" xmlns:x="urn:example:x" xml:lang="en">
+  <?trace level="verbose"?>
+  <header>
+    <transaction>txn-&#x31;7</transaction>
+    <timestamp>2026-10-01T12:34:56Z</timestamp>
+  </header>
+  <body>
+    <request id="r1" x:mode="test">
+      <method>POST</method>
+      <parameter name="q">a&amp;b</parameter>
+      <parameter name="note"><![CDATA[raw <value> & untouched]]></parameter>
+    </request>
+    <response request="r1">
+      <result><item key="alpha">&greeting;</item><item key="beta">&payload;</item></result>
+      <warning>partial result</warning>
+    </response>
+  </body>
+  <trailer/>
+</envelope>

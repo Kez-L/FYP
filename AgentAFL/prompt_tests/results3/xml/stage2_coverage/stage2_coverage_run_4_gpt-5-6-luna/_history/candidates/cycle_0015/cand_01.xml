@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, signature)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload (chunk*)>
+  <!ELEMENT chunk (#PCDATA|part|gap)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT gap EMPTY>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST envelope xmlns:x CDATA #FIXED "urn:x">
+  <!ATTLIST header x:id ID #IMPLIED stamp CDATA #IMPLIED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding (raw|base64|hex) "raw">
+  <!ENTITY left "[[">
+  <!ENTITY right "]]">
+]>
+<envelope xmlns:x="urn:x">
+  <header x:id="h0" stamp="2026-10-01T00:00:00Z"/>
+  <payload>
+    <chunk index="000" encoding="raw">alpha &left; one</chunk>
+    <chunk index="001" encoding="base64">QUJDREVGRw==</chunk>
+    <chunk index="002"><part>nested</part><gap/><part>tail</part></chunk>
+    <chunk index="003">line
+break&#13;carriage&#10;return</chunk>
+  </payload>
+  <signature>sha256:unknown&amp;unverified</signature>
+</envelope>

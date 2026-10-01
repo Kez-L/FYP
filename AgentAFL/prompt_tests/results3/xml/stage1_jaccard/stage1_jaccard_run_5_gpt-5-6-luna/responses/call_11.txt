@@ -1,0 +1,184 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (meta, entry+)>
+  <!ELEMENT meta (#PCDATA)>
+  <!ELEMENT entry (title, detail, link?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST catalog
+    xmlns CDATA #IMPLIED
+    xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    status (draft|published|archived) "draft"
+    xml:base URI #IMPLIED>
+  <!ATTLIST link
+    rel NMTOKEN #REQUIRED
+    href CDATA #REQUIRED>
+  <!ENTITY copyright "© 2026">
+]>
+<catalog xmlns="urn:example:catalog" xml:lang="en" xmlns:x="urn:example:extra">
+  <?index mode="deep"?>
+  <meta>Prepared &copyright; <!-- embedded comment --> &amp; indexed.</meta>
+  <entry id="e1" status="published" xml:base="https://example.invalid/a/">
+    <title><![CDATA[Names, namespaces, and ]]> edge cases</title>
+    <detail>Text <em>x:y</em><br/><code>x &lt; y</code> and <![CDATA[ raw ]]></detail>
+    <link rel="alternate" href="urn:test:one"/>
+  </entry>
+  <x:entry xmlns="urn:example:other" id="e2" status="archived">
+    <x:title>Second vocabulary</x:title>
+    <x:detail>foreign default namespace</x:detail>
+  </x:entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE report [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!NOTATION text PUBLIC "-//Example//TEXT Plain//EN">
+  <!ENTITY logo SYSTEM "logo.gif" NDATA gif>
+  <!ENTITY phrase "left &lt; middle &amp; right">
+  <!ENTITY quoted "A &quot; B &apos; C">
+  <!ENTITY nested "&phrase; / &quoted; / &#x1F642;">
+  <!ELEMENT report (section+)>
+  <!ELEMENT section (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (#PCDATA|ref)*>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST report cover ENTITY #IMPLIED>
+  <!ATTLIST section number NMTOKEN #REQUIRED>
+  <!ATTLIST ref target IDREF #REQUIRED kind CDATA #IMPLIED>
+]>
+<report cover="logo">
+  <section number="α-1">
+    <heading>&nested;</heading>
+    <item>before<ref target="missing" kind="cross"/>after</item>
+    <item><![CDATA[unescaped <markup> and ]] ]]> tail</item>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE universe [
+  <!ELEMENT universe (cluster*)>
+  <!ELEMENT cluster (object|void|cluster)*>
+  <!ELEMENT object (#PCDATA)>
+  <!ELEMENT void EMPTY>
+  <!ATTLIST cluster
+    label CDATA #IMPLIED
+    xmlns:loc CDATA #IMPLIED>
+  <!ATTLIST object
+    key ID #IMPLIED
+    class (α|β|γ) "α"
+    xml:space (default|preserve) "default">
+  <!ATTLIST void marker CDATA #FIXED "∅">
+  <!ENTITY snow "☃">
+  <!ENTITY math "∑ &lt; ∞">
+]>
+<universe xmlns="urn:cosmos">
+  <cluster label="outer" xmlns:loc="urn:locale">
+    <object key="o1" class="β" xml:space="preserve">
+      Line one&#x0A;Line two &snow; &math;
+    </object>
+    <cluster label="nested">
+      <void marker="∅"/>
+      <object class="γ"><![CDATA[
+        whitespace
+        and ]]> delimiter text
+      </object>
+    </cluster>
+  </cluster>
+  <cluster xmlns="">
+    <object key="o2">unqualified object</object>
+  </cluster>
+</universe>
+```
+
+```xml
+<!DOCTYPE message [
+  <!ENTITY % declarations '
+    <!ELEMENT message (sender, recipients, payload, signature?)>
+    <!ELEMENT sender (#PCDATA)>
+    <!ELEMENT recipients (to, cc*)>
+    <!ELEMENT to (#PCDATA)>
+    <!ELEMENT cc (#PCDATA)>
+    <!ELEMENT payload (line|attachment)*>
+    <!ELEMENT line (#PCDATA)>
+    <!ELEMENT attachment EMPTY>
+    <!ELEMENT signature (#PCDATA)>
+  '>
+  %declarations;
+  <!ATTLIST message
+    priority (low|normal|high) "normal"
+    timestamp CDATA #REQUIRED>
+  <!ATTLIST to address CDATA #REQUIRED>
+  <!ATTLIST cc address CDATA #REQUIRED>
+  <!ATTLIST attachment
+    filename CDATA #REQUIRED
+    size NMTOKEN #IMPLIED
+    encoding (base64|hex|raw) "raw">
+  <!ENTITY ampersand "&amp;">
+  <!ENTITY newline "&#xA;">
+]>
+<message priority="high" timestamp="2026-10-01T00:00:00Z">
+  <sender>ops&amp;alerts@example.invalid</sender>
+  <recipients>
+    <to address="alpha@example.invalid">Alpha</to>
+    <cc address="beta@example.invalid">Beta</cc>
+    <cc address="γ@example.invalid">Gamma</cc>
+  </recipients>
+  <payload>
+    <line>First &amp; second&newline;third</line>
+    <attachment filename="a&amp;b.bin" size="000000" encoding="base64"/>
+    <line><![CDATA[--boundary--]]></line>
+  </payload>
+  <signature>-----BEGIN SIGNATURE-----&#xD;
+abc==&#xD;
+-----END SIGNATURE-----</signature>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (directory, footer)>
+  <!ELEMENT directory (folder|file|alias)*>
+  <!ELEMENT folder (folder|file|alias)*>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT alias EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST directory version CDATA #REQUIRED>
+  <!ATTLIST folder name CDATA #REQUIRED open (true|false) "true">
+  <!ATTLIST file
+    name CDATA #REQUIRED
+    mode NMTOKENS #IMPLIED
+    checksum CDATA #IMPLIED>
+  <!ATTLIST alias
+    name CDATA #REQUIRED
+    destination IDREF #REQUIRED>
+  <!ENTITY qmark "?">
+  <!ENTITY path "root/&qmark;/leaf">
+]>
+<archive>
+  <?archive generated="false"?>
+  <directory version="2.0">
+    <folder name="root" open="true">
+      <file name="readme.txt" mode="u+r u-w" checksum="sha256:00"/>
+      <folder name="data">
+        <file name="résumé.txt" mode="0644"/>
+        <alias name="latest" destination="missing-id"/>
+      </folder>
+      <folder name="empty" open="false"></folder>
+    </folder>
+    <file name="loose&amp;file" mode="a b c"/>
+  </directory>
+  <footer><![CDATA[archive path: ]]>&path;<!-- trailing --> </footer>
+</archive>
+```

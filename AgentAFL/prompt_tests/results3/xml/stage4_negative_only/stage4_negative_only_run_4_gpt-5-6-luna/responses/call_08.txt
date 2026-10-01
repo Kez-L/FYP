@@ -1,0 +1,111 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, summary?, details)>
+  <!ATTLIST entry id ID #REQUIRED status (active|retired) "active">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|emph|code)*>
+  <!ELEMENT details (#PCDATA|emph|code)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ENTITY product "XML Toolkit">
+  <!ENTITY copyright "&#xA9; 2026">
+]>
+<catalog>
+  <entry id="item-1">
+    <title>&product;</title>
+    <summary>Parser <emph>coverage</emph> and <code>entities</code>.</summary>
+    <details>Released &copyright;.</details>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE records [
+  <!ELEMENT records (record*)>
+  <!ELEMENT record EMPTY>
+  <!ATTLIST record
+            key CDATA #REQUIRED
+            count NMTOKEN "0"
+            flags NMTOKENS #IMPLIED
+            ref IDREF #IMPLIED>
+]>
+<records>
+  <record key="alpha" count="0007" flags="cold archived"/>
+  <record key="beta" count="12" flags="hot" ref="missing"/>
+  <record key="gamma&#x2D;delta" count="0"/>
+</records>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document [
+  <!ELEMENT document (section)>
+  <!ELEMENT section (heading, paragraph+, note?)>
+  <!ATTLIST section xml:space (default|preserve) "default">
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|br|mark)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+]>
+<document>
+  <!-- mixed content with significant whitespace -->
+  <section xml:space="preserve">
+    <heading>Line breaks &amp; highlighting</heading>
+    <paragraph>First line<br/>second <mark>fragment</mark> and <![CDATA[ raw <markup> ]]></paragraph>
+    <paragraph>Characters: &#x1F642; &#x2028; &lt; &gt; &quot;</paragraph>
+    <note><![CDATA[unescaped ]]> text]]></note>
+  </section>
+</document>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ELEMENT archive (file*)>
+  <!ELEMENT file (#PCDATA)>
+  <!ATTLIST file
+            name CDATA #REQUIRED
+            encoding NOTATION #IMPLIED
+            payload ENTITY #IMPLIED>
+  <!ENTITY sample SYSTEM "sample.bin" NDATA bin>
+]>
+<?archive mode="index"?>
+<archive>
+  <file name="empty" encoding="bin"/>
+  <file name="linked" payload="sample">metadata</file>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body)>
+  <!ELEMENT header (kind, timestamp)>
+  <!ELEMENT kind (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT body (item*)>
+  <!ELEMENT item (value|item)*>
+  <!ATTLIST item name CDATA #IMPLIED>
+  <!ELEMENT value (#PCDATA)>
+]>
+<envelope>
+  <header>
+    <kind>nested-data</kind>
+    <timestamp>2026-10-01T00:00:00Z</timestamp>
+  </header>
+  <body>
+    <item name="root">
+      <item name="branch-a">
+        <value>one</value>
+        <item name="leaf"><value>two</value></item>
+      </item>
+      <item name="branch-b"><value>three &amp; four</value></item>
+    </item>
+  </body>
+</envelope>
+```

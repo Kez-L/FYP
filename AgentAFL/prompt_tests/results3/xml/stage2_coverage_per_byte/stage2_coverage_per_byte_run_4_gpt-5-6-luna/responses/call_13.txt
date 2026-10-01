@@ -1,0 +1,130 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY greeting "hello &amp; welcome">
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (#PCDATA|em|link|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST catalog xmlns CDATA #FIXED "urn:catalog">
+  <!ATTLIST section id ID #REQUIRED xml:lang CDATA "en">
+  <!ATTLIST item priority (low|normal|high) "normal">
+  <!ATTLIST link href URI #REQUIRED>
+]>
+<catalog xmlns="urn:catalog">
+  <section id="s1" xml:lang="fr">
+    <heading>Résumé</heading>
+    <item priority="high">caf&eacute; &greeting; <em>now</em><br/><link href="urn:x">details</link></item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE maze [
+  <!ENTITY % nodes "<!ELEMENT maze (corridor|room)+><!ELEMENT corridor (#PCDATA|door)*><!ELEMENT room (door?, treasure*)><!ELEMENT door EMPTY><!ELEMENT treasure (#PCDATA)>">
+  %nodes;
+  <!ENTITY % attrs "<!ATTLIST maze entrance IDREF #IMPLIED><!ATTLIST door to IDREF #REQUIRED locked (yes|no) 'no'>">
+  %attrs;
+  <![IGNORE[
+    <!ELEMENT erased EMPTY>
+    <!ATTLIST erased ghost CDATA #IMPLIED>
+  ]]>
+]>
+<maze entrance="r1">
+  <corridor>north <door to="r1" locked="yes"/> east</corridor>
+  <room id="r1">
+    <door to="r2"/>
+    <treasure>glass &amp; stone</treasure>
+  </room>
+</maze>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, signature?)>
+  <!ELEMENT header (sender, receiver, stamp)>
+  <!ELEMENT sender EMPTY>
+  <!ELEMENT receiver EMPTY>
+  <!ELEMENT stamp (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST envelope xmlns:s CDATA #FIXED "urn:secure"
+                    s:version CDATA #IMPLIED>
+  <!ATTLIST sender s:id NMTOKEN #REQUIRED
+                  address CDATA #IMPLIED>
+  <!ATTLIST receiver s:id NMTOKEN #REQUIRED>
+  <!ATTLIST payload format (text|binary|mixed) "mixed">
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+]>
+<envelope xmlns:s="urn:secure" s:version="2">
+  <header>
+    <sender s:id="alice" address="a@example.invalid"/>
+    <receiver s:id="bob"/>
+    <stamp>2026-10-01T00:00:00Z</stamp>
+  </header>
+  <payload format="mixed"><data>&left;raw&right;</data><chunk><![CDATA[a]]></chunk></payload>
+  <signature>none</signature>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!NOTATION jpeg PUBLIC "-//IMAGE/JPEG//" "image/jpeg">
+  <!ENTITY cover SYSTEM "cover.gif" NDATA gif>
+  <!ENTITY preview SYSTEM "preview.jpg" NDATA jpeg>
+  <!ELEMENT archive (metadata, asset+)>
+  <!ELEMENT metadata (name, checksum)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT asset EMPTY>
+  <!ATTLIST archive version NMTOKEN #REQUIRED>
+  <!ATTLIST asset id ID #REQUIRED
+                 source ENTITY #IMPLIED
+                 preview ENTITY #IMPLIED
+                 role (cover|thumbnail|original) "original">
+]>
+<archive version="3.0">
+  <metadata>
+    <name>sample</name>
+    <checksum>00ff&amp;11ee</checksum>
+  </metadata>
+  <asset id="a1" source="cover" role="cover"/>
+  <asset id="a2" source="preview" preview="preview" role="thumbnail"/>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (record*)>
+  <!ELEMENT record (key, value, note?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|quote|escape)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT escape EMPTY>
+  <!ATTLIST record sequence NMTOKEN #REQUIRED>
+  <!ATTLIST escape code NMTOKEN #REQUIRED>
+  <!ENTITY q "&quot;">
+  <!ENTITY apos "&apos;">
+]>
+<stream>
+  <record sequence="001">
+    <key>alpha</key>
+    <value>one <quote>two &q;three&quo;</quote><escape code="x0a"/>four</value>
+  </record>
+  <record sequence="002">
+    <key>beta</key>
+    <value><![CDATA[<not-an-element> && ]]><quote>tail</quote></value>
+    <note>unterminated &apos; marker</note>
+  </record>
+</stream>
+```

@@ -1,0 +1,197 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<drawing xmlns="http://www.w3.org/2000/svg"
+         xmlns:ink="http://www.inkscape.org/namespaces/inkscape"
+         width="320" height="180" viewBox="0 0 320 180">
+  <?render profile="preview"?>
+  <defs>
+    <linearGradient id="shade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#112233"/>
+      <stop offset="100%" stop-color="#ddeeff"/>
+    </linearGradient>
+    <clipPath id="window">
+      <rect x="12" y="18" width="296" height="144" rx="7"/>
+    </clipPath>
+  </defs>
+  <!-- Mixed content and namespace-qualified extension data. -->
+  <g id="scene" clip-path="url(#window)" ink:label="demo">
+    <rect x="0" y="0" width="320" height="180" fill="url(#shade)"/>
+    <path d="M 20,130 C 70,40 110,160 165,72 S 255,35 300,125"
+          fill="none" stroke="white" stroke-width="3"/>
+    <text x="22" y="42" font-family="sans-serif" font-size="18">
+      <tspan font-weight="bold">Vector</tspan>
+      <tspan dx="5">markup</tspan>
+    </text>
+    <foreignObject x="34" y="92" width="250" height="42">
+      <article xmlns="http://www.w3.org/1999/xhtml" lang="en">
+        A <em>small</em> embedded fragment.
+      </article>
+    </foreignObject>
+  </g>
+</drawing>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (heading, product*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT product (name, price, details?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|note|code)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ATTLIST product sku ID #REQUIRED state (new|used|archived) "new">
+  <!ENTITY company "Northwind &amp; Sons">
+  <!ENTITY mark "&#x2605;">
+]>
+<catalog>
+  <section code="tools">
+    <heading>&company; &mark; tools</heading>
+    <product sku="p-17" state="new">
+      <name>Precision wrench</name>
+      <price currency="EUR">19.95</price>
+      <details>
+        Hardened steel
+        <note>Keep dry.</note>
+        <code>NW-17</code>
+      </details>
+    </product>
+    <product sku="p-18" state="used">
+      <name>Bench vise</name>
+      <price currency="EUR">44.00</price>
+    </product>
+  </section>
+  <section code="parts">
+    <heading>Replacement parts</heading>
+    <product sku="p-21">
+      <name>Jaw insert</name>
+      <price currency="EUR">3.50</price>
+    </product>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<stream xmlns="urn:example:telemetry"
+        xmlns:x="urn:example:extra"
+        xml:base="https://telemetry.invalid/device/">
+  <device serial="ZX-9000" x:revision="7">
+    <location>
+      <latitude>51.5074</latitude>
+      <longitude>-0.1278</longitude>
+    </location>
+    <samples interval="PT5M">
+      <sample at="2026-09-30T23:55:00Z">
+        <temperature unit="C">18.25</temperature>
+        <pressure unit="hPa">1012.8</pressure>
+        <flags>
+          <flag>stable</flag>
+          <flag>calibrated</flag>
+        </flags>
+      </sample>
+      <sample at="2026-10-01T00:00:00Z">
+        <temperature unit="C">18.10</temperature>
+        <pressure unit="hPa">1012.6</pressure>
+        <annotation xml:space="preserve">
+          line one
+          
+          line three
+        </annotation>
+      </sample>
+    </samples>
+  </device>
+  <checkpoint id="c-2">
+    <![CDATA[raw payload: <not-an-element> & still text]]>
+  </checkpoint>
+</stream>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<conversation xmlns="urn:example:chat"
+              xmlns:app="urn:example:app"
+              app:mode="threaded">
+  <message id="m1" from="alice" to="bob">
+    <header>
+      <subject>Re: migration plan</subject>
+      <sent>2026-10-01T09:00:00+02:00</sent>
+    </header>
+    <body>Hello <mention user="bob">@Bob</mention>, see the
+      <link href="urn:doc:plan">updated plan</link>.
+      <quote author="bob">
+        <p>We should preserve the old indexes.</p>
+        <p>Then verify them after cutover.</p>
+      </quote>
+    </body>
+    <attachments>
+      <attachment name="diagram.svg" media-type="image/svg+xml">
+        <checksum>sha256:abc123</checksum>
+      </attachment>
+      <attachment name="notes.txt" media-type="text/plain">
+        <checksum>sha256:def456</checksum>
+      </attachment>
+    </attachments>
+  </message>
+  <message id="m2" from="bob" to="alice" reply-to="m1">
+    <header>
+      <subject>Acknowledged</subject>
+      <sent>2026-10-01T09:14:03+02:00</sent>
+    </header>
+    <body>
+      <p>Confirmed.</p>
+      <reaction code="thumbs-up"/>
+    </body>
+  </message>
+</conversation>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:example:config">
+  <profiles>
+    <profile name="development" enabled="true">
+      <property key="endpoint"><![CDATA[https://dev.example.invalid/api?v=2&x=1]]></property>
+      <property key="timeout">00:00:30</property>
+      <property key="features">
+        <list>
+          <item>cache</item>
+          <item>metrics</item>
+          <item>trace</item>
+        </list>
+      </property>
+    </profile>
+    <profile name="production" enabled="false">
+      <property key="endpoint">https://prod.example.invalid/api</property>
+      <property key="timeout">00:02:00</property>
+    </profile>
+  </profiles>
+  <rules>
+    <rule priority="10">
+      <match path="/users/*" method="GET"/>
+      <action type="allow">
+        <header name="Cache-Control" value="no-store"/>
+      </action>
+    </rule>
+    <rule priority="20">
+      <match path="/admin/**" method="*"/>
+      <action type="deny">
+        <reason>restricted area</reason>
+      </action>
+    </rule>
+    <rule priority="30">
+      <match path="/search" method="POST">
+        <condition field="query" operator="contains">status</condition>
+      </match>
+      <action type="redirect" location="/status"/>
+    </rule>
+  </rules>
+  <secrets>
+    <token id="primary" encoding="base64">QWJjMTIzIT8=</token>
+  </secrets>
+</configuration>
+```

@@ -1,0 +1,23 @@
+{
+  "call": 3,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE report [\n  <!ENTITY product \"A &amp; B\">\n  <!ENTITY quoted \"&quot;quoted&quot;\">\n  <!ENTITY greeting \"Hello, &product; \u2014 &quoted;\">\n  <!ELEMENT report (header, section+, footer?)>\n  <!ELEMENT header (#PCDATA)>\n  <!ELEMENT section (heading, paragraph+)>\n  <!ATTLIST section code NMTOKEN #REQUIRED>\n  <!ELEMENT heading (#PCDATA)>\n  <!ELEMENT paragraph (#PCDATA|strong|code|br)*>\n  <!ELEMENT strong (#PCDATA)>\n  <!ELEMENT code (#PCDATA)>\n  <!ELEMENT br EMPTY>\n  <!ELEMENT footer (#PCDATA)>\n]>\n<report>\n  <header>&greeting;</header>\n  <section code=\"intro\">\n    <heading>Overview</heading>\n    <paragraph>This is <strong>important</strong>, with <code>R&amp;D</code> details<br/>inline.</paragraph>\n    <paragraph>Symbols: &#x2192; &#x2603; and escaped &lt;markup&gt;.</paragraph>\n  </section>\n  <section code=\"empty-text\">\n    <heading/>\n    <paragraph><![CDATA[Literal entity text: &product;]]></paragraph>\n  </section>\n  <footer>End of report.</footer>\n</report>\n\n--- example 2 ---\n<?xml version=\"1.1\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (warehouse*)>\n  <!ELEMENT warehouse (label, bin*)>\n  <!ATTLIST warehouse xmlns CDATA #IMPLIED location CDATA #REQUIRED>\n  <!ELEMENT label (#PCDATA)>\n  <!ELEMENT bin (item*)>\n  <!ATTLIST bin number NMTOKEN #REQUIRED>\n  <!ELEMENT item EMPTY>\n  <!ATTLIST item\n            sku ID #REQUIRED\n            quantity NMTOKEN #REQUIRED\n            state (new|used|held) \"new\">\n]>\n<inventory xmlns=\"urn:stock\" xmlns:x=\"urn:extra\">\n  <warehouse location=\"north\">\n    <label>North &amp; Main</label>\n    <bin number=\"A-01\">\n      <item sku=\"sku-001\" quantity=\"4\"/>\n      <item sku=\"sku-002\" quantity=\"0\" state=\"held\"/>\n    </bin>\n    <bin number=\"B-07\">\n      <item sku=\"sku-003\" quantity=\"12\" state=\"used\"/>\n    </bin>\n  </warehouse>\n  <warehouse location=\"south\">\n    <label xml:lang=\"fr\">D\u00e9p\u00f4t sud</label>\n    <bin number=\"C-02\"/>\n    <x:note x:priority=\"low\">Outside the default vocabulary</x:note>\n  </warehouse>\n</inventory>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-01T05:35:02.142102+00:00"
+}

@@ -1,0 +1,203 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, product*)>
+  <!ATTLIST section id ID #REQUIRED xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT product (sku, description, price, tags?)>
+  <!ATTLIST product status (active|retired|pending) "active">
+  <!ATTLIST product featured (yes|no) "no">
+  <!ELEMENT sku (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT price EMPTY>
+  <!ATTLIST price currency CDATA #REQUIRED amount CDATA #REQUIRED>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+]>
+<catalog>
+  <section id="hardware" xml:lang="en">
+    <title>Devices</title>
+    <product status="active" featured="yes">
+      <sku>ZX-001</sku>
+      <description>Compact <em>edge</em> unit with <code>USB-C</code> support.</description>
+      <price currency="EUR" amount="0.00"/>
+      <tags><tag>new</tag><tag>portable</tag></tags>
+    </product>
+    <product status="retired" featured="no">
+      <sku>ZX-002</sku>
+      <description>Legacy &quot;controller&quot; with a&amp;b diagnostics.</description>
+      <price currency="JPY" amount="999999999999999999999999"/>
+    </product>
+  </section>
+  <section id="international" xml:lang="und">
+    <title>多言語 / العربية / Ελληνικά</title>
+    <product status="pending">
+      <sku>Ω-𐐷-7</sku>
+      <description><![CDATA[<not-markup> & still raw ]]></description>
+      <price currency="𐐀" amount="-0.0000000000000000001"/>
+      <tags><tag>α</tag><tag>界</tag><tag>🙂</tag></tags>
+    </product>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE message [
+  <!ELEMENT message (routing, headers, body)>
+  <!ELEMENT routing (source, destination, hop*)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT destination (#PCDATA)>
+  <!ELEMENT hop EMPTY>
+  <!ATTLIST hop name CDATA #REQUIRED count NMTOKEN "0">
+  <!ELEMENT headers (header*)>
+  <!ELEMENT header (#PCDATA)>
+  <!ATTLIST header key NMTOKEN #REQUIRED>
+  <!ELEMENT body (paragraph|quote|attachment)*>
+  <!ELEMENT paragraph (#PCDATA|link|br)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href URI #REQUIRED>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT quote (paragraph+)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment filename CDATA #REQUIRED media CDATA #IMPLIED size NMTOKEN #IMPLIED>
+  <!ENTITY left "&#x27;">
+  <!ENTITY right "&#x2019;">
+]>
+<message>
+  <routing>
+    <source>node:left</source>
+    <destination>node:right</destination>
+    <hop name="gateway-1" count="000"/>
+    <hop name="gateway-2" count="18446744073709551616"/>
+  </routing>
+  <headers>
+    <header key="X_EMPTY"></header>
+    <header key="X_TEXT">a&amp;b&lt;c&gt;d&quot;e&apos;f</header>
+    <header key="X_DUPLICATE">first</header>
+    <header key="X_DUPLICATE">second</header>
+  </headers>
+  <body>
+    <paragraph>Before<link href="urn:x:a%20b?z=1&amp;q=2">click</link><br/>after.</paragraph>
+    <quote>
+      <paragraph>&left;quoted&right; text</paragraph>
+      <paragraph><![CDATA[line one
+line two
+line three]]></paragraph>
+    </quote>
+    <attachment filename="a&#x0D;&#x0A;b.bin" media="application/octet-stream" size=""/>
+  </body>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node*, edge*)>
+  <!ELEMENT node (label?, metadata?)>
+  <!ATTLIST node id ID #REQUIRED kind CDATA "normal">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT metadata (property*)>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST property name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREFS #REQUIRED weight CDATA #IMPLIED directed (true|false) "true">
+  <!ENTITY nested "one &amp; two &lt; three">
+]>
+<graph>
+  <node id="n0" kind="root">
+    <label>root</label>
+    <metadata>
+      <property name="empty" value=""/>
+      <property name="quote" value="&quot;&apos;&quot;"/>
+      <property name="entity" value="&nested;"/>
+    </metadata>
+  </node>
+  <node id="n1">
+    <label/>
+  </node>
+  <node id="n2" kind="isolated">
+    <metadata><property name="novalue"/></metadata>
+  </node>
+  <node id="n3"><label>comma, semicolon; slash / backslash \</label></node>
+  <edge from="n0" to="n1 n2" weight="NaN" directed="false"/>
+  <edge from="n1" to="n3" weight="-INF"/>
+  <edge from="n2" to="n0 n3" weight="0xFFFFFFFFFFFFFFFF"/>
+</graph>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:package xmlns:r="urn:example:root" xmlns:x="urn:example:item" xmlns="urn:example:default" xml:base="http://example.invalid/a/">
+  <?processing instruction-data?>
+  <r:manifest xml:lang="fr">
+    <r:entry x:id="item-α" x:type="text/xml" xml:base="../b/one">
+      <x:name>élément</x:name>
+      <x:value xmlns:y="urn:example:aux" y:ref="urn:ref#1">A&lt;B&amp;C</x:value>
+      <x:flags>
+        <x:flag xmlns="">unqualified</x:flag>
+        <x:flag xmlns:r="">rebound-prefix</x:flag>
+      </x:flags>
+    </r:entry>
+    <r:entry x:id="item-β" x:type="application/octet-stream" xml:space="preserve">
+      <x:name>  padded
+text  </x:name>
+      <x:value><![CDATA[ ]]> </x:value>
+      <x:flags>
+        <x:flag xmlns:x="urn:other:item">shadowed</x:flag>
+        <x:flag xmlns="urn:example:inner"><inner/></x:flag>
+      </x:flags>
+    </r:entry>
+  </r:manifest>
+  <container xmlns="urn:example:default">
+    <child attr="v">default namespace content</child>
+    <r:foreign xmlns:r="urn:other:root"><r:child/></r:foreign>
+  </container>
+</r:package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE labyrinth [
+  <!ELEMENT labyrinth (level)>
+  <!ELEMENT level (room)>
+  <!ATTLIST level number NMTOKEN #REQUIRED>
+  <!ELEMENT room (door|room|note|empty)*>
+  <!ATTLIST room id CDATA #IMPLIED exit IDREFS #IMPLIED>
+  <!ELEMENT door (label, destination?)>
+  <!ATTLIST door locked (true|false) "false">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT destination (#PCDATA)>
+  <!ELEMENT note (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT empty EMPTY>
+]>
+<labyrinth>
+  <level number="0000000000000000000000000000000000000000000000000000000000000007">
+    <room id="outer" exit="r1 r2">
+      <door locked="false">
+        <label>north &amp; west</label>
+        <destination>r1</destination>
+      </door>
+      <room id="r1">
+        <note>nested <mark>room</mark> with <![CDATA[]]></note>
+        <empty/>
+        <room id="r1a">
+          <door locked="true"><label>sealed</label></door>
+          <room id="r1a-i"><note><![CDATA[<xml>]]></note></room>
+        </room>
+      </room>
+      <room id="r2" exit="">
+        <door locked="true"><label>south</label><destination/></door>
+        <note><mark/><mark>split</mark>tail</note>
+      </room>
+      <room>
+        <empty/><empty/><empty/>
+      </room>
+    </room>
+  </level>
+</labyrinth>
+```

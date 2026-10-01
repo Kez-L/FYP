@@ -1,0 +1,211 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (title, widget+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT widget (caption?, data)>
+  <!ATTLIST widget id ID #REQUIRED kind (gauge|table|sparkline) #REQUIRED>
+  <!ELEMENT caption (#PCDATA|em)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT data (point*)>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST point
+            label CDATA #IMPLIED
+            value CDATA #REQUIRED
+            ref IDREF #IMPLIED>
+  <!ENTITY degree "&#x00B0;">
+]>
+<dashboard xml:space="preserve">
+  <?render theme="dark"?>
+  <title>System &amp; Service Metrics</title>
+  <widget id="cpu" kind="gauge">
+    <caption>CPU <em>utilization</em></caption>
+    <data>
+      <point label="user" value="41&degree;"/>
+      <point label="system" value="13&degree;"/>
+      <point label="idle" value="46&degree;"/>
+    </data>
+  </widget>
+  <widget id="latency" kind="sparkline">
+    <data>
+      <point value="12"/>
+      <point value="18"/>
+      <point value="9"/>
+      <point value="27" ref="cpu"/>
+    </data>
+  </widget>
+  <widget id="requests" kind="table">
+    <caption>Requests &lt; 1 second</caption>
+    <data/>
+  </widget>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body)>
+  <!ELEMENT header (sender, recipient, timestamp, property*)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST property name NMTOKEN #REQUIRED>
+  <!ELEMENT body (command|result|fault)>
+  <!ELEMENT command (argument*)>
+  <!ATTLIST command name NMTOKEN #REQUIRED async (true|false) "false">
+  <!ELEMENT argument (#PCDATA|value)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT result (value|item)*>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT fault (code, message)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT message (#PCDATA)>
+]>
+<envelope xmlns="urn:example:rpc" xmlns:meta="urn:example:metadata">
+  <header>
+    <sender>client-07</sender>
+    <recipient>compute-node</recipient>
+    <timestamp>2026-10-01T12:34:56Z</timestamp>
+    <property name="trace">a&amp;b-19</property>
+    <meta:property name="priority">high</meta:property>
+  </header>
+  <body>
+    <command name="replace" async="true">
+      <argument>path</argument>
+      <argument><value>/var/data/&lt;pending&gt;</value></argument>
+      <argument>payload</argument>
+      <argument><![CDATA[{"enabled":true,"threshold":0.75}]]></argument>
+    </command>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE page [
+  <!ENTITY % headitems "(meta|link)*">
+  <!ENTITY % inline "(text|b|i|code|br)*">
+  <!ELEMENT page (head, body)>
+  <!ELEMENT head (title, %headitems;)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta name NMTOKEN #IMPLIED content CDATA #IMPLIED>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link rel NMTOKEN #REQUIRED href CDATA #REQUIRED>
+  <!ELEMENT body (article, aside?)>
+  <!ELEMENT article (h1, section+)>
+  <!ELEMENT h1 (#PCDATA)>
+  <!ELEMENT section (h2, p+)>
+  <!ELEMENT h2 (#PCDATA)>
+  <!ELEMENT p %inline;>
+  <!ELEMENT text (#PCDATA)>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT aside (#PCDATA|note)*>
+  <!ELEMENT note (#PCDATA)>
+]>
+<page xml:lang="en-US">
+  <head>
+    <title>Parser Notes</title>
+    <meta name="viewport" content="width=device-width"/>
+    <meta content="document &amp; diagnostics"/>
+    <link rel="stylesheet" href="/assets/main.css"/>
+  </head>
+  <body>
+    <article>
+      <h1>Reading <code>XML</code> Streams</h1>
+      <section>
+        <h2>Tokens</h2>
+        <p><text>Markup may contain </text><b>bold</b><text>, </text><i>italic</i><br/><text> and code.</text></p>
+      </section>
+      <section>
+        <h2>Boundaries</h2>
+        <p><![CDATA[Characters such as < and > remain literal here.]]></p>
+      </section>
+    </article>
+    <aside><note>Keep the input deterministic.</note></aside>
+  </body>
+</page>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!NOTATION jpeg PUBLIC "-//Example//NOTATION JPEG 1.0//EN" "image/jpeg">
+  <!ENTITY thumbnail SYSTEM "thumb.dat" NDATA bin>
+  <!ELEMENT archive (folder+)>
+  <!ELEMENT folder (name, entry*)>
+  <!ATTLIST folder path CDATA #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT entry (description?, checksum?)>
+  <!ATTLIST entry
+            id ID #REQUIRED
+            type (text|image|binary) #REQUIRED
+            payload ENTITY #IMPLIED>
+  <!ELEMENT description (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+]>
+<archive>
+  <folder path="/incoming">
+    <name>Incoming Files</name>
+    <entry id="readme" type="text">
+      <description>Instructions &amp; release notes</description>
+      <checksum>sha256:00112233445566778899aabbccddeeff</checksum>
+    </entry>
+    <entry id="preview" type="image" payload="thumbnail">
+      <description>Unparsed binary preview</description>
+    </entry>
+  </folder>
+  <folder path="/processed">
+    <name>Processed</name>
+    <entry id="report" type="text">
+      <checksum><![CDATA[sha256:deadbeefdeadbeef]]></checksum>
+    </entry>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE network [
+  <!ELEMENT network (cluster+)>
+  <!ELEMENT cluster (name, node+, policy?)>
+  <!ATTLIST cluster id ID #REQUIRED region CDATA #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT node (address, capability*)>
+  <!ATTLIST node id ID #REQUIRED role (leader|worker|observer) #REQUIRED>
+  <!ELEMENT address (#PCDATA)>
+  <!ELEMENT capability (#PCDATA)>
+  <!ELEMENT policy (rule*)>
+  <!ELEMENT rule (#PCDATA)>
+  <!ATTLIST rule effect (allow|deny) #REQUIRED>
+]>
+<network xmlns="urn:example:network" xmlns:n="urn:example:node">
+  <cluster id="alpha" region="eu-west">
+    <name>Alpha <n:label>Control Plane</n:label></name>
+    <node id="n1" role="leader">
+      <address>https://[2001:db8::1]:8443/api</address>
+      <capability>schedule</capability>
+      <capability>replicate</capability>
+    </node>
+    <node id="n2" role="worker">
+      <address>https://worker-2.example.invalid/api?mode=fast&amp;raw=1</address>
+      <capability><![CDATA[compute<gpu>]]></capability>
+    </node>
+    <policy>
+      <rule effect="allow">read:metrics</rule>
+      <rule effect="deny">write:secrets</rule>
+    </policy>
+  </cluster>
+  <cluster id="beta" region="us-central">
+    <name>Beta</name>
+    <node id="n3" role="observer">
+      <address>unix:///var/run/observer.sock</address>
+    </node>
+  </cluster>
+</network>
+```

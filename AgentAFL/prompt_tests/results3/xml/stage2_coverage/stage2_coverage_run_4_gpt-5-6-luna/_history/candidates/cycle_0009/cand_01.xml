@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body, trailer)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST field name CDATA #REQUIRED>
+  <!ELEMENT body (record+)>
+  <!ELEMENT record (key, data)>
+  <!ATTLIST record status (new|old|locked) "new">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT data (#PCDATA|part|gap)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT gap EMPTY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ENTITY open "(">
+  <!ENTITY close ")">
+  <!ENTITY pair "&open;payload&close;">
+]>
+<envelope>
+  <header>
+    <field name="&quot;mode&quot;">safe</field>
+    <field name="checksum">a&#x09;b&#x0D;c</field>
+  </header>
+  <body>
+    <record status="locked"><key>K&amp;1</key><data>&pair;<part><![CDATA[x<y && z>q]]></part><gap/></data></record>
+    <record><key>K2</key><data>tail</data></record>
+  </body>
+  <trailer>done</trailer>
+</envelope>

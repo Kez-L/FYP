@@ -1,0 +1,164 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (header, transaction+, footer)>
+  <!ELEMENT header (title, generated)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT transaction (from, to, amount, note?)>
+  <!ATTLIST transaction id ID #REQUIRED status (pending|posted|void) "pending">
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT amount (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY currency "¤">
+]>
+<ledger>
+  <header>
+    <title>Reconciliation &amp; Exceptions</title>
+    <generated>2026-10-01T00:00:00Z</generated>
+  </header>
+  <transaction id="t-001" status="posted">
+    <from>vault/alpha</from>
+    <to>branch-7</to>
+    <amount>&currency;100.00</amount>
+    <note>Manual <emphasis>review</emphasis> required.</note>
+  </transaction>
+  <transaction id="t-002">
+    <from>branch-7</from>
+    <to>vault/omega</to>
+    <amount>&currency;0.00</amount>
+    <note><![CDATA[adjustment <pending/> & unresolved]]></note>
+  </transaction>
+  <footer>2 transactions</footer>
+</ledger>
+```
+
+```xml
+<?xml version="1.0"?>
+<scene xmlns="urn:scene:v2" xmlns:geo="urn:geo" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <?render profile="wireframe"?>
+  <canvas width="640" height="480" unit="px">
+    <layer name="background" visible="true">
+      <geo:polygon>
+        <geo:point lat="+00.000000" lon="-000.000000"/>
+        <geo:point lat="51.5000" lon="-0.1200"/>
+        <geo:point lat="90" lon="180"/>
+      </geo:polygon>
+    </layer>
+    <layer name="objects" visible="false">
+      <group transform="translate(10,-4) rotate(0)">
+        <path id="p0" d="M0 0 C1.5 2.5 3.0 -1.0 4 4 Z"/>
+        <label for="p0"><![CDATA[<path id="p0"/>]]></label>
+        <resource xlink:href="#missing" xlink:type="simple"/>
+      </group>
+      <!-- intentionally empty layer -->
+    </layer>
+  </canvas>
+  <metadata>
+    <entry key="empty"/>
+    <entry key="quote">He said &quot;left&quot; &amp; she said &apos;right&apos;.</entry>
+  </metadata>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (open, payload, close)>
+  <!ELEMENT open EMPTY>
+  <!ATTLIST open stamp CDATA #IMPLIED>
+  <!ELEMENT payload (record|blob|record)*>
+  <!ELEMENT record (key, value)>
+  <!ATTLIST record kind CDATA "text">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|br|chunk)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT blob (#PCDATA)>
+  <!ELEMENT close (#PCDATA)>
+  <!ENTITY newline "&#10;">
+]>
+<packet>
+  <open stamp="0000-00-00T00:00:00Z"/>
+  <payload>
+    <record kind="mixed">
+      <key>alpha</key>
+      <value>first<br/>second<chunk><![CDATA[raw ]]>third</chunk></value>
+    </record>
+    <blob><![CDATA[
+      binary-looking: AAECAwQFBgcICQoLDA0ODw==
+      terminator candidates: ] ]> and &amp;
+    ]]></blob>
+    <record>
+      <key>beta</key>
+      <value>&newline;leading whitespace<chunk>tail</chunk></value>
+    </record>
+  </payload>
+  <close>done</close>
+</packet>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<configuration xmlns:x="urn:config:experimental" xmlns:y="urn:config:legacy">
+  <profile name="default">
+    <option x:key="path" value="/tmp/a&#x2Fb;..&#x2F;z"/>
+    <option x:key="retry" value="0000000000000000000000000000000000007"/>
+    <option y:key="mode">safe</option>
+    <switch name="features">
+      <enable>one</enable>
+      <disable>two</disable>
+      <enable><![CDATA[three]]></enable>
+    </switch>
+  </profile>
+  <profile name="">
+    <include href="file:///dev/null"/>
+    <include href="urn:config:%E2%98%83"/>
+    <override>
+      <option x:key="retry" value="-1"/>
+    </override>
+  </profile>
+  <?checkpoint?>
+  <diagnostics>
+    <!-- whitespace and mixed content -->
+    before<message severity="warning">unexpected &lt;token&gt;</message>after
+  </diagnostics>
+</configuration>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE federation [
+  <!ELEMENT federation (node*)>
+  <!ELEMENT node (identity, capability*, relation*)>
+  <!ATTLIST node uid ID #REQUIRED role CDATA #IMPLIED>
+  <!ELEMENT identity (#PCDATA)>
+  <!ELEMENT capability EMPTY>
+  <!ATTLIST capability name CDATA #REQUIRED level NMTOKEN #IMPLIED>
+  <!ELEMENT relation (node-ref, annotation?)>
+  <!ATTLIST relation type (parent|peer|child) "peer">
+  <!ELEMENT node-ref EMPTY>
+  <!ATTLIST node-ref target IDREF #REQUIRED>
+  <!ELEMENT annotation (#PCDATA)>
+]>
+<federation>
+  <node uid="n-root" role="anchor">
+    <identity>urn:node:root</identity>
+    <capability name="read" level="high"/>
+    <capability name="write" level="low"/>
+    <relation type="child">
+      <node-ref target="n-leaf"/>
+      <annotation>delegated &amp; audited</annotation>
+    </relation>
+  </node>
+  <node uid="n-leaf">
+    <identity><![CDATA[urn:node:leaf?x=1&y=2]]></identity>
+    <relation type="parent">
+      <node-ref target="n-root"/>
+    </relation>
+  </node>
+</federation>
+```

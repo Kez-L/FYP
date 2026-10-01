@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE observatory [
+  <!ELEMENT observatory (station, instrument*)>
+  <!ELEMENT station (location, climate)>
+  <!ELEMENT location (latitude, longitude, elevation)>
+  <!ELEMENT latitude (#PCDATA)>
+  <!ELEMENT longitude (#PCDATA)>
+  <!ELEMENT elevation (#PCDATA)>
+  <!ELEMENT climate (reading+)>
+  <!ELEMENT reading EMPTY>
+  <!ELEMENT instrument (calibration, channel+)>
+  <!ELEMENT calibration (#PCDATA)>
+  <!ELEMENT channel EMPTY>
+  <!ATTLIST observatory code ID #REQUIRED>
+  <!ATTLIST station region CDATA #IMPLIED>
+  <!ATTLIST reading kind (temperature|pressure|humidity) #REQUIRED
+                    value CDATA #REQUIRED unit CDATA #REQUIRED>
+  <!ATTLIST instrument serial ID #REQUIRED model CDATA #REQUIRED>
+  <!ATTLIST channel name CDATA #REQUIRED scale CDATA "linear">
+  <!NOTATION csv SYSTEM "text/csv">
+  <!ENTITY format "2026-Q4">
+]>
+<observatory code="north-07">
+  <?calibration source="remote"?>
+  <station region="polar">
+    <location>
+      <latitude>78.2232N</latitude>
+      <longitude>15.6469E</longitude>
+      <elevation>32m</elevation>
+    </location>
+    <climate>
+      <reading kind="temperature" value="-11.8" unit="C"/>
+      <reading kind="pressure" value="1008.4" unit="hPa"/>
+      <reading kind="humidity" value="71.2" unit="percent"/>
+    </climate>
+  </station>
+  <instrument serial="wx-440" model="Aster-4">
+    <calibration>verified-&format;</calibration>
+    <channel name="thermal" scale="logarithmic"/>
+    <channel name="wind-vector" scale="linear"/>
+    <channel name="visibility"/>
+  </instrument>
+</observatory>

@@ -1,0 +1,122 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY copyright "&#xA9; 2026">
+  <!ENTITY quoted "&quot;quoted&quot;">
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|detail|ref)*>
+  <!ATTLIST item
+    sku ID #IMPLIED
+    media NOTATION (jpeg) #IMPLIED
+    state (new|used|reserved) "new">
+  <!ELEMENT detail (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+]>
+<catalog>
+  <section code="hardware">
+    <title>Tools &amp; &quot;parts&quot;</title>
+    <item sku="bolt-7" media="jpeg" state="used">steel<detail>&copyright;</detail><ref target="bolt-7"/></item>
+    <item>loose<detail><![CDATA[<raw> & data ]]]]><![CDATA[>]]></detail></item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE message [
+  <!ELEMENT message (sender, recipient, payload)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT packet (chunk*)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<message>
+  <sender>alpha&#x0A;node</sender>
+  <recipient>beta</recipient>
+  <payload>
+    <packet>
+      <chunk>&left;one&right;</chunk>
+      <chunk><![CDATA[unparsed ]]> text]]></chunk>
+    </packet>
+  </payload>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % common "<!ELEMENT root (x|y),z?>">
+  %common;
+  <!ELEMENT x EMPTY>
+  <!ELEMENT y (#PCDATA)>
+  <!ELEMENT z (a,b?)>
+  <!ELEMENT a EMPTY>
+  <!ELEMENT b EMPTY>
+  <!ATTLIST root mode CDATA "fallback">
+  <!ATTLIST x flag (on|off) #IMPLIED>
+]>
+<root mode="&quot;odd&quot;">
+  <y>text</y>
+  <z><a/><b/></z>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svgroot [
+  <!ELEMENT svgroot (svg:canvas)>
+  <!ELEMENT svg:canvas (svg:group*)>
+  <!ELEMENT svg:group (svg:path|svg:text)*>
+  <!ELEMENT svg:path EMPTY>
+  <!ELEMENT svg:text (#PCDATA)>
+  <!ATTLIST svg:path points CDATA #IMPLIED>
+  <!ATTLIST svg:text xml:space (default|preserve) "default">
+]>
+<svgroot xmlns:svg="urn:vector:test" xmlns="urn:outer">
+  <svg:canvas xml:base="urn:base">
+    <svg:group id="g1">
+      <svg:path points="0,0 10,10"/>
+      <svg:text xml:space="preserve">  A &amp; B  </svg:text>
+    </svg:group>
+  </svg:canvas>
+</svgroot>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (name, data, checksum?)>
+  <!ATTLIST entry kind CDATA #REQUIRED timestamp CDATA #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (line|blob|empty)>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT blob (#PCDATA)>
+  <!ELEMENT empty EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY amp "&amp;">
+  <!ENTITY nested "A &amp; B &amp; C">
+]>
+<archive>
+  <entry kind="text" timestamp="1970-01-01T00:00:00Z">
+    <name>first</name>
+    <data>
+      <line>one&#13;&#10;two</line>
+      <line>&nested;</line>
+    </data>
+    <checksum><![CDATA[deadbeef]]></checksum>
+  </entry>
+  <entry kind="binary">
+    <name>second</name>
+    <data><blob>&amp; &lt; &gt; &quot; &apos;</blob></data>
+  </entry>
+</archive>
+```

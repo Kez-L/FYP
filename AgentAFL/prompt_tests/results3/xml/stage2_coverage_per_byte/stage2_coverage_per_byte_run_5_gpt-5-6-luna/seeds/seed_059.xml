@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (header, payload)>
+  <!ELEMENT header (item*)>
+  <!ELEMENT item EMPTY>
+  <!ELEMENT payload (chunk|chunk|tail)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT tail (#PCDATA)>
+  <!ATTLIST package version CDATA #REQUIRED>
+  <!ATTLIST header count NMTOKEN #IMPLIED>
+  <!ATTLIST item key CDATA #IMPLIED value CDATA #IMPLIED>
+  <!ATTLIST chunk id ID #IMPLIED>
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+]>
+<package version="&left;v2&right;">
+  <header count="2"><item key="a" value="1"/><item key="b" value="2"/></header>
+  <payload>
+    <chunk id="c1">&left;escaped&right;</chunk>
+    <chunk id="c1">duplicate-id</chunk>
+    <tail>unfinished &amp; entity &quot;quote</tail>
+  </payload>
+</package>

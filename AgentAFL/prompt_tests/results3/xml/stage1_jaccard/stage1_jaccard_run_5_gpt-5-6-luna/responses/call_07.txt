@@ -1,0 +1,164 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+, note?)>
+  <!ELEMENT item (title, meta, description, link*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT description (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST item
+    sku ID #REQUIRED
+    state (new|used|archived) "new">
+  <!ATTLIST meta
+    weight CDATA #IMPLIED
+    tags NMTOKENS #IMPLIED>
+  <!ATTLIST link
+    rel NMTOKEN #REQUIRED
+    href URI #IMPLIED>
+  <!ENTITY copyright "&#xA9; 2026">
+]>
+<catalog>
+  <item sku="A-01" state="new">
+    <title>alpha &amp; beta</title>
+    <meta weight="1.25" tags="one two&#x20;three"/>
+    <description>Text <em>with</em> <code>&lt;tokens&gt;</code><br/>and a symbol: &copyright;</description>
+    <link rel="self" href="urn:item:A-01"/>
+  </item>
+  <item sku="B-02">
+    <title>second</title>
+    <meta tags="single"/>
+    <description><![CDATA[raw ]]> text with ]]> split safely</description>
+    <link rel="related"/>
+  </item>
+  <note>catalog-end</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8" standalone="yes"?>
+<?source name="fuzzer" mode="edge"?>
+<r:report xmlns:r="urn:example:report" xmlns:x="urn:example:data" xml:lang="fr">
+  <!-- comment with --? no, deliberately ordinary -->
+  <r:header xml:space="preserve">
+    <r:id>x-&#x1F600;-&#x85;</r:id>
+    <r:empty/>
+  </r:header>
+  <r:entries>
+    <x:entry key="k1" x:kind="quoted">
+      <x:value> leading&#x9;middle&#xA;trailing </x:value>
+      <x:value><![CDATA[<not-an-element>&still-raw;</not-an-element>]]></x:value>
+    </x:entry>
+    <x:entry key="k2">
+      <x:value>two</x:value>
+      <?inner data?>
+    </x:entry>
+  </r:entries>
+  <r:footer><![CDATA[line-one
+line-two
+]]></r:footer>
+</r:report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (context?, message, signature?)>
+  <!ELEMENT context (user|service|anonymous)>
+  <!ELEMENT user (#PCDATA)>
+  <!ELEMENT service (#PCDATA)>
+  <!ELEMENT anonymous EMPTY>
+  <!ELEMENT message (part+)>
+  <!ELEMENT part (#PCDATA|quote|break)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST part number CDATA #REQUIRED encoding (plain|base64) "plain">
+  <!ENTITY % switches "<!ENTITY feature \"enabled\">">
+  %switches;
+  <!ENTITY open "[[">
+  <!ENTITY close "]]">
+  <!ENTITY payload "A&amp;B&lt;C&gt;">
+]>
+<envelope>
+  <context><service>mail-gateway</service></context>
+  <message>
+    <part number="1">prefix <quote>&payload;</quote><break/>suffix</part>
+    <part number="2" encoding="base64">QUJDREVGRw==</part>
+    <part number="3">markers: &open; body &close;</part>
+  </message>
+  <signature>feature=&feature;</signature>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (layer, layer, overlay?)>
+  <!ELEMENT layer (tile*)>
+  <!ELEMENT tile EMPTY>
+  <!ELEMENT overlay (polygon|point|path)+>
+  <!ELEMENT polygon EMPTY>
+  <!ELEMENT point EMPTY>
+  <!ELEMENT path EMPTY>
+  <!ATTLIST map xmlns CDATA #IMPLIED>
+  <!ATTLIST layer
+    id ID #REQUIRED
+    visible (true|false) "true"
+    opacity NMTOKEN "1">
+  <!ATTLIST tile
+    x NMTOKEN #REQUIRED
+    y NMTOKEN #REQUIRED
+    src CDATA #REQUIRED>
+  <!ATTLIST polygon points CDATA #REQUIRED fill CDATA #IMPLIED>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ATTLIST path d CDATA #REQUIRED>
+]>
+<map xmlns="urn:geo:map" xmlns:g="urn:geo:meta" g:version="0.4">
+  <layer id="base" opacity="0.75">
+    <tile x="0" y="0" src="tiles/0/0/0.png"/>
+    <tile x="1" y="0" src="tiles/0/1/0.png"/>
+    <tile x="0" y="1" src="tiles/0/0/1.png"/>
+  </layer>
+  <layer id="roads" visible="false" opacity="0">
+    <tile x="0" y="0" src="roads&amp;old.png"/>
+  </layer>
+  <overlay>
+    <polygon points="0,0 10,0 10,10 0,10" fill="#00ff80"/>
+    <point x="-0.0001" y="+42"/>
+    <path d="M0 0 C1.5 2.5 3 4 8 13"/>
+  </overlay>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE sequence [
+  <!ELEMENT sequence (alpha|beta|gamma)*>
+  <!ELEMENT alpha (#PCDATA|item)*>
+  <!ELEMENT beta (item?, marker+)>
+  <!ELEMENT gamma EMPTY>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT marker (#PCDATA)>
+  <!ATTLIST alpha ref ID #IMPLIED>
+  <!ATTLIST beta ref IDREF #IMPLIED>
+  <!ATTLIST item role (first|middle|last) #IMPLIED>
+  <!ENTITY one "1">
+  <!ENTITY two "&one;&one;">
+  <!ENTITY three "&two;&one;">
+]>
+<sequence>
+  <alpha ref="a1">A<item role="first">x</item><item>y</item>tail</alpha>
+  <beta ref="a1">
+    <item role="last">&three;</item>
+    <marker>m1</marker>
+    <marker><![CDATA[m2 & m3]]></marker>
+  </beta>
+  <gamma/>
+  <alpha>mixed <item>content</item> after <?pi value?> end</alpha>
+</sequence>
+```

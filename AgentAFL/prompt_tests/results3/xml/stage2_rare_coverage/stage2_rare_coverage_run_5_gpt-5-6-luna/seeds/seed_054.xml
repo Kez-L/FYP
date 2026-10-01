@@ -1,0 +1,24 @@
+<!DOCTYPE packet [
+  <!ELEMENT packet (meta, payload, trailer?)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT payload (chunk*)>
+  <!ELEMENT chunk (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST meta
+    version CDATA #IMPLIED
+    enabled (yes|no) "yes"
+  >
+  <!ATTLIST chunk index CDATA #REQUIRED>
+]>
+<packet>
+  <meta version="2&amp;3"/>
+  <payload>
+    <chunk index="000">
+      prefix<part>nested</part>suffix
+    </chunk>
+    <chunk index="001">text<part/>tail<part>final</part></chunk>
+    <chunk index="002"/>
+  </payload>
+  <trailer>checksum: &#x30;&#x31;&#x32;</trailer>
+</packet>

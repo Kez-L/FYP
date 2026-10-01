@@ -1,0 +1,33 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (environment, setting+, fallback?)>
+  <!ATTLIST configuration name CDATA #REQUIRED>
+  <!ELEMENT environment (#PCDATA)>
+  <!ELEMENT setting (value, description?)>
+  <!ATTLIST setting key NMTOKEN #REQUIRED locked (true|false) "false">
+  <!ELEMENT value (#PCDATA|item)*>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item name CDATA #REQUIRED>
+  <!ELEMENT description (#PCDATA)>
+  <!ELEMENT fallback (setting*)>
+  <!ENTITY newline "&#xA;">
+  <!ENTITY separator "&#x85;">
+]>
+<configuration name="runtime">
+  <environment>production</environment>
+  <setting key="paths" locked="true">
+    <value>
+      <item name="cache">/var/cache/app</item>
+      <item name="logs">/var/log/app</item>
+    </value>
+    <description>Search locations&newline;are ordered.</description>
+  </setting>
+  <setting key="features">
+    <value>alpha;beta&separator;gamma</value>
+  </setting>
+  <fallback>
+    <setting key="paths">
+      <value><item name="cache">./cache</item></value>
+    </setting>
+  </fallback>
+</configuration>

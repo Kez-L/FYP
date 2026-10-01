@@ -1,0 +1,165 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE office [
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY greeting "hello &amp; welcome">
+  <!ELEMENT office (header, body)>
+  <!ELEMENT header (title, author+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author EMPTY>
+  <!ATTLIST author
+    id ID #REQUIRED
+    role (lead|editor|guest) "guest"
+    xml:lang CDATA #IMPLIED
+  >
+  <!ELEMENT body (section+)>
+  <!ELEMENT section (heading, (p|list|note)*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT p (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+]>
+<office>
+  <header>
+    <title>Design&nbsp;&amp;&nbsp;Review</title>
+    <author id="a1" role="lead" xml:lang="en">Ada</author>
+    <author id="a2">Lin</author>
+  </header>
+  <body>
+    <section>
+      <heading>Introduction</heading>
+      <p>The <em>first</em> draft uses <code>alpha</code><br/>markers.</p>
+      <list>
+        <item>one</item>
+        <item>two</item>
+      </list>
+      <note xml:space="preserve">  &lt;raw&gt; &amp; text  </note>
+    </section>
+    <section>
+      <heading>&greeting;</heading>
+      <p>final&nbsp;paragraph</p>
+    </section>
+  </body>
+</office>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE inventory [
+  <!ENTITY % itemDecl
+    "<!ELEMENT item (#PCDATA)>
+     <!ATTLIST item code NMTOKEN #REQUIRED>">
+  %itemDecl;
+  <!ENTITY % mode "INCLUDE">
+  <![%mode;[
+    <!ELEMENT retired EMPTY>
+    <!ATTLIST retired since CDATA #IMPLIED>
+  ]]>
+  <!ELEMENT inventory (group*)>
+  <!ELEMENT group (label, item+, note?)>
+  <!ATTLIST group name CDATA #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT note (#PCDATA|em)*>
+  <!ELEMENT em (#PCDATA)>
+]>
+<inventory>
+  <group name="hardware">
+    <label>Hardware</label>
+    <item code="cpu">processor</item>
+    <item code="ram">memory</item>
+    <note>check <em>serial</em> numbers</note>
+  </group>
+  <group name="obsolete">
+    <label>Legacy</label>
+    <item code="disk">archive</item>
+    <retired since="2020"/>
+  </group>
+</inventory>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE gallery [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!NOTATION svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+  <!ENTITY banner SYSTEM "banner.gif" NDATA gif>
+  <!ENTITY diagram SYSTEM "diagram.svg" NDATA svg>
+  <!ELEMENT gallery (caption?, asset+, link*)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT asset EMPTY>
+  <!ATTLIST asset
+    name CDATA #REQUIRED
+    source ENTITY #REQUIRED
+    width NMTOKEN #IMPLIED
+    height NMTOKEN #IMPLIED
+  >
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link href URI #REQUIRED>
+]>
+<gallery>
+  <caption>Media inventory</caption>
+  <asset name="header" source="banner" width="640" height="80"/>
+  <asset name="architecture" source="diagram"/>
+  <link href="https://example.invalid/archive"/>
+</gallery>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:report xmlns:r="urn:report" xmlns:m="urn:metrics" xmlns="urn:content" xml:lang="fr">
+  <r:metadata>
+    <r:identifier xml:id="rep-17">R-17</r:identifier>
+    <r:created>2026-10-01T12:34:56Z</r:created>
+    <r:owner m:code="A7">Équipe</r:owner>
+  </r:metadata>
+  <r:measurements>
+    <m:measure name="latency" unit="ms">12.5</m:measure>
+    <m:measure name="errors" unit="count">0</m:measure>
+    <m:series>
+      <m:value>3</m:value>
+      <m:value>5</m:value>
+      <m:value>8</m:value>
+    </m:series>
+  </r:measurements>
+  <r:payload>
+    <entry key="alpha">texte <![CDATA[<not markup>]]></entry>
+    <entry xmlns="" key="beta">
+      <part>plain namespace</part>
+      <?audit level="low"?>
+    </entry>
+  </r:payload>
+</r:report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE maze [
+  <!ELEMENT maze ANY>
+  <!ATTLIST maze flags NMTOKENS #IMPLIED>
+  <!ELEMENT corridor ANY>
+  <!ELEMENT gate EMPTY>
+  <!ATTLIST gate open (yes|no) "no" code CDATA #IMPLIED>
+  <!ENTITY left "L">
+  <!ENTITY right "R">
+  <!ENTITY path "&left;-&right;-&left;">
+]>
+<maze flags="north&#x9;east south">
+  <corridor id="c1">
+    <![CDATA[
+      <gate open="no"/>
+      &not-an-entity;
+    ]]>
+    <gate open="yes" code="A&amp;B"/>
+    <!-- a comment containing -- is not allowed here -->
+    <?trace value="&path;"?>
+  </corridor>
+  <corridor>
+    <gate/>
+    <junction><![CDATA[alpha]]></junction>
+  </corridor>
+</maze>
+```

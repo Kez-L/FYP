@@ -1,0 +1,27 @@
+<?xml version="1.1"?>
+<!DOCTYPE log [
+  <!ELEMENT log (entry*)>
+  <!ELEMENT entry (message, detail*)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ATTLIST entry level (info|warn|error) "info">
+  <!ATTLIST entry sequence NMTOKEN #REQUIRED>
+  <!ENTITY separator "&#x85;">
+  <!ENTITY control "&#x1;&#x7F;&#x2028;">
+]>
+<log xmlns="urn:example:log" xml:space="preserve">
+  <entry sequence="A-000" level="info">
+    <message>first&separator;line</message>
+    <detail>plain <code>alpha</code> tail</detail>
+  </entry>
+  <entry sequence="B_001" level="warn">
+    <message><![CDATA[brackets ] ]> and ampersands &amp;]]></message>
+    <detail xml:lang="ja">日本語</detail>
+  </entry>
+  <entry sequence="C.002" level="error">
+    <message>before&control;after</message>
+    <detail><code>ERR_0x00</code><code>ERR_0xFF</code></detail>
+  </entry>
+  <?checkpoint id="3"?>
+</log>

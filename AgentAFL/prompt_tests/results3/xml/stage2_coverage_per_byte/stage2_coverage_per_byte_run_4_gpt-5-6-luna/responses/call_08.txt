@@ -1,0 +1,161 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (header, item+, footer?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT item (name, price, details?, tag*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST catalog xml:lang (en|fr|de) "en" version CDATA #REQUIRED>
+  <!ATTLIST item code ID #REQUIRED status (new|used|archived) "new">
+  <!ATTLIST price currency CDATA #IMPLIED>
+  <!ENTITY company "Example &amp; Sons">
+]>
+<catalog version="2" xml:lang="en">
+  <header>Offers from &company;</header>
+  <item code="p17" status="new">
+    <name>Glass &lt;vessel&gt;</name>
+    <price currency="EUR">19.95</price>
+    <details>Clear <em>borosilicate</em><br/>hand-finished</details>
+    <tag>kitchen</tag>
+    <tag>fragile</tag>
+  </item>
+  <item code="p18">
+    <name>Folded map</name>
+    <price>4.00</price>
+    <details><![CDATA[creased, annotated, and marked "north"]]></details>
+  </item>
+  <footer>End of list</footer>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node EMPTY>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST graph directed (yes|no) "yes">
+  <!ATTLIST node id ID #REQUIRED label CDATA #IMPLIED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight NMTOKEN #IMPLIED>
+  <!ENTITY % extra '
+    <!ELEMENT annotation (#PCDATA)>
+    <!ATTLIST annotation for IDREF #REQUIRED>
+  '>
+  %extra;
+  <!ENTITY left "L&amp;R">
+  <!NOTATION plain SYSTEM "text/plain">
+  <!ATTLIST graph format NOTATION (plain) "plain">
+]>
+<graph directed="no" format="plain">
+  <node id="n1" label="&left;"/>
+  <node id="n2" label="second"/>
+  <node id="n3"/>
+  <edge from="n1" to="n2" weight="07"/>
+  <edge from="n2" to="n3"/>
+  <annotation for="n2">linked &lt;note&gt;</annotation>
+</graph>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workspace xmlns="urn:example:workspace"
+           xmlns:ui="urn:example:ui"
+           xmlns:data="urn:example:data"
+           xml:space="preserve">
+  <?build mode="debug"?>
+  <section id="intro" ui:collapsed="false">
+    <ui:title>Namespaced content</ui:title>
+    <data:table data:rows="2">
+      <data:row data:key="α">
+        <data:cell><![CDATA[one & two]]></data:cell>
+        <data:cell>3&#x20;4</data:cell>
+      </data:row>
+      <data:row data:key="β">
+        <data:cell xml:space="default">  padded  </data:cell>
+        <data:cell>
+          <ui:link ui:target="_blank" href="https://example.invalid/a?x=1&amp;y=2">
+            open
+          </ui:link>
+        </data:cell>
+      </data:row>
+    </data:table>
+  </section>
+  <foreign xmlns="">
+    <leaf xmlns="urn:example:leaf" xmlns:q="urn:example:q" q:value="&quot;quoted&quot;"/>
+  </foreign>
+</workspace>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (title, section*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT section (heading?, paragraph*, list?)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|bold|italic|code|ref)*>
+  <!ELEMENT bold (#PCDATA)>
+  <!ELEMENT italic (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT list (entry+)>
+  <!ELEMENT entry (#PCDATA|paragraph)*>
+  <!ATTLIST report generated CDATA #IMPLIED>
+  <!ATTLIST section name CDATA #REQUIRED>
+  <!ATTLIST ref target CDATA #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY mark "<bold>important</bold>">
+]>
+<report generated="true">
+  <title>Parser &amp; token boundaries</title>
+  <section name="mixed">
+    <heading>Examples</heading>
+    <paragraph>Text &nbsp;<bold>strong</bold> and <italic>soft</italic>.</paragraph>
+    <paragraph>Inline <code>a&amp;b&lt;c</code> <ref target="sec-2"/> tail.</paragraph>
+    <list>
+      <entry>first</entry>
+      <entry><paragraph>nested paragraph</paragraph>second</entry>
+    </list>
+  </section>
+  <section name="entity">
+    <paragraph>Before &mark; after.</paragraph>
+    <![CDATA[raw ]]> data
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (metadata?, payload, checksum?)>
+  <!ELEMENT metadata (field*)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT payload ANY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST envelope mode (safe|raw|test) "test">
+  <!ATTLIST field key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY hex "&#x41;&#x42;&#x43;">
+]>
+<envelope mode="raw">
+  <metadata>
+    <field key="empty" value=""/>
+    <field key="symbols" value="&lt;&gt;&amp;&quot;&apos;"/>
+    <field key="unicode" value="snowman &#x2603;"/>
+  </metadata>
+  <payload>
+    <chunk index="0">start</chunk>
+    <chunk index="1"><![CDATA[
+      <not-a-tag attr='x'> & raw bytes
+    ]]></chunk>
+    <chunk index="2">end &hex;</chunk>
+    <empty/>
+  </payload>
+  <checksum>00ff&#x0D;&#x0A;17</checksum>
+</envelope>
+```

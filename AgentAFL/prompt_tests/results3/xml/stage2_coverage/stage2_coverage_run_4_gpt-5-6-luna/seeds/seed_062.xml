@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (header, panel+)>
+  <!ELEMENT header (#PCDATA|status)*>
+  <!ELEMENT status EMPTY>
+  <!ELEMENT panel (label, metric*, graph?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT metric (#PCDATA)>
+  <!ELEMENT graph (point*)>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST status level (ok|warn|fail) "ok">
+  <!ATTLIST panel id ID #REQUIRED visible (yes|no) "yes">
+  <!ATTLIST metric unit (ms|bytes|count) #IMPLIED>
+  <!ATTLIST point x NMTOKEN #REQUIRED y NMTOKEN #REQUIRED>
+  <!ENTITY percent "&#37;">
+]>
+<dashboard xmlns="urn:dashboard:v2" xmlns:m="urn:metrics">
+  <header>Build <status level="warn"/> completed at 87&percent;</header>
+  <panel id="latency" visible="yes">
+    <label>Request latency</label>
+    <metric unit="ms">12.4</metric>
+    <metric unit="ms">18.9</metric>
+    <graph>
+      <point x="0" y="4"/>
+      <point x="1" y="9"/>
+      <point x="2" y="7"/>
+    </graph>
+  </panel>
+  <panel id="memory" visible="no">
+    <label><![CDATA[Resident <memory>]]></label>
+    <metric unit="bytes">65536</metric>
+  </panel>
+</dashboard>

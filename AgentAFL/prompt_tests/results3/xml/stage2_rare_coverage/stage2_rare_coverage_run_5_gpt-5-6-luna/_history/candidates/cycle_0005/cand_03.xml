@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (camera, group*)>
+  <!ELEMENT camera EMPTY>
+  <!ELEMENT group (group|shape|transform)*>
+  <!ELEMENT shape EMPTY>
+  <!ELEMENT transform EMPTY>
+  <!ATTLIST scene units CDATA "px">
+  <!ATTLIST camera x CDATA "0" y CDATA "0" zoom CDATA "1">
+  <!ATTLIST group name CDATA #IMPLIED visible (true|false) "true">
+  <!ATTLIST shape type (circle|rect|path) #REQUIRED data CDATA #IMPLIED>
+  <!ATTLIST transform matrix CDATA #REQUIRED>
+  <!ENTITY unit "10">
+  <!ENTITY origin "0,0">
+  <!ENTITY scale "&unit;px">
+]>
+<scene units="&scale;">
+  <?render mode="preview" quality="0"/>
+  <camera x="&origin;" y="&origin;" zoom="1.000"/>
+  <group name="outer" visible="true">
+    <transform matrix="1 0 0 1 &origin;"/>
+    <shape type="rect" data="0,0 100,50"/>
+    <group name="nested">
+      <shape type="circle" data="&unit;,&unit;,&unit;"/>
+      <transform matrix="0 -1 1 0 5 5"/>
+      <group visible="false">
+        <shape type="path" data="M0 0 L1 1 Z"/>
+      </group>
+    </group>
+  </group>
+  <!-- a second top-level group with no children -->
+  <group name="empty"/>
+</scene>

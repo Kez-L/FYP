@@ -1,0 +1,162 @@
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (metadata, folder*)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST metadata
+            created CDATA #REQUIRED
+            revision NMTOKEN "0">
+  <!ELEMENT folder (name, file*)>
+  <!ATTLIST folder
+            id ID #REQUIRED
+            parent IDREF #IMPLIED
+            tags NMTOKENS #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT file (name, checksum, link?)>
+  <!ATTLIST file
+            id ID #REQUIRED
+            owner IDREF #IMPLIED
+            mode (text|binary) "text"
+            hidden (yes|no) "no">
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target IDREF #REQUIRED>
+]>
+<archive>
+  <metadata created="2026-10-01" revision="17"/>
+  <folder id="root" tags="system primary">
+    <name>Root directory</name>
+    <file id="readme" mode="text">
+      <name>README</name>
+      <checksum>sha256:0000</checksum>
+    </file>
+    <file id="blob" owner="root" mode="binary" hidden="yes">
+      <name>payload.bin</name>
+      <checksum>sha256:ffff</checksum>
+      <link target="readme"/>
+    </file>
+  </folder>
+  <folder id="nested" parent="root" tags="child">
+    <name>Nested</name>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (chunk+)>
+  <!ELEMENT chunk (#PCDATA|boundary)*>
+  <!ATTLIST chunk number CDATA #REQUIRED>
+  <!ELEMENT boundary EMPTY>
+  <!ATTLIST boundary
+            kind (open|close|pause) #REQUIRED
+            marker CDATA #IMPLIED>
+]>
+<stream>
+  <chunk number="001">prefix<boundary kind="open" marker="&quot;"/><![CDATA[raw <bytes>]]>middle</chunk>
+  <chunk number="002">line one
+line two&#x85;line three<boundary kind="pause"/>tail</chunk>
+  <chunk number="003"><boundary kind="close"/>suffix</chunk>
+</stream>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (widget*)>
+  <!ELEMENT widget (caption?, value, action*)>
+  <!ATTLIST widget
+            name ID #REQUIRED
+            enabled (true|false) "true"
+            role CDATA #IMPLIED>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT action EMPTY>
+  <!ATTLIST action
+            type NOTATION #REQUIRED
+            ref IDREF #IMPLIED
+            payload CDATA #IMPLIED>
+  <!NOTATION json SYSTEM "application/json">
+  <!NOTATION text SYSTEM "text/plain">
+]>
+<dashboard>
+  <widget name="cpu" role="metric">
+    <caption>CPU &lt;load&gt;</caption>
+    <value>73%</value>
+    <action type="text" payload="refresh"/>
+  </widget>
+  <widget name="raw" enabled="false">
+    <value><![CDATA[{"x": [1, 2, 3], "ok": true}]]></value>
+    <action type="json" ref="cpu"/>
+    <action type="text" payload="archive &amp; rotate"/>
+  </widget>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (sender, recipients, subject, body)>
+  <!ELEMENT sender EMPTY>
+  <!ATTLIST sender address CDATA #REQUIRED display CDATA #IMPLIED>
+  <!ELEMENT recipients (recipient+)>
+  <!ELEMENT recipient EMPTY>
+  <!ATTLIST recipient address CDATA #REQUIRED type (to|cc|bcc) "to">
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|attachment|br)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment
+            filename CDATA #REQUIRED
+            size NMTOKEN #IMPLIED>
+  <!ELEMENT br EMPTY>
+]>
+<message>
+  <sender address="alice@example.test" display="Alice &amp; Co"/>
+  <recipients>
+    <recipient address="bob@example.test"/>
+    <recipient address="audit@example.test" type="cc"/>
+  </recipients>
+  <subject>Re: boundaries &lt;and&gt; entities</subject>
+  <body>Hello, <br/>please see <quote>the nested <quote>quoted</quote> text</quote>.
+    <attachment filename="report&amp;data.xml" size="42"/>
+    <![CDATA[
+      trailing data with ]]> represented safely
+    ]]>
+  </body>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ATTLIST row index NMTOKEN #REQUIRED>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST cell
+            coordinate CDATA #REQUIRED
+            rowspan NMTOKEN "1"
+            colspan NMTOKEN "1"
+            formula CDATA #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY left "&#x27E6;">
+  <!ENTITY right "&#x27E7;">
+]>
+<matrix>
+  <row index="0">
+    <cell coordinate="A1" formula="SUM(B1:C1)">12</cell>
+    <cell coordinate="B1" colspan="2">&left;wide&right;</cell>
+  </row>
+  <row index="1">
+    <cell coordinate="A2" rowspan="2">label&nbsp;one</cell>
+    <cell coordinate="B2" formula="A1*2">24</cell>
+    <cell coordinate="C2">0</cell>
+  </row>
+  <row index="2">
+    <cell coordinate="B3" formula="IF(C2&gt;0,&quot;yes&quot;,&quot;no&quot;)">yes</cell>
+    <cell coordinate="C3"><![CDATA[unterminated-looking ] text]]></cell>
+  </row>
+</matrix>
+```

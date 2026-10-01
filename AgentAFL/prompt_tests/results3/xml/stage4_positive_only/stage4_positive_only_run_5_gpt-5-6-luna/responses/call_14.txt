@@ -1,0 +1,193 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ATTLIST catalog edition NMTOKEN #IMPLIED>
+  <!ELEMENT entry (key, metadata?, description, tags?, payload?)>
+  <!ATTLIST entry code ID #REQUIRED status (draft|active|retired) "active">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT metadata (created, modified?)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT modified (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emphasis|link)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href URI #REQUIRED>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|item)*>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item name CDATA #REQUIRED>
+]>
+<catalog edition="winter">
+  <entry code="alpha-1">
+    <key>First &amp; primary</key>
+    <metadata>
+      <created>2024-02-29T23:59:59Z</created>
+      <modified>2026-01-01</modified>
+    </metadata>
+    <description>A <emphasis>compact</emphasis> record with a <link href="https://example.test/a?x=1&amp;y=2">reference</link>.</description>
+    <tags>
+      <tag>edge</tag>
+      <tag>unicode-π</tag>
+    </tags>
+    <payload>
+      <![CDATA[raw <payload> with ]]> and delimiters]]>
+      <item name="empty"/>
+    </payload>
+  </entry>
+  <entry code="omega-9" status="retired">
+    <key>Trailing entry</key>
+    <description/>
+    <tags/>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<workflow xmlns="urn:example:workflow" xmlns:x="urn:example:extra">
+  <header>
+    <name>nightly-build</name>
+    <attempt>0007</attempt>
+    <flags x:mode="safe" x:retries="0"/>
+  </header>
+  <steps>
+    <step id="prepare" depends="">
+      <command><![CDATA[printf '<input/>' | ./tool --stdin]]></command>
+      <environment>
+        <variable key="EMPTY"/>
+        <variable key="PATH">/bin:/usr/bin</variable>
+      </environment>
+    </step>
+    <step id="compile" depends="prepare">
+      <command>make &amp;&amp; make test</command>
+      <matrix>
+        <axis name="os">
+          <value>linux</value>
+          <value>bsd</value>
+        </axis>
+        <axis name="compiler">
+          <value>clang</value>
+        </axis>
+      </matrix>
+    </step>
+  </steps>
+  <result code="0">
+    <message xml:lang="en">completed</message>
+  </result>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messages [
+  <!ELEMENT messages (message*)>
+  <!ELEMENT message (from, to+, subject, body, attachment*)>
+  <!ATTLIST message uid ID #REQUIRED priority NMTOKEN "normal">
+  <!ELEMENT from EMPTY>
+  <!ATTLIST from address CDATA #REQUIRED display CDATA #IMPLIED>
+  <!ELEMENT to EMPTY>
+  <!ATTLIST to address CDATA #REQUIRED>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|list|br)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT list (li+)>
+  <!ELEMENT li (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT attachment (name, bytes)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT bytes (#PCDATA)>
+]>
+<messages>
+  <message uid="m-001" priority="high">
+    <from address="sender@example.test" display="R&amp;D"/>
+    <to address="one@example.test"/>
+    <to address="two@example.test"/>
+    <subject>Nested &lt;markup&gt; and text</subject>
+    <body>
+      Please review:
+      <quote>the original <quote>quoted line</quote></quote>
+      <list>
+        <li>first</li>
+        <li>second &amp; final</li>
+      </list>
+      <br/>
+      Thanks.
+    </body>
+    <attachment>
+      <name>notes.txt</name>
+      <bytes>0</bytes>
+    </attachment>
+  </message>
+</messages>
+```
+
+```xml
+<?xml version="1.0"?>
+<geometry xmlns="urn:test:geometry" unit="mm">
+  <scene id="s0">
+    <transform matrix="1 0 0 1 0 0">
+      <group opacity="0.75">
+        <shape kind="polygon">
+          <points>
+            <point x="0" y="0"/>
+            <point x="10.5" y="-3"/>
+            <point x="10.5" y="8"/>
+          </points>
+          <style>
+            <fill color="#00ff00" alpha="1"/>
+            <stroke color="none"/>
+          </style>
+        </shape>
+        <shape kind="path" hidden="true">
+          <data><![CDATA[M 0,0 C 1,2 3,4 5,6]]></data>
+        </shape>
+      </group>
+    </transform>
+    <metadata>
+      <entry name="author">測試</entry>
+      <entry name="note">line one
+line two</entry>
+    </metadata>
+  </scene>
+</geometry>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (defaults, profile+)>
+  <!ELEMENT defaults (option*)>
+  <!ELEMENT profile (inherit?, option*, remove*)>
+  <!ATTLIST profile name NMTOKEN #REQUIRED>
+  <!ELEMENT inherit EMPTY>
+  <!ATTLIST inherit from NMTOKEN #REQUIRED>
+  <!ELEMENT option (value|values)>
+  <!ATTLIST option key NMTOKEN #REQUIRED type (string|integer|boolean|list) "string">
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT values (value+)>
+  <!ELEMENT remove EMPTY>
+  <!ATTLIST remove key NMTOKEN #REQUIRED>
+]>
+<configuration>
+  <defaults>
+    <option key="timeout" type="integer"><value>30</value></option>
+    <option key="verbose" type="boolean"><value>false</value></option>
+  </defaults>
+  <profile name="minimal">
+    <option key="paths" type="list">
+      <values>
+        <value>/tmp</value>
+        <value>/var/lib/app</value>
+      </values>
+    </option>
+    <remove key="verbose"/>
+  </profile>
+  <profile name="production">
+    <inherit from="minimal"/>
+    <option key="timeout" type="integer"><value>86400</value></option>
+    <option key="banner"><value><![CDATA[<ready> & safe]]></value></option>
+  </profile>
+</configuration>
+```

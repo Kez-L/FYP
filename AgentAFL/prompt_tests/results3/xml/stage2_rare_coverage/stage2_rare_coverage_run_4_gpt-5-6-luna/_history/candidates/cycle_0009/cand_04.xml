@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE form [
+  <!ELEMENT form (field*, choice, result?)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field
+    name CDATA #REQUIRED
+    value CDATA #IMPLIED
+    disabled (yes|no) "no">
+  <!ELEMENT choice (option+)>
+  <!ATTLIST choice selected IDREF #IMPLIED>
+  <!ELEMENT option (#PCDATA)>
+  <!ATTLIST option id ID #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT result (#PCDATA|error|value)*>
+  <!ELEMENT error (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+]>
+<form>
+  <field name="query" value="&lt;tag attr='x'&gt;"/>
+  <field name="empty" disabled="yes"/>
+  <field name="quote" value="a&quot;b&apos;c"/>
+  <choice selected="opt-b">
+    <option id="opt-a" value="1">One</option>
+    <option id="opt-b" value="2">Two &amp; more</option>
+    <option id="opt-c">Three</option>
+  </choice>
+  <result>
+    <value>accepted</value>
+    <error><![CDATA[warning: <not-an-element>]]></error>
+    trailing text
+  </result>
+</form>

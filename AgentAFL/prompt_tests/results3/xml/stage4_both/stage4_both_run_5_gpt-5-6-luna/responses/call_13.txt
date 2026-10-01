@@ -1,0 +1,225 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (metadata, collection+)>
+  <!ELEMENT metadata (title, generated, operator)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT operator (#PCDATA)>
+  <!ELEMENT collection (record+)>
+  <!ELEMENT record (heading, abstract?, body, tags?)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT abstract (#PCDATA)>
+  <!ELEMENT body (paragraph+)>
+  <!ELEMENT paragraph (#PCDATA|emphasis|code|link)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST archive created CDATA #REQUIRED>
+  <!ATTLIST collection name CDATA #REQUIRED visibility (public|private) "public">
+  <!ATTLIST record key ID #REQUIRED status (draft|final|retired) "draft">
+  <!ATTLIST link target CDATA #REQUIRED>
+  <!ENTITY product "Atlas">
+  <!ENTITY copy "&#169;">
+]>
+<archive created="2026-10-01">
+  <metadata>
+    <title>&product; Knowledge Archive</title>
+    <generated>2026-10-01T12:30:45Z</generated>
+    <operator>research-team</operator>
+  </metadata>
+  <collection name="release-notes" visibility="public">
+    <record key="r17" status="final">
+      <heading>Incremental indexing</heading>
+      <abstract>Search results now update without a full rebuild.</abstract>
+      <body>
+        <paragraph>The <emphasis>indexer</emphasis> accepts a bounded stream of events.</paragraph>
+        <paragraph>Configuration is expressed with <code>window=64</code> and a <link target="r12">compatibility profile</link>.</paragraph>
+      </body>
+      <tags>
+        <tag>search</tag>
+        <tag>performance</tag>
+        <tag>&copy;2026</tag>
+      </tags>
+    </record>
+  </collection>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE observatory [
+  <!ELEMENT observatory (station, instrument*)>
+  <!ELEMENT station (location, climate)>
+  <!ELEMENT location (latitude, longitude, elevation)>
+  <!ELEMENT latitude (#PCDATA)>
+  <!ELEMENT longitude (#PCDATA)>
+  <!ELEMENT elevation (#PCDATA)>
+  <!ELEMENT climate (reading+)>
+  <!ELEMENT reading EMPTY>
+  <!ELEMENT instrument (calibration, channel+)>
+  <!ELEMENT calibration (#PCDATA)>
+  <!ELEMENT channel EMPTY>
+  <!ATTLIST observatory code ID #REQUIRED>
+  <!ATTLIST station region CDATA #IMPLIED>
+  <!ATTLIST reading kind (temperature|pressure|humidity) #REQUIRED
+                    value CDATA #REQUIRED unit CDATA #REQUIRED>
+  <!ATTLIST instrument serial ID #REQUIRED model CDATA #REQUIRED>
+  <!ATTLIST channel name CDATA #REQUIRED scale CDATA "linear">
+  <!NOTATION csv SYSTEM "text/csv">
+  <!ENTITY format "2026-Q4">
+]>
+<observatory code="north-07">
+  <?calibration source="remote"?>
+  <station region="polar">
+    <location>
+      <latitude>78.2232N</latitude>
+      <longitude>15.6469E</longitude>
+      <elevation>32m</elevation>
+    </location>
+    <climate>
+      <reading kind="temperature" value="-11.8" unit="C"/>
+      <reading kind="pressure" value="1008.4" unit="hPa"/>
+      <reading kind="humidity" value="71.2" unit="percent"/>
+    </climate>
+  </station>
+  <instrument serial="wx-440" model="Aster-4">
+    <calibration>verified-&format;</calibration>
+    <channel name="thermal" scale="logarithmic"/>
+    <channel name="wind-vector" scale="linear"/>
+    <channel name="visibility"/>
+  </instrument>
+</observatory>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="urn:example:package"
+         xmlns:meta="urn:example:metadata"
+         xmlns:bin="urn:example:binary"
+         xml:lang="en"
+         xml:base="https://invalid.example/packages/">
+  <meta:manifest revision="7" meta:sealed="false">
+    <meta:owner>build-system</meta:owner>
+    <meta:license uri="urn:license:internal">restricted</meta:license>
+  </meta:manifest>
+  <payload>
+    <module id="core" version="4.2.0">
+      <entrypoint kind="shared" path="lib/core.so"/>
+      <dependency optional="false">
+        <module-ref name="runtime" constraint="&gt;=3.1"/>
+      </dependency>
+      <resources>
+        <resource xml:base="assets/" href="logo.svg" media="image/svg+xml"/>
+        <resource href="strings/en.json" media="application/json"/>
+      </resources>
+    </module>
+    <module id="tools" version="4.2.0-beta">
+      <entrypoint kind="script" path="bin/inspect"/>
+      <dependency optional="true">
+        <module-ref name="debugger" constraint="~2.8"/>
+      </dependency>
+    </module>
+  </payload>
+  <bin:checksums algorithm="sha256">
+    <bin:digest ref="core">4f2a8b5e9c1d0a77</bin:digest>
+    <bin:digest ref="tools">a8e031c4bb29f610</bin:digest>
+  </bin:checksums>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE transcript [
+  <!ELEMENT transcript (header, exchange+)>
+  <!ELEMENT header (subject, participants, confidentiality)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT participants (person+)>
+  <!ELEMENT person (#PCDATA)>
+  <!ELEMENT confidentiality (#PCDATA)>
+  <!ELEMENT exchange (speaker, timestamp, utterance, annotation*)>
+  <!ELEMENT speaker (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT utterance (#PCDATA|quote|pause|term)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT pause EMPTY>
+  <!ELEMENT term (#PCDATA)>
+  <!ELEMENT annotation (#PCDATA)>
+  <!ATTLIST transcript id ID #REQUIRED language CDATA "en">
+  <!ATTLIST exchange sequence NMTOKEN #REQUIRED>
+  <!ATTLIST pause duration CDATA #REQUIRED>
+  <!ATTLIST term type (technical|proper|uncertain) "technical">
+  <!ATTLIST annotation category CDATA #REQUIRED>
+  <!ENTITY speakerOne "Mara">
+  <!ENTITY speakerTwo "Ivo">
+]>
+<transcript id="meeting-42" language="en">
+  <header>
+    <subject>Migration review</subject>
+    <participants>
+      <person>&speakerOne; Chen</person>
+      <person>&speakerTwo; Novak</person>
+      <person>Samir Patel</person>
+    </participants>
+    <confidentiality>internal</confidentiality>
+  </header>
+  <exchange sequence="1">
+    <speaker>&speakerOne;</speaker>
+    <timestamp>09:00:14</timestamp>
+    <utterance>We should preserve the <term type="technical">wire format</term> during the transition.</utterance>
+    <annotation category="action">Document compatibility cases.</annotation>
+  </exchange>
+  <exchange sequence="2">
+    <speaker>&speakerTwo;</speaker>
+    <timestamp>09:01:02</timestamp>
+    <utterance><quote>Nothing changes at the boundary</quote><pause duration="750ms"/>unless the adapter rewrites headers.</utterance>
+    <annotation category="risk">Legacy clients may omit the version field.</annotation>
+  </exchange>
+</transcript>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ledger [
+  <!ENTITY % itemFields "(debit|credit|transfer|adjustment)">
+  <!ELEMENT ledger (account+, audit)>
+  <!ELEMENT account (owner, opening, entry*)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT opening EMPTY>
+  <!ELEMENT entry %itemFields;>
+  <!ELEMENT debit EMPTY>
+  <!ELEMENT credit EMPTY>
+  <!ELEMENT transfer EMPTY>
+  <!ELEMENT adjustment EMPTY>
+  <!ELEMENT audit (event+)>
+  <!ELEMENT event (#PCDATA)>
+  <!ATTLIST ledger period CDATA #REQUIRED currency CDATA #REQUIRED>
+  <!ATTLIST account number ID #REQUIRED state (open|frozen|closed) "open">
+  <!ATTLIST opening amount CDATA #REQUIRED as-of CDATA #REQUIRED>
+  <!ATTLIST debit amount CDATA #REQUIRED memo CDATA #IMPLIED>
+  <!ATTLIST credit amount CDATA #REQUIRED memo CDATA #IMPLIED>
+  <!ATTLIST transfer amount CDATA #REQUIRED to IDREF #REQUIRED>
+  <!ATTLIST adjustment amount CDATA #REQUIRED reason CDATA #REQUIRED>
+  <!ATTLIST event actor CDATA #REQUIRED at CDATA #REQUIRED>
+]>
+<ledger period="2026-09" currency="EUR">
+  <account number="acct-main" state="open">
+    <owner>Operations</owner>
+    <opening amount="18420.00" as-of="2026-09-01"/>
+    <credit amount="2750.00" memo="invoice-882"/>
+    <transfer amount="400.00" to="acct-reserve"/>
+    <adjustment amount="-12.50" reason="rounding correction"/>
+  </account>
+  <account number="acct-reserve" state="frozen">
+    <owner>Contingency</owner>
+    <opening amount="9000.00" as-of="2026-09-01"/>
+    <debit amount="125.00" memo="maintenance"/>
+  </account>
+  <audit>
+    <event actor="batch-17" at="2026-09-30T23:59:58Z">period closed successfully</event>
+    <event actor="reviewer-3" at="2026-10-01T08:15:00Z">manual verification pending</event>
+  </audit>
+</ledger>
+```

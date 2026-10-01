@@ -1,0 +1,80 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:meta">
+  <!-- mixed content and CDATA -->
+  <item id="A-01" x:rank="007">
+    <name><![CDATA[alpha < beta && gamma]]></name>
+    <price currency="€">0.000</price>
+    <tags><tag/><tag>δ</tag></tags>
+  </item>
+  <?audit mode="silent"?>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, footer?)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header priority NMTOKENS "low urgent">
+  <!ELEMENT body (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY smile "&#x263A;">
+]>
+<message>
+  <header priority="high urgent"/>
+  <body>Hello <em>world</em><br/>&smile;</body>
+  <footer>done</footer>
+</message>
+```
+
+```xml
+<root xmlns:a="urn:a" xmlns:b="urn:b" a:value="1">
+  <a:branch>
+    <b:leaf b:value="&quot;&amp;&lt;" />
+    <a:branch><![CDATA[
+      line one
+      ]]><b:leaf/></a:branch>
+  </a:branch>
+  <empty xmlns="" data="x&#10;y"/>
+</root>
+```
+
+```xml
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (warehouse+)>
+  <!ELEMENT warehouse (bin*)>
+  <!ATTLIST warehouse code ID #REQUIRED>
+  <!ELEMENT bin (product, quantity)>
+  <!ATTLIST bin location (left|right|center) "center">
+  <!ELEMENT product (#PCDATA)>
+  <!ELEMENT quantity (#PCDATA)>
+]>
+<inventory>
+  <warehouse code="w1">
+    <bin location="left"><product>nuts</product><quantity>0</quantity></bin>
+    <bin><product>bolts</product><quantity>999999999999999999999</quantity></bin>
+  </warehouse>
+  <warehouse code="w2"/>
+</inventory>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE r [
+  <!ENTITY one "first">
+  <!ENTITY two "&one;-second">
+  <!ENTITY quote "&#34;">
+]>
+<r a="&two;" b="&quote;">
+  <?pi?>
+  <x><![CDATA[]]></x>
+  <!-- comment with --? -->
+  <y>text&amp;&lt;&gt;&apos;&quot;</y>
+  <z>
+    <n/>
+  </z>
+</r>
+```

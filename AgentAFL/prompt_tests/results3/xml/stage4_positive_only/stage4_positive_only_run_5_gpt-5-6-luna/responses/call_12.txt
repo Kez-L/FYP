@@ -1,0 +1,148 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (heading, entry*)>
+  <!ATTLIST section name CDATA #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT entry (name, description, price, metadata?)>
+  <!ATTLIST entry sku ID #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|link)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #IMPLIED>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT metadata (property*)>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST property key CDATA #REQUIRED value CDATA #IMPLIED>
+]>
+<catalog>
+  <section name="hardware">
+    <heading>Portable Tools</heading>
+    <entry sku="tool-17">
+      <name>Folding Compass</name>
+      <description>Precision instrument with <em>engraved</em> markings and a <link href="urn:manual:compass">reference guide</link>.</description>
+      <price currency="EUR">19.95</price>
+      <metadata>
+        <property key="weight" value="84g"/>
+        <property key="waterproof" value="true"/>
+      </metadata>
+    </entry>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<message-bundle>
+  <bundle-id><![CDATA[alpha<&>2026]]></bundle-id>
+  <messages>
+    <message xml:lang="fr" priority="high">
+      <subject>Résumé</subject>
+      <body><![CDATA[Line one
+Line two with <literal>markup</literal> and ]]> characters.</body>
+      <attachments>
+        <attachment filename="résumé.txt" media-type="text/plain"/>
+        <attachment filename="data.bin" media-type="application/octet-stream" checksum="sha256:00ff"/>
+      </attachments>
+    </message>
+    <message xml:lang="ja" priority="low">
+      <subject>通知</subject>
+      <body>こんにちは &amp; さようなら</body>
+    </message>
+  </messages>
+</message-bundle>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (step+)>
+  <!ELEMENT step (label, action, transition*)>
+  <!ATTLIST step id ID #REQUIRED terminal (yes|no) "no">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT action EMPTY>
+  <!ATTLIST action kind CDATA #REQUIRED command CDATA #IMPLIED>
+  <!ELEMENT transition EMPTY>
+  <!ATTLIST transition event CDATA #REQUIRED target IDREF #REQUIRED>
+]>
+<workflow>
+  <step id="begin">
+    <label>Initialize</label>
+    <action kind="setup" command="prepare"/>
+    <transition event="ready" target="process"/>
+  </step>
+  <step id="process">
+    <label>Process input</label>
+    <action kind="transform" command="normalize &amp; validate"/>
+    <transition event="success" target="finish"/>
+    <transition event="failure" target="abort"/>
+  </step>
+  <step id="abort" terminal="yes">
+    <label>Abort</label>
+    <action kind="rollback"/>
+  </step>
+  <step id="finish" terminal="yes">
+    <label>Complete</label>
+    <action kind="notify" command="send-report"/>
+  </step>
+</workflow>
+```
+
+```xml
+<?xml version="1.0"?>
+<geometry xmlns="urn:example:geometry">
+  <collection id="set-9">
+    <point x="0" y="0" z="0"/>
+    <point x="-1.25" y="3.5"/>
+    <polygon closed="true">
+      <vertex index="0">0,0</vertex>
+      <vertex index="1">10,0</vertex>
+      <vertex index="2">10,10</vertex>
+      <vertex index="3">0,10</vertex>
+    </polygon>
+    <metadata>
+      <author><![CDATA[Vector <Lab>]]></author>
+      <description>Bounds: &lt;0,0&gt; through &lt;10,10&gt;</description>
+    </metadata>
+  </collection>
+</geometry>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (run, metrics, anomalies?)>
+  <!ELEMENT run (started, duration, host)>
+  <!ELEMENT started (#PCDATA)>
+  <!ELEMENT duration (#PCDATA)>
+  <!ELEMENT host (#PCDATA)>
+  <!ELEMENT metrics (metric*)>
+  <!ELEMENT metric EMPTY>
+  <!ATTLIST metric name CDATA #REQUIRED value CDATA #REQUIRED unit CDATA #IMPLIED>
+  <!ELEMENT anomalies (anomaly+)>
+  <!ELEMENT anomaly (message, context?)>
+  <!ATTLIST anomaly severity (info|warning|error) #REQUIRED>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT context (#PCDATA)>
+]>
+<report>
+  <run>
+    <started>2026-10-01T23:59:59+00:00</started>
+    <duration>PT0.0042S</duration>
+    <host>node-α-03</host>
+  </run>
+  <metrics>
+    <metric name="items" value="18446744073709551615" unit="count"/>
+    <metric name="ratio" value="NaN"/>
+    <metric name="empty" value="" unit="unknown"/>
+  </metrics>
+  <anomalies>
+    <anomaly severity="warning">
+      <message>Input contained an unexpected delimiter: &quot;]&gt;&quot;</message>
+      <context><![CDATA[chunk[17] => ]]>]]></context>
+    </anomaly>
+  </anomalies>
+</report>
+```

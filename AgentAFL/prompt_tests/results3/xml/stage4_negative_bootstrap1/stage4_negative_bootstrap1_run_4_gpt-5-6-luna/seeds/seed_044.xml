@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (profile | include | override)*>
+  <!ELEMENT profile (property*)>
+  <!ATTLIST profile name CDATA #REQUIRED inherits IDREF #IMPLIED>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST property key CDATA #REQUIRED readonly (0|1) "0">
+  <!ELEMENT include EMPTY>
+  <!ATTLIST include href CDATA #REQUIRED parse (xml|text) "xml">
+  <!ELEMENT override (property+)>
+  <!ATTLIST override target ID #REQUIRED>
+]>
+<configuration xmlns:xi="http://www.w3.org/2001/XInclude">
+  <profile name="base" id="p0">
+    <property key="path">/tmp/a</property>
+    <property key="flags" readonly="1">--safe --verbose</property>
+  </profile>
+  <include href="defaults.xml" parse="xml"/>
+  <override target="p0">
+    <property key="path">/var/lib/app</property>
+  </override>
+  <xi:include href="fragment.xml" parse="xml">
+    <xi:fallback><property key="fallback">enabled</property></xi:fallback>
+  </xi:include>
+</configuration>

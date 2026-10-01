@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ENTITY % switch "INCLUDE">
+  <![%switch;[
+    <!ELEMENT packet (header, payload, trailer?)>
+    <!ELEMENT header (field+)>
+    <!ELEMENT field EMPTY>
+    <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+    <!ELEMENT payload (chunk+)>
+    <!ELEMENT chunk (#PCDATA)>
+    <!ATTLIST chunk index NMTOKEN #IMPLIED>
+    <!ELEMENT trailer EMPTY>
+    <!ATTLIST trailer checksum CDATA #IMPLIED>
+  ]]>
+  <![IGNORE[
+    <!ELEMENT discarded ANY>
+    <!ENTITY ghost "not expanded">
+  ]]>
+]>
+<packet>
+  <header>
+    <field name="type" value="binary"/>
+    <field name="flags" value="a&amp;b"/>
+  </header>
+  <payload>
+    <chunk index="0">A</chunk>
+    <chunk index="1"><![CDATA[B]]></chunk>
+    <chunk index="2">C&#13;&#10;D</chunk>
+  </payload>
+  <trailer checksum="00ff"/>
+</packet>

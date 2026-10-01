@@ -1,0 +1,180 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!ENTITY logo SYSTEM "logo.gif" NDATA gif>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quoted "He said &quot;catalog&quot;">
+  <!ELEMENT catalog (header, item+, footer?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT item (name, price, details?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|note)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST catalog version NMTOKEN #REQUIRED>
+  <!ATTLIST item code ID #REQUIRED state (new|used|archived) "new" ref IDREFS #IMPLIED>
+  <!ATTLIST details format CDATA #IMPLIED>
+]>
+<catalog version="v2">
+  <header>&quoted; &nbsp;</header>
+  <item code="p001" state="new">
+    <name>Glass &amp; Wire</name>
+    <price currency="USD">19.95</price>
+    <details format="plain"><note>limited stock</note><note>fragile</note></details>
+  </item>
+  <item code="p002" state="used" ref="p001">
+    <name>Archive Box</name>
+    <price currency="EUR">4.50</price>
+  </item>
+  <footer>End of catalog</footer>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<?pipeline phase="preflight" mode="trace"?>
+<!-- comments may contain -- only with care -->
+<workspace xml:lang="fr" xml:space="preserve"
+           xmlns="urn:example:workspace"
+           xmlns:meta="urn:example:metadata">
+  <?checkpoint?>
+  <section id="A">
+    intro <![CDATA[<literal>&not-an-entity;</literal>]]>
+    <meta:tag meta:key="x:y">alpha</meta:tag>
+    <paragraph>one<emphasis>two</emphasis>three</paragraph>
+    <empty/>
+  </section>
+  <section id="B" xml:base="./nested/">
+    <line>before<![CDATA[]]]]><![CDATA[>after]]></line>
+    <meta:tag meta:key="quoted">a &lt; b &amp;&amp; c &gt; d</meta:tag>
+    <?instruction data with spaces?>
+  </section>
+</workspace>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, signatures)>
+  <!ELEMENT header (source, destination, timestamp)>
+  <!ELEMENT source EMPTY>
+  <!ELEMENT destination EMPTY>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT payload (entry*)>
+  <!ELEMENT entry (key, value, value?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|fragment)*>
+  <!ELEMENT fragment (#PCDATA)>
+  <!ELEMENT signatures (signature*)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST source id CDATA #REQUIRED>
+  <!ATTLIST destination id CDATA #REQUIRED>
+  <!ATTLIST entry ordinal CDATA #IMPLIED>
+  <!ENTITY ampersand "&amp;">
+  <!ENTITY brace "{&ampersand;">
+  <!ENTITY closebrace "}">
+]>
+<envelope>
+  <header>
+    <source id="node-α"/>
+    <destination id="node-β"/>
+    <timestamp>2026-10-01T12:34:56Z</timestamp>
+  </header>
+  <payload>
+    <entry ordinal="001">
+      <key>status</key>
+      <value>open<fragment>:</fragment>ready</value>
+      <value>&brace;state&closebrace;</value>
+    </entry>
+    <entry ordinal="002">
+      <key>payload</key>
+      <value><![CDATA[
+        { "items": [1, 2, 3], "valid": true }
+      ]]></value>
+    </entry>
+  </payload>
+  <signatures>
+    <signature>sha256:abc123</signature>
+    <signature><![CDATA[-----BEGIN SIGNATURE-----
+opaque== 
+-----END SIGNATURE-----]]></signature>
+  </signatures>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ENTITY % declarations '
+    <!ELEMENT configuration (defaults, profiles)>
+    <!ELEMENT defaults (option*)>
+    <!ELEMENT profiles (profile+)>
+    <!ELEMENT profile (inherits?, option*, limits?)>
+    <!ELEMENT inherits EMPTY>
+    <!ELEMENT option (#PCDATA)>
+    <!ELEMENT limits (memory?, threads?)>
+    <!ELEMENT memory (#PCDATA)>
+    <!ELEMENT threads (#PCDATA)>
+    <!ATTLIST profile name NMTOKEN #REQUIRED>
+    <!ATTLIST option key CDATA #REQUIRED scope (local|global) "local">
+  '>
+  %declarations;
+  <!ENTITY % extra '
+    <!ELEMENT feature (switch|path|pattern)*>
+    <!ELEMENT switch EMPTY>
+    <!ELEMENT path (#PCDATA)>
+    <!ELEMENT pattern (#PCDATA)>
+    <!ATTLIST feature enabled (yes|no) "yes">
+  '>
+  %extra;
+]>
+<configuration>
+  <defaults>
+    <option key="color" scope="global">auto</option>
+    <option key="log-level">debug</option>
+  </defaults>
+  <profiles>
+    <profile name="fast">
+      <inherits from="defaults"/>
+      <option key="workers">8</option>
+      <limits><memory>512M</memory><threads>16</threads></limits>
+      <feature enabled="yes">
+        <switch name="cache"/>
+        <path>/var/tmp/cache</path>
+        <pattern><![CDATA[[A-Z]+(?:_[0-9]+)?]]></pattern>
+      </feature>
+    </profile>
+  </profiles>
+</configuration>
+```
+
+```xml
+<?xml version="1.1"?>
+<?xml-stylesheet type="text/xsl" href="view.xsl" alternate="yes"?>
+<stream xmlns="urn:stream:v3" xmlns:e="urn:event" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <open sequence="00000001" retry="0"/>
+  <frame e:type="measurement" xlink:href="urn:data:42">
+    <e:header>
+      <e:device serial="SN-77&amp;Q">sensor-A</e:device>
+      <e:time>2026-10-01T00:00:00.000+00:00</e:time>
+    </e:header>
+    <e:body>
+      <e:value unit="°C" scale="10">215</e:value>
+      <e:value unit="kPa" scale="1">101.325</e:value>
+      <e:status><![CDATA[OK]]></e:status>
+    </e:body>
+    <e:diagnostics>
+      <e:item code="W01">threshold <e:limit>&lt; 300</e:limit></e:item>
+      <e:item code="I00"><![CDATA[raw bytes: ]]>&#x20AC;<![CDATA[ retained]]></e:item>
+    </e:diagnostics>
+  </frame>
+  <frame e:type="heartbeat">
+    <e:body>
+      <e:value unit="count">1</e:value>
+    </e:body>
+  </frame>
+  <close status="complete"/>
+</stream>
+```

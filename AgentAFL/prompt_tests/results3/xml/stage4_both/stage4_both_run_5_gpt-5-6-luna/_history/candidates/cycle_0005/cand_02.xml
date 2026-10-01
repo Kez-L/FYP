@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow" xmlns:ext="urn:example:workflow:extension" version="3">
+  <definition id="wf-204" owner="night-shift">
+    <trigger>
+      <schedule timezone="UTC">
+        <window start="22:00:00" end="23:30:00"/>
+        <days>
+          <day>monday</day>
+          <day>wednesday</day>
+          <day>friday</day>
+        </days>
+      </schedule>
+      <condition operator="all">
+        <test path="/sensor/status" equals="ready"/>
+        <test path="/queue/length" greater-than="0"/>
+      </condition>
+    </trigger>
+    <steps>
+      <step id="prepare" action="allocate" timeout="PT30S">
+        <resource class="gpu" count="2"/>
+        <resource class="memory" amount="8GiB"/>
+      </step>
+      <step id="execute" action="run" depends-on="prepare">
+        <command><![CDATA[
+          ./analyze --input "$SOURCE" --format json
+        ]]></command>
+        <environment>
+          <variable name="MODE">batch</variable>
+          <variable name="VERBOSE">1</variable>
+        </environment>
+        <on-failure>
+          <retry limit="3" delay="PT10S"/>
+          <notify channel="pager">operator@example.test</notify>
+        </on-failure>
+      </step>
+      <step id="publish" action="transfer" depends-on="execute">
+        <destination protocol="sftp" host="drop.example.test" path="/incoming/results"/>
+        <ext:checksum algorithm="sha512">required</ext:checksum>
+      </step>
+    </steps>
+  </definition>
+  <history>
+    <run started="2026-09-30T22:01:04Z" finished="2026-09-30T22:08:19Z" result="success">
+      <artifact name="summary.json" bytes="18420"/>
+      <artifact name="trace.log" bytes="9021"/>
+    </run>
+  </history>
+</workflow>

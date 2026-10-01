@@ -1,0 +1,96 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY base "alpha">
+  <!ENTITY suffix "omega">
+  <!ENTITY combined "&base;:&suffix;">
+  <!ENTITY % attrs '<!ATTLIST section mode (cold|warm|hot) "warm" stamp CDATA #IMPLIED>'>
+  %attrs;
+  <!ELEMENT report (section+, payload?)>
+  <!ELEMENT section (#PCDATA)>
+  <!ELEMENT payload (#PCDATA)>
+]>
+<report>
+  <section stamp="&combined;">&base; &#x20; &suffix;</section>
+  <section mode="hot">before<![CDATA[<&unexpanded;]]>after</section>
+  <payload>&combined;</payload>
+</report>
+```
+
+```xml
+<!DOCTYPE archive [
+  <!ELEMENT archive ANY>
+  <!ELEMENT record EMPTY>
+  <!ATTLIST record
+    key ID #REQUIRED
+    links IDREFS #IMPLIED
+    state NMTOKEN "new">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "blob.dat" NDATA bin>
+]>
+<archive>
+  <record key="r0" state="old"/>
+  <record key="r1" links="r0 missing"/>
+  <group>
+    <record key="r2"/>
+  </group>
+</archive>
+```
+
+```xml
+<?xml version="1.1" standalone="yes"?>
+<!DOCTYPE Ω [
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY weird "&#x85;&#x2028;&#xD;&#xA;">
+  <!ELEMENT Ω (a|b|c)*>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c (#PCDATA)>
+]>
+<Ω xmlns:p="urn:p" p:flag="&nbsp;">
+  <a>&weird;</a>
+  <b>left&#9;middle&#x0B;right</b>
+  <c>text &unknown; tail</c>
+</Ω>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ENTITY open "<item kind='generated'>">
+  <!ENTITY close "</item>">
+  <!ELEMENT envelope ANY>
+  <!ELEMENT item ANY>
+]>
+<envelope><?start?>
+  &open;
+    <![CDATA[
+      ]]> inside text
+      <tag attr="&quot;"/>
+    ]]>
+    <?pi data?>
+  &close;
+  <!-- odd -- comment -->
+  <item kind="literal">&open;</item>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, body, tail?)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT body (#PCDATA|chunk|![CDATA[]]>)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT tail EMPTY>
+  <!ATTLIST header
+    version CDATA #FIXED "9"
+    flags NMTOKENS #IMPLIED>
+  <!ENTITY q "&quot;">
+  <!ENTITY amp "&amp;">
+]>
+<packet>
+  <header version="9" flags="a  b&#x20;c"/>
+  <body>start<chunk data="&q;">&amp; &lt; &#x3C;</chunk>middle</body>
+  <tail/>
+</packet>
+```

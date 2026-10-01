@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (record*)>
+  <!ELEMENT record (key, value, note?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|quote|escape)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT escape EMPTY>
+  <!ATTLIST record sequence NMTOKEN #REQUIRED>
+  <!ATTLIST escape code NMTOKEN #REQUIRED>
+  <!ENTITY q "&quot;">
+  <!ENTITY apos "&apos;">
+]>
+<stream>
+  <record sequence="001">
+    <key>alpha</key>
+    <value>one <quote>two &q;three&quo;</quote><escape code="x0a"/>four</value>
+  </record>
+  <record sequence="002">
+    <key>beta</key>
+    <value><![CDATA[<not-an-element> && ]]><quote>tail</quote></value>
+    <note>unterminated &apos; marker</note>
+  </record>
+</stream>

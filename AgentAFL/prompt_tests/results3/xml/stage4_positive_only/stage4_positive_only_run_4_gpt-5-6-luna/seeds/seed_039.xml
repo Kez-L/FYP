@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE transcript [
+  <!ELEMENT transcript (session, speaker+, segment*)>
+  <!ELEMENT session (topic, started, location?)>
+  <!ELEMENT topic (#PCDATA)>
+  <!ELEMENT started (#PCDATA)>
+  <!ELEMENT location (#PCDATA)>
+  <!ELEMENT speaker (name, role, bio?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT role (#PCDATA)>
+  <!ELEMENT bio (#PCDATA)>
+  <!ELEMENT segment (voice?, cue?, utterance, annotation*)>
+  <!ELEMENT voice EMPTY>
+  <!ELEMENT cue (#PCDATA)>
+  <!ELEMENT utterance (#PCDATA|emphasis|pause|term)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT pause EMPTY>
+  <!ELEMENT term (#PCDATA)>
+  <!ELEMENT annotation (#PCDATA)>
+  <!ATTLIST speaker key ID #REQUIRED>
+  <!ATTLIST segment who IDREF #REQUIRED offset CDATA #IMPLIED>
+  <!ATTLIST voice channel (left|right|center) "center">
+  <!ATTLIST pause ms CDATA #REQUIRED>
+  <!ATTLIST annotation kind CDATA #REQUIRED>
+]>
+<transcript>
+  <session>
+    <topic>Unexpected input handling</topic>
+    <started>2026-10-01 14:07:03 +0000</started>
+    <location>lab-4 / booth-2</location>
+  </session>
+  <speaker key="spk-a">
+    <name>Rina</name>
+    <role>operator</role>
+    <bio>Maintains the test harness.</bio>
+  </speaker>
+  <speaker key="spk-b">
+    <name>Owen</name>
+    <role>reviewer</role>
+  </speaker>
+  <segment who="spk-a" offset="00:00:04.120">
+    <voice channel="left"/>
+    <utterance>We should preserve <emphasis>all</emphasis> delimiters< pause ms="180"/>even when they look like markup.</utterance>
+    <annotation kind="acoustic">overlap-start</annotation>
+  </segment>
+  <segment who="spk-b" offset="00:00:09.875">
+    <cue>question</cue>
+    <utterance>The token <term>alpha&amp;beta</term> is data, not a tag.</utterance>
+    <annotation kind="editor">verify punctuation</annotation>
+    <annotation kind="confidence">0.82</annotation>
+  </segment>
+</transcript>

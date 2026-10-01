@@ -1,0 +1,163 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (label, description, meta?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|ref)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT meta (author?, tag*)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST entry id ID #REQUIRED status (draft|live|archived) "draft">
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY company "A &amp; B Research">
+  <!ENTITY mark "&#x2605;">
+]>
+<catalog xmlns="urn:example:catalog" xml:lang="en">
+  <entry id="e1" status="live">
+    <label>&company; &mark;</label>
+    <description>Text with <em>mixed</em> content and a <ref target="e2"/> cross-link.</description>
+    <meta>
+      <author>North &amp; South</author>
+      <tag>unicode</tag>
+      <tag>references</tag>
+    </meta>
+  </entry>
+  <entry id="e2">
+    <label>Second entry</label>
+    <description><![CDATA[Literal <markup> and ]] characters]]></description>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (profile, profile*)>
+  <!ELEMENT profile (property*)>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST profile name NMTOKEN #REQUIRED inherits NMTOKEN #IMPLIED>
+  <!ATTLIST property key NMTOKEN #REQUIRED value CDATA #IMPLIED locked (true|false) "false">
+  <!ENTITY % switches '<!ATTLIST property scope (local|global|session) "local">'>
+  %switches;
+  <![INCLUDE[
+    <!ENTITY default-value "unset">
+  ]]>
+  <![IGNORE[
+    <!ELEMENT ignored (anything)>
+    <!ATTLIST ignored obsolete CDATA #IMPLIED>
+  ]]>
+]>
+<configuration>
+  <profile name="base">
+    <property key="timeout" value="30" scope="global"/>
+    <property key="region" value="&default-value;"/>
+  </profile>
+  <profile name="child" inherits="base">
+    <property key="debug" value="true" locked="true"/>
+    <property key="temporary" scope="session"/>
+  </profile>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder|file|alias)*>
+  <!ELEMENT folder (folder|file|alias)*>
+  <!ELEMENT file (#PCDATA)>
+  <!ELEMENT alias EMPTY>
+  <!ATTLIST folder path CDATA #REQUIRED>
+  <!ATTLIST file path CDATA #REQUIRED checksum CDATA #IMPLIED>
+  <!ATTLIST alias path CDATA #REQUIRED points-to IDREF #REQUIRED>
+  <!ENTITY slash "/">
+  <!ENTITY root "var&slash;lib">
+  <!ENTITY note "line one&#xA;line two">
+]>
+<archive>
+  <folder path="&root;">
+    <file path="&root;&slash;state.db" checksum="a&amp;b">&note;</file>
+    <folder path="&root;&slash;cache">
+      <file path="entry&amp;1">cached &lt;data&gt;</file>
+    </folder>
+  </folder>
+  <alias path="latest" points-to="missing"/>
+  <file path="quoted" checksum="&quot;single&apos;double&quot;">&#x20;&#x9;text</file>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, footer?)>
+  <!ELEMENT header (sender, recipient+, subject)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (paragraph|quote|list|break)*>
+  <!ELEMENT paragraph (#PCDATA|strong|code|link|break)*>
+  <!ELEMENT quote (#PCDATA|paragraph)*>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|paragraph)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST link href URI #REQUIRED rel CDATA #IMPLIED>
+  <!ENTITY intro "A message with &lt;markup&gt;">
+]>
+<message>
+  <header>
+    <sender>sender@example.test</sender>
+    <recipient>one@example.test</recipient>
+    <recipient>two@example.test</recipient>
+    <subject>&intro;</subject>
+  </header>
+  <body>
+    <paragraph>Hello <strong>world</strong><break/>This is <code>a &amp; b</code>.</paragraph>
+    <quote>
+      <paragraph>Quoted <link href="urn:test:item" rel="related">material</link>.</paragraph>
+    </quote>
+    <list>
+      <item>first</item>
+      <item><paragraph>second with <strong>emphasis</strong></paragraph></item>
+    </list>
+    <?processing instruction?>
+    <!-- comment between body nodes -->
+  </body>
+  <footer><![CDATA[End of message ]]>with trailing text</footer>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE telemetry [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "data.bin" NDATA bin>
+  <!ELEMENT telemetry (sample*, summary)>
+  <!ELEMENT sample (time, reading, annotation?)>
+  <!ELEMENT time (#PCDATA)>
+  <!ELEMENT reading (#PCDATA)>
+  <!ELEMENT annotation (#PCDATA)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ATTLIST sample key ID #REQUIRED unit (C|F|K) "C" source CDATA #IMPLIED>
+  <!ATTLIST annotation xml:space (default|preserve) "preserve">
+  <!ENTITY degree "&#xB0;">
+  <!ENTITY city "München">
+]>
+<telemetry xml:lang="de">
+  <sample key="s-alpha" unit="C" source="sensor-α">
+    <time>2026-10-01T12:00:00Z</time>
+    <reading>21&degree; &city;</reading>
+    <annotation xml:space="preserve">  spaced&#xA;value  </annotation>
+  </sample>
+  <sample key="s-beta" unit="K">
+    <time>2026-10-01T12:01:00Z</time>
+    <reading>294.15</reading>
+  </sample>
+  <summary><![CDATA[Samples: 2; status=<ok>]]></summary>
+</telemetry>
+```

@@ -1,0 +1,128 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:m="urn:example:meta">
+  <!-- mixed content with namespaces, CDATA, and processing instructions -->
+  <m:metadata xml:lang="en" priority="high">
+    <m:author id="a-01">Ada &amp; Lin</m:author>
+    <m:note><![CDATA[Symbols such as <tag> & "quotes" remain literal.]]></m:note>
+    <?catalog-hint key="alpha"?>
+  </m:metadata>
+  <item sku="X-7" available="true">
+    <title>Nested <emphasis>content</emphasis> sample</title>
+    <description>Use &#x1F642; and &#65; together.</description>
+    <tags>
+      <tag>one</tag>
+      <tag>two</tag>
+    </tags>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, section+)>
+  <!ELEMENT header (title, generated)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated EMPTY>
+  <!ELEMENT section (entry*)>
+  <!ELEMENT entry (#PCDATA|value)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST section name CDATA #REQUIRED>
+  <!ENTITY company "Northwind &amp; Partners">
+  <!ENTITY % optional "<!ELEMENT appendix (#PCDATA)>">
+  %optional;
+]>
+<report>
+  <header>
+    <title>&company;</title>
+    <generated/>
+  </header>
+  <section name="first">
+    <entry>plain <value>42</value> text</entry>
+    <entry><![CDATA[raw ]]> data</entry>
+  </section>
+  <section name="empty"/>
+</report>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE media [
+  <!ELEMENT media (asset+, manifest)>
+  <!ELEMENT asset EMPTY>
+  <!ELEMENT manifest (checksum*)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST asset
+            name CDATA #REQUIRED
+            format (png|svg|bin) "bin"
+            payload ENTITY #IMPLIED>
+  <!ATTLIST manifest verified (yes|no) "no">
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY icon SYSTEM "icon.svg" NDATA binary>
+]>
+<media>
+  <asset name="logo" format="svg" payload="icon"/>
+  <asset name="blob"/>
+  <manifest verified="yes">
+    <checksum algorithm="sha256">not-an-attribute</checksum>
+  </manifest>
+</media>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<warehouse>
+  <zone id="A&amp;1">
+    <bin>
+      <slot index="0"><value>alpha</value></slot>
+      <slot index="1">
+        <value>
+          <![CDATA[first]]>
+          <inner><![CDATA[second ]]]]><![CDATA[> third]]></inner>
+        </value>
+      </slot>
+    </bin>
+  </zone>
+  <zone id="B">
+    <bin>
+      <slot index="&#x32;">
+        <value>line one&#xA;line two&#x9;tab</value>
+      </slot>
+    </bin>
+  </zone>
+  <?audit timestamp="unknown"?>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header?, body, trailer?)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT body (message|attachment|message-group)+>
+  <!ELEMENT message (#PCDATA|link)*>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT attachment (#PCDATA)>
+  <!ELEMENT message-group (message+)>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST envelope version CDATA #IMPLIED>
+  <!ATTLIST header signature CDATA #IMPLIED>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+]>
+<envelope version="2">
+  <header signature="a&quot;b"/>
+  <body>
+    <message>Hello&nbsp;<link href="urn:test"/></message>
+    <message-group>
+      <message>nested one</message>
+      <message>nested two<attachment>payload &amp; tail</attachment></message>
+    </message-group>
+    <attachment><![CDATA[
+      binary-like: \x00 \xFF
+    ]]></attachment>
+  </body>
+  <trailer>done</trailer>
+</envelope>
+```

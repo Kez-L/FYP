@@ -1,0 +1,31 @@
+<?xml version="1.1"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (warehouse*)>
+  <!ELEMENT warehouse (label, bin*)>
+  <!ATTLIST warehouse xmlns CDATA #IMPLIED location CDATA #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT bin (item*)>
+  <!ATTLIST bin number NMTOKEN #REQUIRED>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item
+            sku ID #REQUIRED
+            quantity NMTOKEN #REQUIRED
+            state (new|used|held) "new">
+]>
+<inventory xmlns="urn:stock" xmlns:x="urn:extra">
+  <warehouse location="north">
+    <label>North &amp; Main</label>
+    <bin number="A-01">
+      <item sku="sku-001" quantity="4"/>
+      <item sku="sku-002" quantity="0" state="held"/>
+    </bin>
+    <bin number="B-07">
+      <item sku="sku-003" quantity="12" state="used"/>
+    </bin>
+  </warehouse>
+  <warehouse location="south">
+    <label xml:lang="fr">Dépôt sud</label>
+    <bin number="C-02"/>
+    <x:note x:priority="low">Outside the default vocabulary</x:note>
+  </warehouse>
+</inventory>

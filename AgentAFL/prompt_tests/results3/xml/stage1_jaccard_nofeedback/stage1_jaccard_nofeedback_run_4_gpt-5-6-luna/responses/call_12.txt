@@ -1,0 +1,95 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:meta">
+  <x:metadata id="m-01">
+    <x:label><![CDATA[alpha < beta && gamma > delta]]></x:label>
+  </x:metadata>
+  <item sku="A&amp;B" active="true">
+    <name>Tea &lt;Coffee&gt;</name>
+    <price currency="€">12.50</price>
+    <description>mixed <emphasis>text</emphasis> with a comment<!--inside--></description>
+  </item>
+  <?audit level="verbose"?>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, section+)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT section (title, entry*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (#PCDATA|note)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST section code ID #REQUIRED>
+]>
+<report>
+  <header>Quarterly summary</header>
+  <section code="s1">
+    <title>First</title>
+    <entry>one<note>annotated</note>two</entry>
+  </section>
+  <section code="s2">
+    <title><![CDATA[Second ]]>part</title>
+    <entry/>
+  </section>
+</report>
+```
+
+```xml
+<message xmlns="urn:msg" xmlns:a="urn:attr" a:version="2">
+  <sender>
+    <name>δοκιμή</name>
+    <address><![CDATA[user@example.invalid]]></address>
+  </sender>
+  <payload encoding="base64">
+    <![CDATA[
+      AAECAwQFBgcICQoLDA0ODw==
+    ]]>
+  </payload>
+  <attachments>
+    <attachment name="one.txt" size="0"/>
+    <attachment name="two&amp;two.bin">
+      <checksum>00000000000000000000000000000000</checksum>
+    </attachment>
+  </attachments>
+</message>
+```
+
+```xml
+<?xml version="1.1"?>
+<!-- leading comment -->
+<?processing instruction?>
+<root>
+  <empty></empty>
+  <nested>
+    <level1>
+      <level2><![CDATA[]]></level2>
+      <level2>line
+break
+      </level2>
+    </level1>
+  </nested>
+  <mixed>before<!-- comment --><![CDATA[<raw/>]]>after</mixed>
+</root>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ENTITY greeting "hello">
+  <!ENTITY quoted "a &quot;quoted&quot; value">
+]>
+<envelope xmlns:xlink="http://www.w3.org/1999/xlink">
+  <header>
+    <subject>&greeting;: &quoted;</subject>
+    <timestamp value="2026-10-01T00:00:00Z"/>
+  </header>
+  <body>
+    <link xlink:type="simple" xlink:href="urn:test:one">resource</link>
+    <data><![CDATA[
+      ]]> tricky delimiter text <![CDATA[ retained
+    ]]></data>
+  </body>
+</envelope>
+```

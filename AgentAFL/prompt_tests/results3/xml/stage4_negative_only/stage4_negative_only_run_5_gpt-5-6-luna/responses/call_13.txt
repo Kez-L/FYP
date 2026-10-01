@@ -1,0 +1,148 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, creator*, description?, price)>
+  <!ATTLIST entry code ID #REQUIRED status (active|retired) "active">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT creator (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emph|ref)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #IMPLIED>
+  <!ELEMENT price (#PCDATA)>
+  <!ENTITY currency "¤">
+]>
+<catalog>
+  <entry code="bk-001">
+    <title>Parsing &amp; Validation</title>
+    <creator>R. Example</creator>
+    <description>A guide to <emph>structured</emph> data and <ref target="bk-001"/> references.</description>
+    <price>&currency;19.95</price>
+  </entry>
+  <entry code="bk-002" status="retired">
+    <title>Legacy Markup</title>
+    <price>&currency;7.50</price>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<scene xmlns="urn:fiction:scene" xmlns:geo="urn:fiction:geo">
+  <location geo:lat="+51.4778" geo:lon="-0.0015">
+    <name><![CDATA[Royal Observatory <Greenwich>]]></name>
+  </location>
+  <actors>
+    <actor role="narrator">The clock began at 00:00:00.</actor>
+    <actor role="observer">
+      Before the signal, <pause duration="PT3S"/> nobody spoke.
+      <gesture kind="point" target="clock"/>
+    </actor>
+  </actors>
+  <clock id="clock" precision="millisecond">
+    <reading>12:34:56.789</reading>
+    <?calibrate source="laboratory"?>
+  </clock>
+  <!-- The following whitespace is significant to the scene renderer. -->
+</scene>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, section+)>
+  <!ELEMENT header (title, date, author)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT date (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT section (heading, paragraph+)>
+  <!ATTLIST section number NMTOKEN #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|code|linebreak)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT linebreak EMPTY>
+  <!ENTITY lt "<">
+  <!ENTITY gt ">">
+]>
+<report>
+  <header>
+    <title>Build &amp; Release Notes</title>
+    <date>2026-10-01</date>
+    <author>Automation</author>
+  </header>
+  <section number="1">
+    <heading>Changes</heading>
+    <paragraph>Compilation now accepts expressions such as <code>&lt;node&gt;</code>.<linebreak/>Warnings are grouped by module.</paragraph>
+    <paragraph>Literal delimiters remain text: &lt;tag&gt; and &gt;.</paragraph>
+  </section>
+  <section number="2">
+    <heading>Compatibility</heading>
+    <paragraph>Older clients may ignore unknown attributes.</paragraph>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<workflow xmlns:w="urn:workflow" xmlns:ext="urn:extensions">
+  <w:definition name="backup" revision="08">
+    <w:step id="prepare" kind="task">
+      <w:input name="root" value="/srv/data"/>
+      <w:output name="manifest" type="application/json"/>
+    </w:step>
+    <w:branch test="files &gt; 0">
+      <w:when value="true">
+        <w:step id="archive" kind="command">
+          <w:command><![CDATA[tar -cf archive.tar ./data]]></w:command>
+          <ext:limits cpu="2" memory="512M"/>
+        </w:step>
+      </w:when>
+      <w:otherwise>
+        <w:step id="empty" kind="notify">
+          <w:message>No files selected.</w:message>
+        </w:step>
+      </w:otherwise>
+    </w:branch>
+    <w:finally>
+      <w:cleanup preserve="manifest"/>
+    </w:finally>
+  </w:definition>
+  <w:metadata>
+    <w:tag>nightly</w:tag>
+    <w:tag>storage</w:tag>
+  </w:metadata>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record*)>
+  <!ELEMENT record (key, value, attachment?)>
+  <!ATTLIST record category CDATA "general">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT attachment (#PCDATA)>
+  <!ATTLIST attachment encoding (base64|hex|plain) "plain">
+  <!ENTITY nbsp "&#160;">
+]>
+<archive>
+  <record category="text">
+    <key>alpha</key>
+    <value>First&nbsp;entry</value>
+  </record>
+  <record category="binary">
+    <key>blob-9</key>
+    <value>opaque payload</value>
+    <attachment encoding="base64">
+      QkFTRTY0LURBVEEtMTIzNDU2Nzg5MA==
+    </attachment>
+  </record>
+  <record category="mixed">
+    <key>symbols</key>
+    <value>quotes: &quot;single&quot; &amp; double; brackets: [a][b]</value>
+    <attachment encoding="hex">00ff10ab7e</attachment>
+  </record>
+</archive>
+```

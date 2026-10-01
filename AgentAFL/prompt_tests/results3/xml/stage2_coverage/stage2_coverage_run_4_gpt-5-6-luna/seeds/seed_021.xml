@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (panel*)>
+  <!ELEMENT panel (heading, widget*)>
+  <!ATTLIST panel
+    name NMTOKEN #REQUIRED
+    collapsed (true|false) "false"
+  >
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT widget (label, value, threshold?)>
+  <!ATTLIST widget
+    key ID #REQUIRED
+    state (active|paused|failed) "active"
+  >
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA|unit)*>
+  <!ELEMENT unit EMPTY>
+  <!ATTLIST unit symbol CDATA #REQUIRED>
+  <!ELEMENT threshold (#PCDATA)>
+]>
+<dashboard xmlns="urn:example:dashboard" xmlns:m="urn:example:metrics" xml:base="https://example.invalid/ui/">
+  <panel name="cpu" collapsed="false">
+    <heading>Processor</heading>
+    <widget key="cpu-load" state="active">
+      <label>Load</label>
+      <value>73<unit symbol="%"/></value>
+      <threshold>90</threshold>
+    </widget>
+  </panel>
+  <panel name="memory" collapsed="true">
+    <heading>Memory &amp; cache</heading>
+    <widget key="ram-used" state="paused">
+      <label>Resident</label>
+      <value><![CDATA[4096]]><unit symbol="MiB"/></value>
+    </widget>
+    <?refresh interval="30"?>
+  </panel>
+</dashboard>

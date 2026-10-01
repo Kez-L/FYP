@@ -1,0 +1,23 @@
+{
+  "call": 5,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE report [\n  <!ELEMENT report (section+)>\n  <!ELEMENT section (heading, entry*)>\n  <!ATTLIST section code NMTOKEN #REQUIRED>\n  <!ELEMENT heading (#PCDATA)>\n  <!ELEMENT entry (#PCDATA | note)*>\n  <!ELEMENT note (#PCDATA)>\n  <!ATTLIST note level (low|normal|high) \"normal\">\n]>\n<report>\n  <section code=\"A1\">\n    <heading>Observations</heading>\n    <entry>First result <note level=\"high\">requires review</note> before release.</entry>\n    <entry>Second result contains an embedded <note>annotation</note> and trailing text.</entry>\n  </section>\n  <section code=\"B-2\">\n    <heading>Empty section</heading>\n  </section>\n  <section code=\"C3\">\n    <heading>Escaped values</heading>\n    <entry><![CDATA[raw <text> with ]]> characters]]></entry>\n  </section>\n</report>\n\n--- example 2 ---\n<?xml version=\"1.1\"?>\n<!DOCTYPE message [\n  <!ENTITY greeting \"Hello\">\n  <!ENTITY who \"world\">\n  <!ENTITY phrase \"&greeting;, &who;!\">\n]>\n<message xmlns=\"urn:message\" xmlns:x=\"urn:extra\">\n  <header x:priority=\"high\">\n    <subject>&phrase;</subject>\n  </header>\n  <body xml:space=\"preserve\">\n    <![CDATA[\n      line one\n      ]]> \n    <part kind=\"text\">alpha&#x0A;beta</part>\n    <!-- a comment containing -- must not be split -->\n    <part kind=\"empty\"/>\n  </body>\n</message>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-01T03:37:00.581036+00:00"
+}

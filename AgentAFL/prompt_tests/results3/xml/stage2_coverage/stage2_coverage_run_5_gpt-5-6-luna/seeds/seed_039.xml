@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (chunk+)>
+  <!ELEMENT chunk (header,payload,checksum?)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED compressed (yes|no) "no">
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header size NMTOKEN #REQUIRED type CDATA #IMPLIED>
+  <!ELEMENT payload (#PCDATA|fragment)*>
+  <!ELEMENT fragment (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY amp "&amp;">
+  <!ENTITY nested "left &amp; right &amp; center">
+]>
+<stream>
+  <chunk index="000" compressed="yes">
+    <header size="0" type="binary"/>
+    <payload/>
+    <checksum>00000000</checksum>
+  </chunk>
+  <chunk index="001">
+    <header size="17" type="text"/>
+    <payload>start<fragment>&nested;</fragment>middle<![CDATA[end ]]>tail</payload>
+  </chunk>
+</stream>

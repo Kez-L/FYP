@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % common "<!ELEMENT label (#PCDATA)> <!ELEMENT value (#PCDATA|label)*>">
+  %common;
+  <!ELEMENT report (meta, record*)>
+  <!ELEMENT meta (label, value)>
+  <!ELEMENT record (label?, value, record?)>
+  <!ATTLIST record key CDATA #IMPLIED>
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+  <!ENTITY nested "L&amp;R">
+  <![IGNORE[
+    <!ELEMENT ignored (nothing)>
+    <!ENTITY hidden "not expanded">
+  ]]>
+]>
+<report>
+  <meta>
+    <label>status</label>
+    <value>ready <label>&nested;</label> &left;inside&right;</value>
+  </meta>
+  <record key="alpha">
+    <label>outer</label>
+    <value><![CDATA[raw <xml> and ]] brackets]]></value>
+    <record key="beta">
+      <value>leaf &amp; final</value>
+    </record>
+  </record>
+  <record>
+    <value><label>embedded</label>tail</value>
+  </record>
+</report>

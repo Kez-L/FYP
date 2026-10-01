@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (step, step*, on-error?)>
+  <!ATTLIST workflow name CDATA #REQUIRED>
+  <!ELEMENT step (input*, action, output*)>
+  <!ATTLIST step number CDATA #REQUIRED optional (true|false) "false">
+  <!ELEMENT input EMPTY>
+  <!ATTLIST input key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT output EMPTY>
+  <!ATTLIST output key CDATA #REQUIRED>
+  <!ELEMENT on-error (action, notify?)>
+  <!ELEMENT notify (#PCDATA)>
+]>
+<workflow name="nightly-export">
+  <step number="1">
+    <input key="source" value="/var/lib/data"/>
+    <input key="mode" value="incremental"/>
+    <action>scan</action>
+    <output key="manifest"/>
+  </step>
+  <step number="2" optional="true">
+    <input key="manifest"/>
+    <action>transform &amp; compress</action>
+    <output key="archive"/>
+  </step>
+  <step number="3">
+    <input key="archive"/>
+    <action>publish</action>
+  </step>
+  <on-error>
+    <action>rollback</action>
+    <notify>ops@example.invalid</notify>
+  </on-error>
+</workflow>

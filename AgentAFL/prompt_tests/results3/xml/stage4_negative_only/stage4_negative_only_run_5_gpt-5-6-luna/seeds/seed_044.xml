@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE query [
+  <!ELEMENT query (select, from, where?, order?, limit?)>
+  <!ELEMENT select (field+)>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST field alias CDATA #IMPLIED>
+  <!ELEMENT from (table+)>
+  <!ELEMENT table (#PCDATA)>
+  <!ELEMENT where (and|or|not|eq|in|literal|field)+>
+  <!ELEMENT and (and|or|not|eq|in|literal|field)+>
+  <!ELEMENT or (and|or|not|eq|in|literal|field)+>
+  <!ELEMENT not (and|or|not|eq|in|literal|field)+>
+  <!ELEMENT eq (field|literal)+>
+  <!ELEMENT in (field|literal)+>
+  <!ELEMENT literal (#PCDATA)>
+  <!ELEMENT order (by+)>
+  <!ELEMENT by (#PCDATA)>
+  <!ELEMENT limit (#PCDATA)>
+]>
+<query>
+  <select>
+    <field alias="identifier">id</field>
+    <field>COALESCE(name, 'unknown')</field>
+  </select>
+  <from>
+    <table>users</table>
+    <table>profiles</table>
+  </from>
+  <where>
+    <and>
+      <eq><field>users.active</field><literal>true</literal></eq>
+      <or>
+        <in><field>profiles.region</field><literal>EU</literal><literal>APAC</literal></in>
+        <not><eq><field>users.deleted</field><literal>1</literal></eq></not>
+      </or>
+    </and>
+  </where>
+  <order><by descending="true">created_at</by></order>
+  <limit>18446744073709551615</limit>
+</query>

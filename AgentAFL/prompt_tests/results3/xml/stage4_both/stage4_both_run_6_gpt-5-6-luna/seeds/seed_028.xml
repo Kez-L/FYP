@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, records)>
+  <!ELEMENT header (created, creator, flags?)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT creator (#PCDATA)>
+  <!ELEMENT flags (flag*)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST flag name NMTOKEN #REQUIRED enabled (0|1) "1">
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (key, value, history?)>
+  <!ATTLIST record id ID #REQUIRED category CDATA #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|raw)*>
+  <!ELEMENT raw (#PCDATA)>
+  <!ELEMENT history (change+)>
+  <!ELEMENT change (when, actor, before, after)>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT actor (#PCDATA)>
+  <!ELEMENT before (#PCDATA)>
+  <!ELEMENT after (#PCDATA)>
+  <!ENTITY left "&lt;">
+  <!ENTITY right "&gt;">
+]>
+<archive xmlns:a="urn:archive:v2" xmlns: xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <header>
+    <created>2026-10-01T00:00:00Z</created>
+    <creator>importer</creator>
+    <flags>
+      <flag name="compressed" enabled="1"/>
+      <flag name="encrypted" enabled="0"/>
+    </flags>
+  </header>
+  <records>
+    <record id="r-1" category="configuration">
+      <key>a.b.c</key>
+      <value>enabled=true<a:raw xsi:type="a:literal">&left;not markup&right;</a:raw></value>
+      <history>
+        <change>
+          <when>2026-09-30</when>
+          <actor>admin</actor>
+          <before>false</before>
+          <after>true</after>
+        </change>
+      </history>
+    </record>
+    <record id="r-2">
+      <key>threshold</key>
+      <value><![CDATA[0 < 1 && 2 > 0]]></value>
+    </record>
+  </records>
+</archive>

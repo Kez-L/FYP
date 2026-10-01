@@ -1,0 +1,143 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE library [
+  <!ELEMENT library (section+)>
+  <!ELEMENT section (title, book*)>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT book (name, author+, summary?)>
+  <!ATTLIST book isbn CDATA #REQUIRED available (true|false) "true">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT summary (#PCDATA)>
+]>
+<library>
+  <section id="fiction">
+    <title>Fiction</title>
+    <book isbn="978-1-4028-9462-6">
+      <name>The Glass Harbor</name>
+      <author>Mira Vale</author>
+      <author>Jonas Reed</author>
+      <summary>A quiet mystery beneath a changing tide.</summary>
+    </book>
+  </section>
+  <section id="reference">
+    <title>Reference</title>
+    <book isbn="978-0-395-19395-8" available="false">
+      <name>Atlas of Small Places</name>
+      <author>R. K. Stone</author>
+    </book>
+  </section>
+</library>
+```
+
+```xml
+<?xml version="1.0"?>
+<configuration>
+  <profile name="staging">
+    <endpoint>
+      <protocol>https</protocol>
+      <host>api.example.invalid</host>
+      <port>8443</port>
+      <path>/v2/events</path>
+    </endpoint>
+    <credentials>
+      <token><![CDATA[abc<def>&ghi]]></token>
+      <rotation days="30"/>
+    </credentials>
+    <features>
+      <feature key="audit" enabled="1"/>
+      <feature key="compression" enabled="0"/>
+      <feature key="retries" enabled="1">
+        <limit>5</limit>
+      </feature>
+    </features>
+  </profile>
+  <profile name="offline">
+    <endpoint>
+      <protocol>file</protocol>
+      <path>/var/tmp/archive</path>
+    </endpoint>
+    <features/>
+  </profile>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<conversation>
+  <message id="m001" sender="alice" timestamp="2026-09-30T23:59:59Z">
+    Hello, <emphasis>world</emphasis>!
+    <attachment filename="note.txt" media-type="text/plain">first line
+second line</attachment>
+  </message>
+  <message id="m002" sender="bob" timestamp="2026-10-01T00:00:01+00:00">
+    <quote author="alice">Hello, world!</quote>
+    <reaction symbol="&#x1F44D;"/>
+  </message>
+  <message id="m003" sender="system">
+    <![CDATA[Use <reply> to respond & preserve formatting.]]>
+  </message>
+</conversation>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, metrics, note?)>
+  <!ELEMENT header (generated, owner)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT metrics (metric+)>
+  <!ELEMENT metric EMPTY>
+  <!ATTLIST metric name CDATA #REQUIRED value CDATA #REQUIRED unit CDATA #IMPLIED>
+  <!ELEMENT note (#PCDATA)>
+]>
+<report>
+  <header>
+    <generated>2026-10-01T08:15:00Z</generated>
+    <owner>operations@example.invalid</owner>
+  </header>
+  <metrics>
+    <metric name="requests" value="18472" unit="count"/>
+    <metric name="latency.p50" value="18.4" unit="ms"/>
+    <metric name="latency.p99" value="203" unit="ms"/>
+    <metric name="errors" value="0"/>
+  </metrics>
+  <note>All measurements are preliminary.</note>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow id="deploy-42">
+  <trigger>
+    <schedule timezone="UTC">
+      <day>Monday</day>
+      <day>Thursday</day>
+      <at hour="02" minute="30"/>
+    </schedule>
+  </trigger>
+  <steps>
+    <step id="prepare" type="shell" continue-on-error="false">
+      <command>printf '%s\n' "prepare"</command>
+      <environment>
+        <variable name="MODE">safe</variable>
+        <variable name="COUNT">3</variable>
+      </environment>
+    </step>
+    <step id="publish" type="http" continue-on-error="true">
+      <request method="POST" url="https://deploy.example.invalid/start">
+        <header name="X-Run-ID">deploy-42</header>
+        <body media-type="application/json"><![CDATA[{"dry_run":true,"targets":["edge","core"]}]]></body>
+      </request>
+      <on-success>
+        <log level="info">publication requested</log>
+      </on-success>
+      <on-failure>
+        <retry attempts="2" backoff="250ms"/>
+      </on-failure>
+    </step>
+  </steps>
+</workflow>
+```

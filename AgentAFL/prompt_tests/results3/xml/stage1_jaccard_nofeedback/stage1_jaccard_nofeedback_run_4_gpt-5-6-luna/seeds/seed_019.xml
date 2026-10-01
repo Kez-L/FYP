@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (name, data, checksum?)>
+  <!ATTLIST record id ID #IMPLIED ref IDREF #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY chunk "<part>entity-content</part>">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY external SYSTEM "missing-resource.bin" NDATA bin>
+]>
+<archive>
+  <record id="first">
+    <name>one</name>
+    <data><![CDATA[<<< >>> ]]> &chunk; <![CDATA[]]></data>
+    <checksum>00000000</checksum>
+  </record>
+  <record id="second" ref="first">
+    <name>two</name>
+    <data>text &amp; more &#35; <![CDATA[raw]]></data>
+    <checksum/>
+  </record>
+  <record>
+    <name>third</name>
+    <data>&external;</data>
+  </record>
+</archive>

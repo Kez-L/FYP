@@ -1,0 +1,117 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE warehouse [
+  <!ELEMENT warehouse (aisle+)>
+  <!ELEMENT aisle (bin+)>
+  <!ATTLIST aisle name CDATA #REQUIRED>
+  <!ELEMENT bin (label, product*, note?)>
+  <!ATTLIST bin position NMTOKEN #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT product (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY company "North &amp; South Logistics">
+]>
+<warehouse>
+  <aisle name="A">
+    <bin position="01">
+      <label>Fragile &company;</label>
+      <product>glassware</product>
+      <product>ceramic</product>
+    </bin>
+    <bin position="02">
+      <label>Oversized</label>
+      <note>Handle with care.</note>
+    </bin>
+  </aisle>
+  <aisle name="B">
+    <bin>
+      <label>Returns</label>
+    </bin>
+  </aisle>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0"?>
+<map xmlns="urn:map" xmlns:geo="urn:geo">
+  <point geo:id="p-7" lat="51.5074" lon="-0.1278">
+    <geo:name>London</geo:name>
+    <geo:meta>
+      <geo:tag>capital</geo:tag>
+      <geo:tag><![CDATA[urban <zone>]]></geo:tag>
+    </geo:meta>
+  </point>
+  <route>
+    <from ref="p-7"/>
+    <to ref="p-8"/>
+    <distance unit="km">12.5</distance>
+  </route>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<?processing mode="test"?>
+<message id="m42">
+  <!-- interleaved text and elements -->
+  Hello
+  <header>
+    <sender><![CDATA[alpha@example.org]]></sender>
+    <flags>
+      <flag>urgent</flag>
+      <flag>encrypted</flag>
+    </flags>
+  </header>
+  <body>Line one&#10;Line two&#x21;</body>
+  <?checkpoint value="after-body"?>
+  <attachments>
+    <file name="a&amp;b.txt" size="0"/>
+    <file name="signature.bin" size="18446744073709551615"/>
+  </attachments>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE library [
+  <!ELEMENT library (book*)>
+  <!ELEMENT book (author+, synopsis)>
+  <!ATTLIST book isbn CDATA #IMPLIED category (fiction|history|science) "fiction">
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT synopsis (#PCDATA|em|strong)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT strong (#PCDATA)>
+  <!ENTITY intro "A &lt;short&gt; description">
+]>
+<library>
+  <book isbn="978-0" category="science">
+    <author>R. Example</author>
+    <author>J. Reader</author>
+    <synopsis>&intro; with <em>nested</em> emphasis and <strong>bold</strong> terms.</synopsis>
+  </book>
+  <book category="history">
+    <author>Unknown</author>
+    <synopsis>Fragments, <em>dates</em>, and archival notes.</synopsis>
+  </book>
+</library>
+```
+
+```xml
+<?xml version="1.0"?>
+<configuration>
+  <profiles>
+    <profile name="minimal" enabled="true">
+      <option key="timeout">0</option>
+      <option key="retries">-1</option>
+    </profile>
+    <profile name="unicode-☃" enabled="false">
+      <option key="path">/tmp/a&#x2F;b</option>
+      <option key="pattern"><![CDATA[[a-z]+(\d{2,})]]></option>
+    </profile>
+  </profiles>
+  <matrix rows="2" cols="3">
+    <row index="0"><cell/><cell value="&apos;"/><cell value="&quot;"/></row>
+    <row index="1"><cell value="left"/><cell value="middle"/><cell value="right"/></row>
+  </matrix>
+</configuration>
+```

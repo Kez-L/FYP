@@ -1,0 +1,16 @@
+<?xml version="1.1"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (chunk+)>
+  <!ELEMENT chunk (#PCDATA|boundary)*>
+  <!ATTLIST chunk number CDATA #REQUIRED>
+  <!ELEMENT boundary EMPTY>
+  <!ATTLIST boundary
+            kind (open|close|pause) #REQUIRED
+            marker CDATA #IMPLIED>
+]>
+<stream>
+  <chunk number="001">prefix<boundary kind="open" marker="&quot;"/><![CDATA[raw <bytes>]]>middle</chunk>
+  <chunk number="002">line one
+line two&#x85;line three<boundary kind="pause"/>tail</chunk>
+  <chunk number="003"><boundary kind="close"/>suffix</chunk>
+</stream>

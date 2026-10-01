@@ -1,0 +1,103 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:m="urn:example:meta" xml:space="preserve">
+  <m:header priority="high" enabled="true">
+    <m:title>alpha &amp; omega</m:title>
+    <m:note><![CDATA[<not-an-element> && raw markup]]></m:note>
+  </m:header>
+  <item id="A-001" status="draft">
+    <name>Widget &lt;small&gt;</name>
+    <tags><tag>one</tag><tag>two</tag><tag/></tags>
+    <description>left<!-- embedded comment -->right<?hint value?></description>
+  </item>
+  <item id="A-002">
+    <value units="μs">0</value>
+    <empty/>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section+, footer?)>
+  <!ELEMENT section (title, paragraph*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA|em|br)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ATTLIST paragraph level (low|normal|high) "normal">
+  <!NOTATION text SYSTEM "text/plain">
+]>
+<report>
+  <section code="s1">
+    <title>Introduction</title>
+    <paragraph level="high">A <em>nested <em>emphasis</em></em><br/>line.</paragraph>
+  </section>
+  <section code="s2">
+    <title><![CDATA[Details ]]> <![CDATA[and conclusions]]></title>
+    <paragraph>tail</paragraph>
+  </section>
+  <footer>Generated &#x20;today</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:root xmlns:r="urn:root" xmlns:a="urn:a" xmlns:b="urn:b" xmlns="">
+  <r:branch a:k="v" b:k="w">
+    <leaf><![CDATA[]]></leaf>
+    <leaf>
+      text
+      <inner xmlns="urn:inner" xml:lang="fr">
+        <![CDATA[raw ]]>content<![CDATA[ [data]]]>
+        <inner-child a:flag="1"/>
+      </inner>
+      tail
+    </leaf>
+  </r:branch>
+  <container xmlns:r="urn:shadow">
+    <r:root>
+      <r:branch/>
+    </r:root>
+  </container>
+</r:root>
+```
+
+```xml
+<?xml version="1.0"?>
+<document>
+  <prolog><?custom alpha="&quot;"?></prolog>
+  <data a="1" b="2" a="3">
+    <broken>
+      <nested value='unterminated>
+        <![CDATA[unfinished-looking but closed]]>
+      </nested>
+    </broken>
+  </data>
+</document>
+```
+
+```xml
+<?xml version="1.1"?>
+<!-- leading comment with --? no -->
+<?xml-stylesheet type="text/xsl" href="style.xsl"?>
+<message xml:id="m0" xml:base="./path/">
+  <header>
+    <from>user@example.test</from>
+    <to>receiver@example.test</to>
+  </header>
+  <body><![CDATA[
+    <payload>
+      <entry key="x">1 &amp; 2</entry>
+      <entry key="y">&#0;</entry>
+    </payload>
+  ]]></body>
+  <attachments>
+    <attachment name="a&amp;b.bin" size="00000000000000000001"/>
+    <attachment name="empty"></attachment>
+  </attachments>
+</message>
+```

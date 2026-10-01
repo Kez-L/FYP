@@ -1,0 +1,118 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:example:catalog" xmlns:m="urn:example:meta">
+  <item id="α-01" m:state="active">
+    <name><![CDATA[Tea & Coffee <set>]]></name>
+    <price currency="€">12.50</price>
+    <tags>
+      <tag>breakfast</tag>
+      <tag><![CDATA[mañana]]></tag>
+    </tags>
+  </item>
+  <?refresh mode="lazy"?>
+  <item id="β-02" m:state="archived">
+    <name>Soup &amp; Bread</name>
+    <price currency="USD">0</price>
+  </item>
+</catalog>
+```
+
+```xml
+<!DOCTYPE warehouse [
+  <!ELEMENT warehouse (section+)>
+  <!ELEMENT section (bin*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT bin (label, count, note?)>
+  <!ATTLIST bin kind (open|closed|unknown) "unknown">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT count (#PCDATA)>
+  <!ELEMENT note (#PCDATA|warning)*>
+  <!ELEMENT warning (#PCDATA)>
+  <!ENTITY marker "&#x2605;">
+]>
+<warehouse>
+  <section code="north">
+    <bin kind="open">
+      <label>small &marker; parts</label>
+      <count>0042</count>
+      <note>stored <warning>indoors</warning></note>
+    </bin>
+    <bin>
+      <label><![CDATA[raw [text] with ]]> brackets]]></label>
+      <count>0</count>
+    </bin>
+  </section>
+  <section code="south">
+    <bin kind="closed">
+      <label>sealed</label>
+      <count>17</count>
+      <note>inspection pending</note>
+    </bin>
+  </section>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % mode "(summary|detail)">
+  <!ELEMENT report (header, body, footer)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT body (entry+)>
+  <!ELEMENT entry (key, value, extra*)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT extra (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST entry mode %mode; "summary">
+]>
+<report>
+  <header>daily &quot;delta&quot;</header>
+  <body>
+    <entry mode="detail">
+      <key>temperature</key>
+      <value>18.75</value>
+      <extra>min=-2</extra>
+      <extra>max=31</extra>
+    </entry>
+    <entry>
+      <key>status</key>
+      <value>nominal</value>
+    </entry>
+  </body>
+  <footer>generated at 23:59:59</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns:x="urn:x" xmlns:y="urn:y">
+  <x:branch y:flag="true">
+    <leaf x:code="A&#10;B">line one&#x0A;line two</leaf>
+    <leaf y:code="&quot;quoted&quot;">
+      <![CDATA[
+        whitespace
+        <not-an-element/>
+        & and ]]> markers
+      ]]>
+    </leaf>
+  </x:branch>
+  <mixed>before<inner/>after<inner>text</inner>tail</mixed>
+  <empty xmlns="" data="&lt;&amp;&gt;"/>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE broken [
+  <!ELEMENT broken (a, b?)>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b (#PCDATA)>
+  <!ENTITY once "A &amp; B">
+]>
+<broken unexpected="1" unexpected="2">
+  <a>&once;<b>nested too early</a>
+  <b><![CDATA[unterminated-looking text]]></b>
+  <?pi value
+</broken>
+```

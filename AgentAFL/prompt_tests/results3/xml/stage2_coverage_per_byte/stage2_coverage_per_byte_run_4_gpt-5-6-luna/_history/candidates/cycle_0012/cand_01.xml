@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header (source, destination, stamp)>
+  <!ELEMENT source EMPTY>
+  <!ELEMENT destination EMPTY>
+  <!ELEMENT stamp (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ATTLIST envelope xmlns:msg CDATA #FIXED "urn:message"
+                    xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST source msg:id ID #REQUIRED
+                  role (primary|backup) #REQUIRED>
+  <!ATTLIST destination msg:ref IDREF #REQUIRED>
+  <!ENTITY quote "He said &quot;ready&quot;">
+]>
+<envelope xmlns:msg="urn:message" xml:lang="en-US">
+  <header>
+    <source msg:id="origin-7" role="primary"/>
+    <destination msg:ref="origin-7"/>
+    <stamp>2026-10-01T00:00:00Z</stamp>
+  </header>
+  <payload>
+    <?route via="internal"?>
+    <msg:packet xmlns:msg="urn:message" msg:type="data">
+      <![CDATA[<not-an-element>&still-raw;</not-an-element>]]>
+      <msg:value>&quote;</msg:value>
+    </msg:packet>
+  </payload>
+</envelope>

@@ -1,0 +1,140 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (p:item*, note?)>
+  <!ELEMENT p:item (#PCDATA|p:tag)*>
+  <!ELEMENT p:tag EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST catalog xmlns:p CDATA #FIXED "urn:parts"
+                    version NMTOKEN "v1">
+  <!ATTLIST p:item id ID #REQUIRED
+                  kind (new|used|refurbished) "new"
+                  label CDATA "unlabeled">
+  <!ATTLIST p:tag key CDATA #IMPLIED>
+  <!ENTITY amp "&amp;">
+  <!ENTITY fragment "<p:tag key='embedded'/>">
+  <!NOTATION svg SYSTEM "image/svg+xml">
+  <!ENTITY icon SYSTEM "icon.svg" NDATA svg>
+]>
+<catalog version="v2" xmlns:p="urn:parts">
+  <p:item id="part-a" kind="used">A &amp; B &fragment;</p:item>
+  <p:item id="part-b" label="quoted &amp; escaped">
+    <p:tag key="x"/>
+    <![CDATA[raw ]]> text
+  </p:item>
+  <note xml:space="preserve">line one
+line two</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST envelope mode (fast|safe|debug) "safe">
+  <!ATTLIST header stamp CDATA #IMPLIED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!ENTITY % extra '
+    <!ATTLIST payload encoding (plain|base64) "plain">
+  '>
+  %extra;
+  <!ENTITY cr "&#x0D;">
+  <!ENTITY lf "&#x0A;">
+]>
+<envelope mode="debug">
+  <header stamp="&cr;&lf;"/>
+  <payload encoding="plain">before<chunk index="001">inside</chunk>after</payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- comment with --? no, this is ordinary text -->
+<?build stage="probe"?>
+<!DOCTYPE window [
+  <!ELEMENT window (title?, body)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (line|break|foreign)*>
+  <!ELEMENT line (#PCDATA|em)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT foreign ANY>
+  <!ATTLIST window xmlns CDATA #IMPLIED
+                  xml:lang NMTOKEN #IMPLIED>
+]>
+<window xmlns="urn:window" xml:lang="el">
+  <title>Αρχείο &amp; δοκιμή</title>
+  <body>
+    <line>alpha <em>βήτα</em> gamma</line>
+    <break/>
+    <foreign xmlns:q="urn:q"><q:item q:value="1"/></foreign>
+    <![CDATA[<not-an-element>&still-raw;</not-an-element>]]>
+    <line xml:space="default">tail</line>
+  </body>
+</window>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (entry+)>
+  <!ELEMENT entry (key, value?, detail*)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|ref)*>
+  <!ELEMENT detail EMPTY>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST registry xmlns:r CDATA #FIXED "urn:registry">
+  <!ATTLIST entry id ID #REQUIRED status (open|closed|hold) #IMPLIED>
+  <!ATTLIST key type (text|number|date) "text">
+  <!ATTLIST detail code CDATA #REQUIRED enabled (yes|no) "yes">
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quote "&#34;">
+]>
+<registry xmlns:r="urn:registry">
+  <entry id="e1" status="open">
+    <key type="number">42</key>
+    <value>value&nbsp;is <ref target="e2"/></value>
+    <detail code="A&amp;B"/>
+  </entry>
+  <entry id="e2">
+    <key>second</key>
+    <value>quoted &quote;word&quote;</value>
+    <detail code="Z" enabled="no"/>
+  </entry>
+</registry>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (node)>
+  <!ELEMENT node (node|leaf|data)*>
+  <!ELEMENT leaf EMPTY>
+  <!ELEMENT data (#PCDATA)>
+  <!ATTLIST node depth NMTOKEN #IMPLIED
+                 flag CDATA "0">
+  <!ATTLIST leaf id ID #IMPLIED>
+  <!ENTITY open "<data>">
+  <!ENTITY close "</data>">
+]>
+<stream>
+  <node depth="0" flag="1">
+    <node depth="1">
+      <leaf id="leaf-1"/>
+      <data>first &lt;payload&gt;</data>
+      <node depth="2">
+        <data><![CDATA[ ]]>middle</data>
+        <leaf/>
+      </node>
+    </node>
+    <node depth="1" flag="&quot;">
+      &open;generated text&close;
+      <data>last</data>
+    </node>
+  </node>
+</stream>
+```

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (event*)>
+  <!ELEMENT event (timestamp, payload)>
+  <!ATTLIST event type CDATA #REQUIRED>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ENTITY open "<fragment kind='generated'>">
+  <!ENTITY close "</fragment>">
+]>
+<?processing instruction-data?>
+<stream>
+  <event type="start">
+    <timestamp>2026-10-01T12:34:56.123456789Z</timestamp>
+    <payload>
+      &open;
+      <item key="a&amp;b" value="&quot;quoted&quot;"/>
+      <![CDATA[ raw ]]> 
+      &close;
+    </payload>
+  </event>
+  <event type="empty">
+    <timestamp/>
+    <payload><![CDATA[]]></payload>
+  </event>
+  <event type="mixed">
+    <timestamp>+00:00</timestamp>
+    <payload>left<!-- hidden -->middle<?pi x?>right</payload>
+  </event>
+</stream>

@@ -1,0 +1,110 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY company "Aster &amp; Oak">
+  <!ENTITY quote "He said &quot;hello&quot;">
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|note)*>
+  <!ELEMENT note (#PCDATA)>
+]>
+<catalog>
+  <section id="s1">
+    <title>&company; inventory</title>
+    <item>alpha<note>first</note>beta</item>
+    <item>&quote;</item>
+  </section>
+  <section id="s2">
+    <title>Second section</title>
+    <item>numeric &#x1F642; character</item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<env:Envelope xmlns:env="urn:example:envelope"
+              xmlns:m="urn:example:message"
+              env:version="2">
+  <?trace enabled="yes"?>
+  <env:Header>
+    <m:Token m:type="opaque"><![CDATA[a<b>&c]]></m:Token>
+    <!-- header comment with -- unusual text -->
+  </env:Header>
+  <env:Body>
+    <m:Request id="req-42">
+      <m:Value><![CDATA[
+        line one
+        ]]>tail<![CDATA[<raw/>]]></m:Value>
+      <m:Empty/>
+    </m:Request>
+  </env:Body>
+</env:Envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % common "(entry | branch)*">
+  <!ENTITY % declarations "<!ELEMENT report %common;>
+                            <!ELEMENT entry (#PCDATA)>
+                            <!ELEMENT branch (entry|branch)*>
+                            <!ATTLIST entry level NMTOKEN #IMPLIED>">
+  %declarations;
+  <!NOTATION txt SYSTEM "text/plain">
+  <!ENTITY payload SYSTEM "payload.txt" NDATA txt>
+]>
+<report>
+  <branch>
+    <entry level="0">root</entry>
+    <branch>
+      <entry level="1">child</entry>
+      <branch>
+        <entry level="2">leaf</entry>
+      </branch>
+    </branch>
+  </branch>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST row index NMTOKEN #IMPLIED>
+  <!ATTLIST cell x CDATA #IMPLIED y CDATA #IMPLIED>
+]>
+<matrix>
+  <row index="A">
+    <cell x="0" y="0">one</cell>
+    <cell x="1" y="0">two &amp; more</cell>
+  </row>
+  <row index="B">
+    <cell x="0" y="1">three</cell>
+    <cell x="1" y="1"><![CDATA[four
+five]]></cell>
+    <cell x="2" y="1">&#65;&#x42;&#x43;</cell>
+  </row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE broken [
+  <!ELEMENT broken (a, b?, c*)>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c EMPTY>
+  <!ATTLIST a key ID #IMPLIED key2 CDATA "default">
+]>
+<broken>
+  <a key="item-1" key2="unterminated &amp; value">text
+  <b>nested <c></b>
+  <c extra="x"/>
+  <c>
+</broken>
+```

@@ -1,0 +1,155 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE museum [
+  <!ELEMENT museum (wing+, note?)>
+  <!ELEMENT wing (label, artifact*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT artifact (#PCDATA|material|mark)*>
+  <!ELEMENT material (#PCDATA)>
+  <!ELEMENT mark EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST wing code ID #REQUIRED>
+  <!ATTLIST artifact ref IDREF #IMPLIED state (new|old|lost) "new">
+  <!ENTITY amp "&#38;">
+]>
+<!-- A collection containing mixed content and ID references. -->
+<museum>
+  <wing code="north">
+    <label>Early Instruments</label>
+    <artifact ref="piece-2" state="old">
+      Resonant wood <material>cedar</material>
+      <mark/> with an &amp; unusual grain.
+    </artifact>
+    <artifact ref="piece-1" state="new" xml:space="preserve"><material>brass</material> polished</artifact>
+  </wing>
+  <wing code="south">
+    <label>Fragments</label>
+    <artifact ref="piece-1">joined after restoration</artifact>
+  </wing>
+  <note>Inventory &amp; conservation records.</note>
+</museum>
+```
+
+```xml
+<?xml version="1.1"?>
+<ledger xmlns="urn:ledger:main"
+        xmlns:p="urn:ledger:person"
+        xmlns:x="urn:ledger:entry"
+        xml:lang="fr">
+  <?audit mode="incremental"?>
+  <period value="2026-09">
+    <p:operator p:id="op-7">
+      <p:name>Élodie</p:name>
+      <p:role xml:lang="en">reviewer</p:role>
+    </p:operator>
+    <entries>
+      <x:item x:key="A-01" status="open">
+        <x:amount currency="EUR">0012.40</x:amount>
+        <x:description><![CDATA[<not-an-element> & raw text]]></x:description>
+      </x:item>
+      <x:item x:key="A-02" status="closed" xmlns:x="urn:ledger:archived">
+        <x:amount currency="EUR">0</x:amount>
+        <x:description>archived <em xmlns="">record</em></x:description>
+      </x:item>
+    </entries>
+  </period>
+  <!-- A namespace is restored after a local default reset. -->
+  <summary xmlns="">total: 2</summary>
+</ledger>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE pipeline [
+  <!ENTITY % declarations "
+    <!ELEMENT pipeline (stage+, result?)>
+    <!ELEMENT stage (input, action, output?)>
+    <!ELEMENT input (#PCDATA)>
+    <!ELEMENT action (#PCDATA)>
+    <!ELEMENT output (#PCDATA|warning)*>
+    <!ELEMENT warning (#PCDATA)>
+    <!ELEMENT result (#PCDATA)>
+  ">
+  %declarations;
+  <!ATTLIST pipeline name CDATA #REQUIRED>
+  <!ATTLIST stage number NMTOKEN #REQUIRED>
+  <!ENTITY arrow "&#x2192;">
+  <!ENTITY quoted "&#34;quoted&#34;">
+]>
+<pipeline name="nightly">
+  <stage number="1">
+    <input>source.xml</input>
+    <action>parse &amp; normalize</action>
+    <output>intermediate &arrow; tree</output>
+  </stage>
+  <stage number="2">
+    <input>&quoted;</input>
+    <action>validate</action>
+    <output>
+      <warning>missing optional field</warning>
+      <warning>default applied</warning>
+    </output>
+  </stage>
+  <result>complete</result>
+</pipeline>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<?generator name="seed" revision="4"?>
+<conversation id="c-17" xml:space="default">
+  <turn speaker="alpha">
+    <text>First line
+      <break/>
+      second line.</text>
+    <metadata>
+      <flag enabled="true"/>
+      <flag enabled="false"/>
+    </metadata>
+  </turn>
+  <turn speaker="beta" xml:space="preserve">
+    <text>  leading spaces
+      <emphasis level="high">and nested emphasis</emphasis>
+      trailing spaces  </text>
+    <!-- The payload intentionally contains markup-looking characters. -->
+    <attachment media-type="text/plain"><![CDATA[
+      { "kind": "sample", "items": [1, 2, 3] }
+    ]]></attachment>
+  </turn>
+  <turn speaker="system">
+    <text><![CDATA[closing ] characters are ordinary here]]></text>
+    <?checkpoint id="last"?>
+  </turn>
+</conversation>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (directory, checksum)>
+  <!ELEMENT directory (folder|file)*>
+  <!ELEMENT folder (folder|file)*>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST archive generated CDATA #IMPLIED>
+  <!ATTLIST folder path CDATA #REQUIRED>
+  <!ATTLIST file name CDATA #REQUIRED size CDATA "0" hidden (yes|no) "no">
+]>
+<archive generated="2026-10-01T00:00:00Z">
+  <directory>
+    <folder path="/">
+      <file name=".keep" size="0" hidden="yes"/>
+      <folder path="/alpha">
+        <file name="one.bin" size="4096"/>
+        <file name="two.bin" size="17" hidden="no"/>
+      </folder>
+      <folder path="/beta">
+        <folder path="/beta/empty"/>
+        <file name="notes.txt" size="128"/>
+      </folder>
+    </folder>
+    <file name="manifest" size="3"/>
+  </directory>
+  <checksum>sha256:0000000000000000000000000000000000000000000000000000000000000000</checksum>
+</archive>
+```

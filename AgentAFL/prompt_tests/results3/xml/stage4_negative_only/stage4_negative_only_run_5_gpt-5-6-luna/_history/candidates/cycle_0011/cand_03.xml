@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns:w="urn:workflow" xmlns:task="urn:workflow:task" xmlns:env="urn:workflow:environment">
+  <w:pipeline id="nightly" enabled="true">
+    <w:inputs>
+      <w:input name="source" type="directory" optional="false"/>
+      <w:input name="mode" type="enum" default="strict">
+        <w:choice>strict</w:choice>
+        <w:choice>permissive</w:choice>
+      </w:input>
+    </w:inputs>
+    <w:stages>
+      <task:stage id="scan" retries="2">
+        <task:executor env="linux">
+          <env:variable name="LC_ALL">C.UTF-8</env:variable>
+          <env:variable name="FLAGS"><![CDATA[-Wall -Wextra --define=x>y]]></env:variable>
+        </task:executor>
+        <task:command><![CDATA[
+          find "$source" -type f -print0 | sort -z
+        ]]></task:command>
+        <task:artifacts>
+          <task:artifact pattern="**/*.xml" compression="none"/>
+        </task:artifacts>
+      </task:stage>
+      <task:stage id="publish" depends-on="scan">
+        <task:condition><![CDATA[status == "success" && count > 0]]></task:condition>
+        <task:command>emit-report --format="xml"</task:command>
+      </task:stage>
+    </w:stages>
+    <w:notifications>
+      <w:notify channel="email" when="failure">ops@example.invalid</w:notify>
+      <w:notify channel="log" when="always"/>
+    </w:notifications>
+  </w:pipeline>
+</workflow>

@@ -1,0 +1,120 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section id ID #REQUIRED xml:lang NMTOKEN "en">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (name, price?, note*)>
+  <!ATTLIST item code ID #IMPLIED status (new|used|retired) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+]>
+<catalog>
+  <section id="s1" xml:lang="en">
+    <title>Tools &amp; Parts</title>
+    <item code="i-7" status="used">
+      <name>Socket &lt;Set&gt;</name>
+      <price>19.95</price>
+      <note>Includes <emph>eight</emph> pieces.</note>
+    </item>
+    <item>
+      <name>Clamp</name>
+      <note>unfinished <![CDATA[markup <> & weirdness]]></note>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE message [
+  <!ENTITY greeting "Hello">
+  <!ENTITY who "world">
+  <!ENTITY phrase "&greeting;, &who;!">
+]>
+<message xmlns="urn:message" xmlns:x="urn:extra">
+  <header x:priority="high">
+    <subject>&phrase;</subject>
+  </header>
+  <body xml:space="preserve">
+    <![CDATA[
+      line one
+      ]]> 
+    <part kind="text">alpha&#x0A;beta</part>
+    <!-- a comment containing -- must not be split -->
+    <part kind="empty"/>
+  </body>
+</message>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ELEMENT root (branch|leaf)*>
+  <!ELEMENT branch (branch|leaf)*>
+  <!ELEMENT leaf EMPTY>
+  <!ATTLIST leaf key NMTOKEN #IMPLIED>
+]>
+<root xmlns:p="urn:p">
+  <branch>
+    <leaf key="a"/>
+    <branch>
+      <leaf p:key="b" xmlns:p="urn:shadow"/>
+      <branch/>
+    </branch>
+  </branch>
+  <leaf key="c"/>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (meta, data)>
+  <!ELEMENT meta (created, owner)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT data (entry+)>
+  <!ELEMENT entry (value, value?, flag?)>
+  <!ATTLIST entry id ID #REQUIRED>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+]>
+<report>
+  <meta>
+    <created>2026-10-01T00:00:00Z</created>
+    <owner>parser-test</owner>
+  </meta>
+  <data>
+    <entry id="e1"><value>001</value><value>002</value><flag/></entry>
+    <entry id="e2"><value><![CDATA[&amp; not expanded]]></value></entry>
+    <entry id="e3"><value>text&#13;more</value><flag /></entry>
+  </data>
+</report>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (sender, receiver, payload)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT receiver (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ENTITY local "inside">
+]>
+<envelope xmlns:a="urn:alpha" xmlns:b="urn:beta" xml:base="http://example.test/root/">
+  <sender>client</sender>
+  <receiver>server</receiver>
+  <payload>
+    <a:packet b:type="request" a:ref="urn:item">
+      <a:data><![CDATA[raw ]]> &local; <![CDATA[ data]]></a:data>
+      <b:metadata xmlns:b="urn:changed">
+        <b:item>one</b:item>
+        <b:item>two</b:item>
+      </b:metadata>
+    </a:packet>
+    <empty xmlns="urn:default"/>
+  </payload>
+</envelope>
+```

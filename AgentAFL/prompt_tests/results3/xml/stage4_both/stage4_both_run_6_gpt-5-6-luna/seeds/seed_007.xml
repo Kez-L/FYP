@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (widget*)>
+  <!ELEMENT widget (caption?, value, action*)>
+  <!ATTLIST widget
+            name ID #REQUIRED
+            enabled (true|false) "true"
+            role CDATA #IMPLIED>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT action EMPTY>
+  <!ATTLIST action
+            type NOTATION #REQUIRED
+            ref IDREF #IMPLIED
+            payload CDATA #IMPLIED>
+  <!NOTATION json SYSTEM "application/json">
+  <!NOTATION text SYSTEM "text/plain">
+]>
+<dashboard>
+  <widget name="cpu" role="metric">
+    <caption>CPU &lt;load&gt;</caption>
+    <value>73%</value>
+    <action type="text" payload="refresh"/>
+  </widget>
+  <widget name="raw" enabled="false">
+    <value><![CDATA[{"x": [1, 2, 3], "ok": true}]]></value>
+    <action type="json" ref="cpu"/>
+    <action type="text" payload="archive &amp; rotate"/>
+  </widget>
+</dashboard>

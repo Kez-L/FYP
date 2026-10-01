@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE dossier [
+  <!ENTITY open "<section type='generated'>">
+  <!ENTITY close "</section>">
+  <!ENTITY nested "alpha &amp; beta">
+  <!ELEMENT dossier (preamble, section+, appendix)>
+  <!ELEMENT preamble (#PCDATA|remark)*>
+  <!ELEMENT section (heading, paragraph*, table?)>
+  <!ATTLIST section type CDATA "normal">
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|remark|term)*>
+  <!ELEMENT remark (#PCDATA)>
+  <!ELEMENT term (#PCDATA)>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT appendix (item*)>
+  <!ELEMENT item (#PCDATA)>
+]>
+<dossier>
+  <preamble>
+    Intro <remark priority="high">without a declared attribute</remark>
+    &nested;
+  </preamble>
+  <section type="manual">
+    <heading>Literal markup</heading>
+    <paragraph>Use <term>escape</term> rules<remark>!</remark>.</paragraph>
+    <paragraph><![CDATA[
+      line one
+      ]]><![CDATA[line two]]></paragraph>
+    <table>
+      <row><cell>r1c1</cell><cell>r1c2</cell></row>
+      <row><cell>r2c1 &amp; more</cell><cell>r2c2</cell><cell/></row>
+    </table>
+  </section>
+  &open;
+    <heading>Entity section</heading>
+    <paragraph>Created through replacement text.</paragraph>
+  &close;
+  <appendix>
+    <item>zero</item>
+    <item>one&#x0A;two</item>
+  </appendix>
+</dossier>

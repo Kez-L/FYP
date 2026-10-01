@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (name, data, checksum?)>
+  <!ATTLIST entry kind CDATA #REQUIRED timestamp CDATA #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (line|blob|empty)>
+  <!ELEMENT line (#PCDATA)>
+  <!ELEMENT blob (#PCDATA)>
+  <!ELEMENT empty EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ENTITY amp "&amp;">
+  <!ENTITY nested "A &amp; B &amp; C">
+]>
+<archive>
+  <entry kind="text" timestamp="1970-01-01T00:00:00Z">
+    <name>first</name>
+    <data>
+      <line>one&#13;&#10;two</line>
+      <line>&nested;</line>
+    </data>
+    <checksum><![CDATA[deadbeef]]></checksum>
+  </entry>
+  <entry kind="binary">
+    <name>second</name>
+    <data><blob>&amp; &lt; &gt; &quot; &apos;</blob></data>
+  </entry>
+</archive>

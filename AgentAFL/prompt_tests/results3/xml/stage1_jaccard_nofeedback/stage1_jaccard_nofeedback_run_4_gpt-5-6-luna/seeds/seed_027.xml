@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (sender, recipient+, subject?, content)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT content (#PCDATA|quote|attachment)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST message id ID #IMPLIED priority (low|normal|high) "normal">
+  <!ATTLIST recipient type (to|cc|bcc) "to">
+  <!ATTLIST attachment filename CDATA #REQUIRED media NMTOKEN #REQUIRED size NMTOKEN #IMPLIED>
+  <!ENTITY greeting "Hello, &amp; welcome!">
+  <!ENTITY qmark "&#x3F;">
+]>
+<message id="m-001" priority="high">
+  <sender>sender@example.test</sender>
+  <recipient type="to">receiver@example.test</recipient>
+  <recipient type="cc">archive@example.test</recipient>
+  <subject>&greeting; &qmark;</subject>
+  <content>
+    Start
+    <quote>Outer <quote>inner &lt;quoted&gt; text</quote> tail</quote>
+    <attachment filename="a&amp;b.bin" media="application/octet-stream" size="0"/>
+    End
+  </content>
+</message>

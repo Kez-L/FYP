@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (profile, profile*)>
+  <!ELEMENT profile (property*)>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST profile name NMTOKEN #REQUIRED inherits NMTOKEN #IMPLIED>
+  <!ATTLIST property key NMTOKEN #REQUIRED value CDATA #IMPLIED locked (true|false) "false">
+  <!ENTITY % switches '<!ATTLIST property scope (local|global|session) "local">'>
+  %switches;
+  <![INCLUDE[
+    <!ENTITY default-value "unset">
+  ]]>
+  <![IGNORE[
+    <!ELEMENT ignored (anything)>
+    <!ATTLIST ignored obsolete CDATA #IMPLIED>
+  ]]>
+]>
+<configuration>
+  <profile name="base">
+    <property key="timeout" value="30" scope="global"/>
+    <property key="region" value="&default-value;"/>
+  </profile>
+  <profile name="child" inherits="base">
+    <property key="debug" value="true" locked="true"/>
+    <property key="temporary" scope="session"/>
+  </profile>
+</configuration>

@@ -1,0 +1,137 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, collection)>
+  <!ELEMENT header (title, created, checksum)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT collection (item+)>
+  <!ELEMENT item (name, description, metadata?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST archive xmlns CDATA #IMPLIED version NMTOKEN #REQUIRED>
+  <!ATTLIST item key ID #REQUIRED ref IDREF #IMPLIED state (new|old|held) "new">
+  <!ATTLIST metadata source CDATA #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY marker "&#x2063;">
+]>
+<archive xmlns="urn:example:archive" version="7">
+  <header>
+    <title>Index &amp; &lt;catalog&gt; &nbsp;</title>
+    <created>2026-10-01T12:34:56Z</created>
+    <checksum><![CDATA[sha256:5f70d2c8<raw>&binary]]></checksum>
+  </header>
+  <collection>
+    <item key="i001" state="new">
+      <name>Alpha</name>
+      <description>first &marker; entry</description>
+      <metadata source="scanner"/>
+    </item>
+    <item key="i002" ref="i001" state="held">
+      <name><![CDATA[Beta ]]> &lt;revision&gt;</name>
+      <description>linked record</description>
+    </item>
+  </collection>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:measurement xmlns:r="urn:telemetry" xmlns:u="urn:units" xmlns:x="urn:extra">
+  <r:device x:id="node-17" x:class="prototype">
+    <r:sample time="2026-10-01T00:00:00.000000Z" u:scale="µs">
+      <r:value u:name="temperature" u:symbol="°C">-273.149999999</r:value>
+      <r:value u:name="pressure" u:symbol="Pa" nil="true"/>
+      <r:payload><![CDATA[
+        ]]>]]>&amp;<![CDATA[<fragment a="b"/>]]>
+      </r:payload>
+    </r:sample>
+    <r:sample time="2026-10-01T00:00:00Z">
+      <r:value u:name="voltage" u:symbol="V">NaN</r:value>
+      <r:note xml:lang="zh-Hant" xml:space="preserve">  前後空白  </r:note>
+    </r:sample>
+  </r:device>
+  <?telemetry mode="burst"?>
+</r:measurement>
+```
+
+```xml
+<!DOCTYPE vault [
+  <!ENTITY % declarations '
+    <!ELEMENT vault (record*)>
+    <!ELEMENT record (key, blob, link*)>
+    <!ELEMENT key (#PCDATA)>
+    <!ELEMENT blob (#PCDATA)>
+    <!ELEMENT link EMPTY>
+    <!ATTLIST record uid CDATA #IMPLIED>
+    <!ATTLIST link target CDATA #REQUIRED kind CDATA "soft">
+  '>
+  %declarations;
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+]>
+<vault>
+  <record uid="α-01">
+    <key>one</key>
+    <blob>&left;opaque&amp;encoded&right;</blob>
+    <link target="α-02"/>
+    <link target="missing" kind="hard"/>
+  </record>
+  <record uid="α-02">
+    <key>two</key>
+    <blob>line&#x0A;break&#x0D;carriage&#x09;tab</blob>
+  </record>
+</vault>
+```
+
+```xml
+<?xml version="1.1"?>
+<package xml:base="urn:pkg:root/">
+  <manifest>
+    <entry href="a/../b/item.xml" media-type="application/xml"/>
+    <entry href="./%E2%82%AC.txt" media-type="text/plain"/>
+    <entry href="urn:x-test:fragment#xpointer(/one/two[3])" media-type="application/octet-stream"/>
+  </manifest>
+  <content>
+    <section id="s0">
+      <item xml:id="i0">zero</item>
+      <section id="s1">
+        <item xml:id="i1" xml:lang="en-US">one</item>
+        <section id="s2">
+          <item xml:id="i2" xml:space="default"><![CDATA[three < four > two]]></item>
+        </section>
+      </section>
+    </section>
+  </content>
+  <processing xml:space="preserve">
+    <instruction><?target data with ? and > characters?></instruction>
+    <!-- comment containing --? -->
+  </processing>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (chunk, terminator)>
+  <!ELEMENT chunk (#PCDATA|part|gap)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT gap EMPTY>
+  <!ELEMENT terminator EMPTY>
+  <!ATTLIST chunk count CDATA #REQUIRED>
+  <!ATTLIST part n NMTOKEN #IMPLIED>
+  <!ATTLIST gap width NMTOKEN #REQUIRED>
+  <!ATTLIST terminator code CDATA #FIXED "0x00">
+]>
+<stream count="0000000000000000000000000000000000000000000000001">
+  <chunk count="3">prefix
+    <part n="1">A&amp;B</part>
+    <gap width="18446744073709551616"/>
+    <part n="2"><![CDATA[<not-an-element>]]></part>
+    suffix
+  </chunk>
+  <terminator code="0x00"/>
+</stream>
+```

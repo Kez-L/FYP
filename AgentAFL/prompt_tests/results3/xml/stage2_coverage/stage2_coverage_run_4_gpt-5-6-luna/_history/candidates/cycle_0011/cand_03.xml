@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload, signature?)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+    path CDATA #REQUIRED
+    size NMTOKEN #IMPLIED
+    checksum CDATA #IMPLIED
+  >
+  <!ELEMENT payload (chunk*)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk
+    number NMTOKEN #REQUIRED
+    encoding (plain|base64|hex) "plain"
+  >
+  <!ELEMENT signature (#PCDATA)>
+  <!ENTITY lf "&#xA;">
+  <![IGNORE[
+    <!ELEMENT obsolete EMPTY>
+    <!ATTLIST obsolete reason CDATA #IMPLIED>
+  ]]>
+  <![INCLUDE[
+    <!ENTITY % extra "format CDATA 'binary'">
+    <!ATTLIST package %extra;>
+  ]]>
+]>
+<package format="binary">
+  <manifest>
+    <file path="a&amp;b.txt" size="17" checksum="sha256:00"/>
+    <file path="nested/item.bin" size="0"/>
+  </manifest>
+  <payload>
+    <chunk number="1" encoding="plain">first&lf;second</chunk>
+    <chunk number="2" encoding="base64"><![CDATA[AAEC/f4=]]></chunk>
+  </payload>
+  <signature>-----BEGIN DATA-----
+abc
+-----END DATA-----</signature>
+</package>

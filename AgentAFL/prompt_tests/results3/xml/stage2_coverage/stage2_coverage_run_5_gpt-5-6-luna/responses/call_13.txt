@@ -1,0 +1,176 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|price|note)*>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST section code ID #REQUIRED status (open|closed|draft) "open">
+  <!ATTLIST item sku NMTOKEN #IMPLIED featured (yes|no) "no">
+  <!ENTITY currency "€">
+  <!ENTITY mark "<em>special</em>">
+]>
+<catalog>
+  <section code="s1" status="draft">
+    <title>Seasonal &amp; Miscellaneous</title>
+    <item sku="A_01" featured="yes">
+      citrus
+      <price>12 &currency;</price>
+      <note>limited &mark;</note>
+    </item>
+    <item sku="B-02">
+      plain text
+      <price>0</price>
+    </item>
+  </section>
+  <section code="s2">
+    <title>Empty inventory</title>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, trailer?)>
+  <!ELEMENT header (from, to, subject)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (paragraph|quote|br|list)*>
+  <!ELEMENT paragraph (#PCDATA|em|strong|br)*>
+  <!ELEMENT quote (#PCDATA|paragraph)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT list (entry+)>
+  <!ELEMENT entry (#PCDATA|em)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST message priority (low|normal|high) "normal">
+  <!ATTLIST quote source CDATA #IMPLIED>
+]>
+<message priority="high">
+  <header>
+    <from>alpha@example.test</from>
+    <to>beta@example.test</to>
+    <subject>Line &quot;one&quot; &amp; line two</subject>
+  </header>
+  <body>
+    <paragraph>Hello <em>there</em><br/>This is <strong>mixed</strong> content.</paragraph>
+    <quote source="archive">
+      <paragraph>Nested quotation.</paragraph>
+      <paragraph>Second <em>fragment</em>.</paragraph>
+    </quote>
+    <list>
+      <entry>first</entry>
+      <entry>second &apos;entry&apos;</entry>
+    </list>
+  </body>
+  <trailer>done</trailer>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE world [
+  <!ELEMENT world (region*)>
+  <!ELEMENT region (label, city*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT city (name, landmark*, population?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT landmark (#PCDATA)>
+  <!ELEMENT population (#PCDATA)>
+  <!ATTLIST region id ID #REQUIRED>
+  <!ATTLIST city class (capital|port|village) "village">
+  <!NOTATION map SYSTEM "application/x-map">
+  <!ENTITY mapfile SYSTEM "maps/current.map" NDATA map>
+]>
+<world>
+  <region id="north">
+    <label xml:lang="en">Northern &amp; Islands</label>
+    <city class="capital">
+      <name>Northport</name>
+      <landmark>Old Gate</landmark>
+      <landmark>River &lt;Bridge&gt;</landmark>
+      <population>1048576</population>
+    </city>
+    <city class="village">
+      <name>Snowfield</name>
+    </city>
+  </region>
+  <region id="south">
+    <label xml:lang="fr">Région méridionale</label>
+    <city class="port">
+      <name>Baie-sur-Mer</name>
+      <population>00042</population>
+    </city>
+  </region>
+</world>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ELEMENT config (defaults, profile+)>
+  <!ELEMENT defaults (option*)>
+  <!ELEMENT profile (inherits?, option*, path*)>
+  <!ELEMENT inherits EMPTY>
+  <!ELEMENT option (#PCDATA)>
+  <!ELEMENT path (#PCDATA)>
+  <!ATTLIST profile name ID #REQUIRED>
+  <!ATTLIST option key NMTOKEN #REQUIRED enabled (true|false) "true">
+  <!ATTLIST path kind (input|output|cache) #REQUIRED>
+  <!ATTLIST inherits ref IDREF #REQUIRED>
+  <!ENTITY nl "&#10;">
+  <!ENTITY tab "&#9;">
+]>
+<config>
+  <defaults>
+    <option key="verbose" enabled="false">off</option>
+    <option key="retries">3</option>
+  </defaults>
+  <profile name="base">
+    <option key="format">xml&nl;compact</option>
+    <path kind="cache">/var/tmp/app</path>
+  </profile>
+  <profile name="child">
+    <inherits ref="base"/>
+    <option key="format">pretty&tab;utf8</option>
+    <option key="escaped">a&lt;b&gt;c&amp;d</option>
+    <path kind="input">./data/</path>
+    <path kind="output">./out/</path>
+  </profile>
+</config>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA|value)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST matrix units CDATA #IMPLIED>
+  <!ATTLIST row index NMTOKEN #REQUIRED>
+  <!ATTLIST cell type (text|number|empty) "text" colspan NMTOKEN "1">
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+]>
+<matrix units="mixed">
+  <row index="0">
+    <cell type="text">name</cell>
+    <cell type="number">42</cell>
+    <cell type="empty"/>
+  </row>
+  <row index="1">
+    <cell colspan="2">alpha <value>&left;beta&right;</value></cell>
+  </row>
+  <row index="2">
+    <cell type="text">line one&#x0A;line two</cell>
+    <cell type="number">-0.000</cell>
+    <cell type="text"><![CDATA[<unparsed>&still raw;</unparsed>]]></cell>
+  </row>
+</matrix>
+```

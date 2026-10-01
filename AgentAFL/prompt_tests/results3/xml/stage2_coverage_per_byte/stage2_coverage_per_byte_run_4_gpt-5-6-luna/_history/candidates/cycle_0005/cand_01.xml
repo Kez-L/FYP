@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ENTITY % declarations "<!ATTLIST packet mode CDATA #IMPLIED checksum NMTOKEN #IMPLIED>">
+  %declarations;
+  <!ELEMENT packet (header, payload, trailer)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload ANY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST header version NMTOKEN #REQUIRED>
+  <!ENTITY left "L&lt;">
+  <!ENTITY right "&gt;R">
+]>
+<packet mode="stream" checksum="a1_b2">
+  <header version="07"/>
+  <payload>
+    <chunk xmlns="urn:chunk" id="x">one</chunk>
+    <chunk xmlns="urn:chunk" id="y"><![CDATA[<&]]></chunk>
+    &left;&right;
+  </payload>
+  <trailer>done&#13;&#10;now</trailer>
+</packet>

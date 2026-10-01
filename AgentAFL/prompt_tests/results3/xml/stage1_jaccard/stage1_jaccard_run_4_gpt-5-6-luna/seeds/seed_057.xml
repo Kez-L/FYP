@@ -1,0 +1,33 @@
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder*)>
+  <!ELEMENT folder (folder|record|comment)*>
+  <!ELEMENT record (name, blob?, checksum)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT blob (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT comment (#PCDATA)>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ATTLIST record key ID #IMPLIED>
+  <!ENTITY nl "&#10;">
+  <!ENTITY quote "&quot;">
+]>
+<archive>
+  <folder name="root">
+    <!-- a comment with -- forbidden-looking punctuation: - - -->
+    <record key="r1">
+      <name>alpha&amp;omega</name>
+      <blob><![CDATA[
+        00112233445566778899
+        <not-an-element/>
+      ]]></blob>
+      <checksum algorithm="sha256">&quote;deadbeef&quote;</checksum>
+    </record>
+    <folder name="nested">
+      <comment>line one&nl;line two</comment>
+      <record>
+        <name>empty payload</name>
+        <checksum>0000</checksum>
+      </record>
+    </folder>
+  </folder>
+</archive>

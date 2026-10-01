@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE config [
+  <!ENTITY % feature "INCLUDE">
+  <![%feature;[
+    <!ELEMENT config (meta?, setting*, payload)>
+    <!ELEMENT meta EMPTY>
+    <!ATTLIST meta
+      generated CDATA #IMPLIED
+      mode (safe|fast|diagnostic) "safe">
+  ]]>
+  <!ELEMENT setting (value|list|map)>
+  <!ATTLIST setting name NMTOKEN #REQUIRED>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT list (entry*)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ELEMENT map (pair*)>
+  <!ELEMENT pair (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk|![CDATA[not-a-declaration]])*>
+  <!ELEMENT chunk ANY>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<config>
+  <meta generated="yes" mode="diagnostic"/>
+  <setting name="threshold"><value>0&amp;1</value></setting>
+  <setting name="paths">
+    <list><entry>/tmp</entry><entry>&left;cache&right;</entry></list>
+  </setting>
+  <setting name="attributes">
+    <map><pair><key>empty</key><value/></pair></map>
+  </setting>
+  <payload>start<chunk><![CDATA[x<y && z>q]]></chunk>end</payload>
+</config>

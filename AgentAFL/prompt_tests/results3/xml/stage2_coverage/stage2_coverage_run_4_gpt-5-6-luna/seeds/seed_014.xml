@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (namespace*, alias*, item*)>
+  <!ELEMENT namespace EMPTY>
+  <!ELEMENT alias EMPTY>
+  <!ELEMENT item (description?, value*)>
+  <!ELEMENT description (#PCDATA)>
+  <!ELEMENT value (#PCDATA|ref)*>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST namespace prefix NMTOKEN #REQUIRED uri CDATA #REQUIRED>
+  <!ATTLIST alias name NMTOKEN #REQUIRED target IDREF #IMPLIED>
+  <!ATTLIST item id ID #REQUIRED type (text|number|flag) "text">
+  <!ATTLIST value key NMTOKEN #REQUIRED>
+  <!ATTLIST ref idref IDREF #REQUIRED>
+]>
+<registry xmlns:p="urn:primary" xmlns:q="urn:secondary">
+  <namespace prefix="p" uri="urn:primary"/>
+  <namespace prefix="q" uri="urn:secondary"/>
+  <alias name="main" target="item-1"/>
+  <item id="item-1" type="text">
+    <description>mixed <ref idref="item-2"/> content &quot;here&quot;</description>
+    <value key="p:title">A</value>
+    <value key="q:note"><![CDATA[B]]></value>
+  </item>
+  <item id="item-2" type="number">
+    <value key="digits">00123</value>
+  </item>
+</registry>

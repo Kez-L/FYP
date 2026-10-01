@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (widget*)>
+  <!ELEMENT widget (caption?, value, config?)>
+  <!ATTLIST widget name CDATA #REQUIRED enabled (true|false) "true">
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT config ANY>
+]>
+<dashboard xmlns:q="urn:query" xmlns:ui="urn:ui">
+  <widget name="cpu" enabled="true">
+    <caption xml:space="preserve"> CPU load </caption>
+    <value q:format="percent">87%</value>
+    <config ui:collapsed="false">
+      <ui:option key="window">5m</ui:option>
+      <ui:option key="threshold"><![CDATA[> 80 && < 95]]></ui:option>
+    </config>
+  </widget>
+  <widget name="disk" enabled="false">
+    <value q:format="bytes">1099511627776</value>
+  </widget>
+  <widget name="message">
+    <caption>status</caption>
+    <value>ready</value>
+    <config>
+      <q:expression>(load + queue) / 2</q:expression>
+      <q:argument name="queue" value="4"/>
+    </config>
+  </widget>
+</dashboard>

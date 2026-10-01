@@ -1,0 +1,21 @@
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (sender, receiver, payload)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT receiver (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ENTITY local "inside">
+]>
+<envelope xmlns:a="urn:alpha" xmlns:b="urn:beta" xml:base="http://example.test/root/">
+  <sender>client</sender>
+  <receiver>server</receiver>
+  <payload>
+    <a:packet b:type="request" a:ref="urn:item">
+      <a:data><![CDATA[raw ]]> &local; <![CDATA[ data]]></a:data>
+      <b:metadata xmlns:b="urn:changed">
+        <b:item>one</b:item>
+        <b:item>two</b:item>
+      </b:metadata>
+    </a:packet>
+    <empty xmlns="urn:default"/>
+  </payload>
+</envelope>

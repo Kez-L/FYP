@@ -1,0 +1,46 @@
+<?xml version="1.1"?>
+<!DOCTYPE message [
+  <!ELEMENT message (routing, headers, body)>
+  <!ELEMENT routing (source, destination, hop*)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT destination (#PCDATA)>
+  <!ELEMENT hop EMPTY>
+  <!ATTLIST hop name CDATA #REQUIRED count NMTOKEN "0">
+  <!ELEMENT headers (header*)>
+  <!ELEMENT header (#PCDATA)>
+  <!ATTLIST header key NMTOKEN #REQUIRED>
+  <!ELEMENT body (paragraph|quote|attachment)*>
+  <!ELEMENT paragraph (#PCDATA|link|br)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href URI #REQUIRED>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT quote (paragraph+)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment filename CDATA #REQUIRED media CDATA #IMPLIED size NMTOKEN #IMPLIED>
+  <!ENTITY left "&#x27;">
+  <!ENTITY right "&#x2019;">
+]>
+<message>
+  <routing>
+    <source>node:left</source>
+    <destination>node:right</destination>
+    <hop name="gateway-1" count="000"/>
+    <hop name="gateway-2" count="18446744073709551616"/>
+  </routing>
+  <headers>
+    <header key="X_EMPTY"></header>
+    <header key="X_TEXT">a&amp;b&lt;c&gt;d&quot;e&apos;f</header>
+    <header key="X_DUPLICATE">first</header>
+    <header key="X_DUPLICATE">second</header>
+  </headers>
+  <body>
+    <paragraph>Before<link href="urn:x:a%20b?z=1&amp;q=2">click</link><br/>after.</paragraph>
+    <quote>
+      <paragraph>&left;quoted&right; text</paragraph>
+      <paragraph><![CDATA[line one
+line two
+line three]]></paragraph>
+    </quote>
+    <attachment filename="a&#x0D;&#x0A;b.bin" media="application/octet-stream" size=""/>
+  </body>
+</message>

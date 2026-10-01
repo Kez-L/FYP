@@ -1,0 +1,33 @@
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, checksum)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload (record*)>
+  <!ELEMENT record (key, data, data?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT data (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST header
+    sent CDATA #REQUIRED
+    urgent (yes|no) "no">
+  <!ATTLIST record
+    number NMTOKEN #REQUIRED>
+  <!ENTITY open "[[">
+  <!ENTITY close "]]">
+]>
+<envelope>
+  <header sent="2026-10-01T00:00:00Z" urgent="yes"/>
+  <payload>
+    <record number="0001">
+      <key>alpha</key>
+      <data>&open;<part>inside</part>&close;</data>
+    </record>
+    <record number="2">
+      <key>beta</key>
+      <data><![CDATA[ text ]]> <part>fragment &amp; fragment</part> tail</data>
+      <data/>
+    </record>
+  </payload>
+  <checksum>00ff:&#x0D;&#x0A;ab12</checksum>
+</envelope>

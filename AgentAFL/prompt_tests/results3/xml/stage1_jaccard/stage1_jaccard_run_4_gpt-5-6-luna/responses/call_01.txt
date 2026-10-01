@@ -1,0 +1,155 @@
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE catalog [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "blob.dat" NDATA bin>
+  <!ELEMENT catalog (entry+, note?)>
+  <!ELEMENT entry (title, description, attachment?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST entry
+    code ID #REQUIRED
+    state (new|used|archived) "new"
+    rank NMTOKENS #IMPLIED>
+  <!ATTLIST attachment
+    href ENTITY #REQUIRED
+    checksum CDATA #IMPLIED>
+  <!ELEMENT note ANY>
+]>
+<catalog>
+  <entry code="e-1" rank="high urgent">
+    <title>Inventory</title>
+    <description>Marked <em>fragile</em><br/>and sealed.</description>
+    <attachment href="payload" checksum="00ff"/>
+  </entry>
+  <entry code="e-2" state="archived">
+    <title>Résumé &#xE9;</title>
+    <description><![CDATA[raw ]]> text &amp; more</description>
+  </entry>
+  <note>unstructured <em>annotation</em></note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (panel|separator)*>
+  <!ELEMENT panel (heading, metric*, footer?)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT metric EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ATTLIST panel
+    id ID #IMPLIED
+    visible (yes|no) "yes"
+    xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST metric
+    name CDATA #REQUIRED
+    value CDATA #IMPLIED
+    trend (up|down|flat) #IMPLIED>
+  <!ATTLIST separator style CDATA "dashed">
+]>
+<dashboard xml:base="urn:dash:root" xml:lang="fr">
+  <panel id="main" xml:lang="en" visible="no">
+    <heading>Quarterly <span>summary</span></heading>
+    <metric name="users" value="42" trend="up"/>
+    <metric name="errors" value="" trend="flat"></metric>
+    <footer xml:space="preserve">  trailing spaces  </footer>
+  </panel>
+  <separator style="double"/>
+  <panel id="secondary">
+    <heading><![CDATA[<not-an-element>]]></heading>
+    <metric name="latency"/>
+  </panel>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ENTITY % common '
+    <!ELEMENT record (key, value, extra?)>
+    <!ELEMENT key (#PCDATA)>
+    <!ELEMENT value (#PCDATA)>
+    <!ELEMENT extra (#PCDATA)>
+    <!ATTLIST record xmlns CDATA #IMPLIED>
+  '>
+  %common;
+  <!ENTITY % switches '
+    <![%feature;[
+      <!ATTLIST record enabled (true|false) "true">
+    ]]>
+  '>
+  <!ENTITY % feature "feature">
+  %switches;
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+]>
+<archive>
+  <record xmlns="urn:records" enabled="false">
+    <key>A&amp;B</key>
+    <value>one</value>
+    <extra>&lt;escaped&gt; &quot;quoted&quot;</extra>
+  </record>
+  <record xmlns="">
+    <key>two</key>
+    <value><![CDATA[three]]></value>
+  </record>
+</archive>
+```
+
+```xml
+<message>
+  <header a="1" b="2" c="3">
+    <?processing instruction?>
+    <!-- comment with -- no, this is safe -->
+  </header>
+  <body>
+    <![CDATA[
+      <fake>
+        &not-expanded;
+      </fake>
+    ]]>
+    &amp; &#65; &#x41;
+  </body>
+  <tail>
+    <item/>
+    <item key="value" />
+  </tail>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST row index CDATA #REQUIRED>
+  <!ATTLIST cell
+    column NMTOKEN #REQUIRED
+    kind (integer|decimal|string) "string">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quote "&quot;">
+]>
+<matrix>
+  <row index="0">
+    <cell column="a" kind="integer">000</cell>
+    <cell column="b" kind="decimal">-0.00</cell>
+    <cell column="c">alpha&nbsp;beta</cell>
+  </row>
+  <row index="1">
+    <cell column="a" kind="integer">+17</cell>
+    <cell column="b" kind="decimal">3.14159</cell>
+    <cell column="c"><![CDATA[semi & entity]]></cell>
+  </row>
+  <row index="2">
+    <cell column="a" kind="string">line
+break</cell>
+    <cell column="b" kind="string">&quote;quoted&quote;</cell>
+  </row>
+</matrix>
+```

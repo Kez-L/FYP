@@ -1,0 +1,107 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+)>
+  <!ELEMENT entry (title, body, keyword*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (#PCDATA|em|ref)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ATTLIST entry id ID #REQUIRED status (draft|final|sealed) "draft">
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY company "Aster &amp; Quill">
+]>
+<archive>
+  <entry id="e1" status="final">
+    <title>&company; handbook</title>
+    <body>Read <em>carefully</em> before following <ref target="e1"/>.</body>
+    <keyword>XML</keyword>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?processing instruction-data?>
+<root xmlns="urn:alpha" xmlns:a="urn:alpha:item" xmlns:b="urn:beta">
+  <!-- namespace transitions and qualified attributes -->
+  <a:section a:code="X-7" b:state="open">
+    leading <b:label xml:space="preserve">  padded text  </b:label>
+    <a:section xmlns="urn:nested" xmlns:a="">
+      <node kind="leaf"/>
+      <node kind="branch"><child/></node>
+    </a:section>
+    trailing
+  </a:section>
+  <?checkpoint id="42"?>
+</root>
+```
+
+```xml
+<?xml version="1.1"?>
+<transcript xml:space="preserve">
+  <line speaker="α">Καλημέρα &#x1F600; café — naïve</line>
+  <line speaker="β">left&nbsp;right &#160; &#x20AC; &#x4E2D;</line>
+  <line speaker="γ"><![CDATA[raw <angle> & ampersand]]></line>
+  <line speaker="δ"/>
+  <metadata>
+    <flag enabled="1">true</flag>
+    <value>0e-10</value>
+  </metadata>
+</transcript>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % itemattrs 'code CDATA #REQUIRED class NMTOKEN "misc"'>
+  <!ELEMENT catalog (item*, note?)>
+  <!ELEMENT item (name, price, description?)>
+  <!ATTLIST item %itemattrs;>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT description (#PCDATA|strong|br)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY euro "&#x20AC;">
+]>
+<catalog>
+  <item code="A-001" class="tool">
+    <name>Compass</name>
+    <price>19.95 &euro;</price>
+    <description>Small <strong>brass</strong> instrument<br/>for travel.</description>
+  </item>
+  <item code="B-002">
+    <name>Map</name>
+    <price>4.50 &euro;</price>
+  </item>
+  <note>Prices include tax.</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow>
+  <step id="start" type="input">
+    <next to="validate"/>
+    <payload>
+      <field name="message">hello</field>
+      <field name="empty"></field>
+    </payload>
+  </step>
+  <step id="validate" type="transform">
+    <when test="count(items) &gt; 0 and ready = &quot;yes&quot;"/>
+    <mapping from="source" to="destination">
+      <rule priority="10">
+        <match pattern="a/*"/>
+        <replace with="b"/>
+      </rule>
+    </mapping>
+  </step>
+  <step id="finish" type="output">
+    <result><![CDATA[done & safe]]></result>
+  </step>
+</workflow>
+```

@@ -1,0 +1,130 @@
+```xml
+<?xml version="1.1" standalone="yes"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section id ID #REQUIRED xml:lang CDATA #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|link|emph)*>
+  <!ATTLIST item code NMTOKEN #REQUIRED status (new|used|retired) "new">
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href URI #REQUIRED>
+  <!ELEMENT emph (#PCDATA)>
+  <!ENTITY company "A &amp; B Research">
+  <!ENTITY note "line one&#x0A;line two">
+]>
+<catalog>
+  <section id="s-α" xml:lang="en">
+    <title>&company; &amp; archives</title>
+    <item code="A_01">plain <emph>mixed</emph> text<link href="urn:x-example:a?x=1&amp;y=2">reference</link></item>
+    <item code="B-02" status="retired">&note;</item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (point|path|metadata)*>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST point lat CDATA #REQUIRED lon CDATA #REQUIRED label CDATA #IMPLIED>
+  <!ELEMENT path (point+)>
+  <!ATTLIST path closed (yes|no) "no">
+  <!ELEMENT metadata (#PCDATA)>
+]>
+<map xmlns="urn:geo:example" xmlns:g="urn:geo:meta" g:revision="0">
+  <metadata>coordinates use decimal degrees &lt;west/east&gt;</metadata>
+  <point lat="-90.000000" lon="180.000000" label="edge"/>
+  <path closed="yes">
+    <point lat="0" lon="0"/>
+    <point lat="1.234567890123456789" lon="-179.999999999999"/>
+    <point lat="0" lon="0"/>
+  </path>
+  <!-- comment containing -- is not allowed; this one is safe -->
+  <?projection value="EPSG:4326"?>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE records [
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (key, value, flag?)>
+  <!ATTLIST record id ID #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST flag enabled (true|false) "true">
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<records>
+  <record id="r1">
+    <key>zero</key>
+    <value>before<chunk><![CDATA[raw <tag> & data]]></chunk>after</value>
+  </record>
+  <record>
+    <key>symbols</key>
+    <value>&left;quoted&right; &#x1F642; &#x09; tab</value>
+    <flag enabled="false"/>
+  </record>
+  <record id="r3">
+    <key><![CDATA[key]]></key>
+    <value/>
+  </record>
+</records>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file path CDATA #REQUIRED size CDATA #REQUIRED mode CDATA "0644">
+  <!ELEMENT data (block*)>
+  <!ELEMENT block (#PCDATA)>
+  <!ATTLIST block index NMTOKEN #REQUIRED compression (none|gzip|zstd) "none">
+]>
+<package xmlns:p="urn:package:extension">
+  <manifest>
+    <file path="dir/./α.txt" size="0" mode="0000"/>
+    <file path="dir/../β.bin" size="18446744073709551615" mode="0755"/>
+  </manifest>
+  <data p:encoding="base64">
+    <block index="000" compression="none"><![CDATA[]]></block>
+    <block index="1" compression="zstd">AAECAwQFBgcICQoLDA0ODw==</block>
+  </data>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (start, step+, finish)>
+  <!ELEMENT start EMPTY>
+  <!ELEMENT step (input?, action, output*)>
+  <!ATTLIST step name ID #REQUIRED depends IDREFS #IMPLIED>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT action EMPTY>
+  <!ATTLIST action type CDATA #REQUIRED retry NMTOKEN "0">
+  <!ELEMENT output (#PCDATA)>
+  <!ATTLIST output format (text|json|xml) #REQUIRED>
+  <!ELEMENT finish (#PCDATA)>
+]>
+<workflow xmlns:x="urn:workflow:extra">
+  <start/>
+  <step name="prepare">
+    <action type="initialize" retry="000"/>
+    <output format="text">ready</output>
+  </step>
+  <step name="run" depends="prepare">
+    <input>alpha &quot;beta&quot; &apos;gamma&apos;</input>
+    <action type="execute" retry="999999999999999999999999"/>
+    <output format="json"><![CDATA[{"ok":true,"items":[]}]]></output>
+    <output format="xml"><x:result x:code="200">done</x:result></output>
+  </step>
+  <finish>complete<?status code="0"?></finish>
+</workflow>
+```

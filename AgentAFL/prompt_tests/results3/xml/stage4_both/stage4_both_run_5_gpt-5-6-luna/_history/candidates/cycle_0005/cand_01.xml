@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (title, namespace+, bundle?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT namespace (prefix, uri, entry*)>
+  <!ELEMENT prefix (#PCDATA)>
+  <!ELEMENT uri (#PCDATA)>
+  <!ELEMENT entry (symbol, description, alias*)>
+  <!ELEMENT symbol (#PCDATA)>
+  <!ELEMENT description (#PCDATA|code|term)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT term (#PCDATA)>
+  <!ELEMENT alias (#PCDATA)>
+  <!ELEMENT bundle (member+)>
+  <!ELEMENT member EMPTY>
+  <!ATTLIST registry release NMTOKEN #REQUIRED>
+  <!ATTLIST namespace status (active|retired|draft) "active">
+  <!ATTLIST entry key ID #REQUIRED kind (element|attribute|type) #REQUIRED>
+  <!ATTLIST member ref IDREF #REQUIRED>
+  <!ENTITY trademark "™">
+]>
+<registry release="4.2">
+  <title>Interchange Vocabulary &trademark;</title>
+  <namespace status="active">
+    <prefix>geo</prefix>
+    <uri>urn:example:geo</uri>
+    <entry key="geo-point" kind="element">
+      <symbol>point</symbol>
+      <description>A location expressed as <code>latitude</code> and <code>longitude</code>.</description>
+      <alias>coordinate</alias>
+      <alias>position</alias>
+    </entry>
+    <entry key="geo-crs" kind="type">
+      <symbol>coordinate-reference-system</symbol>
+      <description>Reference frame used by a <term>point</term>.</description>
+    </entry>
+  </namespace>
+  <namespace status="draft">
+    <prefix>obs</prefix>
+    <uri>urn:example:observation</uri>
+    <entry key="obs-reading" kind="element">
+      <symbol>reading</symbol>
+      <description>Scalar observation with optional uncertainty.</description>
+    </entry>
+  </namespace>
+  <bundle>
+    <member ref="geo-point"/>
+    <member ref="geo-crs"/>
+    <member ref="obs-reading"/>
+  </bundle>
+</registry>

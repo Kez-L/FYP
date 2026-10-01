@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row*)>
+  <!ELEMENT row (cell*)>
+  <!ATTLIST row index NMTOKEN #IMPLIED>
+  <!ELEMENT cell (#PCDATA|value|ref)*>
+  <!ATTLIST cell
+    colspan NMTOKEN "1"
+    rowspan NMTOKEN "1">
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ATTLIST matrix active IDREFS #IMPLIED>
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+  <!ENTITY nested "<value>generated</value>">
+]>
+<matrix active="c1 c3">
+  <row index="0">
+    <cell id="c1" colspan="2">&left;<value>42</value>&right;</cell>
+    <cell><ref target="c1"/></cell>
+  </row>
+  <row index="1">
+    <cell rowspan="2"><![CDATA[
+      whitespace
+      <not-an-element/>
+      ]]></cell>
+    <cell id="c3">before&nested;after</cell>
+  </row>
+  <row index="2"/>
+</matrix>

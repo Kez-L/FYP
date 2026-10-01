@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<envelope xmlns="urn:example:message" xmlns:sec="urn:example:security" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- A namespaced request with headers, attributes, and mixed payload content. -->
+  <header messageId="msg-7f31" timestamp="2026-10-01T12:45:00Z">
+    <sender>robotics-lab</sender>
+    <receiver>archive-gateway</receiver>
+    <sec:credentials algorithm="sha256">
+      <sec:keyId>lab-key-04</sec:keyId>
+      <sec:digest>9f2a1c7e55d0</sec:digest>
+    </sec:credentials>
+  </header>
+  <body xsi:type="MeasurementBatch">
+    <request priority="high" retry="2">
+      <operation name="capture">
+        <parameter name="exposure" type="integer">240</parameter>
+        <parameter name="filter" type="string">infrared</parameter>
+        <parameter name="enabled" type="boolean">true</parameter>
+      </operation>
+      <targets>
+        <target ref="north-01" active="yes">
+          <location lat="61.2181" lon="-149.9003"/>
+          <channels>
+            <channel id="a" gain="1.25"/>
+            <channel id="b" gain="0.875"/>
+          </channels>
+        </target>
+        <target ref="south-02" active="no">
+          <location lat="34.0522" lon="-118.2437"/>
+        </target>
+      </targets>
+      <note>Capture after <emphasis>local midnight</emphasis>; preserve raw samples.</note>
+    </request>
+  </body>
+</envelope>

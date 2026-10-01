@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ledger [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY stamp "2026-10-01T00:00:00Z">
+  <!ENTITY blob SYSTEM "payload.bin" NDATA bin>
+  <!ELEMENT ledger (entry*)>
+  <!ELEMENT entry (key, value, audit?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|linebreak|quote)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT audit EMPTY>
+  <!ATTLIST entry seq NMTOKEN #REQUIRED kind (text|binary) "text" ref ENTITY #IMPLIED>
+  <!ATTLIST audit by CDATA #IMPLIED at CDATA "&stamp;">
+]>
+<ledger>
+  <entry seq="000" kind="text">
+    <key>alpha</key>
+    <value>left<linebreak/>middle<quote>“quoted”</quote>right</value>
+    <audit by="system"/>
+  </entry>
+  <entry seq="001" kind="binary" ref="blob">
+    <key>omega</key>
+    <value><![CDATA[<not-an-element>&still-data;]]></value>
+  </entry>
+</ledger>

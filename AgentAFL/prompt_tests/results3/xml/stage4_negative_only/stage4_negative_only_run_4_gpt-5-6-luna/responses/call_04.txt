@@ -1,0 +1,107 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+)>
+  <!ELEMENT item (title, description?, price)>
+  <!ATTLIST item id ID #REQUIRED status (active|archived) "active">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emph|link)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target CDATA #IMPLIED>
+  <!ELEMENT price (#PCDATA)>
+  <!ENTITY currency "&#x20AC;">
+]>
+<catalog>
+  <item id="sku-001">
+    <title>Crème brûlée</title>
+    <description>Seasonal <emph>special</emph> with <link target="details"/>.</description>
+    <price>19 &currency; 95</price>
+  </item>
+  <item id="sku-002" status="archived">
+    <title>Tea &amp; biscuits</title>
+    <price>7.50</price>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:report xmlns:r="urn:report:v2" xmlns:m="urn:metrics">
+  <r:header xml:space="preserve"><?audit generated?><r:version>2.0</r:version></r:header>
+  <r:body>
+    <![CDATA[
+      raw <markup> & characters
+      preserved across lines
+    ]]>
+    <m:metric name="latency" unit="ms">12.75</m:metric>
+    <m:metric name="errors" unit="count">0</m:metric>
+    <r:notes>left <r:mark/> right</r:notes>
+  </r:body>
+  <r:footer xml:lang="ja">完了</r:footer>
+</r:report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (name, data)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+  <!ENTITY intro "alpha">
+  <!ENTITY middle "&intro;-beta">
+  <!ENTITY suffix "gamma">
+]>
+<archive>
+  <entry>
+    <name>&middle;-&suffix;</name>
+    <data>line one&#10;line two&#x0A;line three</data>
+  </entry>
+  <entry>
+    <name><![CDATA[<literal name="x"/>]]></name>
+    <data>quotes: &quot;single&apos;double&quot;</data>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns="urn:outer">
+  <section id="a">
+    <item><![CDATA[]]></item>
+    <item>
+      text
+      <inner xmlns="" data="&lt;&amp;&quot;&apos;&gt;"/>
+      tail
+    </item>
+  </section>
+  <section xmlns:x="urn:alternate">
+    <x:item x:flag="yes">
+      <x:value xml:space="default">  padded  </x:value>
+    </x:item>
+    <empty/>
+  </section>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta, payload)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta created CDATA #IMPLIED>
+  <!ELEMENT payload ANY>
+]>
+<envelope>
+  <meta created="2026-10-01T00:00:00Z"/>
+  <?processing instruction-data?>
+  <payload>
+    <chunk index="0">A&amp;B</chunk>
+    <chunk index="1"><![CDATA[unterminated-looking ]]]]><![CDATA[> sequence]]></chunk>
+    <chunk index="2">
+      <nested level="1"><nested level="2"><leaf/></nested></nested>
+    </chunk>
+  </payload>
+</envelope>
+```

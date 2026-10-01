@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ENTITY % optional SYSTEM "urn:config:optional">
+  <![ IGNORE [
+    <!ELEMENT never-seen EMPTY>
+    <!ATTLIST never-seen debug CDATA #IMPLIED>
+  ]]>
+  <!ELEMENT configuration (defaults, environment*, override*)>
+  <!ELEMENT defaults (property*)>
+  <!ELEMENT environment (property*)>
+  <!ATTLIST environment name NMTOKEN #REQUIRED>
+  <!ELEMENT override (property*)>
+  <!ATTLIST override target IDREF #REQUIRED>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST property
+    key NMTOKEN #REQUIRED
+    value CDATA #REQUIRED
+    secret (yes|no) "no"
+  >
+  <!ATTLIST configuration version CDATA #FIXED "3">
+]>
+<configuration version="3">
+  <defaults>
+    <property key="timeout" value="30"/>
+    <property key="retries" value="2"/>
+  </defaults>
+  <environment name="staging">
+    <property key="endpoint" value="https://staging.example.invalid"/>
+    <property key="token" value="masked" secret="yes"/>
+  </environment>
+  <environment name="production">
+    <property key="endpoint" value="https://prod.example.invalid"/>
+  </environment>
+  <override target="staging">
+    <property key="timeout" value="45"/>
+  </override>
+</configuration>

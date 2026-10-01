@@ -1,0 +1,137 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, description?, link*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST entry id ID #REQUIRED ref IDREF #IMPLIED>
+  <!ATTLIST link href CDATA #REQUIRED rel (next|prev|related) "related">
+]>
+<catalog>
+  <entry id="first">
+    <title>Binary &amp; Text</title>
+    <description>use <em>emphasis</em> and <code>code</code> here</description>
+    <link href="next.xml" rel="next"/>
+  </entry>
+  <entry id="second" ref="first">
+    <title>Picture &logo;</title>
+    <link href="previous.xml" rel="prev"/>
+  </entry>
+</catalog>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ENTITY a "alpha">
+  <!ENTITY b "&a;-beta">
+  <!ENTITY c "&b;-gamma">
+  <!ELEMENT envelope (header, body)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field (#PCDATA)>
+  <!ELEMENT body ANY>
+  <!ATTLIST envelope version NMTOKEN "v1">
+]>
+<envelope version="v2">
+  <header>
+    <field name="one">&c;</field>
+    <field name="two">&#x0D;&#10;line</field>
+  </header>
+  <body>
+    <section>
+      <item><![CDATA[raw ]]> text <![CDATA[<tag> & data]]></item>
+      <empty/>
+    </section>
+    <?dispatch mode="fast"?>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.1" standalone="no"?>
+<!DOCTYPE package [
+  <!ELEMENT package (meta, payload)>
+  <!ELEMENT meta (name, checksum)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding (base64|hex|raw) "raw">
+  <!ENTITY nl "&#x85;">
+  <!ENTITY % optional "INCLUDE">
+  <![%optional;[
+    <!ATTLIST package xml:lang CDATA #IMPLIED>
+  ]]>
+]>
+<package xml:lang="en">
+  <meta>
+    <name>sample&#xA;package</name>
+    <checksum>deadbeef</checksum>
+  </meta>
+  <payload>
+    <chunk index="0" encoding="hex">00ff&#x85;&nl;</chunk>
+    <chunk index="1">tail</chunk>
+  </payload>
+</package>
+```
+
+```xml
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node (label?, property*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST node key ID #REQUIRED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1.0">
+  <!ENTITY quoted "&quot;quoted&quot;">
+]>
+<graph>
+  <node key="n1">
+    <label>root</label>
+    <property type="text">A &quoted; value</property>
+    <property type="numeric">&#49;&#50;&#51;</property>
+  </node>
+  <node key="n2">
+    <label><![CDATA[second node]]></label>
+  </node>
+  <edge from="n1" to="n2" weight="0"/>
+  <edge from="n2" to="n1" weight="2.5"/>
+</graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (intro, table, appendix?)>
+  <!ELEMENT intro (#PCDATA|br|strong)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA|strong|br)*>
+  <!ELEMENT appendix (#PCDATA)>
+  <!ATTLIST report xmlns CDATA #IMPLIED generated CDATA "yes">
+  <!ATTLIST row number NMTOKEN #REQUIRED>
+  <!ATTLIST cell colspan NMTOKEN "1" rowspan NMTOKEN "1">
+]>
+<report xmlns="urn:report" generated="no">
+  <intro>Summary<strong>:</strong><br/>multiple lines</intro>
+  <table>
+    <row number="01">
+      <cell colspan="2">left</cell>
+      <cell>right<br/>side</cell>
+    </row>
+    <row number="02">
+      <cell rowspan="2"><![CDATA[<not-markup>]]></cell>
+      <cell>final</cell>
+    </row>
+  </table>
+  <appendix xml:space="preserve">  trailing   spaces  </appendix>
+</report>
+```

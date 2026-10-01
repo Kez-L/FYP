@@ -1,0 +1,117 @@
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry | group)+>
+  <!ELEMENT group (entry*)>
+  <!ELEMENT entry (#PCDATA | link)*>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST entry id ID #IMPLIED status CDATA "new">
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "data.bin" NDATA binary>
+]>
+<catalog>
+  <group>
+    <entry id="e1">Alpha<link href="urn:test:alpha"/>Omega</entry>
+    <entry status="archived">Before &amp; after</entry>
+  </group>
+  <entry id="e2">&payload;</entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST cell col NMTOKEN #REQUIRED>
+  <!ENTITY open "{">
+  <!ENTITY close "}">
+]>
+<map>
+  <row>
+    <cell col="a">&open;one&close;</cell>
+    <cell col="b">x&#x0D;&#x0A;y</cell>
+  </row>
+  <row>
+    <cell col="c"><![CDATA[]]></cell>
+    <cell col="d">left&amp;right</cell>
+    <cell col="e">&#0;</cell>
+  </row>
+</map>
+```
+
+```xml
+<!DOCTYPE envelope [
+  <!ELEMENT envelope ANY>
+  <!ENTITY % declarations '
+    <!ELEMENT packet (header?, body, checksum?)>
+    <!ELEMENT header (#PCDATA)>
+    <!ELEMENT body (chunk*)>
+    <!ELEMENT chunk (#PCDATA)>
+    <!ELEMENT checksum EMPTY>
+    <!ATTLIST checksum algorithm NMTOKEN #IMPLIED>
+  '>
+  %declarations;
+  <!ENTITY % conditional "INCLUDE">
+  <![%conditional;[
+    <!ENTITY marker "inside-section">
+  ]]>
+]>
+<envelope>
+  <packet>
+    <header>&marker;</header>
+    <body>
+      <chunk>first</chunk>
+      <chunk>second <![CDATA[ raw <data> ]]></chunk>
+      <chunk>third &quot;value&quot;</chunk>
+    </body>
+    <checksum algorithm="sha256"/>
+  </packet>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:root xmlns:r="urn:root" xmlns:x="urn:x" xmlns:y="urn:y">
+  <r:branch x:id="A">
+    <x:leaf y:kind="one" xml:space="preserve">  text  </x:leaf>
+    <y:leaf x:kind="two" xmlns:y="">
+      <nested xmlns="urn:nested" q:name="value"/>
+    </y:leaf>
+  </r:branch>
+  <r:branch xmlns:r="urn:alternate">
+    <r:item/>
+    <r:item xmlns:r="urn:root" r:flag="yes"/>
+  </r:branch>
+</r:root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section)>
+  <!ELEMENT section (title, paragraph*, table?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA | emphasis | break)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT table (tr+)>
+  <!ELEMENT tr (td+)>
+  <!ELEMENT td (#PCDATA | emphasis)*>
+  <!ATTLIST section mode (draft|final) "draft">
+  <!ENTITY nbsp "&#160;">
+]>
+<report>
+  <section mode="final">
+    <title>Quarterly &nbsp; Report</title>
+    <paragraph>Some <emphasis>important</emphasis> text<break/>continues.</paragraph>
+    <paragraph><![CDATA[Unclosed-looking <markup> remains data]]></paragraph>
+    <table>
+      <tr><td>1</td><td><emphasis>A</emphasis>B</td></tr>
+      <tr><td>2</td><td>&#x2028;</td></tr>
+    </table>
+  </section>
+</report>
+```

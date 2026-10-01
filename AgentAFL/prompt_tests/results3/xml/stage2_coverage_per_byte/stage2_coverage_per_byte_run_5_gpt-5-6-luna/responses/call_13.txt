@@ -1,0 +1,144 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header (token, timestamp?)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ENTITY left-brace "{">
+  <!ENTITY right-brace "}">
+]>
+<envelope xmlns="urn:acme:message" xmlns:sec="urn:acme:security">
+  <header>
+    <token sec:scheme="opaque">&left-brace;abc-123&right-brace;</token>
+    <timestamp>2026-10-01T12:34:56Z</timestamp>
+  </header>
+  <payload>
+    <command name="rotate" priority="7">
+      <argument key="mode">safe</argument>
+      <argument key="scope">all</argument>
+    </command>
+    <result status="pending"/>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE library [
+  <!ELEMENT library (section+)>
+  <!ELEMENT section (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (name, value, note?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT note (#PCDATA|ref)*>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ATTLIST item kind (book|map|record) "record">
+  <!ATTLIST ref target IDREF #IMPLIED>
+]>
+<library>
+  <section code="sA">
+    <heading>Archives</heading>
+    <item kind="book">
+      <name>North Wind</name>
+      <value>17</value>
+      <note>stored near <ref target="sB"/> annex</note>
+    </item>
+  </section>
+  <section code="sB">
+    <heading>Maps</heading>
+    <item kind="map">
+      <name>Contour</name>
+      <value>42</value>
+    </item>
+  </section>
+</library>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ENTITY % flags "CDATA">
+  <!ELEMENT report (section|warning|section)*>
+  <!ELEMENT section (metric+, table?)>
+  <!ELEMENT metric EMPTY>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT warning (#PCDATA)>
+  <!ATTLIST report generated %flags; #IMPLIED>
+  <!ATTLIST section id ID #IMPLIED>
+  <!ATTLIST metric name CDATA #REQUIRED unit CDATA #IMPLIED value CDATA #REQUIRED>
+  <!ATTLIST table format (csv|grid|raw) "raw">
+  <!ATTLIST row n NMTOKEN #IMPLIED>
+  <!ATTLIST cell span NMTOKEN "1">
+]>
+<report generated="yes">
+  <section id="cpu">
+    <metric name="load" unit="%" value="99.9"/>
+    <metric name="cores" value="0"/>
+    <table format="grid">
+      <row n="01"><cell span="2">idle</cell><cell>busy</cell></row>
+      <row n="02"><cell>unknown</cell></row>
+    </table>
+  </section>
+  <warning>threshold &gt; baseline</warning>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (data|chunk)+>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT chunk (#PCDATA|chunk)*>
+  <!ATTLIST packet version NMTOKEN #FIXED "2.0">
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding (plain|base64|hex) "plain">
+]>
+<packet version="2.0" xmlns:p="urn:packet">
+  <data><![CDATA[raw <bytes> & untouched]]></data>
+  <chunk index="0" encoding="hex">00ff7e</chunk>
+  <chunk index="1">
+    prefix
+    <chunk index="1a">nested &amp; escaped</chunk>
+    suffix
+  </chunk>
+  <chunk index="2" encoding="base64">YWJjZA==</chunk>
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (step+)>
+  <!ELEMENT step (input*, output?, failure?)>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT output (#PCDATA)>
+  <!ELEMENT failure (message, detail*)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT detail (#PCDATA)>
+  <!ATTLIST step id ID #REQUIRED state (queued|running|done|failed) "queued">
+  <!ATTLIST input name NMTOKEN #REQUIRED>
+  <!ATTLIST output code NMTOKEN #IMPLIED>
+]>
+<workflow xmlns:x="urn:workflow:ext">
+  <step id="prepare" state="done">
+    <input name="source">alpha</input>
+    <output code="0">ready</output>
+  </step>
+  <step id="execute" state="failed">
+    <input name="source">beta &amp; gamma</input>
+    <failure>
+      <message>operation aborted</message>
+      <detail>x:reason="timeout"</detail>
+      <detail><![CDATA[retry <later>]]></detail>
+    </failure>
+  </step>
+  <step id="cleanup">
+    <input name="source">omega</input>
+  </step>
+</workflow>
+```

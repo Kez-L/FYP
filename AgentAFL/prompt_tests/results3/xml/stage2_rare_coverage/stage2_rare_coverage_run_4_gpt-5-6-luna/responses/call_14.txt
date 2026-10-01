@@ -1,0 +1,132 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section code NMTOKEN #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (name, price, details?)>
+  <!ATTLIST item sku ID #IMPLIED available (yes|no) "yes">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|mark|linebreak)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT linebreak EMPTY>
+  <!ENTITY currency "€">
+]>
+<catalog>
+  <section code="α-1">
+    <title><![CDATA[Seasonal <offers> & specials]]></title>
+    <item sku="x17">
+      <name>Tea &amp; Honey</name>
+      <price>12 &currency; 50</price>
+      <details>organic <mark>blend</mark><linebreak/>limited edition</details>
+    </item>
+    <item available="no">
+      <name>Empty Shelf</name>
+      <price>0</price>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map ANY>
+  <!ELEMENT node ANY>
+  <!ATTLIST node
+    name CDATA #REQUIRED
+    parent IDREF #IMPLIED
+    kind (branch|leaf) "leaf">
+  <!ENTITY open "<node name='generated' kind='leaf'>">
+  <!ENTITY close "</node>">
+]>
+<?build mode="test"?>
+<map>
+  <node name="root" kind="branch">
+    <node name="left" parent="root">
+      <![CDATA[raw ]]> text
+      <node name="left-left" parent="left"/>
+    </node>
+    <node name="right" parent="root">
+      &open;payload&close;
+    </node>
+  </node>
+</map>
+```
+
+```xml
+<message xmlns="urn:message" xmlns:x="urn:extension" xml:lang="ja">
+  <header>
+    <x:token xml:id="tok-01">東京 &amp; Montréal</x:token>
+    <x:token xml:id="tok-02" x:kind="quoted"><![CDATA[<?not-a-pi?>]]></x:token>
+  </header>
+  <body>
+    <paragraph>Hello <emphasis>world</emphasis>.</paragraph>
+    <paragraph x:format="mixed">before<x:break/>after<!-- retained --></paragraph>
+    <?route destination="archive"?>
+  </body>
+  <attachments>
+    <attachment x:name="résumé.txt" x:size="0"/>
+    <attachment x:name="data.bin"><![CDATA[AAECAwQFBgcICQ==]]></attachment>
+  </attachments>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (metadata, payload)>
+  <!ELEMENT metadata (field*)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT payload (entry+)>
+  <!ELEMENT entry (label, value)>
+  <!ATTLIST entry ref ID #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ENTITY % extra "<!ELEMENT diagnostic (#PCDATA)>">
+  %extra;
+]>
+<report>
+  <metadata>
+    <field key="source" value="synthetic"/>
+    <field key="empty"/>
+  </metadata>
+  <payload>
+    <entry ref="r1">
+      <label>First</label>
+      <value>plain <code>if (x &lt; 2) return;</code></value>
+    </entry>
+    <entry ref="r2">
+      <label>Second</label>
+      <value><![CDATA[line one
+line two
+]]></value>
+    </entry>
+  </payload>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:workflow" xmlns:a="urn:action" xmlns:b="urn:branch">
+  <start id="s0" next="choice"/>
+  <b:choice id="choice" test="enabled">
+    <a:invoke name="prepare" timeout="PT0S">
+      <a:argument name="input">αβγ</a:argument>
+      <a:argument name="mode">safe</a:argument>
+    </a:invoke>
+    <b:when equals="true" next="finish">
+      <b:result><![CDATA[{ "ok": true, "items": [] }]]></b:result>
+    </b:when>
+    <b:otherwise next="failure">
+      <b:result><![CDATA[<not-escaped>]]></b:result>
+    </b:otherwise>
+  </b:choice>
+  <finish id="finish" status="done"/>
+  <failure id="failure" status="error"><![CDATA[reason & details]]></failure>
+</workflow>
+```

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (step+, on-error?)>
+  <!ATTLIST workflow version NMTOKEN #REQUIRED>
+  <!ELEMENT step (input?, action, output?)>
+  <!ATTLIST step id ID #REQUIRED depends-on IDREFS #IMPLIED>
+  <!ELEMENT input (#PCDATA|param)*>
+  <!ELEMENT param (#PCDATA)>
+  <!ELEMENT action EMPTY>
+  <!ATTLIST action name NMTOKEN #REQUIRED timeout CDATA #IMPLIED>
+  <!ELEMENT output (#PCDATA)>
+  <!ELEMENT on-error (message, retry?)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT retry EMPTY>
+  <!ATTLIST retry count NMTOKEN #REQUIRED>
+]>
+<workflow version="2.0">
+  <step id="fetch">
+    <action name="download" timeout="PT30S"/>
+    <output>artifact.bin</output>
+  </step>
+  <step id="inspect" depends-on="fetch">
+    <input>artifact.bin<param>--verbose</param><param>--format=raw</param></input>
+    <action name="scan"/>
+  </step>
+  <step id="publish" depends-on="fetch inspect">
+    <action name="upload"/>
+    <output><![CDATA[repository://staging/]]></output>
+  </step>
+  <on-error>
+    <message>preserve diagnostics &amp; continue</message>
+    <retry count="3"/>
+  </on-error>
+</workflow>

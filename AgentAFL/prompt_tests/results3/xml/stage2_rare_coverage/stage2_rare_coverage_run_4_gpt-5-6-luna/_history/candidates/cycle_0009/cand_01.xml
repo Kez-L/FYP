@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY logo SYSTEM "logo.jpeg" NDATA jpeg>
+  <!ELEMENT message (header, body, attachment*)>
+  <!ELEMENT header (from, to, subject?)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|link|break)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED rel CDATA #IMPLIED>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment
+    name CDATA #REQUIRED
+    content ENTITY #IMPLIED>
+]>
+<message>
+  <header>
+    <from>alice@example.test</from>
+    <to>bob@example.test</to>
+    <subject>Re: &quot;status&quot;</subject>
+  </header>
+  <body>
+    Intro
+    <quote>quoted <quote>nested</quote> material</quote>
+    <link href="https://example.test/a?x=1&amp;y=2" rel="next">continue</link>
+    <break/>
+    <![CDATA[raw ]]> text
+  </body>
+  <attachment name="picture" content="logo"/>
+</message>

@@ -1,0 +1,23 @@
+{
+  "call": 2,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (metadata, folder+)>\n  <!ELEMENT metadata (created, owner, checksum)>\n  <!ELEMENT created (#PCDATA)>\n  <!ELEMENT owner EMPTY>\n  <!ATTLIST owner name CDATA #REQUIRED team CDATA #IMPLIED>\n  <!ELEMENT checksum (#PCDATA)>\n  <!ELEMENT folder (folder|document|link)*>\n  <!ATTLIST folder path CDATA #REQUIRED hidden (yes|no) \"no\">\n  <!ELEMENT document (heading, paragraph+, tag*)>\n  <!ATTLIST document id ID #REQUIRED format (text|binary|unknown) \"text\">\n  <!ELEMENT heading (#PCDATA)>\n  <!ELEMENT paragraph (#PCDATA|code|quote|br)*>\n  <!ELEMENT code (#PCDATA)>\n  <!ELEMENT quote (#PCDATA|code)*>\n  <!ELEMENT br EMPTY>\n  <!ELEMENT tag (#PCDATA)>\n  <!ELEMENT link EMPTY>\n  <!ATTLIST link target IDREF #REQUIRED relation CDATA #IMPLIED>\n]>\n<archive>\n  <metadata>\n    <created>2026-09-30T23:59:59Z</created>\n    <owner name=\"Ada\" team=\"systems\"/>\n    <checksum>sha256:00ff11aa</checksum>\n  </metadata>\n  <folder path=\"/\" hidden=\"no\">\n    <folder path=\"/manuals\" hidden=\"yes\">\n      <document id=\"d1\" format=\"text\">\n        <heading>Migration Notes</heading>\n        <paragraph>Move the <code>cache</code> directory first.<br/>Then verify the <quote>read-only</quote> marker.</paragraph>\n        <tag>maintenance</tag>\n      </document>\n    </folder>\n    <link target=\"d1\" relation=\"references\"/>\n  </folder>\n</archive>\n\n--- example 2 ---\n<?xml version=\"1.1\"?>\n<!DOCTYPE message [\n  <!ENTITY greeting \"Hello\">\n  <!ENTITY who \"world\">\n  <!ENTITY phrase \"&greeting;, &who;!\">\n]>\n<message xmlns=\"urn:message\" xmlns:x=\"urn:extra\">\n  <header x:priority=\"high\">\n    <subject>&phrase;</subject>\n  </header>\n  <body xml:space=\"preserve\">\n    <![CDATA[\n      line one\n      ]]> \n    <part kind=\"text\">alpha&#x0A;beta</part>\n    <!-- a comment containing -- must not be split -->\n    <part kind=\"empty\"/>\n  </body>\n</message>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-01T03:36:20.800858+00:00"
+}

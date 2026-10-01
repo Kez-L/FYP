@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:workflow">
+  <variables>
+    <variable name="attempts" type="integer">3</variable>
+    <variable name="notify" type="boolean">false</variable>
+  </variables>
+  <pipeline id="nightly">
+    <step id="prepare" action="create">
+      <input ref="source"/>
+      <output name="workspace"/>
+    </step>
+    <step id="transform" action="convert" depends-on="prepare">
+      <options>
+        <option key="format">compact</option>
+        <option key="strict">true</option>
+      </options>
+      <on-error>
+        <retry count="2" delay="PT5S"/>
+        <abort code="E_TRANSFORM"/>
+      </on-error>
+    </step>
+    <step id="publish" action="upload" depends-on="transform" optional="true">
+      <destination scheme="https" host="upload.example.test" path="/incoming/"/>
+    </step>
+  </pipeline>
+  <audit>
+    <event timestamp="2026-10-01T00:00:00Z" actor="scheduler">started</event>
+  </audit>
+</workflow>

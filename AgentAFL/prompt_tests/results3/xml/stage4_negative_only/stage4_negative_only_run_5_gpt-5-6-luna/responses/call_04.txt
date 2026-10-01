@@ -1,0 +1,113 @@
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE inventory [
+  <!ELEMENT inventory (item+, audit?)>
+  <!ELEMENT item (label, quantity, note?)>
+  <!ATTLIST item sku ID #REQUIRED state (new|used|hold) "new">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT quantity (#PCDATA)>
+  <!ELEMENT note (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT audit EMPTY>
+  <!ATTLIST audit ref IDREF #IMPLIED>
+  <!ENTITY warehouse "North &amp; West">
+  <!ENTITY warning "Handle with &quot;care&quot;">
+]>
+<inventory location="&warehouse;">
+  <item sku="i-001">
+    <label>Glass &amp; copper</label>
+    <quantity>04</quantity>
+    <note xml:space="preserve">Packed <mark>&warning;</mark> today.</note>
+  </item>
+  <item sku="i-002" state="hold">
+    <label>Replacement part</label>
+    <quantity>&#x30;7;</quantity>
+  </item>
+  <audit ref="i-001"/>
+</inventory>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:catalog:v3" xmlns:m="urn:meta" xmlns:svg="http://www.w3.org/2000/svg">
+  <entry m:key="α-β" m:visible="false">
+    <title><![CDATA[5 < 7 && 9 > 3]]></title>
+    <summary>Words<!--interrupted-->with<?trace level="debug"?>boundaries</summary>
+    <svg:svg width="12" height="8" viewBox="0 0 12 8">
+      <svg:path d="M0,0 L12,8 Z"/>
+      <svg:desc>diagonal</svg:desc>
+    </svg:svg>
+    <details xmlns="">
+      <code><![CDATA[
+        if (a && b) { return "<node/>"; }
+      ]]></code>
+    </details>
+  </entry>
+  <entry m:key="empty">
+    <title/>
+    <summary>tail</summary>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<message xmlns="urn:mail:test" xml:lang="ja">
+  <sender>
+    <name>山田&nbsp;太郎</name>
+    <address><![CDATA[山田@example.test]]></address>
+  </sender>
+  <recipient role="to">
+    <name>李&#x1F600;</name>
+  </recipient>
+  <body xml:space="default">
+    <![CDATA[First line
+Second line
+<literal>&not-an-entity;</literal>]]>
+    <attachment encoding="base64">AAECAwQFBgcICQ==</attachment>
+  </body>
+  <metadata>
+    <flag enabled="1"/>
+    <flag enabled="0"/>
+  </metadata>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<maze xmlns:a="urn:one" xmlns:b="urn:two">
+  <a:level n="0">
+    <b:branch>
+      <leaf xmlns="urn:leaf" id="L0">alpha<a:mark/>omega</leaf>
+      <leaf xmlns="" id="L1">
+        <a:mark xmlns:a="urn:shadow">inside</a:mark>
+      </leaf>
+    </b:branch>
+  </a:level>
+  <a:level n="1">
+    <b:branch kind="left"><leaf id="L2"/></b:branch>
+    <b:branch kind="right">
+      <leaf id="L3"><![CDATA[x]]></leaf>
+      <leaf id="L4"><![CDATA[]]></leaf>
+    </b:branch>
+  </a:level>
+  <tail><!-- comment with -- avoided --><value><![CDATA[&<>]]></value></tail>
+</maze>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE broken [
+  <!ENTITY text "unterminated-looking &amp; text">
+]>
+<root xmlns:p="urn:broken">
+  <header id="x" data="&text;">
+    <p:item>one</p:item>
+    <p:item>two<p:inner>three</p:inner>
+  </header>
+  <payload><![CDATA[raw content
+  <not-a-tag>
+  ]]></payload>
+  <dangling attr="&unknown;">
+</root>
+```

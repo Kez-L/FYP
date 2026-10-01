@@ -1,0 +1,118 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (title, body, link*)>
+  <!ATTLIST record id ID #REQUIRED ref IDREF #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA|em)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target IDREF #REQUIRED>
+  <!ENTITY notice "Confidential &#x2014; internal use only">
+]>
+<archive>
+  <record id="r1">
+    <title>Quarterly &amp; Annual Notes</title>
+    <body>Summary <em>for review</em><br/>Status: &notice;.</body>
+    <link target="r2"/>
+  </record>
+  <record id="r2" ref="r1">
+    <title>Appendix</title>
+    <body><![CDATA[Literal markup: <tag attr="x"/> & not expanded]]></body>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<catalog>
+  <item code="A-01" quantity="0" available="true">
+    <label xml:space="preserve">  padded
+      text  </label>
+    <values>
+      <value>0</value>
+      <value>-0.0</value>
+      <value>1.7976931348623157E+308</value>
+    </values>
+    <description>Line one&#xA;Line two&#x9;with tab</description>
+  </item>
+  <item code="B-02" quantity="18446744073709551615" available="false">
+    <label>empty</label>
+    <values/>
+    <description/>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section*)>
+  <!ELEMENT section (heading, entry+)>
+  <!ATTLIST section kind (alpha|beta|gamma) "alpha">
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT entry (#PCDATA|quote|list)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT list (li+)>
+  <!ELEMENT li (#PCDATA|quote)*>
+]>
+<report>
+  <section kind="beta">
+    <heading>Nested prose</heading>
+    <entry>Before <quote>quoted <quote>deeply</quote> text</quote> after.</entry>
+    <entry>
+      <list>
+        <li>first</li>
+        <li>second <quote>aside</quote></li>
+      </list>
+    </entry>
+  </section>
+  <section>
+    <heading>Whitespace</heading>
+    <entry xml:lang="ja">文字列 — café — 🦊</entry>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns="urn:alpha" xmlns:p="urn:beta" xmlns:q="urn:gamma">
+  <p:container p:id="c-7">
+    <q:entry q:key="x&amp;y" p:flag="yes">
+      <p:leaf xmlns:p="" xmlns:q="urn:delta" q:key="changed"/>
+      <inner xmlns="urn:epsilon">
+        <name>scoped</name>
+        <p:value xmlns:p="urn:beta">42</p:value>
+      </inner>
+    </q:entry>
+  </p:container>
+  <tail xmlns="">
+    <p:orphan xmlns:p="urn:beta">outside-default</p:orphan>
+  </tail>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header version NMTOKEN #REQUIRED>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+]>
+<envelope>
+  <header version="v2.0"/>
+  <payload>
+    <chunk>&left;escaped-element&right;</chunk>
+    <chunk><![CDATA[
+      ]]> tricky text with brackets ]]>
+    </chunk>
+    <chunk>alpha&#13;&#10;beta &amp; gamma</chunk>
+  </payload>
+</envelope>
+```

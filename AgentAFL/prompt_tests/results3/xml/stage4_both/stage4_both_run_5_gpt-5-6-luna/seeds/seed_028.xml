@@ -1,0 +1,42 @@
+<?xml version="1.1"?>
+<!DOCTYPE manifest [
+  <!ELEMENT manifest (header, artifact*)>
+  <!ELEMENT header (generator, created, signature)>
+  <!ELEMENT generator (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ELEMENT artifact (name, digest, chunk*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT digest (#PCDATA)>
+  <!ELEMENT chunk EMPTY>
+  <!ATTLIST manifest mode (full|incremental) #REQUIRED>
+  <!ATTLIST artifact id ID #REQUIRED path CDATA #REQUIRED state (new|changed|removed) #REQUIRED>
+  <!ATTLIST chunk offset NMTOKEN #REQUIRED length NMTOKEN #REQUIRED checksum CDATA #IMPLIED>
+  <!ENTITY hex "0123456789abcdef">
+]>
+<manifest mode="incremental">
+  <header>
+    <generator>delta-packager &hex;</generator>
+    <created>2026-10-01T00:00:00+00:00</created>
+    <signature><![CDATA[
+-----BEGIN SIGNATURE-----
+mF8q2x==/test+payload
+-----END SIGNATURE-----
+]]></signature>
+  </header>
+  <artifact id="a1" path="bin/worker" state="changed">
+    <name>worker</name>
+    <digest algorithm="sha-256">6f1ed002ab5595859014ebf0951522d9</digest>
+    <chunk offset="0" length="4096" checksum="aa00"/>
+    <chunk offset="4096" length="17" checksum="bb11"/>
+  </artifact>
+  <artifact id="a2" path="docs/old.txt" state="removed">
+    <name>old.txt</name>
+    <digest algorithm="sha-256">00000000000000000000000000000000</digest>
+  </artifact>
+  <artifact id="a3" path="etc/blank&amp;safe.conf" state="new">
+    <name>blank&amp;safe.conf</name>
+    <digest algorithm="sha-256">fedcba98765432100123456789abcdef</digest>
+    <chunk offset="0" length="0"/>
+  </artifact>
+</manifest>

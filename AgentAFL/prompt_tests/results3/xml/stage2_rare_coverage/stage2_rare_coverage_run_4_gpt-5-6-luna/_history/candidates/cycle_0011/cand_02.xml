@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (header, body, checksum)>
+  <!ELEMENT header (source, destination)>
+  <!ELEMENT source EMPTY>
+  <!ELEMENT destination EMPTY>
+  <!ELEMENT body (record*)>
+  <!ELEMENT record (key, value?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|blob)*>
+  <!ELEMENT blob (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST source address CDATA #REQUIRED>
+  <!ATTLIST destination address CDATA #REQUIRED>
+  <!ATTLIST record index NMTOKEN #IMPLIED>
+  <!ENTITY marker "]]&gt;">
+]>
+<packet>
+  <header>
+    <source address="urn:one"/>
+    <destination address="urn:two"/>
+  </header>
+  <body>
+    <record index="000">
+      <key>alpha</key>
+      <value>left<![CDATA[<raw>&bytes]]>right</value>
+    </record>
+    <record index="001"><key>beta</key></record>
+    <record><key>gamma</key><value><blob>&marker;</blob></value></record>
+  </body>
+  <checksum>7f-00-ff</checksum>
+</packet>

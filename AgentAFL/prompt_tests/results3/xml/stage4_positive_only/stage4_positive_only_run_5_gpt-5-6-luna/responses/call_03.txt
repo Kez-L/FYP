@@ -1,0 +1,153 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (heading, item*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (label, price, note?)>
+  <!ATTLIST item ref ID #REQUIRED category CDATA #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY currency "€">
+  <!ENTITY company "Northwind &amp; Sons">
+]>
+<catalog>
+  <section code="hardware">
+    <heading>Workshop tools</heading>
+    <item ref="hammer" category="hand">
+      <label>&company; claw hammer</label>
+      <price>19.95 &currency;</price>
+      <note>Tempered steel &amp; ash handle</note>
+    </item>
+    <item ref="vise">
+      <label>Bench vise</label>
+      <price>84.00 &currency;</price>
+    </item>
+  </section>
+  <section code="software">
+    <heading>Utilities</heading>
+    <item ref="parser" category="library">
+      <label>Markup parser</label>
+      <price>0.00 &currency;</price>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<message xmlns="urn:acme:message" xmlns:m="urn:acme:meta" m:id="a-17">
+  <sender>
+    <name>dispatch</name>
+    <address><![CDATA[ops@example.invalid]]></address>
+  </sender>
+  <body priority="high">
+    Before <emphasis>departure</emphasis>, verify
+    <checklist>
+      <check done="true">fuel</check>
+      <check done="false">weather</check>
+      <check done="true"><![CDATA[radio & antenna]]></check>
+    </checklist>
+    <footer m:signature="yes">-- control room</footer>
+  </body>
+  <?audit result="pending"?>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="report.xsl"?>
+<!DOCTYPE report [
+  <!ELEMENT report (metadata, records)>
+  <!ELEMENT metadata (created, owner)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (value, description)>
+  <!ATTLIST record id ID #REQUIRED refs IDREFS #IMPLIED>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT description (#PCDATA)>
+]>
+<report>
+  <!-- Generated from the overnight import -->
+  <metadata>
+    <created>2026-10-01T01:02:03Z</created>
+    <owner>analyst@example.invalid</owner>
+  </metadata>
+  <records>
+    <record id="r1">
+      <value>42</value>
+      <description>Initial sample</description>
+    </record>
+    <record id="r2" refs="r1">
+      <value>7.5</value>
+      <description>Follow-up &lt;measurement&gt;</description>
+    </record>
+    <record id="r3" refs="r1 r2">
+      <value>0</value>
+      <description>zero-length baseline</description>
+    </record>
+  </records>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<terrain xmlns="urn:map:terrain" xmlns:g="urn:map:geo">
+  <tile g:row="03" g:column="09">
+    <elevation unit="m">184.25</elevation>
+    <boundary>
+      <point lat="48.8584" lon="2.2945"/>
+      <point lat="48.8580" lon="2.2950"/>
+      <point lat="48.8576" lon="2.2941"/>
+    </boundary>
+  </tile>
+  <tile g:row="03" g:column="10" xmlns:g="">
+    <elevation unit="ft">612</elevation>
+    <boundary>
+      <point lat="48.8582" lon="2.3100"/>
+    </boundary>
+  </tile>
+  <legend>
+    <symbol key="peak" color="#ffffff"/>
+    <symbol key="water" color="#0033cc"/>
+  </legend>
+</terrain>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (widget*)>
+  <!ELEMENT widget (title, script?, table?)>
+  <!ATTLIST widget type CDATA #REQUIRED enabled (yes|no) "yes">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT script (#PCDATA)>
+  <!ELEMENT table (row*)>
+  <!ELEMENT row (cell*)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY less "&#60;">
+  <!ENTITY amp "&#38;">
+]>
+<dashboard>
+  <widget type="chart" enabled="yes">
+    <title>Temperature &amp; pressure</title>
+    <script><![CDATA[
+      if (value < 0) {
+        return "freeze";
+      }
+    ]]></script>
+    <table>
+      <row><cell>time</cell><cell>value</cell></row>
+      <row><cell>08:00</cell><cell>12.4&nbsp;°C</cell></row>
+      <row><cell>12:00</cell><cell>&less;15 &amp; stable</cell></row>
+    </table>
+  </widget>
+  <widget type="notice" enabled="no">
+    <title>Maintenance &amp; calibration</title>
+  </widget>
+</dashboard>
+```

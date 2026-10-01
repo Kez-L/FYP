@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node|edge)*>
+  <!ELEMENT node (label?, property*)>
+  <!ELEMENT edge EMPTY>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA|value)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST graph xmlns CDATA #IMPLIED>
+  <!ATTLIST node id ID #REQUIRED role (source|sink|middle) #IMPLIED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+  <!ATTLIST property name NMTOKEN #REQUIRED>
+  <!ENTITY one "1">
+  <!ENTITY two "&one;&one;">
+  <!ENTITY four "&two;&two;">
+]>
+<graph xmlns="urn:graph">
+  <node id="n0" role="source">
+    <label>origin</label>
+    <property name="depth"><value>&four;</value></property>
+  </node>
+  <edge from="n0" to="n1" weight="0.25"/>
+  <node id="n1" role="middle">
+    <property name="payload">a<![CDATA[b<c]]>d</property>
+    <property name="empty"><value/></property>
+  </node>
+  <edge from="n1" to="n2"/>
+  <node id="n2" role="sink"><label>finish</label></node>
+</graph>

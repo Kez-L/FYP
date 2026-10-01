@@ -1,0 +1,124 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|meta|item)*>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST section code ID #IMPLIED>
+  <!ATTLIST item ref IDREFS #IMPLIED kind (alpha|beta|gamma) "alpha">
+  <!ATTLIST meta key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<catalog>
+  <section code="s1">
+    <title>&left;Inventory&right;</title>
+    <item ref="s2 s3" kind="gamma">outer <meta key="x" value="1"/> inner &lt; text</item>
+    <item ref="missing">tail</item>
+  </section>
+  <section code="s2">
+    <title>Second</title>
+    <item><item>nested</item><item><![CDATA[raw & markup]]></item></item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a|b|c)+>
+  <!ELEMENT a EMPTY>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c (a?, b*, c?)>
+  <!ATTLIST a xmlns:q CDATA #IMPLIED q:name CDATA #IMPLIED>
+  <!ENTITY % declarations "<!ELEMENT injected EMPTY>">
+  %declarations;
+]>
+<root xmlns="urn:default" xmlns:q="urn:q">
+  <a q:name="one"/>
+  <b>text &quot;quoted&quot; &#x0A; line</b>
+  <c>
+    <a xmlns:q="urn:alternate" q:name="two"/>
+    <b>mixed</b>
+    <c><injected/></c>
+  </c>
+  <injected/>
+</root>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE museum [
+  <!ELEMENT museum (artifact*)>
+  <!ELEMENT artifact (description|location|owner)*>
+  <!ELEMENT description (#PCDATA|emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT location EMPTY>
+  <!ELEMENT owner EMPTY>
+  <!ATTLIST artifact xml:space (default|preserve) "default">
+  <!ATTLIST location lat CDATA #REQUIRED lon CDATA #REQUIRED>
+  <!ATTLIST owner since NMTOKEN #IMPLIED>
+  <!ENTITY ampersand "&#38;">
+]>
+<museum xml:space="preserve">
+  <artifact>
+    <description>Stone <emphasis>fragment</emphasis> &amp; bronze</description>
+    <location lat="+00.000" lon="-000.000"/>
+    <owner since="0042"/>
+  </artifact>
+  <artifact xml:space="default">
+    <description><![CDATA[
+      <![CDATA[ deliberately nested-looking text ]]>
+    ]]></description>
+    <location lat="NaN" lon="INF"/>
+  </artifact>
+</museum>
+```
+
+```xml
+<!DOCTYPE graph [
+  <!ELEMENT graph (node*, edge*)>
+  <!ELEMENT node (label?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST node id ID #REQUIRED type NMTOKEN "plain">
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "data:application/octet-stream;base64,AAEC">
+]>
+<graph xmlns:g="urn:graph" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <node id="n0"><label>zero</label></node>
+  <node id="n1" type="quoted"><label>&#xD;&#xA;&#9;</label></node>
+  <edge from="n0" to="n1" weight="1e309"/>
+  <edge from="n1" to="n0" xlink:href="urn:edge"/>
+  <?graph instruction?>
+</graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE wrapper [
+  <!ELEMENT wrapper ANY>
+  <!ELEMENT pair (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value ANY>
+  <!ENTITY nested "<pair><key>generated</key><value><leaf/></value></pair>">
+  <!ENTITY quote "&#34; &apos; &lt; &gt; &amp;">
+  <!ATTLIST wrapper mode CDATA #IMPLIED>
+]>
+<wrapper mode="test &quot;mode&quot;">
+  &nested;
+  <pair>
+    <key><![CDATA[key]]></key>
+    <value>
+      <leaf attr="&quote;"/>
+      &nested;
+      <!-- comment -- with unusual content -->
+      <![CDATA[&nested; <pair/>]]>
+    </value>
+  </pair>
+  <empty/>
+</wrapper>
+```

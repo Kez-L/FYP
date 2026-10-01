@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (namespace*, record*)>
+  <!ELEMENT namespace (prefix, uri)>
+  <!ELEMENT prefix (#PCDATA)>
+  <!ELEMENT uri (#PCDATA)>
+  <!ELEMENT record (key, value, metadata)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT metadata (created, expires?, tag*)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT expires (#PCDATA)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST registry revision NMTOKEN #REQUIRED>
+  <!ATTLIST namespace builtin (yes|no) "no">
+  <!ATTLIST record state (active|sealed|expired) #REQUIRED>
+  <!ATTLIST record priority NMTOKEN "0">
+  <!ATTLIST tag class (system|user|warning) "user">
+  <!ENTITY empty "";
+  >
+]>
+<registry revision="r-2026.10">
+  <namespace builtin="yes">
+    <prefix>xml</prefix>
+    <uri>http://www.w3.org/XML/1998/namespace</uri>
+  </namespace>
+  <namespace>
+    <prefix>cfg</prefix>
+    <uri>urn:example:configuration</uri>
+  </namespace>
+  <namespace>
+    <prefix>data</prefix>
+    <uri>urn:example:data</uri>
+  </namespace>
+  <record state="active" priority="9">
+    <key>service.endpoint</key>
+    <value>https://node.example.invalid/api?v=2&amp;mode=fast</value>
+    <metadata>
+      <created>2026-01-01</created>
+      <expires>2027-01-01</expires>
+      <tag class="system">bootstrap</tag>
+      <tag class="warning">rotates-soon</tag>
+    </metadata>
+  </record>
+  <record state="sealed">
+    <key>message.template</key>
+    <value><![CDATA[Use ${name} to address the operator.
+Do not interpret <markup> in this value.]]></value>
+    <metadata>
+      <created>2025-12-31</created>
+      <tag class="user">localized</tag>
+    </metadata>
+  </record>
+  <record state="expired" priority="1">
+    <key>legacy.flag</key>
+    <value>&#x0A;disabled&#x0D;</value>
+    <metadata>
+      <created>2020-05-04</created>
+      <tag class="warning">retired</tag>
+    </metadata>
+  </record>
+</registry>

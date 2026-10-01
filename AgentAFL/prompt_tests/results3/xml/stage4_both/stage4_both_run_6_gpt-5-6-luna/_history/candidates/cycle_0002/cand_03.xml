@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (sender, recipients, subject, body)>
+  <!ELEMENT sender EMPTY>
+  <!ATTLIST sender address CDATA #REQUIRED display CDATA #IMPLIED>
+  <!ELEMENT recipients (recipient+)>
+  <!ELEMENT recipient EMPTY>
+  <!ATTLIST recipient address CDATA #REQUIRED type (to|cc|bcc) "to">
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|attachment|br)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment
+            filename CDATA #REQUIRED
+            size NMTOKEN #IMPLIED>
+  <!ELEMENT br EMPTY>
+]>
+<message>
+  <sender address="alice@example.test" display="Alice &amp; Co"/>
+  <recipients>
+    <recipient address="bob@example.test"/>
+    <recipient address="audit@example.test" type="cc"/>
+  </recipients>
+  <subject>Re: boundaries &lt;and&gt; entities</subject>
+  <body>Hello, <br/>please see <quote>the nested <quote>quoted</quote> text</quote>.
+    <attachment filename="report&amp;data.xml" size="42"/>
+    <![CDATA[
+      trailing data with ]]> represented safely
+    ]]>
+  </body>
+</message>

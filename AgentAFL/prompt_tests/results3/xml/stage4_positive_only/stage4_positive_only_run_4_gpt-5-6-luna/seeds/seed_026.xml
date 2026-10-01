@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ENTITY owner "operations">
+  <!ENTITY arrow "&#x2192;">
+  <!ELEMENT workflow (step+)>
+  <!ELEMENT step (label, action, transition*)>
+  <!ATTLIST step id ID #REQUIRED role CDATA #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT action (#PCDATA | command)*>
+  <!ELEMENT command (#PCDATA)>
+  <!ELEMENT transition EMPTY>
+  <!ATTLIST transition to IDREF #REQUIRED condition CDATA #IMPLIED>
+]>
+<workflow>
+  <step id="start" role="&owner;">
+    <label>Initialize</label>
+    <action>Load configuration <command>prepare --safe</command></action>
+    <transition to="validate"/>
+  </step>
+  <step id="validate">
+    <label>Validate input</label>
+    <action>Check the payload &arrow; record diagnostics.</action>
+    <transition to="finish" condition="valid"/>
+    <transition to="reject" condition="invalid"/>
+  </step>
+  <step id="reject">
+    <label>Reject request</label>
+    <action><command>notify-admin</command> and preserve evidence.</action>
+  </step>
+  <step id="finish">
+    <label>Complete</label>
+    <action><![CDATA[status = "done"; emit("finished");]]></action>
+  </step>
+</workflow>

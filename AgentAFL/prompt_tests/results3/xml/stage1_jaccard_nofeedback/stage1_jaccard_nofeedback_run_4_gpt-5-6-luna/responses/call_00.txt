@@ -1,0 +1,117 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <item id="A-001" active="true">
+    <title><![CDATA[<escaped> & preserved]]></title>
+    <price currency="EUR">19.95</price>
+    <tags>
+      <tag priority="1">alpha</tag>
+      <tag priority="2">βeta</tag>
+    </tags>
+    <x:metadata>
+      <x:field name="empty"/>
+      <x:field name="quoted">"value"</x:field>
+    </x:metadata>
+  </item>
+  <item id="A-002" active="false">
+    <title>Mixed text &amp; symbols &#x1F642;</title>
+    <description>before<em>inside</em>after</description>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (name, value, note?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT note (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST record kind (alpha|beta|gamma) "alpha">
+  <!ENTITY copyright "&#169; 2026">
+]>
+<archive>
+  <record kind="beta">
+    <name>first</name>
+    <value>&lt;payload&gt; &amp; &quot;quoted&quot;</value>
+    <note>Use <em>carefully</em><br/>and verify &copyright;.</note>
+  </record>
+  <record>
+    <name>second</name>
+    <value><![CDATA[line one
+line two
+]]></value>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <matrix rows="3" cols="3">
+    <row index="0"><cell>0</cell><cell>1</cell><cell>2</cell></row>
+    <row index="1"><cell><![CDATA[&lt;raw&gt;]]></cell><cell/><cell>  spaced  </cell></row>
+    <row index="2">
+      <cell value="&quot;A&quot;"/>
+      <cell value="&apos;B&apos;"/>
+      <cell value="&#10;&#13;&#9;"/>
+    </row>
+  </matrix>
+  <mixed>prefix <b>bold</b> middle <i>italic</i> suffix</mixed>
+  <empty-a/>
+  <empty-b></empty-b>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (entry*)>
+  <!ELEMENT entry (key, data)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+  <!ATTLIST entry keytype CDATA #IMPLIED>
+  <!NOTATION image SYSTEM "image/png">
+]>
+<map>
+  <entry keytype="text">
+    <key>newline&#10;key</key>
+    <data>left &apos; right &quot; center</data>
+  </entry>
+  <entry keytype="binary">
+    <key>hex:00ff</key>
+    <data><![CDATA[AAECAwQFBgcICQ==]]></data>
+  </entry>
+  <entry>
+    <key>unicode-π-東京</key>
+    <data>caf&#xE9; &#x20AC; &#x1F600;</data>
+  </entry>
+</map>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <server host="localhost" port="0" enabled="yes">
+    <limits>
+      <timeout unit="ms">000000000000000001</timeout>
+      <retry count="999999999999999999999999"/>
+      <buffer size="0x1000">4096</buffer>
+    </limits>
+    <paths>
+      <path type="unix">/var/tmp/app//cache/../data</path>
+      <path type="url">https://example.invalid/a?x=1&amp;y=2#frag</path>
+      <path type="windows">C:\temp\file.txt</path>
+    </paths>
+  </server>
+  <features>
+    <feature name="a" state="on"/>
+    <feature name="b" state="off"/>
+    <feature name="c" state="unknown">text</feature>
+  </features>
+  <commented><![CDATA[]]></commented>
+</configuration>
+```

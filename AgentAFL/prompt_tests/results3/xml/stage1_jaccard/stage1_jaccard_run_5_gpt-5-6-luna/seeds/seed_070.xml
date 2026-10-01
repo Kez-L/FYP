@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE catalog [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "payload.bin" NDATA bin>
+  <!ELEMENT catalog (item+, metadata)>
+  <!ELEMENT item (name, value, link?)>
+  <!ATTLIST item
+    id ID #REQUIRED
+    refs IDREFS #IMPLIED
+    blob ENTITY #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target IDREF #REQUIRED>
+  <!ELEMENT metadata ANY>
+  <!ATTLIST metadata source CDATA "generated">
+]>
+<catalog>
+  <item id="first" refs="second third" blob="payload">
+    <name>alpha</name>
+    <value>left<part>middle</part>right</value>
+    <link target="second"/>
+  </item>
+  <item id="second">
+    <name>βeta</name>
+    <value><![CDATA[x < y && y > z]]></value>
+  </item>
+  <item id="third">
+    <name>gamma</name>
+    <value><part>tail</part></value>
+  </item>
+  <metadata><unknown attr="1"><nested/></unknown></metadata>
+</catalog>

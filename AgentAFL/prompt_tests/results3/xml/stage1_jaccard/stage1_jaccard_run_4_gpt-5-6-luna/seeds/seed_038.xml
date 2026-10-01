@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (event*)>
+  <!ELEMENT event (payload?)>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST event kind CDATA #REQUIRED timestamp CDATA #IMPLIED>
+  <!ATTLIST chunk encoding (plain|base64|hex) "plain">
+]>
+<stream xmlns:a="urn:a" xmlns:b="urn:b" a:mode="test">
+  <event kind="open" timestamp="1970-01-01T00:00:00Z"/>
+  <event kind="data">
+    <payload>prefix<chunk encoding="hex">00ff7f</chunk>suffix</payload>
+  </event>
+  <event kind="data" b:empty="1"><![CDATA[
+    <![CDATA[not really nested]]>
+    &lt;escaped&gt;
+  ]]></event>
+  <event kind="close" timestamp="now"/>
+</stream>

@@ -1,0 +1,41 @@
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (metadata, folder*)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST metadata
+            created CDATA #REQUIRED
+            revision NMTOKEN "0">
+  <!ELEMENT folder (name, file*)>
+  <!ATTLIST folder
+            id ID #REQUIRED
+            parent IDREF #IMPLIED
+            tags NMTOKENS #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT file (name, checksum, link?)>
+  <!ATTLIST file
+            id ID #REQUIRED
+            owner IDREF #IMPLIED
+            mode (text|binary) "text"
+            hidden (yes|no) "no">
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target IDREF #REQUIRED>
+]>
+<archive>
+  <metadata created="2026-10-01" revision="17"/>
+  <folder id="root" tags="system primary">
+    <name>Root directory</name>
+    <file id="readme" mode="text">
+      <name>README</name>
+      <checksum>sha256:0000</checksum>
+    </file>
+    <file id="blob" owner="root" mode="binary" hidden="yes">
+      <name>payload.bin</name>
+      <checksum>sha256:ffff</checksum>
+      <link target="readme"/>
+    </file>
+  </folder>
+  <folder id="nested" parent="root" tags="child">
+    <name>Nested</name>
+  </folder>
+</archive>

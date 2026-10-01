@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE transcript [
+  <!ELEMENT transcript (prolog, exchange*)>
+  <!ELEMENT prolog (#PCDATA)>
+  <!ELEMENT exchange (speaker, message)>
+  <!ELEMENT speaker (#PCDATA)>
+  <!ELEMENT message (#PCDATA|quote|break|pi)*>
+  <!ELEMENT quote (#PCDATA|quote|break)*>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT pi EMPTY>
+  <!ATTLIST exchange turn NMTOKEN #REQUIRED>
+  <!ATTLIST break count NMTOKEN "1">
+  <!ENTITY intro "A &quot;quoted&quot; fragment">
+]>
+<transcript>
+  <prolog><![CDATA[Raw <header> & untouched ]]> &intro;</prolog>
+  <!-- comment with -- almost, but not quite -->
+  <?processing instruction-data?>
+  <exchange turn="A1">
+    <speaker>delta</speaker>
+    <message>start<quote>nested <quote>deep</quote> quote</quote><break count="2"/>
+      after<pi/><![CDATA[ ]]>finish</message>
+  </exchange>
+  <exchange turn="B2">
+    <speaker>echo</speaker>
+    <message><![CDATA[
+      line one
+      line two ]]><break/>tail</message>
+  </exchange>
+</transcript>

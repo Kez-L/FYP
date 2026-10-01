@@ -1,0 +1,177 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, meta?, description)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT description (#PCDATA|link|emphasis)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    refs IDREFS #IMPLIED
+    kind (book|map|other) "other"
+    cover ENTITY #IMPLIED>
+  <!ATTLIST meta
+    format NMTOKENS #IMPLIED>
+  <!ENTITY copyright "&#xA9; 2026">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY cover-image SYSTEM "cover.png" NDATA png>
+]>
+<catalog>
+  <entry id="r1" kind="book" cover="cover-image">
+    <title>Signals &amp; Symbols</title>
+    <meta format="hardcopy illustrated"/>
+    <description>
+      A study of <emphasis>encoded</emphasis> marks,
+      with a <link>cross-reference</link>.
+      &copyright;
+    </description>
+  </entry>
+  <entry id="r2" refs="r1" kind="map">
+    <title>North / South</title>
+    <description><![CDATA[coordinates: [12.50, -7.25] <unstable>]]></description>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (section*)>
+  <!ELEMENT section (heading, widget+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT widget (caption?, value|table|markup)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT markup (#PCDATA|token)*>
+  <!ELEMENT token (#PCDATA)>
+  <!ATTLIST section xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST widget id ID #REQUIRED role (metric|grid|note) "note">
+  <!ENTITY badge "<token>ready</token>">
+  <!ENTITY amp "&#38;">
+]>
+<ui:dashboard xmlns:ui="urn:interface:dashboard"
+              xmlns:data="urn:interface:data"
+              xml:base="https://example.invalid/ui/">
+  <ui:section xml:lang="en-US">
+    <ui:heading>Runtime <data:unit>overview</data:unit></ui:heading>
+    <ui:widget id="cpu" role="metric">
+      <ui:caption>Load</ui:caption>
+      <ui:value>42% &amp; stable</ui:value>
+    </ui:widget>
+    <ui:widget id="grid" role="grid">
+      <ui:table>
+        <ui:row><ui:cell>alpha</ui:cell><ui:cell>βeta</ui:cell></ui:row>
+        <ui:row><ui:cell><![CDATA[x < y && y > z]]></ui:cell><ui:cell>9&badge;</ui:cell></ui:row>
+      </ui:table>
+    </ui:widget>
+  </ui:section>
+</ui:dashboard>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pulse [
+  <!ENTITY % declarations
+    "<!ELEMENT pulse (sample|note)*>
+     <!ATTLIST pulse level NMTOKEN 'low' source CDATA #IMPLIED>">
+  %declarations;
+  <![INCLUDE[
+    <!ELEMENT sample (#PCDATA)>
+    <!ATTLIST sample at NMTOKEN #IMPLIED unit (ms|s|hz) "ms">
+  ]]>
+  <![INCLUDE[
+    <!ELEMENT note (#PCDATA|mark)*>
+    <!ELEMENT mark (#PCDATA)>
+    <!ATTLIST mark color CDATA #IMPLIED>
+  ]]>
+  <!ENTITY quoted "He said &quot;measure twice&quot;">
+  <!ENTITY fragment "<mark color='amber'>check</mark>">
+]>
+<pulse level="high" source="sensor-7">
+  <sample at="0012" unit="ms">17.5</sample>
+  <note>threshold <mark color="red">exceeded</mark></note>
+  <sample at="0013">18&#x2E;0</sample>
+  <note>&quoted;: &fragment;</note>
+</pulse>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE réseau [
+  <!ELEMENT réseau (entrée+, commentaire?)>
+  <!ELEMENT entrée (nom, valeur*, détail?)>
+  <!ELEMENT nom (#PCDATA)>
+  <!ELEMENT valeur (#PCDATA)>
+  <!ELEMENT détail (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT commentaire (#PCDATA)>
+  <!ATTLIST entrée
+    identifiant ID #REQUIRED
+    état (actif|gelé|retiré) "actif"
+    dépend-de IDREF #IMPLIED>
+  <!ATTLIST valeur type (texte|nombre|booléen) "texte">
+  <!ENTITY nbsp "&#xA0;">
+]>
+<réseau xmlns="urn:réseau:1" xmlns:x="urn:extension">
+  <entrée identifiant="nœud-α" état="actif">
+    <nom>Température</nom>
+    <valeur type="nombre">23&#x2E;75</valeur>
+    <valeur type="texte">Celsius&nbsp;extérieur</valeur>
+    <détail>mesuré par <code>x:thermo</code> à 08:30</détail>
+  </entrée>
+  <entrée identifiant="nœud-β" dépend-de="nœud-α" état="gelé">
+    <nom>Échantillon&nbsp;suivant</nom>
+    <valeur type="booléen">false</valeur>
+  </entrée>
+  <commentaire>ligne séparée&#x85;fin de message</commentaire>
+</réseau>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder|record|alias)+>
+  <!ELEMENT folder (folder|record|alias)*>
+  <!ELEMENT record (key, payload, checksum?)>
+  <!ELEMENT alias EMPTY>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk|separator)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST folder name CDATA #REQUIRED hidden (yes|no) "no">
+  <!ATTLIST record key-id ID #REQUIRED tags NMTOKENS #IMPLIED>
+  <!ATTLIST alias target IDREF #REQUIRED>
+  <!ATTLIST chunk encoding (plain|hex|base64) "plain">
+  <!ATTLIST separator width NMTOKEN "1">
+  <!ENTITY left-bracket "[">
+  <!ENTITY right-bracket "]">
+  <!ENTITY linebreak "&#x0D;&#x0A;">
+]>
+<archive>
+  <folder name="2026" hidden="no">
+    <record key-id="a17" tags="urgent external">
+      <key>report-17</key>
+      <payload>
+        <chunk encoding="plain">begin &left-bracket;section&right-bracket;</chunk>
+        <separator width="2"/>
+        <chunk encoding="hex">4A6F7921</chunk>
+        <chunk><![CDATA[raw << bytes >> remain]]></chunk>
+      </payload>
+      <checksum>9f02&linebreak;ab77</checksum>
+    </record>
+    <alias target="a17"/>
+  </folder>
+  <folder name="empty-folder"/>
+  <record key-id="z9">
+    <key>orphan</key>
+    <payload>single text node</payload>
+  </record>
+</archive>
+```

@@ -1,0 +1,127 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, description, price)>
+  <!ATTLIST entry code ID #REQUIRED status (active|retired) "active">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT price (#PCDATA)>
+  <!ENTITY currency "¤">
+  <!ENTITY note "tax included">
+]>
+<catalog>
+  <entry code="p-001">
+    <title>Compact &amp; Reliable</title>
+    <description>Small <em>portable</em> unit<br/>with a replaceable cell.</description>
+    <price>19.95 &currency; (&note;)</price>
+  </entry>
+  <entry code="p-002" status="retired">
+    <title>Legacy Model</title>
+    <description><![CDATA[Discontinued <edition> with "old" packaging.]]></description>
+    <price>0</price>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<archive>
+  <record number="001" xml:space="preserve">
+    <key>alpha&#x0B;</key>
+    <value> leading and trailing whitespace </value>
+    <empty/>
+  </record>
+  <record number="002">
+    <key>beta</key>
+    <value>line one&#x85;line two&#x2028;line three</value>
+    <payload><![CDATA[
+      <not-an-element attr='x'/>
+    ]]></payload>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, trailer)>
+  <!ELEMENT header (sender, recipient, subject)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|link|linebreak)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link target CDATA #IMPLIED>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ENTITY greeting "Hello">
+]>
+<message>
+  <header>
+    <sender>robot@example.invalid</sender>
+    <recipient>reader@example.invalid</recipient>
+    <subject>&greeting;, parser</subject>
+  </header>
+  <body>
+    Before the quote.
+    <quote>Nested <quote>quoted</quote> material.</quote>
+    Follow <link target="urn:item:42">this reference</link>
+    <linebreak/>
+    after the break.
+  </body>
+  <trailer><!-- generated --><![CDATA[END]]></trailer>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (metadata, blob)>
+  <!ELEMENT metadata (format, length, flags)>
+  <!ELEMENT format (#PCDATA)>
+  <!ELEMENT length (#PCDATA)>
+  <!ELEMENT flags (#PCDATA)>
+  <!ELEMENT blob EMPTY>
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "missing.bin" NDATA binary>
+  <!ATTLIST blob source ENTITY #IMPLIED checksum CDATA #IMPLIED>
+]>
+<package>
+  <metadata>
+    <format>raw</format>
+    <length>0000000000000048</length>
+    <flags>read-only&#x9;verified</flags>
+  </metadata>
+  <blob source="payload" checksum="sha256:00000000000000000000000000000000"/>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!ENTITY open "(open)">
+  <!ENTITY close "(close)">
+  <!ENTITY label "north &amp; west">
+  <!ELEMENT scene (layer+, note?)>
+  <!ELEMENT layer (item*)>
+  <!ATTLIST layer name NMTOKEN #REQUIRED z CDATA "0">
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item id ID #IMPLIED kind (point|line|area) "point"
+                 coords CDATA #REQUIRED visible (yes|no) "yes">
+  <!ELEMENT note (#PCDATA)>
+]>
+<scene>
+  <layer name="base" z="-1">
+    <item id="i-a" kind="area" coords="0,0 10,0 10,10 0,10"/>
+    <item id="i-b" kind="line" coords="0,0&#xA;10,10" visible="no"/>
+  </layer>
+  <layer name="labels" z="2">
+    <item id="i-c" coords="5,5"/>
+  </layer>
+  <note>&open; region: &label; &close;</note>
+</scene>
+```

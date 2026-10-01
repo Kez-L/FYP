@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<exchange xmlns="urn:example:exchange"
+          xmlns:x="urn:example:one"
+          xmlns:y="urn:example:two"
+          xml:lang="en-US"
+          xml:base="https://example.invalid/root/">
+  <x:header>
+    <x:field name="Content-Type">application/xml</x:field>
+    <x:field name="X-Trace"><![CDATA[a:b:c::[]]]></x:field>
+    <y:field y:name="alternate" xmlns:y="urn:example:header"/>
+  </x:header>
+  <payload xmlns="">
+    <record xmlns="urn:example:data" id="r-1">
+      <value x:type="integer" xmlns:x="urn:example:types">0007</value>
+      <value x:type="escaped" xmlns:x="urn:example:types"><![CDATA[&lt; &amp; >]]></value>
+      <empty/>
+    </record>
+    <record xmlns="urn:example:data" id="r-2">
+      <value xmlns="urn:example:other">text</value>
+    </record>
+  </payload>
+  <x:trailer xmlns:x="urn:example:tail" x:checksum="0">
+    <!-- deliberately placed between namespace scopes -->
+    <x:status><![CDATA[OK]]></x:status>
+  </x:trailer>
+</exchange>

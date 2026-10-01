@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a|b|c)+>
+  <!ELEMENT a EMPTY>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c (a?, b*, c?)>
+  <!ATTLIST a xmlns:q CDATA #IMPLIED q:name CDATA #IMPLIED>
+  <!ENTITY % declarations "<!ELEMENT injected EMPTY>">
+  %declarations;
+]>
+<root xmlns="urn:default" xmlns:q="urn:q">
+  <a q:name="one"/>
+  <b>text &quot;quoted&quot; &#x0A; line</b>
+  <c>
+    <a xmlns:q="urn:alternate" q:name="two"/>
+    <b>mixed</b>
+    <c><injected/></c>
+  </c>
+  <injected/>
+</root>

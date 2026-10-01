@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE network [
+  <!ELEMENT network (node+, link*)>
+  <!ELEMENT node (hostname, address+, service*)>
+  <!ELEMENT hostname (#PCDATA)>
+  <!ELEMENT address (#PCDATA)>
+  <!ELEMENT service (name, endpoint?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT endpoint (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST node id ID #REQUIRED zone NMTOKEN #IMPLIED>
+  <!ATTLIST address family (v4|v6) #REQUIRED>
+  <!ATTLIST service port NMTOKEN #REQUIRED protocol (tcp|udp) "tcp">
+  <!ATTLIST link from IDREF #REQUIRED to IDREF #REQUIRED weight NMTOKEN "1">
+  <!ENTITY local "localhost">
+  <!ENTITY colon ":">
+]>
+<network xmlns:n="urn:network">
+  <node id="gateway" zone="edge">
+    <hostname>&local;</hostname>
+    <address family="v4">127.0.0.1</address>
+    <address family="v6">::1</address>
+    <service port="443" protocol="tcp">
+      <name>https</name>
+      <endpoint>https&colon;//[::1]/status</endpoint>
+    </service>
+  </node>
+  <node id="worker-1" zone="compute">
+    <hostname>worker-1.example</hostname>
+    <address family="v4">192.0.2.44</address>
+    <service port="9000"><name>queue</name></service>
+  </node>
+  <link from="gateway" to="worker-1" weight="10"/>
+</network>

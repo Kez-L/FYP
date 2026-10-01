@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (title, payload, metadata)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|fragment)*>
+  <!ELEMENT fragment (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST record id ID #REQUIRED status (new|old|pending) "new">
+  <!ATTLIST metadata source CDATA #IMPLIED>
+  <!ENTITY marker "A&amp;B&lt;C&gt;">
+]>
+<archive>
+  <record id="r-001" status="pending">
+    <title>Boundary &marker;</title>
+    <payload><![CDATA[<not-an-element attr="x">]]><fragment>inside</fragment><!-- split --></payload>
+    <metadata source="generated"/>
+  </record>
+  <record id="r-002">
+    <title>Second &#x1F642; title</title>
+    <payload>left<fragment><![CDATA[middle &marker;]]></fragment>right</payload>
+    <metadata/>
+  </record>
+</archive>

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<?processing mode="diagnostic"?>
+<workflow id="wf-42" xml:base="https://example.test/workflows/">
+  <variables>
+    <variable name="attempts" type="integer">3</variable>
+    <variable name="enabled" type="boolean">true</variable>
+    <variable name="pattern" type="string"><![CDATA[a < b && c > d]]></variable>
+  </variables>
+  <steps>
+    <step id="prepare" result="success">
+      <action command="mkdir">/tmp/output</action>
+      <log level="info">Directory ready</log>
+    </step>
+    <step id="process" depends-on="prepare" result="retry">
+      <action command="transform">
+        <input href="input.dat"/>
+        <output href="output.dat"/>
+      </action>
+      <error code="E_TIMEOUT">
+        <message>Operation exceeded 30 seconds</message>
+        <retry-after unit="seconds">5</retry-after>
+      </error>
+    </step>
+    <step id="cleanup" depends-on="process" result="skipped"/>
+  </steps>
+  <?checkpoint name="after-steps"?>
+</workflow>

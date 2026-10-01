@@ -1,0 +1,156 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, entry+)>
+  <!ATTLIST archive generated CDATA #IMPLIED>
+  <!ELEMENT header (title, created, checksum)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT entry (name, payload, metadata?)>
+  <!ATTLIST entry id ID #REQUIRED status (new|held|closed) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT metadata (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ENTITY copyright "&#xA9; 2026">
+]>
+<archive generated="2026-10-01">
+  <header>
+    <title>Incremental &amp; Historical Archive</title>
+    <created>2026-10-01T00:00:00Z</created>
+    <checksum>sha256:7b9f4c1e</checksum>
+  </header>
+  <entry id="e001" status="closed">
+    <name>&copyright; report</name>
+    <payload>first line<linebreak/>second line<linebreak/>final line</payload>
+    <metadata>
+      <tag>sealed</tag>
+      <tag>retained</tag>
+    </metadata>
+  </entry>
+  <entry id="e002">
+    <name>未分類</name>
+    <payload>empty-adjacent<linebreak/><linebreak/>text</payload>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (layer+)>
+  <!ELEMENT layer (node|edge|group)*>
+  <!ATTLIST layer name CDATA #REQUIRED visible (yes|no) "yes">
+  <!ELEMENT node EMPTY>
+  <!ATTLIST node id ID #REQUIRED x CDATA #REQUIRED y CDATA #REQUIRED label CDATA #IMPLIED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED kind CDATA "directed">
+  <!ELEMENT group (node|edge|group)*>
+  <!ATTLIST group id ID #REQUIRED>
+]>
+<map>
+  <layer name="background" visible="no"/>
+  <layer name="network">
+    <node id="n0" x="0" y="0" label="origin"/>
+    <group id="cluster-a">
+      <node id="n1" x="-12.5" y="4.75"/>
+      <node id="n2" x="18" y="4.75" label="出口"/>
+      <edge from="n1" to="n2" kind="bridge"/>
+    </group>
+    <edge from="n0" to="n1"/>
+    <edge from="n2" to="n0" kind="return"/>
+  </layer>
+</map>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<conversation xml:lang="ar" xml:space="preserve">
+  <turn speaker="system" priority="0">
+    <![CDATA[Use the literal markers <start> and &end; without interpreting them.]]>
+  </turn>
+  <turn speaker="user" priority="1">
+    <text>Line one&#x0A;Line two&#x2028;آخر السطر</text>
+    <attachment media="application/octet-stream" encoding="base64">
+      QVhNTF9QQVlMT0FEXzEyMzQ1Njc4OTA=
+    </attachment>
+  </turn>
+  <turn speaker="assistant" priority="2">
+    <text>Result: <emphasis>complete</emphasis>.</text>
+    <!-- This comment contains -- no, it does not; it contains a single hyphen. -->
+    <metrics tokens="17" latency-ms="0"/>
+  </turn>
+</conversation>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section*)>
+  <!ELEMENT section (heading, item*)>
+  <!ATTLIST section key NMTOKEN #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (summary, price, availability)>
+  <!ATTLIST item sku ID #REQUIRED category NMTOKENS #IMPLIED>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT price EMPTY>
+  <!ATTLIST price amount CDATA #REQUIRED currency NMTOKEN #REQUIRED>
+  <!ELEMENT availability EMPTY>
+  <!ATTLIST availability quantity NMTOKEN #REQUIRED backorder (true|false) "false">
+]>
+<catalog>
+  <section key="hardware">
+    <heading>Hardware &amp; accessories</heading>
+    <item sku="sku-a17" category="tool outdoor">
+      <summary>Foldable measuring rule</summary>
+      <price amount="12.50" currency="EUR"/>
+      <availability quantity="0" backorder="true"/>
+    </item>
+    <item sku="sku-b02" category="stationery">
+      <summary>Graph paper, A4</summary>
+      <price amount="3.00" currency="GBP"/>
+      <availability quantity="240"/>
+    </item>
+  </section>
+  <section key="services">
+    <heading>Support</heading>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<?processing instruction-data?>
+<!DOCTYPE laboratory [
+  <!ELEMENT laboratory (experiment, observation*)>
+  <!ELEMENT experiment (name, parameter+)>
+  <!ATTLIST experiment id ID #REQUIRED started CDATA #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT parameter EMPTY>
+  <!ATTLIST parameter key NMTOKEN #REQUIRED value CDATA #REQUIRED unit CDATA #IMPLIED>
+  <!ELEMENT observation (sample, reading, note?)>
+  <!ATTLIST observation ref IDREF #REQUIRED>
+  <!ELEMENT sample (#PCDATA)>
+  <!ELEMENT reading (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+]>
+<laboratory>
+  <experiment id="exp-42" started="2026-09-30T23:59:59+00:00">
+    <name>Boundary response</name>
+    <parameter key="temperature" value="-273.15" unit="degC"/>
+    <parameter key="pressure" value="1.01325e5" unit="Pa"/>
+    <parameter key="mode" value="steady"/>
+  </experiment>
+  <observation ref="exp-42">
+    <sample>vacuum-chamber-A</sample>
+    <reading>0 &lt; x &lt; 1</reading>
+    <note>Calibration required after the next cycle.</note>
+  </observation>
+  <observation ref="exp-42">
+    <sample>vacuum-chamber-B</sample>
+    <reading>NaN</reading>
+  </observation>
+</laboratory>
+```

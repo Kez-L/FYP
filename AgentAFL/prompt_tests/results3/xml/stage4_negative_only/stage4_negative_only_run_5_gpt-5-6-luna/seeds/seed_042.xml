@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, signature?)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header
+    from CDATA #IMPLIED
+    to CDATA #IMPLIED
+    timestamp CDATA #IMPLIED>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk number NMTOKEN #REQUIRED encoding CDATA "base64">
+  <!ELEMENT signature (#PCDATA)>
+]>
+<envelope>
+  <header from="alice@example.invalid"
+          to="bob@example.invalid"
+          timestamp="2026-10-01T00:00:00Z"/>
+  <payload>
+    <chunk number="001">SGVsbG8sIHdvcmxkIQ==</chunk>
+    <chunk number="002">AAEC/f7/</chunk>
+    <chunk number="003"><![CDATA[not-base64-but-character-data]]></chunk>
+  </payload>
+  <signature algorithm="sha256">deadbeef</signature>
+</envelope>

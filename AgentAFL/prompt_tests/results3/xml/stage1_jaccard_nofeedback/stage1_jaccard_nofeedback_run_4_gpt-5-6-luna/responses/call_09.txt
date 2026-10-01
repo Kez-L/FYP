@@ -1,0 +1,131 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, note?)>
+  <!ELEMENT entry (title, metadata, payload)>
+  <!ATTLIST entry id ID #REQUIRED kind (alpha|beta|gamma) "alpha">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT metadata (owner, flag*)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST flag name CDATA #IMPLIED>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY intro "A&amp;B &lt;escaped&gt;">
+]>
+<catalog>
+  <entry id="e1" kind="beta">
+    <title>&intro;</title>
+    <metadata>
+      <owner>ops</owner>
+      <flag name="x"/>
+      <flag name="y"/>
+    </metadata>
+    <payload>left<chunk><![CDATA[ ]]>mid</chunk>right</payload>
+  </entry>
+  <note><![CDATA[unclosed-looking ]]]]><![CDATA[ fragment]]></note>
+</catalog>
+```
+
+```xml
+<!DOCTYPE r [
+  <!ELEMENT r (a|b|c)*>
+  <!ELEMENT a EMPTY>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c (d, e?)>
+  <!ELEMENT d (#PCDATA)>
+  <!ELEMENT e EMPTY>
+  <!ATTLIST r xmlns CDATA #IMPLIED>
+  <!ATTLIST a q ENTITY #IMPLIED>
+  <!ENTITY one "first">
+  <!ENTITY two "&one;-second">
+]>
+<r xmlns="urn:test" xmlns:p="urn:other" p:k="v">
+  <a q="two"/>
+  <b>before &two; after &#x0D; tail</b>
+  <c><d>nested</d><e/></c>
+  <a/>
+  <b><![CDATA[x]]>&#65;</b>
+</r>
+```
+
+```xml
+<?xml version="1.1" standalone="no"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, attachment*)>
+  <!ELEMENT header (from, to, subject)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body ANY>
+  <!ELEMENT attachment (#PCDATA)>
+  <!ATTLIST attachment encoding NMTOKEN "base64">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY file SYSTEM "missing-resource.bin" NDATA bin>
+]>
+<message>
+  <header>
+    <from>sender@example.invalid</from>
+    <to>receiver@example.invalid</to>
+    <subject>mixed &amp; markup</subject>
+  </header>
+  <body>
+    <p xmlns="urn:p">paragraph</p>
+    <empty/>
+    <!-- comment with --? -->
+    <?processing instruction-data?>
+  </body>
+  <attachment encoding="raw">&file;</attachment>
+</message>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ENTITY % common "<!ELEMENT item (#PCDATA|sub)*> <!ELEMENT sub EMPTY>">
+  %common;
+  <!ELEMENT root (item, item?, tail)>
+  <!ELEMENT tail (#PCDATA)>
+  <!ATTLIST item level NMTOKEN #IMPLIED>
+]>
+<root>
+  <item level="0">
+    text
+    <sub/>
+    <![CDATA[<not-an-element> & still text]]>
+    <sub/>
+  </item>
+  <item level="1"><![CDATA[]]></item>
+  <tail>alpha&#x20;beta&#13;&#10;gamma</tail>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form [
+  <!ELEMENT form (section+)>
+  <!ELEMENT section (label, field*)>
+  <!ATTLIST section name CDATA #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST field
+    key ID #IMPLIED
+    type (text|number|hidden) "text"
+    required (yes|no) "no">
+  <!ENTITY amp "&#38;">
+  <!ENTITY nested "value-&amp;-tail">
+]>
+<form>
+  <section name="general">
+    <label>General &nested;</label>
+    <field key="f1" type="text" required="yes">one</field>
+    <field key="f2" type="number">42</field>
+  </section>
+  <section name="advanced">
+    <label><![CDATA[raw ]]> &amp; encoded</label>
+    <field type="hidden"/>
+    <field key="f3">line1
+line2</field>
+  </section>
+</form>
+```

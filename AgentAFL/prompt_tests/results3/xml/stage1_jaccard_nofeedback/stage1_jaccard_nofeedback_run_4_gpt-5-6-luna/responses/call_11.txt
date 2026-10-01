@@ -1,0 +1,133 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:meta="urn:example:meta">
+  <meta:info meta:source="generated" meta:revision="0007"/>
+  <section id="α&amp;β" enabled="true">
+    <item sku="A-001">
+      <name><![CDATA[Widget <deluxe> & "special"]]></name>
+      <price currency="€">19.95</price>
+      <tags>
+        <tag>one</tag>
+        <tag><![CDATA[two & three]]></tag>
+        <tag/>
+      </tags>
+    </item>
+    <item sku="A-002" status="archived">
+      <name>Plain text</name>
+      <details>left<emphasis>middle</emphasis>right</details>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, body, footer)>
+  <!ELEMENT header (title, author+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT body (paragraph | table | note)*>
+  <!ELEMENT paragraph (#PCDATA | strong | link)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<report>
+  <header>
+    <title>Quarterly &amp; Final Results</title>
+    <author>R&amp;D</author>
+    <author>QA</author>
+  </header>
+  <body>
+    <paragraph>First <strong>important</strong> paragraph with a <link>reference</link>.</paragraph>
+    <table>
+      <row><cell>name</cell><cell>value</cell></row>
+      <row><cell>alpha</cell><cell>42</cell></row>
+    </table>
+    <note><![CDATA[Use <row> elements only inside tables.]]></note>
+  </body>
+  <footer>End</footer>
+</report>
+```
+
+```xml
+<?xml version="1.1"?>
+<configuration>
+  <paths>
+    <path kind="input">file:///tmp/in&#x70;ut</path>
+    <path kind="output">file:///tmp/output?x=1&amp;y=2</path>
+  </paths>
+  <options>
+    <option name="empty" value=""/>
+    <option name="quoted" value="a&apos;b&quot;c"/>
+    <option name="whitespace">
+      
+      padded
+    </option>
+  </options>
+  <matrix rows="2" columns="3">
+    <row index="0"><value>0</value><value>1</value><value>2</value></row>
+    <row index="1"><value>3</value><value>4</value><value>5</value></row>
+  </matrix>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<message xmlns:x="urn:x" xmlns:y="urn:y">
+  <x:header>
+    <x:id>00000000-0000-0000-0000-000000000000</x:id>
+    <x:flags x:urgent="false" y:level="high"/>
+  </x:header>
+  <x:body xml:space="preserve">
+    Text before
+    <y:part><![CDATA[
+      line one
+      line two
+      ]]> 
+    </y:part>
+    <y:part>
+      <y:empty/>
+      <y:empty attr="&lt;&gt;&amp;&quot;&apos;"/>
+    </y:part>
+    Text after
+  </x:body>
+  <x:attachments>
+    <x:attachment type="application/octet-stream" size="0"/>
+  </x:attachments>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ATTLIST archive format (zip|tar|raw) "raw">
+  <!ELEMENT entry (name, payload, checksum?)>
+  <!ATTLIST entry id ID #REQUIRED kind CDATA "file">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+]>
+<archive format="tar">
+  <entry id="e1" kind="file">
+    <name>dir/alpha.txt</name>
+    <payload>prefix<chunk><![CDATA[00ff00aa]]></chunk>suffix</payload>
+    <checksum>00000000000000000000000000000000</checksum>
+  </entry>
+  <entry id="e2">
+    <name>dir/beta&amp;gamma.bin</name>
+    <payload/>
+  </entry>
+  <entry id="e3" kind="directory">
+    <name>dir/sub/</name>
+    <payload><chunk>nested</chunk><chunk>content</chunk></payload>
+  </entry>
+</archive>
+```

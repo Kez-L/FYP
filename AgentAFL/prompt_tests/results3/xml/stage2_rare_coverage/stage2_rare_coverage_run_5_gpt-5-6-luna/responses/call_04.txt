@@ -1,0 +1,164 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % feature "INCLUDE">
+  <![%feature;[
+    <!ELEMENT catalog (section+, footer?)>
+    <!ELEMENT section (title, entry*)>
+    <!ELEMENT title (#PCDATA)>
+    <!ELEMENT entry (#PCDATA|em|br)*>
+    <!ELEMENT em (#PCDATA|br)*>
+    <!ELEMENT br EMPTY>
+    <!ELEMENT footer (#PCDATA)>
+    <!ATTLIST catalog version CDATA "1">
+    <!ATTLIST section name ID #REQUIRED>
+    <!ATTLIST entry key CDATA #IMPLIED>
+  ]]>
+  <!ENTITY hello "hello &amp; welcome">
+  <!ENTITY nested "&#x3C;em&#x3E;encoded&#x3C;/em&#x3E;">
+]>
+<catalog version="2">
+  <section name="alpha">
+    <title>Entity test</title>
+    <entry key="a">&hello; <em>world</em><br/>tail</entry>
+    <entry key="b"><![CDATA[<not-an-element>&hello;</not-an-element>]]></entry>
+    <entry key="c">&nested;</entry>
+  </section>
+  <section name="beta">
+    <title xml:lang="fr">Résumé</title>
+    <entry key="mixed">left<em>middle</em>right</entry>
+  </section>
+  <footer>done</footer>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<exchange xmlns="urn:example:exchange"
+          xmlns:x="urn:example:one"
+          xmlns:y="urn:example:two"
+          xml:lang="en-US"
+          xml:base="https://example.invalid/root/">
+  <x:header>
+    <x:field name="Content-Type">application/xml</x:field>
+    <x:field name="X-Trace"><![CDATA[a:b:c::[]]]></x:field>
+    <y:field y:name="alternate" xmlns:y="urn:example:header"/>
+  </x:header>
+  <payload xmlns="">
+    <record xmlns="urn:example:data" id="r-1">
+      <value x:type="integer" xmlns:x="urn:example:types">0007</value>
+      <value x:type="escaped" xmlns:x="urn:example:types"><![CDATA[&lt; &amp; >]]></value>
+      <empty/>
+    </record>
+    <record xmlns="urn:example:data" id="r-2">
+      <value xmlns="urn:example:other">text</value>
+    </record>
+  </payload>
+  <x:trailer xmlns:x="urn:example:tail" x:checksum="0">
+    <!-- deliberately placed between namespace scopes -->
+    <x:status><![CDATA[OK]]></x:status>
+  </x:trailer>
+</exchange>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (metadata, object*)>
+  <!ELEMENT metadata (owner, created)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT object (name, link?, checksum)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST archive id ID #REQUIRED>
+  <!ATTLIST object id ID #REQUIRED ref IDREF #IMPLIED kind (text|binary|image) "text">
+  <!ATTLIST link target ENTITY #IMPLIED>
+  <!ATTLIST checksum algorithm CDATA #FIXED "sha256">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY quote "The value is &quot;opaque&quot;">
+]>
+<archive id="root">
+  <metadata>
+    <owner>&quote;</owner>
+    <created>2026-10-01T00:00:00Z</created>
+  </metadata>
+  <object id="first" kind="text">
+    <name>alpha.txt</name>
+    <checksum algorithm="sha256">000000</checksum>
+  </object>
+  <object id="second" ref="first" kind="binary">
+    <name>logo.bin</name>
+    <link target="logo"/>
+    <checksum algorithm="sha256"><![CDATA[deadbeef]]></checksum>
+  </object>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (camera, group*)>
+  <!ELEMENT camera EMPTY>
+  <!ELEMENT group (group|shape|transform)*>
+  <!ELEMENT shape EMPTY>
+  <!ELEMENT transform EMPTY>
+  <!ATTLIST scene units CDATA "px">
+  <!ATTLIST camera x CDATA "0" y CDATA "0" zoom CDATA "1">
+  <!ATTLIST group name CDATA #IMPLIED visible (true|false) "true">
+  <!ATTLIST shape type (circle|rect|path) #REQUIRED data CDATA #IMPLIED>
+  <!ATTLIST transform matrix CDATA #REQUIRED>
+  <!ENTITY unit "10">
+  <!ENTITY origin "0,0">
+  <!ENTITY scale "&unit;px">
+]>
+<scene units="&scale;">
+  <?render mode="preview" quality="0"/>
+  <camera x="&origin;" y="&origin;" zoom="1.000"/>
+  <group name="outer" visible="true">
+    <transform matrix="1 0 0 1 &origin;"/>
+    <shape type="rect" data="0,0 100,50"/>
+    <group name="nested">
+      <shape type="circle" data="&unit;,&unit;,&unit;"/>
+      <transform matrix="0 -1 1 0 5 5"/>
+      <group visible="false">
+        <shape type="path" data="M0 0 L1 1 Z"/>
+      </group>
+    </group>
+  </group>
+  <!-- a second top-level group with no children -->
+  <group name="empty"/>
+</scene>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE log [
+  <!ELEMENT log (entry*)>
+  <!ELEMENT entry (message, detail*)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ATTLIST entry level (info|warn|error) "info">
+  <!ATTLIST entry sequence NMTOKEN #REQUIRED>
+  <!ENTITY separator "&#x85;">
+  <!ENTITY control "&#x1;&#x7F;&#x2028;">
+]>
+<log xmlns="urn:example:log" xml:space="preserve">
+  <entry sequence="A-000" level="info">
+    <message>first&separator;line</message>
+    <detail>plain <code>alpha</code> tail</detail>
+  </entry>
+  <entry sequence="B_001" level="warn">
+    <message><![CDATA[brackets ] ]> and ampersands &amp;]]></message>
+    <detail xml:lang="ja">日本語</detail>
+  </entry>
+  <entry sequence="C.002" level="error">
+    <message>before&control;after</message>
+    <detail><code>ERR_0x00</code><code>ERR_0xFF</code></detail>
+  </entry>
+  <?checkpoint id="3"?>
+</log>
+```

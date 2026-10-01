@@ -1,0 +1,210 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % commonAttrs ' xml:lang NMTOKEN "en" xml:space (default|preserve) "default" '>
+  <!ENTITY publisher "North &amp; South Press">
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY cover SYSTEM "cover.jpg" NDATA jpeg>
+  <!ELEMENT catalog (book+, supplement?)>
+  <!ELEMENT book (title, author+, description?, coverref?)>
+  <!ATTLIST book
+    isbn ID #REQUIRED
+    genre (fiction|essay|reference) "fiction"
+    %commonAttrs;
+  >
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|quote)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT coverref EMPTY>
+  <!ATTLIST coverref image ENTITY #IMPLIED>
+  <!ELEMENT supplement (entry*)>
+  <!ELEMENT entry (#PCDATA)>
+]>
+<catalog>
+  <book isbn="b-001" genre="essay" xml:lang="en">
+    <title>Contours of &publisher;</title>
+    <author>Ada North</author>
+    <author>Sam South</author>
+    <description xml:space="preserve">A <em>layered</em> account with <quote>short quotations</quote>.</description>
+    <coverref image="cover"/>
+  </book>
+  <supplement>
+    <entry>Index</entry>
+    <entry>Errata</entry>
+  </supplement>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (panel*)>
+  <!ELEMENT panel (heading, widget*)>
+  <!ATTLIST panel
+    name NMTOKEN #REQUIRED
+    collapsed (true|false) "false"
+  >
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT widget (label, value, threshold?)>
+  <!ATTLIST widget
+    key ID #REQUIRED
+    state (active|paused|failed) "active"
+  >
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA|unit)*>
+  <!ELEMENT unit EMPTY>
+  <!ATTLIST unit symbol CDATA #REQUIRED>
+  <!ELEMENT threshold (#PCDATA)>
+]>
+<dashboard xmlns="urn:example:dashboard" xmlns:m="urn:example:metrics" xml:base="https://example.invalid/ui/">
+  <panel name="cpu" collapsed="false">
+    <heading>Processor</heading>
+    <widget key="cpu-load" state="active">
+      <label>Load</label>
+      <value>73<unit symbol="%"/></value>
+      <threshold>90</threshold>
+    </widget>
+  </panel>
+  <panel name="memory" collapsed="true">
+    <heading>Memory &amp; cache</heading>
+    <widget key="ram-used" state="paused">
+      <label>Resident</label>
+      <value><![CDATA[4096]]><unit symbol="MiB"/></value>
+    </widget>
+    <?refresh interval="30"?>
+  </panel>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (meta, body, attachment*)>
+  <!ELEMENT meta (sender, recipient+, reply-to?)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT reply-to (#PCDATA)>
+  <!ELEMENT body (paragraph+, list?)>
+  <!ELEMENT paragraph (#PCDATA|strong|link|br)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|link)*>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment
+    filename CDATA #REQUIRED
+    media-type CDATA #REQUIRED
+    size NMTOKEN #IMPLIED
+  >
+]>
+<message>
+  <meta>
+    <sender>robot@example.invalid</sender>
+    <recipient>one@example.invalid</recipient>
+    <recipient>two@example.invalid</recipient>
+    <reply-to>archive@example.invalid</reply-to>
+  </meta>
+  <body>
+    <paragraph>Hello <strong>team</strong>.<br/>Please review the <link href="urn:case:42">case</link>.</paragraph>
+    <paragraph>Symbols: &lt; &gt; &amp; &quot; &apos; and &#x20AC;.</paragraph>
+    <list>
+      <item>first</item>
+      <item>second <link href="https://example.invalid/help">reference</link></item>
+    </list>
+  </body>
+  <attachment filename="summary.txt" media-type="text/plain" size="128"/>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ENTITY % optional SYSTEM "urn:config:optional">
+  <![ IGNORE [
+    <!ELEMENT never-seen EMPTY>
+    <!ATTLIST never-seen debug CDATA #IMPLIED>
+  ]]>
+  <!ELEMENT configuration (defaults, environment*, override*)>
+  <!ELEMENT defaults (property*)>
+  <!ELEMENT environment (property*)>
+  <!ATTLIST environment name NMTOKEN #REQUIRED>
+  <!ELEMENT override (property*)>
+  <!ATTLIST override target IDREF #REQUIRED>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST property
+    key NMTOKEN #REQUIRED
+    value CDATA #REQUIRED
+    secret (yes|no) "no"
+  >
+  <!ATTLIST configuration version CDATA #FIXED "3">
+]>
+<configuration version="3">
+  <defaults>
+    <property key="timeout" value="30"/>
+    <property key="retries" value="2"/>
+  </defaults>
+  <environment name="staging">
+    <property key="endpoint" value="https://staging.example.invalid"/>
+    <property key="token" value="masked" secret="yes"/>
+  </environment>
+  <environment name="production">
+    <property key="endpoint" value="https://prod.example.invalid"/>
+  </environment>
+  <override target="staging">
+    <property key="timeout" value="45"/>
+  </override>
+</configuration>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (start, step+, finish)>
+  <!ATTLIST workflow id ID #REQUIRED owner CDATA #IMPLIED>
+  <!ELEMENT start EMPTY>
+  <!ATTLIST start next IDREF #REQUIRED>
+  <!ELEMENT step (action, on-success?, on-failure?)>
+  <!ATTLIST step
+    id ID #REQUIRED
+    kind (task|decision|wait) #REQUIRED
+  >
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT on-success EMPTY>
+  <!ATTLIST on-success goto IDREF #REQUIRED>
+  <!ELEMENT on-failure EMPTY>
+  <!ATTLIST on-failure goto IDREF #REQUIRED>
+  <!ELEMENT finish (#PCDATA)>
+]>
+<workflow id="wf-main" owner="ops">
+  <start next="prepare"/>
+  <step id="prepare" kind="task">
+    <action>Prepare input</action>
+    <on-success goto="check"/>
+    <on-failure goto="abort"/>
+  </step>
+  <step id="check" kind="decision">
+    <action>Validate checksum</action>
+    <on-success goto="publish"/>
+    <on-failure goto="repair"/>
+  </step>
+  <step id="repair" kind="task">
+    <action>Repair &amp; requeue</action>
+    <on-success goto="check"/>
+    <on-failure goto="abort"/>
+  </step>
+  <step id="publish" kind="task">
+    <action>Publish result</action>
+    <on-success goto="done"/>
+    <on-failure goto="abort"/>
+  </step>
+  <step id="abort" kind="wait">
+    <action>Stop workflow</action>
+    <on-failure goto="abort"/>
+  </step>
+  <finish>completed</finish>
+</workflow>
+```

@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!DOCTYPE laboratory [
+  <!ELEMENT laboratory (protocol, sample-set)>
+  <!ELEMENT protocol (name, version, step+)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT version (#PCDATA)>
+  <!ELEMENT step (instruction, reagent*, duration?)>
+  <!ATTLIST step index NMTOKEN #REQUIRED>
+  <!ELEMENT instruction (#PCDATA|warning|math)*>
+  <!ELEMENT warning (#PCDATA)>
+  <!ELEMENT math (#PCDATA)>
+  <!ELEMENT reagent EMPTY>
+  <!ATTLIST reagent id ID #REQUIRED volume CDATA #REQUIRED unit (ml|ul|g) "ml">
+  <!ELEMENT duration (#PCDATA)>
+  <!ELEMENT sample-set (sample+)>
+  <!ELEMENT sample (label, property*)>
+  <!ATTLIST sample id ID #REQUIRED kind CDATA #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+]>
+<laboratory>
+  <protocol>
+    <name>Thermal Cycle</name>
+    <version>3.0-beta</version>
+    <step index="1">
+      <instruction>Place the vessel at <math>20 &lt; T &lt; 25</math> degrees.</instruction>
+      <reagent id="buffer" volume="500" unit="ul"/>
+      <duration>00:05:00</duration>
+    </step>
+    <step index="2">
+      <instruction>Raise temperature slowly.<warning>Do not seal the container.</warning></instruction>
+      <reagent id="catalyst" volume="0.25" unit="g"/>
+      <duration>PT2H</duration>
+    </step>
+  </protocol>
+  <sample-set>
+    <sample id="S-α" kind="control">
+      <label>Blank sample</label>
+      <property>
+        <key>matrix</key>
+        <value><![CDATA[H2O / trace salts]]></value>
+      </property>
+    </sample>
+    <sample id="S-β">
+      <label>Unknown &amp; replicate</label>
+      <property>
+        <key>temperature</key>
+        <value>22.000</value>
+      </property>
+      <property>
+        <key>notes</key>
+        <value>contains π and café</value>
+      </property>
+    </sample>
+  </sample-set>
+</laboratory>

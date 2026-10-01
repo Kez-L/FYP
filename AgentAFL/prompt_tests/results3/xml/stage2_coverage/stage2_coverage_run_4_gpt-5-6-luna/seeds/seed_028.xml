@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, body)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST field name NMTOKEN #REQUIRED xml:space (default|preserve) "default">
+  <!ELEMENT body (message|attachment|body)*>
+  <!ELEMENT message (#PCDATA|br|quote)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT quote (#PCDATA|br|quote)*>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST attachment content-type CDATA #REQUIRED encoding CDATA #IMPLIED>
+]>
+<envelope xmlns="urn:mail:v2" xmlns:x="urn:extra">
+  <header>
+    <field name="subject" xml:space="preserve">  A&amp;B  </field>
+    <field name="x:trace">q</field>
+  </header>
+  <body>
+    <message>Hello<br/>world<quote>nested<br/>text</quote></message>
+    <attachment content-type="application/octet-stream" encoding="base64"/>
+    <body>
+      <message><![CDATA[<not-an-element> & raw ]]></message>
+    </body>
+  </body>
+</envelope>

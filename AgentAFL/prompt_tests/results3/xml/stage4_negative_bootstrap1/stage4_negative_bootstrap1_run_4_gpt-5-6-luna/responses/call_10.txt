@@ -1,0 +1,156 @@
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section id ID #REQUIRED xml:space (default|preserve) "default">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|link|br)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link target IDREF #IMPLIED>
+  <!ELEMENT br EMPTY>
+  <!ENTITY greeting "A &amp; B">
+]>
+<catalog>
+  <section id="s-main" xml:space="preserve">
+    <title>&greeting;</title>
+    <item>before<link target="s-main">self</link><br/>after</item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE document [
+  <!ELEMENT document (metadata?, content)>
+  <!ELEMENT metadata (author+, tag*)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT content (chunk+)>
+  <!ELEMENT chunk (#PCDATA|comment|code)*>
+  <!ELEMENT comment (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ATTLIST code language NMTOKEN #IMPLIED>
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+]>
+<document>
+  <metadata>
+    <author>α</author>
+    <author>β</author>
+    <tag xml:lang="und">mixed</tag>
+  </metadata>
+  <content>
+    <chunk>literal &left;tag&right;</chunk>
+    <chunk><comment>nested-looking text</comment><code language="cdata">x &amp; y</code></chunk>
+  </content>
+</document>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+    path NMTOKEN #REQUIRED
+    type NOTATION #IMPLIED
+    size NMTOKEN "0">
+  <!NOTATION image SYSTEM "image-handler">
+  <!NOTATION text SYSTEM "text-handler">
+  <!ELEMENT data (blob*)>
+  <!ELEMENT blob (#PCDATA)>
+  <!ATTLIST blob encoding (base64|hex|raw) "raw">
+]>
+<package>
+  <manifest>
+    <file path="cover.svg" type="image" size="17"/>
+    <file path="readme.txt" type="text"/>
+  </manifest>
+  <data>
+    <blob encoding="hex">00ff7e</blob>
+    <blob><![CDATA[AAECAwQFBgcICQ==]]></blob>
+  </data>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, body, footer?)>
+  <!ELEMENT header (subject, generated, property*)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST property name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT body (section+)>
+  <!ELEMENT section (heading?, paragraph+, list?)>
+  <!ATTLIST section level NMTOKEN "1">
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|b|i|ref|linebreak)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref href URI #REQUIRED>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|b|i)*>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<report>
+  <header>
+    <subject>Quarterly &quot;delta&quot;</subject>
+    <generated>2026-10-01T00:00:00Z</generated>
+    <property name="empty"/>
+    <property name="owner" value="ops &amp; qa"/>
+  </header>
+  <body>
+    <section level="2">
+      <heading>Changes</heading>
+      <paragraph>One <b>bold</b> <i>italic</i><linebreak/><ref href="urn:x-example"/></paragraph>
+      <list><item>first</item><item>second <b>part</b></item></list>
+    </section>
+  </body>
+  <footer>End &#x1F600;</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (context?, request, response)>
+  <!ELEMENT context (trace?, feature*)>
+  <!ELEMENT trace (#PCDATA)>
+  <!ELEMENT feature (#PCDATA)>
+  <!ATTLIST feature enabled (yes|no) "yes">
+  <!ELEMENT request (method, route, parameter*)>
+  <!ELEMENT method (#PCDATA)>
+  <!ELEMENT route (#PCDATA)>
+  <!ELEMENT parameter (#PCDATA)>
+  <!ATTLIST parameter key CDATA #REQUIRED>
+  <!ELEMENT response (status, header*, body?)>
+  <!ELEMENT status (#PCDATA)>
+  <!ELEMENT header (#PCDATA)>
+  <!ATTLIST header name CDATA #REQUIRED>
+  <!ELEMENT body ANY>
+]>
+<envelope>
+  <context>
+    <?trace-id 9f8e7d?>
+    <trace>0000-ffff</trace>
+    <feature enabled="no">compression</feature>
+  </context>
+  <request>
+    <method>POST</method>
+    <route>/v1/search?x=1&amp;y=2</route>
+    <parameter key="q">a&amp;b&lt;c&gt;</parameter>
+    <parameter key="limit">000</parameter>
+  </request>
+  <response>
+    <status>204</status>
+    <header name="X-Empty"></header>
+    <body><result/><result><![CDATA[]]></result></body>
+  </response>
+</envelope>
+```

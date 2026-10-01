@@ -1,0 +1,23 @@
+{
+  "call": 12,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE map [\n  <!ELEMENT map (continent*)>\n  <!ELEMENT continent (country+)>\n  <!ELEMENT country (city*, note?)>\n  <!ELEMENT city (#PCDATA)>\n  <!ELEMENT note (#PCDATA)>\n  <!ATTLIST continent label CDATA #REQUIRED>\n  <!ATTLIST country iso NMTOKEN #IMPLIED>\n  <!ENTITY mark \"&#x2605;\">\n]>\n<map>\n  <continent label=\"north\">\n    <country iso=\"NO\">\n      <city>Oslo</city>\n      <city>Bergen</city>\n      <note>Harbor &mark; district</note>\n    </country>\n    <country iso=\"IS\">\n      <city>Reykjavik</city>\n    </country>\n  </continent>\n  <continent label=\"south\"/>\n</map>\n\n--- example 2 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE transcript [\n  <!ELEMENT transcript (session, speaker+, segment*)>\n  <!ELEMENT session (topic, started, location?)>\n  <!ELEMENT topic (#PCDATA)>\n  <!ELEMENT started (#PCDATA)>\n  <!ELEMENT location (#PCDATA)>\n  <!ELEMENT speaker (name, role, bio?)>\n  <!ELEMENT name (#PCDATA)>\n  <!ELEMENT role (#PCDATA)>\n  <!ELEMENT bio (#PCDATA)>\n  <!ELEMENT segment (voice?, cue?, utterance, annotation*)>\n  <!ELEMENT voice EMPTY>\n  <!ELEMENT cue (#PCDATA)>\n  <!ELEMENT utterance (#PCDATA|emphasis|pause|term)*>\n  <!ELEMENT emphasis (#PCDATA)>\n  <!ELEMENT pause EMPTY>\n  <!ELEMENT term (#PCDATA)>\n  <!ELEMENT annotation (#PCDATA)>\n  <!ATTLIST speaker key ID #REQUIRED>\n  <!ATTLIST segment who IDREF #REQUIRED offset CDATA #IMPLIED>\n  <!ATTLIST voice channel (left|right|center) \"center\">\n  <!ATTLIST pause ms CDATA #REQUIRED>\n  <!ATTLIST annotation kind CDATA #REQUIRED>\n]>\n<transcript>\n  <session>\n    <topic>Unexpected input handling</topic>\n    <started>2026-10-01 14:07:03 +0000</started>\n    <location>lab-4 / booth-2</location>\n  </session>\n  <speaker key=\"spk-a\">\n    <name>Rina</name>\n    <role>operator</role>\n    <bio>Maintains the test harness.</bio>\n  </speaker>\n  <speaker key=\"spk-b\">\n    <name>Owen</name>\n    <role>reviewer</role>\n  </speaker>\n  <segment who=\"spk-a\" offset=\"00:00:04.120\">\n    <voice channel=\"left\"/>\n    <utterance>We should preserve <emphasis>all</emphasis> delimiters< pause ms=\"180\"/>even when they look like markup.</utterance>\n    <annotation kind=\"acoustic\">overlap-start</annotation>\n  </segment>\n  <segment who=\"spk-b\" offset=\"00:00:09.875\">\n    <cue>question</cue>\n    <utterance>The token <term>alpha&amp;beta</term> is data, not a tag.</utterance>\n    <annotation kind=\"editor\">verify punctuation</annotation>\n    <annotation kind=\"confidence\">0.82</annotation>\n  </segment>\n</transcript>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-01T03:38:49.441283+00:00"
+}

@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ENTITY % common "
+    <!ELEMENT property EMPTY>
+    <!ATTLIST property name CDATA #REQUIRED value CDATA #IMPLIED enabled (yes|no) 'yes'>
+  ">
+  %common;
+  <!ENTITY % optional "<!ELEMENT extension (property*)>">
+  %optional;
+  <!ELEMENT configuration (defaults, profile*, extension?)>
+  <!ATTLIST configuration xmlns CDATA #IMPLIED>
+  <!ELEMENT defaults (property*)>
+  <!ELEMENT profile (inherits?, property*)>
+  <!ATTLIST profile id ID #REQUIRED>
+  <!ELEMENT inherits EMPTY>
+  <!ATTLIST inherits ref IDREF #REQUIRED>
+  <!ENTITY slash "/">
+  <![IGNORE[
+    <!ELEMENT obsolete ANY>
+    <!ATTLIST obsolete reason CDATA #IMPLIED>
+  ]]>
+]>
+<configuration xmlns="urn:cfg">
+  <defaults>
+    <property name="path" value="c&slash;temp"/>
+    <property name="verbose" enabled="no"/>
+  </defaults>
+  <profile id="base">
+    <property name="timeout" value="30"/>
+  </profile>
+  <profile id="child">
+    <inherits ref="base"/>
+    <property name="message" value="&lt;ready&gt;"/>
+  </profile>
+  <extension>
+    <property name="extra" value="yes"/>
+  </extension>
+</configuration>

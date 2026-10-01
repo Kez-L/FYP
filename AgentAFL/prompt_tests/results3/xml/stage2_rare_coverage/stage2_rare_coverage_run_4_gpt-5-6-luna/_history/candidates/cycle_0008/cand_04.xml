@@ -1,0 +1,46 @@
+<?xml version="1.1"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (open, event*, close)>
+  <!ELEMENT open EMPTY>
+  <!ATTLIST open token CDATA #REQUIRED>
+  <!ELEMENT event (timestamp, payload)>
+  <!ATTLIST event level (debug|info|warn|error) "info">
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT payload (text|number|flag|list|object)>
+  <!ELEMENT text (#PCDATA)>
+  <!ELEMENT number (#PCDATA)>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST flag value (yes|no) #REQUIRED>
+  <!ELEMENT list (item*)>
+  <!ELEMENT item (#PCDATA|object|list)*>
+  <!ELEMENT object (field*)>
+  <!ELEMENT field (text|number|flag|list|object)>
+  <!ATTLIST field name NMTOKEN #REQUIRED>
+  <!ELEMENT close EMPTY>
+  <!ATTLIST close token CDATA #REQUIRED>
+  <!ENTITY intro "stream-start">
+]>
+<stream>
+  <open token="&intro;"/>
+  <event level="debug">
+    <timestamp>2026-10-01T00:00:00.000000Z</timestamp>
+    <payload>
+      <object>
+        <field name="message"><text>hello&#x85;world</text></field>
+        <field name="attempt"><number>0000000000000000007</number></field>
+        <field name="flags">
+          <list>
+            <item><flag value="yes"/></item>
+            <item><object><field name="nested"><text>value</text></field></object></item>
+            <item><list><item>leaf</item><item>tail</item></list></item>
+          </list>
+        </field>
+      </object>
+    </payload>
+  </event>
+  <event level="error">
+    <timestamp>never</timestamp>
+    <payload><text><![CDATA[unterminated-looking ]] marker: ]]> is data only in this context</text></payload>
+  </event>
+  <close token="stream-start"/>
+</stream>

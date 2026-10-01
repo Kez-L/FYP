@@ -1,0 +1,148 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+)>
+  <!ELEMENT entry (title, metadata, payload)>
+  <!ATTLIST entry id ID #REQUIRED kind (text|binary|mixed) "text">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT metadata (author?, tag*)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+]>
+<archive>
+  <entry id="e1" kind="mixed">
+    <title>Quarterly Notes</title>
+    <metadata>
+      <author>R&amp;D</author>
+      <tag>alpha</tag>
+      <tag>unicode-λ</tag>
+    </metadata>
+    <payload>before<chunk><![CDATA[<not-an-element>&raw;</not-an-element>]]></chunk>after</payload>
+  </entry>
+  <entry id="e2">
+    <title>Empty payload</title>
+    <metadata/>
+    <payload/>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:report xmlns:r="urn:reports:v2" xmlns:x="urn:extra">
+  <r:header x:code="A-17">
+    <r:name xml:lang="fr">Résumé &amp; résultats</r:name>
+    <r:date>2026-10-01T12:34:56Z</r:date>
+  </r:header>
+  <r:sections>
+    <r:section id="intro">
+      <r:heading>Introduction</r:heading>
+      <r:paragraph>Text with <r:emphasis>nested emphasis</r:emphasis> and a <r:link href="https://example.invalid/a?b=1&amp;c=2">link</r:link>.</r:paragraph>
+    </r:section>
+    <r:section id="data">
+      <r:heading x:format="table">Values</r:heading>
+      <r:table>
+        <r:row><r:cell>1</r:cell><r:cell>2</r:cell></r:row>
+        <r:row><r:cell/><r:cell>NaN</r:cell></r:row>
+      </r:table>
+    </r:section>
+  </r:sections>
+</r:report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (product*)>
+  <!ELEMENT product (name, price, dimensions?, notes?)>
+  <!ATTLIST product sku CDATA #REQUIRED available (yes|no) "yes">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT dimensions (width, height, depth)>
+  <!ELEMENT width (#PCDATA)>
+  <!ELEMENT height (#PCDATA)>
+  <!ELEMENT depth (#PCDATA)>
+  <!ELEMENT notes (note+)>
+  <!ELEMENT note (#PCDATA)>
+]>
+<catalog>
+  <product sku="A&amp;B-001" available="yes">
+    <name>Glass &lt;Cube&gt;</name>
+    <price>19.95</price>
+    <dimensions>
+      <width>10</width>
+      <height>10</height>
+      <depth>10</depth>
+    </dimensions>
+    <notes>
+      <note><![CDATA[Handle with care]]></note>
+      <note>Keep away from heat.</note>
+    </notes>
+  </product>
+  <product sku="EMPTY-002" available="no">
+    <name/>
+    <price>0</price>
+  </product>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<configuration>
+  <environment name="test">
+    <setting key="path">/var/tmp/data</setting>
+    <setting key="flags">
+      <value>fast</value>
+      <value>safe</value>
+      <value enabled="false">legacy</value>
+    </setting>
+  </environment>
+  <environment name="production">
+    <setting key="path"><![CDATA[/srv/app/<data>]]></setting>
+    <secret>
+      <key id="primary">redacted</key>
+      <rotation>
+        <interval unit="days">30</interval>
+        <owner email="ops@example.invalid">Operations</owner>
+      </rotation>
+    </secret>
+  </environment>
+  <defaults>
+    <retry count="3"/>
+    <timeout unit="ms">1500</timeout>
+  </defaults>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (node*)>
+  <!ELEMENT node (label?, node*, value?)>
+  <!ATTLIST node id ID #IMPLIED ref IDREF #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+]>
+<map>
+  <node id="root">
+    <label>Root</label>
+    <node id="left">
+      <label>Left branch</label>
+      <node id="leaf-a"><value>alpha</value></node>
+      <node id="leaf-b" ref="leaf-a"><value>beta</value></node>
+    </node>
+    <node id="right">
+      <label><![CDATA[Right & center]]></label>
+      <node id="deep-1">
+        <node id="deep-2">
+          <node id="deep-3">
+            <value>terminal</value>
+          </node>
+        </node>
+      </node>
+    </node>
+  </node>
+</map>
+```

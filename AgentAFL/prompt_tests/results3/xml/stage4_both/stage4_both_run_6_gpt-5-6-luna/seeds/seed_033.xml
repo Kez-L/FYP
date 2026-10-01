@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE drawing [
+  <!NOTATION png SYSTEM "image/png">
+  <!NOTATION jpeg PUBLIC "-//Example//NOTATION JPEG 1.0//EN" "image/jpeg">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ELEMENT drawing (defs, viewport, layer*)>
+  <!ELEMENT defs (gradient|pattern|image)*>
+  <!ELEMENT gradient (stop+)>
+  <!ATTLIST gradient id ID #REQUIRED spread (pad|reflect|repeat) "pad">
+  <!ELEMENT stop EMPTY>
+  <!ATTLIST stop offset CDATA #REQUIRED color CDATA #REQUIRED>
+  <!ELEMENT pattern EMPTY>
+  <!ATTLIST pattern id ID #REQUIRED width CDATA #REQUIRED height CDATA #REQUIRED>
+  <!ELEMENT image EMPTY>
+  <!ATTLIST image id ID #IMPLIED src ENTITY #REQUIRED>
+  <!ELEMENT viewport EMPTY>
+  <!ATTLIST viewport left CDATA #REQUIRED top CDATA #REQUIRED right CDATA #REQUIRED bottom CDATA #REQUIRED>
+  <!ELEMENT layer (item*)>
+  <!ATTLIST layer name CDATA #REQUIRED blend (normal|multiply|screen) "normal">
+  <!ELEMENT item (rect|ellipse|path|label)>
+  <!ATTLIST item id ID #IMPLIED opacity CDATA #IMPLIED>
+  <!ELEMENT rect EMPTY>
+  <!ATTLIST rect x CDATA #REQUIRED y CDATA #REQUIRED width CDATA #REQUIRED height CDATA #REQUIRED fill CDATA #IMPLIED>
+  <!ELEMENT ellipse EMPTY>
+  <!ATTLIST ellipse cx CDATA #REQUIRED cy CDATA #REQUIRED rx CDATA #REQUIRED ry CDATA #REQUIRED>
+  <!ELEMENT path (#PCDATA)>
+  <!ELEMENT label (#PCDATA)>
+]>
+<drawing xmlns="urn:example:drawing" xmlns:ink="urn:example:ink">
+  <defs>
+    <gradient id="sunset" spread="reflect">
+      <stop offset="0%" color="#ffcc66"/>
+      <stop offset="100%" color="#663399"/>
+    </gradient>
+    <pattern id="grid" width="8" height="8"/>
+    <image id="stamp" src="logo"/>
+  </defs>
+  <viewport left="-10" top="-5" right="800" bottom="600"/>
+  <layer name="backdrop" blend="multiply">
+    <item id="r1" opacity="0.8"><rect x="0" y="0" width="800" height="600" fill="url(#sunset)"/></item>
+    <item><ellipse cx="400" cy="240" rx="120" ry="90"/></item>
+  </layer>
+  <layer name="foreground">
+    <item id="curve"><path>M 10,20 C 40,5 80,55 120,30 Z</path></item>
+    <item><label>Δ rendering test — café</label></item>
+  </layer>
+</drawing>

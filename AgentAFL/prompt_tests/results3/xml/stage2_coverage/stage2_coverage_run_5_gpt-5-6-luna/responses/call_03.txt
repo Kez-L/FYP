@@ -1,0 +1,166 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (name, price, note?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emph|code)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ATTLIST catalog xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ATTLIST item sku ID #REQUIRED status (active|retired) "active">
+  <!ENTITY euro "&#x20AC;">
+  <!ENTITY mark "<emph>limited</emph>">
+]>
+<catalog xml:lang="en">
+  <section id="s1">
+    <title>Odd &amp; Useful</title>
+    <item sku="p-01" status="active">
+      <name>Widget</name>
+      <price>19.95 &euro;</price>
+      <note>Seasonal <emph>offer</emph>; use <code>--fast</code> &mark;.</note>
+    </item>
+    <item sku="p-02" status="retired">
+      <name><![CDATA[Bracket <test>]]></name>
+      <price>0</price>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body, attachment*)>
+  <!ELEMENT header (sender, recipient, subject)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|linebreak)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST message priority (low|normal|high) "normal">
+  <!ATTLIST attachment kind NOTATION (text|binary) #REQUIRED>
+  <!NOTATION text SYSTEM "text/plain">
+  <!NOTATION binary PUBLIC "urn:example:binary">
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+]>
+<message priority="high">
+  <header>
+    <sender>alice@example.test</sender>
+    <recipient>bob@example.test</recipient>
+    <subject>Boundary &left;check&right;</subject>
+  </header>
+  <body>
+    Intro
+    <quote>Nested <quote>quoted</quote> material</quote>
+    <linebreak/>
+    <![CDATA[raw ]]> characters
+  </body>
+  <attachment kind="binary" />
+</message>
+```
+
+```xml
+<!DOCTYPE map [
+  <!ELEMENT map (entry*)>
+  <!ELEMENT entry (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|pair)*>
+  <!ELEMENT pair (key, value)>
+  <!ATTLIST entry keyref IDREF #IMPLIED>
+  <!ATTLIST pair keyref IDREF #IMPLIED>
+  <!ATTLIST map xml:space (default|preserve) "default">
+  <!ENTITY one "first">
+  <!ENTITY two "&one; second">
+]>
+<map xml:space="preserve">
+  <entry keyref="missing">
+    <key>root</key>
+    <value>
+      &two;
+      <pair keyref="missing">
+        <key><![CDATA[a&b<c]]></key>
+        <value>text &amp; more</value>
+      </pair>
+      <pair>
+        <key>empty</key>
+        <value/>
+      </pair>
+    </value>
+  </entry>
+  <entry>
+    <key>tail</key>
+    <value>trailing</value>
+  </entry>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (layer+)>
+  <!ELEMENT layer (object*)>
+  <!ELEMENT object (label?, geometry)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT geometry (point|box|path)>
+  <!ELEMENT point EMPTY>
+  <!ELEMENT box EMPTY>
+  <!ELEMENT path (#PCDATA)>
+  <!ATTLIST scene version CDATA #FIXED "2">
+  <!ATTLIST layer name CDATA #REQUIRED visible (true|false) "true">
+  <!ATTLIST object id ID #IMPLIED transform CDATA #IMPLIED>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ATTLIST box x CDATA #REQUIRED y CDATA #REQUIRED width CDATA #REQUIRED height CDATA #REQUIRED>
+  <!ATTLIST path closed (yes|no) "no">
+]>
+<scene version="2">
+  <layer name="background" visible="false">
+    <object id="o0">
+      <geometry><box x="-1" y="0" width="640" height="480"/></geometry>
+    </object>
+  </layer>
+  <layer name="foreground">
+    <object id="o1" transform="rotate(45)">
+      <label>points &lt; paths</label>
+      <geometry><point x="1.0" y="2e3"/></geometry>
+    </object>
+    <object>
+      <geometry><path closed="yes"><![CDATA[M 0 0 L 10 10 Z]]></path></geometry>
+    </object>
+  </layer>
+</scene>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT data (chunk*)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST package xmlns:p CDATA #FIXED "urn:pkg">
+  <!ATTLIST file p:name CDATA #REQUIRED size CDATA #IMPLIED checksum CDATA #IMPLIED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding (plain|base64) "plain">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY percent "&#37;">
+]>
+<p:package xmlns:p="urn:pkg" xmlns:m="urn:meta" m:version="0.0">
+  <manifest>
+    <file p:name="a&amp;b.txt" size="0" checksum=""/>
+    <file p:name="unicode-&#x03BB;.bin" size="18446744073709551615"/>
+  </manifest>
+  <data>
+    <chunk index="0">hello&nbsp;world</chunk>
+    <chunk index="1" encoding="base64"><![CDATA[AAEC/f8=]]></chunk>
+    <chunk index="2">100&percent;</chunk>
+  </data>
+</p:package>
+```

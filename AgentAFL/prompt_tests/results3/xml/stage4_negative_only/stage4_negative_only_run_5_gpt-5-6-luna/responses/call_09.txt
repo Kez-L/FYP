@@ -1,0 +1,117 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, metadata?, description)>
+  <!ATTLIST entry key ID #REQUIRED status (draft|published|archived) "draft">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST metadata created CDATA #IMPLIED updated CDATA #IMPLIED>
+  <!ELEMENT description (#PCDATA|code|br)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ENTITY product "parser">
+  <!ENTITY note "A &product; sample">
+]>
+<catalog>
+  <entry key="e1" status="published">
+    <title>Entity &amp; CDATA coverage</title>
+    <metadata created="2026-01-01T00:00:00Z"/>
+    <description>Text before <code><![CDATA[if (a < b && c > d) {}]]></code><br/>Text after &note;.</description>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item ref IDREF #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY external SYSTEM "missing-resource.bin" NDATA bin>
+]>
+<root xml:space="preserve">
+  <!-- comment with -- unusual? -->
+  <?build stage="fuzz"?>
+  <item id="first" ref="second" data="&quot;&apos;&lt;&gt;&amp;"/>
+  <item id="second"/>
+  <![CDATA[
+    whitespace
+    <not-an-element/>
+    ]]>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="urn:alpha" xmlns:a="urn:alpha" xmlns:b="urn:beta" xmlns:n="urn:nested">
+  <a:node xmlns:a="" xmlns="urn:local" local="yes">
+    <child xmlns="urn:alpha" a:flag="1"/>
+    <n:branch xmlns:n="urn:other">
+      <n:leaf xml:lang="ja">こんにちは</n:leaf>
+    </n:branch>
+  </a:node>
+  <b:node xmlns:b="urn:alpha" b:value="42">
+    <b:inner xmlns:b="urn:beta">namespace rebound</b:inner>
+  </b:node>
+</root>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (record*)>
+  <!ELEMENT record (key, value, value?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+]>
+<stream>
+  <record>
+    <key>alpha</key>
+    <value>one<part>nested</part>two</value>
+    <value><![CDATA[raw ]]>three</value>
+  </record>
+  <?checkpoint?>
+  <record>
+    <key>beta</key>
+    <value>line&#x0A;break&#x9;tab</value>
+  </record>
+</stream>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE document [
+  <!ELEMENT document (section|separator)*>
+  <!ELEMENT section (heading, section|body)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT body (#PCDATA|list|quote|empty)*>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA|list)*>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+]>
+<document>
+  <section id="outer">
+    <heading>Recursive structure</heading>
+    <section id="inner">
+      <heading>Nested section</heading>
+      <body>
+        <list>
+          <item>first</item>
+          <item>second<list><item>deep</item></list></item>
+        </list>
+        <quote>“quoted” &amp; escaped</quote>
+        <empty/>
+      </body>
+    </section>
+  </section>
+  <separator/>
+  <section id="tail">
+    <heading>Mixed content</heading>
+    <body>prefix<quote>middle</quote>suffix</body>
+  </section>
+</document>
+```

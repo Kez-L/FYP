@@ -1,0 +1,139 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, meta?, body)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT body (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA|em)*>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST entry id ID #REQUIRED status (draft|final|archived) "draft">
+  <!ATTLIST meta created CDATA #IMPLIED>
+  <!ENTITY mark "&#x2063;">
+]>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <entry id="e-01" status="final">
+    <title>Boundary &amp; &lt;Markup&gt;</title>
+    <meta created="2026-10-01"/>
+    <body>alpha<em>nested <em>emphasis</em></em><br/>omega&mark;</body>
+  </entry>
+  <entry id="e-02">
+    <title><![CDATA[raw ]]><![CDATA[]]> <![CDATA[text]]></title>
+    <body x:flag="yes">left<?note data?>right</body>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST row index NMTOKEN #REQUIRED>
+  <!ATTLIST cell r CDATA #IMPLIED c CDATA #IMPLIED>
+  <!ENTITY q "&#34;">
+  <!ENTITY amp "&#38;">
+]>
+<matrix>
+  <row index="0"><cell r="0" c="0">0</cell><cell r="0" c="1">&q;one&q;</cell></row>
+  <row index="1"><cell r="1" c="0"><![CDATA[&q;]]></cell><cell r="1" c="1">two&amp;three</cell></row>
+  <row index="2"><cell r="2" c="0">&amp;&amp;&amp;</cell><cell r="2" c="1">&amp;</cell></row>
+</matrix>
+```
+
+```xml
+<!DOCTYPE package [
+  <!ELEMENT package (header, archive)>
+  <!ELEMENT header (name, checksum)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT archive (folder|file|link)*>
+  <!ELEMENT folder (folder|file|link)*>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST archive version CDATA #IMPLIED>
+  <!ATTLIST folder path CDATA #REQUIRED>
+  <!ATTLIST file path CDATA #REQUIRED size CDATA #IMPLIED>
+  <!ATTLIST link path CDATA #REQUIRED target CDATA #REQUIRED>
+]>
+<package>
+  <header>
+    <name>bundle.tar</name>
+    <checksum>sha256:0123456789abcdef</checksum>
+  </header>
+  <archive version="0">
+    <folder path="/">
+      <file path="/readme.txt" size="0"/>
+      <folder path="/deep">
+        <link path="/deep/current" target="../readme.txt"/>
+        <file path="/deep/data.bin" size="18446744073709551615"/>
+      </folder>
+    </folder>
+    <file path="/trailing"/>
+  </archive>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (event*)>
+  <!ELEMENT event (payload?)>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST event kind CDATA #REQUIRED timestamp CDATA #IMPLIED>
+  <!ATTLIST chunk encoding (plain|base64|hex) "plain">
+]>
+<stream xmlns:a="urn:a" xmlns:b="urn:b" a:mode="test">
+  <event kind="open" timestamp="1970-01-01T00:00:00Z"/>
+  <event kind="data">
+    <payload>prefix<chunk encoding="hex">00ff7f</chunk>suffix</payload>
+  </event>
+  <event kind="data" b:empty="1"><![CDATA[
+    <![CDATA[not really nested]]>
+    &lt;escaped&gt;
+  ]]></event>
+  <event kind="close" timestamp="now"/>
+</stream>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section, section?, appendix)>
+  <!ELEMENT section (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (label, value, note?)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA|fragment)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT fragment (#PCDATA)>
+  <!ELEMENT appendix EMPTY>
+  <!ATTLIST section name CDATA #REQUIRED>
+  <!ATTLIST item key ID #REQUIRED>
+  <!ATTLIST value type CDATA #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY euro "&#x20AC;">
+]>
+<report>
+  <section name="primary">
+    <heading>Measurements</heading>
+    <item key="i1">
+      <label>temperature</label>
+      <value type="decimal">-273.15&nbsp;°C</value>
+      <note>lower bound</note>
+    </item>
+    <item key="i2">
+      <label>currency</label>
+      <value type="text">10&nbsp;&euro;<fragment><![CDATA[ / unit ]]></fragment></value>
+    </item>
+  </section>
+  <section name="secondary">
+    <heading>Empty values</heading>
+    <item key="i3"><label>x</label><value/></item>
+  </section>
+  <appendix ref="missing"/>
+</report>
+```

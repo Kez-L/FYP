@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE transaction [
+  <!ELEMENT transaction (request, response, audit?)>
+  <!ELEMENT request (method, uri, headers, body?)>
+  <!ELEMENT response (status, headers, body?)>
+  <!ELEMENT headers (header*)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT method (#PCDATA)>
+  <!ELEMENT uri (#PCDATA)>
+  <!ELEMENT status (#PCDATA)>
+  <!ELEMENT body (#PCDATA|part|raw)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT audit (event+)>
+  <!ELEMENT event (#PCDATA)>
+  <!ATTLIST header name CDATA #REQUIRED>
+  <!ATTLIST body encoding (plain|base64|escaped) "plain">
+  <!ENTITY amp "&amp;">
+  <!ENTITY slash "&#x2F;">
+  <!ENTITY payload "x&slash;y&slash;z">
+]>
+<transaction>
+  <request>
+    <method>POST</method>
+    <uri>/v1/items?x=1&amp;y=2</uri>
+    <headers>
+      <header name="Content-Type">application/xml</header>
+      <header name="X-Trace">&amp;&lt;&gt;&quot;&apos;</header>
+    </headers>
+    <body encoding="escaped">
+      <part><![CDATA[<item id="not-parsed">raw</item>]]></part>
+      <part>&payload;</part>
+    </body>
+  </request>
+  <response>
+    <status>207</status>
+    <headers>
+      <header name="Warning">mixed &amp; encoded</header>
+    </headers>
+    <body encoding="plain">ok</body>
+  </response>
+  <audit>
+    <event time="0">created</event>
+    <event time="1">processed</event>
+  </audit>
+</transaction>

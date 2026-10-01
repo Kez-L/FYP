@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload, trailer?)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ELEMENT payload (data|data-group)+>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT data-group (data*)>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST entry path CDATA #REQUIRED size CDATA #IMPLIED>
+  <!ATTLIST data encoding (raw|base64|hex) "raw">
+]>
+<package>
+  <manifest>
+    <entry path="a/../b" size="000"/>
+    <entry path="x&amp;y" size="NaN"/>
+  </manifest>
+  <payload>
+    <data encoding="raw">line1
+line2&#x0A;line3</data>
+    <data-group>
+      <data encoding="hex"><![CDATA[00ff7e]]></data>
+      <data encoding="base64">QUJDREVGRw==</data>
+    </data-group>
+  </payload>
+  <trailer>after payload<?mark?></trailer>
+</package>

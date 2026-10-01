@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, footer?)>
+  <!ELEMENT entry (title, meta?, description)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT description (#PCDATA|em|ref)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST catalog xmlns CDATA #IMPLIED version NMTOKEN #REQUIRED>
+  <!ATTLIST entry id ID #REQUIRED kind (book|media|other) "other">
+  <!ATTLIST meta key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY mark "&#x2026;">
+  <!ENTITY quoted "&lt;tag&gt;">
+]>
+<catalog xmlns="urn:catalog:v2" version="3">
+  <entry id="e1" kind="book">
+    <title>Signals &amp; Noise</title>
+    <meta key="lang" value="en"/>
+    <description>alpha <em>beta</em> gamma <ref target="e2"/></description>
+  </entry>
+  <entry id="e2">
+    <title>&quoted; &mark;</title>
+    <description><![CDATA[line one
+line two ]]>tail</description>
+  </entry>
+  <?catalog-check mode="strict"?>
+  <footer>done</footer>
+</catalog>

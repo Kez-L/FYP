@@ -1,0 +1,183 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (heading, body, tag*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT body (#PCDATA|code|br)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST archive xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST record id ID #REQUIRED status (draft|published|withdrawn) "draft">
+  <!ATTLIST tag key NMTOKEN #REQUIRED>
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "archive-logo.png" NDATA png>
+  <!ENTITY publisher "Northwind &amp; Sons">
+  <!ENTITY revision "second edition">
+]>
+<archive xml:lang="en" id="collection-main">
+  <!-- A record containing mixed content and entity-expanded text. -->
+  <record id="r-001" status="published">
+    <heading>Field notes from &publisher;</heading>
+    <body>Use <code>--catalog</code> before scanning.<br/>The &revision; includes a revised index.</body>
+    <tag key="topic">cataloguing</tag>
+    <tag key="year">2025</tag>
+  </record>
+  <record id="r-002">
+    <heading>Unpublished fragment</heading>
+    <body><![CDATA[Literal markup: <entry status="raw"/> remains untouched.]]></body>
+    <tag key="topic">preservation</tag>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<envelope xmlns="urn:example:message"
+          xmlns:m="urn:example:meta"
+          xmlns:sec="urn:example:security"
+          xml:lang="fr">
+  <?route priority="urgent"?>
+  <header>
+    <m:message-id>urn:msg:2026:04:17</m:message-id>
+    <m:sent-at timezone="Z">2026-04-17T08:15:00Z</m:sent-at>
+    <sec:credentials algorithm="token">
+      <sec:subject>operator-7</sec:subject>
+      <sec:scope>read&#x20;write</sec:scope>
+    </sec:credentials>
+  </header>
+  <payload xml:space="preserve">
+    <command name="reindex" dry-run="false">
+      <argument key="path">/srv/data/&amp;incoming;</argument>
+      <argument key="pattern"><![CDATA[*.xml;*.xhtml]]></argument>
+      <options>
+        <option enabled="true">case-sensitive</option>
+        <option enabled="false">follow-links</option>
+      </options>
+    </command>
+    <result xmlns="">
+      <code>queued</code>
+      <message>Request accepted &lt;without&gt; execution.</message>
+    </result>
+  </payload>
+  <!-- The signature is deliberately represented as character data. -->
+  <signature xmlns:ds="urn:example:digital-signature"
+             ds:method="urn:example:sha256">AAECAwQFBgcICQ==</signature>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="urn:example:package"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ext="urn:example:extension"
+         version="3.4">
+  <?build profile="portable"?>
+  <metadata>
+    <title>Portable data bundle</title>
+    <creator xml:lang="ja">佐藤 京子</creator>
+    <keywords>XML, parsing, interoperability</keywords>
+  </metadata>
+  <resources>
+    <resource id="main" media-type="application/xml" checksum="sha256:00ff11">
+      <xi:include href="parts/main.xml" parse="xml">
+        <xi:fallback>
+          <notice>Embedded fallback content.</notice>
+        </xi:fallback>
+      </xi:include>
+    </resource>
+    <resource id="readme" media-type="text/plain">
+      <xi:include href="README.txt" parse="text">
+        <xi:fallback><![CDATA[No external readme was supplied.]]></xi:fallback>
+      </xi:include>
+    </resource>
+  </resources>
+  <ext:embedded><![CDATA[
+    function transform(node) {
+      return "<result>" + node.value + "</result>";
+    }
+  ]]></ext:embedded>
+  <links>
+    <link rel="self" href="urn:bundle:portable-34"/>
+    <link rel="license" href="https://example.invalid/license" xml:base="https://example.invalid/"/>
+  </links>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (profile+, defaults)>
+  <!ELEMENT profile (name, setting+, include*)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT setting (#PCDATA|strong|literal)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT literal (#PCDATA)>
+  <!ELEMENT include EMPTY>
+  <!ELEMENT defaults (setting+)>
+  <!ATTLIST configuration id ID #REQUIRED>
+  <!ATTLIST profile id ID #REQUIRED inherits IDREF #IMPLIED>
+  <!ATTLIST setting name NMTOKEN #REQUIRED type (string|integer|boolean) "string">
+  <!ATTLIST include ref IDREF #REQUIRED>
+  <!ENTITY open "<strong>">
+  <!ENTITY close "</strong>">
+  <!ENTITY product "Orion">
+  <!ENTITY nbsp "&#160;">
+]>
+<configuration id="cfg-root">
+  <profile id="base">
+    <name>&product; base profile</name>
+    <setting name="label">Default&nbsp;workspace</setting>
+    <setting name="retries" type="integer">03</setting>
+    <setting name="enabled" type="boolean">true</setting>
+    <include ref="shared"/>
+  </profile>
+  <profile id="secure" inherits="base">
+    <name>Secure profile</name>
+    <setting name="warning">Use &open;encrypted storage&close; only.</setting>
+    <setting name="path" type="string"><literal>/var/lib/orion &amp; cache</literal></setting>
+  </profile>
+  <defaults>
+    <setting name="timeout" type="integer">30</setting>
+    <setting name="separator">A&nbsp;B</setting>
+  </defaults>
+</configuration>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<telemetry xmlns="urn:example:telemetry"
+           xmlns:x="urn:example:telemetry:extra"
+           xml:id="session-α"
+           xml:base="https://telemetry.example.invalid/archive/">
+  <?capture mode="lossless"?>
+  <device model="Q-400" serial="SN-0007">
+    <firmware major="2" minor="0" patch="9"/>
+    <location latitude="+51.5074" longitude="-0.1278">
+      <label xml:lang="en">London &amp; South</label>
+    </location>
+  </device>
+  <samples interval="PT0.250S" count="3">
+    <sample id="s1" at="2026-10-01T00:00:00.000Z">
+      <reading unit="°C" channel="ambient">18.75</reading>
+      <reading unit="%" channel="humidity">&#x1F;</reading>
+      <x:quality code="A">nominal</x:quality>
+    </sample>
+    <sample id="s2" at="2026-10-01T00:00:00.250Z">
+      <reading unit="°C" channel="ambient">18.80</reading>
+      <reading unit="%" channel="humidity">42</reading>
+      <x:quality code="B"><![CDATA[calibration pending]]></x:quality>
+    </sample>
+    <sample id="s3" at="2026-10-01T00:00:00.500Z" xmlns="">
+      <value name="raw" encoding="hex">00ff7e</value>
+      <value name="state">ok</value>
+    </sample>
+  </samples>
+  <annotations>
+    <!-- Control characters are represented only through XML 1.1 character references. -->
+    <note author="system">Line one&#x85;line two&#x2028;line three</note>
+    <x:flag severity="low" enabled="true"/>
+  </annotations>
+</telemetry>
+```

@@ -1,0 +1,21 @@
+<!DOCTYPE r [
+  <!ENTITY % declarations '
+    <!ELEMENT r (a|b|c)*>
+    <!ELEMENT a (#PCDATA)>
+    <!ELEMENT b ANY>
+    <!ELEMENT c EMPTY>
+  '>
+  %declarations;
+  <!ENTITY one "alpha">
+  <!ENTITY two "&one;-beta">
+  <!ENTITY loop "&two;&amp;&loop;">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ATTLIST r mode CDATA "x" blob ENTITY #IMPLIED>
+  <!ATTLIST c kind NOTATION (bin) #IMPLIED>
+]>
+<r mode="y">
+  <a>&two;</a>
+  <b><![CDATA[raw ]]> text ]]> tail</b>
+  <c kind="bin"/>
+  <a>&loop;</a>
+</r>

@@ -1,0 +1,136 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY writer "A. &amp; B.">
+  <!ENTITY % feature "INCLUDE">
+  <![%feature;[
+    <!ELEMENT catalog (entry+, note?)>
+    <!ELEMENT entry (title, detail, link?)>
+    <!ELEMENT title (#PCDATA)>
+    <!ELEMENT detail (#PCDATA|emph|br)*>
+    <!ELEMENT emph (#PCDATA)>
+    <!ELEMENT br EMPTY>
+    <!ELEMENT link EMPTY>
+    <!ATTLIST entry code ID #REQUIRED status (new|old|held) "new">
+    <!ATTLIST link href CDATA #REQUIRED>
+  ]]>
+  <!ELEMENT note (#PCDATA)>
+]>
+<catalog>
+  <entry code="e1" status="held">
+    <title>&writer;</title>
+    <detail>alpha <emph>beta</emph><br/> gamma</detail>
+    <link href="urn:item:one"/>
+  </entry>
+  <entry code="e2">
+    <title>delta</title>
+    <detail><![CDATA[x]]> &amp; <emph>epsilon</emph></detail>
+    <link href="urn:item:two"/>
+  </entry>
+  <note>tail</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ENTITY % declarations "<!ATTLIST packet mode CDATA #IMPLIED checksum NMTOKEN #IMPLIED>">
+  %declarations;
+  <!ELEMENT packet (header, payload, trailer)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload ANY>
+  <!ELEMENT trailer (#PCDATA)>
+  <!ATTLIST header version NMTOKEN #REQUIRED>
+  <!ENTITY left "L&lt;">
+  <!ENTITY right "&gt;R">
+]>
+<packet mode="stream" checksum="a1_b2">
+  <header version="07"/>
+  <payload>
+    <chunk xmlns="urn:chunk" id="x">one</chunk>
+    <chunk xmlns="urn:chunk" id="y"><![CDATA[<&]]></chunk>
+    &left;&right;
+  </payload>
+  <trailer>done&#13;&#10;now</trailer>
+</packet>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta?, body)>
+  <!ELEMENT meta (property*)>
+  <!ELEMENT property EMPTY>
+  <!ELEMENT body (message|attachment)+>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ATTLIST property key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ATTLIST attachment name CDATA #REQUIRED type CDATA "application/octet-stream">
+  <!ENTITY nbsp "&#160;">
+]>
+<envelope xmlns:x="urn:meta" xmlns:y="urn:data">
+  <meta>
+    <property key="x:priority" value="high"/>
+    <property key="y:empty"/>
+  </meta>
+  <body>
+    <message>hello&nbsp;world</message>
+    <attachment name="a&amp;b.bin"/>
+    <message><![CDATA[<not-an-element/>]]></message>
+    <attachment name="last" type="text/plain"/>
+  </body>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node*)>
+  <!ELEMENT node (label?, edge*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST node id ID #REQUIRED kind (root|leaf|branch) "leaf">
+  <!ATTLIST edge to IDREF #REQUIRED weight NMTOKEN #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "payload.bin" NDATA bin>
+]>
+<graph>
+  <node id="n0" kind="root">
+    <label>start</label>
+    <edge to="n1" weight="01"/>
+    <edge to="n2"/>
+  </node>
+  <node id="n1">
+    <label>été &amp; tea</label>
+  </node>
+  <node id="n2" kind="branch">
+    <edge to="n1" weight="&#x2B;3"/>
+  </node>
+</graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section*)>
+  <!ELEMENT section (heading, item*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT item (#PCDATA|code|![CDATA[]]>)>
+  <!ELEMENT code (#PCDATA)>
+  <!ATTLIST report xmlns CDATA #IMPLIED>
+  <!ENTITY open "{">
+  <!ENTITY close "}">
+]>
+<?prepare mode="fuzz"?>
+<report xmlns="urn:report" xmlns:r="urn:row" xml:lang="de">
+  <section r:id="s1">
+    <heading>Überblick</heading>
+    <item>before &open;<code>value</code>&close;</item>
+    <item><![CDATA[raw ]]> tail &lt; end</item>
+  </section>
+  <section r:id="s2" xml:space="preserve">
+    <heading><?inside instruction?></heading>
+    <item>mixed<code>123</code>text</item>
+  </section>
+</report>
+```

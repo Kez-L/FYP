@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT data ANY>
+  <!ATTLIST file path CDATA #REQUIRED checksum CDATA #IMPLIED>
+  <!ENTITY open "<tag origin='entity'>">
+  <!ENTITY close "</tag>">
+]>
+<package>
+  <manifest>
+    <file path="a/b&amp;c.txt" checksum=""/>
+    <file path="space&#x20;name.bin" checksum="deadbeef"/>
+  </manifest>
+  <data>
+    &open;payload &lt;inside&gt; &amp; literal&close;
+    <wrapper><![CDATA[not markup: <fake/> &open;]]></wrapper>
+    <?emit target?>
+  </data>
+</package>

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ENTITY % declarations '
+    <!ELEMENT envelope (header, payload, trailer)>
+    <!ELEMENT header (source, destination, token)>
+    <!ELEMENT source (#PCDATA)>
+    <!ELEMENT destination (#PCDATA)>
+    <!ELEMENT token (#PCDATA)>
+    <!ELEMENT payload (chunk+)>
+    <!ELEMENT chunk (#PCDATA)>
+    <!ATTLIST chunk index CDATA #REQUIRED encoding CDATA "base64">
+    <!ELEMENT trailer EMPTY>
+    <!ATTLIST trailer status (ok|failed|unknown) "unknown">
+  '>
+  %declarations;
+  <!ENTITY amp "&#38;">
+]>
+<envelope>
+  <header>
+    <source>node-A</source>
+    <destination>node-B</destination>
+    <token>tkn-&amp;-42</token>
+  </header>
+  <payload>
+    <chunk index="0">QUJDREVGRw==</chunk>
+    <chunk index="1" encoding="hex">00ff10aa&amp;amp;</chunk>
+    <chunk index="2"><![CDATA[raw
+multiline
+content]]></chunk>
+  </payload>
+  <trailer status="ok"/>
+</envelope>

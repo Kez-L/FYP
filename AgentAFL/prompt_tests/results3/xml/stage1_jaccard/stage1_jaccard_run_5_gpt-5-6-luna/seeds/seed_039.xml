@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE sequence [
+  <!ELEMENT sequence (alpha|beta|gamma)*>
+  <!ELEMENT alpha (#PCDATA|item)*>
+  <!ELEMENT beta (item?, marker+)>
+  <!ELEMENT gamma EMPTY>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT marker (#PCDATA)>
+  <!ATTLIST alpha ref ID #IMPLIED>
+  <!ATTLIST beta ref IDREF #IMPLIED>
+  <!ATTLIST item role (first|middle|last) #IMPLIED>
+  <!ENTITY one "1">
+  <!ENTITY two "&one;&one;">
+  <!ENTITY three "&two;&one;">
+]>
+<sequence>
+  <alpha ref="a1">A<item role="first">x</item><item>y</item>tail</alpha>
+  <beta ref="a1">
+    <item role="last">&three;</item>
+    <marker>m1</marker>
+    <marker><![CDATA[m2 & m3]]></marker>
+  </beta>
+  <gamma/>
+  <alpha>mixed <item>content</item> after <?pi value?> end</alpha>
+</sequence>

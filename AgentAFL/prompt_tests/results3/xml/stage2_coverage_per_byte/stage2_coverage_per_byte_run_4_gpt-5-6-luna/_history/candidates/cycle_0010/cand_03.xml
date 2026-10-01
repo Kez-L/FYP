@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (entry+)>
+  <!ELEMENT entry (key, value?, detail*)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|ref)*>
+  <!ELEMENT detail EMPTY>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST registry xmlns:r CDATA #FIXED "urn:registry">
+  <!ATTLIST entry id ID #REQUIRED status (open|closed|hold) #IMPLIED>
+  <!ATTLIST key type (text|number|date) "text">
+  <!ATTLIST detail code CDATA #REQUIRED enabled (yes|no) "yes">
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quote "&#34;">
+]>
+<registry xmlns:r="urn:registry">
+  <entry id="e1" status="open">
+    <key type="number">42</key>
+    <value>value&nbsp;is <ref target="e2"/></value>
+    <detail code="A&amp;B"/>
+  </entry>
+  <entry id="e2">
+    <key>second</key>
+    <value>quoted &quote;word&quote;</value>
+    <detail code="Z" enabled="no"/>
+  </entry>
+</registry>

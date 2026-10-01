@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE routes [
+  <!ELEMENT routes (route+)>
+  <!ELEMENT route (request, response)>
+  <!ATTLIST route
+    id ID #REQUIRED
+    method (GET|POST|PUT|DELETE) "GET"
+    enabled (yes|no) "yes">
+  <!ELEMENT request (header*, body?)>
+  <!ELEMENT response (status, header*, body?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ATTLIST header name CDATA #REQUIRED>
+  <!ELEMENT body ANY>
+  <!ELEMENT status (#PCDATA)>
+  <!ENTITY amp "&#38;">
+]>
+<routes xmlns="urn:example:routes"
+        xmlns:x="urn:example:extension"
+        xml:base="https://example.invalid/api/">
+  <route id="r1" method="POST" enabled="yes">
+    <request>
+      <header name="Accept">application/xml</header>
+      <header name="X-Trace">a& amp;b</header>
+      <body xmlns="">
+        <form>
+          <field name="q"><![CDATA[a < b && c > d]]></field>
+          <x:foreign xmlns:x="urn:example:extension" x:kind="opaque"/>
+        </form>
+      </body>
+    </request>
+    <response>
+      <status>201</status>
+      <header name="Content-Type">text/xml</header>
+      <body><result xmlns="urn:result"><value>created</value></result></body>
+    </response>
+  </route>
+</routes>

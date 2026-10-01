@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ENTITY open "[" >
+  <!ENTITY close "]" >
+  <!NOTATION png SYSTEM "image/png">
+  <!ELEMENT workflow (trigger, stage+, result?)>
+  <!ATTLIST workflow name CDATA #REQUIRED enabled (true|false) "true">
+  <!ELEMENT trigger (schedule|event)>
+  <!ELEMENT schedule (#PCDATA)>
+  <!ELEMENT event EMPTY>
+  <!ATTLIST event source CDATA #REQUIRED action CDATA #REQUIRED>
+  <!ELEMENT stage (input*, task+, output*)>
+  <!ATTLIST stage number NMTOKEN #REQUIRED>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT task (command, argument*, environment?)>
+  <!ATTLIST task id ID #REQUIRED critical (yes|no) "no">
+  <!ELEMENT command (#PCDATA)>
+  <!ELEMENT argument (#PCDATA)>
+  <!ELEMENT environment (variable+)>
+  <!ELEMENT variable EMPTY>
+  <!ATTLIST variable key NMTOKEN #REQUIRED value CDATA #REQUIRED>
+  <!ELEMENT output (#PCDATA)>
+  <!ELEMENT result (status, message?)>
+  <!ELEMENT status (#PCDATA)>
+  <!ELEMENT message (#PCDATA)>
+]>
+<workflow name="nightly-build" enabled="false">
+  <trigger>
+    <event source="queue" action="release"/>
+  </trigger>
+  <stage number="01">
+    <input>source.tar</input>
+    <task id="extract" critical="yes">
+      <command>unpack</command>
+      <argument>&open;src&close;</argument>
+      <environment>
+        <variable key="MODE" value="safe"/>
+      </environment>
+    </task>
+    <output>workspace/</output>
+  </stage>
+  <stage number="02">
+    <task id="verify">
+      <command>check</command>
+      <argument>--all</argument>
+    </task>
+  </stage>
+  <result>
+    <status>pending</status>
+    <message>Awaiting approval.</message>
+  </result>
+</workflow>

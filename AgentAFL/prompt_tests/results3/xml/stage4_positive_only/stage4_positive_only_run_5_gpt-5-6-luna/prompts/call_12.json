@@ -1,0 +1,23 @@
+{
+  "call": 12,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (header, records)>\n  <!ELEMENT header (title, created, note?)>\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT created (#PCDATA)>\n  <!ELEMENT note (#PCDATA)>\n  <!ELEMENT records (record*)>\n  <!ELEMENT record (key, value, tag*)>\n  <!ATTLIST record uid ID #REQUIRED state (new|ready|closed) \"new\">\n  <!ELEMENT key (#PCDATA)>\n  <!ELEMENT value (#PCDATA|bold|code)*>\n  <!ELEMENT tag (#PCDATA)>\n  <!ELEMENT bold (#PCDATA)>\n  <!ELEMENT code (#PCDATA)>\n]>\n<archive>\n  <header>\n    <title>Configuration archive</title>\n    <created>2026-10-01T12:34:56Z</created>\n    <note>Values may contain <bold>mixed</bold> markup.</note>\n  </header>\n  <records>\n    <record uid=\"r1\" state=\"ready\">\n      <key>timeout</key>\n      <value>30 <code>seconds</code></value>\n      <tag>network</tag>\n      <tag>runtime</tag>\n    </record>\n    <record uid=\"r2\">\n      <key>message</key>\n      <value>Hello &amp; goodbye</value>\n    </record>\n  </records>\n</archive>\n\n--- example 2 ---\n<?xml version=\"1.0\"?>\n<device xmlns=\"urn:acme:device\" xmlns:cfg=\"urn:acme:config\" xmlns:s=\"http://www.w3.org/2000/svg\" id=\"dev-42\">\n  <?profile name=\"portable\"?>\n  <identity>\n    <manufacturer>Acme</manufacturer>\n    <model>Q-7</model>\n    <serial xml:space=\"preserve\">  A7-0009  </serial>\n  </identity>\n  <cfg:settings version=\"2.5\" cfg:locked=\"false\">\n    <cfg:item name=\"threshold\" type=\"decimal\">-0.00001</cfg:item>\n    <cfg:item name=\"enabled\" type=\"boolean\">true</cfg:item>\n  </cfg:settings>\n  <visual>\n    <s:svg viewBox=\"0 0 10 10\">\n      <s:g transform=\"translate(1,2)\">\n        <s:path d=\"M0 0 L5 5 Z\"/>\n      </s:g>\n    </s:svg>\n  </visual>\n</device>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-01T05:33:10.866353+00:00"
+}

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item|group)*>
+  <!ELEMENT group (item+)>
+  <!ELEMENT item (#PCDATA|tag)*>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST item code NMTOKEN #IMPLIED
+                 kind (a|b|c) "a"
+                 refs IDREFS #IMPLIED>
+  <!ATTLIST tag xml:lang NMTOKEN #IMPLIED>
+  <!ENTITY amp "A &amp; B">
+  <!ENTITY quoted "&quot;inside&quot;">
+  <!ENTITY % extra "<!ATTLIST group label CDATA #IMPLIED>">
+  %extra;
+]>
+<catalog>
+  <item code="one" kind="a">plain <tag xml:lang="en">alpha</tag> &amp; &amp;</item>
+  <group label="nested">
+    <item code="two" refs="one">before<tag>middle</tag>after</item>
+  </group>
+  <item code="three">&amp;quoted;</item>
+</catalog>

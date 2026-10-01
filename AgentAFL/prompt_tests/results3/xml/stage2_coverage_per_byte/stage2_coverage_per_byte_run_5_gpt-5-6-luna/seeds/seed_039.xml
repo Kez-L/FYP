@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE conversation [
+  <!ELEMENT conversation (message|separator)*>
+  <!ELEMENT message (sender, recipients?, content, attachment*)>
+  <!ELEMENT sender (#PCDATA)>
+  <!ELEMENT recipients (recipient+)>
+  <!ELEMENT recipient (#PCDATA)>
+  <!ELEMENT content (#PCDATA|mention|link|br)*>
+  <!ELEMENT mention (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT attachment EMPTY>
+  <!ELEMENT separator EMPTY>
+  <!ATTLIST message id ID #REQUIRED reply IDREF #IMPLIED state (open|closed) "open">
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ATTLIST attachment name CDATA #REQUIRED media CDATA #IMPLIED>
+]>
+<conversation>
+  <message id="m1" state="closed">
+    <sender>alice@example.test</sender>
+    <recipients>
+      <recipient>bob@example.test</recipient>
+      <recipient>carol@example.test</recipient>
+    </recipients>
+    <content>Hello <mention>@bob</mention><br/>See <link href="https://example.test/?a=1&amp;b=2">this</link>.</content>
+    <attachment name="résumé.pdf" media="application/pdf"/>
+  </message>
+  <separator/>
+  <message id="m2" reply="m1">
+    <sender>bob@example.test</sender>
+    <content><![CDATA[reply with ]]> and markup <mention>@alice</mention></content>
+  </message>
+</conversation>

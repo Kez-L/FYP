@@ -1,0 +1,124 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ELEMENT catalog (item+, summary?)>
+  <!ELEMENT item (name, price, tags, description)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT summary EMPTY>
+  <!ATTLIST item id ID #REQUIRED availability (yes|no) "yes">
+  <!ATTLIST summary icon ENTITY #IMPLIED>
+]>
+<catalog xml:lang="en" xml:base="urn:example:catalog">
+  <item id="p-1" availability="yes">
+    <name>α &amp; β</name>
+    <price currency="EUR">19.95</price>
+    <tags><tag>odd</tag><tag>compact</tag></tags>
+    <description>Text with <em>emphasis</em>, <code>code()</code>, and <![CDATA[<literal/>]]>.</description>
+  </item>
+  <item id="p-2" availability="no">
+    <name>Second item</name>
+    <price currency="JPY">0</price>
+    <tags/>
+    <description>Line one
+line two<?note data?><![CDATA[x]]></description>
+  </item>
+  <summary icon="logo"/>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE vault [
+  <!ENTITY % feature "INCLUDE">
+  <!ENTITY % fields '<!ELEMENT secret (key, value, fragment?)>
+                      <!ELEMENT key (#PCDATA)>
+                      <!ELEMENT value (#PCDATA)>
+                      <!ELEMENT fragment (#PCDATA)>%feature;'>
+  %fields;
+  <![%feature;[
+    <!ATTLIST secret mode (sealed|open) "sealed">
+  ]]>
+  <!ENTITY left "[left]">
+  <!ENTITY right "[right]">
+  <!ENTITY joined "&left;&right;">
+]>
+<vault>
+  <secret mode="open">
+    <key><![CDATA[a]]></key>
+    <value>&joined; &lt; &quot;quoted&quot;</value>
+    <fragment>before<!-- hidden -->after<?p x?></fragment>
+  </secret>
+</vault>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE r [
+  <!ENTITY x "one">
+  <!ENTITY y "&x;&x;">
+  <!ELEMENT r ANY>
+]>
+<r xmlns="urn:d" xmlns:a="urn:a" a:k="v" a:k="duplicate">
+  <a:box xml:space="preserve">
+    <![CDATA[alpha]]]]><![CDATA[>omega]]>
+    <inner>&y;</inner>
+  </a:box>
+  <empty />
+  <tail attr="a&#x0;b&#10;c">unterminated
+</r>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (layer*)>
+  <!ELEMENT layer (node|layer)*>
+  <!ELEMENT node (#PCDATA|node)*>
+  <!ATTLIST layer depth NMTOKEN #IMPLIED>
+  <!ATTLIST node ref IDREFS #IMPLIED>
+]>
+<scene xmlns:s="urn:scene" s:version="0">
+  <layer depth="0">
+    <node ref="n2 n3">root <node id="n2">nested</node> end</node>
+    <layer depth="1">
+      <node ref="n2">é漢字</node>
+      <?render mode="wireless"?>
+    </layer>
+  </layer>
+</scene>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ENTITY e "<part kind='generated'>&amp;</part>">
+  <!ELEMENT package (header, body)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT body (part|include|![CDATA[]])*>
+  <!ELEMENT part (#PCDATA|part)*>
+  <!ELEMENT include EMPTY>
+  <!ATTLIST header stamp CDATA #IMPLIED>
+  <!ATTLIST part kind CDATA #IMPLIED>
+  <!ATTLIST include href URI #REQUIRED parse (xml|text) "xml">
+]>
+<package>
+  <header stamp="2026-10-01T00:00:00Z"/>
+  <body>
+    &e;
+    <part kind="outer"><part kind="inner">payload</part></part>
+    <include xmlns:xi="http://www.w3.org/2001/XInclude"
+             href="urn:missing:item" parse="xml"/>
+    <![CDATA[
+      ]] is ordinary text here only until this delimiter
+    ]]>
+  </body>
+</package>
+```

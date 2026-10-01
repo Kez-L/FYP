@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (header, batch+)>
+  <!ELEMENT header (institution, period)>
+  <!ELEMENT institution (#PCDATA)>
+  <!ELEMENT period (#PCDATA)>
+  <!ELEMENT batch (entry+)>
+  <!ELEMENT entry (account, amount, memo?, link*)>
+  <!ELEMENT account (#PCDATA)>
+  <!ELEMENT amount (#PCDATA)>
+  <!ELEMENT memo (#PCDATA|emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ENTITY % auditAttrs " actor CDATA #IMPLIED stamp CDATA #IMPLIED ">
+  <!ATTLIST ledger currency (EUR|GBP|JPY|USD) #REQUIRED>
+  <!ATTLIST batch id ID #REQUIRED %auditAttrs;>
+  <!ATTLIST entry ref ID #REQUIRED type (credit|debit|hold) "credit">
+  <!ATTLIST amount unit CDATA #IMPLIED>
+  <!ATTLIST link target IDREF #REQUIRED relation (parent|correction|receipt) #REQUIRED>
+  <!ENTITY currencyMark "¤">
+  <!ENTITY review "pending manual review">
+]>
+<ledger currency="EUR">
+  <header>
+    <institution>North Quay Cooperative</institution>
+    <period>2026-Q3</period>
+  </header>
+  <batch id="batch-a" actor="system" stamp="2026-09-30T23:59:59Z">
+    <entry ref="entry-100" type="credit">
+      <account>4100</account>
+      <amount unit="EUR">1250.00</amount>
+      <memo>Settlement for <emphasis>field services</emphasis> &currencyMark;</memo>
+      <link target="entry-101" relation="receipt"/>
+    </entry>
+    <entry ref="entry-101" type="debit">
+      <account>7820</account>
+      <amount unit="EUR">1250.00</amount>
+      <memo>&review;</memo>
+    </entry>
+  </batch>
+  <batch id="batch-b" actor="clerk">
+    <entry ref="entry-102" type="hold">
+      <account>9901</account>
+      <amount unit="EUR">48.75</amount>
+      <link target="entry-100" relation="parent"/>
+    </entry>
+  </batch>
+</ledger>

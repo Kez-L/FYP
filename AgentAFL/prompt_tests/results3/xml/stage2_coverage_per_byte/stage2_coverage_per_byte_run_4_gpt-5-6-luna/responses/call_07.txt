@@ -1,0 +1,160 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, entry*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (name, price?, note?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emph|link)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST catalog version NMTOKEN #REQUIRED>
+  <!ATTLIST section id ID #IMPLIED xml:lang NMTOKEN "en">
+  <!ATTLIST entry code ID #IMPLIED status (new|used|archived) "new">
+  <!ATTLIST link href URI #REQUIRED>
+  <!ENTITY currency "€">
+]>
+<catalog version="2.0">
+  <section id="s-é" xml:lang="fr">
+    <title>Produits &amp; services</title>
+    <entry code="p1" status="used">
+      <name>Café</name>
+      <price>12 &currency;</price>
+      <note>Très <emph>bon</emph> — voir <link href="urn:x:y"/>.</note>
+    </entry>
+    <entry code="p2">
+      <name>Crème &lt;forte&gt;</name>
+      <note><![CDATA[une valeur ]]> avec séparation</note>
+    </entry>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ENTITY % declarations '
+    <!ELEMENT packet (meta?, body)>
+    <!ELEMENT meta EMPTY>
+    <!ELEMENT body (chunk|binary|![IGNORE[
+      <!ELEMENT ignored (#PCDATA)>
+    ]]>)*
+    <!ELEMENT chunk (#PCDATA|mark)*>
+    <!ELEMENT mark (#PCDATA)>
+    <!ELEMENT binary (#PCDATA)>
+    <!ATTLIST packet kind (request|response) "request">
+    <!ATTLIST meta stamp CDATA #IMPLIED>
+  '>
+  %declarations;
+  <![INCLUDE[
+    <!ENTITY open "[">
+    <!ENTITY close "]">
+  ]]>
+]>
+<packet kind="response">
+  <meta stamp="2026-10-01T00:00:00Z"/>
+  <body>
+    <chunk>alpha<mark>mid</mark>omega</chunk>
+    <binary encoding="base64">AAECAwQF</binary>
+    <chunk>&lt;split&gt; &open;odd&close;</chunk>
+  </body>
+</packet>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node*, edge*)>
+  <!ELEMENT node (label?, data*)>
+  <!ELEMENT edge EMPTY>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT data (#PCDATA|value)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST node id ID #REQUIRED role NMTOKENS #IMPLIED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREFS #REQUIRED weight CDATA "1">
+  <!ATTLIST data key CDATA #REQUIRED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "missing.bin" NDATA bin>
+]>
+<graph>
+  <node id="n0" role="root primary">
+    <label>Réseau</label>
+    <data key="empty"/>
+    <data key="mixed">a<value>42</value>b<value><![CDATA[c]]></value>d</data>
+  </node>
+  <node id="n1"/>
+  <edge from="n0" to="n1 n0" weight="0x10"/>
+</graph>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form [
+  <!ELEMENT form (field|group|submit)*>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT group (field|hint|group)*>
+  <!ELEMENT hint (#PCDATA)>
+  <!ELEMENT submit EMPTY>
+  <!ATTLIST form name CDATA #IMPLIED>
+  <!ATTLIST field name CDATA #REQUIRED type (text|number|date) "text" value CDATA #IMPLIED>
+  <!ATTLIST group id ID #IMPLIED collapsed (yes|no) "no">
+  <!ATTLIST submit action CDATA #REQUIRED>
+  <!ENTITY amp "&#38;">
+  <!ENTITY quote "&#34;">
+]>
+<form name="survey">
+  <group id="personal" collapsed="no">
+    <field name="first" value="Ada &amp; Grace"/>
+    <field name="age" type="number" value="&amp;"/>
+    <hint><![CDATA[Use “ordinary” text and ]]> brackets</hint>
+    <group id="nested">
+      <field name="date" type="date" value="2026-10-01"/>
+    </group>
+  </group>
+  <field name="comment" value="&quote;hello&quote; &amp; goodbye"/>
+  <submit action="/send?x=1&amp;y=2"/>
+</form>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, section+, footer?)>
+  <!ELEMENT header (processing, comment?)>
+  <!ELEMENT processing (#PCDATA)>
+  <!ELEMENT comment (#PCDATA)>
+  <!ELEMENT section (heading, paragraph+, table?)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|br|code|quote)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT quote (#PCDATA|paragraph)*>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST report generated CDATA #IMPLIED>
+  <!ATTLIST section number NMTOKEN #REQUIRED>
+  <!ATTLIST cell colspan NMTOKEN "1">
+  <!ENTITY lt "<">
+  <!ENTITY gt ">">
+  <!ENTITY nbsp "&#160;">
+]>
+<report generated="yes &amp; no">
+  <header>
+    <processing>stage <![CDATA[one]]></processing>
+    <!-- comment with -- malformed? -->
+  </header>
+  <section number="01">
+    <heading>Limits &lt; bounds</heading>
+    <paragraph>Text<br/>after <code>a&amp;b</code><quote>nested <paragraph>quote</paragraph></quote>.</paragraph>
+    <table>
+      <row><cell colspan="2">A</cell><cell>B</cell></row>
+      <row><cell>&nbsp;</cell><cell>&lt;raw&gt;</cell></row>
+    </table>
+  </section>
+  <footer>End <?pi value?></footer>
+</report>
+```

@@ -1,0 +1,125 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry*)>
+  <!ELEMENT entry (title, meta?, blob)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT blob (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST entry id ID #REQUIRED ref IDREFS #IMPLIED>
+  <!ATTLIST meta key NMTOKEN #IMPLIED value CDATA #IMPLIED>
+  <!ENTITY leftBracket "&#60;">
+  <!ENTITY rightBracket "&#62;">
+  <!ENTITY quote "&#34;">
+]>
+<catalog>
+  <entry id="e1" ref="e2 e3">
+    <title>&leftBracket;encoded&rightBracket; &quote;title&quote;</title>
+    <meta key="a:b" value="x&amp;y"/>
+    <blob>alpha<chunk><![CDATA[<raw>&stuff;</raw>]]></chunk>omega</blob>
+  </entry>
+  <entry id="e2">
+    <title>second</title>
+    <blob><![CDATA[]]><chunk>tail</chunk></blob>
+  </entry>
+  <entry id="e3">
+    <title>third</title>
+    <blob>line1&#x0A;line2&#x9;line3</blob>
+  </entry>
+</catalog>
+```
+
+```xml
+<!DOCTYPE r [
+  <!ELEMENT r ANY>
+  <!ENTITY % common '<!ELEMENT branch (leaf|branch)*><!ELEMENT leaf (#PCDATA)>'>
+  %common;
+  <!ENTITY % attrs '<!ATTLIST branch depth CDATA #IMPLIED><!ATTLIST leaf kind (x|y|z) "x">'>
+  %attrs;
+  <!ENTITY recursive "R-&recursive;">
+]>
+<r>
+  <branch depth="0">
+    <leaf kind="y">before &amp; after</leaf>
+    <branch depth="1">
+      <leaf>numeric &#65;&#x42;&#x43;</leaf>
+      <leaf><![CDATA[unterminated-looking ]]]]><![CDATA[> marker]]></leaf>
+    </branch>
+  </branch>
+  <branch depth="2"><leaf>tail</leaf></branch>
+</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<ns:root xmlns:ns="urn:one" xmlns:p="urn:two" xmlns:q="urn:three" p:flag="yes">
+  <ns:item xml:lang="en-US" p:code="A&amp;B">
+    <q:name>alpha</q:name>
+    <p:value><![CDATA[1 < 2 && 3 > 2]]></p:value>
+    <ns:item xmlns:ns="urn:shadow" ns:flag="nested"/>
+  </ns:item>
+  <empty xmlns="" xmlns:p="urn:rebound" p:x="&#x1F;"/>
+  <q:foreign xmlns:q="urn:two">
+    <q:child p:attr="v" xmlns:p=""/>
+  </q:foreign>
+  <?processing data="a?>b"?>
+</ns:root>
+```
+
+```xml
+<!DOCTYPE stream [
+  <!ELEMENT stream (record*)>
+  <!ELEMENT record (key, value, note?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value ANY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST record seq CDATA #REQUIRED>
+  <!ENTITY lt "<">
+  <!ENTITY gt ">">
+  <!ENTITY amp "&amp;">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "data:text/plain,external">
+]>
+<stream>
+  <record seq="001">
+    <key>k&amp;1</key>
+    <value>
+      &lt;escaped&gt;
+      <![CDATA[raw ]]> <![CDATA[split]]>
+      <part>&lt;part/&gt;</part>
+      &amp; &lt; &gt;
+    </value>
+    <note>first&#13;&#10;second</note>
+  </record>
+  <record seq="002">
+    <key><![CDATA[key]]></key>
+    <value><part a="1" b="2"/><part a="3"/></value>
+  </record>
+</stream>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE outer [
+  <!ELEMENT outer (wrapper)>
+  <!ELEMENT wrapper (a|b|c)*>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c EMPTY>
+  <!ATTLIST a n CDATA #IMPLIED>
+  <!ATTLIST b n CDATA #IMPLIED>
+  <!ENTITY common "text &amp; more">
+  <!ENTITY quoted "apos: &apos; quote: &quot;">
+]>
+<outer>
+  <wrapper>
+    <a n="1">&common;</a>
+    <b n="2">&quoted;</b>
+    <c/>
+    <a n="3">x<![CDATA[y]]>z</a>
+    <b n="4"><![CDATA[<a n="fake">]]></b>
+    <c></c>
+  </wrapper>
+</outer>
+```

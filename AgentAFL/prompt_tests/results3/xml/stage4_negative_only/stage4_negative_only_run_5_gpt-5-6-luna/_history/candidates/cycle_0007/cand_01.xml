@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+              xmlns:auth="urn:acme:auth"
+              xmlns:inv="urn:acme:inventory"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <env:Header>
+    <auth:credentials env:mustUnderstand="1">
+      <auth:principal>warehouse-bot</auth:principal>
+      <auth:token xsi:type="auth:OpaqueToken"><![CDATA[Q2hhbmdlLW1lLTQy]]></auth:token>
+    </auth:credentials>
+    <?audit action="lookup"?>
+  </env:Header>
+  <env:Body>
+    <inv:stockRequest request-id="R-9007" region="eu-west">
+      <inv:item sku="A-17">
+        <inv:warehouse code="LON">
+          <inv:bin aisle="7" shelf="B" quantity="0042"/>
+          <inv:bin aisle="8" shelf="A" quantity="0000"/>
+        </inv:warehouse>
+        <inv:warehouse code="MAD">
+          <inv:bin aisle="2" shelf="C" quantity="19"/>
+        </inv:warehouse>
+      </inv:item>
+      <inv:filters>
+        <inv:includeDiscontinued>false</inv:includeDiscontinued>
+        <inv:expression><![CDATA[quantity >= 10 && region != "test"]]></inv:expression>
+      </inv:filters>
+    </inv:stockRequest>
+  </env:Body>
+</env:Envelope>

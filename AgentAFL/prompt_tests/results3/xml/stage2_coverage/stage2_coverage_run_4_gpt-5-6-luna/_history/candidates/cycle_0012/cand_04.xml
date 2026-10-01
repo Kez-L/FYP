@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (step, (branch|loop)*)>
+  <!ELEMENT step (action?, note*)>
+  <!ELEMENT branch (when, then, otherwise?)>
+  <!ELEMENT loop (body)>
+  <!ELEMENT action EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT then (step*)>
+  <!ELEMENT otherwise (step*)>
+  <!ELEMENT body (step*)>
+  <!ATTLIST step
+    id ID #IMPLIED
+    result (ok|fail|skip) "ok"
+  >
+  <!ATTLIST action
+    type CDATA #REQUIRED
+    timeout CDATA "0"
+  >
+]>
+<workflow>
+  <step id="start">
+    <action type="initialize" timeout="0"/>
+    <note>state &lt;pending&gt;</note>
+  </step>
+  <branch>
+    <when>count &gt; 0 &amp;&amp; ready</when>
+    <then>
+      <step id="process" result="ok">
+        <action type="transform" timeout="9223372036854775808"/>
+      </step>
+    </then>
+    <otherwise>
+      <step result="skip"><note>no input</note></step>
+    </otherwise>
+  </branch>
+  <loop>
+    <body>
+      <step><action type="retry" timeout="-1"/></step>
+    </body>
+  </loop>
+</workflow>

@@ -1,0 +1,32 @@
+<!DOCTYPE map [
+  <!ELEMENT map (entry*)>
+  <!ELEMENT entry (key, value)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|pair)*>
+  <!ELEMENT pair (key, value)>
+  <!ATTLIST entry keyref IDREF #IMPLIED>
+  <!ATTLIST pair keyref IDREF #IMPLIED>
+  <!ATTLIST map xml:space (default|preserve) "default">
+  <!ENTITY one "first">
+  <!ENTITY two "&one; second">
+]>
+<map xml:space="preserve">
+  <entry keyref="missing">
+    <key>root</key>
+    <value>
+      &two;
+      <pair keyref="missing">
+        <key><![CDATA[a&b<c]]></key>
+        <value>text &amp; more</value>
+      </pair>
+      <pair>
+        <key>empty</key>
+        <value/>
+      </pair>
+    </value>
+  </entry>
+  <entry>
+    <key>tail</key>
+    <value>trailing</value>
+  </entry>
+</map>

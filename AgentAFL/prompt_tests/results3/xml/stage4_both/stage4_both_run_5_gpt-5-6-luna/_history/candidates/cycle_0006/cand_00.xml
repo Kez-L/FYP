@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE timeline [
+  <!ELEMENT timeline (caption, event+)>
+  <!ELEMENT caption (#PCDATA|em)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT event (when, title, detail?, relation*)>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|em|link)*>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT relation EMPTY>
+  <!ATTLIST timeline id ID #REQUIRED>
+  <!ATTLIST event id ID #REQUIRED category (milestone|warning|note) "note">
+  <!ATTLIST relation target IDREF #REQUIRED kind (before|after|blocks) #REQUIRED>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ENTITY dash "—">
+  <!ENTITY note "archival record">
+]>
+<timeline id="t-17">
+  <caption>Migration history &dash; <em>revised</em> &note;</caption>
+  <event id="e-alpha" category="milestone">
+    <when>2024-02-29T23:59:60Z</when>
+    <title>Initial import</title>
+    <detail>Records were copied from the <em>legacy</em> system.<link href="urn:log:alpha"/></detail>
+    <relation target="e-beta" kind="before"/>
+  </event>
+  <event id="e-beta" category="warning">
+    <when>2024-03-01</when>
+    <title>Checksum discrepancy</title>
+    <detail>Three files contained unexpected &quot;holes&quot;.</detail>
+    <relation target="e-gamma" kind="blocks"/>
+  </event>
+  <event id="e-gamma">
+    <when>2024-03-04</when>
+    <title>Verification</title>
+    <detail>Manual review completed.</detail>
+    <relation target="e-beta" kind="after"/>
+  </event>
+</timeline>

@@ -1,0 +1,29 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE réseau [
+  <!ELEMENT réseau (entrée+, commentaire?)>
+  <!ELEMENT entrée (nom, valeur*, détail?)>
+  <!ELEMENT nom (#PCDATA)>
+  <!ELEMENT valeur (#PCDATA)>
+  <!ELEMENT détail (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT commentaire (#PCDATA)>
+  <!ATTLIST entrée
+    identifiant ID #REQUIRED
+    état (actif|gelé|retiré) "actif"
+    dépend-de IDREF #IMPLIED>
+  <!ATTLIST valeur type (texte|nombre|booléen) "texte">
+  <!ENTITY nbsp "&#xA0;">
+]>
+<réseau xmlns="urn:réseau:1" xmlns:x="urn:extension">
+  <entrée identifiant="nœud-α" état="actif">
+    <nom>Température</nom>
+    <valeur type="nombre">23&#x2E;75</valeur>
+    <valeur type="texte">Celsius&nbsp;extérieur</valeur>
+    <détail>mesuré par <code>x:thermo</code> à 08:30</détail>
+  </entrée>
+  <entrée identifiant="nœud-β" dépend-de="nœud-α" état="gelé">
+    <nom>Échantillon&nbsp;suivant</nom>
+    <valeur type="booléen">false</valeur>
+  </entrée>
+  <commentaire>ligne séparée&#x85;fin de message</commentaire>
+</réseau>

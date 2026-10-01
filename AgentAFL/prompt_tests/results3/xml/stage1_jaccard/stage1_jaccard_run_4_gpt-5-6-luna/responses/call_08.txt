@@ -1,0 +1,161 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ELEMENT catalog (entry+, metadata?)>
+  <!ELEMENT entry (title, description, asset*)>
+  <!ATTLIST entry id ID #REQUIRED status (new|old|archived) "new">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT asset EMPTY>
+  <!ATTLIST asset src ENTITY #REQUIRED role CDATA #IMPLIED>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST metadata generated CDATA #IMPLIED>
+]>
+<catalog>
+  <entry id="e1" status="archived">
+    <title>Binary&nbsp;artifact</title>
+    <description>Use <em>carefully</em>: <code>&lt;asset&gt;</code> references external data.</description>
+    <asset src="logo" role="thumbnail"/>
+  </entry>
+  <entry id="e2">
+    <title>Second entry</title>
+    <description><![CDATA[raw ]]>]]><![CDATA[ delimiters & < > ]]></description>
+  </entry>
+  <metadata generated="2026-10-01T00:00:00Z"/>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % common '
+    <!ELEMENT report (header, body, footer)>
+    <!ELEMENT header (field*)>
+    <!ELEMENT field EMPTY>
+    <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  '>
+  %common;
+  <!ELEMENT body (section+)>
+  <!ELEMENT section (heading?, paragraph*, section*)>
+  <!ATTLIST section depth CDATA #IMPLIED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|strong|break)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY % extra "INCLUDE">
+  <![%extra;[
+    <!ATTLIST report format (text|html|mixed) "mixed">
+  ]]>
+]>
+<report format="html">
+  <header>
+    <field name="owner" value="&quot;qa&quot;"/>
+    <field name="empty"/>
+  </header>
+  <body>
+    <section depth="1">
+      <heading>Overview</heading>
+      <paragraph>Alpha &amp; <strong>beta</strong><break/>gamma& nbsp;</paragraph>
+      <section depth="2">
+        <paragraph><![CDATA[<literal node="not-real"/>]]></paragraph>
+      </section>
+    </section>
+  </body>
+  <footer>End&#x0A;of report</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node|edge)*>
+  <!ELEMENT node (label?, property*)>
+  <!ATTLIST node id ID #REQUIRED kind CDATA #IMPLIED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA|value)*>
+  <!ATTLIST property key CDATA #REQUIRED>
+  <!ELEMENT value (#PCDATA)>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<graph>
+  <node id="n-root" kind="root">
+    <label>Root &left;entry&right;</label>
+    <property key="quoted"><value>one</value><value>two</value></property>
+  </node>
+  <node id="n-leaf">
+    <property key="payload"><![CDATA[&left;not-expanded&right;]]></property>
+  </node>
+  <edge from="n-root" to="n-leaf" weight="0.000000"/>
+  <edge from="n-leaf" to="n-root" weight="-1"/>
+  <node id="n-empty"/>
+</graph>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta?, payload, signature?)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta xml:lang NMTOKEN #IMPLIED timestamp CDATA #IMPLIED>
+  <!ELEMENT payload (item*)>
+  <!ELEMENT item (key, value)>
+  <!ATTLIST item id NMTOKEN #REQUIRED enabled (yes|no) #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|list|itemref)*>
+  <!ELEMENT list (value*)>
+  <!ELEMENT itemref EMPTY>
+  <!ATTLIST itemref ref IDREF #REQUIRED>
+  <!ELEMENT signature (#PCDATA)>
+  <!ENTITY quote "&quot;">
+  <!ENTITY amp "&amp;">
+]>
+<envelope>
+  <meta xml:lang="x-klingon" timestamp="1970-01-01T00:00:00+00:00"/>
+  <payload>
+    <item id="a0" enabled="yes">
+      <key>path</key>
+      <value>/a/b</value>
+    </item>
+    <item id="b1" enabled="no">
+      <key>mixed</key>
+      <value>prefix<list><value>1</value><value>2</value></list>suffix</value>
+    </item>
+    <item id="c2">
+      <key>reference</key>
+      <value><itemref ref="a0"/> &quote;literal&quote; &amp;</value>
+    </item>
+  </payload>
+  <signature>-----BEGIN-----&#xD;&#xA;none&#xD;&#xA;-----END-----</signature>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<?processing instruction?>
+<!-- deliberately irregular lexical boundaries -->
+<r:matrix xmlns:r="urn:example:matrix" xmlns:x="urn:example:cell" xmlns:xml="http://www.w3.org/XML/1998/namespace" xml:space="preserve">
+  <r:row x:index="01">
+    <x:cell x:coordinate="A1">é漢🙂</x:cell>
+    <x:cell x:coordinate="B1" x:empty="true"/>
+  </r:row>
+  <r:row x:index="02">
+    <x:cell x:coordinate="A2"><![CDATA[]]></x:cell>
+    <x:cell x:coordinate="B2">line one
+line two&#13;&#10;line three</x:cell>
+  </r:row>
+  <r:note xml:base="urn:test:base/">
+    <x:item><![CDATA[<r:row/>]]></x:item>
+    <?inside data?>
+    <!-- comment with --? no, nearly -->
+  </r:note>
+</r:matrix>
+```

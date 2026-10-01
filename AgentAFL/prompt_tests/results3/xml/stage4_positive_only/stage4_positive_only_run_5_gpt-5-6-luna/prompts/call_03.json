@@ -1,0 +1,23 @@
+{
+  "call": 3,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE observatory [\n  <!ELEMENT observatory (header, instrument+, log)>\n  <!ELEMENT header (title, location)>\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT location EMPTY>\n  <!ATTLIST location latitude CDATA #REQUIRED longitude CDATA #REQUIRED>\n  <!ELEMENT instrument (name, calibration, reading*)>\n  <!ATTLIST instrument id ID #REQUIRED status (online|offline|testing) \"testing\">\n  <!ELEMENT name (#PCDATA)>\n  <!ELEMENT calibration (#PCDATA)>\n  <!ELEMENT reading (#PCDATA)>\n  <!ATTLIST reading unit CDATA #IMPLIED timestamp CDATA #IMPLIED>\n  <!ELEMENT log (#PCDATA)>\n]>\n<observatory>\n  <header>\n    <title>Night Survey</title>\n    <location latitude=\"51.4779\" longitude=\"-0.0015\"/>\n  </header>\n  <instrument id=\"scope-7\" status=\"online\">\n    <name>Optical Array</name>\n    <calibration>2026-09-30T22:10:00Z</calibration>\n    <reading unit=\"nm\" timestamp=\"22:11\">486.2</reading>\n    <reading unit=\"nm\" timestamp=\"22:12\">486.7</reading>\n  </instrument>\n  <instrument id=\"meter-2\">\n    <name>Radiometer</name>\n    <calibration>reference &lt;zero&gt;</calibration>\n  </instrument>\n  <log>clear sky; intermittent wind</log>\n</observatory>\n\n--- example 2 ---\n<?xml version=\"1.1\"?>\n<root xmlns=\"urn:default\" xmlns:x=\"urn:example:x\" xml:lang=\"fr\">\n  <x:branch data=\"&quot;&amp;&lt;&gt;\">\n    <leaf xml:space=\"preserve\">  text\n      <![CDATA[raw ]]> content]]>\n    </leaf>\n  </x:branch>\n  <empty xmlns=\"\" xmlns:x=\"urn:changed\" x:k=\"v\"/>\n</root>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-01T05:30:44.629037+00:00"
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (name, content, checksum?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT content (#PCDATA|section|include)*>
+  <!ELEMENT section (title?, content)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT include EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST entry id ID #REQUIRED type (text|binary|link) "text">
+  <!ATTLIST include href CDATA #REQUIRED parse (text|xml) "xml">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quote "&#34;">
+]>
+<archive>
+  <entry id="e-1" type="text">
+    <name>notes &nbsp; &quote;</name>
+    <content>
+      intro
+      <section><title>Nested</title><content>inside <include href="part.xml" parse="xml"/></content></section>
+      tail
+    </content>
+    <checksum>00ff</checksum>
+  </entry>
+  <entry id="e-2" type="link">
+    <name>dangling</name>
+    <content><include href="data:application/xml,%3Cz%2F%3E" parse="text"/></content>
+  </entry>
+</archive>

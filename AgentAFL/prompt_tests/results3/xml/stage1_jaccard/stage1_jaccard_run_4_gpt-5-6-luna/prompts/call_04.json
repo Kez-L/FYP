@@ -1,0 +1,23 @@
+{
+  "call": 4,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<!DOCTYPE  somedoc [\n  <!ENTITY a  NTITY b    \"something\">\n  <!ENTITY b   \"&a;\">\n]>\n\n<somedoc>\n\n<somebeacon s8672093846347259794686720938463omeattr bute=\"&b\u0000\u0000\u0000\u0000\n\n&a; sho~ld app version=\"1.0\n  ear after colon: &a;\n&b; should appear after colon: &a;\n&a; should appear after colon: &b;\n&b; shou47259794686720938463omeattributld appear after colon: &b\u001b\n\n</somedoc>\n\n\n--- example 2 ---\n<!DOCTYPE doc [\n    <!ENTITY % z '\n        &#37;z; &#37;z; &#37;z; &#37;z; &#37;z;\n        &#37;z; &#37;z; &#37;z; &#37;z; somebeacon someattribu;`&#37;z; &#37;z; &#37;z; &#37;z#37;z; &#37;z; &#37;z;\n        &#37;z; &#37;z; &#37;z; &#37;z; &#37;z;\n        &#37;z;`&#37;z; &#37;z; &#37;z; &#37;\n        &#37;z; &#37;z; &#37;z; &#37;z; &#37;z;\n        &#37;z; &lt;&gt;&quot;\">\n]>\n<root>\n ;z;\n    '>\n    %z;\n]>\n<doc/>\n\n\nTried before \u2014 no new coverage, avoid repeating:\n--- a seed you generated (cycle 2) added 0 new edges ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE archive [\n  <!ENTITY % common '\n    <!ELEMENT record (key, value, extra?)>\n    <!ELEMENT key (#PCDATA)>\n    <!ELEMENT value (#PCDATA)>\n    <!ELEMENT extra (#PCDATA)>\n    <!ATTLIST record xmlns CDATA #IMPLIED>\n  '>\n  %common;\n  <!ENTITY % switches '\n    <![%feature;[\n      <!ATTLIST record enabled (true|false) \"true\">\n    ]]>\n  '>\n  <!ENTITY % feature \"feature\">\n  %switches;\n  <!ENTITY left \"[\">\n  <!ENTITY right \"]\">\n]>\n<archive>\n  <record xmlns=\"urn:records\" enabled=\"false\">\n    <key>A&amp;B</key>\n    <value>one</value>\n    <extra>&lt;escaped&gt; &quot;quoted&quot;</extra>\n  </record>\n  <record xmlns=\"\">\n    <key>two</key>\n    <value><![CDATA[three]]></value>\n...[truncated, 722 chars total]\n\n--- a seed you generated (cycle 2) added 0 new edges ---\n<message>\n  <header a=\"1\" b=\"2\" c=\"3\">\n    <?processing instruction?>\n    <!-- comment with -- no, this is safe -->\n  </header>\n  <body>\n    <![CDATA[\n      <fake>\n        &not-expanded;\n      </fake>\n    ]]>\n    &amp; &#65; &#x41;\n  </body>\n  <tail>\n    <item/>\n    <item key=\"value\" />\n  </tail>\n</message>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "stage1-jaccard",
+  "positive_feedback": false,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-01T03:16:36.738115+00:00"
+}

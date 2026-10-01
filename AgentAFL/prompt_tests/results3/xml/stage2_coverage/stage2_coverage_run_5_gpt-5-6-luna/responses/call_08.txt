@@ -1,0 +1,131 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ATTLIST section code ID #REQUIRED xml:lang NMTOKEN #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|em|link)*>
+  <!ATTLIST item ref IDREF #IMPLIED status (new|used|archived) "new">
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ENTITY mark "&#x2603;">
+]>
+<catalog xml:lang="fr">
+  <section code="s1">
+    <title>Résumé &amp; index &mark;</title>
+    <item status="used">Texte <em>accentué</em> et <link href="urn:x"/> fin.</item>
+  </section>
+  <section code="s2" xml:lang="ja">
+    <title>雪と風</title>
+    <item ref="s1">référence</item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header (token, timestamp?)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ENTITY open "<chunk kind='generated'>">
+  <!ENTITY close "</chunk>">
+]>
+<envelope>
+  <header>
+    <token><![CDATA[<&token>]]></token>
+    <timestamp>2026-10-01T12:34:56Z</timestamp>
+  </header>
+  <payload>
+    &open;alpha &amp; beta&close;
+    <chunk kind="literal"><![CDATA[<not-an-element/>]]></chunk>
+    <?processing data with > and "quotes"?>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node (label, property*)>
+  <!ATTLIST node id ID #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST property name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight NMTOKEN "1">
+]>
+<graph>
+  <node id="n-root">
+    <label>root</label>
+    <property name="empty" value=""/>
+  </node>
+  <node id="n-β">
+    <label>branch &#x1F333;</label>
+    <property name="flag"/>
+    <property name="quote" value="&quot;left&quot;"/>
+  </node>
+  <edge from="n-root" to="n-β" weight="0.75"/>
+  <edge from="n-β" to="n-root"/>
+</graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE vault [
+  <!ELEMENT vault (folder|secret|alias)*>
+  <!ELEMENT folder (folder|secret|alias)*>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ELEMENT secret (#PCDATA|note)*>
+  <!ATTLIST secret id ID #IMPLIED format (text|base64|hex) "text">
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT alias EMPTY>
+  <!ATTLIST alias target IDREF #REQUIRED>
+  <!ENTITY newline "&#xA;">
+  <!ENTITY banner "BEGIN &quot;VAULT&quot;">
+]>
+<vault>
+  <folder name="outer">
+    <folder name="inner &amp; odd">
+      <secret id="s-1" format="text">&banner;&newline;line one&newline;line two</secret>
+      <note><![CDATA[password-like: <redacted>]]></note>
+    </folder>
+    <alias target="s-1"/>
+  </folder>
+  <?audit created="test"?>
+</vault>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE itinerary [
+  <!ELEMENT itinerary (departure, route, arrival)>
+  <!ATTLIST itinerary xml:space (default|preserve) "default">
+  <!ELEMENT departure EMPTY>
+  <!ATTLIST departure station NMTOKEN #REQUIRED at CDATA #REQUIRED>
+  <!ELEMENT route (stop+, instruction*)>
+  <!ELEMENT stop EMPTY>
+  <!ATTLIST stop city CDATA #REQUIRED platform NMTOKEN #IMPLIED>
+  <!ELEMENT instruction (#PCDATA|strong|br)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT arrival EMPTY>
+  <!ATTLIST arrival station NMTOKEN #REQUIRED at CDATA #REQUIRED>
+]>
+<itinerary xml:space="preserve">
+  <departure station="A-01" at="08:05"> </departure>
+  <route>
+    <stop city="München" platform="4"/>
+    <stop city="東京" platform="B"/>
+    <instruction>Board <strong>before</strong><br/>the signal &gt; changes.</instruction>
+    <instruction><![CDATA[Keep spacing:
+  exactly as written]]></instruction>
+  </route>
+  <arrival station="Z-9" at="19:40"/>
+</itinerary>
+```

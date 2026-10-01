@@ -1,0 +1,141 @@
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, note?)>
+  <!ELEMENT entry (title, author*, details)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT details (#PCDATA|emph|code)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST entry id ID #REQUIRED ref IDREF #IMPLIED state (new|old|archived) "new">
+  <!ATTLIST author role CDATA "unknown">
+  <!ENTITY mark "&#x2605;">
+  <!ENTITY quoted "&quot;quoted&quot;">
+]>
+<catalog>
+  <entry id="e1" state="old">
+    <title>First &mark; record</title>
+    <author role="editor">A &amp; B</author>
+    <details>Plain <emph>mixed</emph> text with <code>&lt;token&gt;</code> and &quoted;.</details>
+  </entry>
+  <entry id="e2" ref="e1">
+    <title><![CDATA[Title containing ]]]]><![CDATA[> split markers]]></title>
+    <details>one<emph>two</emph>three<code>four</code>five</details>
+  </entry>
+  <note>tail</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:envelope xmlns:r="urn:env" xmlns="urn:default" xmlns:q="urn:q">
+  <!-- comment before the payload -->
+  <r:header xml:lang="fr" xml:space="preserve" q:type="text">
+    <?trace level="verbose"?>
+    <q:token q:value="&quot;A&amp;B&quot;">&#x41;&#65;</q:token>
+  </r:header>
+  <r:body>
+    <section xmlns="urn:section" xmlns:q="urn:alternate">
+      <q:item xml:base="http://example.test/a/../b">
+        <![CDATA[<literal attr="x"/> & not markup]]>
+      </q:item>
+      <q:item xmlns:p="urn:p" p:x="1" p:y="2">
+        <p:child xmlns="">no namespace</p:child>
+      </q:item>
+    </section>
+  </r:body>
+  <r:footer xmlns:r="urn:footer">
+    <r:checksum>0&amp;1</r:checksum>
+  </r:footer>
+</r:envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % common "<!ELEMENT label (#PCDATA)> <!ELEMENT value (#PCDATA|label)*>">
+  %common;
+  <!ELEMENT report (meta, record*)>
+  <!ELEMENT meta (label, value)>
+  <!ELEMENT record (label?, value, record?)>
+  <!ATTLIST record key CDATA #IMPLIED>
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+  <!ENTITY nested "L&amp;R">
+  <![IGNORE[
+    <!ELEMENT ignored (nothing)>
+    <!ENTITY hidden "not expanded">
+  ]]>
+]>
+<report>
+  <meta>
+    <label>status</label>
+    <value>ready <label>&nested;</label> &left;inside&right;</value>
+  </meta>
+  <record key="alpha">
+    <label>outer</label>
+    <value><![CDATA[raw <xml> and ]] brackets]]></value>
+    <record key="beta">
+      <value>leaf &amp; final</value>
+    </record>
+  </record>
+  <record>
+    <value><label>embedded</label>tail</value>
+  </record>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST cell r CDATA #IMPLIED c CDATA #IMPLIED kind CDATA "text">
+  <!ENTITY e0 "zero">
+  <!ENTITY e1 "&e0;-one">
+  <!ENTITY e2 "&e1;-two">
+  <!ENTITY e3 "&e2;-three">
+]>
+<matrix>
+  <row r="1">
+    <cell r="1" c="1" kind="entity">&e3;</cell>
+    <cell r="1" c="2">a&amp;b&lt;c&gt;</cell>
+    <cell r="1" c="3"><![CDATA[line&#10;not-an-entity]]></cell>
+  </row>
+  <row r="2">
+    <cell r="2" c="1">
+      text
+      <cell>nested where character data was expected</cell>
+      tail
+    </cell>
+    <cell r="2" c="2" kind="quote" data-extra="&quot;"/>
+  </row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE broken [
+  <!ELEMENT broken (head, body)>
+  <!ELEMENT head EMPTY>
+  <!ELEMENT body (#PCDATA|x)*>
+  <!ELEMENT x EMPTY>
+  <!ATTLIST x a CDATA #IMPLIED>
+  <!ENTITY amp "&amp;">
+]>
+<broken>
+  <head/>
+  <body>
+    <![CDATA[unfinished-looking text]]>
+    <x a="one&amp;two"></x>
+    <x a="&amp;"/>
+    <?pi data?>
+    <!-- a comment with odd spacing -->
+    text &amp; &unknown; tail
+  </body>
+</broken>
+<extra/>
+```

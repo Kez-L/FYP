@@ -1,0 +1,126 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common "&#x25; shared">
+  <!ENTITY % shared " 
+    <!ELEMENT catalog (section+)>
+    <!ELEMENT section (title, entry*)>
+    <!ELEMENT title (#PCDATA)>
+    <!ELEMENT entry (#PCDATA|em|link)*>
+    <!ELEMENT em (#PCDATA)>
+    <!ELEMENT link EMPTY>
+    <!ATTLIST section id ID #REQUIRED kind NMTOKEN "general">
+    <!ATTLIST entry key ID #IMPLIED ref IDREF #IMPLIED>
+    <!ATTLIST link href CDATA #REQUIRED>
+  ">
+  %common;
+  <!ENTITY intro "A &amp; B &lt; C">
+  <!NOTATION plain SYSTEM "text/plain">
+]>
+<catalog>
+  <section id="s1" kind="mixed">
+    <title>&intro;</title>
+    <entry key="e1">alpha <em>bold</em> omega<link href="urn:x"/></entry>
+    <entry ref="e1"><![CDATA[raw ]]> data</entry>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta, payload, signature?)>
+  <!ELEMENT meta (created, creator)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT creator (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST envelope mode (plain|sealed|chunked) "plain" version NMTOKEN #REQUIRED>
+  <!ATTLIST payload encoding (base64|hex|none) #IMPLIED>
+  <!ENTITY left "[[">
+  <!ENTITY right "]]">
+]>
+<envelope version="v2" mode="chunked">
+  <meta>
+    <created>2026-10-01T12:34:56Z</created>
+    <creator xml:lang="en-US">fuzz&amp;lab</creator>
+  </meta>
+  <payload encoding="none">
+    <chunk index="0">&left;one&right;</chunk>
+    <chunk index="1"><![CDATA[<not-an-element attr="x">]]></chunk>
+    <chunk index="2">tail</chunk>
+  </payload>
+  <?checkpoint phase="payload"?>
+  <signature>unverified</signature>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map [
+  <!ELEMENT map (item|group)*>
+  <!ELEMENT group (item|group)*>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST map xmlns:x CDATA #FIXED "urn:example:x">
+  <!ATTLIST group name CDATA #REQUIRED>
+  <!ATTLIST item code NMTOKENS #IMPLIED x:flag (yes|no) "no">
+  <!ENTITY nbsp "&#160;">
+]>
+<map xmlns="urn:example:default" xmlns:x="urn:example:x">
+  <group name="outer">
+    <item code="A B C" x:flag="yes">one&nbsp;two</item>
+    <group name="inner">
+      <item code="single">three</item>
+    </group>
+  </group>
+  <item code="last" x:flag="no">four</item>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, data)>
+  <!ELEMENT header (name, value+)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT data (record*)>
+  <!ELEMENT record (field*)>
+  <!ELEMENT field (#PCDATA)>
+  <!ATTLIST report generated CDATA #IMPLIED>
+  <!ATTLIST record id ID #IMPLIED status (new|old|deleted) "new">
+  <!ATTLIST field name CDATA #REQUIRED>
+  <!ENTITY quote "&quot;">
+  <!ENTITY apos "&apos;">
+]>
+<report generated="yes">
+  <header>
+    <name>mode</name>
+    <value>test</value>
+    <value>&quote;quoted&quote;</value>
+  </header>
+  <data>
+    <record id="r1" status="new">
+      <field name="empty"></field>
+      <field name="text">one &amp; two</field>
+    </record>
+    <record id="r2" status="deleted"><field name="x"><![CDATA[]]></field></record>
+  </data>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a?, b*)>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b (#PCDATA|c)*>
+  <!ELEMENT c EMPTY>
+  <!ATTLIST root xmlns:p CDATA "urn:p" p:mode CDATA #IMPLIED>
+  <!ATTLIST c n CDATA #REQUIRED>
+]>
+<root p:mode="odd" xmlns:q="urn:q">
+  <a>before</a>
+  <b n="not-allowed">text<c n="1"/>more</b>
+  <b>unterminated
+```

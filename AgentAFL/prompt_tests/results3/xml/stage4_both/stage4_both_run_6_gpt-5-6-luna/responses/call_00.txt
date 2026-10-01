@@ -1,0 +1,127 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog"
+         xmlns:meta="urn:example:metadata"
+         xml:lang="en">
+  <!-- Mixed content with namespaces, a processing instruction, and CDATA. -->
+  <item id="α-01" meta:state="draft">
+    <title><![CDATA[Five < symbols & one > symbol]]></title>
+    <meta:labels>
+      <meta:label priority="high">parser</meta:label>
+      <meta:label priority="low">fuzzing</meta:label>
+    </meta:labels>
+    <?build profile="asan"?>
+    <description>Text before <emphasis>nested markup</emphasis> and after.</description>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, section+)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT section (heading, entry*)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT entry (#PCDATA|note)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ATTLIST entry kind (info|warning|error) "info">
+  <!ENTITY company "Example &amp; Sons">
+  <!ENTITY mark "&#x2605;">
+]>
+<report>
+  <header>&company; &#x2014; status &mark;</header>
+  <section code="s1">
+    <heading>Overview</heading>
+    <entry kind="warning">First <note>embedded note</note> entry.</entry>
+    <entry>Second entry with &company;.</entry>
+  </section>
+  <section code="s2">
+    <heading>Details</heading>
+    <entry kind="error">Terminal condition.</entry>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<🧪:document xmlns:🧪="urn:test:unicode"
+             xmlns:x="urn:test:extra"
+             x:version="2">
+  <🧪:header xml:space="preserve">
+    <x:name>Δelta / 東京 / café</x:name>
+  </🧪:header>
+  <🧪:payload>
+    <![CDATA[
+      <not-an-element data="&amp;"> raw text ]]> and more
+    ]]>
+  </🧪:payload>
+  <🧪:records>
+    <🧪:record key="a&amp;b" x:flag="true"/>
+    <🧪:record key="line&#xA;break">value</🧪:record>
+  </🧪:records>
+</🧪:document>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (source, body, signature?)>
+  <!ELEMENT source EMPTY>
+  <!ELEMENT body (message|attachment|message)*>
+  <!ELEMENT message (#PCDATA|link)*>
+  <!ELEMENT attachment EMPTY>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST source
+            system CDATA #FIXED "scanner"
+            version NMTOKEN "1">
+  <!ATTLIST message
+            id ID #IMPLIED
+            priority (low|normal|urgent) "normal">
+  <!ATTLIST attachment
+            type NOTATION (text|binary) "text"
+            href CDATA #REQUIRED>
+  <!NOTATION text SYSTEM "text/plain">
+  <!NOTATION binary SYSTEM "application/octet-stream">
+]>
+<envelope>
+  <source/>
+  <body>
+    <message id="m1" priority="urgent">Review <link>https://example.invalid/a?x=1&amp;y=2</link></message>
+    <attachment type="binary" href="blob://payload-7"/>
+    <message id="m2">Closing message.</message>
+  </body>
+  <signature>sha256:0000000000000000000000000000000000000000000000000000000000000000</signature>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node+, edge*)>
+  <!ELEMENT node (label?, property*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA|value)*>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST node id ID #REQUIRED category CDATA "generic">
+  <!ATTLIST property name CDATA #REQUIRED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1.0">
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+  <!ENTITY pair "&left;key&right;" >
+]>
+<graph>
+  <node id="n0" category="root">
+    <label>root</label>
+    <property name="expression">&pair;<value>alpha</value>&right;</property>
+  </node>
+  <node id="n1">
+    <property name="empty"/>
+    <property name="quoted"><![CDATA["<&>"]]></property>
+  </node>
+  <edge from="n0" to="n1" weight="0.125"/>
+</graph>
+```

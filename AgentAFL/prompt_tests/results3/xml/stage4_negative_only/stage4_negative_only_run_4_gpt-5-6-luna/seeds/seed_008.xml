@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+              xmlns:sec="urn:example:security"
+              xmlns:msg="urn:example:message"
+              env:encodingStyle="urn:example:encoding">
+  <env:Header>
+    <sec:Credentials sec:scheme="token">
+      <sec:Subject>service-reader</sec:Subject>
+      <sec:Token expires="2027-01-15T00:00:00Z">redacted</sec:Token>
+    </sec:Credentials>
+    <msg:Trace env:mustUnderstand="0" msg:id="t-91">
+      <msg:Hop>gateway</msg:Hop>
+      <msg:Hop>worker</msg:Hop>
+    </msg:Trace>
+  </env:Header>
+  <env:Body>
+    <msg:Batch msg:requestId="r-008">
+      <msg:Operation name="merge" mode="preview">
+        <msg:Source xml:lang="en-US">
+          <msg:Path>/records/alpha</msg:Path>
+          <msg:Checksum algorithm="sha256">00aa11bb22cc33dd</msg:Checksum>
+        </msg:Source>
+        <msg:Options>
+          <msg:Option key="preserve-order" value="true"/>
+          <msg:Option key="conflict-policy" value="manual"/>
+        </msg:Options>
+      </msg:Operation>
+      <msg:Operation name="delete" mode="disabled">
+        <msg:Source><msg:Path>/records/obsolete</msg:Path></msg:Source>
+      </msg:Operation>
+    </msg:Batch>
+  </env:Body>
+</env:Envelope>

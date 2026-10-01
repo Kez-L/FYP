@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ledger [
+  <!ENTITY % itemFields "(debit|credit|transfer|adjustment)">
+  <!ELEMENT ledger (account+, audit)>
+  <!ELEMENT account (owner, opening, entry*)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT opening EMPTY>
+  <!ELEMENT entry %itemFields;>
+  <!ELEMENT debit EMPTY>
+  <!ELEMENT credit EMPTY>
+  <!ELEMENT transfer EMPTY>
+  <!ELEMENT adjustment EMPTY>
+  <!ELEMENT audit (event+)>
+  <!ELEMENT event (#PCDATA)>
+  <!ATTLIST ledger period CDATA #REQUIRED currency CDATA #REQUIRED>
+  <!ATTLIST account number ID #REQUIRED state (open|frozen|closed) "open">
+  <!ATTLIST opening amount CDATA #REQUIRED as-of CDATA #REQUIRED>
+  <!ATTLIST debit amount CDATA #REQUIRED memo CDATA #IMPLIED>
+  <!ATTLIST credit amount CDATA #REQUIRED memo CDATA #IMPLIED>
+  <!ATTLIST transfer amount CDATA #REQUIRED to IDREF #REQUIRED>
+  <!ATTLIST adjustment amount CDATA #REQUIRED reason CDATA #REQUIRED>
+  <!ATTLIST event actor CDATA #REQUIRED at CDATA #REQUIRED>
+]>
+<ledger period="2026-09" currency="EUR">
+  <account number="acct-main" state="open">
+    <owner>Operations</owner>
+    <opening amount="18420.00" as-of="2026-09-01"/>
+    <credit amount="2750.00" memo="invoice-882"/>
+    <transfer amount="400.00" to="acct-reserve"/>
+    <adjustment amount="-12.50" reason="rounding correction"/>
+  </account>
+  <account number="acct-reserve" state="frozen">
+    <owner>Contingency</owner>
+    <opening amount="9000.00" as-of="2026-09-01"/>
+    <debit amount="125.00" memo="maintenance"/>
+  </account>
+  <audit>
+    <event actor="batch-17" at="2026-09-30T23:59:58Z">period closed successfully</event>
+    <event actor="reviewer-3" at="2026-10-01T08:15:00Z">manual verification pending</event>
+  </audit>
+</ledger>

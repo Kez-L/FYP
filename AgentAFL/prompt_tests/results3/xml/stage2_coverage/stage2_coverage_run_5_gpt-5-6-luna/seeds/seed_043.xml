@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE vault [
+  <!ELEMENT vault (folder|secret|alias)*>
+  <!ELEMENT folder (folder|secret|alias)*>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ELEMENT secret (#PCDATA|note)*>
+  <!ATTLIST secret id ID #IMPLIED format (text|base64|hex) "text">
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT alias EMPTY>
+  <!ATTLIST alias target IDREF #REQUIRED>
+  <!ENTITY newline "&#xA;">
+  <!ENTITY banner "BEGIN &quot;VAULT&quot;">
+]>
+<vault>
+  <folder name="outer">
+    <folder name="inner &amp; odd">
+      <secret id="s-1" format="text">&banner;&newline;line one&newline;line two</secret>
+      <note><![CDATA[password-like: <redacted>]]></note>
+    </folder>
+    <alias target="s-1"/>
+  </folder>
+  <?audit created="test"?>
+</vault>

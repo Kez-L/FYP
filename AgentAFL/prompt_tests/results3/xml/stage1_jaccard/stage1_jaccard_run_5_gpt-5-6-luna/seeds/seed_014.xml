@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!NOTATION text SYSTEM "text/plain">
+  <!ELEMENT archive (manifest, data)>
+  <!ELEMENT manifest (asset+)>
+  <!ELEMENT asset EMPTY>
+  <!ATTLIST asset
+    name CDATA #REQUIRED
+    format NOTATION (gif|text) #REQUIRED
+    checksum NMTOKEN #IMPLIED>
+  <!ELEMENT data (chunk+)>
+  <!ELEMENT chunk (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ATTLIST part number NMTOKEN #REQUIRED>
+]>
+<archive>
+  <manifest>
+    <asset name="icon.gif" format="gif" checksum="00ff11"/>
+    <asset name="readme.txt" format="text"/>
+    <asset name="odd&amp;name" format="text" checksum="a_b-c"/>
+  </manifest>
+  <data>
+    <chunk>
+      <part number="1">first <![CDATA[raw & bytes]]></part>
+      interleaved
+      <part number="2">second</part>
+    </chunk>
+    <chunk><part number="3"/><![CDATA[tail]]></chunk>
+  </data>
+</archive>

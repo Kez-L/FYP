@@ -1,0 +1,134 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE library [
+  <!ELEMENT library (book+, shelf?)>
+  <!ELEMENT book (title, author+, summary?, chapter*)>
+  <!ATTLIST book
+    id ID #REQUIRED
+    available (yes|no) "yes">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|em|code)*>
+  <!ELEMENT chapter (#PCDATA|section)*>
+  <!ELEMENT section (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT shelf EMPTY>
+]>
+<library>
+  <book id="b1" available="no">
+    <title>Parsing &amp; Recovery</title>
+    <author>Ada Example</author>
+    <author>Lin Parser</author>
+    <summary>Text with <em>mixed</em> content and <code>&lt;tokens&gt;</code>.</summary>
+    <chapter><section>First section</section><section>Second section</section></chapter>
+  </book>
+  <shelf/>
+</library>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE root [
+  <!ELEMENT root (item*)>
+  <!ELEMENT item (#PCDATA|x:item)*>
+  <!ATTLIST item xml:lang NMTOKEN #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY greeting "hello &nbsp; world">
+]>
+<root xmlns:x="urn:example:items" xml:space="preserve">
+  <item xml:lang="en">A <![CDATA[raw ]]> fragment &greeting;.</item>
+  <item><x:item>nested</x:item><![CDATA[ & < > ]]></item>
+</root>
+```
+
+```xml
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry*)>
+  <!ELEMENT entry (name, metadata, payload)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT metadata (tag*)>
+  <!ELEMENT tag EMPTY>
+  <!ATTLIST tag
+    key CDATA #REQUIRED
+    value CDATA #IMPLIED>
+  <!ELEMENT payload ANY>
+  <!ENTITY % commonAttrs ' xml:id ID #IMPLIED xml:base URI #IMPLIED '>
+  <!ATTLIST entry %commonAttrs; status (new|old|archived) "new">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY data SYSTEM "data.bin" NDATA bin>
+]>
+<catalog>
+  <entry xml:id="e-1" xml:base="urn:base/" status="archived">
+    <name>Binary reference</name>
+    <metadata>
+      <tag key="format" value="bin"/>
+      <tag key="empty"/>
+    </metadata>
+    <payload>&data;</payload>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE message [
+  <!ELEMENT message (header, body)>
+  <!ELEMENT header (to, from, subject)>
+  <!ELEMENT to (#PCDATA)>
+  <!ELEMENT from (#PCDATA)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|quote|list)*>
+  <!ELEMENT quote (#PCDATA|quote)*>
+  <!ELEMENT list (li+)>
+  <!ELEMENT li (#PCDATA|link)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ENTITY left "&lt;">
+  <!ENTITY right "&gt;">
+]>
+<message xmlns="urn:mail">
+  <header>
+    <to>reader@example.test</to>
+    <from>parser@example.test</from>
+    <subject>Nested &left;markup&right;</subject>
+  </header>
+  <body>
+    Intro
+    <quote>Outer <quote>inner</quote> quote</quote>
+    <list>
+      <li>one <link href="urn:item:1">link</link></li>
+      <li>two</li>
+    </list>
+  </body>
+</message>
+```
+
+```xml
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (panel*)>
+  <!ELEMENT panel (title, metric*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT metric EMPTY>
+  <!ATTLIST panel
+    name CDATA #REQUIRED
+    hidden (true|false) "false">
+  <!ATTLIST metric
+    key NMTOKEN #REQUIRED
+    value CDATA #REQUIRED
+    trend (up|down|flat) "flat">
+  <!ENTITY percent "&#37;">
+]>
+<dashboard>
+  <panel name="cpu" hidden="false">
+    <title>System &amp; Health</title>
+    <metric key="load_1m" value="0.73" trend="up"/>
+    <metric key="memory" value="64&percent;" trend="flat"/>
+  </panel>
+  <panel name="network" hidden="true">
+    <title><![CDATA[Packets <dropped>]]></title>
+    <metric key="rx" value="1024" trend="down"/>
+    <metric key="tx" value="2048"/>
+  </panel>
+</dashboard>
+```

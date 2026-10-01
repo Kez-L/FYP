@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns:w="urn:workflow" xmlns:sec="urn:security">
+  <w:definition name="recovery" version="0.0.0">
+    <w:trigger type="manual">
+      <w:parameter name="reason" required="false"/>
+      <w:parameter name="attempts" required="true" default="0"/>
+    </w:trigger>
+    <w:branch expression="status = 'failed'">
+      <w:step id="prepare" timeout="PT0S">
+        <w:command>/bin/true</w:command>
+        <w:environment>
+          <w:variable name="EMPTY" value=""/>
+          <w:variable name="QUOTED" value="&quot;&apos;&amp;&lt;&gt;"/>
+        </w:environment>
+      </w:step>
+      <w:step id="notify" depends-on="prepare">
+        <sec:credentials scheme="none">
+          <sec:token/>
+        </sec:credentials>
+        <w:recipients>
+          <w:recipient channel="email">nobody@example.invalid</w:recipient>
+        </w:recipients>
+      </w:step>
+    </w:branch>
+    <w:branch expression="status != 'failed'">
+      <w:step id="finish">
+        <w:result code="0">ok</w:result>
+      </w:step>
+    </w:branch>
+  </w:definition>
+  <w:run id="run-00000000-0000-0000-0000-000000000000" state="pending">
+    <w:log><![CDATA[not interpreted: <step id="fake"/> & raw]]></w:log>
+  </w:run>
+</workflow>

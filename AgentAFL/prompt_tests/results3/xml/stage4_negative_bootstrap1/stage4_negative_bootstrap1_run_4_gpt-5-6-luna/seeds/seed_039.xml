@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (event+)>
+  <!ELEMENT event (timestamp, source, payload)>
+  <!ATTLIST event id ID #REQUIRED type CDATA #IMPLIED>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT source EMPTY>
+  <!ATTLIST source host CDATA #REQUIRED port NMTOKEN #IMPLIED secure (yes|no) "no">
+  <!ELEMENT payload ANY>
+  <!ENTITY amp "&#38;">
+  <!ENTITY weird "]]&gt; and &amp; and &lt;">
+]>
+<stream>
+  <event id="e0" type="json">
+    <timestamp>2026-10-01T00:00:00.000Z</timestamp>
+    <source host="::1" port="0" secure="yes"/>
+    <payload><![CDATA[{"a":[null,true,false,1e-9],"s":"<&>"}]]></payload>
+  </event>
+  <event id="e1" type="mixed">
+    <timestamp>-0001-00-00T24:60:60Z</timestamp>
+    <source host="host.name" port="65535"/>
+    <payload>
+      <fragment><![CDATA[one]]></fragment>
+      &weird;
+      <fragment>tail &amp; <![CDATA[raw]]></fragment>
+    </payload>
+  </event>
+</stream>

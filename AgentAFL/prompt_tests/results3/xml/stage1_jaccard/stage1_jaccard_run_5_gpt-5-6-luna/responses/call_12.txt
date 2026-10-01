@@ -1,0 +1,102 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA|em|br)*>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST section xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST item id ID #REQUIRED priority (low|normal|high) "normal">
+  <!ENTITY mark "&#x2605;">
+]>
+<catalog xmlns="urn:example:catalog" xmlns:x="urn:example:extra">
+  <!-- mixed content with namespaces and entity replacement -->
+  <section xml:lang="en-US">
+    <title>Examples &amp; &mark;</title>
+    <item id="i-1" priority="high">alpha <em>beta <em>gamma</em></em><br/>delta</item>
+    <item id="i-2" x:flag="yes"><![CDATA[<literal> & not markup ]]></item>
+    <?catalog instruction="one &amp; two"?>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta, payload)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT payload (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA|part)*>
+  <!ATTLIST meta stamp CDATA #IMPLIED>
+  <!ATTLIST part level NMTOKEN #IMPLIED>
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+  <!ENTITY wrapped "&left;inside&right;">
+]>
+<envelope>
+  <meta stamp="&#x0A;&#x09;encoded&#x20;value"/>
+  <payload>
+    prefix &wrapped;
+    <part level="0"><part level="1"><part level="2"><![CDATA[ raw ]]>tail</part></part>
+    suffix &unknown;
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.1"?>
+<r xmlns="urn:r" xmlns:a="urn:a" a:x="1">
+  <a:n xmlns:a="">
+    <child xml:space="preserve">one&#x85;two&#x2028;three</child>
+    <child><![CDATA[
+      <![CDATA[ nested-looking text ]]>
+      &amp; still text
+    ]]></child>
+  </a:n>
+  <empty xmlns=""/>
+  <mix>text<!-- comment --><![CDATA[ cdata ]]><?p?>text</mix>
+</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (alpha|beta|gamma)+>
+  <!ELEMENT alpha EMPTY>
+  <!ELEMENT beta (#PCDATA)>
+  <!ELEMENT gamma (delta)>
+  <!ELEMENT delta EMPTY>
+  <!ATTLIST alpha a CDATA "default">
+  <!ATTLIST beta b CDATA #IMPLIED>
+  <!ENTITY one "first">
+  <!ENTITY two "second &one;">
+  <!NOTATION bin SYSTEM "data.bin">
+  <!ENTITY blob SYSTEM "data.bin" NDATA bin>
+]>
+<root>
+  <alpha/>
+  <beta b="&quot;&apos;&gt;&lt;&amp;">&two;</beta>
+  <gamma><delta/></gamma>
+  <alpha a="&#x3C;broken&#x3E;"/>
+  <beta><![CDATA[unclosed-looking ]]]]><![CDATA[> boundary]]></beta>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<document>
+  <head><name>stress</name><name/></head>
+  <body>
+    <level n="1"><level n="2"><level n="3"><level n="4"><level n="5">
+      <leaf a="&amp;" b="&quot;" c="&#65;" d="&#x41;">value</leaf>
+    </level></level></level></level></level>
+    <broken attr='single' other="double">
+      text &amp; &#0; &#xD800;
+      <inner></broken>
+  </body>
+  <?processing target-data?>
+  <!-- unterminated comment
+</document>
+```

@@ -1,0 +1,159 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY % entry-model "(title, value, note?)">
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (label, entry+)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT entry %entry-model;>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST section code NMTOKEN #REQUIRED>
+  <!ATTLIST entry kind (fact|warning|reference) "fact"
+                 ref ID #IMPLIED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY mark "&#x2022;">
+]>
+<catalog>
+  <section code="alpha">
+    <label>Measurements</label>
+    <entry kind="fact" ref="e1">
+      <title>Mean value</title>
+      <value>18.4&nbsp;units</value>
+      <note>Rounded to &mark; two decimal places.</note>
+    </entry>
+    <entry kind="warning">
+      <title>Outlier</title>
+      <value>none recorded</value>
+    </entry>
+  </section>
+  <section code="beta">
+    <label>References</label>
+    <entry kind="reference" ref="e2">
+      <title>Source</title>
+      <value>Register B-17</value>
+    </entry>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<registry xmlns="urn:acme:registry"
+          xmlns:r="urn:acme:record"
+          xmlns:meta="urn:acme:metadata"
+          xml:id="registry-root">
+  <meta:header>
+    <meta:issued>2026-10-01</meta:issued>
+    <meta:operator xml:id="op-9">delta-team</meta:operator>
+  </meta:header>
+  <r:record xml:id="record-17" r:class="transient">
+    <r:key type="uuid">7f3e1e9c-0b4e-4f76-a4c2-6c70e3f3f221</r:key>
+    <r:state meta:code="PENDING">awaiting-review</r:state>
+    <r:attributes>
+      <r:attribute name="region" value="north"/>
+      <r:attribute name="priority" value="low"/>
+      <r:attribute name="owner">team-alpha</r:attribute>
+    </r:attributes>
+    <r:history>
+      <r:event at="2026-09-28T10:20:00Z" by="op-9"/>
+      <r:event at="2026-09-30T16:45:12Z" by="op-9">
+        <r:comment>Changed from &quot;queued&quot; to &quot;pending&quot;.</r:comment>
+      </r:event>
+    </r:history>
+  </r:record>
+</registry>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (opening, transaction*, closing)>
+  <!ELEMENT opening EMPTY>
+  <!ELEMENT transaction (account, amount, memo?)>
+  <!ELEMENT account (#PCDATA)>
+  <!ELEMENT amount (#PCDATA)>
+  <!ELEMENT memo (#PCDATA)>
+  <!ELEMENT closing EMPTY>
+  <!ATTLIST opening balance CDATA #REQUIRED currency NMTOKEN #REQUIRED>
+  <!ATTLIST transaction number NMTOKEN #REQUIRED type (credit|debit) #REQUIRED>
+  <!ATTLIST closing balance CDATA #REQUIRED>
+]>
+<ledger>
+  <opening balance="1042.75" currency="EUR"/>
+  <transaction number="0001" type="debit">
+    <account>supplies</account>
+    <amount>17.20</amount>
+    <memo>Paper, labels, and envelopes</memo>
+  </transaction>
+  <transaction number="0002" type="credit">
+    <account>refund</account>
+    <amount>4.00</amount>
+  </transaction>
+  <transaction number="0003" type="debit">
+    <account>transport</account>
+    <amount>12.50</amount>
+    <memo>Bus fare &#x85; local route</memo>
+  </transaction>
+  <closing balance="1017.05"/>
+</ledger>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="view.xsl" alternate="yes" title="Readable"?>
+<survey>
+  <!-- Answers may contain markup-like text without being interpreted. -->
+  <question id="q1" required="true"><![CDATA[What is your preferred <format>?]]></question>
+  <answer question="q1">
+    <choice selected="false">plain text</choice>
+    <choice selected="true">structured XML</choice>
+    <choice selected="false">binary</choice>
+  </answer>
+  <question id="q2" required="false">Additional comments</question>
+  <answer question="q2"><![CDATA[
+    Keep the sequence exactly as submitted:
+    <choice selected="true">structured XML</choice>
+  ]]></answer>
+  <?review status="pending" reviewer="qa-3"?>
+</survey>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow"
+          xmlns:x="urn:example:extension"
+          xmlns:html="http://www.w3.org/1999/xhtml"
+          version="2.0">
+  <definition name="nightly-maintenance">
+    <trigger kind="calendar">
+      <schedule tz="UTC">
+        <weekday>mon</weekday>
+        <weekday>wed</weekday>
+        <weekday>fri</weekday>
+        <time>02:30:00</time>
+      </schedule>
+    </trigger>
+    <steps>
+      <step id="prepare" action="mkdir" x:retry="2">
+        <parameter name="path" type="string">/var/tmp/work</parameter>
+      </step>
+      <step id="execute" action="run" depends-on="prepare">
+        <parameter name="command"><![CDATA[printf '%s\n' "<ready>"]]></parameter>
+        <environment>
+          <variable name="LANG">C.UTF-8</variable>
+          <variable name="LC_ALL">C</variable>
+        </environment>
+      </step>
+      <step id="report" action="notify" depends-on="execute">
+        <html:message>
+          <html:p>Maintenance completed.</html:p>
+          <html:ul><html:li>prepare</html:li><html:li>execute</html:li></html:ul>
+        </html:message>
+      </step>
+    </steps>
+  </definition>
+  <disabled name="legacy-task" reason="retired"/>
+</workflow>
+```

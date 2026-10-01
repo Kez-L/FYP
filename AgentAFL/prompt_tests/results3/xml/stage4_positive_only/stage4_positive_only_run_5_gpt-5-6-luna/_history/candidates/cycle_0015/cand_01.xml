@@ -1,0 +1,32 @@
+<?xml version="1.1"?>
+<workflow xmlns="urn:example:workflow" xmlns:x="urn:example:extra">
+  <header>
+    <name>nightly-build</name>
+    <attempt>0007</attempt>
+    <flags x:mode="safe" x:retries="0"/>
+  </header>
+  <steps>
+    <step id="prepare" depends="">
+      <command><![CDATA[printf '<input/>' | ./tool --stdin]]></command>
+      <environment>
+        <variable key="EMPTY"/>
+        <variable key="PATH">/bin:/usr/bin</variable>
+      </environment>
+    </step>
+    <step id="compile" depends="prepare">
+      <command>make &amp;&amp; make test</command>
+      <matrix>
+        <axis name="os">
+          <value>linux</value>
+          <value>bsd</value>
+        </axis>
+        <axis name="compiler">
+          <value>clang</value>
+        </axis>
+      </matrix>
+    </step>
+  </steps>
+  <result code="0">
+    <message xml:lang="en">completed</message>
+  </result>
+</workflow>

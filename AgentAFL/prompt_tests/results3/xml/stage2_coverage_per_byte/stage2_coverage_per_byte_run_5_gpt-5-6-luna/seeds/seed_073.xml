@@ -1,0 +1,23 @@
+<!DOCTYPE shell [
+  <!ELEMENT shell (left, middle, right)>
+  <!ELEMENT left EMPTY>
+  <!ELEMENT middle (node|leaf)*>
+  <!ELEMENT node (leaf?)>
+  <!ELEMENT leaf (#PCDATA)>
+  <!ELEMENT right EMPTY>
+  <!ATTLIST shell xmlns CDATA #IMPLIED xmlns:a CDATA #IMPLIED>
+  <!ATTLIST left a:flag (on|off) #REQUIRED>
+  <!ATTLIST node depth NMTOKEN #IMPLIED>
+  <!ENTITY % branch "(node|leaf)*">
+  <!ENTITY % injected "<!ELEMENT extra EMPTY>">
+  %injected;
+]>
+<shell xmlns="urn:base" xmlns:a="urn:attr">
+  <left a:flag="on"/>
+  <middle>
+    <node depth="00"><leaf>n1</leaf></node>
+    <leaf>standalone</leaf>
+    <node><leaf><![CDATA[raw ]]></leaf></node>
+  </middle>
+  <right/>
+</shell>

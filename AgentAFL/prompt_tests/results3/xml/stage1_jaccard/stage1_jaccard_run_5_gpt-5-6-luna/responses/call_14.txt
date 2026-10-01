@@ -1,0 +1,119 @@
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE catalog [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "payload.bin" NDATA bin>
+  <!ELEMENT catalog (item+, metadata)>
+  <!ELEMENT item (name, value, link?)>
+  <!ATTLIST item
+    id ID #REQUIRED
+    refs IDREFS #IMPLIED
+    blob ENTITY #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target IDREF #REQUIRED>
+  <!ELEMENT metadata ANY>
+  <!ATTLIST metadata source CDATA "generated">
+]>
+<catalog>
+  <item id="first" refs="second third" blob="payload">
+    <name>alpha</name>
+    <value>left<part>middle</part>right</value>
+    <link target="second"/>
+  </item>
+  <item id="second">
+    <name>βeta</name>
+    <value><![CDATA[x < y && y > z]]></value>
+  </item>
+  <item id="third">
+    <name>gamma</name>
+    <value><part>tail</part></value>
+  </item>
+  <metadata><unknown attr="1"><nested/></unknown></metadata>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<α:envelope xmlns:α="urn:outer" xmlns:b="urn:inner" xml:lang="fr">
+  <!-- comment before the payload -->
+  <?audit level="verbose"?>
+  <α:header b:code="A&amp;B" xml:space="preserve">
+    <![CDATA[
+      <not-an-element>
+      ]]> 
+  </α:header>
+  <α:body>
+    <b:section id="s1">
+      text
+      <b:entry><![CDATA[raw ]]>]]&gt;<![CDATA[ content]]></b:entry>
+      <?local instruction?>
+      <b:entry attr="&#x1F642;">終</b:entry>
+    </b:section>
+    <α:body>
+      <b:section id="s2"><b:entry/></b:section>
+    </α:body>
+  </α:body>
+</α:envelope>
+```
+
+```xml
+<!DOCTYPE r [
+  <!ELEMENT r (a|b|c)*>
+  <!ELEMENT a EMPTY>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c (d,e?)>
+  <!ELEMENT d ANY>
+  <!ELEMENT e EMPTY>
+  <!ATTLIST r mode (one|two|three) "two" count NMTOKEN #IMPLIED>
+  <!ATTLIST a flag NMTOKEN #FIXED "on">
+]>
+<r count="0007">
+  <a/>
+  <b>one &lt; two</b>
+  <c><d><x/><y><![CDATA[data]]></d><e/></c>
+  <a flag="on"/>
+  <b><![CDATA[split]]>after</b>
+</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (node)>
+  <!ELEMENT node (node|leaf)*>
+  <!ELEMENT leaf (#PCDATA)>
+  <!ATTLIST node
+    depth CDATA #IMPLIED
+    key ID #IMPLIED>
+  <!ENTITY left "(">
+  <!ENTITY right ")">
+]>
+<root>
+  <node depth="0" key="n0">
+    <node depth="1" key="n1">
+      <leaf>&left;level-2&right;</leaf>
+      <node depth="2" key="n2">
+        <leaf>deep&amp;literal</leaf>
+      </node>
+    </node>
+    <node depth="1" key="n3">
+      <leaf>line1
+line2&#x0A;line3</leaf>
+    </node>
+  </node>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<root a="1" a="2" b="unterminated>
+  <item>
+    <![CDATA[unterminated cdata
+  </item>
+  &unknown;
+  <tail attr="&#0;"/>
+</root>
+```

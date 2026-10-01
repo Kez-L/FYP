@@ -1,0 +1,111 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+)>
+  <!ELEMENT entry (#PCDATA|meta)*>
+  <!ATTLIST entry id ID #REQUIRED category (text|binary|unknown) "text">
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY greeting "hello &amp; welcome">
+]>
+<archive>
+  <!-- Mixed character data with a declared ID attribute -->
+  <entry id="first" category="text">&greeting; <![CDATA[raw <markup> remains text]]><meta key="lang" value="en"/>tail</entry>
+  <entry id="second"><meta key="empty"/><meta key="format" value="plain"/></entry>
+</archive>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE document [
+  <!ELEMENT document (section, section?)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+]>
+<?audit mode="minimal"?>
+<document>
+  <section>
+    <title>Résumé &amp; Notes</title>
+    <item>alpha<em>bold</em>omega<br/>delta</item>
+    <item><![CDATA[line one
+line two
+line three]]></item>
+  </section>
+  <section>
+    <title>第二章</title>
+    <item>π ≈ 3.141592653589793</item>
+  </section>
+</document>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (node)>
+  <!ELEMENT node (leaf|node)*>
+  <!ELEMENT leaf (#PCDATA)>
+  <!ATTLIST node ref IDREF #IMPLIED>
+  <!ATTLIST leaf status NMTOKEN "new">
+]>
+<root>
+  <node ref="n1">
+    <leaf status="ready">one</leaf>
+    <node ref="n1">
+      <leaf>two &lt; three</leaf>
+      <node>
+        <leaf status="x:y">three</leaf>
+      </node>
+    </node>
+  </node>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (record*)>
+  <!ELEMENT record (key, value, note?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|![CDATA[]]>)*>
+  <!ELEMENT note (#PCDATA)>
+]>
+<catalog>
+  <record>
+    <key xml:space="preserve">  spaced	key  </key>
+    <value>left <![CDATA[]]> middle <![CDATA[&amp; &lt;]]> right</value>
+    <note>first&#x0A;second&#13;third</note>
+  </record>
+  <record>
+    <key>emoji-😀</key>
+    <value><![CDATA[brackets ]]]]><![CDATA[> and ]]>]]></value>
+  </record>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field EMPTY>
+  <!ATTLIST field name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding (raw|base64|hex) #REQUIRED>
+]>
+<envelope>
+  <header>
+    <field name="empty" value=""/>
+    <field name="quoted" value="&quot;&apos;&amp;&lt;&gt;"/>
+    <field name="unicode" value="λ/Ж/あ"/>
+  </header>
+  <payload>
+    <chunk index="0" encoding="base64">AAECAwQFBgcICQ==</chunk>
+    <chunk index="1" encoding="hex">00ff10deadbeef</chunk>
+    <chunk index="2" encoding="raw"><![CDATA[<not-an-element/>]]></chunk>
+  </payload>
+</envelope>
+```

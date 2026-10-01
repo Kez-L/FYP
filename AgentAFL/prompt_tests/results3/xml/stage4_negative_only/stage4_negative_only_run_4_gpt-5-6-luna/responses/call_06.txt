@@ -1,0 +1,130 @@
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, description, tags?)>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    status (draft|published|archived) "draft"
+    related IDREF #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT tags (tag+)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ENTITY product "XML &amp; Fuzzing">
+  <!ENTITY mark "&#x2603;">
+]>
+<catalog>
+  <entry id="a1" status="published">
+    <title>&product; &mark;</title>
+    <description>Parser <em>stress</em> with <code>entities</code>.</description>
+    <tags><tag>alpha</tag><tag>βeta</tag></tags>
+  </entry>
+  <entry id="b2" related="a1">
+    <title>Second record</title>
+    <description><![CDATA[Literal <markup> and ]]> characters]]></description>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:report xmlns:r="urn:report:v3"
+          xmlns:m="urn:metrics"
+          xmlns:x="urn:extra"
+          xml:lang="de">
+  <?audit level="verbose"?>
+  <r:header xml:space="preserve">
+    <r:generated-at>2026-10-01T12:34:56Z</r:generated-at>
+    <r:source m:kind="batch" x:flag="true">sensor-07</r:source>
+  </r:header>
+  <r:body>
+    <m:metric m:name="latency" m:unit="ms">0</m:metric>
+    <m:metric m:name="ratio" m:unit="1">-1.25E-03</m:metric>
+    <section xmlns="urn:section" xmlns:r="urn:shadow">
+      <r:item r:key="k&amp;1">text</r:item>
+      <item xmlns="">unqualified</item>
+    </section>
+  </r:body>
+  <!-- retained for compatibility -->
+  <?checksum algorithm="none"?>
+</r:report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dialogue [
+  <!ELEMENT dialogue (scene+)>
+  <!ELEMENT scene (speaker, line*)>
+  <!ATTLIST scene number CDATA #REQUIRED>
+  <!ELEMENT speaker (#PCDATA)>
+  <!ELEMENT line (#PCDATA|pause|aside)*>
+  <!ELEMENT pause EMPTY>
+  <!ATTLIST pause duration CDATA "short">
+  <!ELEMENT aside (#PCDATA)>
+]>
+<dialogue>
+  <scene number="1">
+    <speaker>Archivist</speaker>
+    <line>Open the vault.<pause duration="long"/>Not the east door.</line>
+    <line><aside>(whispered)</aside> The key is <pause/> beneath the stone.</line>
+  </scene>
+  <scene number="2">
+    <speaker>Machine</speaker>
+    <line><![CDATA[<status value="unknown"/>]]></line>
+    <line>Signal: &#x1F4A1; &amp; response: &quot;ready&quot;.</line>
+  </scene>
+</dialogue>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder*)>
+  <!ELEMENT folder (label, item*)>
+  <!ATTLIST folder path CDATA #REQUIRED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item
+    kind NMTOKEN "file"
+    flags NMTOKENS #IMPLIED>
+]>
+<archive>
+  <folder path="/tmp/α" >
+    <label xml:space="default">Résumé&#x85;notes</label>
+    <item kind="file" flags="hidden encrypted">alpha&#xA0;one</item>
+    <item kind="link" flags="external">target&#x2028;name</item>
+  </folder>
+  <folder path="/var/log">
+    <label>events</label>
+    <item kind="device" flags="read-only">0000</item>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta, payload)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta
+    version CDATA #FIXED "2"
+    mode (safe|raw) "safe">
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding NMTOKEN "plain">
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+  <!ENTITY quoted "&quot;ready&quot;">
+]>
+<envelope>
+  <meta/>
+  <payload>
+    <chunk index="01">literal text &amp; symbols</chunk>
+    <chunk index="02" encoding="escaped">&left;tag attr=&quoted;&right;</chunk>
+    <chunk index="03"><![CDATA[raw ]]> data]]></chunk>
+  </payload>
+</envelope>
+```

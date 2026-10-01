@@ -1,0 +1,29 @@
+<!DOCTYPE root [
+  <!ELEMENT root (item|group|empty)*>
+  <!ELEMENT item (#PCDATA|mark)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT group (item+, note?)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT empty EMPTY>
+  <!ATTLIST root xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST item code CDATA #IMPLIED>
+  <!ATTLIST group name CDATA #REQUIRED>
+  <!ENTITY amp "&amp;">
+  <!ENTITY nested "a&amp;b&lt;c&gt;">
+  <!ENTITY % mode "INCLUDE">
+  <![%mode;[
+    <!ATTLIST note priority (low|high) "low">
+  ]]>
+]>
+<root xml:lang="x-test">
+  <group name="g&amp;1">
+    <item code="A">one<mark>two</mark>&nested;</item>
+    <note priority="high">note &amp; trail</note>
+  </group>
+  <empty/>
+  <item><![CDATA[<x>]]><?p?>after</item>
+  <group name="second">
+    <item code="B">left</item>
+    <item code="C"><mark/></item>
+  </group>
+</root>

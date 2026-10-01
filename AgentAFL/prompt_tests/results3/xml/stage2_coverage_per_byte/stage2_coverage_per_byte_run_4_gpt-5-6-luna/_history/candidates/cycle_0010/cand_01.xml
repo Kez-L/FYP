@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header EMPTY>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST envelope mode (fast|safe|debug) "safe">
+  <!ATTLIST header stamp CDATA #IMPLIED>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED>
+  <!ENTITY % extra '
+    <!ATTLIST payload encoding (plain|base64) "plain">
+  '>
+  %extra;
+  <!ENTITY cr "&#x0D;">
+  <!ENTITY lf "&#x0A;">
+]>
+<envelope mode="debug">
+  <header stamp="&cr;&lf;"/>
+  <payload encoding="plain">before<chunk index="001">inside</chunk>after</payload>
+</envelope>

@@ -1,0 +1,30 @@
+<!DOCTYPE package [
+  <!ELEMENT package (header, archive)>
+  <!ELEMENT header (name, checksum)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT archive (folder|file|link)*>
+  <!ELEMENT folder (folder|file|link)*>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST archive version CDATA #IMPLIED>
+  <!ATTLIST folder path CDATA #REQUIRED>
+  <!ATTLIST file path CDATA #REQUIRED size CDATA #IMPLIED>
+  <!ATTLIST link path CDATA #REQUIRED target CDATA #REQUIRED>
+]>
+<package>
+  <header>
+    <name>bundle.tar</name>
+    <checksum>sha256:0123456789abcdef</checksum>
+  </header>
+  <archive version="0">
+    <folder path="/">
+      <file path="/readme.txt" size="0"/>
+      <folder path="/deep">
+        <link path="/deep/current" target="../readme.txt"/>
+        <file path="/deep/data.bin" size="18446744073709551615"/>
+      </folder>
+    </folder>
+    <file path="/trailing"/>
+  </archive>
+</package>

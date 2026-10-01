@@ -1,0 +1,23 @@
+{
+  "call": 11,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (collection+)>\n  <!ELEMENT collection (title, entry*)>\n  <!ELEMENT title (#PCDATA)>\n  <!ELEMENT entry (name, metadata, payload?)>\n  <!ELEMENT name (#PCDATA)>\n  <!ELEMENT metadata (author*, date?, keyword*)>\n  <!ELEMENT author (#PCDATA)>\n  <!ELEMENT date (#PCDATA)>\n  <!ELEMENT keyword (#PCDATA)>\n  <!ELEMENT payload (#PCDATA|fragment)*>\n  <!ELEMENT fragment (#PCDATA)>\n  <!ATTLIST collection code NMTOKEN #REQUIRED>\n  <!ATTLIST entry ref ID #REQUIRED relation IDREFS #IMPLIED>\n  <!ATTLIST entry compressed (yes|no) \"no\">\n  <!ENTITY separator \" / \">\n]>\n<archive>\n  <collection code=\"alpha\">\n    <title>Research notes</title>\n    <entry ref=\"e1\" compressed=\"yes\">\n      <name>Protocol &separator; draft</name>\n      <metadata>\n        <author>Li</author>\n        <author>O'Neil</author>\n        <date>2026-09-30</date>\n        <keyword>parsing</keyword>\n        <keyword>recovery</keyword>\n      </metadata>\n      <payload>\n        Introductory text\n        <fragment><![CDATA[<not-an-element>]]></fragment>\n        trailing text\n      </payload>\n    </entry>\n    <entry ref=\"e2\" relation=\"e1\">\n      <name>Appendix</name>\n      <metadata>\n        <keyword>\u0394</keyword>\n      </metadata>\n    </entry>\n  </collection>\n  <collection code=\"\u03b2\">\n    <title>Empty collection</title>\n  </collection>\n</archive>\n\n--- example 2 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<registry xmlns:r=\"urn:registry\" xmlns:m=\"urn:meta\" xml:lang=\"en\">\n  <?index mode=\"incremental\"?>\n  <r:entry r:key=\"alpha\" m:created=\"2026-10-01\">\n    <r:name>Alpha</r:name>\n    <r:aliases>\n      <r:alias>first</r:alias>\n      <r:alias xml:space=\"default\">A</r:alias>\n    </r:aliases>\n    <r:data><![CDATA[\n      {\"enabled\":true,\"limits\":[0,1,2,3],\"note\":\"<not markup>\"}\n    ]]></r:data>\n  </r:entry>\n  <r:entry r:key=\"beta\">\n    <r:name>Beta</r:name>\n    <r:aliases/>\n    <r:data>\n      <m:integer base=\"16\">DEADBEEF</m:integer>\n      <m:boolean>true</m:boolean>\n      <m:null/>\n    </r:data>\n  </r:entry>\n  <!-- terminal record -->\n  <r:entry r:key=\"gamma\" r:deprecated=\"yes\">\n    <r:name>Gamma &amp; Delta</r:name>\n  </r:entry>\n</registry>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-01T03:38:39.471420+00:00"
+}

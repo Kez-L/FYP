@@ -1,0 +1,26 @@
+<!DOCTYPE stream [
+  <!ELEMENT stream (record*)>
+  <!ELEMENT record (key, value, metadata?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|fragment)*>
+  <!ELEMENT fragment (#PCDATA)>
+  <!ELEMENT metadata (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST record timestamp CDATA #IMPLIED type CDATA "event">
+  <!ENTITY open "<fragment>expanded">
+  <!ENTITY close "</fragment>">
+]>
+<stream>
+  <record timestamp="1970-01-01T00:00:00Z" type="text">
+    <key>alpha</key>
+    <value>before &open; middle &close; after</value>
+    <metadata>
+      <tag>one</tag>
+      <tag><![CDATA[two <three>]]></tag>
+    </metadata>
+  </record>
+  <record timestamp="now">
+    <key><![CDATA[k&y]]></key>
+    <value><fragment>explicit</fragment>tail</value>
+  </record>
+</stream>

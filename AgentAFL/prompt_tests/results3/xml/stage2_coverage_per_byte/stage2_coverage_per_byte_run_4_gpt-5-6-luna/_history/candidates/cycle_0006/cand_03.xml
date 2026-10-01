@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT data (record*)>
+  <!ELEMENT record (key, value, blob?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT blob (#PCDATA)>
+  <!ATTLIST package mode (read|write) "read">
+  <!ATTLIST file path CDATA #REQUIRED type NMTOKEN "text">
+  <!ATTLIST record rid ID #REQUIRED>
+  <!ATTLIST blob encoding (base64|hex) #IMPLIED>
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY sample SYSTEM "missing.dat" NDATA bin>
+]>
+<package mode="write">
+  <manifest>
+    <file path="a/b.txt" type="text"/>
+    <file path="image.bin" type="binary"/>
+  </manifest>
+  <data>
+    <record rid="r1">
+      <key>name</key>
+      <value>one<part>+</part>two</value>
+    </record>
+    <record rid="r2">
+      <key>raw</key>
+      <value><![CDATA[&not-expanded;]]></value>
+      <blob encoding="hex">00ff10aa</blob>
+    </record>
+  </data>
+</package>

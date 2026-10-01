@@ -1,0 +1,108 @@
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<archive xmlns="urn:acme:archive" xml:space="preserve">
+  <!-- mixed content with significant whitespace -->
+  <record xml:id="r-α-01" status="draft">
+    <heading>Résumé — café &amp; tea</heading>
+    <body>Before <emphasis>the storm</emphasis>, <![CDATA[<unparsed> & raw]]> after.</body>
+    <metadata>
+      <tag>Δ</tag>
+      <tag>東京</tag>
+      <empty/>
+    </metadata>
+  </record>
+  <?index mode="incremental"?>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, meta, body)>
+  <!ATTLIST entry id ID #REQUIRED kind (note|warning|info) "info">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta author CDATA #IMPLIED priority NMTOKEN "normal">
+  <!ELEMENT body (#PCDATA|code|br)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ENTITY quoted "&#x22;quoted&#x22;">
+  <!ENTITY mark "A &amp; B">
+]>
+<catalog>
+  <entry id="e1" kind="warning">
+    <title>&quoted;</title>
+    <meta author="x&amp;y" priority="high"/>
+    <body>Use <code>&lt;node/&gt;</code><br/>Result: &mark;.</body>
+  </entry>
+</catalog>
+```
+
+```xml
+<configuration xmlns="urn:example:config"
+               xmlns:sec="urn:example:security"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:nil="false">
+  <profile name="isolated">
+    <sec:permissions>
+      <sec:allow action="read" resource="config"/>
+      <sec:deny action="write" resource="secrets"/>
+    </sec:permissions>
+    <parameters>
+      <parameter key="threshold" type="decimal">0.0000001</parameter>
+      <parameter key="enabled" type="boolean">false</parameter>
+      <parameter key="pattern" type="regex"><![CDATA[[A-Z]{2,4}\d+]]></parameter>
+    </parameters>
+    <fallback xmlns="">
+      <value xml:lang="fr">aucune</value>
+    </fallback>
+  </profile>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest xmlns="urn:example:manifest"
+          xmlns:xi="http://www.w3.org/2001/XInclude"
+          xml:base="https://example.invalid/root/">
+  <resource xml:lang="en" xml:base="assets/">
+    <name>bundle</name>
+    <xi:include href="part-a.xml" parse="xml">
+      <xi:fallback>
+        <placeholder reason="missing">unavailable</placeholder>
+      </xi:fallback>
+    </xi:include>
+    <xi:include href="data:text/plain,not-xml" parse="text"/>
+    <checksum algorithm="sha256">e3b0c44298fc1c149afbf4c8996fb924</checksum>
+  </resource>
+</manifest>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!ELEMENT scene (branch)>
+  <!ELEMENT branch (leaf|branch|text)*>
+  <!ELEMENT leaf EMPTY>
+  <!ATTLIST leaf value CDATA #IMPLIED>
+  <!ELEMENT text (#PCDATA)>
+]>
+<scene>
+  <branch level="0">
+    <text>α</text>
+    <branch level="1">
+      <leaf value="&quot;one&quot;"/>
+      <branch level="2">
+        <![CDATA[
+          deliberately irregular spacing
+          <not-an-element>&amp;</not-an-element>
+        ]]>
+        <text>β&#x1F600;γ</text>
+        <leaf value="two"/>
+      </branch>
+      <text>tail &lt; fragment &gt; end</text>
+    </branch>
+  </branch>
+</scene>
+```

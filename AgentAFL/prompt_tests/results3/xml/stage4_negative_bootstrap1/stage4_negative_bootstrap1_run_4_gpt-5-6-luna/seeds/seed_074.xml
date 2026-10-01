@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (start, step+, finish)>
+  <!ELEMENT start EMPTY>
+  <!ELEMENT step (input?, action, output*)>
+  <!ATTLIST step name ID #REQUIRED depends IDREFS #IMPLIED>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT action EMPTY>
+  <!ATTLIST action type CDATA #REQUIRED retry NMTOKEN "0">
+  <!ELEMENT output (#PCDATA)>
+  <!ATTLIST output format (text|json|xml) #REQUIRED>
+  <!ELEMENT finish (#PCDATA)>
+]>
+<workflow xmlns:x="urn:workflow:extra">
+  <start/>
+  <step name="prepare">
+    <action type="initialize" retry="000"/>
+    <output format="text">ready</output>
+  </step>
+  <step name="run" depends="prepare">
+    <input>alpha &quot;beta&quot; &apos;gamma&apos;</input>
+    <action type="execute" retry="999999999999999999999999"/>
+    <output format="json"><![CDATA[{"ok":true,"items":[]}]]></output>
+    <output format="xml"><x:result x:code="200">done</x:result></output>
+  </step>
+  <finish>complete<?status code="0"?></finish>
+</workflow>

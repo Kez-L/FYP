@@ -1,0 +1,128 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (item+)>
+  <!ELEMENT item (title, description, metadata?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT metadata EMPTY>
+  <!ATTLIST item id ID #REQUIRED category CDATA "general">
+  <!ATTLIST metadata source CDATA #IMPLIED>
+  <!ENTITY company "Ada &amp; Grace Computing">
+]>
+<catalog>
+  <item id="i-001" category="history">
+    <title>Analytical Engines</title>
+    <description>Machines designed by <emphasis>&company;</emphasis>.</description>
+    <metadata source="archive"/>
+  </item>
+  <item id="i-002">
+    <title>Calculation Notes</title>
+    <description><![CDATA[Symbols such as <, >, and & remain literal here.]]></description>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY % structure "<!ELEMENT root (section*)>">
+  %structure;
+  <!ELEMENT section (heading, paragraph+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|em)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ATTLIST section name NMTOKEN #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <![INCLUDE[
+    <!ENTITY included "conditionally-visible">
+  ]]>
+]>
+<root>
+  <section name="intro">
+    <heading>Overview</heading>
+    <paragraph>This&nbsp;is <em>important</em> text.</paragraph>
+    <paragraph>&included; content follows.</paragraph>
+  </section>
+</root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns="urn:example:app"
+             xmlns:cfg="urn:example:config"
+             xml:lang="en-US"
+             xml:space="preserve">
+  <?build profile="fuzz"?>
+  <!-- Configuration values intentionally contain mixed content. -->
+  <header cfg:version="2.7" cfg:enabled="true">
+    <name>Parser &amp; Validator</name>
+    <description><![CDATA[
+      A line with ]]> characters represented safely in a CDATA boundary:
+      <![CDATA[alpha ]]]]><![CDATA[> omega
+    ]]></description>
+  </header>
+  <settings>
+    <setting key="timeout" value="00000030"/>
+    <setting key="path">/tmp/a/b/../c</setting>
+    <setting key="empty"/>
+  </settings>
+</application>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE report [
+  <!ELEMENT report (run, summary)>
+  <!ELEMENT run (input, result*)>
+  <!ELEMENT input (#PCDATA)>
+  <!ELEMENT result (message?, value?)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT summary (#PCDATA)>
+  <!ATTLIST run id ID #REQUIRED>
+  <!ATTLIST result status (ok|fail|unknown) "unknown">
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<report>
+  <run id="r01">
+    <input>sample&#x0A;with&#x9;whitespace</input>
+    <result status="ok">
+      <message>range &left;0..10&right;</message>
+      <value>10</value>
+    </result>
+    <result status="fail"/>
+  </run>
+  <summary>completed&#xA;with mixed outcomes</summary>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (branch)>
+  <!ELEMENT branch (node|leaf)*>
+  <!ELEMENT node (node|leaf)*>
+  <!ELEMENT leaf EMPTY>
+  <!ATTLIST branch depth CDATA #IMPLIED>
+  <!ATTLIST node key CDATA #REQUIRED>
+  <!ATTLIST leaf value CDATA #IMPLIED>
+]>
+<envelope>
+  <branch depth="0">
+    <node key="a">
+      <leaf value="&quot;quoted&quot;"/>
+      <node key="a.1">
+        <leaf value="&apos;single&apos;"/>
+        <leaf/>
+      </node>
+    </node>
+    <node key="b">
+      <leaf value="&#x1F600;"/>
+      <leaf value="line one&#10;line two"/>
+    </node>
+  </branch>
+</envelope>
+```

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (environment, modules, rules)>
+  <!ELEMENT environment (variable*)>
+  <!ELEMENT variable EMPTY>
+  <!ATTLIST variable name NMTOKEN #REQUIRED value CDATA #IMPLIED sensitive (true|false) "false">
+  <!ELEMENT modules (module*)>
+  <!ELEMENT module (depends*, option*)>
+  <!ATTLIST module id ID #REQUIRED state (enabled|disabled|experimental) "enabled">
+  <!ELEMENT depends EMPTY>
+  <!ATTLIST depends ref IDREF #REQUIRED optional (yes|no) "no">
+  <!ELEMENT option (#PCDATA|list|map)*>
+  <!ATTLIST option name NMTOKEN #REQUIRED type (string|integer|boolean|json) "string">
+  <!ELEMENT list (item*)>
+  <!ELEMENT item (#PCDATA|map)*>
+  <!ELEMENT map (pair*)>
+  <!ELEMENT pair (#PCDATA|list|map)*>
+  <!ATTLIST pair key NMTOKEN #REQUIRED>
+  <!ELEMENT rules (rule+)>
+  <!ELEMENT rule (match, action, comment?)>
+  <!ATTLIST rule id ID #REQUIRED priority CDATA "0">
+  <!ELEMENT match (#PCDATA)>
+  <!ELEMENT action EMPTY>
+  <!ATTLIST action name NMTOKEN #REQUIRED target IDREF #IMPLIED>
+  <!ELEMENT comment (#PCDATA)>
+]>
+<configuration xml:space="preserve" xmlns:c="urn:config">
+  <environment>
+    <variable name="MODE" value="staging"/>
+    <variable name="TOKEN" sensitive="true"/>
+  </environment>
+  <modules>
+    <module id="core">
+      <option name="threads" type="integer">4</option>
+      <option name="features" type="json"><list><item>fast</item><item>safe</item></list></option>
+    </module>
+    <module id="cache" state="experimental">
+      <depends ref="core"/>
+      <option name="limits"><map><pair key="soft">128</pair><pair key="hard">256</pair></map></option>
+    </module>
+  </modules>
+  <rules>
+    <rule id="r-main" priority="10">
+      <match><![CDATA[path =~ "^/api/(v1|v2)/"]]></match>
+      <action name="route" target="core"/>
+      <comment>Apply only after normalization &amp; decoding.</comment>
+    </rule>
+    <rule id="r-fallback">
+      <match>otherwise()</match>
+      <action name="cache" target="cache"/>
+    </rule>
+  </rules>
+</configuration>

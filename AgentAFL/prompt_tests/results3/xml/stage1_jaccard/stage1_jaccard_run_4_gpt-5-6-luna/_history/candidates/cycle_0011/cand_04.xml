@@ -1,0 +1,38 @@
+<!DOCTYPE exchange [
+  <!ELEMENT exchange (request, response?, fault?)>
+  <!ELEMENT request (method, headers, body)>
+  <!ELEMENT response (status, headers?, body?)>
+  <!ELEMENT fault (code, message, detail?)>
+  <!ELEMENT method (#PCDATA)>
+  <!ELEMENT headers (header*)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT body ANY>
+  <!ELEMENT status (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT detail ANY>
+  <!ATTLIST exchange transaction CDATA #REQUIRED>
+  <!ATTLIST header name CDATA #REQUIRED folded (yes|no) "no">
+  <!ENTITY amp "&amp;">
+  <!ENTITY quoted "&quot;">
+]>
+<exchange transaction="txn-&#x31;&#x32;&#x33;">
+  <request>
+    <method>POST</method>
+    <headers>
+      <header name="Content-Type" folded="yes">application/xml</header>
+      <header name="X-Trace">&quoted;abc&quoted;</header>
+    </headers>
+    <body>
+      <message xmlns="urn:message">
+        <part id="a">one&amp;two</part>
+        <part id="b"><![CDATA[<part id="fake"/>]]></part>
+      </message>
+      <?audit level="debug"?>
+    </body>
+  </request>
+  <response>
+    <status>202</status>
+    <body><accepted xmlns="urn:result" next="urn:item"/></body>
+  </response>
+</exchange>

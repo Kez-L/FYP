@@ -1,0 +1,24 @@
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST cell
+    col NMTOKEN #REQUIRED
+    span NMTOKEN "1">
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+]>
+<?build phase="fuzz"?>
+<matrix>
+  <row>
+    <cell col="a" span="2">&left;one&right;</cell>
+    <cell col="c"><![CDATA[unterminated ]]> marker]]></cell>
+  </row>
+  <row>
+    <cell col="a">x&#0;y</cell>
+    <cell col="b">line1
+line2&#xD;</cell>
+    <cell col="c"><?inner data?><![CDATA[&amp;]]></cell>
+  </row>
+</matrix>

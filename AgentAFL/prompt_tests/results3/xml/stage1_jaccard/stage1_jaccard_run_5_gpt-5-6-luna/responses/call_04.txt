@@ -1,0 +1,135 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, price?, details)>
+  <!ATTLIST entry id ID #REQUIRED status (new|used|archived) "new">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|em|ref)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #IMPLIED>
+]>
+<catalog>
+  <entry id="item-1" status="used">
+    <title>Odd &amp; Unusual</title>
+    <price>0.00</price>
+    <details>before <em>emphasis</em> after <ref target="item-1"/></details>
+  </entry>
+  <entry id="item-2">
+    <title>Second</title>
+    <details>mixed text <![CDATA[ ]]> tail</details>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % common "title | data | note">
+  <!ELEMENT report (header, section+)>
+  <!ELEMENT header (%common;)>
+  <!ELEMENT section (name, (%common;)*, section?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT name (#PCDATA)>
+]>
+<report>
+  <header>
+    <title>Nested declaration test</title>
+    <data><![CDATA[<x>&y;</x>]]></data>
+    <note>alpha</note>
+  </header>
+  <section>
+    <name>outer</name>
+    <data>one</data>
+    <section>
+      <name>inner</name>
+      <note>two &lt; three</note>
+    </section>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE packet [
+  <!ELEMENT packet (meta, payload)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta
+    source CDATA #IMPLIED
+    flags NMTOKENS #IMPLIED
+    checksum NMTOKEN #IMPLIED>
+  <!ELEMENT payload (chunk*)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk
+    index NMTOKEN #REQUIRED
+    encoding (raw|base64|hex) "raw">
+]>
+<packet>
+  <meta source="a&amp;b" flags="fast checked" checksum="0000"/>
+  <payload>
+    <chunk index="000" encoding="hex">00ff7e</chunk>
+    <chunk index="01">line
+break &#x0A; and &#65;</chunk>
+    <chunk index="2" encoding="base64"><![CDATA[AAECAwQ=]]></chunk>
+  </payload>
+</packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE vault [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY logo SYSTEM "logo.bin" NDATA bin>
+  <!ELEMENT vault (record*)>
+  <!ELEMENT record (label, value)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA|link)*>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST record key ID #IMPLIED>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ATTLIST vault icon ENTITY #IMPLIED>
+]>
+<vault icon="logo">
+  <record key="r1">
+    <label>external notation</label>
+    <value>prefix<link href="urn:x"/>suffix</value>
+  </record>
+  <record>
+    <label>quotes &quot; apostrophe &apos;</label>
+    <value><![CDATA[<& not markup]]></value>
+  </record>
+</vault>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE switches [
+  <!ELEMENT switches (mode, item*)>
+  <!ELEMENT mode (#PCDATA)>
+  <!ELEMENT item (key, value?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST item enabled (yes|no) "yes">
+  <!ENTITY open "<![CDATA[">
+  <!ENTITY close "]]>">
+  <!ENTITY amp "&#38;">
+]>
+<switches>
+  <mode>test</mode>
+  <item enabled="no">
+    <key>empty</key>
+  </item>
+  <item enabled="yes">
+    <key>entities</key>
+    <value>&open;hidden &amp; literal&close;</value>
+  </item>
+  <item>
+    <key>numeric</key>
+    <value>&#0; &#x1; &#x7F; &amp; &lt; &gt;</value>
+  </item>
+</switches>
+```

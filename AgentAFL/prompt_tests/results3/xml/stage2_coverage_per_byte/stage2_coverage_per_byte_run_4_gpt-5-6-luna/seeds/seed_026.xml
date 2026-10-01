@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, signature?)>
+  <!ELEMENT header (field*)>
+  <!ELEMENT field EMPTY>
+  <!ELEMENT payload ANY>
+  <!ELEMENT signature (#PCDATA)>
+  <!ATTLIST envelope id ID #IMPLIED sealed (yes|no) "no">
+  <!ATTLIST field name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ENTITY left "[[">
+  <!ENTITY right "]]">
+  <!ENTITY percent "%">
+]>
+<envelope id="packet-7" sealed="yes">
+  <header>
+    <field name="A" value="1"/>
+    <field name="B" value="&amp;&quot;"/>
+  </header>
+  <payload xmlns:x="urn:x">
+    &left;<x:chunk x:level="0">one</x:chunk>&right;
+    <chunk xmlns="urn:payload"><![CDATA[<not-markup/>]]></chunk>
+    <?payload data?>
+  </payload>
+  <signature>sha256:abc&amp;def</signature>
+</envelope>

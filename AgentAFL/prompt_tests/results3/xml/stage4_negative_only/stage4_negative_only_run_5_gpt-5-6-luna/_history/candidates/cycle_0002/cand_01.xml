@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (manifest, payload)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry path CDATA #REQUIRED kind (text|binary|link) "text" checksum CDATA #IMPLIED>
+  <!ELEMENT payload (section+)>
+  <!ELEMENT section (#PCDATA|section|item)*>
+  <!ATTLIST section name CDATA #REQUIRED>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item key ID #IMPLIED>
+  <!ENTITY greeting "hello &amp; welcome">
+  <!ENTITY stamp "2026-10-01">
+]>
+<archive>
+  <manifest>
+    <entry path="docs/readme.txt" kind="text" checksum="sha256:abc123"/>
+    <entry path="assets/logo.bin" kind="binary" checksum="sha256:def456"/>
+    <entry path="latest" kind="link"/>
+  </manifest>
+  <payload>
+    <section name="intro">
+      &greeting; — generated on &stamp;.
+      <item key="first">alpha</item>
+      <section name="nested">
+        <item>beta &lt; gamma</item>
+        <![CDATA[raw payload: ]]> <item>delta</item>
+      </section>
+    </section>
+    <section name="empty-content"/>
+  </payload>
+</archive>

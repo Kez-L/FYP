@@ -1,0 +1,41 @@
+<!DOCTYPE message [
+  <!ENTITY % declarations '
+    <!ELEMENT message (sender, recipients, payload, signature?)>
+    <!ELEMENT sender (#PCDATA)>
+    <!ELEMENT recipients (to, cc*)>
+    <!ELEMENT to (#PCDATA)>
+    <!ELEMENT cc (#PCDATA)>
+    <!ELEMENT payload (line|attachment)*>
+    <!ELEMENT line (#PCDATA)>
+    <!ELEMENT attachment EMPTY>
+    <!ELEMENT signature (#PCDATA)>
+  '>
+  %declarations;
+  <!ATTLIST message
+    priority (low|normal|high) "normal"
+    timestamp CDATA #REQUIRED>
+  <!ATTLIST to address CDATA #REQUIRED>
+  <!ATTLIST cc address CDATA #REQUIRED>
+  <!ATTLIST attachment
+    filename CDATA #REQUIRED
+    size NMTOKEN #IMPLIED
+    encoding (base64|hex|raw) "raw">
+  <!ENTITY ampersand "&amp;">
+  <!ENTITY newline "&#xA;">
+]>
+<message priority="high" timestamp="2026-10-01T00:00:00Z">
+  <sender>ops&amp;alerts@example.invalid</sender>
+  <recipients>
+    <to address="alpha@example.invalid">Alpha</to>
+    <cc address="beta@example.invalid">Beta</cc>
+    <cc address="γ@example.invalid">Gamma</cc>
+  </recipients>
+  <payload>
+    <line>First &amp; second&newline;third</line>
+    <attachment filename="a&amp;b.bin" size="000000" encoding="base64"/>
+    <line><![CDATA[--boundary--]]></line>
+  </payload>
+  <signature>-----BEGIN SIGNATURE-----&#xD;
+abc==&#xD;
+-----END SIGNATURE-----</signature>
+</message>

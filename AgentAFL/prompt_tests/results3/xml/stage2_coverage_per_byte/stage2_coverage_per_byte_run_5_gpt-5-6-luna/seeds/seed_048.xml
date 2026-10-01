@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, content)>
+  <!ELEMENT manifest (file+)>
+  <!ELEMENT file EMPTY>
+  <!ELEMENT content (chunk|include|checksum)+>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT include EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST package id ID #REQUIRED xml:base CDATA #IMPLIED>
+  <!ATTLIST file path CDATA #REQUIRED size CDATA #IMPLIED>
+  <!ATTLIST include href ENTITY #REQUIRED>
+  <!ENTITY part SYSTEM "fragment.ent">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY blob SYSTEM "payload.bin" NDATA bin>
+]>
+<package id="pkg-7" xml:base="file:///tmp/">
+  <manifest>
+    <file path="a&amp;b.txt" size="07"/>
+    <file path="empty" size="0"/>
+  </manifest>
+  <content>
+    <chunk>first</chunk>
+    <include href="part"/>
+    <checksum>sha256:0000</checksum>
+    <chunk>second &part;</chunk>
+  </content>
+</package>

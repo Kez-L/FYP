@@ -1,0 +1,167 @@
+```
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, summary?, meta, body)>
+  <!ATTLIST entry id ID #REQUIRED refs IDREFS #IMPLIED status (draft|final|archived) "draft">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|mark|code)*>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta created CDATA #REQUIRED owner CDATA #IMPLIED>
+  <!ELEMENT body (section+)>
+  <!ELEMENT section (heading, paragraph+)>
+  <!ATTLIST section name CDATA #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|em|br|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ENTITY product "Atlas">
+  <!ENTITY notice "For &product; users only.">
+]>
+<catalog>
+  <entry id="e1" status="final">
+    <title>&product; deployment notes</title>
+    <summary>Read the <mark>important</mark> parts and inspect <code>--verify</code>.</summary>
+    <meta created="2026-10-01" owner="ops"/>
+    <body>
+      <section name="intro">
+        <heading>Overview</heading>
+        <paragraph>Use <em>staged</em> rollout.<br/>Then verify each node.</paragraph>
+      </section>
+      <section name="legal">
+        <heading>Notice</heading>
+        <paragraph>&notice;</paragraph>
+      </section>
+    </body>
+  </entry>
+  <entry id="e2" refs="e1" status="archived">
+    <title>Archive</title>
+    <meta created="2025-01-15"/>
+    <body>
+      <section name="history">
+        <heading>Earlier release</heading>
+        <paragraph>Retained for comparison.</paragraph>
+      </section>
+    </body>
+  </entry>
+</catalog>
+```
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+              xmlns:auth="urn:acme:auth"
+              xmlns:inv="urn:acme:inventory"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <env:Header>
+    <auth:credentials env:mustUnderstand="1">
+      <auth:principal>warehouse-bot</auth:principal>
+      <auth:token xsi:type="auth:OpaqueToken"><![CDATA[Q2hhbmdlLW1lLTQy]]></auth:token>
+    </auth:credentials>
+    <?audit action="lookup"?>
+  </env:Header>
+  <env:Body>
+    <inv:stockRequest request-id="R-9007" region="eu-west">
+      <inv:item sku="A-17">
+        <inv:warehouse code="LON">
+          <inv:bin aisle="7" shelf="B" quantity="0042"/>
+          <inv:bin aisle="8" shelf="A" quantity="0000"/>
+        </inv:warehouse>
+        <inv:warehouse code="MAD">
+          <inv:bin aisle="2" shelf="C" quantity="19"/>
+        </inv:warehouse>
+      </inv:item>
+      <inv:filters>
+        <inv:includeDiscontinued>false</inv:includeDiscontinued>
+        <inv:expression><![CDATA[quantity >= 10 && region != "test"]]></inv:expression>
+      </inv:filters>
+    </inv:stockRequest>
+  </env:Body>
+</env:Envelope>
+```
+
+```
+<?xml version="1.1" encoding="UTF-8"?>
+<document xmlns="urn:unicode:ledger" xml:lang="el">
+  <header>
+    <label>Κατάσταση — résumé — سجل</label>
+    <revision>r&amp;d-17</revision>
+    <line-breaks>first&#x85;second&#x2028;third</line-breaks>
+  </header>
+  <records>
+    <record key="α-001" amount="+00012.50" valid="true">
+      <description>Δοκιμή με 日本語 και العربية</description>
+      <values>
+        <value index="0">0</value>
+        <value index="1">12.50</value>
+        <value index="2">∞</value>
+      </values>
+      <annotation><![CDATA[
+        This section contains <literal>markup</literal>,
+        ampersands & and brackets ]]> safely.
+      </annotation>
+    </record>
+    <record key="β-002" amount="-7" valid="false">
+      <description>Second entry</description>
+      <values>
+        <value index="0"/>
+        <value index="1">-7</value>
+      </values>
+      <!-- A comment with -- is intentionally absent because XML forbids it. -->
+    </record>
+  </records>
+  <?checkpoint sequence="2"?>
+</document>
+```
+
+```
+<?xml version="1.0"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node*, edge*)>
+  <!ELEMENT node (label?, property*)>
+  <!ATTLIST node id NMTOKEN #REQUIRED kind CDATA #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST property key NMTOKEN #REQUIRED>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge from NMTOKEN #REQUIRED to NMTOKEN #REQUIRED weight CDATA "1">
+]>
+<graph>
+  <node id="n0" kind="root">
+    <label>Start</label>
+    <property key="color">#ff00aa</property>
+    <property key="empty"/>
+  </node>
+  <node id="n1">
+    <label><![CDATA[<middle> & central]]></label>
+  </node>
+  <node id="n2" kind="leaf">
+    <label>End</label>
+  </node>
+  <node id="n3">
+    <property key="note">contains &lt;escaped&gt; text</property>
+  </node>
+  <edge from="n0" to="n1" weight="0.25"/>
+  <edge from="n1" to="n2" weight="NaN"/>
+  <edge from="n2" to="n3" weight="-Infinity"/>
+  <edge from="n3" to="n0" weight="1e+309"/>
+</graph>
+```
+
+```
+<?xml version="1.0"?>
+<!DOCTYPE broken [
+  <!ELEMENT root (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ATTLIST item code CDATA #IMPLIED>
+]>
+<root>
+  <item code="one">alpha &amp; beta</item>
+  <item code="two"><![CDATA[unterminated-looking content ]]> tail</item>
+  <item code="three">text with &#x1F600; and &#169;</item>
+  <item code="four" code="duplicate">duplicate attribute probe</item>
+  <item code='five>mismatched quote</item>
+</root>
+```

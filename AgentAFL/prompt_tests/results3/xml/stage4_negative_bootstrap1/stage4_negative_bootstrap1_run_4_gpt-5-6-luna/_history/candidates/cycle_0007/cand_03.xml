@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE configuration [
+  <!ELEMENT configuration (defaults, profiles)>
+  <!ELEMENT defaults (option*)>
+  <!ELEMENT profiles (profile+)>
+  <!ELEMENT profile (inherits?, option*, module*)>
+  <!ATTLIST profile name NMTOKEN #REQUIRED enabled (yes|no) "yes">
+  <!ELEMENT inherits EMPTY>
+  <!ATTLIST inherits profile NMTOKEN #REQUIRED>
+  <!ELEMENT option (#PCDATA)>
+  <!ATTLIST option key NMTOKEN #REQUIRED type (string|integer|boolean|path) "string">
+  <!ELEMENT module (setting*)>
+  <!ATTLIST module name NMTOKEN #REQUIRED>
+  <!ELEMENT setting (#PCDATA)>
+  <!ATTLIST setting key NMTOKEN #REQUIRED>
+  <!NOTATION ini SYSTEM "application/ini">
+  <!ENTITY nbsp "&#160;">
+]>
+<configuration>
+  <defaults>
+    <option key="timeout" type="integer">30</option>
+    <option key="verbose" type="boolean">false</option>
+    <option key="root" type="path">/var/lib/app/&nbsp;</option>
+  </defaults>
+  <profiles>
+    <profile name="development" enabled="yes">
+      <option key="timeout" type="integer">0</option>
+      <option key="banner">dev &lt;local&gt;</option>
+      <module name="storage">
+        <setting key="driver">sqlite</setting>
+        <setting key="file">./data/test.db</setting>
+      </module>
+    </profile>
+    <profile name="production" enabled="no">
+      <inherits profile="development"/>
+      <option key="verbose" type="boolean">true</option>
+      <module name="logging">
+        <setting key="format">[%Y-%m-%dT%H:%M:%S%z] %p %m</setting>
+      </module>
+    </profile>
+  </profiles>
+</configuration>

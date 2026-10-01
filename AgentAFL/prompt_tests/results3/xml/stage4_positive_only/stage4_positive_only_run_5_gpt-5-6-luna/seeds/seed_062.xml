@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (step+)>
+  <!ELEMENT step (label, action, transition*)>
+  <!ATTLIST step id ID #REQUIRED terminal (yes|no) "no">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT action EMPTY>
+  <!ATTLIST action kind CDATA #REQUIRED command CDATA #IMPLIED>
+  <!ELEMENT transition EMPTY>
+  <!ATTLIST transition event CDATA #REQUIRED target IDREF #REQUIRED>
+]>
+<workflow>
+  <step id="begin">
+    <label>Initialize</label>
+    <action kind="setup" command="prepare"/>
+    <transition event="ready" target="process"/>
+  </step>
+  <step id="process">
+    <label>Process input</label>
+    <action kind="transform" command="normalize &amp; validate"/>
+    <transition event="success" target="finish"/>
+    <transition event="failure" target="abort"/>
+  </step>
+  <step id="abort" terminal="yes">
+    <label>Abort</label>
+    <action kind="rollback"/>
+  </step>
+  <step id="finish" terminal="yes">
+    <label>Complete</label>
+    <action kind="notify" command="send-report"/>
+  </step>
+</workflow>

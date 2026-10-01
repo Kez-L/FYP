@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!NOTATION jpeg SYSTEM "image/jpeg">
+  <!ENTITY logo SYSTEM "logo.jpg" NDATA jpeg>
+  <!ENTITY company "North &amp; South">
+  <!ENTITY token "A&lt;B&gt;C&quot;D&apos;E">
+  <!ELEMENT catalog (entry+, index?)>
+  <!ELEMENT entry (title, description, asset*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT asset EMPTY>
+  <!ELEMENT index (ref*)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST catalog
+    id ID #REQUIRED
+    mode (compact|expanded|archived) "expanded">
+  <!ATTLIST entry
+    key ID #REQUIRED
+    parent IDREF #IMPLIED
+    status NMTOKEN #IMPLIED>
+  <!ATTLIST asset
+    src ENTITY #IMPLIED
+    format NOTATION (jpeg) #IMPLIED>
+  <!ATTLIST ref target IDREF #REQUIRED>
+]>
+<catalog id="c-main" mode="compact">
+  <entry key="e-one" status="new">
+    <title>&company; &token;</title>
+    <description>Use <em>markup</em> around <code>literal &lt;data&gt;</code>.</description>
+    <asset src="logo" format="jpeg"/>
+  </entry>
+  <entry key="e-two" parent="e-one">
+    <title><![CDATA[raw ]]> content ]]&gt; and more</title>
+    <description>left<!-- embedded comment -->right</description>
+  </entry>
+  <index>
+    <ref target="e-one"/>
+    <ref target="e-two"/>
+  </index>
+</catalog>

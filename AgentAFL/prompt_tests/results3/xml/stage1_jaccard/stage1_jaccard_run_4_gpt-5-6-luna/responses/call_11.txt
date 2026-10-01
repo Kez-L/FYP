@@ -1,0 +1,184 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, footer)>
+  <!ELEMENT entry (title, creator*, description, link*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT creator (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link (#PCDATA)>
+  <!ELEMENT footer (#PCDATA)>
+  <!ATTLIST catalog xmlns CDATA #IMPLIED xml:lang NMTOKEN "en">
+  <!ATTLIST entry id ID #REQUIRED status (new|old|draft) "new">
+  <!ATTLIST link ref IDREF #IMPLIED>
+  <!ENTITY mark "&#xE2;&#x98;&#x83;">
+  <!ENTITY phrase "A &amp; B &lt; C &gt; D">
+]>
+<catalog xmlns="urn:example:catalog" xml:lang="fr">
+  <entry id="e1" status="draft">
+    <title>Signals &mark;</title>
+    <creator>Alpha</creator>
+    <creator>Beta</creator>
+    <description>text <em>emphasis</em><br/><code>&phrase;</code> tail</description>
+    <link ref="e2">next</link>
+  </entry>
+  <entry id="e2">
+    <title>Second</title>
+    <description><![CDATA[raw ]]> content &amp; more</description>
+  </entry>
+  <footer>done</footer>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % common '
+    <!ELEMENT report (section|note)+>
+    <!ELEMENT section (heading, item*)>
+    <!ELEMENT heading (#PCDATA)>
+    <!ELEMENT item (#PCDATA|value)*>
+    <!ELEMENT value (#PCDATA)>
+    <!ELEMENT note (#PCDATA)>
+  '>
+  %common;
+  <!ENTITY % attrs '
+    <!ATTLIST section code NMTOKEN #REQUIRED>
+    <!ATTLIST item kind CDATA "plain">
+  '>
+  %attrs;
+  <!ENTITY left "[">
+  <!ENTITY right "]">
+  <!ENTITY nested "&left;&amp;&right;">
+]>
+<report>
+  <section code="A-01">
+    <heading>first</heading>
+    <item kind="quoted">&nested;</item>
+    <item><value>42</value><value>7</value></item>
+  </section>
+  <note><![CDATA[section-like text: <section code="fake"/>]]></note>
+  <section code="B_02">
+    <heading>second</heading>
+  </section>
+</report>
+```
+
+```xml
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder*)>
+  <!ELEMENT folder (folder|record|comment)*>
+  <!ELEMENT record (name, blob?, checksum)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT blob (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT comment (#PCDATA)>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ATTLIST record key ID #IMPLIED>
+  <!ENTITY nl "&#10;">
+  <!ENTITY quote "&quot;">
+]>
+<archive>
+  <folder name="root">
+    <!-- a comment with -- forbidden-looking punctuation: - - -->
+    <record key="r1">
+      <name>alpha&amp;omega</name>
+      <blob><![CDATA[
+        00112233445566778899
+        <not-an-element/>
+      ]]></blob>
+      <checksum algorithm="sha256">&quote;deadbeef&quote;</checksum>
+    </record>
+    <folder name="nested">
+      <comment>line one&nl;line two</comment>
+      <record>
+        <name>empty payload</name>
+        <checksum>0000</checksum>
+      </record>
+    </folder>
+  </folder>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (meta, node+)>
+  <!ELEMENT meta (label, stamp)>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT stamp (#PCDATA)>
+  <!ELEMENT node (label?, node*)>
+  <!ATTLIST node id ID #REQUIRED parent IDREF #IMPLIED kind CDATA "branch">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY angled "&lt;angle&gt;">
+]>
+<map>
+  <meta>
+    <label>topology &nbsp; map</label>
+    <stamp>2026-10-01T00:00:00Z</stamp>
+  </meta>
+  <node id="n0" kind="branch">
+    <label>root</label>
+    <node id="n1" parent="n0" kind="leaf">
+      <label>&angled;</label>
+    </node>
+    <node id="n2" parent="n0">
+      <node id="n3" parent="n2" kind="leaf"/>
+      <node id="n4" parent="n2" kind="leaf">
+        <![CDATA[embedded ]]> text
+      </node>
+    </node>
+  </node>
+</map>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE transaction [
+  <!ELEMENT transaction (request, response, audit?)>
+  <!ELEMENT request (method, uri, headers, body?)>
+  <!ELEMENT response (status, headers, body?)>
+  <!ELEMENT headers (header*)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT method (#PCDATA)>
+  <!ELEMENT uri (#PCDATA)>
+  <!ELEMENT status (#PCDATA)>
+  <!ELEMENT body (#PCDATA|part|raw)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT audit (event+)>
+  <!ELEMENT event (#PCDATA)>
+  <!ATTLIST header name CDATA #REQUIRED>
+  <!ATTLIST body encoding (plain|base64|escaped) "plain">
+  <!ENTITY amp "&amp;">
+  <!ENTITY slash "&#x2F;">
+  <!ENTITY payload "x&slash;y&slash;z">
+]>
+<transaction>
+  <request>
+    <method>POST</method>
+    <uri>/v1/items?x=1&amp;y=2</uri>
+    <headers>
+      <header name="Content-Type">application/xml</header>
+      <header name="X-Trace">&amp;&lt;&gt;&quot;&apos;</header>
+    </headers>
+    <body encoding="escaped">
+      <part><![CDATA[<item id="not-parsed">raw</item>]]></part>
+      <part>&payload;</part>
+    </body>
+  </request>
+  <response>
+    <status>207</status>
+    <headers>
+      <header name="Warning">mixed &amp; encoded</header>
+    </headers>
+    <body encoding="plain">ok</body>
+  </response>
+  <audit>
+    <event time="0">created</event>
+    <event time="1">processed</event>
+  </audit>
+</transaction>
+```

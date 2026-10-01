@@ -1,0 +1,159 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:example:library" xmlns:m="urn:example:meta">
+  <!-- A catalog entry with mixed content and nested metadata -->
+  <book isbn="978-0000000001" available="yes">
+    <title xml:lang="en">The <emphasis>Shape</emphasis> of Data</title>
+    <authors>
+      <author id="a1">
+        <name>Rina Vale</name>
+        <role>editor</role>
+      </author>
+      <author id="a2">
+        <name>Omar Chen</name>
+      </author>
+    </authors>
+    <description><![CDATA[
+      A guide to <markup>, entities, and serialized documents.
+    ]]></description>
+    <m:details>
+      <m:published year="2024" month="11"/>
+      <m:rating scale="5">4.5</m:rating>
+    </m:details>
+    <keywords>
+      <keyword>XML</keyword>
+      <keyword>parsing</keyword>
+      <keyword>fuzzing</keyword>
+    </keywords>
+  </book>
+</library>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE canvas [
+  <!ELEMENT canvas (layer+)>
+  <!ELEMENT layer (shape|group|text)*>
+  <!ATTLIST layer name CDATA #IMPLIED visible (true|false) "true">
+  <!ELEMENT group (shape|text|group)*>
+  <!ATTLIST group transform CDATA #IMPLIED>
+  <!ELEMENT shape EMPTY>
+  <!ATTLIST shape type (circle|rect|path) #REQUIRED x CDATA #IMPLIED y CDATA #IMPLIED>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST text align (left|center|right) "left">
+]>
+<canvas>
+  <layer name="background" visible="false">
+    <shape type="rect" x="0" y="0"/>
+  </layer>
+  <layer name="foreground">
+    <group transform="translate(12,8) rotate(3)">
+      <shape type="circle" x="40" y="20"/>
+      <text align="center">A &amp; B</text>
+      <group transform="scale(0.5)">
+        <shape type="path" x="M0 0 L10 20"/>
+        <text>Nested <![CDATA[vector]]> label</text>
+      </group>
+    </group>
+  </layer>
+</canvas>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<message xmlns="urn:example:message" xmlns:hdr="urn:example:header">
+  <hdr:envelope>
+    <hdr:sender id="node-7">
+      <hdr:name>relay.example</hdr:name>
+      <hdr:address><![CDATA[ops@example.test]]></hdr:address>
+    </hdr:sender>
+    <hdr:recipients>
+      <hdr:to priority="high">team@example.test</hdr:to>
+      <hdr:cc>archive@example.test</hdr:cc>
+    </hdr:recipients>
+    <hdr:timestamp>2026-10-01T09:30:00Z</hdr:timestamp>
+  </hdr:envelope>
+  <payload type="notification">
+    <subject>Maintenance window</subject>
+    <body>Services will pause briefly; see <link href="https://example.test/status">status</link>.</body>
+    <attachments>
+      <attachment filename="plan.txt" media-type="text/plain">
+        <data>cGxhbiB2MQ==</data>
+      </attachment>
+      <attachment filename="diagram.svg" media-type="image/svg+xml">
+        <data encoding="base64">PHN2Zy8+</data>
+      </attachment>
+    </attachments>
+  </payload>
+</message>
+```
+
+```xml
+<?xml version="1.0"?>
+<?processing mode="diagnostic"?>
+<workflow id="wf-42" xml:base="https://example.test/workflows/">
+  <variables>
+    <variable name="attempts" type="integer">3</variable>
+    <variable name="enabled" type="boolean">true</variable>
+    <variable name="pattern" type="string"><![CDATA[a < b && c > d]]></variable>
+  </variables>
+  <steps>
+    <step id="prepare" result="success">
+      <action command="mkdir">/tmp/output</action>
+      <log level="info">Directory ready</log>
+    </step>
+    <step id="process" depends-on="prepare" result="retry">
+      <action command="transform">
+        <input href="input.dat"/>
+        <output href="output.dat"/>
+      </action>
+      <error code="E_TIMEOUT">
+        <message>Operation exceeded 30 seconds</message>
+        <retry-after unit="seconds">5</retry-after>
+      </error>
+    </step>
+    <step id="cleanup" depends-on="process" result="skipped"/>
+  </steps>
+  <?checkpoint name="after-steps"?>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<weather xmlns="urn:example:weather" xmlns:geo="urn:example:geo">
+  <station code="KXYZ">
+    <location>
+      <city>North Harbor</city>
+      <geo:coordinates lat="51.5072" lon="-0.1276"/>
+      <elevation unit="m">18</elevation>
+    </location>
+    <observations date="2026-10-01">
+      <observation time="06:00" condition="fog">
+        <temperature unit="C">8.2</temperature>
+        <wind direction="NE">
+          <speed unit="km/h">11</speed>
+          <gust unit="km/h">19</gust>
+        </wind>
+        <visibility unit="km">2.4</visibility>
+      </observation>
+      <observation time="12:00" condition="clear">
+        <temperature unit="C">16.7</temperature>
+        <wind direction="E">
+          <speed unit="km/h">7</speed>
+        </wind>
+        <alerts>
+          <alert severity="low">Dry air</alert>
+          <alert severity="info"><![CDATA[No precipitation expected]]></alert>
+        </alerts>
+      </observation>
+    </observations>
+    <forecast>
+      <day name="tomorrow">
+        <high unit="C">18</high>
+        <low unit="C">9</low>
+        <summary>Sunny with occasional cloud</summary>
+      </day>
+    </forecast>
+  </station>
+</weather>
+```

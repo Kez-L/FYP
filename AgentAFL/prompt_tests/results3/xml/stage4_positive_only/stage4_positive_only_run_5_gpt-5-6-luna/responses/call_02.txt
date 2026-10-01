@@ -1,0 +1,158 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE observatory [
+  <!ELEMENT observatory (header, instrument+, log)>
+  <!ELEMENT header (title, location)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT location EMPTY>
+  <!ATTLIST location latitude CDATA #REQUIRED longitude CDATA #REQUIRED>
+  <!ELEMENT instrument (name, calibration, reading*)>
+  <!ATTLIST instrument id ID #REQUIRED status (online|offline|testing) "testing">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT calibration (#PCDATA)>
+  <!ELEMENT reading (#PCDATA)>
+  <!ATTLIST reading unit CDATA #IMPLIED timestamp CDATA #IMPLIED>
+  <!ELEMENT log (#PCDATA)>
+]>
+<observatory>
+  <header>
+    <title>Night Survey</title>
+    <location latitude="51.4779" longitude="-0.0015"/>
+  </header>
+  <instrument id="scope-7" status="online">
+    <name>Optical Array</name>
+    <calibration>2026-09-30T22:10:00Z</calibration>
+    <reading unit="nm" timestamp="22:11">486.2</reading>
+    <reading unit="nm" timestamp="22:12">486.7</reading>
+  </instrument>
+  <instrument id="meter-2">
+    <name>Radiometer</name>
+    <calibration>reference &lt;zero&gt;</calibration>
+  </instrument>
+  <log>clear sky; intermittent wind</log>
+</observatory>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:catalog:v3" xmlns:m="urn:meta" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <m:generated xsi:nil="true"/>
+  <section code="tools">
+    <entry sku="T-001" available="yes">
+      <name>Torque wrench</name>
+      <price currency="EUR">89.95</price>
+      <tags>
+        <tag>mechanical</tag>
+        <tag>calibrated</tag>
+      </tags>
+    </entry>
+    <entry sku="T-002" available="no">
+      <name xml:lang="de">Schraubenschlüssel</name>
+      <price currency="EUR">12.00</price>
+      <tags/>
+    </entry>
+  </section>
+  <section code="materials">
+    <entry sku="M-404" available="yes">
+      <name>Polymer sheet</name>
+      <price currency="USD">0</price>
+      <description><![CDATA[Thickness: 2mm
+Use <inside> protective packaging.]]></description>
+    </entry>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (sender, recipients, subject, body, attachment*)>
+  <!ELEMENT sender EMPTY>
+  <!ATTLIST sender address CDATA #REQUIRED>
+  <!ELEMENT recipients (recipient+)>
+  <!ELEMENT recipient EMPTY>
+  <!ATTLIST recipient address CDATA #REQUIRED kind (to|cc|bcc) "to">
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|emphasis|quote|break)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT attachment (#PCDATA)>
+  <!ATTLIST attachment name CDATA #REQUIRED encoding CDATA #IMPLIED>
+]>
+<message>
+  <sender address="robot@example.net"/>
+  <recipients>
+    <recipient address="alice@example.net"/>
+    <recipient address="ops@example.net" kind="cc"/>
+  </recipients>
+  <subject>Maintenance &amp; status</subject>
+  <body>
+    Scheduled <emphasis>downtime</emphasis> begins at 03:00.
+    <break/>
+    <quote>Keep the service window open.</quote>
+  </body>
+  <attachment name="report.txt" encoding="base64">VGhlIHJlcG9ydA==</attachment>
+</message>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:workflow" xmlns:sec="urn:security">
+  <pipeline id="deploy-prod">
+    <trigger type="manual">
+      <sec:principal role="release-manager">buildbot</sec:principal>
+    </trigger>
+    <step id="compile" retry="2">
+      <command><![CDATA[make all && make install]]></command>
+      <environment>
+        <variable name="MODE">production</variable>
+        <variable name="FLAGS">-O2 -Wall</variable>
+      </environment>
+    </step>
+    <step id="verify" retry="0">
+      <depends-on ref="compile"/>
+      <check><![CDATA[test "$STATUS" = "ready"]]></check>
+    </step>
+    <step id="publish" retry="1">
+      <depends-on ref="verify"/>
+      <artifact path="/srv/releases/app.tar.gz" checksum="sha256:abc123"/>
+    </step>
+  </pipeline>
+  <history>
+    <run started="2026-09-30T19:00:00Z" duration="PT4M">
+      <result>success</result>
+    </run>
+  </history>
+</workflow>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (folder+)>
+  <!ELEMENT folder (folder|file|link)*>
+  <!ATTLIST folder name CDATA #REQUIRED>
+  <!ELEMENT file (#PCDATA)>
+  <!ATTLIST file name CDATA #REQUIRED size CDATA #IMPLIED>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link name CDATA #REQUIRED target CDATA #REQUIRED>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY marker "A &amp; B">
+]>
+<archive>
+  <folder name="root">
+    <file name="readme.txt" size="18">alpha &marker; beta&nbsp;</file>
+    <folder name="data">
+      <file name="empty.bin" size="0"></file>
+      <link name="latest" target="../incoming/item-07"/>
+      <folder name="nested">
+        <file name="notes.xml"><![CDATA[<not-a-document>]]></file>
+      </folder>
+    </folder>
+  </folder>
+  <folder name="lost+found">
+    <link name="recovered" target="/archive/root/data/empty.bin"/>
+  </folder>
+</archive>
+```

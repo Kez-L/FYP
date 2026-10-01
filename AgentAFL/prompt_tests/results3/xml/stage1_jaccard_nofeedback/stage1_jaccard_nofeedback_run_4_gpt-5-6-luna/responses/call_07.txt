@@ -1,0 +1,110 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:m="urn:example:meta">
+  <m:header xml:lang="en" xml:space="preserve">
+    <![CDATA[alpha < beta && gamma > delta]]>
+    <m:revision number="0007">2026-10-01</m:revision>
+  </m:header>
+  <item id="A-01" enabled="true">
+    <name>Tea &amp; Honey</name>
+    <description>Line one&#x0A;Line two&#x20;with spaces</description>
+    <price currency="€">12.50</price>
+  </item>
+  <item id="B-02">
+    <name><![CDATA[<unparsed> & " text]]></name>
+    <tags><tag>odd</tag><tag>even</tag></tags>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+, trailer?)>
+  <!ELEMENT entry (title, payload, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST entry key ID #REQUIRED>
+  <!ATTLIST entry state (new|old|held) "new">
+  <!ENTITY mark "&#x2603;">
+  <!ENTITY fragment "<chunk>embedded &amp; marked</chunk>">
+]>
+<archive>
+  <entry key="e1" state="held">
+    <title>First &mark; record</title>
+    <payload>before &fragment; after</payload>
+    <note xml:lang="fr">résumé</note>
+  </entry>
+  <entry key="e2">
+    <title>Second</title>
+    <payload><chunk>one</chunk><chunk><![CDATA[two]]></chunk></payload>
+  </entry>
+  <trailer/>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<?processing instruction-data?>
+<r:root xmlns:r="urn:r" xmlns:x="urn:x" xml:base="relative/path">
+  <!-- comment with --? no, just punctuation: [ ] { } -->
+  <x:branch count="3">
+    <x:leaf value="&quot;quoted&quot;" data="&#x1F642;"/>
+    <x:leaf>
+      <r:inner><![CDATA[
+        whitespace
+        <not-an-element/>
+      ]]></r:inner>
+    </x:leaf>
+  </x:branch>
+  <?inside alpha="beta"?>
+  <r:tail x:flag="yes">text<empty/></r:tail>
+</r:root>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <level01><level02><level03><level04><level05>
+    <value><![CDATA[deep]]></value>
+    <value>numeric: &#9;&#10;&#13;&#x41;&#X42;</value>
+  </level05></level04></level03></level02></level01>
+  <mixed>left<!-- hidden -->middle<?pi data?>right</mixed>
+  <nbsp>&#160;&#x2003;&#x2028;</nbsp>
+  <empty></empty>
+  <self-closing a="1" b="2"/>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (section|separator)*>
+  <!ELEMENT section (heading, body)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT body (#PCDATA|line|br)*>
+  <!ELEMENT line (#PCDATA|emph)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT separator EMPTY>
+  <!ATTLIST section id NMTOKEN #IMPLIED>
+]>
+<report>
+  <section id="intro">
+    <heading>Overview</heading>
+    <body>
+      <line>Plain <emph>emphasis</emph> and more</line>
+      <br/>
+      <line><![CDATA[x < y && y < z]]></line>
+    </body>
+  </section>
+  <separator/>
+  <section>
+    <heading>尾部</heading>
+    <body>αβγ<line>δ</line>終</body>
+  </section>
+</report>
+```

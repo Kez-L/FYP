@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ENTITY company "Northwind &amp; Sons">
+  <!ENTITY note "A &lt;small&gt; sample with &quot;quoted&quot; text.">
+  <!ELEMENT archive (header, entry+, footer)>
+  <!ELEMENT header (title, generated)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT generated (#PCDATA)>
+  <!ELEMENT entry (summary, detail?, link*)>
+  <!ATTLIST entry
+    key ID #REQUIRED
+    state (new|held|closed) "new"
+    ref IDREF #IMPLIED>
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link
+    rel CDATA #REQUIRED
+    target URI #IMPLIED>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<archive>
+  <header>
+    <title>&company; — &note;</title>
+    <generated>2026-10-01T00:00:00Z</generated>
+  </header>
+  <entry key="item-a" state="closed">
+    <summary>First &amp; final</summary>
+    <detail xml:space="preserve">before<em>inside</em><br/><code>&lt;token/&gt;</code>after</detail>
+    <link rel="self" target="urn:item:item-a"/>
+  </entry>
+  <entry key="item-b" ref="item-a">
+    <summary>Referenced record</summary>
+    <!-- deliberately mixed whitespace -->
+    <detail><![CDATA[x < y && y > z]]></detail>
+    <link rel="parent" target="#item-a"/>
+    <link rel="alternate"/>
+  </entry>
+  <footer>done</footer>
+</archive>

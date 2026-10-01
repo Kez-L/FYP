@@ -1,0 +1,239 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY title "Fuzz &amp; Explore">
+  <!ENTITY writer "A. Researcher">
+  <!ENTITY % commonAttrs '<!ATTLIST entry xml:lang NMTOKEN "en" status (draft|final|archived) "draft">'>
+  <!ELEMENT catalog (header, section+)>
+  <!ELEMENT header (title, author, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT note (#PCDATA|em|code)*>
+  <!ELEMENT section (entry+)>
+  <!ATTLIST section id ID #REQUIRED label CDATA #IMPLIED>
+  <!ELEMENT entry (name, summary?, details?)>
+  <!ATTLIST entry ref IDREF #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|em)*>
+  <!ELEMENT details (para|code|em)*>
+  <!ELEMENT para (#PCDATA|em|code|link)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  %commonAttrs;
+]>
+<catalog xml:base="urn:seed:catalog">
+  <header>
+    <title>&title;</title>
+    <author>&writer;</author>
+    <note>Use <em>carefully</em> with <code>&lt;tokens&gt;</code>.</note>
+  </header>
+  <section id="s-main" label="α">
+    <entry ref="s-main" status="final">
+      <name>First &amp; Primary</name>
+      <summary>Short <em>annotated</em> summary.</summary>
+      <details>
+        <para>Line one <link>urn:item:1</link></para>
+        <code>if (x &lt; 2) return &quot;ok&quot;;</code>
+      </details>
+    </entry>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ENTITY greeting "Hello, &quot;client&quot;">
+  <!ENTITY payload "<data kind='embedded'>sample</data>">
+  <!ELEMENT envelope (header, body, trailer)>
+  <!ELEMENT header (transaction, timestamp)>
+  <!ELEMENT transaction (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT body (request|response|fault)+>
+  <!ELEMENT request (method, parameter*)>
+  <!ELEMENT response (result|warning)*>
+  <!ELEMENT fault (code, message)>
+  <!ELEMENT method (#PCDATA)>
+  <!ELEMENT parameter (#PCDATA)>
+  <!ELEMENT result (#PCDATA|item)*>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT warning (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST request id ID #IMPLIED xmlns:x CDATA #FIXED "urn:example:x">
+  <!ATTLIST response request IDREF #IMPLIED>
+  <!ATTLIST item key NMTOKEN #REQUIRED>
+]>
+<envelope xmlns="urn:example:envelope" xmlns:x="urn:example:x" xml:lang="en">
+  <?trace level="verbose"?>
+  <header>
+    <transaction>txn-&#x31;7</transaction>
+    <timestamp>2026-10-01T12:34:56Z</timestamp>
+  </header>
+  <body>
+    <request id="r1" x:mode="test">
+      <method>POST</method>
+      <parameter name="q">a&amp;b</parameter>
+      <parameter name="note"><![CDATA[raw <value> & untouched]]></parameter>
+    </request>
+    <response request="r1">
+      <result><item key="alpha">&greeting;</item><item key="beta">&payload;</item></result>
+      <warning>partial result</warning>
+    </response>
+  </body>
+  <trailer/>
+</envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ENTITY nbsp "&#160;">
+  <!ELEMENT scene (metadata, layer*)>
+  <!ELEMENT metadata (name, description?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT layer (group|shape|use)*>
+  <!ATTLIST layer id ID #REQUIRED z NMTOKEN #IMPLIED>
+  <!ELEMENT group (shape|group|use)*>
+  <!ATTLIST group transform CDATA #IMPLIED>
+  <!ELEMENT shape (point*)>
+  <!ATTLIST shape type (circle|rect|path) #REQUIRED fill CDATA "none" source ENTITY #IMPLIED>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ELEMENT use EMPTY>
+  <!ATTLIST use href IDREF #REQUIRED>
+]>
+<scene xmlns="urn:graphics:scene" viewBox="0 0 640 480">
+  <metadata>
+    <name>Vector &amp; Raster</name>
+    <description>Coordinates follow<linebreak/>a local origin.&nbsp;</description>
+  </metadata>
+  <layer id="background" z="0">
+    <shape type="rect" fill="#fff"/>
+  </layer>
+  <layer id="foreground" z="1">
+    <group transform="translate(10,20) scale(2)">
+      <shape type="circle" source="logo">
+        <point x="12.5" y="8"/>
+        <point x="19" y="14"/>
+      </shape>
+      <use href="background"/>
+    </group>
+  </layer>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY % feature "INCLUDE">
+  <!ENTITY % optional "<!ELEMENT diagnostics (metric|message)*><!ELEMENT metric (#PCDATA)><!ELEMENT message (#PCDATA)>">
+  <!ELEMENT report (prologue, content, appendix?)>
+  <!ELEMENT prologue (heading, owner, keywords?)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT keywords (keyword+)>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ELEMENT content (chapter+)>
+  <!ELEMENT chapter (heading, paragraph+, table?)>
+  <!ATTLIST chapter number NMTOKEN #REQUIRED>
+  <!ELEMENT paragraph (#PCDATA|strong|quote|break)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT quote (#PCDATA|strong)*>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA|strong)*>
+  <!ELEMENT appendix (diagnostics)>
+  <!ATTLIST appendix xml:space (default|preserve) "preserve">
+  <![%feature;[
+    %optional;
+  ]]>
+]>
+<report xml:lang="fr">
+  <prologue>
+    <heading>Étude &amp; Résultats</heading>
+    <owner>Équipe Δ</owner>
+    <keywords>
+      <keyword>parser</keyword>
+      <keyword>sécurité</keyword>
+    </keywords>
+  </prologue>
+  <content>
+    <chapter number="I">
+      <heading>Entrée</heading>
+      <paragraph>Une <strong>valeur</strong> suivie d’un <quote>exemple</quote>.<break/>Fin.</paragraph>
+      <table>
+        <row><cell>A</cell><cell><strong>B</strong></cell></row>
+        <row><cell>1</cell><cell>2 &lt; 3</cell></row>
+      </table>
+    </chapter>
+    <chapter number="II">
+      <heading>Sortie</heading>
+      <paragraph><![CDATA[<opaque>content & data</opaque>]]></paragraph>
+    </chapter>
+  </content>
+  <appendix>
+    <diagnostics>
+      <metric>0x00ff</metric>
+      <message>completed</message>
+    </diagnostics>
+  </appendix>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE registry [
+  <!ELEMENT registry (namespace, record*)>
+  <!ATTLIST registry version NMTOKEN #REQUIRED>
+  <!ELEMENT namespace (prefix, uri)>
+  <!ELEMENT prefix (#PCDATA)>
+  <!ELEMENT uri (#PCDATA)>
+  <!ELEMENT record (key, value, metadata?)>
+  <!ATTLIST record id ID #REQUIRED type (text|number|boolean|list) "text" link IDREFS #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|entry|flag|number)*>
+  <!ELEMENT metadata (created, modified?, tag*)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT modified (#PCDATA)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT entry (#PCDATA|flag|number)*>
+  <!ATTLIST entry name NMTOKEN #REQUIRED>
+  <!ELEMENT flag EMPTY>
+  <!ATTLIST flag name NMTOKEN #REQUIRED state (on|off) "on">
+  <!ELEMENT number (#PCDATA)>
+]>
+<registry version="2.0" xmlns:r="urn:registry" xmlns:m="urn:meta">
+  <namespace>
+    <prefix>r</prefix>
+    <uri>urn:registry</uri>
+  </namespace>
+  <record id="alpha" type="list">
+    <key>features</key>
+    <value>
+      <entry name="fast">enabled</entry>
+      <entry name="safe"><flag name="checks" state="on"/><number>42</number></entry>
+    </value>
+    <metadata>
+      <created>2026-01-01</created>
+      <tag xml:lang="en">primary</tag>
+      <tag xml:lang="ja">主</tag>
+    </metadata>
+  </record>
+  <record id="beta" type="text" link="alpha">
+    <key>message</key>
+    <value>Use &quot;quoted&quot; text, &#x1F600;, and &#13; markers.</value>
+    <metadata>
+      <created>2026-02-02</created>
+      <modified>2026-09-30</modified>
+    </metadata>
+  </record>
+</registry>
+```

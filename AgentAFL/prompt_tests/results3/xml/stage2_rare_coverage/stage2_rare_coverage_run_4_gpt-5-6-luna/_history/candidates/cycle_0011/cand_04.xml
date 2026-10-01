@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE document [
+  <!ELEMENT document (before, include, after)>
+  <!ELEMENT before (#PCDATA|item)*>
+  <!ELEMENT include (xi:include|fallback|item)*>
+  <!ELEMENT after ANY>
+  <!ELEMENT item (#PCDATA|item)*>
+  <!ELEMENT fallback (#PCDATA|item)*>
+  <!ATTLIST item level NMTOKEN #IMPLIED>
+  <!ATTLIST fallback mode CDATA #IMPLIED>
+  <!ENTITY local "entity-text">
+]>
+<document xmlns:xi="http://www.w3.org/2001/XInclude"
+          xmlns:meta="urn:metadata" xml:base="file:///tmp/base/">
+  <before>start &local;<item level="1">nested<item level="2">deep</item></item></before>
+  <include>
+    <xi:include href="missing.xml" parse="xml">
+      <xi:fallback mode="continue">
+        <item level="fallback">replacement</item>
+      </xi:fallback>
+    </xi:include>
+    <xi:include href="fragment.txt" parse="text"/>
+    <item xmlns="urn:payload" meta:kind="tail"><![CDATA[raw ]]> content</item>
+  </include>
+  <after>
+    <?processing instruction?>
+    <!-- preserved -->
+    <meta:record xmlns:meta="urn:metadata" meta:id="x1"/>
+    text &amp; more
+  </after>
+</document>

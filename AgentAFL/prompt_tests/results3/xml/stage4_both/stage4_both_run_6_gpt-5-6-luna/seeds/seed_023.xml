@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!NOTATION jpeg PUBLIC "-//Example//NOTATION JPEG 1.0//EN" "image/jpeg">
+  <!ENTITY thumbnail SYSTEM "thumb.dat" NDATA bin>
+  <!ELEMENT archive (folder+)>
+  <!ELEMENT folder (name, entry*)>
+  <!ATTLIST folder path CDATA #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT entry (description?, checksum?)>
+  <!ATTLIST entry
+            id ID #REQUIRED
+            type (text|image|binary) #REQUIRED
+            payload ENTITY #IMPLIED>
+  <!ELEMENT description (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+]>
+<archive>
+  <folder path="/incoming">
+    <name>Incoming Files</name>
+    <entry id="readme" type="text">
+      <description>Instructions &amp; release notes</description>
+      <checksum>sha256:00112233445566778899aabbccddeeff</checksum>
+    </entry>
+    <entry id="preview" type="image" payload="thumbnail">
+      <description>Unparsed binary preview</description>
+    </entry>
+  </folder>
+  <folder path="/processed">
+    <name>Processed</name>
+    <entry id="report" type="text">
+      <checksum><![CDATA[sha256:deadbeefdeadbeef]]></checksum>
+    </entry>
+  </folder>
+</archive>

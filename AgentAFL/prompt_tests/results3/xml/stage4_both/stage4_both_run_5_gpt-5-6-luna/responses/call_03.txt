@@ -1,0 +1,261 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE observatory [
+  <!ELEMENT observatory (site, session*)>
+  <!ELEMENT site (name, coordinates)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT coordinates (latitude, longitude, altitude?)>
+  <!ELEMENT latitude (#PCDATA)>
+  <!ELEMENT longitude (#PCDATA)>
+  <!ELEMENT altitude (#PCDATA)>
+  <!ELEMENT session (instrument+, remark*)>
+  <!ELEMENT instrument (reading+, calibration?)>
+  <!ELEMENT reading (#PCDATA)>
+  <!ELEMENT calibration (#PCDATA)>
+  <!ELEMENT remark (#PCDATA|emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ATTLIST observatory xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST session code ID #REQUIRED phase (dawn|day|night) "day">
+  <!ATTLIST instrument type (optical|radio|magnetic) #REQUIRED>
+  <!ATTLIST reading unit CDATA #IMPLIED>
+  <!ATTLIST reading quality (raw|checked|estimated) "raw">
+  <!ENTITY approx "approximately">
+]>
+<observatory xml:lang="en">
+  <site>
+    <name>Raven Ridge Station</name>
+    <coordinates>
+      <latitude>46.8127N</latitude>
+      <longitude>121.7426W</longitude>
+      <altitude>2140m</altitude>
+    </coordinates>
+  </site>
+  <session code="s-01" phase="night">
+    <instrument type="optical">
+      <reading unit="nm" quality="checked">632.8</reading>
+      <reading unit="nm">633.1</reading>
+      <calibration>Reference lamp stable; drift &approx; 0.02</calibration>
+    </instrument>
+    <remark>Cloud cover <emphasis>thin</emphasis> above the western ridge.</remark>
+  </session>
+  <session code="s-02" phase="dawn">
+    <instrument type="magnetic">
+      <reading unit="nT" quality="estimated">48123</reading>
+    </instrument>
+    <remark><![CDATA[Sensor enclosure reopened after frost warning.]]></remark>
+  </session>
+</observatory>
+```
+
+```xml
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE manuscript [
+  <!ELEMENT manuscript (front, chapter+, bibliography?)>
+  <!ELEMENT front (title, contributor+, abstract?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT contributor (#PCDATA)>
+  <!ELEMENT abstract (#PCDATA|term|break)*>
+  <!ELEMENT chapter (heading, section+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT section (heading, paragraph+, footnote*)>
+  <!ELEMENT paragraph (#PCDATA|term|quote|break)*>
+  <!ELEMENT term (#PCDATA)>
+  <!ELEMENT quote (#PCDATA|term)*>
+  <!ELEMENT break EMPTY>
+  <!ELEMENT footnote (#PCDATA|quote)*>
+  <!ELEMENT bibliography (entry+)>
+  <!ELEMENT entry (author, work, year)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT work (#PCDATA)>
+  <!ELEMENT year (#PCDATA)>
+  <!ATTLIST manuscript revision NMTOKEN #IMPLIED>
+  <!ATTLIST chapter number NMTOKEN #REQUIRED>
+  <!ATTLIST section id ID #REQUIRED>
+  <!ATTLIST paragraph status (draft|reviewed|final) "draft">
+  <!ATTLIST quote source CDATA #IMPLIED>
+  <!ENTITY unit "m/s²">
+  <!ENTITY note "The measured interval is shorter than expected.">
+]>
+<?processing stage="normalization"?>
+<manuscript revision="7">
+  <front>
+    <title>Notes on Small Motions</title>
+    <contributor>Jun Arai</contributor>
+    <contributor>Selene Ortiz</contributor>
+    <abstract>We compare <term>local drift</term><break/>against a fixed reference frame.</abstract>
+  </front>
+  <chapter number="1">
+    <heading>Apparatus</heading>
+    <section id="apparatus">
+      <heading>Bench arrangement</heading>
+      <paragraph status="reviewed">The carriage moved at 3 &unit; during the first pass.</paragraph>
+      <paragraph>As the operator wrote, <quote source="lab notebook">listen before adjusting</quote>.</paragraph>
+      <footnote>Calibration followed the morning temperature cycle.</footnote>
+    </section>
+  </chapter>
+  <chapter number="2">
+    <heading>Results</heading>
+    <section id="results">
+      <heading>Repeated measures</heading>
+      <paragraph status="final">The second series was quieter<break/>and less sensitive to vibration.</paragraph>
+      <paragraph>&note; A duplicate reading was retained for comparison.</paragraph>
+      <footnote><quote source="appendix">No correction was applied.</quote></footnote>
+    </section>
+  </chapter>
+  <bibliography>
+    <entry>
+      <author>M. Chen</author>
+      <work>Practical Motion Tables</work>
+      <year>2019</year>
+    </entry>
+  </bibliography>
+</manuscript>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<canvas xmlns="urn:example:canvas"
+        xmlns:svg="http://www.w3.org/2000/svg"
+        xmlns:m="urn:example:metadata"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        xml:lang="ja">
+  <m:metadata m:revision="3" m:owner="atelier-9">
+    <m:label>Layered study</m:label>
+    <m:keyword xml:lang="en">geometry</m:keyword>
+    <m:keyword xml:lang="fr">lumière</m:keyword>
+  </m:metadata>
+  <layer id="background" opacity="0.75">
+    <svg:svg viewBox="0 0 320 180" width="320" height="180">
+      <svg:defs>
+        <svg:linearGradient id="wash" x1="0" y1="0" x2="1" y2="1">
+          <svg:stop offset="0%" stop-color="#112233"/>
+          <svg:stop offset="100%" stop-color="#eeddaa"/>
+        </svg:linearGradient>
+      </svg:defs>
+      <svg:rect x="0" y="0" width="320" height="180" fill="url(#wash)"/>
+      <svg:path d="M12 144 C80 92, 145 158, 220 88 S300 64, 312 28"
+                fill="none" stroke="#ffffff" stroke-width="3"/>
+      <svg:use xlink:href="#missing-symbol" x="4" y="4"/>
+    </svg:svg>
+    <caption xml:space="preserve">  A pale contour
+  crossing the field  </caption>
+  <annotation kind="editorial">retain the uneven edge</annotation>
+  <group xmlns="" data-state="unscoped">
+    <legacy id="l1">plain namespace content</legacy>
+    <legacy id="l2"><![CDATA[<not-an-element/> & untouched]]></legacy>
+  </group>
+  </layer>
+  <layer id="foreground">
+    <mark role="accent" m:confidence="0.98">
+      <point x="18.5" y="77.25"/>
+      <point x="241" y="39"/>
+    </mark>
+    <?render mode="preview"?>
+  </layer>
+</canvas>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (header, batch+)>
+  <!ELEMENT header (institution, period)>
+  <!ELEMENT institution (#PCDATA)>
+  <!ELEMENT period (#PCDATA)>
+  <!ELEMENT batch (entry+)>
+  <!ELEMENT entry (account, amount, memo?, link*)>
+  <!ELEMENT account (#PCDATA)>
+  <!ELEMENT amount (#PCDATA)>
+  <!ELEMENT memo (#PCDATA|emphasis)*>
+  <!ELEMENT emphasis (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ENTITY % auditAttrs " actor CDATA #IMPLIED stamp CDATA #IMPLIED ">
+  <!ATTLIST ledger currency (EUR|GBP|JPY|USD) #REQUIRED>
+  <!ATTLIST batch id ID #REQUIRED %auditAttrs;>
+  <!ATTLIST entry ref ID #REQUIRED type (credit|debit|hold) "credit">
+  <!ATTLIST amount unit CDATA #IMPLIED>
+  <!ATTLIST link target IDREF #REQUIRED relation (parent|correction|receipt) #REQUIRED>
+  <!ENTITY currencyMark "¤">
+  <!ENTITY review "pending manual review">
+]>
+<ledger currency="EUR">
+  <header>
+    <institution>North Quay Cooperative</institution>
+    <period>2026-Q3</period>
+  </header>
+  <batch id="batch-a" actor="system" stamp="2026-09-30T23:59:59Z">
+    <entry ref="entry-100" type="credit">
+      <account>4100</account>
+      <amount unit="EUR">1250.00</amount>
+      <memo>Settlement for <emphasis>field services</emphasis> &currencyMark;</memo>
+      <link target="entry-101" relation="receipt"/>
+    </entry>
+    <entry ref="entry-101" type="debit">
+      <account>7820</account>
+      <amount unit="EUR">1250.00</amount>
+      <memo>&review;</memo>
+    </entry>
+  </batch>
+  <batch id="batch-b" actor="clerk">
+    <entry ref="entry-102" type="hold">
+      <account>9901</account>
+      <amount unit="EUR">48.75</amount>
+      <link target="entry-100" relation="parent"/>
+    </entry>
+  </batch>
+</ledger>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?package name="delta-bundle"?>
+<package xmlns="urn:example:bundle"
+         xmlns:sec="urn:example:security"
+         xmlns:doc="urn:example:document"
+         xml:base="https://assets.example.invalid/releases/">
+  <identity>
+    <name>delta-bundle</name>
+    <version major="2" minor="4" patch="0">2.4.0</version>
+    <released>2026-10-01T04:15:00Z</released>
+  </identity>
+  <manifest>
+    <directory path="docs">
+      <file path="docs/readme.txt" media-type="text/plain" size="418">
+        <checksum algorithm="sha256">4e7d2c9a0f8b11cc</checksum>
+      </file>
+      <file path="docs/guide.xml" media-type="application/xml" size="902">
+        <checksum algorithm="sha256">9a31d8ef77c012ab</checksum>
+        <doc:summary xml:space="preserve">A guide with
+multiple lines and deliberate spacing.</doc:summary>
+      </file>
+    </directory>
+    <directory path="assets">
+      <file path="assets/icon.svg" media-type="image/svg+xml" executable="false"/>
+      <file path="assets/data.bin" media-type="application/octet-stream">
+        <checksum algorithm="sha256">0000000000000000</checksum>
+      </file>
+    </directory>
+  </manifest>
+  <security>
+    <sec:signature sec:method="ed25519" sec:key-id="test-key-17">
+      <sec:created>2026-10-01T04:15:03Z</sec:created>
+      <sec:value><![CDATA[
+-----BEGIN SIGNATURE-----
+not-a-real-signature
+-----END SIGNATURE-----
+]]></sec:value>
+    </sec:signature>
+    <sec:permission subject="reader" resource="docs/*">
+      <sec:allow operation="read"/>
+    </sec:permission>
+    <sec:permission subject="maintainer" resource="*">
+      <sec:allow operation="read"/>
+      <sec:allow operation="write"/>
+    </sec:permission>
+  </security>
+  <payload encoding="base64">
+    <chunk index="0">VGhpcyBpcyBhIHRlc3QgY2h1bmsu</chunk>
+    <chunk index="1">QW5kIHRoaXMgaXMgYSBzZWNvbmQ=</chunk>
+  </payload>
+</package>
+```

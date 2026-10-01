@@ -1,0 +1,161 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, item*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT item (name, price?, note?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST catalog version NMTOKEN #FIXED "v2">
+  <!ATTLIST section code ID #REQUIRED>
+  <!ATTLIST item sku ID #REQUIRED status (new|used|retired) "new">
+]>
+<catalog version="v2">
+  <section code="hardware">
+    <title>Tools &amp; Parts</title>
+    <item sku="s-001" status="used">
+      <name>Angle &lt;Bracket&gt;</name>
+      <price>12.50</price>
+      <note>Second-hand <em>but sound</em><br/>stock.</note>
+    </item>
+    <item sku="s-002">
+      <name>Washer</name>
+      <note><![CDATA[diameter=3.5; finish="raw"]]></note>
+    </item>
+  </section>
+  <section code="misc">
+    <title>Loose goods</title>
+    <item sku="s-003"><name>Empty note</name><note/></item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE map [
+  <!ELEMENT map (node+)>
+  <!ELEMENT node (label, node*)>
+  <!ELEMENT label (#PCDATA)>
+  <!ATTLIST node key ID #REQUIRED ref IDREFS #IMPLIED>
+  <!ENTITY left "west &amp; blue">
+  <!ENTITY right "east &quot;red&quot;">
+]>
+<map>
+  <node key="root" ref="a b">
+    <label>&left;</label>
+    <node key="a">
+      <label>one</label>
+    </node>
+    <node key="b" ref="root">
+      <label>&right;</label>
+      <node key="c">
+        <label>three &#x20; parts</label>
+      </node>
+    </node>
+  </node>
+</map>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, body, footer)>
+  <!ELEMENT header (meta*)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta name CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT body (paragraph|table|quote|separator)*>
+  <!ELEMENT paragraph (#PCDATA|link|mark)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href URI #REQUIRED>
+  <!ELEMENT mark (#PCDATA)>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA|mark)*>
+  <!ATTLIST cell span NMTOKEN "1">
+  <!ELEMENT quote (#PCDATA|paragraph)*>
+  <!ELEMENT separator EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<report>
+  <header>
+    <meta name="author" value="A &amp; B"/>
+    <meta name="revision"/>
+  </header>
+  <body>
+    <paragraph>Start <link href="urn:x:test">linked</link> and <mark>marked</mark>.</paragraph>
+    <table>
+      <row><cell span="2">wide</cell></row>
+      <row><cell>left</cell><cell>right &#13; edge</cell></row>
+    </table>
+    <separator/>
+    <quote><paragraph><![CDATA[quoted <text> with ]]> inside]]></paragraph></quote>
+  </body>
+  <footer>done</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE bundle [
+  <!ELEMENT bundle (manifest, payload)>
+  <!ELEMENT manifest (entry*)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry path CDATA #REQUIRED kind (file|dir|link) #REQUIRED>
+  <!ELEMENT payload (chunk*)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk index NMTOKEN #REQUIRED encoding (text|base64|hex) "text">
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+]>
+<bundle>
+  <manifest>
+    <entry path="/" kind="dir"/>
+    <entry path="/readme.txt" kind="file"/>
+    <entry path="/latest" kind="link"/>
+  </manifest>
+  <payload>
+    <chunk index="0" encoding="text">header&#xA;--begin--</chunk>
+    <chunk index="1" encoding="base64"><![CDATA[AAECAwQFBgcICQ==]]></chunk>
+    <chunk index="2" encoding="hex">00 ff 10 7e</chunk>
+  </payload>
+</bundle>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (h:header, body, h:trail)>
+  <!ELEMENT body (message|attachment|empty)>
+  <!ELEMENT message (#PCDATA|x:part)*>
+  <!ELEMENT x:part (#PCDATA)>
+  <!ELEMENT attachment EMPTY>
+  <!ELEMENT empty EMPTY>
+  <!ELEMENT h:header (h:source, h:destination, h:flags?)>
+  <!ELEMENT h:source (#PCDATA)>
+  <!ELEMENT h:destination (#PCDATA)>
+  <!ELEMENT h:flags (#PCDATA)>
+  <!ELEMENT h:trail (#PCDATA)>
+  <!ATTLIST envelope xmlns:h CDATA #FIXED "urn:header"
+                    xmlns:x CDATA #FIXED "urn:content"
+                    id ID #REQUIRED>
+  <!ATTLIST message xml:lang NMTOKEN #IMPLIED priority (low|normal|high) "normal">
+  <!ATTLIST attachment name CDATA #REQUIRED type CDATA #IMPLIED>
+]>
+<envelope xmlns:h="urn:header" xmlns:x="urn:content" id="env-7">
+  <h:header>
+    <h:source>alpha</h:source>
+    <h:destination>omega</h:destination>
+    <h:flags><![CDATA[a|b|c]]></h:flags>
+  </h:header>
+  <body>
+    <message xml:lang="en-GB" priority="high">Hello <x:part>world</x:part> &amp; all.</message>
+    <attachment name="data.bin" type="application/octet-stream"/>
+    <empty/>
+  </body>
+  <h:trail>checksum: &#x0A; none</h:trail>
+</envelope>
+```

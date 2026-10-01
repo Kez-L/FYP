@@ -1,0 +1,23 @@
+{
+  "call": 10,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE inventory [\n  <!ELEMENT inventory (header, item+, footer?)>\n  <!ELEMENT header (generated, source)>\n  <!ELEMENT generated (#PCDATA)>\n  <!ELEMENT source (#PCDATA)>\n  <!ELEMENT item (label, quantity, dimensions?, tags?)>\n  <!ELEMENT label (#PCDATA)>\n  <!ELEMENT quantity (#PCDATA)>\n  <!ELEMENT dimensions (width, height, unit)>\n  <!ELEMENT width (#PCDATA)>\n  <!ELEMENT height (#PCDATA)>\n  <!ELEMENT unit (#PCDATA)>\n  <!ELEMENT tags (tag*)>\n  <!ELEMENT tag (#PCDATA)>\n  <!ELEMENT footer (#PCDATA)>\n  <!ATTLIST item sku ID #REQUIRED state (new|used|held) \"new\">\n  <!ATTLIST tag key NMTOKEN #REQUIRED>\n  <!ENTITY warehouse \"north &amp; west\">\n]>\n<inventory>\n  <header>\n    <generated>2026-10-01T14:22:09Z</generated>\n    <source>&warehouse; depot</source>\n  </header>\n  <item sku=\"p-17\" state=\"held\">\n    <label>folding &lt;crate&gt;</label>\n    <quantity>0000000000000000003</quantity>\n    <dimensions>\n      <width>12.5</width>\n      <height>0</height>\n      <unit>cm</unit>\n    </dimensions>\n    <tags>\n      <tag key=\"fragile\">glass</tag>\n      <tag key=\"route\">R&amp;D</tag>\n    </tags>\n  </item>\n  <item sku=\"p-18\">\n    <label>caf\u00e9\u2013mug \u2615</label>\n    <quantity>1</quantity>\n  </item>\n  <footer>checksum=&quot;unverified&quot;</footer>\n</inventory>\n\n--- example 2 ---\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE node [\n  <!ENTITY % declarations '\n    <!ELEMENT node (branch|leaf|text)*>\n    <!ELEMENT branch (node*)>\n    <!ELEMENT leaf EMPTY>\n    <!ELEMENT text (#PCDATA)>\n    <!ATTLIST branch id ID #IMPLIED>\n    <!ATTLIST leaf value CDATA #REQUIRED>\n  '>\n  %declarations;\n]>\n<node>\n  <branch id=\"root\">\n    <branch id=\"left\">\n      <leaf value=\"A\"/>\n      <text>between</text>\n      <branch>\n        <leaf value=\"B&amp;C\"/>\n      </branch>\n    </branch>\n    <branch id=\"right\">\n      <text>mixed <![CDATA[raw <content>]]> tail</text>\n      <leaf value=\"&#x1F642;\"/>\n    </branch>\n  </branch>\n</node>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 0,
+  "feedback": false,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-01T03:38:21.270627+00:00"
+}

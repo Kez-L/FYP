@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry path CDATA #REQUIRED kind (file|directory|symlink) #REQUIRED mode NMTOKEN #IMPLIED>
+  <!ELEMENT data (directory*)>
+  <!ELEMENT directory (file|directory)*>
+  <!ATTLIST directory name CDATA #REQUIRED>
+  <!ELEMENT file (#PCDATA)>
+  <!ATTLIST file name CDATA #REQUIRED encoding (base64|text|hex) "text">
+]>
+<package xmlns:p="urn:example:package" p:format="2">
+  <manifest>
+    <entry path="." kind="directory" mode="0755"/>
+    <entry path="docs/readme.txt" kind="file" mode="0644"/>
+    <entry path="bin/run" kind="file" mode="0755"/>
+    <entry path="current" kind="symlink" mode="0777"/>
+  </manifest>
+  <data>
+    <directory name="docs">
+      <file name="readme.txt" encoding="text">Line one&#10;Line two&#10;Trailing &amp; marker</file>
+      <file name="empty" encoding="hex"/>
+    </directory>
+    <directory name="bin">
+      <file name="run" encoding="base64">
+        SGVsbG8sIHdvcmxkIQo=
+      </file>
+      <directory name="nested">
+        <file name="payload" encoding="hex">00ff10aB</file>
+      </directory>
+    </directory>
+  </data>
+</package>

@@ -1,0 +1,113 @@
+```xml
+<?xml version="1.0"?>
+<catalog xmlns="urn:example:catalog" xmlns:m="urn:example:meta">
+  <m:metadata generated="true">
+    <m:field name="alpha">one</m:field>
+    <m:field name="beta"><![CDATA[<&amp;]]></m:field>
+  </m:metadata>
+  <item id="A-001" active="yes">
+    <title>Nested <emphasis>XML</emphasis> sample</title>
+    <price currency="EUR">12.50</price>
+    <tags>
+      <tag>one</tag>
+      <tag><![CDATA[two & three]]></tag>
+      <tag>three</tag>
+    </tags>
+  </item>
+</catalog>
+```
+
+```xml
+<!DOCTYPE library [
+  <!ELEMENT library (section+)>
+  <!ELEMENT section (heading, entry*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT entry (name, note?, link*)>
+  <!ATTLIST entry ref IDREF #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT note (#PCDATA|b|i)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target IDREF #REQUIRED kind (local|remote) "local">
+]>
+<library>
+  <section code="s1">
+    <heading>References</heading>
+    <entry ref="e2">
+      <name>First entry</name>
+      <note>plain <b>bold</b> and <i>italic</i></note>
+      <link target="e2" kind="remote"/>
+    </entry>
+  </section>
+  <section code="s2">
+    <heading>Empty section</heading>
+  </section>
+</library>
+```
+
+```xml
+<?xml version="1.1"?>
+<message>
+  <header>
+    <from><![CDATA[alice@example.test]]></from>
+    <to>bob@example.test</to>
+    <flags urgent="false" read="true"/>
+  </header>
+  <body>
+    <paragraph>Line one&#10;line two&#13;line three.</paragraph>
+    <attachment name="data.bin" size="0">
+      <content encoding="base64"><![CDATA[AAECAwQFBgcICQ==]]></content>
+    </attachment>
+  </body>
+  <history>
+    <event at="2026-01-01T00:00:00Z">created</event>
+    <event at="2026-01-02T12:34:56+05:30">updated</event>
+  </history>
+</message>
+```
+
+```xml
+<!DOCTYPE root [
+  <!ENTITY greeting "hello">
+  <!ENTITY quoted "A &quot;quoted&quot; value">
+  <!ENTITY fragment "<part role='generated'>&greeting;</part>">
+  <!NOTATION plain SYSTEM "text/plain">
+  <!ELEMENT root (config, payload, config?)>
+  <!ELEMENT config EMPTY>
+  <!ATTLIST config mode CDATA "default">
+  <!ELEMENT payload ANY>
+  <!ENTITY external SYSTEM "missing-resource.xml">
+]>
+<root>
+  <config mode="&quoted;"/>
+  <payload>
+    &fragment;
+    <mixed><![CDATA[ raw ]]> text &greeting; </mixed>
+  </payload>
+  <config mode="secondary"/>
+</root>
+```
+
+```xml
+<r:report xmlns:r="urn:report" xmlns:x="urn:data" version="2">
+  <r:run x:id="run-7">
+    <r:status code="200">ok</r:status>
+    <r:metrics>
+      <r:metric name="latency" unit="ms"><r:value>0</r:value></r:metric>
+      <r:metric name="count" unit="items">
+        <r:value>18446744073709551615</r:value>
+        <r:sample><![CDATA[1,2,3,5,8,13]]></r:sample>
+      </r:metric>
+    </r:metrics>
+  </r:run>
+  <r:run>
+    <r:status code="500"/>
+    <r:error x:type="parser">
+      <r:message>Unexpected end of input</r:message>
+      <r:location line="0" column="-1"/>
+    </r:error>
+  </r:run>
+</r:report>
+```

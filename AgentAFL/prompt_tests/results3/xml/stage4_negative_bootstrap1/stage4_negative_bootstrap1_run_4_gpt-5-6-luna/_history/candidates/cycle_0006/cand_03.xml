@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, resources, content)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry path NMTOKEN #REQUIRED type CDATA #REQUIRED size NMTOKEN #IMPLIED>
+  <!ELEMENT resources (resource*)>
+  <!ELEMENT resource (data|reference)>
+  <!ATTLIST resource id ID #REQUIRED>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT reference EMPTY>
+  <!ATTLIST reference href URI #REQUIRED>
+  <!ELEMENT content (section+)>
+  <!ELEMENT section (heading, block*)>
+  <!ATTLIST section xml:id ID #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT block (#PCDATA|list|itemref)*>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT itemref EMPTY>
+  <!ATTLIST itemref ref IDREF #REQUIRED>
+]>
+<package xml:base="https://example.invalid/archive/">
+  <manifest>
+    <entry path="index.xml" type="application/xml" size="2048"/>
+    <entry path="assets/data.bin" type="application/octet-stream"/>
+  </manifest>
+  <resources>
+    <resource id="intro">
+      <data>first&#x0D;&#x0A;second</data>
+    </resource>
+    <resource id="remote">
+      <reference href="../shared.xml#part-7"/>
+    </resource>
+  </resources>
+  <content>
+    <section xml:id="main">
+      <heading>Package overview</heading>
+      <block>Before <itemref ref="intro"/> and after.</block>
+      <block>
+        <list>
+          <item>one</item>
+          <item>two &amp; three</item>
+        </list>
+      </block>
+    </section>
+  </content>
+</package>

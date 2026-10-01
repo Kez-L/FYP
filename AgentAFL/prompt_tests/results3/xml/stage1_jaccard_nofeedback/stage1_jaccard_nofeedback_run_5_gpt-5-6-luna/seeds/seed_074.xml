@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (trigger, variables, stages, audit)>
+  <!ELEMENT trigger EMPTY>
+  <!ATTLIST trigger
+    event (create|update|delete) #REQUIRED
+    retry NMTOKEN "0">
+  <!ELEMENT variables (var*)>
+  <!ELEMENT var EMPTY>
+  <!ATTLIST var name NMTOKEN #REQUIRED value CDATA #IMPLIED secret (yes|no) "no">
+  <!ELEMENT stages (stage+)>
+  <!ELEMENT stage (step+)>
+  <!ATTLIST stage name NMTOKEN #REQUIRED enabled (true|false) "true">
+  <!ELEMENT step (action, condition?)>
+  <!ATTLIST step id ID #REQUIRED timeout NMTOKEN "30">
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT condition (#PCDATA)>
+  <!ELEMENT audit (event+)>
+  <!ELEMENT event EMPTY>
+  <!ATTLIST event
+    level (info|warn|error) #REQUIRED
+    message CDATA #REQUIRED>
+]>
+<workflow>
+  <trigger event="update" retry="3"/>
+  <variables>
+    <var name="region" value="eu-west" />
+    <var name="token" secret="yes" />
+    <var name="parallelism" value="4" />
+  </variables>
+  <stages>
+    <stage name="prepare">
+      <step id="fetch" timeout="15">
+        <action>download-manifest</action>
+        <condition>region != 'offline'</condition>
+      </step>
+      <step id="verify"><action>check-signature</action></step>
+    </stage>
+    <stage name="publish" enabled="false">
+      <step id="upload" timeout="120"><action>send-artifact</action></step>
+    </stage>
+  </stages>
+  <audit>
+    <event level="info" message="workflow loaded"/>
+    <event level="warn" message="optional stage disabled"/>
+    <event level="error" message="checksum mismatch"/>
+  </audit>
+</workflow>

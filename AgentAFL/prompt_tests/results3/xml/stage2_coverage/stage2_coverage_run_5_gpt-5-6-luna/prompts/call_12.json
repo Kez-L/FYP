@@ -1,0 +1,23 @@
+{
+  "call": 12,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a XML document parser.\nTarget: /home/user/Documents/AFLPlus/libxml2-build/xmllint-afl --noout @@.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 XML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<!DOCTYPE doc [\n<!ELEMENT doc EMPTY>\n<!ATTLIST doc\n defatt  (0|1)   \"0\"\n     xmlns:tst CDATA #FIXED \"http://exa_ple.org\"  tst:att  (0|1)   \"0\"\n    att (0|1)   \"1\">\n]>\n<doc att=\"1Bcrontic.com - Warning: Breakdancing midget with tourette&apos;s syndrome o#16060;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#&#x\">\n160;&#160;&#160;&#160;&#160;&#16<doc xmlns:a=\"urn:a\" xmlns:b=\"u?@???Xrn:a\">\n    <elem a:160;&#&#160;&#160;&#160;&#160;&#160;&#160;&#x\">\n<!-- <!ENT0;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\" url=\"ht.icrontic.c/h12;&laugh12;&laugh12;&la>\n\n\n--- example 2 ---\n<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<!DOCTYPE  somedoc [\n  <!ENTITY a   \"some\n\n<somKdoc>\n\n<somebeaconthing\">\n  <!ENTITY b   \"&a;\">\n]>\n\n<somedoc>\n\n<somebeacon someattribute=\":b;\"/>\n\n&a; should appear after colon: &a;\n&b; should appear after colon: &a;\n&a; should appear after colon: &b;\n&b; shou37;MENTD&#3fter colon: &b;\n\n</somedoc>\n\n\nTried before \u2014 no new coverage, avoid repeating:\n--- 2 of your past seeds (cycles 6,12) drove the same already-covered path with 0 new edges ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE archive [\n  <!ELEMENT archive (entry*)>\n  <!ELEMENT entry (meta, payload)>\n  <!ELEMENT meta (tag*)>\n  <!ELEMENT tag (#PCDATA)>\n  <!ELEMENT payload (#PCDATA|chunk|![CDATA[]])*>\n  <!ELEMENT chunk (#PCDATA)>\n  <!ATTLIST entry id ID #REQUIRED checksum CDATA #IMPLIED>\n  <!ENTITY open \"[[\">\n  <!ENTITY close \"]]\">\n  <!ENTITY sample \"&open;not a real section&close;\">\n]>\n<archive>\n  <entry id=\"e001\" checksum=\"sha256:00ff\">\n    <meta>\n      <tag>binary</tag>\n      <tag>compressed</tag>\n    </meta>\n    <payload>\n      prefix\n      <![CDATA[ raw <bytes> & entities ]]>\n      <chunk>middle &#x1F; fragment</chunk>\n      &sample;\n      suffix\n    </payload>\n  </entry>\n  <entr...[truncated, 782 chars total]\n\n--- 2 of your past seeds (cycles 1,7) drove the same already-covered path with 0 new edges ---\n<?xml version=\"1.0\"?>\n<!DOCTYPE package [\n  <!ENTITY % enabled \"INCLUDE\">\n  <![%enabled;[\n    <!ELEMENT package (manifest, data)>\n    <!ELEMENT manifest (file+)>\n    <!ELEMENT file EMPTY>\n    <!ATTLIST file name CDATA #REQUIRED size NMTOKEN #IMPLIED>\n  ]]>\n  <!ELEMENT data (#PCDATA|record)*>\n  <!ELEMENT record (#PCDATA)>\n  <!ATTLIST package xmlns CDATA #IMPLIED>\n]>\n<package xmlns=\"urn:pkg\">\n  <manifest>\n    <file name=\"a&amp;b.txt\" size=\"0012\"/>\n    <file name=\"empty.bin\"/>\n  </manifest>\n  <data>\n    prelude\n    <record id=\"x\">value &#65; &#x42;</record>\n    <![CDATA[postlude ]]> text\n  </data>\n</package>\n\nGenerate 5 new XML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": false,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-libxml2-20260907",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-01T05:16:34.402752+00:00"
+}

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope"
+               xmlns:env="urn:example:envelope"
+               xml:lang="en">
+  <soap:Header>
+    <env:Trace correlation="7f3a" priority="high">
+      <env:Hop index="0" role="gateway"/>
+      <env:Hop index="1" role="service"/>
+    </env:Trace>
+    <env:Capabilities>
+      <env:Feature name="compression">gzip</env:Feature>
+      <env:Feature name="compression">br</env:Feature>
+    </env:Capabilities>
+  </soap:Header>
+  <soap:Body>
+    <env:Dispatch xml:base="https://example.invalid/api/">
+      <env:Request id="r-001" method="POST">
+        <env:Path>/v2/items</env:Path>
+        <env:Headers>
+          <env:Header name="Accept">application/xml</env:Header>
+          <env:Header name="X-Mode">dry-run</env:Header>
+        </env:Headers>
+        <env:Payload>
+          <env:Item code="A&amp;B">
+            Before <env:Emphasis>validation</env:Emphasis> and after.
+          </env:Item>
+        </env:Payload>
+      </env:Request>
+    </env:Dispatch>
+  </soap:Body>
+</soap:Envelope>

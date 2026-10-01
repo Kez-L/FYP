@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload, signatures?)>
+  <!ATTLIST package format NMTOKEN #REQUIRED>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry (name, checksum, permissions?)>
+  <!ATTLIST entry path CDATA #REQUIRED type (file|directory|link) #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ELEMENT permissions (#PCDATA)>
+  <!ELEMENT payload (file|directory|link)*>
+  <!ELEMENT file (#PCDATA|chunk)*>
+  <!ATTLIST file path CDATA #REQUIRED encoding (text|base64|binary) "text">
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT directory EMPTY>
+  <!ATTLIST directory path CDATA #REQUIRED>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link path CDATA #REQUIRED target CDATA #REQUIRED>
+  <!ELEMENT signatures (signature+)>
+  <!ELEMENT signature (algorithm, digest, certificate?)>
+  <!ELEMENT algorithm (#PCDATA)>
+  <!ELEMENT digest (#PCDATA)>
+  <!ELEMENT certificate (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+]>
+<package format="bundle">
+  <manifest>
+    <entry path="docs/readme.txt" type="file">
+      <name>readme.txt</name>
+      <checksum>sha256:8f00&amp;ab</checksum>
+      <permissions>0644</permissions>
+    </entry>
+    <entry path="bin" type="directory">
+      <name>bin</name>
+      <checksum>directory</checksum>
+    </entry>
+  </manifest>
+  <payload>
+    <directory path="bin"/>
+    <file path="docs/readme.txt" encoding="text">Hello&nbsp;world<chunk>second line</chunk></file>
+    <link path="latest" target="docs/readme.txt"/>
+  </payload>
+  <signatures>
+    <signature>
+      <algorithm>ed25519</algorithm>
+      <digest><![CDATA[4f/7+q==]]></digest>
+      <certificate>local&nbsp;test</certificate>
+    </signature>
+  </signatures>
+</package>

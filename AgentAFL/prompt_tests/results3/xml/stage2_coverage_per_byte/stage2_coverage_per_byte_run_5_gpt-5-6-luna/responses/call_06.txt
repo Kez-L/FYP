@@ -1,0 +1,147 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % feature "INCLUDE">
+  <!ENTITY % extra "<!ELEMENT metadata (author?, keyword*)><!ELEMENT author (#PCDATA)><!ELEMENT keyword (#PCDATA)>">
+  <![%feature;[
+    %extra;
+    <!ATTLIST item xml:lang NMTOKEN #IMPLIED xml:space (default|preserve) "default">
+  ]]>
+  <!ELEMENT catalog (item+)>
+  <!ELEMENT item (title, metadata?, price, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA|emph|ref)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST item code ID #REQUIRED>
+  <!ATTLIST ref target IDREF #IMPLIED>
+]>
+<catalog>
+  <item code="a1" xml:lang="fr">
+    <title>Résumé &amp; détails</title>
+    <metadata><author>Élodie</author><keyword>xml</keyword></metadata>
+    <price>19.95</price>
+    <note>Voir <ref target="a1"/> <emph>ici</emph>.</note>
+  </item>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ELEMENT header (source, destination, timestamp)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT destination (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT packet (data|dataRef|fragment)+>
+  <!ELEMENT data (#PCDATA)>
+  <!ELEMENT dataRef EMPTY>
+  <!ELEMENT fragment (#PCDATA|packet)*>
+  <!ATTLIST envelope xmlns:sec CDATA #IMPLIED>
+  <!ATTLIST dataRef href CDATA #REQUIRED digest CDATA #IMPLIED>
+  <!ENTITY left "&#x3C;">
+  <!ENTITY right "&#x3E;">
+]>
+<envelope xmlns:sec="urn:security" sec:mode="sealed">
+  <header>
+    <source>node-α</source>
+    <destination>node-β</destination>
+    <timestamp>2026-10-01T12:34:56Z</timestamp>
+  </header>
+  <payload>
+    <packet>
+      <data>literal &left;not-an-element&right;</data>
+      <dataRef href="urn:blob:7" digest="sha256:deadbeef"/>
+      <fragment><packet><data>nested</data></packet></fragment>
+    </packet>
+  </payload>
+</envelope>
+```
+
+```xml
+<!DOCTYPE r [
+  <!ENTITY % declarations '
+    <!ELEMENT r (a|b|c)*>
+    <!ELEMENT a (#PCDATA)>
+    <!ELEMENT b ANY>
+    <!ELEMENT c EMPTY>
+  '>
+  %declarations;
+  <!ENTITY one "alpha">
+  <!ENTITY two "&one;-beta">
+  <!ENTITY loop "&two;&amp;&loop;">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ATTLIST r mode CDATA "x" blob ENTITY #IMPLIED>
+  <!ATTLIST c kind NOTATION (bin) #IMPLIED>
+]>
+<r mode="y">
+  <a>&two;</a>
+  <b><![CDATA[raw ]]> text ]]> tail</b>
+  <c kind="bin"/>
+  <a>&loop;</a>
+</r>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE ui [
+  <!ELEMENT ui (window+)>
+  <!ELEMENT window (caption?, widget*)>
+  <!ELEMENT caption (#PCDATA)>
+  <!ELEMENT widget (label?, value?, widget*)>
+  <!ELEMENT label (#PCDATA|icon)*>
+  <!ELEMENT value (#PCDATA|linebreak)*>
+  <!ELEMENT icon EMPTY>
+  <!ELEMENT linebreak EMPTY>
+  <!ATTLIST window id ID #REQUIRED state (open|closed) "open">
+  <!ATTLIST widget name NMTOKEN #IMPLIED visible (yes|no) "yes">
+  <!ATTLIST icon src CDATA #REQUIRED alt CDATA #IMPLIED>
+]>
+<ui xmlns="urn:example:ui" xmlns:x="urn:example:extra">
+  <window id="main" state="open">
+    <caption>Control &amp; Monitor</caption>
+    <widget name="tree" x:visible="yes">
+      <label><icon src="tree.svg" alt="tree"/>Nodes</label>
+      <value>root<linebreak/>child</value>
+      <widget name="leaf"><label>Leaf</label></widget>
+    </widget>
+  </window>
+  <window id="aux" state="closed"><caption/></window>
+</ui>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry*)>
+  <!ELEMENT entry (name, content, checksum?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT content (#PCDATA|section|include)*>
+  <!ELEMENT section (title?, content)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT include EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST entry id ID #REQUIRED type (text|binary|link) "text">
+  <!ATTLIST include href CDATA #REQUIRED parse (text|xml) "xml">
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY quote "&#34;">
+]>
+<archive>
+  <entry id="e-1" type="text">
+    <name>notes &nbsp; &quote;</name>
+    <content>
+      intro
+      <section><title>Nested</title><content>inside <include href="part.xml" parse="xml"/></content></section>
+      tail
+    </content>
+    <checksum>00ff</checksum>
+  </entry>
+  <entry id="e-2" type="link">
+    <name>dangling</name>
+    <content><include href="data:application/xml,%3Cz%2F%3E" parse="text"/></content>
+  </entry>
+</archive>
+```

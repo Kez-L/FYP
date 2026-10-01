@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE network [
+  <!ELEMENT network (node+, route*)>
+  <!ELEMENT node (label, address*)>
+  <!ATTLIST node
+    id ID #REQUIRED
+    state (up|down|unknown) "unknown"
+  >
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT address (#PCDATA)>
+  <!ATTLIST address family (v4|v6|dns) #REQUIRED>
+  <!ELEMENT route EMPTY>
+  <!ATTLIST route
+    from IDREF #REQUIRED
+    to IDREF #REQUIRED
+    metric NMTOKEN "1"
+  >
+  <!ENTITY colon ":">
+  <!ENTITY hash "#">
+  <!ENTITY ipv6 "2001&colon;db8&colon;&hash;&hash;1">
+]>
+<network xmlns:n="urn:network" xmlns:m="urn:metadata">
+  <node id="gateway" state="up">
+    <label xml:space="preserve">Gateway &#x9; A</label>
+    <address family="v4">192.0.2.1</address>
+    <address family="v6">&ipv6;</address>
+  </node>
+  <node id="client" state="unknown">
+    <label>Client &lt;one&gt;</label>
+    <address family="dns">client.example.invalid</address>
+  </node>
+  <node id="backup" state="down">
+    <label><![CDATA[backup & node]]></label>
+  </node>
+  <route from="client" to="gateway" metric="010"/>
+  <route from="backup" to="gateway" metric="0"/>
+  <m:annotation n:for="gateway">maintenance &amp; testing</m:annotation>
+</network>

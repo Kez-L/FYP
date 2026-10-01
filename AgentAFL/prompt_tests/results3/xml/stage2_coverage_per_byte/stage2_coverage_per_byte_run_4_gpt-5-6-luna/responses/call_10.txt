@@ -1,0 +1,140 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE warehouse [
+  <!ENTITY % common "<!ELEMENT crate (label?,item*,note?)>">
+  %common;
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT item (#PCDATA|part|quantity)*>
+  <!ELEMENT part EMPTY>
+  <!ELEMENT quantity (#PCDATA)>
+  <!ELEMENT note (#PCDATA|item)*>
+  <!ATTLIST warehouse xmlns CDATA #IMPLIED zone NMTOKEN #REQUIRED>
+  <!ATTLIST crate code ID #REQUIRED sealed (yes|no) "no">
+  <!ATTLIST item sku IDREF #IMPLIED>
+  <!ATTLIST part name CDATA #REQUIRED>
+  <!ENTITY left "<![CDATA[unparsed <payload> & symbols]]>">
+  <!ENTITY amp "&amp;">
+]>
+<warehouse xmlns="urn:stock:2026" zone="north">
+  <crate code="c-17" sealed="yes">
+    <label>mixed &amp; marked text</label>
+    <item sku="c-17">
+      before<part name="bolt"/>after
+      <quantity>4 &amp; &amp;</quantity>
+    </item>
+    <note><![CDATA[closing-looking text ]]]]><![CDATA[> remains data]]></note>
+  </crate>
+</warehouse>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload, trailer)>
+  <!ELEMENT header (field+)>
+  <!ELEMENT field (#PCDATA)>
+  <!ELEMENT payload ANY>
+  <!ELEMENT trailer EMPTY>
+  <!ATTLIST envelope xmlns:a CDATA #FIXED "urn:a"
+                    xmlns:b CDATA #FIXED "urn:b"
+                    a:mode (raw|parsed) "parsed">
+  <!ATTLIST field b:key NMTOKEN #REQUIRED>
+  <!ENTITY one "alpha">
+  <!ENTITY two "&one;-beta">
+  <!ENTITY % attrs "<!ATTLIST payload format CDATA 'fragment'>">
+  %attrs;
+]>
+<envelope xmlns:a="urn:a" xmlns:b="urn:b" a:mode="raw">
+  <header>
+    <field b:key="x1">&two;</field>
+    <field b:key="x2">line&#x0A;break</field>
+  </header>
+  <payload format="fragment">
+    <a:chunk xmlns:a="urn:other" b:flag="yes">
+      <![CDATA[<not-an-element/>]]>
+      <b:item a:value="&quot;quoted&quot;"/>
+    </a:chunk>
+  </payload>
+  <trailer/>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node|edge)+>
+  <!ELEMENT node (name?,tag*)>
+  <!ELEMENT edge EMPTY>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ATTLIST graph xml:lang NMTOKEN #IMPLIED>
+  <!ATTLIST node id ID #REQUIRED kind CDATA #IMPLIED>
+  <!ATTLIST edge from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA "1.0">
+  <!ATTLIST tag xml:space (default|preserve) "preserve">
+  <!ENTITY nbsp "&#160;">
+]>
+<graph xml:lang="en-US">
+  <node id="n1" kind="entry">
+    <name>Root&nbsp;Node</name>
+    <tag xml:space="preserve">  padded  </tag>
+  </node>
+  <edge from="n1" to="n2" weight="0"/>
+  <node id="n2">
+    <name>Second &lt;Node&gt;</name>
+    <tag><![CDATA[a]]>&#x20;<![CDATA[b]]></tag>
+  </node>
+  <edge from="n2" to="n1" weight="+INF"/>
+</graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry*)>
+  <!ELEMENT entry (key, value, value?)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|em)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ATTLIST catalog version CDATA #REQUIRED>
+  <!ATTLIST entry rank NMTOKEN #IMPLIED status (new|old|) "new">
+  <!ENTITY quote "&quot;">
+  <!ENTITY lt "&lt;">
+  <!ENTITY % injected "<!ENTITY recursive 'r&amp;recursive;'>">
+  %injected;
+]>
+<catalog version="1&amp;2">
+  <entry rank="01" status="">
+    <key>k&amp;1</key>
+    <value>plain <em>emphasized</em> tail</value>
+    <value>&quote; &lt; &gt; &#x41;</value>
+  </entry>
+  <entry rank="x:y">
+    <key><![CDATA[key]]></key>
+    <value>text<!-- embedded comment -->more</value>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a,b,c?)>
+  <!ELEMENT a (#PCDATA)>
+  <!ELEMENT b EMPTY>
+  <!ELEMENT c (x|y)>
+  <!ELEMENT x EMPTY>
+  <!ELEMENT y EMPTY>
+  <!ATTLIST root xmlns:p CDATA #IMPLIED p:state CDATA #IMPLIED>
+  <!ATTLIST b value CDATA #IMPLIED>
+  <!ATTLIST x id ID #IMPLIED>
+  <!ATTLIST y id ID #IMPLIED>
+  <!ENTITY marker "M&amp;N">
+]>
+<root xmlns:p="urn:test" p:state="ready">
+  <a>start&#x9;middle&#xD;end&marker;</a>
+  <b value="&quot; / &apos;"/>
+  <c><x id="one"/></c>
+  <?processing instruction?>
+  <!-- comment with --? no -->
+</root
+```

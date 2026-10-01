@@ -1,0 +1,143 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+, note?)>
+  <!ELEMENT entry (title, creator*, link?, description)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT creator EMPTY>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT description (#PCDATA|em|code|br)*>
+  <!ELEMENT em (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST catalog id ID #REQUIRED version NMTOKEN #IMPLIED>
+  <!ATTLIST entry key ID #REQUIRED status (draft|live|retired) "draft">
+  <!ATTLIST creator name CDATA #REQUIRED ref IDREF #IMPLIED>
+  <!ATTLIST link href CDATA #REQUIRED type NMTOKEN #IMPLIED>
+  <!NOTATION binary SYSTEM "application/octet-stream">
+  <!ENTITY logo SYSTEM "logo.bin" NDATA binary>
+]>
+<catalog id="c-01" version="v2">
+  <entry key="e-7" status="live">
+    <title>Mixed <em>content</em> &amp; markup</title>
+    <creator name="Ada" ref="e-7"/>
+    <link href="https://example.test/a?x=1&amp;y=2" type="html"/>
+    <description>alpha <em>beta <code>gamma</code></em><br/>delta</description>
+  </entry>
+  <note>Unparsed entity: &logo;</note>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ENTITY % mode "INCLUDE">
+  <!ENTITY % fields "<!ELEMENT fields (field|group)*>
+    <!ELEMENT field (#PCDATA)>
+    <!ELEMENT group (field+)>
+    <!ATTLIST field name CDATA #REQUIRED kind (text|number|flag) 'text'>">
+  %fields;
+  <!ELEMENT report (meta, fields, checksum?)>
+  <!ELEMENT meta EMPTY>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST report generated CDATA #IMPLIED>
+  <![%mode;[
+    <!ATTLIST meta source CDATA #REQUIRED format CDATA "xml">
+  ]]>
+]>
+<report generated="2026-10-01T00:00:00Z">
+  <meta source="sensor-9" format="compact"/>
+  <fields>
+    <field name="count" kind="number">0042</field>
+    <group>
+      <field name="enabled" kind="flag">true</field>
+      <field name="label">A &lt; B</field>
+    </group>
+  </fields>
+  <checksum><![CDATA[sha256:ab12<34>]]></checksum>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (item*)>
+  <!ELEMENT item EMPTY>
+  <!ELEMENT data ANY>
+  <!ATTLIST package xmlns:p CDATA #FIXED "urn:pkg">
+  <!ATTLIST manifest p:count CDATA #IMPLIED>
+  <!ATTLIST item path CDATA #REQUIRED size NMTOKEN #IMPLIED>
+  <!ENTITY left "{">
+  <!ENTITY right "}">
+]>
+<p:package xmlns:p="urn:pkg" xmlns:q="urn:other">
+  <manifest p:count="2">
+    <item path="&left;config&right;" size="17"/>
+    <item path="q:blob" size="0"/>
+  </manifest>
+  <data>
+    <?payload kind="opaque"?>
+    <![CDATA[
+      <embedded xmlns="urn:embedded">
+        <value q:x="1">&not-parsed;</value>
+      </embedded>
+    ]]>
+    <q:fragment q:mode="raw">text &amp; more</q:fragment>
+  </data>
+</p:package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST matrix rows NMTOKEN #REQUIRED cols NMTOKEN #REQUIRED>
+  <!ATTLIST row index NMTOKEN #IMPLIED>
+  <!ATTLIST cell index NMTOKEN #IMPLIED role (head|value|total) "value">
+]>
+<matrix rows="3" cols="3">
+  <row index="0">
+    <cell index="0" role="head">Name</cell>
+    <cell index="1" role="head">Value</cell>
+    <cell index="2" role="head">Remark</cell>
+  </row>
+  <row index="1">
+    <cell index="0">x&amp;y</cell>
+    <cell index="1">1.0e+09</cell>
+    <cell index="2">line one
+line two&#x0A;line three</cell>
+  </row>
+  <row index="2">
+    <cell index="0">total</cell>
+    <cell index="1" role="total">42</cell>
+    <cell index="2"><![CDATA[<raw/>]]></cell>
+  </row>
+</matrix>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE stream [
+  <!ELEMENT stream (open, chunk*, close)>
+  <!ELEMENT open EMPTY>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT close EMPTY>
+  <!ATTLIST stream id ID #REQUIRED>
+  <!ATTLIST open time CDATA #IMPLIED token CDATA #REQUIRED>
+  <!ATTLIST chunk seq NMTOKEN #REQUIRED encoding (plain|base64) "plain">
+  <!ATTLIST close status (ok|error) #REQUIRED>
+]>
+<stream id="s-884">
+  <open time="2026-10-01T01:02:03Z" token="a&amp;b&lt;c"/>
+  <chunk seq="1">first&#13;second</chunk>
+  <chunk seq="2" encoding="base64">
+    <![CDATA[VGhpcyBpcyBub3QgYSB0cmVlLg==]]>
+  </chunk>
+  <chunk seq="3">tail &quot;quoted&quot; &apos;value&apos;</chunk>
+  <close status="ok"/>
+</stream>
+```

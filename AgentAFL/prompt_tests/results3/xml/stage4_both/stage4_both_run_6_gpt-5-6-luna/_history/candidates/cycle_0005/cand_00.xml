@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dashboard [
+  <!ELEMENT dashboard (title, widget+)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT widget (caption?, data)>
+  <!ATTLIST widget id ID #REQUIRED kind (gauge|table|sparkline) #REQUIRED>
+  <!ELEMENT caption (#PCDATA|em)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT data (point*)>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST point
+            label CDATA #IMPLIED
+            value CDATA #REQUIRED
+            ref IDREF #IMPLIED>
+  <!ENTITY degree "&#x00B0;">
+]>
+<dashboard xml:space="preserve">
+  <?render theme="dark"?>
+  <title>System &amp; Service Metrics</title>
+  <widget id="cpu" kind="gauge">
+    <caption>CPU <em>utilization</em></caption>
+    <data>
+      <point label="user" value="41&degree;"/>
+      <point label="system" value="13&degree;"/>
+      <point label="idle" value="46&degree;"/>
+    </data>
+  </widget>
+  <widget id="latency" kind="sparkline">
+    <data>
+      <point value="12"/>
+      <point value="18"/>
+      <point value="9"/>
+      <point value="27" ref="cpu"/>
+    </data>
+  </widget>
+  <widget id="requests" kind="table">
+    <caption>Requests &lt; 1 second</caption>
+    <data/>
+  </widget>
+</dashboard>

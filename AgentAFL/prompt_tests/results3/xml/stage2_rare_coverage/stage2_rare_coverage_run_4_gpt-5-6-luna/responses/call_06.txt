@@ -1,0 +1,179 @@
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common "item | note">
+  <!ENTITY % itemdecl "<!ELEMENT item (name, price, details?)>
+                         <!ATTLIST item code ID #REQUIRED category CDATA #IMPLIED>">
+  %itemdecl;
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, (%common);*)>
+  <!ATTLIST section xml:lang CDATA #IMPLIED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT details (#PCDATA|emph|linebreak)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT linebreak EMPTY>
+  <!ENTITY mark "&#x2063;">
+  <!ENTITY phrase "A &mark;small&#xA;catalog">
+]>
+<catalog>
+  <section xml:lang="en">
+    <title>&phrase;</title>
+    <item code="i001" category="sample">
+      <name>Alpha</name>
+      <price>10.00</price>
+      <details>first<emph> highlighted</emph><linebreak/>second</details>
+    </item>
+    <note><![CDATA[raw ]]> content &amp; boundaries</note>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry
+    path CDATA #REQUIRED
+    kind (text|binary|link) "text"
+    refs IDREFS #IMPLIED>
+  <!ELEMENT payload (chunk|separator|chunk)+>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ELEMENT separator EMPTY>
+  <!ATTLIST separator id ID #IMPLIED>
+  <!ENTITY left "&#x5B;">
+  <!ENTITY right "&#x5D;">
+]>
+<package>
+  <manifest>
+    <entry path="a/b.txt" kind="text" refs="sep1"/>
+    <entry path="c.bin" kind="binary"/>
+  </manifest>
+  <payload>
+    <chunk>&left;one&amp;two&right;</chunk>
+    <separator id="sep1"/>
+    <chunk><![CDATA[
+      <not-an-element attr="&invalid;">
+    ]]></chunk>
+    <separator/>
+    <chunk>final&#13;&#10;line</chunk>
+  </payload>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE registry [
+  <!NOTATION gif SYSTEM "image/gif">
+  <!NOTATION png PUBLIC "-//Example//NOTATION PNG//EN" "image/png">
+  <!ENTITY logo SYSTEM "logo.gif" NDATA gif>
+  <!ELEMENT registry (entry*)>
+  <!ELEMENT entry (label, metadata?, value)>
+  <!ATTLIST entry
+    id ID #REQUIRED
+    alias IDREF #IMPLIED
+    asset ENTITY #IMPLIED
+    format NOTATION (gif|png) #IMPLIED
+    flags NMTOKENS #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT metadata (author|tag|tag)+>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT value (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ENTITY intro "registered &amp; verified">
+]>
+<registry>
+  <entry id="root" flags="a b c" format="gif" asset="logo">
+    <label>&intro;</label>
+    <metadata>
+      <author>system</author>
+      <tag>one</tag>
+      <tag>two</tag>
+    </metadata>
+    <value>prefix<code>if (x &lt; y) return;</code>suffix</value>
+  </entry>
+  <entry id="child" alias="root" flags="single">
+    <label>second</label>
+    <value><![CDATA[alpha ]]> beta</value>
+  </entry>
+</registry>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE routes [
+  <!ELEMENT routes (route+)>
+  <!ELEMENT route (request, response)>
+  <!ATTLIST route
+    id ID #REQUIRED
+    method (GET|POST|PUT|DELETE) "GET"
+    enabled (yes|no) "yes">
+  <!ELEMENT request (header*, body?)>
+  <!ELEMENT response (status, header*, body?)>
+  <!ELEMENT header (#PCDATA)>
+  <!ATTLIST header name CDATA #REQUIRED>
+  <!ELEMENT body ANY>
+  <!ELEMENT status (#PCDATA)>
+  <!ENTITY amp "&#38;">
+]>
+<routes xmlns="urn:example:routes"
+        xmlns:x="urn:example:extension"
+        xml:base="https://example.invalid/api/">
+  <route id="r1" method="POST" enabled="yes">
+    <request>
+      <header name="Accept">application/xml</header>
+      <header name="X-Trace">a& amp;b</header>
+      <body xmlns="">
+        <form>
+          <field name="q"><![CDATA[a < b && c > d]]></field>
+          <x:foreign xmlns:x="urn:example:extension" x:kind="opaque"/>
+        </form>
+      </body>
+    </request>
+    <response>
+      <status>201</status>
+      <header name="Content-Type">text/xml</header>
+      <body><result xmlns="urn:result"><value>created</value></result></body>
+    </response>
+  </route>
+</routes>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE maze [
+  <!ELEMENT maze (node)>
+  <!ELEMENT node (branch|leaf|node)*>
+  <!ATTLIST node
+    name CDATA #IMPLIED
+    depth NMTOKEN #IMPLIED>
+  <!ELEMENT branch (node|leaf)+>
+  <!ATTLIST branch choice (left|right|both) #REQUIRED>
+  <!ELEMENT leaf (#PCDATA)>
+  <!ENTITY open "<mark>">
+  <!ENTITY close "</mark>">
+]>
+<maze xmlns="urn:maze" xmlns:m="urn:marker">
+  <node name="root" depth="0">
+    <branch choice="both">
+      <node name="left" depth="1">
+        <leaf>plain</leaf>
+        <branch choice="left">
+          <leaf>&open;tagged&close;</leaf>
+        </branch>
+      </node>
+      <node name="right" depth="1">
+        <leaf m:state="terminal" xmlns:m="urn:marker">right-side</leaf>
+        <node name="nested">
+          <leaf><![CDATA[<branch>literal</branch>]]></leaf>
+        </node>
+      </node>
+    </branch>
+    <leaf xml:space="preserve">  trailing whitespace  </leaf>
+  </node>
+</maze>
+```
