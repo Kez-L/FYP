@@ -138,7 +138,7 @@ def run_stream_analyzer(
                         )
                     )
 
-                    controller.apply_adaptation(
+                    controller.apply_level1_adaptation(
                         window_id=window_id,
                         ces_score=ces_score,
                         trigger_reason=trigger_reason

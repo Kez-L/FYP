@@ -6,7 +6,9 @@ class AdaptiveFuzzingController:
 
     def __init__(
         self,
-        fuzzer_out_dir="out"
+        fuzzer_out_dir="out",
+        persistence_windows=3,
+        escalation_threshold=3
     ):
 
         self.fuzzer_out_dir = fuzzer_out_dir
@@ -23,9 +25,35 @@ class AdaptiveFuzzingController:
             ".adapt_signal"
         )
 
-        self.low_efficiency_counter = 0
+        # -----------------------------------------------------
+        # Configurable parameters
+        # -----------------------------------------------------
 
-        self.escalation_threshold = 3
+        self.persistence_windows = (
+            persistence_windows
+        )
+
+        self.escalation_threshold = (
+            escalation_threshold
+        )
+
+        # -----------------------------------------------------
+        # Runtime state
+        # -----------------------------------------------------
+
+        self.cpu_abnormal_counter = 0
+
+        self.memory_abnormal_counter = 0
+
+        self.resource_abnormal_counter = 0
+
+        self.unsuccessful_adaptation_counter = 0
+
+        self.previous_unique_crashes = 0
+
+        self.previous_coverage = None
+
+        self.last_adaptation = None
 
         os.makedirs(
             self.signal_dir,
@@ -67,7 +95,155 @@ class AdaptiveFuzzingController:
             )
 
     # ---------------------------------------------------------
-    # Apply adaptation
+    # Detect new unique crash
+    # ---------------------------------------------------------
+
+    def is_new_unique_crash(
+        self,
+        current_unique_crashes
+    ):
+
+        new_crash = (
+            current_unique_crashes
+            >
+            self.previous_unique_crashes
+        )
+
+        self.previous_unique_crashes = (
+            current_unique_crashes
+        )
+
+        return new_crash
+
+    # ---------------------------------------------------------
+    # Update resource persistence
+    # ---------------------------------------------------------
+
+    def update_resource_persistence(
+        self,
+        cpu_abnormal,
+        memory_abnormal
+    ):
+
+        if cpu_abnormal:
+
+            self.cpu_abnormal_counter += 1
+
+        else:
+
+            self.cpu_abnormal_counter = 0
+
+        if memory_abnormal:
+
+            self.memory_abnormal_counter += 1
+
+        else:
+
+            self.memory_abnormal_counter = 0
+
+        resource_abnormal = (
+            cpu_abnormal
+            or
+            memory_abnormal
+        )
+
+        if resource_abnormal:
+
+            self.resource_abnormal_counter += 1
+
+        else:
+
+            self.resource_abnormal_counter = 0
+
+        persistent = (
+            self.resource_abnormal_counter
+            >=
+            self.persistence_windows
+        )
+
+        return persistent
+
+    # ---------------------------------------------------------
+    # Determine trigger
+    # ---------------------------------------------------------
+
+    def determine_trigger(
+        self,
+        unique_crashes,
+        cpu_abnormal=False,
+        memory_abnormal=False
+    ):
+        """
+        Determine the highest-priority intervention.
+
+        Priority:
+
+        1. New unique crash
+        2. Persistent CPU + memory abnormality
+        3. Persistent CPU abnormality
+        4. Persistent memory abnormality
+        5. No intervention
+        """
+
+        # -----------------------------------------------------
+        # Highest priority: NEW unique crash
+        # -----------------------------------------------------
+
+        new_crash = self.is_new_unique_crash(
+            unique_crashes
+        )
+
+        if new_crash:
+
+            return "CRASH_FOUND"
+
+        # -----------------------------------------------------
+        # Resource persistence
+        # -----------------------------------------------------
+
+        persistent = (
+            self.update_resource_persistence(
+                cpu_abnormal,
+                memory_abnormal
+            )
+        )
+
+        if not persistent:
+
+            return None
+
+        # -----------------------------------------------------
+        # CPU + memory
+        # -----------------------------------------------------
+
+        if (
+            cpu_abnormal
+            and
+            memory_abnormal
+        ):
+
+            return "CPU_MEMORY_SPIKE"
+
+        # -----------------------------------------------------
+        # CPU
+        # -----------------------------------------------------
+
+        if cpu_abnormal:
+
+            return "CPU_SPIKE"
+
+        # -----------------------------------------------------
+        # Memory
+        # -----------------------------------------------------
+
+        if memory_abnormal:
+
+            return "MEMORY_SPIKE"
+
+        return None
+
+    # ---------------------------------------------------------
+    # Apply Level 1 adaptation
     # ---------------------------------------------------------
 
     def apply_level1_adaptation(
@@ -77,8 +253,6 @@ class AdaptiveFuzzingController:
         trigger_reason
     ):
 
-        self.low_efficiency_counter += 1
-
         print(
             f"\n[Adaptive Controller] "
             f"Window {window_id}: "
@@ -87,9 +261,7 @@ class AdaptiveFuzzingController:
 
         print(
             f"[Adaptive Controller] "
-            f"Low efficiency count: "
-            f"{self.low_efficiency_counter}/"
-            f"{self.escalation_threshold}"
+            f"Trigger = {trigger_reason}"
         )
 
         # -----------------------------------------------------
@@ -102,7 +274,7 @@ class AdaptiveFuzzingController:
 
             print(
                 "[Level 1] "
-                "CPU spike detected."
+                "Persistent CPU spike detected."
             )
 
         # -----------------------------------------------------
@@ -115,7 +287,7 @@ class AdaptiveFuzzingController:
 
             print(
                 "[Level 1] "
-                "Memory growth detected."
+                "Persistent memory growth detected."
             )
 
         # -----------------------------------------------------
@@ -132,7 +304,7 @@ class AdaptiveFuzzingController:
             )
 
         # -----------------------------------------------------
-        # Crash
+        # New unique crash
         # -----------------------------------------------------
 
         elif trigger_reason == "CRASH_FOUND":
@@ -141,7 +313,7 @@ class AdaptiveFuzzingController:
 
             print(
                 "[Level 1] "
-                "New crash detected."
+                "NEW unique crash detected."
             )
 
         # -----------------------------------------------------
@@ -171,20 +343,21 @@ class AdaptiveFuzzingController:
             )
 
         # -----------------------------------------------------
-        # Plateau placeholder
+        # Remember intervention
         # -----------------------------------------------------
 
-        if (
-            self.low_efficiency_counter
-            >= self.escalation_threshold
-        ):
+        self.last_adaptation = {
 
-            print(
-                "[Level 2] "
-                "Low efficiency sustained."
-            )
+            "window_id": window_id,
 
-            self._trigger_plateau_placeholder()
+            "mode": mode,
+
+            "trigger_reason": trigger_reason,
+
+            "ces": ces_score,
+
+            "timestamp": time.time()
+        }
 
         # -----------------------------------------------------
         # Send signal
@@ -194,49 +367,160 @@ class AdaptiveFuzzingController:
             mode
         )
 
+        return mode
+
+    # ---------------------------------------------------------
+    # Evaluate adaptation result
+    # ---------------------------------------------------------
+
+    def evaluate_adaptation(
+        self,
+        improved
+    ):
+
+        if self.last_adaptation is None:
+
+            return
+
+        if improved:
+
+            print(
+                "[Adaptive Controller] "
+                "Intervention improved performance."
+            )
+
+            self.unsuccessful_adaptation_counter = 0
+
+        else:
+
+            self.unsuccessful_adaptation_counter += 1
+
+            print(
+                "[Adaptive Controller] "
+                "Intervention did NOT improve "
+                "performance."
+            )
+
+            print(
+                "[Adaptive Controller] "
+                "Unsuccessful adaptations: "
+                f"{self.unsuccessful_adaptation_counter}/"
+                f"{self.escalation_threshold}"
+            )
+
+        self.last_adaptation = None
+
+    # ---------------------------------------------------------
+    # Check AgentAFL escalation
+    # ---------------------------------------------------------
+
+    def should_trigger_agentafl(
+        self,
+        coverage_stagnant,
+        ces_low
+    ):
+
+        return (
+            coverage_stagnant
+            and
+            ces_low
+            and
+            self.unsuccessful_adaptation_counter
+            >=
+            self.escalation_threshold
+        )
+
+    # ---------------------------------------------------------
+    # Trigger AgentAFL
+    # ---------------------------------------------------------
+
+    def trigger_agentafl(self):
+
+        print(
+            "\n[Level 2] "
+            "Persistent stagnation detected."
+        )
+
+        print(
+            "[Level 2] "
+            "Level 1 adaptations were unsuccessful."
+        )
+
+        print(
+            "[Level 2] "
+            "AgentAFL should now be triggered."
+        )
+
+        self._write_signal(
+            "AGENT_AFL"
+        )
+
     # ---------------------------------------------------------
     # Reset
     # ---------------------------------------------------------
 
     def reset_counter(self):
 
-        if self.low_efficiency_counter > 0:
+        self.cpu_abnormal_counter = 0
 
-            print(
-                "[Adaptive Controller] "
-                "Performance recovered."
-            )
+        self.memory_abnormal_counter = 0
 
-        self.low_efficiency_counter = 0
+        self.resource_abnormal_counter = 0
+
+        self.unsuccessful_adaptation_counter = 0
 
         self._write_signal(
             "DEFAULT"
         )
 
-    # ---------------------------------------------------------
-    # Plateau placeholder
-    # ---------------------------------------------------------
 
-    def _trigger_plateau_placeholder(self):
-
-        print(
-            "[Plateau Placeholder] "
-            "Sustained plateau detected."
-        )
-
-        print(
-            "[Plateau Placeholder] "
-            "AgentAFL/LLM recovery would "
-            "be invoked here."
-        )
-
+# -------------------------------------------------------------
+# Direct test
+# -------------------------------------------------------------
 
 if __name__ == "__main__":
 
-    controller = AdaptiveFuzzingController()
-
-    controller.apply_level1_adaptation(
-        window_id=1,
-        ces_score=0.0,
-        trigger_reason="CPU_SPIKE"
+    controller = AdaptiveFuzzingController(
+        persistence_windows=3,
+        escalation_threshold=3
     )
+
+    # Simulate persistent CPU abnormality
+
+    print("\n--- Window 1 ---")
+
+    print(
+        controller.determine_trigger(
+            unique_crashes=0,
+            cpu_abnormal=True,
+            memory_abnormal=False
+        )
+    )
+
+    print("\n--- Window 2 ---")
+
+    print(
+        controller.determine_trigger(
+            unique_crashes=0,
+            cpu_abnormal=True,
+            memory_abnormal=False
+        )
+    )
+
+    print("\n--- Window 3 ---")
+
+    trigger = controller.determine_trigger(
+        unique_crashes=0,
+        cpu_abnormal=True,
+        memory_abnormal=False
+    )
+
+    print(trigger)
+
+    if trigger:
+
+        controller.apply_level1_adaptation(
+            window_id=3,
+            ces_score=0.0,
+            trigger_reason=trigger
+        )

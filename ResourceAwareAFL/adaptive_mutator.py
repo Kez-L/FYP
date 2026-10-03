@@ -12,6 +12,7 @@ SIGNAL_FILE = os.path.join(
     ".adapt_signal"
 )
 
+LAST_MODE = None
 
 # =============================================================
 # AFL++ lifecycle
@@ -442,7 +443,17 @@ def fuzz(
 
         return buf
 
+    global LAST_MODE
+
     mode = read_adaptation_mode()
+
+    if mode != LAST_MODE:
+        print(
+            f"[Adaptive Mutator] Mode changed: "
+            f"{LAST_MODE} -> {mode}",
+            flush=True
+        )
+        LAST_MODE = mode
 
     # ---------------------------------------------------------
     # Select strategy

@@ -292,6 +292,132 @@ class CostEffectivenessAnalyzer:
                 status
         }
 
+    # ---------------------------------------------------------
+    # Evaluate intervention
+    # ---------------------------------------------------------
+
+    def evaluate_intervention(
+        self,
+        before_record,
+        after_record
+    ):
+        """
+        Compare system performance before and after
+        an adaptation.
+
+        Returns whether the intervention improved
+        overall cost-effectiveness.
+        """
+
+        before_ces = before_record.get(
+            "CES",
+            0.0
+        )
+
+        after_ces = after_record.get(
+            "CES",
+            0.0
+        )
+
+        before_cov = before_record.get(
+            "delta_cov",
+            0.0
+        )
+
+        after_cov = after_record.get(
+            "delta_cov",
+            0.0
+        )
+
+        before_cpu = before_record.get(
+            "cpu_percent",
+            0.0
+        )
+
+        after_cpu = after_record.get(
+            "cpu_percent",
+            0.0
+        )
+
+        before_memory = before_record.get(
+            "memory_mb",
+            0.0
+        )
+
+        after_memory = after_record.get(
+            "memory_mb",
+            0.0
+        )
+
+        ces_improved = after_ces > before_ces
+
+        coverage_improved = after_cov > before_cov
+
+        resource_improved = (
+            after_cpu < before_cpu
+            or
+            after_memory < before_memory
+        )
+
+        improved = (
+            ces_improved
+            or
+            (
+                coverage_improved
+                and resource_improved
+            )
+        )
+
+        return {
+            "before_ces": round(
+                before_ces,
+                6
+            ),
+
+            "after_ces": round(
+                after_ces,
+                6
+            ),
+
+            "before_coverage_gain": round(
+                before_cov,
+                4
+            ),
+
+            "after_coverage_gain": round(
+                after_cov,
+                4
+            ),
+
+            "before_cpu": round(
+                before_cpu,
+                2
+            ),
+
+            "after_cpu": round(
+                after_cpu,
+                2
+            ),
+
+            "before_memory": round(
+                before_memory,
+                2
+            ),
+
+            "after_memory": round(
+                after_memory,
+                2
+            ),
+
+            "ces_improved": ces_improved,
+
+            "coverage_improved": coverage_improved,
+
+            "resource_improved": resource_improved,
+
+            "improved": improved
+        }
+
 
 # -------------------------------------------------------------
 # Direct test
