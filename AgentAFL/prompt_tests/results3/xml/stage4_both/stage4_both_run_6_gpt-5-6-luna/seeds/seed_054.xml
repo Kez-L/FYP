@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ENTITY % package-model "
+    <!ELEMENT package (manifest, metadata, files, signatures?)>
+    <!ATTLIST package id ID #REQUIRED format NMTOKEN #REQUIRED>
+  ">
+  %package-model;
+  <!ELEMENT manifest (item+)>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item path CDATA #REQUIRED media CDATA #REQUIRED size NMTOKEN #IMPLIED checksum CDATA #IMPLIED>
+  <!ELEMENT metadata (name, description?, authors, license, keywords?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|line-break)*>
+  <!ELEMENT line-break EMPTY>
+  <!ELEMENT authors (author+)>
+  <!ELEMENT author (#PCDATA)>
+  <!ATTLIST author id ID #IMPLIED role (creator|maintainer|contributor) "contributor">
+  <!ELEMENT license (#PCDATA)>
+  <!ELEMENT keywords (keyword*)>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ELEMENT files (directory|document|binary)*>
+  <!ELEMENT directory (directory|document|binary)*>
+  <!ATTLIST directory path CDATA #REQUIRED>
+  <!ELEMENT document (#PCDATA)>
+  <!ATTLIST document path CDATA #REQUIRED encoding NMTOKEN #IMPLIED compressed (true|false) "false">
+  <!ELEMENT binary EMPTY>
+  <!ATTLIST binary path CDATA #REQUIRED encoding (base64|hex|external) #REQUIRED>
+  <!ELEMENT signatures (signature+)>
+  <!ELEMENT signature (algorithm, value, certificate?)>
+  <!ATTLIST signature signer IDREF #IMPLIED>
+  <!ELEMENT algorithm (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT certificate (#PCDATA)>
+]>
+<package id="pkg-204" format="bundle-3">
+  <manifest>
+    <item path="README.txt" media="text/plain" size="842" checksum="sha256:abc123"/>
+    <item path="src/core.xml" media="application/xml" size="3912" checksum="sha256:def456"/>
+    <item path="assets/icon.bin" media="application/octet-stream" size="128"/>
+  </manifest>
+  <metadata>
+    <name>Signal Garden</name>
+    <description>Portable tools for inspecting<line-break/>structured event streams.</description>
+    <authors>
+      <author id="author-1" role="creator">I. Navarro</author>
+      <author role="maintainer">Build Service</author>
+    </authors>
+    <license>Apache-2.0</license>
+    <keywords><keyword>events</keyword><keyword>diagnostics</keyword><keyword>xml</keyword></keywords>
+  </metadata>
+  <files>
+    <document path="README.txt" encoding="UTF-8">Usage:
+  signal-garden inspect --input events.xml
+  signal-garden report --format json</document>
+    <directory path="src">
+      <document path="src/core.xml" encoding="UTF-8" compressed="true"><![CDATA[<core version="4"><mode>safe</mode></core>]]></document>
+      <directory path="src/tests">
+        <document path="src/tests/sample.xml" encoding="UTF-8">&lt;sample&gt;fixture&lt;/sample&gt;</document>
+      </directory>
+    </directory>
+    <binary path="assets/icon.bin" encoding="base64"/>
+  </files>
+  <signatures>
+    <signature signer="author-1">
+      <algorithm>ed25519</algorithm>
+      <value>QmFzZTY0U2lnbmF0dXJlPT0=</value>
+      <certificate><![CDATA[-----BEGIN CERTIFICATE-----
+MIIB...placeholder...
+-----END CERTIFICATE-----]]></certificate>
+    </signature>
+  </signatures>
+</package>

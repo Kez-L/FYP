@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!DOCTYPE registry [
+  <!ENTITY % commonAttrs "xml:lang NMTOKEN #IMPLIED xml:space (default|preserve) 'preserve'">
+  <!ENTITY productName "A &amp; B Registry">
+  <!ELEMENT registry (header,namespace*,record*)>
+  <!ATTLIST registry %commonAttrs; revision NMTOKEN #REQUIRED>
+  <!ELEMENT header (name,created,comment?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT comment (#PCDATA|b|i|code)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT namespace EMPTY>
+  <!ATTLIST namespace prefix NMTOKEN #REQUIRED uri CDATA #REQUIRED>
+  <!ELEMENT record (key,value,metadata?,history?)>
+  <!ATTLIST record id ID #REQUIRED state (new|active|retired) "active">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part|ref)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ATTLIST part role NMTOKEN #IMPLIED>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED kind (soft|hard) "soft">
+  <!ELEMENT metadata (property*)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST property name NMTOKEN #REQUIRED type (text|integer|boolean|date) "text">
+  <!ELEMENT history (event+)>
+  <!ELEMENT event (actor,when,change)>
+  <!ATTLIST event seq NMTOKEN #REQUIRED>
+  <!ELEMENT actor (#PCDATA)>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT change (#PCDATA|add|remove)*>
+  <!ELEMENT add (#PCDATA)>
+  <!ELEMENT remove (#PCDATA)>
+]>
+<registry revision="r&amp;7" xml:lang="en-US">
+  <header>
+    <name>&productName;</name>
+    <created>2026-10-01T12:34:56Z</created>
+    <comment>Use <b>escaped</b> values, <i>not</i> raw <code>&lt;tags&gt;</code>.</comment>
+  </header>
+  <namespace prefix="cfg" uri="urn:config:v2"/>
+  <namespace prefix="ext" uri="urn:vendor:extension"/>
+  <record id="item-1" state="active">
+    <key>threshold</key>
+    <value>12<part role="unit">ms</part><ref target="item-2" kind="hard"/></value>
+    <metadata>
+      <property name="enabled" type="boolean">true</property>
+      <property name="retries" type="integer">004</property>
+      <property name="when" type="date">2026-09-30</property>
+    </metadata>
+    <history>
+      <event seq="1">
+        <actor>system</actor>
+        <when>2026-09-30</when>
+        <change><add>initial value</add></change>
+      </event>
+      <event seq="2">
+        <actor>operator</actor>
+        <when>2026-10-01</when>
+        <change><remove>temporary override</remove><add><![CDATA[stable]]></add></change>
+      </event>
+    </history>
+  </record>
+  <record id="item-2" state="retired">
+    <key>legacy</key>
+    <value>old &amp; obsolete</value>
+  </record>
+</registry>

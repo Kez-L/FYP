@@ -1,0 +1,96 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (item*)>
+  <!ATTLIST section name CDATA #REQUIRED>
+  <!ELEMENT item (#PCDATA|note|value)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ATTLIST item id ID #IMPLIED state (new|old|archived) "new">
+]>
+<catalog>
+  <section name="alpha">
+    <item id="i1"><value><![CDATA[x<y&z]]></value><note>first</note></item>
+    <item state="archived">mixed <note>text</note> tail</item>
+  </section>
+  <section name="empty"/>
+</catalog>
+```
+
+```xml
+<?xml version="1.1"?>
+<r xmlns="urn:root" xmlns:p="urn:p" xmlns:q="urn:q">
+  <p:branch q:flag="yes" p:code="&#x41;&#65;">
+    <q:leaf xmlns:q="" />
+    <leaf xmlns="urn:alternate">
+      <![CDATA[ ]]>text<![CDATA[ ]]> 
+    </leaf>
+  </p:branch>
+  <branch xmlns:p="urn:shadow">
+    <p:child/>
+  </branch>
+</r>
+```
+
+```xml
+<!DOCTYPE report [
+  <!ELEMENT report (header, body, footer)>
+  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT body (entry+)>
+  <!ELEMENT entry (title, data)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT data (#PCDATA|br)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY stamp "A &nbsp; B">
+]>
+<report>
+  <header>Run &quot;nightly&quot;</header>
+  <body>
+    <entry><title>one</title><data>left<br/>right &stamp;</data></entry>
+    <entry><title>two</title><data><![CDATA[raw ]]> &amp; <![CDATA[ text]]></data></entry>
+  </body>
+  <footer>&stamp;</footer>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ELEMENT a ANY>
+  <!ELEMENT b ANY>
+  <!ELEMENT c EMPTY>
+  <!ATTLIST root xmlns CDATA #IMPLIED mode CDATA "x">
+  <!ATTLIST a ref IDREF #IMPLIED>
+  <!ATTLIST b refs IDREFS #IMPLIED>
+]>
+<root mode="&quot;quoted&quot;">
+  <a ref="node-2">
+    <c/>
+    <b id="node-2" refs="node-2 missing-node"/>
+  </a>
+  <a>
+    <b><![CDATA[unterminated-looking ]]]]><![CDATA[> sequence]]></b>
+  </a>
+</root>
+```
+
+```xml
+<?xml version="1.0"?>
+<universe>
+  <level n="0">
+    <level n="1">
+      <level n="2">
+        <payload kind="mixed">alpha<!-- hidden --><![CDATA[beta]]><?pi data?><![CDATA[gamma]]></payload>
+        <payload kind="empty"/>
+      </level>
+    </level>
+  </level>
+  <?processing instruction?>
+  <!-- comment with -- several? no -->
+  <tail a="&lt;" b="&gt;" c="&amp;" d="&#x1F600;"/>
+</universe>
+```

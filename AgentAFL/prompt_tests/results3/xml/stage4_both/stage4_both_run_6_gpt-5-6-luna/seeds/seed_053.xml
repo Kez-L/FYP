@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE query [
+  <!ELEMENT query (with?, select, from, join*, where?, group-by?, order-by?, limit?)>
+  <!ATTLIST query id ID #REQUIRED dialect (generic|postgres|sqlite) "generic">
+  <!ELEMENT with (cte+)>
+  <!ELEMENT cte (select, columns?)>
+  <!ATTLIST cte name NMTOKEN #REQUIRED recursive (true|false) "false">
+  <!ELEMENT columns (column+)>
+  <!ELEMENT select (column|expression|star)+>
+  <!ELEMENT from (table|subquery)>
+  <!ELEMENT table EMPTY>
+  <!ATTLIST table name NMTOKEN #REQUIRED alias NMTOKEN #IMPLIED>
+  <!ELEMENT subquery (select, from, where?)>
+  <!ELEMENT join (table|subquery, on)>
+  <!ATTLIST join type (inner|left|right|full|cross) "inner">
+  <!ELEMENT on (#PCDATA)>
+  <!ELEMENT column EMPTY>
+  <!ATTLIST column name NMTOKEN #REQUIRED alias NMTOKEN #IMPLIED>
+  <!ELEMENT expression (#PCDATA|function|literal|reference|operator)*>
+  <!ELEMENT function (argument*)>
+  <!ATTLIST function name NMTOKEN #REQUIRED>
+  <!ELEMENT argument (#PCDATA|reference|literal|function)*>
+  <!ELEMENT literal (#PCDATA)>
+  <!ELEMENT reference EMPTY>
+  <!ATTLIST reference table NMTOKEN #IMPLIED name NMTOKEN #REQUIRED>
+  <!ELEMENT operator (#PCDATA)>
+  <!ELEMENT star EMPTY>
+  <!ELEMENT where (#PCDATA|expression|predicate)*>
+  <!ELEMENT predicate (expression|value-list)>
+  <!ATTLIST predicate kind (equals|in|between|like|is-null) #REQUIRED>
+  <!ELEMENT value-list (literal*)>
+  <!ELEMENT group-by (reference+)>
+  <!ELEMENT order-by (ordering+)>
+  <!ELEMENT ordering EMPTY>
+  <!ATTLIST ordering name NMTOKEN #REQUIRED direction (asc|desc) "asc">
+  <!ELEMENT limit (#PCDATA)>
+]>
+<query id="q-analytics-19" dialect="postgres">
+  <with>
+    <cte name="recent" recursive="false">
+      <select>
+        <column name="account_id"/>
+        <column name="amount"/>
+        <column name="created_at"/>
+      </select>
+      <from><table name="payments" alias="p"/></from>
+      <where>
+        <predicate kind="between">
+          <expression><reference table="p" name="created_at"/><operator>&gt;=</operator><literal>2026-09-01</literal></expression>
+        </predicate>
+      </where>
+    </cte>
+  </with>
+  <select>
+    <reference table="recent" name="account_id"/>
+    <expression><function name="sum"><argument><reference table="recent" name="amount"/></argument></function></expression>
+    <expression><function name="count"><argument><star/></argument></function></expression>
+  </select>
+  <from><table name="recent" alias="r"/></from>
+  <join type="left"><table name="accounts" alias="a"/><on>r.account_id = a.id</on></join>
+  <where>
+    <predicate kind="in">
+      <expression><reference table="a" name="status"/></expression>
+      <value-list><literal>active</literal><literal>trial</literal></value-list>
+    </predicate>
+  </where>
+  <group-by><reference table="r" name="account_id"/></group-by>
+  <order-by><ordering name="amount" direction="desc"/><ordering name="account_id"/></order-by>
+  <limit>250</limit>
+</query>

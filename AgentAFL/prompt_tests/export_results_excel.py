@@ -28,17 +28,38 @@ Series, all cumulative over seeds walked in generation order (seed_index):
   cum_redundant           redundant seeds so far.
   frac_redundant          redundant / (redundant + non-redundant) so far, i.e.
                           over seeds that produced any coverage at all.
+  frac_redundant_all      redundant / all seeds so far, i.e. the same trend as
+                          frac_redundant but with seeds that produced no
+                          coverage at all kept in the denominator.
   frac_non_redundant_all  non-redundant / all seeds so far, including seeds
                           that produced no coverage at all.
 
-Redundancy is judged on a seed's FULL edge set against the earlier seeds of the
-same run, independent of the baseline: a seed is non-redundant when it hits at
-least one edge no earlier seed in the run hit, redundant when it has coverage
-but every edge was already seen. Seeds with no coverage at all (edge_ids == [])
-are neither, and are excluded from frac_redundant but included in
-frac_non_redundant_all. new_edge_ids cannot express this rule — batch_harness
-sets it to [] by construction for every "BAD (redundant)" seed — so edge_ids is
-used, which is always populated.
+frac_redundant and frac_redundant_all are identical wherever a run has no
+NO_COVERAGE seeds (all of xml); they diverge on ical, where whole calls
+occasionally return empty seeds.
+
+frac_non_redundant_all necessarily sits at 1.0 over the first stretch of a run:
+redundancy is judged against the earlier seeds of the same run, so the union of
+seen edges starts empty, seed 1 is non-redundant by definition, and a seed can
+only be redundant once every one of its edges is already in the union. The
+informative part is where that flat region ends — across results3 the first
+redundant seed lands between seed 5 and seed 41 depending on the arm.
+
+A seed is non-redundant when it hits at least one edge that is in neither the
+AFL++ baseline nor any earlier seed of the same run, and redundant when it has
+coverage but adds no such edge. Seeds with no coverage at all (edge_ids == [])
+are neither: they are excluded from frac_redundant but included in
+frac_redundant_all and frac_non_redundant_all.
+
+Classification uses new_edge_ids (= edge_ids minus the baseline). That field is
+only populated for "GOOD (novel coverage)" seeds, which is harmless here: a
+"BAD (redundant)" seed has edge_ids wholly inside the baseline, so its novel set
+is empty either way, and it is correctly counted as redundant.
+
+frac_non_redundant_all is therefore the new-edge contributor rate, and the final
+non-redundant count equals summary coverage.distinct_new_edge_contributors --
+load_run checks this, so the Diagnostics sheet flags any disagreement with
+batch_harness's own greedy contributor count.
 
 Runs end at different lengths (a call that should emit 5 seeds sometimes emits
 4). Each run's curve is forward-filled with its final value out to the longest
@@ -82,6 +103,10 @@ SERIES_SPECS = [
                "redundant share of seeds with coverage",
                "Redundant / (redundant + non-redundant)",
                "dec3", "dec3", 1.0),
+    SeriesSpec("frac_redundant_all",
+               "redundant share of all seeds",
+               "Redundant / all seeds so far",
+               "dec3", "dec3", 1.0),
     SeriesSpec("frac_non_redundant_all",
                "non-redundant share of all seeds",
                "Non-redundant / all seeds so far",
@@ -102,6 +127,7 @@ RUN_METRICS = [
     ("redundant_seeds",                lambda r: r["health"]["n_redundant"]),
     ("non_redundant_seeds",            lambda r: r["health"]["n_non_redundant"]),
     ("final_frac_redundant",           lambda r: r["health"]["final_frac_redundant"]),
+    ("final_frac_redundant_all",       lambda r: r["health"]["final_frac_redundant_all"]),
     ("final_frac_non_redundant_all",   lambda r: r["health"]["final_frac_non_redundant_all"]),
     ("calls",                          lambda r: r["summary"].get("calls")),
     ("input_tokens_total",             lambda r: r["summary"].get("input_tokens_total")),
@@ -143,30 +169,34 @@ def read_seed_rows(path):
 def build_series(seeds):
     """Walk seeds in generation order, returning the cumulative series + tallies.
 
-    A seed is non-redundant when its edge set contains an edge no earlier seed
-    in this run hit; redundant when it has coverage but adds nothing new; and
-    neither when it has no coverage at all.
+    A seed is non-redundant when it hits an edge that is in neither the AFL++
+    baseline nor any earlier seed of this run; redundant when it has coverage
+    but adds no such edge; and neither when it has no coverage at all. The
+    running count of non-redundant seeds is therefore exactly the greedy
+    new-edge contributor count of batch_harness.write_contribution_report, and
+    load_run asserts the two agree.
     """
     series = {k: [] for k in SERIES_KEYS}
-    seen_new, union = set(), set()
+    seen_new = set()
     n_red = n_non_red = n_no_cov = 0
 
     for r in seeds:
-        seen_new.update(r.get("new_edge_ids") or [])
         edges = set(r.get("edge_ids") or [])
+        novel = set(r.get("new_edge_ids") or [])  # edge_ids minus the AFL++ baseline
         if not edges:
             n_no_cov += 1
-        elif edges - union:
+        elif novel - seen_new:
             n_non_red += 1
         else:
             n_red += 1
-        union |= edges
+        seen_new |= novel
 
         n_total = len(series["cum_new_edges"]) + 1  # seeds walked so far
         n_covered = n_red + n_non_red
         series["cum_new_edges"].append(len(seen_new))
         series["cum_redundant"].append(n_red)
         series["frac_redundant"].append(n_red / n_covered if n_covered else None)
+        series["frac_redundant_all"].append(n_red / n_total)
         series["frac_non_redundant_all"].append(n_non_red / n_total)
 
     tallies = {
@@ -175,6 +205,7 @@ def build_series(seeds):
         "n_redundant": n_red,
         "n_non_redundant": n_non_red,
         "final_frac_redundant": series["frac_redundant"][-1] if seeds else None,
+        "final_frac_redundant_all": series["frac_redundant_all"][-1] if seeds else None,
         "final_frac_non_redundant_all": series["frac_non_redundant_all"][-1] if seeds else None,
     }
     return series, tallies
@@ -210,6 +241,16 @@ def load_run(run_dir, section):
     if not health["cumulative_matches_summary"]:
         print(f"WARNING: {run_dir}: cumulative ends at {final} "
               f"but summary new_edges_total_batch = {expected}", file=sys.stderr)
+
+    # Our non-redundant count is the same greedy rule batch_harness uses, so it
+    # must reproduce distinct_new_edge_contributors exactly.
+    contributors = summary.get("coverage", {}).get("distinct_new_edge_contributors")
+    health["distinct_new_edge_contributors"] = contributors
+    health["contributors_match_summary"] = (contributors is None
+                                            or health["n_non_redundant"] == contributors)
+    if not health["contributors_match_summary"]:
+        print(f"WARNING: {run_dir}: {health['n_non_redundant']} non-redundant seeds "
+              f"but summary distinct_new_edge_contributors = {contributors}", file=sys.stderr)
     if unparsable:
         print(f"WARNING: {run_dir}: skipped {unparsable} unparsable seeds.jsonl "
               f"line(s) (run still being written?)", file=sys.stderr)
@@ -475,6 +516,8 @@ DIAG_COLUMNS = [
     ("final_new_edges",        lambda r, longest: r["series"]["cum_new_edges"][-1]),
     ("new_edges_total_batch",  lambda r, longest: r["health"]["new_edges_total_batch"]),
     ("cumulative_matches",     lambda r, longest: "yes" if r["health"]["cumulative_matches_summary"] else "NO"),
+    ("distinct_new_edge_contributors", lambda r, longest: r["health"]["distinct_new_edge_contributors"]),
+    ("contributors_match",     lambda r, longest: "yes" if r["health"]["contributors_match_summary"] else "NO"),
 ]
 
 
@@ -492,7 +535,8 @@ def write_diagnostics_sheet(wb, fmts, ws, fmt, sections):
                        or run["health"]["missing_indices"]
                        or run["health"]["duplicate_indices"]
                        or run["health"]["unparsable_lines"]
-                       or not run["health"]["cumulative_matches_summary"])
+                       or not run["health"]["cumulative_matches_summary"]
+                       or not run["health"]["contributors_match_summary"])
             cell_fmt = fmts["warn"] if flagged else None
             for c, (_, get) in enumerate(DIAG_COLUMNS):
                 v = get(run, longest)

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow" xmlns:ext="urn:example:workflow:extension" version="3.1">
+  <trigger id="nightly" active="true">
+    <schedule timezone="UTC">
+      <cron>0 30 2 * * *</cron>
+      <window start="PT10M" end="PT2H"/>
+    </schedule>
+  </trigger>
+  <variables>
+    <variable name="attempts" type="integer" scope="run">0</variable>
+    <variable name="target" type="string" scope="global"><![CDATA[cluster-eu-west-1]]></variable>
+    <variable name="dryRun" type="boolean" scope="run">false</variable>
+  </variables>
+  <steps>
+    <parallel id="prepare" fail-policy="continue">
+      <task id="snapshot" executor="shell">
+        <command><![CDATA[tar -czf /tmp/state.tgz /srv/state]]></command>
+        <timeout unit="seconds">45</timeout>
+        <environment>
+          <entry key="LANG">C.UTF-8</entry>
+          <entry key="TMPDIR">/var/tmp</entry>
+        </environment>
+      </task>
+      <task id="health" executor="http">
+        <request method="GET" url="https://status.example.invalid/api/health">
+          <header name="Accept">application/json</header>
+        </request>
+        <expect status="200"/>
+      </task>
+    </parallel>
+    <condition id="gate">
+      <expression language="xpath">/workflow/variables/variable[@name='dryRun'] = 'false'</expression>
+      <then>
+        <task id="deploy" executor="container" image="registry.invalid/app:2026.10">
+          <argument name="region">${target}</argument>
+        </task>
+      </then>
+      <else>
+        <log level="info">deployment skipped</log>
+      </else>
+    </condition>
+  </steps>
+  <on-error>
+    <notify channel="pager" severity="critical">workflow failure</notify>
+    <ext:rollback retain="3"/>
+  </on-error>
+</workflow>

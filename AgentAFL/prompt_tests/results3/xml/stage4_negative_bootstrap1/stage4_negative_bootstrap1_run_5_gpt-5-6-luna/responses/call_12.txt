@@ -1,0 +1,146 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, metadata?, description)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT metadata (author*, tag*)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|link)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST entry id ID #REQUIRED status (draft|published|archived) "draft">
+  <!ATTLIST link href CDATA #REQUIRED>
+]>
+<catalog>
+  <entry id="r17" status="published">
+    <title>Signals</title>
+    <metadata>
+      <author>R. Chen</author>
+      <author>M. Ortiz</author>
+      <tag>systems</tag>
+    </metadata>
+    <description>Read <em>carefully</em>: see <link href="urn:ref:42"/> before continuing.</description>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ENTITY intro "Quarterly &amp; consolidated">
+  <!ENTITY % common "CDATA">
+  <!ELEMENT report (section, appendix)>
+  <!ELEMENT section (heading, paragraph+)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|list|quote)*>
+  <!ELEMENT list (item+)>
+  <!ELEMENT item (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT appendix (note*)>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST report code %common; #IMPLIED>
+]>
+<report code="Q4">
+  <section>
+    <heading>&intro;</heading>
+    <paragraph>First observation.</paragraph>
+    <paragraph>Second <list><item>alpha</item><item>beta</item></list> follows.</paragraph>
+    <paragraph><quote>Retain the original ordering.</quote></paragraph>
+  </section>
+  <appendix>
+    <note>Generated after review.</note>
+    <note>Revision &amp; verification pending.</note>
+  </appendix>
+</report>
+```
+
+```xml
+<?xml version="1.0"?>
+<scene xmlns="urn:scene" xmlns:svg="http://www.w3.org/2000/svg" xml:base="https://example.invalid/assets/">
+  <!-- namespace-qualified mixed content -->
+  <layer xml:id="background" opacity="0.75">
+    <svg:svg viewBox="0 0 20 20">
+      <svg:defs>
+        <svg:linearGradient id="g">
+          <svg:stop offset="0%"/>
+          <svg:stop offset="100%"/>
+        </svg:linearGradient>
+      </svg:defs>
+      <svg:path d="M0,0 L20,20" fill="url(#g)"/>
+    </svg:svg>
+    <caption><![CDATA[An embedded <markup> fragment]]></caption>
+  </layer>
+  <layer xml:id="foreground">
+    <marker ref="#background"/>
+    <marker ref="urn:scene:item"/>
+  </layer>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (header, records, signature?)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header created CDATA #REQUIRED>
+  <!ELEMENT records (record*)>
+  <!ELEMENT record (key, value, binary?)>
+  <!ATTLIST record kind CDATA #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT binary (#PCDATA)>
+  <!ELEMENT signature (#PCDATA)>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<archive>
+  <header created="2026-10-01T00:00:00Z"/>
+  <records>
+    <record kind="text">
+      <key>name</key>
+      <value>before<part>middle</part>after</value>
+    </record>
+    <record kind="encoded">
+      <key>payload</key>
+      <value>&left;opaque&amp;value&right;</value>
+      <binary><![CDATA[
+AAECAwQFBgcICQ==
+]]></binary>
+    </record>
+  </records>
+  <signature>sha256:unavailable</signature>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (routing, message)>
+  <!ELEMENT routing (source, destination, hops?)>
+  <!ELEMENT source (#PCDATA)>
+  <!ELEMENT destination (#PCDATA)>
+  <!ELEMENT hops (hop+)>
+  <!ELEMENT hop (#PCDATA)>
+  <!ELEMENT message (subject, body)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT body (#PCDATA|br|table)*>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+]>
+<envelope>
+  <routing>
+    <source>node-A</source>
+    <destination>node-Z</destination>
+    <hops><hop>node-C</hop><hop>node-F</hop></hops>
+  </routing>
+  <message>
+    <subject>Boundary test</subject>
+    <body>Start<br/>middle<table><row><cell>1</cell><cell>2</cell></row><row><cell><![CDATA[x]]></cell></row></table>end</body>
+  </message>
+</envelope>
+```

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (metadata, step+, transitions)>
+  <!ELEMENT metadata (title, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT note (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT step (input*, action, output*)>
+  <!ELEMENT input EMPTY>
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT output EMPTY>
+  <!ELEMENT transitions (transition+)>
+  <!ELEMENT transition EMPTY>
+  <!ATTLIST step id ID #REQUIRED type NMTOKEN #REQUIRED>
+  <!ATTLIST input name CDATA #REQUIRED required (yes|no) "no">
+  <!ATTLIST output name CDATA #REQUIRED>
+  <!ATTLIST transition from IDREF #REQUIRED to IDREF #REQUIRED>
+]>
+<workflow>
+  <metadata>
+    <title>Nightly transform</title>
+    <note>Run after <linebreak/> validation and before publication.</note>
+  </metadata>
+  <step id="load" type="source">
+    <output name="document"/>
+  </step>
+  <step id="validate" type="check">
+    <input name="document" required="yes"/>
+    <action>validate-schema</action>
+    <output name="report"/>
+  </step>
+  <step id="publish" type="sink">
+    <input name="report"/>
+    <action>publish</action>
+  </step>
+  <transitions>
+    <transition from="load" to="validate"/>
+    <transition from="validate" to="publish"/>
+  </transitions>
+</workflow>

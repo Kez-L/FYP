@@ -1,0 +1,269 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ENTITY product "Orion">
+  <!ENTITY note "Confidential &amp; internal">
+  <!ELEMENT report (metadata, summary, metrics, observations)>
+  <!ATTLIST report id ID #REQUIRED period CDATA #IMPLIED>
+  <!ELEMENT metadata (owner, created, tags)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT metrics (metric+)>
+  <!ELEMENT metric (value, bounds?)>
+  <!ATTLIST metric name NMTOKEN #REQUIRED unit CDATA #IMPLIED status (ok|warn|fail) "ok">
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT bounds (low, high)>
+  <!ELEMENT low (#PCDATA)>
+  <!ELEMENT high (#PCDATA)>
+  <!ELEMENT observations (observation*)>
+  <!ELEMENT observation (message, sample*)>
+  <!ATTLIST observation severity (info|warning|error) #REQUIRED>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT sample (#PCDATA)>
+]>
+<report id="r-2026-01" period="Q3">
+  <metadata>
+    <owner>Telemetry Team</owner>
+    <created>2026-09-30T18:45:00Z</created>
+    <tags>
+      <tag>batch</tag>
+      <tag>nightly</tag>
+      <tag>&product;</tag>
+    </tags>
+  </metadata>
+  <summary>System <em>stable</em>; inspect <code>latency.p95</code>. &note;</summary>
+  <metrics>
+    <metric name="throughput" unit="events/s" status="ok">
+      <value>1842.75</value>
+      <bounds><low>1200</low><high>2500</high></bounds>
+    </metric>
+    <metric name="latency.p95" unit="ms" status="warn">
+      <value>87.4</value>
+      <bounds><low>0</low><high>75</high></bounds>
+    </metric>
+  </metrics>
+  <observations>
+    <observation severity="warning">
+      <message>Queue depth changed during maintenance.</message>
+      <sample>2026-09-30T02:00:00Z: 4096</sample>
+      <sample>2026-09-30T02:15:00Z: 1024</sample>
+    </observation>
+    <observation severity="info">
+      <message><![CDATA[No parser-visible anomalies in <payload> samples.]]></message>
+    </observation>
+  </observations>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"
+      xmlns:media="http://search.yahoo.com/mrss/"
+      xmlns:thr="http://purl.org/syndication/thread/1.0"
+      xml:base="https://news.example.test/archive/"
+      xml:lang="en">
+  <title type="html">Signals &amp; Noise</title>
+  <subtitle>Short reports from the observatory</subtitle>
+  <id>urn:uuid:7c1e4d2a-9c9f-4d46-a4f3-0b6d4d4ec011</id>
+  <updated>2026-10-01T07:30:00Z</updated>
+  <generator uri="https://example.test/press">Pressroom 4.2</generator>
+  <link rel="self" type="application/atom+xml" href="index.atom"/>
+  <link rel="alternate" hreflang="fr" href="fr/index.html"/>
+  <entry xml:lang="en">
+    <title>Unexpected aurora over the southern array</title>
+    <id>tag:news.example.test,2026:aurora-441</id>
+    <published>2026-09-30T23:12:00-04:00</published>
+    <updated>2026-10-01T01:08:19Z</updated>
+    <author><name>J. Alvarez</name><email>j.alvarez@example.test</email></author>
+    <category term="weather" label="Weather events"/>
+    <category term="research"/>
+    <summary type="xhtml">
+      <div xmlns="http://www.w3.org/1999/xhtml">
+        <p>The northern camera recorded a <em>rare</em> red arc.</p>
+        <p>Measurements remain provisional.</p>
+      </div>
+    </summary>
+    <content type="html"><![CDATA[<p>Images will be reviewed by <a href="/team">the team</a>.</p>]]></content>
+    <media:group>
+      <media:content url="images/aurora-441.jpg" type="image/jpeg" width="1600" height="900"/>
+      <media:thumbnail url="images/aurora-441-small.jpg"/>
+      <media:description>Frame captured at 23:11 local time.</media:description>
+    </media:group>
+    <thr:in-reply-to ref="tag:news.example.test,2026:weather-438" type="text/html"/>
+  </entry>
+</feed>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE workspace [
+  <!ENTITY root-label "Developer Workspace">
+  <!ELEMENT workspace (profile, resources, tasks, hooks?)>
+  <!ATTLIST workspace name CDATA #REQUIRED revision NMTOKEN #IMPLIED>
+  <!ELEMENT profile (display-name, preferences)>
+  <!ELEMENT display-name (#PCDATA)>
+  <!ELEMENT preferences (preference*)>
+  <!ELEMENT preference EMPTY>
+  <!ATTLIST preference key NMTOKEN #REQUIRED value CDATA #IMPLIED enabled (true|false) "true">
+  <!ELEMENT resources (folder|secret|endpoint)*>
+  <!ELEMENT folder (file|folder)*>
+  <!ATTLIST folder path CDATA #REQUIRED>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file path CDATA #REQUIRED role (source|test|generated|asset) #IMPLIED>
+  <!ELEMENT secret EMPTY>
+  <!ATTLIST secret name NMTOKEN #REQUIRED source (environment|vault|prompt) #REQUIRED>
+  <!ELEMENT endpoint (header*)>
+  <!ATTLIST endpoint name NMTOKEN #REQUIRED url URI #REQUIRED method (GET|POST|PUT|DELETE) "GET">
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header name CDATA #REQUIRED value CDATA #REQUIRED>
+  <!ELEMENT tasks (task+)>
+  <!ELEMENT task (command, when?, environment?)>
+  <!ATTLIST task id ID #REQUIRED depends IDREFS #IMPLIED>
+  <!ELEMENT command (#PCDATA)>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT environment (variable*)>
+  <!ELEMENT variable EMPTY>
+  <!ATTLIST variable name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT hooks (hook*)>
+  <!ELEMENT hook EMPTY>
+  <!ATTLIST hook event (open|save|build|close) #REQUIRED command CDATA #REQUIRED>
+]>
+<workspace name="&root-label;" revision="r17">
+  <profile>
+    <display-name>Delta Lab</display-name>
+    <preferences>
+      <preference key="autosave" value="45"/>
+      <preference key="color-scheme" value="midnight"/>
+      <preference key="telemetry" enabled="false"/>
+    </preferences>
+  </profile>
+  <resources>
+    <folder path="/srv/delta">
+      <file path="src/main.rs" role="source"/>
+      <file path="src/parser.rs" role="source"/>
+      <folder path="/srv/delta/tests">
+        <file path="fixtures/edge-case.xml" role="test"/>
+      </folder>
+    </folder>
+    <secret name="REGISTRY_TOKEN" source="vault"/>
+    <endpoint name="artifact" url="https://packages.example.test/v2" method="POST">
+      <header name="Accept" value="application/json"/>
+      <header name="X-Trace" value="workspace-r17"/>
+    </endpoint>
+  </resources>
+  <tasks>
+    <task id="compile" depends="">
+      <command>cargo build --locked</command>
+      <environment>
+        <variable name="RUST_BACKTRACE" value="1"/>
+      </environment>
+    </task>
+    <task id="verify" depends="compile">
+      <command><![CDATA[cargo test -- --nocapture && ./tools/check "a < b"]]></command>
+      <when>on-save</when>
+    </task>
+  </tasks>
+  <hooks>
+    <hook event="open" command="./tools/announce --quiet"/>
+    <hook event="build" command="./tools/archive --revision r17"/>
+  </hooks>
+</workspace>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope"
+              xmlns:app="urn:example:inventory"
+              xmlns:sec="urn:example:security"
+              env:encodingStyle="http://www.w3.org/2003/05/soap-encoding">
+  <env:Header>
+    <sec:Credentials env:mustUnderstand="true" env:role="http://www.w3.org/2003/05/soap-envelope/role/next">
+      <sec:User>scanner</sec:User>
+      <sec:Token algorithm="urn:example:token:opaque">bXktdGVzdC10b2tlbg==</sec:Token>
+    </sec:Credentials>
+    <app:RequestContext correlationId="c-88f1" locale="en-GB">
+      <app:ClientVersion>6.0</app:ClientVersion>
+      <app:Flags>
+        <app:Flag>include-retired</app:Flag>
+        <app:Flag>include-history</app:Flag>
+      </app:Flags>
+    </app:RequestContext>
+  </env:Header>
+  <env:Body>
+    <app:InventoryQuery>
+      <app:Warehouse code="LON-2"/>
+      <app:Filter>
+        <app:Sku operator="starts-with">ZX-</app:Sku>
+        <app:Quantity comparator="gte">0</app:Quantity>
+        <app:UpdatedAfter>2026-09-01T00:00:00Z</app:UpdatedAfter>
+      </app:Filter>
+      <app:Projection>
+        <app:Field name="sku"/>
+        <app:Field name="description"/>
+        <app:Field name="stock" unit="items"/>
+      </app:Projection>
+    </app:InventoryQuery>
+    <app:ResponseHints>
+      <app:Page size="25" cursor="first"/>
+      <app:Sort field="sku" direction="ascending"/>
+    </app:ResponseHints>
+  </env:Body>
+</env:Envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, signature, payload)>
+  <!ATTLIST package id ID #REQUIRED format NMTOKEN #REQUIRED>
+  <!ELEMENT manifest (item+)>
+  <!ELEMENT item (digest, metadata?)>
+  <!ATTLIST item uri URI #REQUIRED media-type CDATA #REQUIRED size CDATA #IMPLIED>
+  <!ELEMENT digest (#PCDATA)>
+  <!ELEMENT metadata (property*)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST property name NMTOKEN #REQUIRED>
+  <!ELEMENT signature (algorithm, key, value)>
+  <!ATTLIST signature verified (yes|no) #REQUIRED>
+  <!ELEMENT algorithm (#PCDATA)>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT payload (#PCDATA|chunk)*>
+  <!ELEMENT chunk (#PCDATA)>
+]>
+<package id="bundle-09" format="sealed-archive">
+  <manifest>
+    <item uri="data/config.json" media-type="application/json" size="834">
+      <digest algorithm="sha256">4a8f0d94be3c0f0ad0a72157b2c43fcb6d9af0c8e3be0e4e6d8457cc8f2a91b1</digest>
+      <metadata>
+        <property name="owner">release-bot</property>
+        <property name="line-ending">LF</property>
+      </metadata>
+    </item>
+    <item uri="bin/runner" media-type="application/octet-stream" size="4096">
+      <digest algorithm="sha256">c29d1f7e6b5f4d6b9ec0b2a6d10f1b7c8e99821c4f75d8a1aa7a8f31d0e9c411</digest>
+    </item>
+    <item uri="docs/readme.txt" media-type="text/plain; charset=utf-8" size="121">
+      <digest algorithm="sha256">00ff11ee22dd33cc44bb55aa66ff778899aabbccddeeff001122334455667788</digest>
+    </item>
+  </manifest>
+  <signature verified="yes">
+    <algorithm>ed25519</algorithm>
+    <key>key-id:release-2026</key>
+    <value><![CDATA[
+MEQCIFakeSignaturePayloadForParserCoverageOnly==
+    ]]></value>
+  </signature>
+  <payload>
+    <chunk><![CDATA[{"name":"delta","enabled":true,]]></chunk>
+    <chunk><![CDATA["limits":{"soft":128,"hard":256}}]]></chunk>
+    <chunk><![CDATA[
+]]></chunk>
+  </payload>
+</package>
+```

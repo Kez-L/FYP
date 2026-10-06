@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ENTITY % common "<!ELEMENT note (#PCDATA)> <!ATTLIST note priority (low|normal|high) 'normal'>">
+  %common;
+  <!ELEMENT archive (section+)>
+  <!ELEMENT section (title, note?, record*)>
+  <!ATTLIST section id ID #REQUIRED ref IDREF #IMPLIED mode (open|closed) "open">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT record (key, value)>
+  <!ATTLIST record kind NMTOKEN #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|note)*>
+  <!ENTITY marker "A &lt; B &amp; C">
+]>
+<archive>
+  <section id="alpha" mode="open">
+    <title>Primary</title>
+    <note priority="high">review required</note>
+    <record kind="text">
+      <key>one</key>
+      <value>left <note>inside</note> &marker;</value>
+    </record>
+    <record kind="numeric">
+      <key>two</key>
+      <value>42</value>
+    </record>
+  </section>
+  <section id="beta" ref="alpha" mode="closed">
+    <title>Secondary</title>
+    <record>
+      <key>three</key>
+      <value>archived</value>
+    </record>
+  </section>
+</archive>

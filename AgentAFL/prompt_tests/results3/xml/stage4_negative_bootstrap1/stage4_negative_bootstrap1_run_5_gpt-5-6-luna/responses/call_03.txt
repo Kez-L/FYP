@@ -1,0 +1,149 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+, index?)>
+  <!ELEMENT entry (title, body, tag*)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT body (#PCDATA|ref|emph)*>
+  <!ELEMENT tag EMPTY>
+  <!ELEMENT ref EMPTY>
+  <!ELEMENT emph (#PCDATA|ref|emph)*>
+  <!ELEMENT index (item*)>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST archive version NMTOKEN #REQUIRED>
+  <!ATTLIST entry id ID #REQUIRED status (new|old|held) "new">
+  <!ATTLIST tag value CDATA #REQUIRED>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ATTLIST item entry IDREF #REQUIRED>
+  <!ENTITY mark "&#x2605;">
+]>
+<archive version="7">
+  <entry id="e1" status="new">
+    <title>Signals &amp; Symbols</title>
+    <body>Start <emph>here <ref target="e2"/></emph> &mark;</body>
+    <tag value="alpha"/>
+    <tag value="unicode"/>
+  </entry>
+  <entry id="e2" status="held">
+    <title>Second record</title>
+    <body><![CDATA[raw <markup> and ]]> inside text</body>
+  </entry>
+  <index>
+    <item entry="e1"/>
+    <item entry="e2"/>
+  </index>
+</archive>
+```
+
+```xml
+<?xml version="1.1"?>
+<r:packet xmlns:r="urn:root:packet" xmlns:q="urn:payload:item" xml:base="https://example.invalid/a/">
+  <!-- namespace rebinding and mixed content -->
+  <r:header q:kind="Δ" xml:lang="zh-Hant">
+    before<?audit level="trace"?>after
+  </r:header>
+  <r:payload>
+    <q:item q:key="001" xml:id="node-a">
+      <![CDATA[<not-an-element>&still-not-an-entity;]]>
+    </q:item>
+    <q:item q:key="002">
+      <q:empty/>
+      <q:value>𐐀</q:value>
+    </q:item>
+  </r:payload>
+  <r:footer xmlns:q="">
+    <r:checksum algorithm="none">0x00</r:checksum>
+  </r:footer>
+</r:packet>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE vault [
+  <!ELEMENT vault (section*)>
+  <!ELEMENT section (record|note|section)*>
+  <!ELEMENT record EMPTY>
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST section name CDATA #IMPLIED>
+  <!ATTLIST record key CDATA #REQUIRED>
+  <!ATTLIST record value CDATA #IMPLIED>
+]>
+<vault>
+  <section name="outer">
+    <record key="a" value="1"/>
+    <section name="inner">
+      <note>unterminated-looking text &amp; safely escaped</note>
+      <record key="b"/>
+    </section>
+    <note><![CDATA[This CDATA closes here]]></note>
+  </section>
+  <section name="tail">
+    <record key="c" value="3"></record>
+  </section>
+</vault
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ENTITY % common "<!ELEMENT catalog (book+,magazine*)>">
+  %common;
+  <!ELEMENT book (author, name, summary?, link*)>
+  <!ELEMENT magazine (name, issue)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ELEMENT issue (#PCDATA)>
+  <!ATTLIST book isbn NMTOKEN #REQUIRED>
+  <!ATTLIST link href URI #REQUIRED rel CDATA "related">
+  <!ATTLIST magazine month NMTOKEN #REQUIRED>
+  <!ENTITY % optional "<!ELEMENT supplement (#PCDATA)>">
+  <![IGNORE[
+    %optional;
+  ]]>
+]>
+<catalog>
+  <book isbn="978-0-00-000000-0">
+    <author>A &amp; B</author>
+    <name>Parsing &lt;XML&gt;</name>
+    <summary>Text with <code>inline()</code> notation.</summary>
+    <link href="urn:book:one"/>
+    <link href="#local" rel="citation"/>
+  </book>
+  <magazine month="2026-10">
+    <name>Markup Quarterly</name>
+    <issue>42</issue>
+  </magazine>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE matrix [
+  <!ELEMENT matrix (row*)>
+  <!ELEMENT row (cell*)>
+  <!ELEMENT cell (#PCDATA|br)*>
+  <!ELEMENT br EMPTY>
+  <!ATTLIST matrix xmlns CDATA #IMPLIED>
+  <!ATTLIST row index CDATA #REQUIRED>
+  <!ATTLIST cell colspan NMTOKEN "1" rowspan NMTOKEN "1">
+  <!ENTITY left "&#x27E6;">
+  <!ENTITY right "&#x27E7;">
+]>
+<matrix xmlns="urn:matrix">
+  <row index="0">
+    <cell colspan="2">&left;top&right;<br/></cell>
+    <cell rowspan="0">zero</cell>
+  </row>
+  <row index="1">
+    <cell><![CDATA[
+      whitespace
+      and <literal> brackets
+    ]]></cell>
+    <cell colspan="03">A&#x0A;B</cell>
+  </row>
+  <row index="2"/>
+</matrix>
+```

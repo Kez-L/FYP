@@ -1,0 +1,129 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (record+)>
+  <!ELEMENT record (name, value, note?)>
+  <!ATTLIST record key ID #REQUIRED status (new|old|held) "new">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY unit "meters">
+  <!ENTITY mark "&#x2212;">
+]>
+<catalog>
+  <record key="r1" status="new">
+    <name>North &amp; South</name>
+    <value>12 <part>alpha</part> &mark; 4 <part>&unit;</part></value>
+    <note><![CDATA[raw <text> and ]]> characters]]></note>
+  </record>
+  <record key="r2">
+    <name>Empty measure</name>
+    <value><part>zero</part></value>
+  </record>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:registry
+    xmlns:r="urn:registry"
+    xmlns:x="urn:record"
+    xmlns:a="urn:attribute"
+    xmlns:xml="http://www.w3.org/XML/1998/namespace"
+    xml:base="https://example.invalid/root/">
+  <r:header a:revision="007" a:flag="true"/>
+  <r:records>
+    <x:item a:key="A&amp;B" xml:lang="en-US">
+      <x:label>One</x:label>
+      <x:link xml:base="sub/" href="entry.xml"/>
+      <x:data><![CDATA[
+        line one
+        <not-an-element/>
+        line three
+      ]]></x:data>
+    </x:item>
+    <x:item a:key="C">
+      <x:label xml:space="preserve">  padded
+text  </x:label>
+      <!-- deliberately interleaved content -->
+      <x:empty/>
+    </x:item>
+  </r:records>
+</r:registry>
+```
+
+```xml
+<?xml version="1.0"?>
+<?processing instruction-data?>
+<!-- A document whose root contains mixed text, comments, and nested runs. -->
+<transcript>
+  Before <speaker id="s-1">Ada</speaker>
+  says <quote cite="urn:quote:1">“A &lt; B”</quote>
+  <pause duration="PT0.25S"/>
+  <line>
+    <word>Unicode</word>
+    <word>snowman: &#x2603;</word>
+    <word>combining: e&#x301;</word>
+  </line>
+  <![CDATA[
+    Brackets ] and ampersands & remain literal here.
+  ]]>
+  <aside>
+    <p>First paragraph.</p>
+    <p>Second <em>paragraph</em> with <br/> break.</p>
+  </aside>
+  After
+</transcript>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (file*)>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file path CDATA #REQUIRED kind CDATA "binary">
+  <!ELEMENT payload (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+]>
+<package>
+  <manifest>
+    <file path="a/../one.bin" kind="binary"/>
+    <file path="./two.txt" kind="text"/>
+    <file path="" kind="empty"/>
+  </manifest>
+  <payload>
+    <chunk><![CDATA[AAECAwQF]]></chunk>
+    <chunk>text &amp; entities &#10; across lines</chunk>
+    <chunk><![CDATA[]]></chunk>
+  </payload>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<archive xmlns="urn:archive:v2" xmlns:q="urn:query" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <index>
+    <entry q:rank="0" q:kind="mixed">
+      <key><![CDATA[ ]]>zero</key>
+      <pointer xlink:type="simple" xlink:href="#part-0"/>
+    </entry>
+    <entry q:rank="-1">
+      <key>last</key>
+      <pointer xlink:href="urn:item:Ω"/>
+    </entry>
+  </index>
+  <body>
+    <section id="part-0">
+      <title>Root</title>
+      <section id="part-0-a">
+        <title>Nested</title>
+        <item enabled="false">A</item>
+        <item enabled="true"><![CDATA[B < C && D > E]]></item>
+      </section>
+    </section>
+  </body>
+  <?archive mode="compact"?>
+</archive>
+```

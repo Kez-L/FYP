@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, observations, conclusion)>
+  <!ATTLIST report ref ID #REQUIRED>
+  <!ELEMENT header (subject, issued, laboratory)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT issued (#PCDATA)>
+  <!ELEMENT laboratory EMPTY>
+  <!ATTLIST laboratory code NMTOKEN #REQUIRED accreditation CDATA #IMPLIED>
+  <!ELEMENT observations (observation+)>
+  <!ELEMENT observation (metric, reading, reference?)>
+  <!ATTLIST observation id ID #REQUIRED status (normal|warning|critical) "normal">
+  <!ELEMENT metric (#PCDATA)>
+  <!ELEMENT reading (#PCDATA)>
+  <!ATTLIST reading units CDATA #REQUIRED uncertainty CDATA #IMPLIED>
+  <!ELEMENT reference (#PCDATA)>
+  <!ELEMENT conclusion (#PCDATA)>
+]>
+<report ref="r-2026-041">
+  <header>
+    <subject>Atmospheric sample A-17</subject>
+    <issued>2026-10-01T14:22:09+00:00</issued>
+    <laboratory code="LAB-7" accreditation="ISO-17025"/>
+  </header>
+  <observations>
+    <observation id="o1" status="normal">
+      <metric>pressure</metric>
+      <reading units="kPa" uncertainty="0.02">101.325</reading>
+      <reference>99.0 - 102.0</reference>
+    </observation>
+    <observation id="o2" status="warning">
+      <metric>particulate-matter</metric>
+      <reading units="ug/m3" uncertainty="1.5">38.7</reading>
+    </observation>
+    <observation id="o3" status="critical">
+      <metric>ozone</metric>
+      <reading units="ppb">146</reading>
+      <reference>&lt; 100</reference>
+    </observation>
+  </observations>
+  <conclusion><![CDATA[Review the third observation before release.]]></conclusion>
+</report>

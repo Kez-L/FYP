@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow" xmlns:ext="urn:example:workflow:extension" version="5">
+  <start id="receive" next="validate"/>
+  <task id="validate" owner="system" retry="2">
+    <input name="payload" required="true"/>
+    <output name="validated" type="boolean"/>
+    <on event="success" next="classify"/>
+    <on event="failure" next="reject"/>
+  </task>
+  <branch id="classify" expression="priority &gt; 7">
+    <case value="true" next="expedite"/>
+    <case value="false" next="queue"/>
+    <default next="queue"/>
+  </branch>
+  <parallel id="expedite" join="merge">
+    <task-ref ref="notify"/>
+    <task-ref ref="reserve"/>
+  </parallel>
+  <queue id="queue" channel="standard" next="merge">
+    <limit>250</limit>
+    <delay unit="seconds">30</delay>
+  </queue>
+  <merge id="merge" next="finish" strategy="all">
+    <artifact name="receipt" format="json"/>
+    <ext:telemetry sample-rate="0.25">
+      <ext:tag name="pipeline">intake</ext:tag>
+    </ext:telemetry>
+  </merge>
+  <task id="notify" owner="alerts" retry="0">
+    <message priority="high">Expedited item accepted</message>
+  </task>
+  <task id="reserve" owner="inventory" retry="3">
+    <resource class="cold-storage" quantity="1"/>
+  </task>
+  <terminal id="reject" code="400"/>
+  <terminal id="finish" code="204"/>
+</workflow>

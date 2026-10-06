@@ -1,0 +1,99 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry*)>
+  <!ELEMENT entry (title, metadata?, description)>
+  <!ATTLIST entry id ID #REQUIRED status (draft|published|archived) "draft">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT metadata (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT description (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+]>
+<catalog>
+  <entry id="r-001" status="published">
+    <title>Parser notes</title>
+    <metadata><tag>xml</tag><tag>fuzzing</tag></metadata>
+    <description>Mixed <em>content</em> with <code>&lt;tokens&gt;</code>.</description>
+  </entry>
+  <entry id="r-002">
+    <title>Draft</title>
+    <description><![CDATA[line one
+line two ]]>tail</description>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<scene xmlns="urn:scene" xmlns:geo="urn:geo" xml:lang="fr">
+  <layer id="background" visible="false"/>
+  <layer id="roads" visible="true">
+    <geo:path geo:crs="EPSG:4326">
+      <geo:point lat="48.8566" lon="2.3522"/>
+      <geo:point lat="51.5074" lon="-0.1278"/>
+    </geo:path>
+    <label anchor="middle">Paris → London</label>
+  </layer>
+  <?render quality="draft"?>
+  <metadata>
+    <created xml:space="preserve">  2026-10-01  </created>
+    <empty><![CDATA[]]></empty>
+  </metadata>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ENTITY greeting "hello">
+  <!ENTITY quoted "A &quot;quoted&quot; value">
+  <!NOTATION bin SYSTEM "application/octet-stream">
+  <!ENTITY payload SYSTEM "payload.dat" NDATA bin>
+]>
+<archive>
+  <header>
+    <name>&greeting; &quoted;</name>
+    <ref href="#part-a"/>
+  </header>
+  <parts>
+    <part id="part-a" format="text">alpha &amp; omega</part>
+    <part id="part-b" format="binary"/>
+  </parts>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<dashboard xmlns:x="urn:widgets" xmlns:y="urn:values">
+  <x:panel key="cpu">
+    <x:title>CPU</x:title>
+    <x:metric unit="percent" y:value="0.75"/>
+    <x:metric unit="percent" y:value="NaN"/>
+    <x:history>
+      <x:sample at="00:00">12</x:sample>
+      <x:sample at="00:01">13</x:sample>
+      <x:sample at="00:02">14</x:sample>
+    </x:history>
+  </x:panel>
+  <x:panel key="memory">
+    <x:title><![CDATA[RAM <live>]]></x:title>
+    <x:metric unit="bytes" y:value="18446744073709551615"/>
+  </x:panel>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xmlns="urn:broken">
+  <item id="one">text &amp; more</item>
+  <item id="two"><![CDATA[unterminated-looking ] text]]></item>
+  <item id="three">
+    <child attr="value">nested</child>
+  </item>
+  <tail xmlns="">
+    <value>plain namespace</value>
+  </tail>
+</root>
+```

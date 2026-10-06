@@ -1,0 +1,337 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="transform.xsl" media="screen"?>
+<!DOCTYPE dashboard [
+  <!ENTITY product "Aurora">
+  <!ENTITY note "status &amp; telemetry">
+  <!ELEMENT dashboard (metadata, widgets, audit-log)>
+  <!ATTLIST dashboard id ID #REQUIRED generated CDATA #IMPLIED>
+  <!ELEMENT metadata (title, owner, tags)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT owner EMPTY>
+  <!ATTLIST owner name CDATA #REQUIRED team CDATA #IMPLIED>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT widgets (chart|table|metric|panel)*>
+  <!ELEMENT chart (series+)>
+  <!ATTLIST chart id ID #REQUIRED caption CDATA #IMPLIED>
+  <!ELEMENT series (point*)>
+  <!ATTLIST series key NMTOKEN #REQUIRED color CDATA #IMPLIED>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ELEMENT table (column+, row*)>
+  <!ELEMENT column EMPTY>
+  <!ATTLIST column name NMTOKEN #REQUIRED type (text|number|date) "text">
+  <!ELEMENT row (cell*)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT metric (#PCDATA)>
+  <!ATTLIST metric name NMTOKEN #REQUIRED unit CDATA #IMPLIED>
+  <!ELEMENT panel (heading?, content)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT content (#PCDATA|link|br)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT audit-log (entry*)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ATTLIST entry at CDATA #REQUIRED actor CDATA #IMPLIED>
+]>
+<dashboard id="dash-7" generated="2026-10-01T00:00:00Z">
+  <metadata>
+    <title>&product; Operations &amp; &note;</title>
+    <owner name="Mira" team="observability"/>
+    <tags><tag>nightly</tag><tag>production</tag><tag><![CDATA[edge/region-a]]></tag></tags>
+  </metadata>
+  <widgets>
+    <metric name="uptime" unit="%">99.982</metric>
+    <chart id="latency" caption="p95 response time">
+      <series key="api" color="#4c78a8">
+        <point x="00:00" y="81"/>
+        <point x="06:00" y="93"/>
+        <point x="12:00" y="117"/>
+      </series>
+      <series key="worker">
+        <point x="00:00" y="42"/>
+        <point x="12:00" y="48"/>
+      </series>
+    </chart>
+    <table>
+      <column name="region" type="text"/>
+      <column name="requests" type="number"/>
+      <column name="observed" type="date"/>
+      <row><cell>eu-west</cell><cell>1842</cell><cell>2026-10-01</cell></row>
+      <row><cell>ap-south</cell><cell>903</cell><cell>2026-10-01</cell></row>
+    </table>
+    <panel>
+      <heading>Operator note</heading>
+      <content>See <link href="urn:runbook:latency">the runbook</link><br/>before escalation.</content>
+    </panel>
+  </widgets>
+  <audit-log>
+    <entry at="2026-10-01T00:01:02Z" actor="scheduler">refresh completed</entry>
+    <entry at="2026-10-01T00:03:19Z">threshold &lt; 120ms maintained</entry>
+  </audit-log>
+</dashboard>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE feed [
+  <!ENTITY % common "xml:lang CDATA #IMPLIED xml:base CDATA #IMPLIED">
+  <!ELEMENT feed (id, updated, author, title, subtitle?, link+, entry*)>
+  <!ATTLIST feed %common; xmlns CDATA #IMPLIED>
+  <!ELEMENT id (#PCDATA)>
+  <!ELEMENT updated (#PCDATA)>
+  <!ELEMENT author (name, email?, uri?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT email (#PCDATA)>
+  <!ELEMENT uri (#PCDATA)>
+  <!ELEMENT title (#PCDATA|em)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT subtitle (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link href URI #REQUIRED rel NMTOKEN #IMPLIED type CDATA #IMPLIED hreflang NMTOKEN #IMPLIED>
+  <!ELEMENT entry (title, link+, id, updated, summary?, content?, category*)>
+  <!ATTLIST entry xml:space (default|preserve) "default">
+  <!ELEMENT summary (#PCDATA)>
+  <!ELEMENT content (#PCDATA|pre|code|strong)*>
+  <!ELEMENT pre (#PCDATA|code)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT category EMPTY>
+  <!ATTLIST category term NMTOKEN #REQUIRED scheme URI #IMPLIED label CDATA #IMPLIED>
+]>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en" xml:base="https://news.invalid/archive/">
+  <id>urn:feed:aurora:events</id>
+  <updated>2026-10-01T08:30:00Z</updated>
+  <author><name>Release Desk</name><email>desk@example.invalid</email><uri>urn:team:release</uri></author>
+  <title>Deployments <em>and</em> discoveries</title>
+  <subtitle>Change announcements for distributed systems</subtitle>
+  <link href="https://news.invalid/archive/" rel="self" type="application/atom+xml"/>
+  <link href="https://news.invalid/" rel="alternate" hreflang="en"/>
+  <entry xml:space="preserve">
+    <title>Router update: 3.4</title>
+    <link href="2026/10/router-34" rel="alternate"/>
+    <id>urn:entry:router:34</id>
+    <updated>2026-09-30T17:12:00Z</updated>
+    <summary>Introduces bounded retries and revised route scoring.</summary>
+    <content>Read the <strong>compatibility</strong> notes:<pre><code>retry_window = 250ms
+route_score = weighted_latency</code></pre></content>
+    <category term="networking" label="Networking"/>
+    <category term="release" scheme="urn:taxonomy"/>
+  </entry>
+  <entry>
+    <title>Maintenance window</title>
+    <link href="2026/10/maintenance" rel="alternate"/>
+    <id>urn:entry:maintenance:oct</id>
+    <updated>2026-10-01T06:00:00Z</updated>
+    <summary>Scheduled maintenance &amp; certificate rotation.</summary>
+    <category term="operations"/>
+  </entry>
+</feed>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ELEMENT scene (camera, assets, layers)>
+  <!ATTLIST scene id ID #REQUIRED version NMTOKEN #REQUIRED>
+  <!ELEMENT camera EMPTY>
+  <!ATTLIST camera projection (orthographic|perspective) "perspective" x CDATA #IMPLIED y CDATA #IMPLIED zoom CDATA #IMPLIED>
+  <!ELEMENT assets (image|font|material)*>
+  <!ELEMENT image EMPTY>
+  <!ATTLIST image id ID #REQUIRED src ENTITY #REQUIRED width CDATA #IMPLIED height CDATA #IMPLIED>
+  <!ELEMENT font EMPTY>
+  <!ATTLIST font id ID #REQUIRED family CDATA #REQUIRED weight NMTOKEN #IMPLIED>
+  <!ELEMENT material EMPTY>
+  <!ATTLIST material id ID #REQUIRED diffuse CDATA #IMPLIED opacity CDATA #IMPLIED>
+  <!ELEMENT layers (layer+)>
+  <!ELEMENT layer (group|sprite|path|text|instance)*>
+  <!ATTLIST layer name NMTOKEN #REQUIRED visible (true|false) "true" blend (normal|multiply|screen) "normal">
+  <!ELEMENT group (group|sprite|path|text|instance)*>
+  <!ATTLIST group name CDATA #IMPLIED transform CDATA #IMPLIED>
+  <!ELEMENT sprite EMPTY>
+  <!ATTLIST sprite asset IDREF #REQUIRED material IDREF #IMPLIED transform CDATA #IMPLIED>
+  <!ELEMENT path (#PCDATA)>
+  <!ATTLIST path material IDREF #IMPLIED closed (true|false) "false">
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST text font IDREF #REQUIRED size CDATA #REQUIRED x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ELEMENT instance EMPTY>
+  <!ATTLIST instance ref IDREF #REQUIRED transform CDATA #IMPLIED>
+]>
+<scene id="title-card" version="2.1">
+  <camera projection="orthographic" x="0" y="0" zoom="1.25"/>
+  <assets>
+    <image id="hero" src="logo" width="640" height="180"/>
+    <font id="display" family="Spectral" weight="600"/>
+    <material id="ink" diffuse="#102030" opacity="0.94"/>
+    <material id="accent" diffuse="#f0a040"/>
+  </assets>
+  <layers>
+    <layer name="background" blend="normal">
+      <path material="ink" closed="true">M0,0 L1280,0 L1280,720 L0,720 Z</path>
+      <group name="decor" transform="translate(88,96) rotate(-4)">
+        <sprite asset="hero" material="accent" transform="scale(0.5)"/>
+        <instance ref="badge" transform="translate(740,210)"/>
+      </group>
+    </layer>
+    <layer name="foreground" visible="true">
+      <text font="display" size="42" x="96" y="612">A map of quiet signals</text>
+      <group name="badge" transform="translate(0,0)">
+        <path material="accent">M0,0 C12,8 20,18 28,32</path>
+        <text font="display" size="18" x="42" y="30">LIVE</text>
+      </group>
+    </layer>
+  </layers>
+</scene>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE query [
+  <!ELEMENT query (with?, select, from, join*, where?, group-by?, order-by?, limit?)>
+  <!ATTLIST query id ID #REQUIRED dialect (generic|postgres|sqlite) "generic">
+  <!ELEMENT with (cte+)>
+  <!ELEMENT cte (select, columns?)>
+  <!ATTLIST cte name NMTOKEN #REQUIRED recursive (true|false) "false">
+  <!ELEMENT columns (column+)>
+  <!ELEMENT select (column|expression|star)+>
+  <!ELEMENT from (table|subquery)>
+  <!ELEMENT table EMPTY>
+  <!ATTLIST table name NMTOKEN #REQUIRED alias NMTOKEN #IMPLIED>
+  <!ELEMENT subquery (select, from, where?)>
+  <!ELEMENT join (table|subquery, on)>
+  <!ATTLIST join type (inner|left|right|full|cross) "inner">
+  <!ELEMENT on (#PCDATA)>
+  <!ELEMENT column EMPTY>
+  <!ATTLIST column name NMTOKEN #REQUIRED alias NMTOKEN #IMPLIED>
+  <!ELEMENT expression (#PCDATA|function|literal|reference|operator)*>
+  <!ELEMENT function (argument*)>
+  <!ATTLIST function name NMTOKEN #REQUIRED>
+  <!ELEMENT argument (#PCDATA|reference|literal|function)*>
+  <!ELEMENT literal (#PCDATA)>
+  <!ELEMENT reference EMPTY>
+  <!ATTLIST reference table NMTOKEN #IMPLIED name NMTOKEN #REQUIRED>
+  <!ELEMENT operator (#PCDATA)>
+  <!ELEMENT star EMPTY>
+  <!ELEMENT where (#PCDATA|expression|predicate)*>
+  <!ELEMENT predicate (expression|value-list)>
+  <!ATTLIST predicate kind (equals|in|between|like|is-null) #REQUIRED>
+  <!ELEMENT value-list (literal*)>
+  <!ELEMENT group-by (reference+)>
+  <!ELEMENT order-by (ordering+)>
+  <!ELEMENT ordering EMPTY>
+  <!ATTLIST ordering name NMTOKEN #REQUIRED direction (asc|desc) "asc">
+  <!ELEMENT limit (#PCDATA)>
+]>
+<query id="q-analytics-19" dialect="postgres">
+  <with>
+    <cte name="recent" recursive="false">
+      <select>
+        <column name="account_id"/>
+        <column name="amount"/>
+        <column name="created_at"/>
+      </select>
+      <from><table name="payments" alias="p"/></from>
+      <where>
+        <predicate kind="between">
+          <expression><reference table="p" name="created_at"/><operator>&gt;=</operator><literal>2026-09-01</literal></expression>
+        </predicate>
+      </where>
+    </cte>
+  </with>
+  <select>
+    <reference table="recent" name="account_id"/>
+    <expression><function name="sum"><argument><reference table="recent" name="amount"/></argument></function></expression>
+    <expression><function name="count"><argument><star/></argument></function></expression>
+  </select>
+  <from><table name="recent" alias="r"/></from>
+  <join type="left"><table name="accounts" alias="a"/><on>r.account_id = a.id</on></join>
+  <where>
+    <predicate kind="in">
+      <expression><reference table="a" name="status"/></expression>
+      <value-list><literal>active</literal><literal>trial</literal></value-list>
+    </predicate>
+  </where>
+  <group-by><reference table="r" name="account_id"/></group-by>
+  <order-by><ordering name="amount" direction="desc"/><ordering name="account_id"/></order-by>
+  <limit>250</limit>
+</query>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ENTITY % package-model "
+    <!ELEMENT package (manifest, metadata, files, signatures?)>
+    <!ATTLIST package id ID #REQUIRED format NMTOKEN #REQUIRED>
+  ">
+  %package-model;
+  <!ELEMENT manifest (item+)>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item path CDATA #REQUIRED media CDATA #REQUIRED size NMTOKEN #IMPLIED checksum CDATA #IMPLIED>
+  <!ELEMENT metadata (name, description?, authors, license, keywords?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT description (#PCDATA|line-break)*>
+  <!ELEMENT line-break EMPTY>
+  <!ELEMENT authors (author+)>
+  <!ELEMENT author (#PCDATA)>
+  <!ATTLIST author id ID #IMPLIED role (creator|maintainer|contributor) "contributor">
+  <!ELEMENT license (#PCDATA)>
+  <!ELEMENT keywords (keyword*)>
+  <!ELEMENT keyword (#PCDATA)>
+  <!ELEMENT files (directory|document|binary)*>
+  <!ELEMENT directory (directory|document|binary)*>
+  <!ATTLIST directory path CDATA #REQUIRED>
+  <!ELEMENT document (#PCDATA)>
+  <!ATTLIST document path CDATA #REQUIRED encoding NMTOKEN #IMPLIED compressed (true|false) "false">
+  <!ELEMENT binary EMPTY>
+  <!ATTLIST binary path CDATA #REQUIRED encoding (base64|hex|external) #REQUIRED>
+  <!ELEMENT signatures (signature+)>
+  <!ELEMENT signature (algorithm, value, certificate?)>
+  <!ATTLIST signature signer IDREF #IMPLIED>
+  <!ELEMENT algorithm (#PCDATA)>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT certificate (#PCDATA)>
+]>
+<package id="pkg-204" format="bundle-3">
+  <manifest>
+    <item path="README.txt" media="text/plain" size="842" checksum="sha256:abc123"/>
+    <item path="src/core.xml" media="application/xml" size="3912" checksum="sha256:def456"/>
+    <item path="assets/icon.bin" media="application/octet-stream" size="128"/>
+  </manifest>
+  <metadata>
+    <name>Signal Garden</name>
+    <description>Portable tools for inspecting<line-break/>structured event streams.</description>
+    <authors>
+      <author id="author-1" role="creator">I. Navarro</author>
+      <author role="maintainer">Build Service</author>
+    </authors>
+    <license>Apache-2.0</license>
+    <keywords><keyword>events</keyword><keyword>diagnostics</keyword><keyword>xml</keyword></keywords>
+  </metadata>
+  <files>
+    <document path="README.txt" encoding="UTF-8">Usage:
+  signal-garden inspect --input events.xml
+  signal-garden report --format json</document>
+    <directory path="src">
+      <document path="src/core.xml" encoding="UTF-8" compressed="true"><![CDATA[<core version="4"><mode>safe</mode></core>]]></document>
+      <directory path="src/tests">
+        <document path="src/tests/sample.xml" encoding="UTF-8">&lt;sample&gt;fixture&lt;/sample&gt;</document>
+      </directory>
+    </directory>
+    <binary path="assets/icon.bin" encoding="base64"/>
+  </files>
+  <signatures>
+    <signature signer="author-1">
+      <algorithm>ed25519</algorithm>
+      <value>QmFzZTY0U2lnbmF0dXJlPT0=</value>
+      <certificate><![CDATA[-----BEGIN CERTIFICATE-----
+MIIB...placeholder...
+-----END CERTIFICATE-----]]></certificate>
+    </signature>
+  </signatures>
+</package>
+```

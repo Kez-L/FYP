@@ -1,0 +1,117 @@
+```xml
+<?xml version="1.1"?>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope"
+               xmlns:svc="urn:example:service"
+               xml:lang="ja">
+  <!-- mixed content and processing instructions -->
+  <soap:Header>
+    <svc:Trace id="α-01" enabled="true"/>
+    <?audit level="verbose"?>
+  </soap:Header>
+  <soap:Body>
+    <svc:Submit><![CDATA[
+      <payload kind="opaque">&not-an-element;</payload>
+    ]]><![CDATA[]]></svc:Submit>
+    <svc:Note>left &amp; right <svc:emphasis>together</svc:emphasis>.</svc:Note>
+  </soap:Body>
+</soap:Envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, creator*, description?, link*)>
+  <!ATTLIST entry id ID #REQUIRED status (draft|published|retired) "draft">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT creator (#PCDATA)>
+  <!ELEMENT description (#PCDATA|term)*>
+  <!ELEMENT term (#PCDATA)>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link rel CDATA #REQUIRED target IDREF #IMPLIED>
+  <!ENTITY euro "&#x20AC;">
+  <!ENTITY quoted "&quot;inside&quot;">
+  <!ENTITY % extra "edition CDATA #IMPLIED">
+  <!ATTLIST entry %extra;>
+]>
+<catalog>
+  <entry id="bk1" status="published" edition="third">
+    <title>Parsing &euro; &amp; entities</title>
+    <creator>Ada</creator>
+    <description>Text with <term>&quoted;</term> and references.</description>
+    <link rel="related" target="bk2"/>
+  </entry>
+  <entry id="bk2">
+    <title>Second record</title>
+    <creator>Lin</creator>
+    <link rel="source" target="bk1"/>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<package xmlns="urn:example:package"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ext="urn:example:extension">
+  <manifest xml:base="https://invalid.example/assets/">
+    <item key="a&amp;b" media-type="text/plain">
+      <xi:include href="fragment.xml" parse="xml">
+        <xi:fallback>
+          <ext:missing reason="offline"/>
+        </xi:fallback>
+      </xi:include>
+    </item>
+    <item key="binary" media-type="application/octet-stream">
+      <xi:include href="data.bin" parse="text" encoding="UTF-8"/>
+    </item>
+  </manifest>
+  <payload>
+    <ext:wrapper>
+      <![CDATA[raw <markup> with ]]> characters]]>
+    </ext:wrapper>
+  </payload>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<log xmlns="urn:example:log" xmlns:x="urn:example:extra">
+  <?pipeline normalize?>
+  <record when="2026-10-01T23:59:59Z" severity="warning">
+    <message>prefix<!-- hidden -->middle<![CDATA[<literal/>]]>suffix</message>
+    <context>
+      <x:field name="empty"/>
+      <x:field name="unicode">𝄞 café line</x:field>
+      <x:field name="quoted">a &lt; b &amp;&amp; c &gt; d</x:field>
+    </context>
+  </record>
+  <record when="not-a-date" severity="unknown">
+    <message/>
+    <context><x:field name="nested"><x:value/></x:field></context>
+  </record>
+</log>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ELEMENT root (a|b|c)*>
+  <!ELEMENT a ANY>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT c EMPTY>
+  <!ATTLIST a refs IDREFS #IMPLIED>
+  <!ATTLIST b xml:space (default|preserve) "default">
+  <!ATTLIST c flag (on|off) #REQUIRED>
+]>
+<root>
+  <a refs="missing another">
+    <b xml:space="preserve">  text
+      with whitespace
+    </b>
+    <c flag="on"/>
+  </a>
+  <b>text &unknown; </b>
+  <c/>
+</root>
+```

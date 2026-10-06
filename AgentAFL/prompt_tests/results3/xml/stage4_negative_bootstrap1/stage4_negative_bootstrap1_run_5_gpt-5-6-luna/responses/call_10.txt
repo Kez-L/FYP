@@ -1,0 +1,126 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (section+)>
+  <!ELEMENT section (title, entry*)>
+  <!ATTLIST section code ID #REQUIRED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT entry (label, value, note?)>
+  <!ATTLIST entry key CDATA #REQUIRED kind (text|number|flag) "text">
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT value (#PCDATA|em|br)*>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+]>
+<catalog>
+  <section code="alpha">
+    <title>Mixed Content</title>
+    <entry key="x1">
+      <label>markup</label>
+      <value>left <em>center</em><br/> right &amp; beyond</value>
+      <note>contains &lt; escaped delimiters &gt;</note>
+    </entry>
+  </section>
+  <section code="omega">
+    <title>Empty Section</title>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<r:repository xmlns:r="urn:repo" xmlns:m="urn:meta" xml:base="https://example.invalid/root/">
+  <!-- deliberately sparse hierarchy -->
+  <r:object xml:id="obj-1" xml:lang="fr">
+    <r:name>café</r:name>
+    <r:link href="../a?x=1&amp;y=2" rel="alternate"/>
+    <m:properties>
+      <m:property name="quoted">"single" &apos;double&apos;</m:property>
+      <m:property name="whitespace">
+        line one
+        line two
+      </m:property>
+    </m:properties>
+  </r:object>
+  <r:object xml:id="obj-2">
+    <r:name><![CDATA[raw ]]> text <![CDATA[section]]></r:name>
+    <?vendor instruction?>
+  </r:object>
+</r:repository>
+```
+
+```xml
+<?xml version="1.1"?>
+<!DOCTYPE graph [
+  <!ELEMENT graph (node*)>
+  <!ELEMENT node (name, edge*)>
+  <!ATTLIST node id ID #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge to IDREF #REQUIRED weight NMTOKEN #IMPLIED directed (yes|no) "yes">
+]>
+<graph>
+  <node id="n-root">
+    <name>root</name>
+    <edge to="n-leaf" weight="0"/>
+    <edge to="n-leaf" directed="no"/>
+  </node>
+  <node id="n-leaf">
+    <name>leaf</name>
+    <edge to="n-root" weight="1.5"/>
+  </node>
+</graph>
+```
+
+```xml
+<?xml version="1.0"?>
+<form xmlns="urn:forms" xmlns:x="urn:extra">
+  <header>
+    <caption>Survey</caption>
+    <x:revision>0</x:revision>
+  </header>
+  <body>
+    <field name="choice" required="true">
+      <option value="a" selected="true">A</option>
+      <option value="b">B</option>
+      <option value="">Empty value</option>
+    </field>
+    <field name="comment" required="false">
+      <default><![CDATA[<not-an-element>&still-text;]]></default>
+    </field>
+    <separator/>
+    <field name="nested">
+      <group>
+        <field name="inner"><default>42</default></field>
+      </group>
+    </field>
+  </body>
+  <footer>done</footer>
+</form>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry, entry?, checksum)>
+  <!ELEMENT entry (path, payload)>
+  <!ATTLIST entry state CDATA "new">
+  <!ELEMENT path (#PCDATA)>
+  <!ELEMENT payload (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+]>
+<archive>
+  <entry state="compressed">
+    <path>././data/../data/item</path>
+    <payload><![CDATA[
+      A0B1C2D3
+      ]]></payload>
+  </entry>
+  <entry state="literal">
+    <path>unicode/π/文件.txt</path>
+    <payload>line-1&#x0A;line-2&#13;&#10;end</payload>
+  </entry>
+  <checksum>sha256:0000000000000000000000000000000000000000000000000000000000000000</checksum>
+</archive>
+```

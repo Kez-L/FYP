@@ -1,0 +1,27 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE ledger [
+  <!ELEMENT ledger (header, transaction*)>
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header timestamp CDATA #REQUIRED>
+  <!ELEMENT transaction (debit?, credit?, memo?)>
+  <!ATTLIST transaction number NMTOKEN #REQUIRED status CDATA "pending">
+  <!ELEMENT debit EMPTY>
+  <!ATTLIST debit account CDATA #REQUIRED amount CDATA #REQUIRED>
+  <!ELEMENT credit EMPTY>
+  <!ATTLIST credit account CDATA #REQUIRED amount CDATA #REQUIRED>
+  <!ELEMENT memo (#PCDATA|em|br)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+]>
+<ledger>
+  <header timestamp="2026-10-01T12:34:56Z"/>
+  <transaction number="A-001" status="posted">
+    <debit account="401" amount="12.50"/>
+    <credit account="902" amount="12.50"/>
+    <memo>adjusted <em>after</em><br/> review</memo>
+  </transaction>
+  <transaction number="A-002">
+    <credit account="700" amount="0"/>
+    <memo><![CDATA[zero-width: ​ and nonbreaking: ]]></memo>
+  </transaction>
+</ledger>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE scene [
+  <!NOTATION png SYSTEM "image/png">
+  <!NOTATION text SYSTEM "text/plain">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ELEMENT scene (layer+)>
+  <!ATTLIST scene xmlns:draw CDATA #IMPLIED xmlns:meta CDATA #IMPLIED width NMTOKEN #REQUIRED height NMTOKEN #REQUIRED>
+  <!ELEMENT layer (draw:group|draw:shape|draw:image|draw:label|meta:note)*>
+  <!ATTLIST layer name NMTOKEN #REQUIRED z CDATA #IMPLIED visible (yes|no) "yes">
+  <!ELEMENT draw:group (draw:shape|draw:label|draw:image|draw:group)*>
+  <!ATTLIST draw:group id ID #IMPLIED opacity CDATA #IMPLIED>
+  <!ELEMENT draw:shape EMPTY>
+  <!ATTLIST draw:shape id ID #IMPLIED type (rect|ellipse|polygon|line) #REQUIRED points CDATA #IMPLIED>
+  <!ELEMENT draw:image EMPTY>
+  <!ATTLIST draw:image id ID #IMPLIED href CDATA #IMPLIED source ENTITY #IMPLIED>
+  <!ELEMENT draw:label (#PCDATA)>
+  <!ATTLIST draw:label x CDATA #IMPLIED y CDATA #IMPLIED rotate CDATA #IMPLIED>
+  <!ELEMENT meta:note (#PCDATA|meta:author|meta:tag)*>
+  <!ELEMENT meta:author (#PCDATA)>
+  <!ELEMENT meta:tag (#PCDATA)>
+]>
+<scene xmlns:draw="urn:example:drawing"
+       xmlns:meta="urn:example:metadata"
+       width="1024" height="768">
+  <layer name="background" z="-10">
+    <draw:shape id="base" type="rect" points="0,0 1024,768"/>
+    <meta:note><meta:author>renderer</meta:author><meta:tag>generated</meta:tag></meta:note>
+  </layer>
+  <layer name="content" z="0">
+    <draw:group id="cluster" opacity="0.875">
+      <draw:shape id="ellipse-1" type="ellipse"/>
+      <draw:shape id="poly-1" type="polygon" points="1,2 3,5 8,13 21,34"/>
+      <draw:label x="48.5" y="77" rotate="-12">A &amp; B &lt; C</draw:label>
+      <draw:image id="remote" href="https://example.invalid/assets/a.svg"/>
+    </draw:group>
+    <draw:image id="binary" source="logo"/>
+    <draw:label x="0" y="767"><![CDATA[line
+break
+and ]]> brackets</draw:label>
+  </layer>
+  <layer name="overlay" visible="no">
+    <draw:group id="empty"/>
+    <meta:note>hidden <!-- annotation --> remains metadata</meta:note>
+  </layer>
+</scene>

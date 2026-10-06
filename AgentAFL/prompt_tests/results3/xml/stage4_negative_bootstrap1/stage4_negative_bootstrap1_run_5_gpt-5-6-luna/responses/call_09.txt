@@ -1,0 +1,121 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, price?, detail*)>
+  <!ATTLIST entry code ID #REQUIRED status (active|archived) "active">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT detail (#PCDATA|em)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ENTITY currency "€">
+  <!ENTITY note "limited &amp; numbered">
+]>
+<catalog>
+  <entry code="item-a7">
+    <title>α &amp; β</title>
+    <price>19.95 &currency;</price>
+    <detail>Special <em>edition</em> — &note;.</detail>
+  </entry>
+  <entry code="item-b2" status="archived">
+    <title><![CDATA[Raw <title> text]]></title>
+    <detail>old stock</detail>
+    <detail/>
+  </entry>
+</catalog>
+```
+
+```xml
+<r:report xmlns:r="urn:report" xmlns:x="urn:report:data" xmlns="urn:default">
+  <r:header>
+    <r:field name="generated" value="2026-10-01T12:34:56Z"/>
+    <r:field name="empty"/>
+  </r:header>
+  <r:rows count="2">
+    <row id="001" x:kind="numeric">
+      <cell><![CDATA[0]]></cell>
+      <cell>1.0</cell>
+      <cell xmlns="">text without a namespace</cell>
+    </row>
+    <row id="002" x:kind="mixed">
+      <cell>before<mark importance="high">inside</mark>after</cell>
+      <cell xmlns:r="">rebound prefix</cell>
+    </row>
+  </r:rows>
+  <r:footer xmlns:q="urn:other">
+    <q:reference q:id="ref-7">A&#x1F642;B</q:reference>
+  </r:footer>
+</r:report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<filesystem root="/" xmlns="urn:fs">
+  <directory name="tmp">
+    <entry name="a&amp;b.txt" type="file" size="0"/>
+    <directory name="nested">
+      <entry name="spaced name" type="file">
+        <checksum algorithm="sha256">0000000000000000000000000000000000000000000000000000000000000000</checksum>
+      </entry>
+    </directory>
+  </directory>
+  <directory name="unicode-🦊">
+    <entry name="line&#xA;break" type="file"><![CDATA[
+payload
+with brackets ]]> and ampersands &amp;
+]]></entry>
+  </directory>
+  <link name="latest" target="/tmp/nested"/>
+</filesystem>
+```
+
+```xml
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, data)>
+  <!ELEMENT manifest (item*)>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item path CDATA #REQUIRED media CDATA #IMPLIED>
+  <!ELEMENT data (chunk+)>
+  <!ELEMENT chunk (#PCDATA)>
+]>
+<package>
+  <manifest>
+    <item path="docs/readme.txt" media="text/plain"/>
+    <item path="images/logo.svg" media="image/svg+xml"/>
+    <item path="empty.bin"/>
+  </manifest>
+  <data>
+    <chunk id="a" encoding="base64">SGVsbG8sIHdvcmxkIQ==</chunk>
+    <chunk id="b" encoding="hex">00ff10ab</chunk>
+    <chunk id="c" encoding="none">x&lt;y&gt;z</chunk>
+  </data>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<schedule xmlns="urn:calendar" xmlns:cal="urn:calendar:ext">
+  <day date="2026-02-28" timezone="UTC">
+    <event start="23:59:59" duration="PT1S">
+      <name>boundary</name>
+      <location><![CDATA[Room A & Room B]]></location>
+      <attendees>
+        <person id="p1" role="owner"/>
+        <person id="p2" role="guest">
+          <contact type="email">user@example.invalid</contact>
+        </person>
+      </attendees>
+    </event>
+  </day>
+  <day date="2026-02-29">
+    <event start="00:00:00" duration="P1D">
+      <name>leap-like date</name>
+      <cal:repeat interval="P1W" count="0"/>
+    </event>
+  </day>
+  <cal:metadata>
+    <cal:tag>night</cal:tag>
+    <cal:tag><![CDATA[day]]></cal:tag>
+  </cal:metadata>
+</schedule>
+```

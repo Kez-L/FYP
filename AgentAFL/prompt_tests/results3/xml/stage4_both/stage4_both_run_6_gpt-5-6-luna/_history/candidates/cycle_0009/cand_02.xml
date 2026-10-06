@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!DOCTYPE workspace [
+  <!ENTITY root-label "Developer Workspace">
+  <!ELEMENT workspace (profile, resources, tasks, hooks?)>
+  <!ATTLIST workspace name CDATA #REQUIRED revision NMTOKEN #IMPLIED>
+  <!ELEMENT profile (display-name, preferences)>
+  <!ELEMENT display-name (#PCDATA)>
+  <!ELEMENT preferences (preference*)>
+  <!ELEMENT preference EMPTY>
+  <!ATTLIST preference key NMTOKEN #REQUIRED value CDATA #IMPLIED enabled (true|false) "true">
+  <!ELEMENT resources (folder|secret|endpoint)*>
+  <!ELEMENT folder (file|folder)*>
+  <!ATTLIST folder path CDATA #REQUIRED>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file path CDATA #REQUIRED role (source|test|generated|asset) #IMPLIED>
+  <!ELEMENT secret EMPTY>
+  <!ATTLIST secret name NMTOKEN #REQUIRED source (environment|vault|prompt) #REQUIRED>
+  <!ELEMENT endpoint (header*)>
+  <!ATTLIST endpoint name NMTOKEN #REQUIRED url URI #REQUIRED method (GET|POST|PUT|DELETE) "GET">
+  <!ELEMENT header EMPTY>
+  <!ATTLIST header name CDATA #REQUIRED value CDATA #REQUIRED>
+  <!ELEMENT tasks (task+)>
+  <!ELEMENT task (command, when?, environment?)>
+  <!ATTLIST task id ID #REQUIRED depends IDREFS #IMPLIED>
+  <!ELEMENT command (#PCDATA)>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT environment (variable*)>
+  <!ELEMENT variable EMPTY>
+  <!ATTLIST variable name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT hooks (hook*)>
+  <!ELEMENT hook EMPTY>
+  <!ATTLIST hook event (open|save|build|close) #REQUIRED command CDATA #REQUIRED>
+]>
+<workspace name="&root-label;" revision="r17">
+  <profile>
+    <display-name>Delta Lab</display-name>
+    <preferences>
+      <preference key="autosave" value="45"/>
+      <preference key="color-scheme" value="midnight"/>
+      <preference key="telemetry" enabled="false"/>
+    </preferences>
+  </profile>
+  <resources>
+    <folder path="/srv/delta">
+      <file path="src/main.rs" role="source"/>
+      <file path="src/parser.rs" role="source"/>
+      <folder path="/srv/delta/tests">
+        <file path="fixtures/edge-case.xml" role="test"/>
+      </folder>
+    </folder>
+    <secret name="REGISTRY_TOKEN" source="vault"/>
+    <endpoint name="artifact" url="https://packages.example.test/v2" method="POST">
+      <header name="Accept" value="application/json"/>
+      <header name="X-Trace" value="workspace-r17"/>
+    </endpoint>
+  </resources>
+  <tasks>
+    <task id="compile" depends="">
+      <command>cargo build --locked</command>
+      <environment>
+        <variable name="RUST_BACKTRACE" value="1"/>
+      </environment>
+    </task>
+    <task id="verify" depends="compile">
+      <command><![CDATA[cargo test -- --nocapture && ./tools/check "a < b"]]></command>
+      <when>on-save</when>
+    </task>
+  </tasks>
+  <hooks>
+    <hook event="open" command="./tools/announce --quiet"/>
+    <hook event="build" command="./tools/archive --revision r17"/>
+  </hooks>
+</workspace>

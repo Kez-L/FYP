@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="transform.xsl" media="screen"?>
+<!DOCTYPE dashboard [
+  <!ENTITY product "Aurora">
+  <!ENTITY note "status &amp; telemetry">
+  <!ELEMENT dashboard (metadata, widgets, audit-log)>
+  <!ATTLIST dashboard id ID #REQUIRED generated CDATA #IMPLIED>
+  <!ELEMENT metadata (title, owner, tags)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT owner EMPTY>
+  <!ATTLIST owner name CDATA #REQUIRED team CDATA #IMPLIED>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT widgets (chart|table|metric|panel)*>
+  <!ELEMENT chart (series+)>
+  <!ATTLIST chart id ID #REQUIRED caption CDATA #IMPLIED>
+  <!ELEMENT series (point*)>
+  <!ATTLIST series key NMTOKEN #REQUIRED color CDATA #IMPLIED>
+  <!ELEMENT point EMPTY>
+  <!ATTLIST point x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ELEMENT table (column+, row*)>
+  <!ELEMENT column EMPTY>
+  <!ATTLIST column name NMTOKEN #REQUIRED type (text|number|date) "text">
+  <!ELEMENT row (cell*)>
+  <!ELEMENT cell (#PCDATA)>
+  <!ELEMENT metric (#PCDATA)>
+  <!ATTLIST metric name NMTOKEN #REQUIRED unit CDATA #IMPLIED>
+  <!ELEMENT panel (heading?, content)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT content (#PCDATA|link|br)*>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT audit-log (entry*)>
+  <!ELEMENT entry (#PCDATA)>
+  <!ATTLIST entry at CDATA #REQUIRED actor CDATA #IMPLIED>
+]>
+<dashboard id="dash-7" generated="2026-10-01T00:00:00Z">
+  <metadata>
+    <title>&product; Operations &amp; &note;</title>
+    <owner name="Mira" team="observability"/>
+    <tags><tag>nightly</tag><tag>production</tag><tag><![CDATA[edge/region-a]]></tag></tags>
+  </metadata>
+  <widgets>
+    <metric name="uptime" unit="%">99.982</metric>
+    <chart id="latency" caption="p95 response time">
+      <series key="api" color="#4c78a8">
+        <point x="00:00" y="81"/>
+        <point x="06:00" y="93"/>
+        <point x="12:00" y="117"/>
+      </series>
+      <series key="worker">
+        <point x="00:00" y="42"/>
+        <point x="12:00" y="48"/>
+      </series>
+    </chart>
+    <table>
+      <column name="region" type="text"/>
+      <column name="requests" type="number"/>
+      <column name="observed" type="date"/>
+      <row><cell>eu-west</cell><cell>1842</cell><cell>2026-10-01</cell></row>
+      <row><cell>ap-south</cell><cell>903</cell><cell>2026-10-01</cell></row>
+    </table>
+    <panel>
+      <heading>Operator note</heading>
+      <content>See <link href="urn:runbook:latency">the runbook</link><br/>before escalation.</content>
+    </panel>
+  </widgets>
+  <audit-log>
+    <entry at="2026-10-01T00:01:02Z" actor="scheduler">refresh completed</entry>
+    <entry at="2026-10-01T00:03:19Z">threshold &lt; 120ms maintained</entry>
+  </audit-log>
+</dashboard>

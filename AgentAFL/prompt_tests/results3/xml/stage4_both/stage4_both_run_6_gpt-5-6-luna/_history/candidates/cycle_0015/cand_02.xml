@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration [
+  <!ENTITY % switches "debug (on|off) 'off' trace (on|off) 'off'">
+  <!ELEMENT configuration (profiles, active, extensions?)>
+  <!ATTLIST configuration %switches;>
+  <!ELEMENT profiles (profile+)>
+  <!ELEMENT profile (property*)>
+  <!ATTLIST profile name NMTOKEN #REQUIRED inherits NMTOKEN #IMPLIED>
+  <!ELEMENT property (#PCDATA|value)*>
+  <!ATTLIST property key CDATA #REQUIRED>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT active (#PCDATA)>
+  <!ELEMENT extensions (extension*)>
+  <!ELEMENT extension ANY>
+  <!ATTLIST extension kind CDATA #REQUIRED>
+  <![INCLUDE[
+    <!ENTITY vendor "acme">
+  ]]>
+]>
+<configuration debug="on" trace="off">
+  <profiles>
+    <profile name="base">
+      <property key="endpoint">https://&vendor;.invalid/api</property>
+      <property key="timeout"><value>30</value> seconds</property>
+    </profile>
+    <profile name="staging" inherits="base">
+      <property key="endpoint"><value>https://staging.invalid</value></property>
+      <property key="features">alpha <value>enabled</value> beta</property>
+    </profile>
+  </profiles>
+  <active>staging</active>
+  <extensions>
+    <extension kind="opaque">
+      <plugin xmlns="urn:vendor:plugin" version="3">
+        <parameter name="mode">shadow</parameter>
+        <parameter name="limit"><![CDATA[1 < 2 && 3 > 0]]></parameter>
+      </plugin>
+    </extension>
+  </extensions>
+</configuration>

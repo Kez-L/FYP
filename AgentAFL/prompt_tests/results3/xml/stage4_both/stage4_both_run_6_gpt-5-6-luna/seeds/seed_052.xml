@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE scene [
+  <!NOTATION png SYSTEM "image/png">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ELEMENT scene (camera, assets, layers)>
+  <!ATTLIST scene id ID #REQUIRED version NMTOKEN #REQUIRED>
+  <!ELEMENT camera EMPTY>
+  <!ATTLIST camera projection (orthographic|perspective) "perspective" x CDATA #IMPLIED y CDATA #IMPLIED zoom CDATA #IMPLIED>
+  <!ELEMENT assets (image|font|material)*>
+  <!ELEMENT image EMPTY>
+  <!ATTLIST image id ID #REQUIRED src ENTITY #REQUIRED width CDATA #IMPLIED height CDATA #IMPLIED>
+  <!ELEMENT font EMPTY>
+  <!ATTLIST font id ID #REQUIRED family CDATA #REQUIRED weight NMTOKEN #IMPLIED>
+  <!ELEMENT material EMPTY>
+  <!ATTLIST material id ID #REQUIRED diffuse CDATA #IMPLIED opacity CDATA #IMPLIED>
+  <!ELEMENT layers (layer+)>
+  <!ELEMENT layer (group|sprite|path|text|instance)*>
+  <!ATTLIST layer name NMTOKEN #REQUIRED visible (true|false) "true" blend (normal|multiply|screen) "normal">
+  <!ELEMENT group (group|sprite|path|text|instance)*>
+  <!ATTLIST group name CDATA #IMPLIED transform CDATA #IMPLIED>
+  <!ELEMENT sprite EMPTY>
+  <!ATTLIST sprite asset IDREF #REQUIRED material IDREF #IMPLIED transform CDATA #IMPLIED>
+  <!ELEMENT path (#PCDATA)>
+  <!ATTLIST path material IDREF #IMPLIED closed (true|false) "false">
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST text font IDREF #REQUIRED size CDATA #REQUIRED x CDATA #REQUIRED y CDATA #REQUIRED>
+  <!ELEMENT instance EMPTY>
+  <!ATTLIST instance ref IDREF #REQUIRED transform CDATA #IMPLIED>
+]>
+<scene id="title-card" version="2.1">
+  <camera projection="orthographic" x="0" y="0" zoom="1.25"/>
+  <assets>
+    <image id="hero" src="logo" width="640" height="180"/>
+    <font id="display" family="Spectral" weight="600"/>
+    <material id="ink" diffuse="#102030" opacity="0.94"/>
+    <material id="accent" diffuse="#f0a040"/>
+  </assets>
+  <layers>
+    <layer name="background" blend="normal">
+      <path material="ink" closed="true">M0,0 L1280,0 L1280,720 L0,720 Z</path>
+      <group name="decor" transform="translate(88,96) rotate(-4)">
+        <sprite asset="hero" material="accent" transform="scale(0.5)"/>
+        <instance ref="badge" transform="translate(740,210)"/>
+      </group>
+    </layer>
+    <layer name="foreground" visible="true">
+      <text font="display" size="42" x="96" y="612">A map of quiet signals</text>
+      <group name="badge" transform="translate(0,0)">
+        <path material="accent">M0,0 C12,8 20,18 28,32</path>
+        <text font="display" size="18" x="42" y="30">LIVE</text>
+      </group>
+    </layer>
+  </layers>
+</scene>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ENTITY product "Orion">
+  <!ENTITY note "Confidential &amp; internal">
+  <!ELEMENT report (metadata, summary, metrics, observations)>
+  <!ATTLIST report id ID #REQUIRED period CDATA #IMPLIED>
+  <!ELEMENT metadata (owner, created, tags)>
+  <!ELEMENT owner (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT tags (tag*)>
+  <!ELEMENT tag (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|em|code)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT metrics (metric+)>
+  <!ELEMENT metric (value, bounds?)>
+  <!ATTLIST metric name NMTOKEN #REQUIRED unit CDATA #IMPLIED status (ok|warn|fail) "ok">
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT bounds (low, high)>
+  <!ELEMENT low (#PCDATA)>
+  <!ELEMENT high (#PCDATA)>
+  <!ELEMENT observations (observation*)>
+  <!ELEMENT observation (message, sample*)>
+  <!ATTLIST observation severity (info|warning|error) #REQUIRED>
+  <!ELEMENT message (#PCDATA)>
+  <!ELEMENT sample (#PCDATA)>
+]>
+<report id="r-2026-01" period="Q3">
+  <metadata>
+    <owner>Telemetry Team</owner>
+    <created>2026-09-30T18:45:00Z</created>
+    <tags>
+      <tag>batch</tag>
+      <tag>nightly</tag>
+      <tag>&product;</tag>
+    </tags>
+  </metadata>
+  <summary>System <em>stable</em>; inspect <code>latency.p95</code>. &note;</summary>
+  <metrics>
+    <metric name="throughput" unit="events/s" status="ok">
+      <value>1842.75</value>
+      <bounds><low>1200</low><high>2500</high></bounds>
+    </metric>
+    <metric name="latency.p95" unit="ms" status="warn">
+      <value>87.4</value>
+      <bounds><low>0</low><high>75</high></bounds>
+    </metric>
+  </metrics>
+  <observations>
+    <observation severity="warning">
+      <message>Queue depth changed during maintenance.</message>
+      <sample>2026-09-30T02:00:00Z: 4096</sample>
+      <sample>2026-09-30T02:15:00Z: 1024</sample>
+    </observation>
+    <observation severity="info">
+      <message><![CDATA[No parser-visible anomalies in <payload> samples.]]></message>
+    </observation>
+  </observations>
+</report>
