@@ -12,13 +12,15 @@ class AFLRuntimeMonitor:
         fuzzer_out_dir="out",
         target_proc_name="afl-fuzz",
         window_sec=10,
-        output_log="raw_metrics.json"
+        output_log="raw_metrics.json",
+        calibration_windows=10
     ):
 
         self.fuzzer_out_dir = fuzzer_out_dir
         self.target_proc_name = target_proc_name
         self.window_sec = window_sec
         self.output_log = output_log
+        self.calibration_windows = calibration_windows
 
         self.window_id = 0
 
@@ -189,15 +191,8 @@ class AFLRuntimeMonitor:
                 memory_mb = 0.0
 
         else:
-
-            cpu_percent = psutil.cpu_percent(
-                interval=0.1
-            )
-
-            memory_mb = (
-                psutil.virtual_memory().used /
-                (1024 * 1024)
-            )
+            print("[Monitor] AFL++ process not found; skipping this window.")
+            return None
 
         # -----------------------------------------------------
         # Build record
@@ -261,6 +256,10 @@ class AFLRuntimeMonitor:
 
             snapshot = self.collect_snapshot()
 
+            if snapshot is None:
+                time.sleep(self.window_sec)
+                continue
+
             with open(
                 self.output_log,
                 "a"
@@ -303,7 +302,8 @@ if __name__ == "__main__":
     monitor = AFLRuntimeMonitor(
         fuzzer_out_dir=fuzzer_output_directory,
         window_sec=10,
-        output_log="raw_metrics.json"
+        output_log="raw_metrics.json",
+        calibration_windows=10
     )
 
     monitor.start_monitoring()
