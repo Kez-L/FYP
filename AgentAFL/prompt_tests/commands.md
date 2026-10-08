@@ -86,3 +86,56 @@ python3 run_build_context.py --provider openai --model gpt-5.6-luna --temperatur
 # Negative only, AFL seed bootstrap — Stage 2 Coverage good seeds on call 0 only (to
 # jump-start), avoid block on every round, zero good-seed examples from call 1 onward
 python3 run_build_context.py --provider openai --model gpt-5.6-luna --temperature 1.0 --format-dir ical --campaign-root /home/user/Documents/1git-folder/AgentAFL/afl-output-libical-20260915 --target /home/user/Documents/1git-folder/AgentAFL/AFLPlus/libical-build/libical_fuzzer-afl --target-args "@@" --fmt "iCalendar document" --reuse-baseline results/baseline_edges_libical.json --seed-selector coverage --good-seeds-first-round-only --label stage4_negative_bootstrap1
+
+
+# ============================================================
+# HTML (tidy-html5 / tidy_parse_string_fuzzer) — format-dir: html
+# ============================================================
+
+# PREREQUISITE — freeze the corpus baseline once (no API calls, one afl-showmap
+# pass over 46,970 queue files). Unlike xml and ical there is no baseline
+# checked into results/ yet, and --reuse-baseline defaults to the *xml* one, so
+# every command below passes its own path explicitly. Do this first:
+#
+#   ../.venv/bin/python freeze_baseline_only.py \
+#       --campaign-root /home/user/Documents/1git-folder/AgentAFL/afl-output-tidy-20261006 \
+#       --target /home/user/Documents/1git-folder/AgentAFL/AFLPlus/tidy-html5-build/tidy_parse_string_fuzzer-afl \
+#       --target-args "@@" \
+#       --out results/baseline_edges_tidy.json
+
+# --- Stage 1/2: good-seed selection criterion (negative feedback on by default) ---
+
+# Stage 1 (Raw)
+python3 run_build_context.py --provider openai --model gpt-5.6-luna --temperature 1.0 --format-dir html --campaign-root /home/user/Documents/1git-folder/AgentAFL/afl-output-tidy-20261006 --target /home/user/Documents/1git-folder/AgentAFL/AFLPlus/tidy-html5-build/tidy_parse_string_fuzzer-afl --target-args "@@" --fmt "HTML document" --reuse-baseline results/baseline_edges_tidy.json --seed-selector default
+
+# Stage 1 (Jaccard)
+python3 run_build_context.py --provider openai --model gpt-5.6-luna --temperature 1.0 --format-dir html --campaign-root /home/user/Documents/1git-folder/AgentAFL/afl-output-tidy-20261006 --target /home/user/Documents/1git-folder/AgentAFL/AFLPlus/tidy-html5-build/tidy_parse_string_fuzzer-afl --target-args "@@" --fmt "HTML document" --reuse-baseline results/baseline_edges_tidy.json --seed-selector stage1-jaccard
+
+# Stage 1 (Jaccard) no feedback
+python3 run_build_context.py --provider openai --model gpt-5.6-luna --temperature 1.0 --format-dir html --campaign-root /home/user/Documents/1git-folder/AgentAFL/afl-output-tidy-20261006 --target /home/user/Documents/1git-folder/AgentAFL/AFLPlus/tidy-html5-build/tidy_parse_string_fuzzer-afl --target-args "@@" --fmt "HTML document" --reuse-baseline results/baseline_edges_tidy.json --seed-selector stage1-jaccard --no-feedback
+
+# Stage 2 (Coverage)
+python3 run_build_context.py --provider openai --model gpt-5.6-luna --temperature 1.0 --format-dir html --campaign-root /home/user/Documents/1git-folder/AgentAFL/afl-output-tidy-20261006 --target /home/user/Documents/1git-folder/AgentAFL/AFLPlus/tidy-html5-build/tidy_parse_string_fuzzer-afl --target-args "@@" --fmt "HTML document" --reuse-baseline results/baseline_edges_tidy.json --seed-selector coverage
+
+# Stage 2 (Coverage per byte)
+python3 run_build_context.py --provider openai --model gpt-5.6-luna --temperature 1.0 --format-dir html --campaign-root /home/user/Documents/1git-folder/AgentAFL/afl-output-tidy-20261006 --target /home/user/Documents/1git-folder/AgentAFL/AFLPlus/tidy-html5-build/tidy_parse_string_fuzzer-afl --target-args "@@" --fmt "HTML document" --reuse-baseline results/baseline_edges_tidy.json --seed-selector coverage-per-byte
+
+# Stage 2 (Rare Coverage)
+python3 run_build_context.py --provider openai --model gpt-5.6-luna --temperature 1.0 --format-dir html --campaign-root /home/user/Documents/1git-folder/AgentAFL/afl-output-tidy-20261006 --target /home/user/Documents/1git-folder/AgentAFL/AFLPlus/tidy-html5-build/tidy_parse_string_fuzzer-afl --target-args "@@" --fmt "HTML document" --reuse-baseline results/baseline_edges_tidy.json --seed-selector rare-coverage
+
+# --- Stage 4: feedback mode ---
+
+# Negative only — NO good seeds at all, ever (not AFL, not AI): call 0 is Stage-0-like
+# (format name only, nothing else), avoid block on from call 1 onward
+python3 run_build_context.py --provider openai --model gpt-5.6-luna --temperature 1.0 --format-dir html --campaign-root /home/user/Documents/1git-folder/AgentAFL/afl-output-tidy-20261006 --target /home/user/Documents/1git-folder/AgentAFL/AFLPlus/tidy-html5-build/tidy_parse_string_fuzzer-afl --target-args "@@" --fmt "HTML document" --reuse-baseline results/baseline_edges_tidy.json --seed-selector no-seed --label stage4_negative_only
+
+# Positive only — no avoid block; good seeds are past AI seeds that found new coverage
+# (Stage 2 Coverage supplies the good seeds until enough past-AI seeds exist)
+python3 run_build_context.py --provider openai --model gpt-5.6-luna --temperature 1.0 --format-dir html --campaign-root /home/user/Documents/1git-folder/AgentAFL/afl-output-tidy-20261006 --target /home/user/Documents/1git-folder/AgentAFL/AFLPlus/tidy-html5-build/tidy_parse_string_fuzzer-afl --target-args "@@" --fmt "HTML document" --reuse-baseline results/baseline_edges_tidy.json --seed-selector coverage --positive-feedback --no-feedback
+
+# Negative + Positive (both) — avoid block on, AND good seeds are past AI seeds
+python3 run_build_context.py --provider openai --model gpt-5.6-luna --temperature 1.0 --format-dir html --campaign-root /home/user/Documents/1git-folder/AgentAFL/afl-output-tidy-20261006 --target /home/user/Documents/1git-folder/AgentAFL/AFLPlus/tidy-html5-build/tidy_parse_string_fuzzer-afl --target-args "@@" --fmt "HTML document" --reuse-baseline results/baseline_edges_tidy.json --seed-selector coverage --positive-feedback
+
+# Negative only, AFL seed bootstrap — Stage 2 Coverage good seeds on call 0 only (to
+# jump-start), avoid block on every round, zero good-seed examples from call 1 onward
+python3 run_build_context.py --provider openai --model gpt-5.6-luna --temperature 1.0 --format-dir html --campaign-root /home/user/Documents/1git-folder/AgentAFL/afl-output-tidy-20261006 --target /home/user/Documents/1git-folder/AgentAFL/AFLPlus/tidy-html5-build/tidy_parse_string_fuzzer-afl --target-args "@@" --fmt "HTML document" --reuse-baseline results/baseline_edges_tidy.json --seed-selector coverage --good-seeds-first-round-only --label stage4_negative_bootstrap1

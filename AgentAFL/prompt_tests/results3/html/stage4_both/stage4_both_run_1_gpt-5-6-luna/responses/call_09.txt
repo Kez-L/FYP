@@ -1,0 +1,233 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-16">
+<title>comment and declaration boundaries</title>
+<!-- ordinary comment -->
+<!--- malformed comment -->
+<!---->
+<![CDATA[head data]]>
+<?xml version="1.0"?>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="style.css" media="screen and (min-width: 2px)">
+</head>
+<body>
+<!-- comment with -- inside -- and an unfinished marker
+<header id="top">
+  <nav aria-label="main navigation">
+    <ol>
+      <li><a href="#one">One</a>
+      <li><a href="#two">Two</a></li>
+      <li><a href="#three">Three
+    </ol>
+  </nav>
+</header>
+<main>
+  <article>
+    <h1 id="one">A &amp; B &lt; C &gt; D &quot;quoted&quot;</h1>
+    <p>Text with unknown &bogus; entity and numeric &#0; &#xD800; &#x110000; values.</p>
+    <aside><p>aside starts without a closing element
+  </article>
+  <section id="two">
+    <h2>Nested section</h2>
+    <p>alpha <em>beta <strong>gamma</em> delta</strong> epsilon</p>
+    <dl>
+      <dt>Term one
+      <dd>Definition one
+      <dt>Term two</dt>
+      <dd><code>value</code><wbr><mark>marked</mark>
+    </dl>
+  </section>
+  <section id="three">
+    <figure>
+      <picture>
+        <source srcset="a.webp 1x, b.webp 2x" type="image/webp">
+        <source media="(min-width: 400px)" srcset="wide.png">
+        <img src="fallback.png" alt="fallback">
+      </picture>
+      <figcaption>caption without expected nesting</figcaption>
+    </figure>
+  </section>
+</main>
+<footer><small>tail</small></footer>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>interactive details and templates</title>
+<base href="/assets/">
+</head>
+<body>
+<details open="sometimes">
+  <summary>Options <span>summary</span>
+  <div class="panel">
+    <p>Hidden-ish content <button type="unknown" disabled="maybe">press</button>
+  </div>
+</details>
+<dialog open="false" aria-modal="true">
+  <form method="dialog">
+    <p>Dialog text</p>
+    <menu>
+      <li><button value="ok">OK</button>
+      <li><button value="cancel">Cancel</button></li>
+    </menu>
+  </form>
+</dialog>
+<template id="card">
+  <article>
+    <h2>Template heading</h2>
+    <slot name="label">default label</slot>
+    <input name="x">
+  </article>
+</template>
+<main>
+  <article itemscope itemtype="https://schema.org/Thing">
+    <data itemprop="identifier" value="007">seven</data>
+    <time itemprop="dateCreated" datetime="not-a-date">yesterday</time>
+    <meter min="10" max="2" low="x" high="y" optimum="z" value="999">meter</meter>
+    <progress max="-1" value="NaN">progress</progress>
+  </article>
+  <p><ruby>漢<rt>かん</rt><rp>(</rp><rt>じ</rt><rp>)</rp></ruby>
+  <p><bdi dir="sideways">isolation</bdi> <bdo dir="unknown">override</bdo></p>
+  <iframe src="about:blank" sandbox="allow-scripts allow-what" loading="whenever">
+    iframe fallback
+  </iframe>
+</main>
+<script type="application/ld+json">{"x":1,}</script>
+<noscript><p>noscript branch</p></noscript>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>raw text and token interruptions</title>
+  <style>
+    body { color: red; }
+    </style type="text/css">
+    /* unterminated comment
+    .x { content: "</style><p>escaped"; }
+  </style>
+</head>
+<body>
+  <textarea name="notes" rows="2" cols="x">first &amp; second
+  </textarea>
+  <select name="choice" multiple="maybe" size="-3">
+    <optgroup label="Group one" disabled="false">
+      <option value="a" selected="sometimes">Alpha
+      <option value="b">Bravo</option>
+    </optgroup>
+    <optgroup>
+      <option>Orphan group
+  </select>
+  <output for="a b" name="result">old result</output>
+  <form>
+    <input type="text" name="q" value="&lt;tag&gt;">
+    <button type="submit"><span>submit</span></button>
+  </form>
+  <script>
+    if (a < b && c > d) {
+      document.write("<div class='x'>literal</div>");
+    }
+    </script>
+  <script type="text/plain">
+    <tag attr="value">not really markup</tag>
+  </script>
+  <div data-x="unterminated data-y=two class='x'>
+    <p>after broken quote
+    <div><!-- nested --><!--> weird comment</div>
+  </div>
+  <noscript>
+    <div>fallback <b>markup</b>
+  </noscript>
+</body>
+</html>
+```
+
+```html
+<!doctype html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>namespace and embedded markup</title></head>
+<body>
+  <div>
+    <svg>
+      <foreignObject>
+        <div>foreign object text</div>
+      </foreignObject>
+    </svg>
+    <math display="block">
+      <mi>x</mi><mo>&InvisibleTimes;</mo><mfrac><mn>1</mn><mrow><mi>y</mi></mrow>
+      <annotation encoding="application/xml"><![CDATA[<x>raw</x>]]></annotation>
+    </math>
+  </div>
+  <p>between namespaces</p>
+  <object type="image/svg+xml" data="diagram.svg">
+    <param name="quality" value="high">
+    <div>object fallback</div>
+  </object>
+  <map name="m">
+    <area shape="poly" coords="0,0,10,10,20" href="#a" alt="poly">
+    <area shape="circle" coords="bad" href="#b">
+  </map>
+  <img src="map.png" usemap="#m" ismap="false" alt="">
+  <table>
+    <caption>caption</caption>
+    <colgroup span="x"><col width="10"><col></colgroup>
+    <thead><tr><th scope="rowgroup">head</th><th>next</th></tr></thead>
+    <tbody>
+      <tr><td rowspan="-1">one<td colspan="bad">two</tr>
+    </tbody>
+    <tfoot><tr><td>foot</td></tr></tfoot>
+  </table>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>misnested flow and section recovery</title></head>
+<body>
+  <hgroup><h1>Heading <small>minor</small></h1><p>not a heading</p></hgroup>
+  <p>before <a href="one"><span>link <a href="two">nested link</a> tail</span></a> after</p>
+  <div class="outer">
+    <p>paragraph one
+    <div class="inner">
+      <p>paragraph two
+      <ul>
+        <li>item one
+        <li>item two
+          <ol start="zero" reversed="maybe">
+            <li value="NaN">subitem
+            <li>subitem two
+          </ol>
+        <li>item three
+      </div>
+    </ul>
+    <blockquote cite="javascript:void(0)">
+      <pre><code>line 1
+line 2 &lt; literal
+      </code></pre>
+      <cite>citation</cite>
+    </blockquote>
+  </div>
+  <address>
+    <span>Author</span><br>
+    <a href="mailto:x@y">x@y</a>
+  </address>
+  <hr>
+  <p>Trailing paragraph
+  <div id="end">
+    <span>unclosed span
+    <custom-element data-a="1"><slot></slot>
+  </div>
+  </body
+</html
+```

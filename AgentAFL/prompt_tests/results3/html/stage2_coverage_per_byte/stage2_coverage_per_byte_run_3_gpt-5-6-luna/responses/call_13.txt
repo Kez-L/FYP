@@ -1,0 +1,122 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="http://example.invalid/a/">
+<style type="text/css">
+@media screen { body > :first-child { color: rgb(1,2,3); } }
+</style>
+</head>
+<body onload="x<y && a>b">
+<table border="1">
+<caption><b>caption</caption>
+<colgroup span="2"><col width="10"><col></colgroup>
+<thead><tr><th rowspan="2">A<th colspan="3">B</tr></thead>
+<tbody>
+<tr><td><table><tr><td>nested<td><div>unclosed
+<tr><td colspan=bad><input type=text disabled="disabled" value="&amp;&#0;&#xD800;">
+</tbody>
+<tfoot><tr><td>tail</table>
+<!-- --><!----><! -- malformed -->
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE weird SYSTEM "urn:example:broken">
+<?xml version="1.0"?>
+<![CDATA[not really cdata in html]]>
+<html xmlns="urn:outer" xmlns:x="urn:x">
+<head>
+<title>quotes &quot; apostrophe &apos; &#x26;</title>
+</head>
+<body>
+<section id='a"b' data-x="one'two" x:y=z>
+<article><header><hgroup><h1>Alpha<h6>Omega</h2></header>
+<p>one<br/>two<wbr>three<hr/ >
+<aside><blockquote cite=http://example.invalid/?a=1&b=2>
+<q cite='x'>quoted</q></blockquote></aside>
+</article>
+</section>
+<svg xmlns="http://www.w3.org/2000/svg"><title>vector</title><circle cx="1" cy="2" r="3"/><text x="0">text</text></svg>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<script type="text/javascript">
+if (a < b) { document.write("<p data-x='1'>"); }
+<!-- legacy comment
+while (x-- > 0) { /* */ }
+</script>
+<noscript><p>fallback &amp; <em>markup</em></noscript>
+</head>
+<body>
+<pre>
+	leading
+&amp; &lt; &gt; &quot; &#65; &#x41; &#99999999;
+</pre>
+<script>
+/* unterminated-looking content </scriptX>
+</script>
+<div style="background:url('x'); content:'</style>'">
+<style>.a{content:"<tag> &amp;";}</style>
+</div>
+</body>
+</html>
+```
+
+```html
+<html>
+<head><title>table recovery</title></head>
+<body>
+<table>
+<tr><td>a</td></tr>
+<div>outside before tbody</div>
+<tbody>
+<tr><td>one
+<tr><th>two<td>three
+</tbody>
+<colgroup><col><colgroup><col></colgroup>
+<thead><tr><td>late head</thead>
+<tfoot><tr><td>foot
+</table>
+<dl>
+<dt>term 1
+<dd>definition 1
+<dt><span>term 2</span><dd><p>definition 2
+</dl>
+<ul><li>first<ul><li>nested</ul><li>second</li></ul>
+<ol start="-3"><li value="999999999999999999999">number</ol>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="">
+<head>
+<meta http-equiv=refresh content='0; url="javascript:alert(1)"'>
+<link rel=stylesheet href=//invalid.example/a.css disabled>
+<title>entities &#0; &#1; &#x10ffff; &unknown; &ampersand;</title>
+</head>
+<body>
+<form>
+<label>name<input name=name></label>
+<input type=image src alt>
+<select>
+<option>one
+</select>
+<textarea cols="999999999999999999999999999999999999999999999999999999">a&amp;b</textarea>
+<details open><summary>sum</summary><p>detail</details>
+<dialog open><form method=dialog><button>OK</button></form></dialog>
+<iframe srcdoc="<p title='x&y'>embedded</p>" sandbox></iframe>
+<object data="x" type="application/x-test"><param name=name value=value><embed src=x></object>
+</form>
+</body>
+</html>
+```

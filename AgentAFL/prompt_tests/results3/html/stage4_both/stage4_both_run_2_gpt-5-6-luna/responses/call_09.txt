@@ -1,0 +1,154 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base href="not a valid base">
+  <title>table repair and character references</title>
+  <!-- unterminated-looking -- comment -- >
+  <style type="text/plain">body { color: red; }</style>
+</head>
+<body>
+  <table border="not-a-number" cellpadding="-4" cellspacing="huge">
+    text before row
+    <caption align="sideways">caption <b>bold</caption>
+    <colgroup span="-1"><col width="none"><colgroup><col></colgroup>
+    <thead><tr><th rowspan="zero" colspan="-9">head<th scope="mystery">second
+    <tbody>
+      <tr><td headers="a b" rowspan="999999999999999999999">one
+      <td><p>paragraph in cell<table><tr><td>inner</table>tail
+      <tr><td>unclosed
+    <tfoot><tr><td colspan="garbage">foot</td></tr></tfoot>
+  </table>
+  <p>&unknown; &#x110000; &#999999999; &copy no-semi &notit; &amp</p>
+  <p>before<br/>after<hr/></p>
+  <![CDATA[ not really cdata in HTML ]]>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>ruby and phrasing boundaries</title>
+</head>
+<body>
+  <p>
+    <ruby>漢<rt>kan<rp>(</rp>字<rt>ji</ruby>
+    <b><i>left <mark>marked <q cite="&quot;broken">quote</b>
+    <span dir="rtl"><bdo dir="sideways">direction</bdo></span>
+    <time datetime="2024-99-99T99:99:99Z">when</time>
+    <data value="NaN">datum</data>
+  </p>
+  <p><a href="http://[bad" ping="one two" download="x">link
+    <img srcset="a 1x, b 999w, c" sizes="not valid" alt="image">
+    <map name="strange"><area href="%%%" coords="x,y" shape="rectangle"></map>
+  </p>
+  <dl compact="false">
+    <dt>term <dd>definition
+    <dt><span>second</span><dd><div>block inside definition</div>
+  </dl>
+  <address><abbr title="unclosed">Acronym <dfn>definition</address>
+  <p><span style="color: rgb(999, -1, 2);">style</span>
+     <font face="&quot; size="not-a-size" color="invalid">legacy</font>
+     <center>centered</center>
+  </p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>template and metadata oddities</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=bogus">
+  <meta http-equiv="refresh" content="-1; URL=::::">
+  <link rel="stylesheet" href="" media="not-media" integrity="bad" crossorigin="maybe">
+  <template shadowrootmode="sideways">
+    <table><tr><td>template cell</td></tr></table>
+    <slot name="x y">fallback</slot>
+  </template>
+</head>
+<body>
+  <template id="t"><p>first <em>template</template> outside
+  <div id="host">
+    <slot></slot>
+    <template><section><hgroup><h1>heading</h1><h6>small</h6></hgroup></section></template>
+  </div>
+  <script type="application/ld+json">
+    {"broken": [1, 2,], "text": "</script> premature"}
+  </script>
+  <noscript><p>noscript <b>content</b></noscript>
+  <object data="x" type="bad/type" usemap="#missing" form="none">
+    <param name="movie" value="&notclosed">
+    fallback <embed src="nested" />
+  </object>
+  <canvas width="-4" height="not-number">canvas fallback <img src="fallback"></canvas>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>lists and block recovery</title></head>
+<body>
+  <main>
+    <h1><small>heading <sup>2</sup></h1>
+    <section><header>header without closing
+      <p>one<div>block interrupts paragraph<span>span
+      <blockquote cite="not a uri"><pre>preformatted
+    text <code>code <kbd>key</kbd></pre></blockquote>
+    <aside><h2>aside</h3><p>aside text</aside>
+    <footer>footer</section>
+  </main>
+  <ol start="not-number" reversed="maybe" type="Z">
+    <li value="x">alpha
+      <ol><li>nested one<li>nested two</ol>
+    <li>beta
+  </ol>
+  <ul type="invalid">
+    <li>unordered
+    <li><div>block item</div><li><p>paragraph item
+  </ul>
+  <menu>
+    <li><a href="#">menu a
+    <li><hr><li>menu c
+  </menu>
+  <hr noshade="false" size="-100">
+  <div><p>unclosed one<p>unclosed two
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>foreign boundaries and malformed markup</title>
+</head>
+<body>
+  <svg>
+    <metadata><rdf:RDF><rdf:Description></rdf:Description></rdf:RDF></metadata>
+    <g><a href="x"><text>svg text</a></g>
+    <switch requiredExtensions="bad"><foreignObject><p>html in svg</p></foreignObject>
+    <use xlink:href="#missing" xlink:actuate="maybe"></use>
+  </svg>
+  <math>
+    <mrow><mi mathvariant="unknown">x</mi><mo>+</mo><mfrac><mn>1</mn><mroot><mn>2</mn></mroot></mfrac>
+    <annotation-xml encoding="application/xhtml+xml"><div><b>embedded</b></annotation-xml>
+  </math>
+  <p>text<!-- comment with -- double -- hyphen --><span>after
+  <?processing instruction?>
+  <!bad declaration>
+  <!DOCTYPE nested SYSTEM "strange">
+  <form>
+    <input type="file" accept=",,,application/x-unknown" capture="maybe">
+    <input type="checkbox" checked="false" indeterminate="yes">
+    <textarea wrap="sideways" minlength="999999999999" maxlength="-1">text</textarea>
+  </form>
+</body>
+</html>
+```

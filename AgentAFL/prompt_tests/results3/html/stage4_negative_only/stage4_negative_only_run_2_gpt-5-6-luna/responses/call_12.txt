@@ -1,0 +1,157 @@
+```html
+<!DOCTYPE html [
+  <!ENTITY sample "replacement">
+]>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>&sample; &amp; malformed</title>
+  <!-- comment -- -- broken -->
+  <style type="text/css">
+    body { color: red; }
+    @media screen { .x { content: "</style>"; } }
+  </style>
+</head>
+<body id="main" class="a b" disabled>
+  <h1 title="unterminated>Heading
+  <p>alpha &copy &unknown; &#x110000; &#0; &amp
+  <p><b><i><u>nested formatting</b> after i</u></i></p>
+  <hr/><br///>
+  <div><span>one<div>two</span>three</div>four
+  <!-- nested <!-- comment --> tail -->
+  <![CDATA[not really cdata]]>
+  <script>
+    if (a < b && c > d) {
+      document.write("<p>generated</p>");
+    }
+  </script>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>List and definition recovery</title></head>
+<body>
+  <ol start="not-a-number" reversed="false">
+    <li>first
+    <li value="-999999999999999999999">second
+      <ul type="square">
+        <li>nested one
+        <li>nested two
+    <dt>misplaced term
+    <dd>definition without a list
+    <li>third
+  </ol>
+  <dl compact>
+    <dt><em>term
+    <dd><p>definition one
+    <dt><input type=text name=term value="x y">
+    <dd><div>definition two</div></dd>
+  </dl>
+  <menu>
+    <li><a href="javascript:alert('x')">link
+    <li><button type=submit disabled=false>button</button>
+  </menu>
+  <p>tail
+</body>
+</html>
+```
+
+```html
+<html>
+<head>
+  <base href="http://example.invalid/a/">
+  <title>Forms and controls</title>
+</head>
+<body>
+<form action="/submit?x=1&y=2" method="POST" enctype="multipart/form-data">
+  <fieldset disabled>
+    <legend>Account <b>details</legend>
+    <label for="u">User
+    <input id="u" name="user" type="text" value="a" required>
+    <label>Password <input name=password type=password minlength="-1" maxlength="999999">
+  </fieldset>
+  <input type=checkbox checked="no" name=flag>
+  <input type=radio name=choice checked>
+  <input type=file accept="image/*,,text/plain" multiple>
+  <select name=items size=999>
+    <option selected>one
+    <option value="two" disabled=false>two
+    <optgroup label="group"><option>three</optgroup>
+    stray text
+  </select>
+  <textarea name=notes rows="-2" cols="999">initial
+  <button formaction=/other>Send
+  <input type=image src=x alt="broken"
+</form>
+<form><input name=outside></form>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Embedded content and obsolete elements</title>
+</head>
+<body bgcolor="#gggggg" text="red">
+  <center>
+    <font size="999" color="#12">legacy <big>large <small>small</font></big></small>
+  </center>
+  <marquee behavior=alternate direction=sideways scrollamount="-1">moving</marquee>
+  <frameset rows="*,0,*">
+    <frame src="one.html" name=one>
+    <frame src="two.html">
+    <noframes>
+      <body>
+        <p>fallback body <img src="x" width="-20" height="999999999999">
+        <map name=m><area shape=polygon coords="1,2,three,4"></map>
+      </body>
+    </noframes>
+  </frameset>
+  <object data="file:///tmp/x" width="bad" height="-1">
+    <param name=movie>
+    fallback <embed src="" hidden="false">
+  </object>
+  <video controls autoplay="no" poster=x>
+    <source src=a type=video/unknown>
+    <track kind=subtitles src=vtt>
+    fallback video
+  </video>
+  <audio src=a><source src=b></audio>
+</body>
+</html>
+```
+
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <title>Preformatted and scripting edges</title>
+  <noscript><p>noscript <b>fallback</noscript>
+</head>
+<body>
+  <pre>line 1
+line 2 &lt;tag&gt;
+  indented</pre>
+  <listing><xmp><tag attr="x">raw &amp; text</xmp></listing>
+  <plaintext>
+Everything after this point is intended to be text.
+<div><b>not markup</b></div>
+</plaintext>
+<script type="text/javascript">
+  var s = "</script><p>escaped-looking</p>";
+  /* comment with </script> */
+</script>
+<noscript>
+  <iframe src="about:blank"></iframe>
+</noscript>
+<ins cite="x" datetime="not-date">inserted <del datetime="">deleted</del></ins>
+<ruby>漢<rt>kan</rt><rp>(</rp><rp>)</rp></ruby>
+<p><a href="x"><img srcset="a 1x, b 2x," alt="x"></a></p>
+</body>
+</html>
+```

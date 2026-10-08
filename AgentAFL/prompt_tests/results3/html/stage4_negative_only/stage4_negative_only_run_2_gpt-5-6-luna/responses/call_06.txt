@@ -1,0 +1,158 @@
+```html
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Table reconstruction</title>
+</head>
+<body>
+  <table border="1">
+    <caption><b>caption <i>crossed</caption>
+    <colgroup><col span="2"><col></colgroup>
+    <thead>
+      <tr><th>one<th>two<th colspan="2">three
+    </thead>
+    <tbody>
+      <tr><td rowspan="2">a
+        <table><tr><td>nested before close<td>tail</table>
+      <td>b
+      <tr><td>c<td>d
+    </tbody>
+    <tfoot><tr><td>foot
+  </table>
+  <p>after table
+  <form action="/submit" method="post">
+    <table>
+      <tr><td><input name="x" value="&quot;broken">
+      <p>paragraph fostered <button type="submit">send</button>
+      <tr><td><select name="pick"><option>one<option selected>two</select>
+    </table>
+  </form>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Interactive nesting</title>
+</head>
+<body>
+  <main>
+    <details open>
+      <summary><em>Choose a section</em></summary>
+      <details>
+        <summary>Nested summary <span title="unterminated>label</span></summary>
+        <p>Hidden text <mark>marked <small>small</small></mark>
+      </details>
+      <dialog open>
+        <form method="dialog">
+          <fieldset disabled>
+            <legend>Dialog controls</legend>
+            <label for="q">Query</label>
+            <input id="q" name="q" list="words" required>
+            <datalist id="words"><option value="alpha"><option value="beta"></datalist>
+            <output for="q">result</output>
+          </fieldset>
+          <button value="ok">OK</button>
+        </form>
+      </dialog>
+    </details>
+    <menu type="toolbar">
+      <li><button type="button">A</button>
+      <li><button type="button">B
+        <menu><li>subitem</li></menu>
+      </li>
+    </menu>
+  </main>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Raw text boundaries</title>
+  <style type="text/css">
+    body > p::before { content: "</style><script>not really a tag</script>"; }
+    @media screen and (min-width: 2px) { .x { color: rgb(1,2,3); } }
+  </style>
+  <script type="application/javascript">
+    if (a < b && c > d) {
+      document.write("<div data-x='&amp;'>raw</div>");
+      // </script> appears in a JavaScript comment
+    }
+  </script>
+</head>
+<body>
+  <noscript>
+    <p>noscript branch <img src="x" alt="&copy;">
+  </noscript>
+  <template id="card">
+    <article itemscope itemtype="https://example.invalid/Thing">
+      <h2 itemprop="name">Template <span>content</span></h2>
+      <meta itemprop="version" content="1">
+      <slot name="missing"></slot>
+    </article>
+  </template>
+  <p>Outside <code>&lt;tag&gt;</code> <kbd>Ctrl</kbd><var>x</var>
+  <script type="text/plain">literal <b>markup</b> &amp; text</script>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head><title>Legacy and malformed markup</title></head>
+<body bgcolor="#fff" text="black" link="#00f">
+  <center>
+    <font face="serif" size="7"><b>old <i>style <u>mix</b> end</i></u></font>
+  </center>
+  <dir><li>first<li>second<ul><li>inner</ul><li>third</dir>
+  <dl>
+    <dt>Term one
+    <dd>Definition <br><br>
+    <dt><a href="http://example.invalid/" target="_blank">Term two
+    <dd><img src=x alt=unquoted title="a & b">
+  </dl>
+  <blockquote cite="x"><p>quote <q>nested <cite>source</cite></blockquote>
+  <pre> preformatted
+  <tt>literal &copy; text</tt>
+  </pre>
+  <hr noshade="noshade">
+  <marquee direction="left"><blink>legacy</blink></marquee>
+  <address>contact <a href="mailto:a@b">mail</address>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Token edge cases</title>
+  <!-- first --><!-- -- --><! bogus declaration>
+  <?processing instruction?>
+  <meta name="x" content="a>b<c&amp;d">
+</head>
+<body>
+  <hgroup><h1>Heading <span>one</hgroup><h2>or two</h2>
+  <p class="a b" data-empty="" data-dup="1" data-dup="2" disabled=>
+    Text&nbsp;&copy;&#0;&#xD800;&#x110000;&unknown;<!-- unclosed comment
+  <section id="s">
+    <a href="#s"><a href="#other">nested links</a></a>
+    <b><i><u>adoption <em>agency</b> recovery</u></i></em>
+  </section>
+  <input type="text" value="&quot; autofocus onfocus="x<y" />
+  <select multiple size="2">
+    <optgroup label="A"><option value="1">one<option value="2">two</optgroup>
+    <option disabled>three
+  </select>
+  <textarea name="t">text </textarea> tail</textarea>
+  <p>final
+</body>
+</html>
+```

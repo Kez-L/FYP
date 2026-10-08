@@ -1,0 +1,115 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<base href="http://example.invalid/a/../b/">
+<title>&lt;unterminated title
+</head>
+<frameset rows="*,0,25%" cols="120,*">
+<frame src="javascript:alert('x')" name="left" scrolling="maybe" noresize>
+<frameset cols="50%,50%">
+<frame src="" frameborder="-1">
+<frame srcdoc="<p>nested &amp; fragment</p>" name="right">
+<noframes>
+<body>
+<h1>Frames fallback
+<p><a href="mailto:a@b?subject=x&body=y" target="_blank">mail</a>
+</body>
+</noframes>
+</frameset>
+</frameset>
+</html>
+```
+
+```html
+<!doctype html>
+<html lang="x-klingon" dir="sideways">
+<head>
+<!-- comment -- -- broken -->
+<?xml version="1.0"?>
+<meta name="viewport" content="width=device-width, initial-scale=NaN">
+<link rel=stylesheet href=data:text/css,body%7Bcolor:red%7D media="screen and (width<0px)">
+<style type="text/plain"><!--
+body { content: "</style><p>escaped"; }
+--></style>
+</head>
+<body>
+<main id="a b" class="one  two" data-x="&notanentity;" data-y='&#xD800;'>
+<hgroup><h1>Heading<h4>wrong level</h4></hgroup>
+<p>alpha<br><hr><wbr>omega
+<blockquote cite="&quot;broken"><pre> one
+  two</pre></blockquote>
+<dl><dt>term<dd>definition<dt><dd>orphan</dl>
+<details open="false"><summary>summary</summary><p>inside</details>
+</main>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>table repair maze</title></head>
+<body>
+<table border="999" cellpadding="-" cellspacing="1e309">
+<caption><b>caption <i>crossed</caption>
+<colgroup span="0"><col width="*"><colgroup><col>
+<thead><tr><th rowspan="-2" colspan="999">A<th>B<td>C
+<tbody>
+<tr><td rowspan="0">one<td><div>block in cell</div><tr>
+<td colspan="x"><table><tr><td>inner<td></tr></table>
+<tfoot><tr><td>foot
+</tbody>
+<tr><td>after body
+</table>
+<table><tr><td>&#0;&#1;&#x110000;&bad;</td></tr></table>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>misnested inline and obsolete elements</title></head>
+<body>
+<center><font face="&quot;A" size="999" color="#GGGGGG">
+<b><i><u><s>one
+</b>two</i>three</u>four</s>
+<big><small><tt><strike>text</strike></tt></small></big>
+</font></center>
+<marquee behavior="sideways" direction="diagonal" loop="-1">
+<nobr>long <blink>blink <spacer type="block" width="-5" height="NaN">
+</nobr></marquee>
+<isindex prompt="Search &amp; find:"><basefont size="0">
+<acronym title="a>b">label</acronym>
+<q cite="urn:foo?x=1&y=2"><cite>nested cite</q></cite>
+<address><a href="#x"><em>contact</address></em></a>
+<layer visibility="maybe"><div>layer content</div></layer>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>raw text and embedded data</title></head>
+<body>
+<script type="application/ld+json">
+{"key":"</script><script>alert(1)</script>","n":1e999,"u":"\u0000"}
+</script>
+<script type="text/javascript"><![CDATA[
+if (a < b && c > d) { document.write("<p>x</p>"); }
+/* </script */
+]]></script>
+<noscript><p>fallback <b>bold</noscript>
+<template id="t"><table><tr><td>template<table><tr><td>x</template>
+<object data="file:///dev/null" type="application/x-unknown" width="1e999" height="-">
+<param name="movie" value="&quot;broken">
+<embed src="data:application/octet-stream;base64,%%%%" type="x/y">
+</object>
+<map name="m"><area shape="poly" coords="0,0,NaN,-1" href="#a"><area nohref></map>
+<img srcset="a 1x, b 0w, c 999q" usemap="#m" alt>
+</body>
+</html>
+```

@@ -1,0 +1,134 @@
+```html
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base href="http://example.invalid/a/">
+  <title>table and map recovery</title>
+</head>
+<body>
+  <table border=1 cellpadding="2" summary="broken table">
+    <caption><b>Inventory</caption>
+    <colgroup span=2><col width=25%><col></colgroup>
+    <thead><tr><th scope=col>Code<th scope="row">Description</thead>
+    <tbody>
+      <tr><td>A&amp;1<td><a href=#x>first
+      <tr><td rowspan=999><img src="x" alt="&notanentity;" usemap="#m"><td>second
+      <tbody><tr><td colspan=0>nested body</tr>
+    </tbody>
+    <tfoot><tr><td>tail</table>
+  <map name=m id=m>
+    <area shape=rect coords="0,0,10,10" href="one">
+    <area shape=circle coords=bad href>
+    <area nohref="nohref">
+  </map>
+  <object data="movie.bin" type="application/octet-stream" width=0 height=-1>
+    <param name="autoplay" value="true">
+    fallback <embed src=x hidden=false>
+  </object>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>foreign content</title>
+</head>
+<body>
+  <svg width="120" height="80" viewBox="0 0 120 80">
+    <g id="layer" transform="translate(1 2)">
+      <path d="M0,0 L10,20 Z" fill="url(#paint)" />
+      <linearGradient id="paint"><stop offset="0%" stop-color="#fff"></stop><stop offset="100%"></linearGradient>
+      <text x="2" y="20"><tspan>svg &amp; text</tspan></text>
+    </g>
+    <foreignObject width="50" height="20"><div xmlns="http://www.w3.org/1999/xhtml"><i>inside</i></div></foreignObject>
+  </svg>
+  <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+    <mrow><mi>x</mi><mo>=</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+    <annotation encoding="application/x-tex">x &lt; y</annotation>
+  </math>
+  <p><svg><circle cx="bad" cy="2" r="3"></svg>after</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head><title>obsolete inline elements</title></head>
+<body bgcolor=#fff text="black" link=blue vlink=purple alink=red>
+  <center><font face="serif" size=+7 color=red>Old <strike>style</font></center>
+  <dir compact>
+    <li>one
+    <li><b>two<i>three</b>four</i>
+  </dir>
+  <ruby>
+    漢字 <rp>(</rp><rt>かんじ</rt><rp>)</rp>
+    <rtc><rb>extra</rb><rt>annotation</rt></rtc>
+  </ruby>
+  <bdo dir=sideways>direction</bdo>
+  <bdi><wbr>isolated</bdi>
+  <marquee behavior=alternate scrollamount=999999 direction=diagonal>
+    <blink>moving</blink><nobr>long&nbsp;text</nobr>
+  </marquee>
+  <ins cite="x" datetime=never>inserted<del datetime="2020-99-99">deleted</ins></del>
+  <hr noshade size=0 width=wat>
+  <isindex prompt="Search:">
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <meta http-equiv=refresh content='0; url="x&y"'>
+  <meta name=viewport content=width=device-width,initial-scale=abc>
+  <title>&#0;&#xD800;&unknown; title</title>
+  <noscript><link rel=stylesheet href=x><p>fallback</noscript>
+</head>
+<body>
+  <template id="t"><table><tr><td>template cell</template>
+  <form id=f action="" method=INVALID enctype=x accept-charset="UTF-8,">
+    <label><input type=text name=x value='a"b' disabled=FALSE autofocus=maybe>text</label>
+    <select name=s size="-999" multiple=0>
+      <option value=1 selected=off>one
+      <option value=2 label="two &amp; 2">two
+    </select>
+    <textarea name=ta wrap=sideways maxlength=-1>line 1
+line 2 &lt;tag&gt;</textarea>
+    <button type=unknown formtarget=_blank>submit</button>
+  </form>
+  <details open="false"><summary>summary</summary><p>details body</p></details>
+  <output for="x y z">result</output>
+  <progress value=NaN max=0>loading</progress>
+</body>
+</html>
+```
+
+```html
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE weird [
+  <!ELEMENT weird ANY>
+  <!ENTITY local "replacement">
+]>
+<?processing instruction?>
+<weird:page xmlns:weird="urn:broken" xmlns:q="urn:q">
+  <weird:head>
+    <weird:title>Namespaced title</weird:title>
+    <![CDATA[raw <not-an-element> & stuff]]>
+  </weird:head>
+  <q:body class="a&#13;b" q:flag="x:y">
+    <!-- comment -- -- bad -->
+    <q:item><q:name>one</q:name></q:item>
+    <weird:item>two</q:item>
+    <script type="text/plain"><![CDATA[
+      if (x < y) { z = "</weird:item>"; }
+    ]]></script>
+    <style>p { content: "]]>"; }</style>
+    <p data-x="unterminated data-y=next disabled
+       weird:attr='single &amp; quote'>text
+    <p>second</weird:page>
+```

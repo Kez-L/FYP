@@ -1,0 +1,138 @@
+```html
+<!DOCTYPE html [
+  <!ENTITY demo "expanded">
+]>
+<?xml version="1.0"?>
+<html lang="x-private">
+<head>
+<meta charset="utf-16">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'">
+<base href="http://[invalid-host">
+<link rel="alternate" media="not all" href="">
+<style type="text/plain"><!--
+  body { color: red; }
+  </style>
+<script type="application/ld+json">
+{"key": [1, 2, {"nested": true}], "unterminated": "value}
+</script>
+</head>
+<body>
+<!--- malformed comment --!>
+<!---->
+<![CDATA[ raw text with <tags> & symbols ]]>
+<main id="a" id="b" class="x y" style="width:calc(100% - )">
+<h1><span><em>Deep <strong>mixed</h1>
+<p>Text <a href="javascript:alert(1)" title="unterminated>link
+<details open="false"><summary>Summary</summary><div>Hidden <mark>content</details>
+<dialog open><p>Dialog <small>text</dialog>
+<template><section><p>Template content</section></template>
+</main>
+</body>
+</html>
+```
+
+```html
+<!doctype html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:x="urn:test">
+<head><title>Foreign content</title></head>
+<body>
+<svg viewBox="0 0 10 10" viewbox="bad" width="1e309">
+  <defs><linearGradient id="g"><stop offset="0%"/><stop offset="120%"></linearGradient></defs>
+  <g transform="translate(0 0) rotate(foo)">
+    <path d="M0,0 L 10,10 Z Z" fill="url(#g)" stroke-width="-Infinity"/>
+    <foreignObject><div xmlns="http://www.w3.org/1999/xhtml"><p>HTML in SVG
+  </g>
+</svg>
+<math display="bogus">
+ <mrow><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mi>y</mi><mn>2</mn></msup>
+ <annotation-xml encoding="application/xhtml+xml"><p>embedded math text</annotation-xml>
+</math>
+<x:widget x:flag="yes" x:flag="no"><x:child /></x:widget>
+<p><svg><circle cx="NaN" cy="Infinity" r="-1"></circle></p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>Lists and ruby</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=nan">
+</head>
+<body>
+<ol start="999999999999999999999999999999" reversed type="Z">
+<li>one
+<li value="-999999999999999999999">two
+<dl>
+<dt><b>term <dd>definition <dt>second
+<dd><ul><li><li><li><ol><li>nested</ul>
+</dl>
+<ruby>
+漢<rt>kan<rp>(<rtc><span>reading</span></rtc><rp>)</ruby>
+<p><bdi dir="invalid">isolate <bdo dir="rtl">direction</bdi></bdi>
+<menu type="context"><li><button type="menu">Action</button></li><hr><li>Item
+<menuitem label="Legacy" checked>
+</menu>
+<figure><img srcset="a 1x, b 0w, c -2x," sizes="(min-width: ) 50vw" alt="image"><figcaption>Caption
+</figure>
+<address><a href="mailto:"><span>name</address>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Frames and obsolete elements</title>
+<base target="_blank">
+</head>
+<frameset rows="*,0,NaN" cols="1*,2*,-3*">
+<frame src="about:blank" name="left" scrolling="maybe" frameborder="-1">
+<frame src="missing.html" name="right" noresize>
+<noframes>
+<body>
+<center><font face="sans-serif" size="+999" color="#GGGGGG">
+<marquee behavior="warp" direction="sideways" loop="-1" scrollamount="0">
+  <blink>legacy <strike>content</strike>
+</marquee>
+</font></center>
+<pre><listing>preformatted
+  <code>code <var>variable <samp>sample</pre>
+<hr width="999999999999999999999" size="-1" noshade="false">
+<isindex prompt="Search &copy; <input type=text>">
+</body>
+</noframes>
+</frameset>
+<iframe srcdoc="<p>quoted <b>fragment</iframe>" sandbox="allow-scripts allow-scripts" loading="unknown"></iframe>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>Raw text and malformed attributes</title>
+<script language="javascript" type="text/javascript">
+if (a < b && c > d) { document.write("<div>"); }
+<!-- nested-looking comment
+</script>
+<style>
+@media (width: ) { * { background: url("unterminated); } }
+</style>
+</head>
+<body>
+<textarea name="x" maxlength="-999999999999999999999">first
+</textarea><textarea>second <b>literal</textarea>
+<xmp><div><span>&amp; raw xmp</xmp>
+<plaintext><h1>everything after plaintext
+<p>not really markup &amp; &#x110000; &#999999999999999999;
+<!-- comment without close
+<div class="a" class="b" data-x="1" data-x="2" disabled="" hidden="no">
+<output for="a b c">result</output>
+<progress max="-1" value="Infinity">loading</progress>
+<meter min="10" max="2" low="NaN" high="-Infinity" optimum="999">meter</meter>
+</body>
+</html>
+```

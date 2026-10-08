@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# run_all_stages.sh — one run-through of every ablation stage, xml then ical.
+# run_all_stages.sh — one run-through of every ablation stage, xml then ical
+# then html.
 #
 # Each invocation of run_build_context.py picks the next free run number
 # (_next_run_number), so every stage gets a fresh
@@ -8,14 +9,18 @@
 #
 # The stage list is hard-coded (not discovered from results3/). Commands are
 # copied from commands.md. Deliberately left out: Stage 1 Raw
-# (--seed-selector default) for both xml and ical.
+# (--seed-selector default) for every format.
 #
 # Usage:
-#   bash run_all_stages.sh                 # run all 18 stages sequentially
+#   bash run_all_stages.sh                 # run all 27 stages sequentially
 #   bash run_all_stages.sh --dry-run       # print the commands only (no API calls)
-#   bash run_all_stages.sh --only xml      # just one format (xml|ical)
+#   bash run_all_stages.sh --only html     # just one format (xml|ical|html)
 #   bash run_all_stages.sh --skip-eval     # any other args are passed through
 #                                          # to every run_build_context.py call
+#
+# Prerequisite for html: results/baseline_edges_tidy.json must exist — freeze it
+# once with freeze_baseline_only.py (no API calls). The sweep refuses to start
+# an html stage without it rather than re-scan 46,970 queue files nine times.
 #
 # Out of credits/quota: the sweep stops immediately (exit 3) and prints which
 # stage hit it; other stage failures are recorded and the sweep continues.
@@ -32,17 +37,20 @@ PYTHON="${PYTHON:-$HERE/../.venv/bin/python}"
 
 DRY_RUN=0
 ONLY=""
+STAGES_FILTER=""
 PASSTHRU=()
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --dry-run) DRY_RUN=1; shift ;;
         --only)    ONLY="${2:-}"; shift 2 ;;
+        --stages)  STAGES_FILTER="${2:-}"; shift 2 ;;
         *)         PASSTHRU+=("$1"); shift ;;
     esac
 done
-if [[ -n "$ONLY" && "$ONLY" != "xml" && "$ONLY" != "ical" ]]; then
-    echo "--only must be xml or ical" >&2; exit 2
-fi
+case "$ONLY" in
+    ""|xml|ical|html) ;;
+    *) echo "--only must be xml, ical or html" >&2; exit 2 ;;
+esac
 
 OUT_OF_CREDITS_RE="insufficient_quota|credit_balance_exhausted|no credits remaining|exceeded your current quota|credit balance is too low|billing_hard_limit_reached|OUT OF CREDITS"
 
@@ -57,7 +65,21 @@ ICAL_ARGS=(
     --reuse-baseline results/baseline_edges_libical.json
 )
 
-# "stage folder|stage-specific flags" — same list for both formats.
+# Same harness shape as libical (whole input = one document), so html stays
+# comparable to ical. --target-args "@@" is required, not cosmetic: outside
+# afl-fuzz the libAFLDriver harness reads a file argument, and plain stdin
+# silently parses an EMPTY document. --reuse-baseline is also not optional —
+# run_build_context.py would otherwise fall back to the *xml* baseline.
+HTML_ARGS=(
+    --format-dir html
+    --campaign-root /home/user/Documents/1git-folder/AgentAFL/afl-output-tidy-20261006
+    --target /home/user/Documents/1git-folder/AgentAFL/AFLPlus/tidy-html5-build/tidy_parse_string_fuzzer-afl
+    --target-args "@@"
+    --fmt "HTML document"
+    --reuse-baseline results/baseline_edges_tidy.json
+)
+
+# "stage folder|stage-specific flags" — same list for every format.
 STAGES=(
     "stage1_jaccard|--seed-selector stage1-jaccard"
     "stage1_jaccard_nofeedback|--seed-selector stage1-jaccard --no-feedback"
@@ -70,8 +92,54 @@ STAGES=(
     "stage4_negative_bootstrap1|--seed-selector coverage --good-seeds-first-round-only --label stage4_negative_bootstrap1"
 )
 
-FORMATS=(xml ical)
+# --stages narrows the sweep to the named stage folders, in the order they
+# appear in STAGES above (not the order you list them). Use it to resume an
+# aborted sweep: pass only the stages that are short a run. An unknown name is
+# a hard error, so a typo can't silently run nothing.
+if [[ -n "$STAGES_FILTER" ]]; then
+    IFS=',' read -r -a want <<< "$STAGES_FILTER"
+    for w in "${want[@]}"; do
+        found=0
+        for entry in "${STAGES[@]}"; do
+            [[ "${entry%%|*}" == "$w" ]] && { found=1; break; }
+        done
+        if [[ $found -eq 0 ]]; then
+            echo "unknown stage: $w" >&2
+            echo "known stages:" >&2
+            printf '  %s\n' "${STAGES[@]%%|*}" >&2
+            exit 2
+        fi
+    done
+    filtered=()
+    for entry in "${STAGES[@]}"; do
+        for w in "${want[@]}"; do
+            [[ "${entry%%|*}" == "$w" ]] && { filtered+=("$entry"); break; }
+        done
+    done
+    STAGES=("${filtered[@]}")
+fi
+
+FORMATS=(xml ical html)
 [[ -n "$ONLY" ]] && FORMATS=("$ONLY")
+
+# html has no baseline checked into results/ the way xml and ical do. Without it
+# freeze_baseline would re-scan 46,970 queue files at the start of every one of
+# the 9 html stages, so fail loudly here instead.
+HTML_BASELINE="$HERE/results/baseline_edges_tidy.json"
+if [[ $DRY_RUN -eq 0 ]] && printf '%s\n' "${FORMATS[@]}" | grep -qx html; then
+    if [[ ! -f "$HTML_BASELINE" ]]; then
+        echo "html corpus baseline missing: $HTML_BASELINE" >&2
+        echo >&2
+        echo "Freeze it once first (no API calls, one afl-showmap pass):" >&2
+        echo >&2
+        echo "  $PYTHON freeze_baseline_only.py \\" >&2
+        echo "      --campaign-root /home/user/Documents/1git-folder/AgentAFL/afl-output-tidy-20261006 \\" >&2
+        echo "      --target /home/user/Documents/1git-folder/AgentAFL/AFLPlus/tidy-html5-build/tidy_parse_string_fuzzer-afl \\" >&2
+        echo "      --target-args \"@@\" \\" >&2
+        echo "      --out results/baseline_edges_tidy.json" >&2
+        exit 2
+    fi
+fi
 
 STAMP="$(date +%Y%m%dT%H%M%S)"
 LOG_DIR="$HERE/run_logs/$STAMP"
@@ -94,7 +162,11 @@ for fmt in "${FORMATS[@]}"; do
         stage="${entry%%|*}"
         read -r -a flags <<< "${entry#*|}"
         cmd=("$PYTHON" run_build_context.py "${COMMON[@]}")
-        [[ "$fmt" == "ical" ]] && cmd+=("${ICAL_ARGS[@]}")
+        # xml needs no extra args — it is run_build_context.py's own default.
+        case "$fmt" in
+            ical) cmd+=("${ICAL_ARGS[@]}") ;;
+            html) cmd+=("${HTML_ARGS[@]}") ;;
+        esac
         cmd+=("${flags[@]}" "${PASSTHRU[@]}")
 
         if [[ $DRY_RUN -eq 1 ]]; then

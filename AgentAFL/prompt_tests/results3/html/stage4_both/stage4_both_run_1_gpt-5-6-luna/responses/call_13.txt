@@ -1,0 +1,167 @@
+```html
+<!doctype html>
+<html>
+<head>
+  <title>doctype and token boundary stress</title>
+  <meta charset="utf-8">
+</head>
+<body>
+  Text before root
+  <!-- comment -- --><!----><!-------><!--unterminated
+  <!bogus><!DOCTYPE html SYSTEM "x"><![IGNORE[hidden]]>
+  <p id="a&amp;b" class="one  two&#x0;three" data-empty="" data-noeq=x>
+    &lt; &gt; &amp; &quot; &apos; &#0; &#xD800; &#x110000; &unknown; &copy
+  <p><span><em>deep <b>nest <strong>stack</span> repair</em></b></strong>
+  <pre>  leading
+    &amp; &lt; raw-looking
+</pre>
+  <textarea name="t">&lt;tag&gt;
+  </textarea>
+  <script type="text/plain">if (a < b && c > d) { "</script>" }</script>
+  <style>/* unterminated style
+  .x { content: "</style>"; color: #12; }
+  </style>
+  <p>after raw text
+</body>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>forms with unusual nesting</title></head>
+<body>
+  <form id="a">
+    <input name="x">
+    <form id="b" method="get">
+      <button type="submit"><span>send</button>
+      <select name="choice" multiple size="-3">
+        <optgroup label="one" disabled="maybe">
+          <option selected selected value=a>A
+          <option value="b">B
+        </optgroup>
+        <option>outside
+      </select>
+      <input type="hidden" name="h" value="&quot;broken">
+    </form>
+    <output for="x y">result</output>
+  </form>
+  <form action="/x" accept-charset="utf-8, windows-1252, ???">
+    <fieldset>
+      <legend>legend <input name=inside></legend>
+      <input type="radio" name=r checked="false">
+      <input type="checkbox" name=c indeterminate="true">
+      <textarea cols="not-a-number" rows="999999999999999999">value</textarea>
+      <select><option><option><optgroup><option>tail</select>
+    </fieldset>
+  </form>
+  <input form="missing" type="text" value="detached">
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>table repair and phrasing interruptions</title>
+</head>
+<body>
+  <table border="abc" cellpadding="-1" cellspacing="999999999999">
+    text directly in table
+    <tr><td>r1c1<td>r1c2
+    <tr><th><p>header paragraph</th><td>
+    <tbody>
+      <tr><td rowspan="0" colspan="0">zero
+      <tr><td>
+        <table>
+          <tr><td>nested
+        </table>
+      </td></tr>
+    </tbody>
+    <tfoot><tr><td>foot
+    <caption align="sideways">late caption</caption>
+    <colgroup><col span="-2"><col span="999999999999999999999"></colgroup>
+  </table>
+  <p>outside <table><tr><td>misplaced</td></tr></table> trailing</p>
+  <table>
+    <thead><tr><th>a<th>b
+    <tbody><tr><td>one<td>two
+    <tbody><tr><td>third
+    <tfoot><tr><td>x</tfoot>
+    <tr><td>after footer</table>
+  <p><ruby>base<rt>annotation<rp>(</rp>fallback</ruby> end
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>embedded raw and foreign content</title>
+  <template id="t"><div><p>template <b>content</template>
+  <script>
+    <!--
+    if (x < 10) { document.write("<p>"); }
+    //-->
+  </script>
+</head>
+<body>
+  <iframe srcdoc="<p>inside &amp; <b>frame</p>" sandbox="allow-scripts allow-unknown" loading="sideways">
+    fallback <a href="x">link
+  </iframe>
+  <object data="x" type="application/unknown">
+    <param name="x" value="1">
+    fallback <embed src="y" type="bad">
+  </object>
+  <svg viewBox="0 0 10 10" viewbox="bad" width="NaN">
+    <title>svg title</title>
+    <g transform="translate(1 2) rotate(nope)">
+      <path d="M0 0 L 1 1 Z garbage" fill="url(#x)">
+      <foreignObject><p>html in svg</p></foreignObject>
+    </g>
+    <script><![CDATA[if (a < b) alert("&");]]></script>
+  </svg>
+  <math>
+    <mrow><mi> a </mi><mo>&lt;</mo><mn>2</mn></mrow>
+    <mtext><annotation-xml encoding="text/html"><p>annotation</p></annotation-xml></mtext>
+  </math>
+  <template><table><tr><td>unclosed template
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html lang="">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=bogus">
+  <title>head ordering and obsolete constructs</title>
+  <meta name=keywords content="a,b,c">
+  <meta name=author content="x" />
+  <link rel="alternate stylesheet" title="x" href="a" disabled="false">
+  <link href="b" rel="not-a-real-rel">
+  <style media="(" nonce="&bad;">.a{}</style>
+  <base href="http://[bad" target="unterminated>
+  <title>second title</title>
+</head>
+<body id=body>
+  <header><nav><a href="" accesskey="a&amp;b" tabindex="999999999999">home</a>
+    <a href="javascript:">empty</a></nav></header>
+  <main>
+    <section><article><aside><address>contact <time datetime="not-time">now</time>
+    <wbr><br><br /> <hr />
+    <ins cite="[" datetime="tomorrow">inserted</ins>
+    <del cite="]" datetime="">deleted</del>
+    </address></aside></article></section>
+    <figure>
+      <img alt="unterminated src="x" width="bad" height="-1">
+      <figcaption>caption</figcaption>
+    </figure>
+    <p><q cite="&quot;">quote <cite>cite</q> after</cite>
+    <blockquote cite="http://["><p>nested quote</blockquote>
+  </main>
+  <footer><small>foot</small><s>obsolete</s><u>underline</u></footer>
+</body>
+</html>
+```

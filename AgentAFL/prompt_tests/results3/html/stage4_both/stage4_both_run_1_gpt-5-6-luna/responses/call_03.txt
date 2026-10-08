@@ -1,0 +1,139 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN">
+<html>
+<head>
+  <title>frameset recovery</title>
+  <meta http-equiv="refresh" content="0; URL=javascript:alert(1)">
+</head>
+<frameset rows="*,0,25%" cols="70%,*,*">
+  <frame src="left.html" name="nav" scrolling="maybe" frameborder="-1">
+  <frameset cols="*,*" border="not-a-number">
+    <frame srcdoc="<p>embedded &amp; broken" name="main">
+    <frame src="right.html" noresize="false">
+  </frameset>
+  <noframes>
+    <body>
+      <h1>Fallback</h1>
+      <p><a href="x" target="_top">open</a>
+      <frameset><frame src="recursive.html"></frameset>
+    </body>
+  </noframes>
+</frameset>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>ruby and phrasing repairs</title>
+</head>
+<body>
+  <article>
+    <header><hgroup><h1>漢<ruby>字<rt>かん<rp>(</rp></ruby></h1><h2>sub</h2></hgroup></header>
+    <p><b><i><u>mixed <small>inline <big>levels</b> after break
+      <ruby>東京<rt>とうきょう<rp>)</ruby>
+      <bdi dir=garbage>abc</bdi><bdo dir=sideways>xyz</bdo>
+      <abbr title="a < b">A&amp;B</abbr>
+      <q cite='x"y'>quote</q></u>
+    <address><span>one<br>two<hr>three</address>
+    <details open="sometimes"><summary>summary <mark>mark</mark></summary>
+      <p>inside details</p>
+      <dialog open><p>dialog text</dialog>
+    </details>
+    <!-- broken -- comment -- with -- delimiters -->
+    <![if IE]><p>conditional text</p><![endif]>
+  </article>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>controls and labels</title></head>
+<body>
+  <form method="POST" enctype="multipart/form-data" accept-charset="UTF-8,NOPE">
+    <fieldset disabled="0">
+      <legend><label for="missing">Account <em>details</legend>
+      <label>Name <input id=name name=user autofocus required pattern="[A-" min=+1></label>
+      <label for=mail>Email</label><input type=email id=mail multiple value=a@b
+      <input type=file name=upload accept=image/*,garbage capture=environment>
+      <textarea name=note rows=999 cols=-4 wrap=diagonal>unclosed
+      <select name=mode size="NaN" multiple="false">
+        <optgroup label="group" disabled="no">
+          <option value=1 selected=maybe>one
+          <option value=2>two
+        </optgroup>
+        <option>outside
+      </select>
+      <input type=image src=x alt=go width=+0 height=-9>
+      <button type=unknown formaction=/submit>send <input value=inside></button>
+      <output for="a b c">result</output>
+      <progress value=Infinity max=0>loading</progress>
+      <meter min=10 max=2 low=x high=y optimum=z value=999>meter</meter>
+    </fieldset>
+    <input type=hidden name=token value="&invalid; &#x;">
+  </form>
+</body>
+</html>
+```
+
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head><title>replaced content and maps</title></head>
+<body>
+  <p><img src="x" alt="&amp;bad" usemap="#m" ismap border="--" hspace="999999999999">
+    text after image
+  <map name=m id=m>
+    <area shape=rect coords="1,2,3" href=a alt=A>
+    <area shape=poly coords="1,2,3,4,5,6,7" nohref=no>
+    <area shape=circle coords="x,y,r" target=_blank>
+    <p>map paragraph
+  </map>
+  <object classid="clsid:x" codebase="bad://" data="file.bin" type=application/octet-stream
+          width="auto" height="0" declare="maybe">
+    <param name=movie value="a&b">
+    <param name=quality value=best>
+    <object data=nested><embed src=plugin type=x/y></object>
+    fallback <a href=javascript:void(0)>link</a>
+  </object>
+  <applet code="Foo.class" archive="a.jar,b.jar" object="x" alt="old">
+    <param name=code value=bad>
+    applet fallback
+  </applet>
+  <marquee behavior=sideways direction=diagonal loop=-1>
+    <blink>moving <img src=x></blink>
+  </marquee>
+  <center><font face="A<B" size="+99" color="#GGG">legacy</font></center>
+</body>
+</html>
+```
+
+```html
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="xx">
+<head>
+  <?xml version="1.0"?>
+  <style type="text/css"><![CDATA[
+    body { color: red; content: "</style>"; }
+    @import url("x");
+  ]]></style>
+  <script type="application/javascript">
+    if (a < b && c > d) { document.write("<p>x</p>"); }
+    // </script> remains text?
+  </script>
+</head>
+<body>
+  <svg width="100%" viewBox="0 0 10 10"><g><path d="M0 0 L10 10"/></g></svg>
+  <math><mrow><mi>x</mi><mo>&lt;</mo><mn>2</mn></mrow></math>
+  <x:widget x:flag="1"><x:item /></x:widget>
+  <![CDATA[ raw <tag> & stuff ]]>
+  <!-- comment with <fake> tags and -- bad -->
+  <p data-a=one/ data-b="two" / >after slash
+  <section><p>alpha<section>beta</p></section>
+  <template><div>template <span>content</template>
+  <noscript><iframe src="//example.invalid"></iframe></noscript>
+</body>
+</html>
+```

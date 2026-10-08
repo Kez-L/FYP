@@ -1,0 +1,132 @@
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name=generator content="x">
+<title>Broken &amp; Encoded &copy; Title</title>
+<!-- comment -- -- comment -->
+<?xml version="1.0"?>
+</head>
+<body bgcolor=#ffffff text="black">
+<center>
+<hgroup><h1>Header <em>one</h1><h2>Header two</hgroup>
+<dl compact>
+<dt><b>Term
+<dd>Definition <q cite=foo"bar>quoted</q>
+<dt><img src= alt= width="x" height=-1>
+<dd><pre>preformatted
+	<code>code</pre></code>
+</dl>
+<blockquote cite='unterminated>
+<p>Before <del cite=a datetime=2020-01-01>deleted <ins>inserted</del> text</ins>
+<address><a href=mailto:test@example.invalid>contact &unknown; &#x110000;</a></address>
+</center>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Namespace crossing</title></head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs><linearGradient id=g><stop offset="0%"/><stop offset="100%"></linearGradient></defs>
+  <foreignObject x=0 y=0 width=100 height=100>
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <p><b>HTML inside SVG</b><svg><circle cx="4" cy="5" r="0"/></svg></p>
+    </div>
+  </foreignObject>
+  <path d="M0 0 LNaN 1 Z" fill="url(#g)" />
+</svg>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow><mi>x</mi><mo>=</mo><mfrac><mrow><mi>a</mi></mrow><mrow><mi>b</mi></mrow></mfrac></mrow>
+  <annotation-xml encoding="application/xhtml+xml"><p>math fallback</p></annotation-xml>
+</math>
+<p><svg><foreignObject><table><tr><td>mixed</svg></td></tr></table></foreignObject>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <template id="outer">
+    <table><tr><td>template cell</td></tr></table>
+    <template><p>nested template</p></template>
+  </template>
+  <title>Template and shadow-like content</title>
+</head>
+<body>
+<template>
+  <form><input name=x><button type=submit>Go</button></form>
+  <select><option>hidden choice</option></select>
+</template>
+<main>
+  <template shadowrootmode="open">
+    <style>:host{display:block}</style>
+    <slot name="label">default</slot>
+  </template>
+  <div slot=label>slotted <span>content</div>
+  <script type="text/plain"><![CDATA[
+    <not-an-element attr='x'>
+  ]]></script>
+</main>
+<noscript>
+  <p>noscript text <img src=x></p>
+</noscript>
+<script>
+  if (a < b && c > d) { document.write("<i>raw</i>"); }
+</script>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Character reference stress</title></head>
+<body>
+<p>&amp;&lt;&gt;&quot;&apos;&nbsp;&copy;&reg;&trade;&euro;&notin;&not;&unknown;
+<p>&#0;&#1;&#9;&#10;&#13;&#26;&#31;&#127;&#160;&#255;&#x0;&#xD800;&#x10FFFF;&#x110000;&#-1;
+<p title="a&amp;b&#34;c&#x27;d&#xzz;e&quot;f">
+  &#x3C;em&#x3E;not markup&#x3C;/em&#x3E;
+</p>
+<textarea>&amp; &lt;tag&gt; &#65; &#x41;</textarea>
+<pre>&#10;line one&#13;&#10;line two &copy;</pre>
+<p><a href="x&amp;y?z=&#35;frag&amp;bad">link</a>
+<img alt="&lt;img&gt;" src="data:text/plain,a&amp;b">
+<p>split&am
+p; split&#
+65; split&#x
+41; split&copy
+; end
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Interactive and media recovery</title></head>
+<body>
+<details open=maybe>
+  <summary>Summary <button type=button disabled=false>press</button></summary>
+  <p>Details content
+</details>
+<dialog open="0"><form method=dialog><label for=x>Name</label><input id=x autofocus><output for=x>result</output></form></dialog>
+<menu><li><button formaction=/a formmethod=post>One</button></li><li>Two</li></menu>
+<picture>
+  <source media="(min-width: 1px)" srcset="a 1x, b 2x, c">
+  <source type=image/webp srcset>
+  <img src=x alt=picture>
+</picture>
+<audio controls autoplay="false"><source src=a type=audio/ogg><track kind=subtitles srclang=en default></audio>
+<video poster=x width=bad height=-20><track kind=captions><object><param name=movie value=x>fallback</object></video>
+<iframe srcdoc="<p>embedded <b>document</p>" sandbox="allow-scripts allow-forms"></iframe>
+<marquee direction=sideways><blink>old <font size=999 color=>text</blink></marquee>
+</body>
+</html>
+```

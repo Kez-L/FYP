@@ -1,0 +1,63 @@
+```html
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>nested table stress</title></head>
+<body>
+<table border="1"><caption>alpha<table><tr><td rowspan="2">one<td>two
+<tr><th colspan="3"><div><p>three</table>
+<table><colgroup><col span="x"><col><tbody><tr><td><form><input name="a" value="&quot;&amp;"><button><select><option selected>item<option>other</select></button></form>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html><head><title>comments and entities</title></head>
+<body>
+<!-- outer <!-- inner --> tail -->
+<!-----><!--
+unterminated comment
+<p>hidden</p>
+-->
+<p title="a&quot;b&#x0;z&#99999999;">&lt;&gt;&amp;&apos;&unknown;&copy
+<pre>line 1
+line 2&#13;&#10;line 3</pre>
+<![CDATA[<not-a-tag>&still-text;</not-a-tag>]]>
+</body></html>
+```
+
+```html
+<!doctype html>
+<html><head><title>foreign content</title></head>
+<body>
+<svg width="100" height="100" viewBox="0 0 100 100"><g transform="translate(1 2)"><path d="M0 0 L10 10 Z"><foreignObject><div xmlns="http://www.w3.org/1999/xhtml"><p>inside svg</div></foreignObject></g></svg>
+<math display="block"><mrow><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow><annotation-xml encoding="text/html"><p>math payload</p></annotation-xml></math>
+<svg><script><![CDATA[if (a < b) { c = "</svg>"; }]]></script><style>rect{fill:red}</style></svg>
+</body></html>
+```
+
+```html
+<!DOCTYPE html>
+<html><head><title>forms and phrasing</title></head>
+<body>
+<form id="f" action="/submit" method="post" enctype="multipart/form-data">
+<label for="x">Name<input id="x" type="text" disabled="false" required="" maxlength="-1"></label>
+<fieldset><legend><b>Options</legend><input type="checkbox" checked="no"><input type="radio" name="r"><textarea cols="999999" rows="-4">abc</textarea>
+<select multiple size="not-a-number"><optgroup label="g"><option value="1" selected>one<option value="2">two</optgroup></select></fieldset>
+<button type="submit"><img src=x alt="&quot; onerror=alert(1)>Go</button></form>
+<p><b><i><u>misnested <em>formatting</b> boundary</u></i></em></p>
+</body></html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang=en><head><meta http-equiv=refresh content='0;url=/x'><base href="http://example.invalid/a/"><title>raw text</title></head>
+<body>
+<noscript><iframe src="x"></iframe><p>fallback</noscript>
+<style type=text/css>body { background: url("</style><script>x()</script>"); } .x { color: red; }</style>
+<script type="application/json">{"x":"</script>","arr":[1,2,3]}</script>
+<textarea><div>&amp; not markup</div></textarea>
+<x-custom data-a=1 data-b="unterminated><template><tr><td>template cell</template>
+<iframe srcdoc="<p class='q'>embedded</p>"></iframe>
+</body></html>
+```

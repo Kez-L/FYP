@@ -1,0 +1,151 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN">
+<!--><!----><!DOCTYPE broken[
+  <!ELEMENT strange ANY>
+  <!ENTITY local "value">
+]>
+<html lang=en dir="rtl">
+<head profile="urn:example:profile">
+  <meta charset="x-invalid">
+  <base href="http://[::1">
+  <title>frame &amp title</title>
+  <link rel=stylesheet href="style.css" media="screen,">
+  <style type=text/css>body { color: red; } </style>
+</head>
+<frameset rows="*,0,*" cols="30%,*,">
+  <frame src="one.html" name=main scrolling=maybe>
+  <frameset>
+    <frame src="" frameborder=-1>
+    <noframes>
+      <body bgcolor=#zzzzzz>
+        <p>fallback <a href="javascript:alert('&quot;')">link</a>
+        <hr noshade="noshade" width="%%%">
+      </body>
+    </noframes>
+  </frameset>
+  <frame srcdoc="<p>embedded & broken" name="last">
+</frameset>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Adoption and implied end tags</title></head>
+<body>
+<h1><em><strong>heading <small>tiny</h1>
+<p>first <b>bold <i>italic <u>underlined
+<p>second <a href="one" title="unterminated>anchor
+<div><span>span<div>block inside span</span>tail</div>
+<blockquote cite="a>b"><p>quote <q>nested <q>quotes</blockquote>
+<ol start="zero" reversed="maybe">
+  <li>one
+  <li>two<ul><li>nested<li><li>empty
+</ol>
+<dl>
+  <dt>term <dd>definition
+  <dt><dt>second term<dd><p>paragraph definition
+</dl>
+<pre> pre <code>&lt;tag&gt;</pre><code>after</code>
+<center><address><bdi dir="auto">mixed</address></center>
+<ins datetime="not-a-date"><del cite=x>changed</ins></del>
+<p><img src=x alt="a & b" width="1.5" height="-4"><br><wbr>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Form controls and replaced elements</title>
+</head>
+<body>
+<form action="/submit?a=1&b=2" method=post enctype="multipart/form-data" name=f>
+  <fieldset disabled="false"><legend><label for=x>Choose &amp; type</legend>
+    <label><input id=x type=text name=q value="one" value="two" maxlength=-3></label>
+    <input type=number min=10 max=2 step=0 name=n>
+    <input type=image src=missing alt=go formaction=/other>
+    <button type=submit><select name=s multiple size=-1>
+      <option selected value=a>alpha<option value=b>beta
+      <optgroup label="group"><option>gamma</optgroup>
+    </select></button>
+    <textarea name=t rows=0 cols=-5>text &amp; <b>literal?</textarea>
+    <output for="x n">result</output>
+  </fieldset>
+  <input type=file accept="image/*,,text/plain" capture=unknown>
+</form>
+<map name=m><area shape=rect coords="1,2,three,4" href=#x><area nohref></map>
+<img src="x" usemap="#m" ismap loading=lazy>
+<object data="file.bin" type="application/octet-stream" width="auto">
+  <param name=p value=v><param name=p>
+  <embed src="plugin" type="x/y"><noembed>fallback</noembed>
+</object>
+<video controls autoplay="0" poster="" width="NaN">
+  <source src=a type=video/mp4><track kind=captions src=cc.vtt default>
+  video fallback
+</video>
+<iframe src="about:blank" sandbox="allow-scripts allow-scripts" loading=lazy>frame text</iframe>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <meta http-equiv="refresh" content="0; URL=&quot;bad">
+  <title>Raw text boundaries</title>
+  <script type="text/javascript">
+    if (a < b && c > d) {
+      document.write("<div title='x'>raw &amp; text</div>");
+    }
+    // </script is text here
+    /* <!-- fake comment --> */
+  </script>
+  <script>
+    var s = "</script><style>broken{color:red}</style>";
+  </script>
+  <style type="text/css">
+    /* </style> */
+    body > p::before { content: "<tag>&"; }
+  </style>
+</head>
+<body>
+<!-- normal -- -- broken -->
+<script type="application/json">{"x":"&amp;","end":"</script>"}</script>
+<p title="a&#0;b&#xD800;c&#999999;">entities &bogus; &#; &#x; &amp</p>
+<noscript><div><b>noscript markup</noscript>
+<textarea>one</textarea>two</textarea>
+<template id=t><p>template &lt;content&gt;<template><span>nested</template></template>
+<div><![CDATA[not XML in HTML]]></div>
+<!--[if IE]><span>conditional</span><![endif]-->
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Namespaces, declarations, and odd attributes</title></head>
+<body XMLNS="urn:not-html" xml:lang="en">
+  <?xml version="1.0"?>
+  <!bogus>
+  <div class=one class=two =bad ="value" data-a data-b= data-c="x y" disabled=false>
+    <custom-element/><custom-element></custom-element>
+    <svg:svg xmlns:svg="http://www.w3.org/2000/svg"><svg:path/></svg:svg>
+    <math:math xmlns:math="http://www.w3.org/1998/Math/MathML"><math:mi>x</math:mi></math:math>
+  </div>
+  <table role=grid>
+    <caption>caption</caption>
+    <colgroup><col span=0><colgroup><col></colgroup>
+    <tr><td>a</table>
+  <p>after stray table</p>
+  <hr><hr/><br/><br>
+  <details open=closed><summary>summary</summary><p>details</details>
+  <dialog open=maybe><form method=dialog><button>close</button></form>
+  <ruby>漢<rt>kan<rp>(<rtc><rb>字</ruby>
+  <p><bdo dir=sideways>direction <bdi>isolation</bdi></bdo>
+  <div style="color: red; width: calc(100% - );" onclick="x='&quot;">
+    trailing text
+```

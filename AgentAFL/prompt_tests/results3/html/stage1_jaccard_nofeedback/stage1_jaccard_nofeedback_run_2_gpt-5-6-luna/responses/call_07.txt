@@ -1,0 +1,103 @@
+```html
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<base href="http://example.invalid/a/../../b">
+<style type="text/css">
+@import url("x.css"); <!--
+div:nth-child(2n+1) { color: rgb(255,0,0); }
+</style>
+</head>
+<body id=outer onload="if (a < b && c > d) alert('&amp;')">
+<div><span class='one two' disabled=disabled title="a"b">broken
+<ol start="00"><li>first<li value=-1>second</ol>
+<dl><dt>term<dd>definition<dt><dt>empty</dl>
+<form method=post action="/x?y=1&z=2"><input name=x value="&notanentity;" checked><button type=submit>go</button>
+</form>
+<!-- unterminated comment with <tag attr='x'>
+<p>after comment</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+<foreignObject x="1" y="2" width="30" height="40">
+<div xmlns="http://www.w3.org/1999/xhtml">
+<p>mixed namespace text &amp; &#0; &#xD800; &#x110000; &semi
+</div>
+</foreignObject>
+<g transform="translate(1e309,-Infinity) rotate(-0)">
+<path d="M0 0 L10 10 Z" d="Mbad"/>
+<text x="1" y="2"><tspan>alpha</text></tspan>
+<use href="#missing" xlink:href="javascript:alert(1)"/>
+</g>
+<metadata><![CDATA[<not-an-element>&amp;]]></metadata>
+</svg>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>frames and controls</title></head>
+<frameset rows="*,0,25%" cols="50%,*">
+<frame src="a.html" name="left" frameborder="0">
+<frameset>
+<frame srcdoc="<p>embedded <b>text</b></p>" scrolling=maybe>
+<noframes><body><p>fallback</p></body></noframes>
+</frameset>
+<iframe src="data:text/html,<html><body>x</body></html>" sandbox="allow-scripts allow-forms" width=0 height=-1></iframe>
+<object data="movie.bin" type="application/x-shockwave-flash">
+<param name=movie value="x.swf">
+<embed src=x.swf hidden>
+fallback <a href="mailto:a@b?subject=x&body=y">mail</a>
+</object>
+</frameset>
+```
+
+```html
+<!DOCTYPE HTML>
+<html lang="x-private">
+<head>
+<meta charset="UTF-16">
+<meta name="viewport" content="width=device-width,initial-scale=NaN">
+<link rel=stylesheet href=one.css><link rel=stylesheet href=two.css disabled>
+<script type="application/ld+json">
+{"@context":"http://schema.org","name":"</script>","x":"\uD800"}
+</script>
+</head>
+<body>
+<table border="1">
+<colgroup span="2"><col width="10"><colgroup><col>
+<thead><tr><th rowspan="0" colspan="-2">H<th>H2
+<tbody><tr><td>A<td>B
+<tfoot><tr><td colspan=99>foot</tr></tbody>
+</table>
+<details open=open><summary>title</summary><template><p>inside</p></template></details>
+<ruby>漢<rt>kan<rp>(</rp><rtc>annotation</rtc></ruby>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title><![CDATA[title]]></title>
+</head>
+<body>
+<p><b><i><u><s><em><strong>deep</b> reorder</i></u></s></em></strong>
+<blockquote cite="x"><p>quote<q cite='y'>nested</blockquote></p>
+<address><a href="http://x/%E0%A4%A">link<img src alt=broken></a></address>
+<hr/><br//><input type=text name=a=1 value='unclosed><textarea rows=0 cols=-3>raw <b>&amp; </textarea>
+<pre>line 1
+line 2&#x0D;line 3</pre>
+<script><!--
+var x = "</script" + ">"; /* &amp; */
+--></script>
+<noscript><p>fallback</p></noscript>
+</body>
+</html>
+```

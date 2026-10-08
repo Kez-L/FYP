@@ -1,0 +1,136 @@
+```html
+<!doctype html>
+<html>
+  <head>
+    <title><meta title="unterminated"><![CDATA[head]]></title>
+    <base href="http://example.invalid/a/b">
+    <meta http-equiv="content-type" content="text/html; charset=windows-1252">
+  </head>
+  <body id=test class='a"b' data-x="&amp &unknown; &#0; &#x110000;">
+    <hgroup><h1>Heading <em>with <strong>crossed</hgroup></strong></em></h1>
+    <p><a href=http://example.invalid/?a=1&b=2 title="x>y">broken link
+    <img src=foo alt="one" width=bad height=-3><br/>
+    <hr><wbr><bdi dir=auto>abc</bdi><bdo dir=sideways>def</bdo>
+    <div><span>first<div>second</span>third</div>fourth
+    <p>entity stream: &amp; &apos; &quot; &lt; &gt; &nbsp &copy; &notin; &fake;
+    <p>numeric: &#1; &#8; &#10; &#13; &#xD800; &#xDFFF; &#x10FFFF; &#x110000;
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE html [
+  <!ELEMENT note ANY>
+  <!ENTITY local "replacement &amp; text">
+  <!ATTLIST note kind CDATA #IMPLIED>
+]>
+<note kind="test">
+  <![CDATA[
+    <not-real attr="&local;"> raw section </not-real>
+  ]]>
+  <!-- first comment -- -- second comment -->
+  <!--
+  <broken>
+  <nested>
+  -->
+  <?xml version="1.0"?>
+  <?processing data?>
+  <section><item>one</item><item>two
+  <item><label>three</section>
+  <footer>tail
+</note>
+```
+
+```html
+<!doctype html>
+<form action="/submit" method=post enctype="multipart/form-data">
+  <fieldset disabled>
+    <legend>Account <input name=hidden type=hidden value="&amp;broken"></legend>
+    <label for=a>Name <input id=a name=name required value="x'y"></label>
+    <label><input type=checkbox checked=maybe> option</label>
+    <select name=choice multiple size="0">
+      <option value=1 selected>one
+      <optgroup label="group &amp; one">
+        <option>two
+        <option disabled="false">three
+      </optgroup>
+      <option value="4">four
+    </select>
+    <textarea name=message cols=abc rows=-1>line one
+      <option>not an option</textarea>
+    <button type=submit formaction=/alt>send</button>
+  </fieldset>
+  <input type=image src=x alt=submit ismap>
+</form>
+<table border=1>
+  <colgroup><col span=2><col></colgroup>
+  <thead><tr><th rowspan=0>Header<th colspan=bad>Other</tr></thead>
+  <tbody><tr><td>A<td>B<tr><td colspan=99>C</tbody>
+  <tfoot><tr><td>foot</table>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <style type=text/css>
+    @media screen and (min-width:0) {
+      body { color: red; }
+      .x { content: "</style><div>escaped?"; }
+    }
+  </style>
+  <script type="application/ld+json">
+    {"x":"</script>","y":"&amp;","z":"\u2028"}
+  </script>
+</head>
+<body>
+  <noscript><p>fallback <img src=x></noscript>
+  <template id=t><div><slot name=x>default</slot><input></div></template>
+  <div inert hidden="no" contenteditable=true spellcheck=maybe>
+    <svg viewBox="0 0 1 1"><title>svg title</title><desc>bad &amp; text</desc>
+      <circle cx=1 cy=2 r=3></circle>
+    </svg>
+    <math><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mn>2</mn></msup></math>
+  </div>
+  <script>
+    if (a < b && c > d) { document.write("<p>x</p>"); }
+    // </script> appears before the actual end
+  </script>
+</body>
+</html>
+```
+
+```html
+<html lang="">
+<head>
+  <meta charset="utf-16">
+  <title>unclosed title
+  <link rel=stylesheet href="a.css">
+</head>
+<body>
+  <dl>
+    <dt>term one
+    <dd>definition one
+    <dt><code>term <mark>two</dt>
+    <dd>definition <p>with paragraph
+  </dl>
+  <ol start="not-a-number" reversed>
+    <li value=0>zero
+    <li>one
+      <ul type=disc compact>
+        <li>nested
+        <li><li>empty nesting
+      </ul>
+    <li>two
+  </ol>
+  <blockquote cite=http://example.invalid/"bad">
+    <q cite='x>y'>quote <cite>source</blockquote>
+  <address><a href="mailto:a@b">a@b<br>line
+  <iframe srcdoc="<p>inner &amp; <b>markup</b>"><fallback></iframe>
+  <object data=x type=application/octet-stream>
+    <param name=movie value="&quot;">
+    <embed src=y>
+    fallback text
+  </object>
+</body>
+```

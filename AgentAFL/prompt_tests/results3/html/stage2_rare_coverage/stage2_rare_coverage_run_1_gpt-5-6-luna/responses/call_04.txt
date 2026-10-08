@@ -1,0 +1,119 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="http://example.invalid/a/">
+<meta http-equiv="refresh" content="0; url=/next">
+<style>
+@media screen and (min-width:0px) {
+  body { color: red; }
+  @import url("broken.css");
+}
+</style>
+</head>
+<body id="root" onload="if (a < b) { document.title = 'x'; }">
+<header><hgroup><h1>Header <span>one</h1><h2>Subtitle</span></h2></hgroup></header>
+<main>
+<article itemscope itemtype="http://schema.org/Thing">
+<meta itemprop="name" content="A &amp; B">
+<figure><img srcset="a.png 1x, b.png 2x," sizes="(bad)" alt="x"><figcaption>Caption
+<details open><summary>Summary</summary><p>Hidden <mark>text</details>
+</figure>
+<time datetime="not-a-date">yesterday</time>
+<data value="1&amp;2">value</data>
+</article>
+</main>
+<footer><address><a href="mailto:x@y">x@y</address></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Table recovery</title></head>
+<body>
+<table border="1">
+<caption><b>Caption</caption>
+<colgroup span="2"><col width="10"><col></colgroup>
+<thead><tr><th rowspan="9">A<th colspan="0">B<td>C
+<tbody>
+<tr><td>one<td><table><tr><td>nested</tr></table>
+<tr><td colspan="x">two</td></tr>
+<tfoot><tr><th>footer</th></tr>
+</tbody>
+</table>
+<div><p>after<table><tr><td>x</div>tail
+<table><tr><td><form><input name="inside"></form></td></tr>
+<tr><td><select><option>unfinished</table>
+</body>
+</html>
+```
+
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<title>Obsolete constructs</title>
+</head>
+<body bgcolor="#fff" text="black">
+<center><font face="serif" size="+9" color="red">Legacy
+<big><small>mixed</big></small></font></center>
+<dir><li>directory item<li>second</dir>
+<menu><li>menu item</menu>
+<blockquote cite="x"><pre> preformatted
+  <b>bold</pre></blockquote>
+<marquee direction="sideways"><blink>blink</blink><isindex prompt="Search:">
+<hr noshade="nonsense" width="bad" height="-3">
+<applet code="X.class" archive="a.jar,b.jar" width="0" height="x">
+<param name="p" value="a&amp;b"><param>
+fallback text
+</applet>
+<object data="x" type="application/x-test"><param name="movie"><embed src="x" pluginspage="bad"></object>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Ruby and international text</title>
+</head>
+<body>
+<p lang="ja"><ruby>漢<rt>かん<rp>(</rp>字<rt>じ<rp>)</ruby> <bdi dir="rtl">אבג</bdi> <bdo dir="sideways">abc</bdo></p>
+<p><ins datetime="2020-99-99"><del cite="bad" datetime="">old &notanentity; new</del></ins></p>
+<p><q cite="&quot;unterminated">quote <cite>source</cite></q>
+<dl compact="maybe">
+<dt><span>term
+<dd><p>definition <wbr><s>strike</s><u>under</u>
+<dt>next<dd>value</dd>
+</dl>
+<dialog open><form method="dialog"><button value="ok">OK</button></form>
+<p>dialog text</dialog>
+<section><h2>section</h2><aside><p>aside</section>orphan</aside>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Odd token boundaries</title></head>
+<body>
+<div class = "a&#x0;b" data-x = "one" data-y=two data-z='three &amp; four'>
+<p>alpha<!-- comment with -- and --><span / >beta</p>
+<x-custom foo=bar baz="unterminated>
+  <template shadowrootmode="open"><div>template <slot name="x"></slot></div></template>
+</x-custom>
+<svg width="10" height="10"><path d="M0 0 L10 10 Z" fill="url(#x)"></path><use href="#missing"/></svg>
+<math><mi>x</mi><mo>&InvisibleTimes;</mo><mfrac><mn>1</mn><mn>0</mn></mfrac></math>
+<textarea>literal <b>tags</b> &amp; &#xZZ;</textarea>
+<pre><code>one
+two</code><code>three</pre>
+<!-- unclosed comment
+<div>buried</div>
+</body>
+</html>
+```

@@ -1,0 +1,131 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<TITLE>Table recovery case</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<CENTER>
+<TABLE BORDER=4 CELLPADDING=3 CELLSPACING=0 WIDTH="90%">
+<CAPTION ALIGN=bottom>broken caption
+<TR><TH ROWSPAN=2>Header<TH COLSPAN=2>Values
+<TR><TD ALIGN=right>one<TD><IMG SRC="x.gif" ALT="missing quote>
+<TR><TD><FORM ACTION="/x" METHOD=post>
+<INPUT NAME=a VALUE="one two><TEXTAREA NAME=note ROWS=2 COLS=8>alpha
+<SELECT NAME=s><OPTION VALUE=1>one<OPTION VALUE=2>two</FORM>
+</TABLE>
+</CENTER>
+<HR NOSHADE SIZE=0>
+<DL><DT>term<DD><B><I>description</DL>
+</BODY>
+</HTML>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Entity and comment stress</title>
+  <!-- unterminated comment begins
+  <meta name="x" content="ignored">
+  <script>this should be comment text</script>
+  --><meta name=test content="a&b&#xD800;&#0;">
+</head>
+<body>
+  <p>start &amp &copy &#; &#x; &#xZZ; &notit; &unknown;
+  <b>bold <i>italic <u>under <em>emphasis</b> after</u></i></em>
+  <pre>  pre &lt;tag&gt;
+line two</pre>
+  <blockquote cite="a&b" title='one"two'>
+    <p>quote
+    <address><a href="mailto:x@y">contact
+  </blockquote>
+  <![CDATA[ raw cdata <b>not really</b> ]]>
+  <?processing instruction data?>
+  <p>end
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Head boundary mutations</title>
+<base href="/root/">
+<link rel=stylesheet href=style.css>
+<meta charset=UTF-8>
+<style type=text/css>
+body { color: red; } </style data-x>
+<noscript><link rel=alternate href=x></noscript>
+</head>
+<body>
+  <header id=top><hgroup><h1>Title<h2>Subtitle</hgroup></header>
+  <main>
+    <section><article>
+      <h3>Article heading
+      <p>Paragraph one
+      <p>Paragraph two
+      <div><span>nested <span>deep</div>
+    </article></section>
+    <aside><menu type=context>
+      <li><a href=#a>first
+      <li><button disabled=disabled name=b>second
+    </menu></aside>
+  </main>
+  <footer><small>Footer</small></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Raw text and obsolete elements</title></head>
+<body>
+<plaintext>
+Everything after this point is intended to challenge plaintext handling.
+</plaintext>
+<listing>one
+two <b>three</b></listing>
+<xmp><div>literal markup</div></xmp>
+<noscript>
+  <table><tr><td>fallback</noscript>
+  <applet code="A.class" archive="a.jar,b.jar" width=0 height=-1>
+    <param name=code value="A.class">
+    fallback <object><param name=x><span>object text</span></object>
+  </applet>
+  <marquee direction=sideways behavior=scrollloop>moving</marquee>
+  <blink><font face="Arial" size="+9" color=#12FG34>old text</font></blink>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Forms and nested controls</title></head>
+<body>
+<form id=f1 action=/submit enctype=multipart/form-data>
+  <fieldset>
+    <legend><label>Account <input name=user></label></legend>
+    <input type=text name=a required autofocus maxlength=-4 size=999999999999>
+    <input type=image src=x alt=go border=abc>
+    <button type=button><select name=q>
+      <option value="a">A
+      <optgroup label="G"><option>B
+    </select></button>
+    <textarea name=t cols=0 rows=-8 wrap=sideways>one
+two</textarea>
+  </fieldset>
+</form>
+<form action=/second>
+  <input name=outside form=f1>
+  <label for=missing>label<label>nested</label></label>
+  <output for="a b c">result</output>
+  <progress value=nan max=0>loading</progress>
+  <meter min=10 max=2 low=bad high=999 value=-3>meter</meter>
+</form>
+</body>
+</html>
+```

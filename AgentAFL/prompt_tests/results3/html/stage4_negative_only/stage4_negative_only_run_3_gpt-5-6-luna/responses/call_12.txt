@@ -1,0 +1,112 @@
+```html
+<!doctype html>
+<html lang="x-klingon">
+<head>
+<meta charset="utf-16">
+<base href="http://example.invalid/a/../b/">
+<meta http-equiv="refresh" content="0; URL='javascript:alert(1)'">
+<style type="text/x-custom"><![CDATA[
+  body > :not(.x) { content: "</style><script>x</script>"; }
+]]></style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","name":"<&","broken":[1,2,}
+</script>
+</head>
+<body>
+<!-- --><!----><! -- malformed comment -- >
+<section id="a" id="b" class="x y x">
+<h1><em><strong>heading</h1>tail</strong></em>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
+  <foreignObject width="10" height="10">
+    <div xmlns="http://www.w3.org/1999/xhtml"><p>inside <b>foreign</div>
+  </foreignObject>
+  <path d="M0,0 LNaN,Infinity Z" fill="url(#none)"/>
+</svg>
+<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow></math>
+<template shadowrootmode="open"><p>template <i>content</template>
+</body>
+</html>
+```
+
+```html
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ENTITY local "replacement &amp; text">
+  <!ELEMENT root ANY>
+  <!ATTLIST root weird CDATA #IMPLIED>
+]>
+<root xmlns="urn:weird:one" xmlns:q="urn:weird:two" weird="&local;">
+  <q:item a="1" a="2" q:b="&unknown;" />
+  <node><![CDATA[<not><markup>&still-not-entity;</node>]]></node>
+  <broken attr='unterminated>
+    text &copy &amp; &#xD800; &#99999999; &#0;
+  <empty></empty/>
+  <mixed><one><two /></one></mixed>
+</root>
+```
+
+```html
+<!doctype html SYSTEM "urn:missing">
+<html>
+<head>
+<title>unterminated title
+<link rel=stylesheet href="data:text/css,body{color:red}">
+<style> .a { background: url("x); } </style>
+</head>
+<body>
+<main>
+<p>alpha
+<blockquote cite="unterminated>beta
+<pre>
+  line one
+  </pre><code>after-pre</code>
+<address><a href="mailto:test@example.invalid?x=&amp;y=">mail
+<ins cite=/foo datetime=2024-99-99T99:99:99Z>inserted
+<del datetime="">deleted
+<ruby>漢<rt>kan<rp>(</ruby></rp></rt>
+<details open="false"><summary>sum</summary><div>detail
+<dialog open>dialogue
+<menu type=context><li><button popover=auto>click</menu>
+</main>
+<footer><p>last
+</body>
+```
+
+```html
+<html><head><title>state switches</title></head><body>
+<p><iframe srcdoc="<p>nested &amp; <b>doc</iframe>">
+<object data="x" type="application/x-unknown">
+  <param name=name value="a&b">
+  <embed src="x" pluginspage="about:blank">
+  fallback <form><input name="x"></object>
+<video controls poster="a&b" src="x"><track kind=subtitles src=x srclang=en label="A > B"><source srcset="a 1x, b 2x,">
+fallback video
+</video>
+<audio autoplay="0"><source type=audio/ogg src=x></audio>
+<map name=x><area shape=poly coords="0,0,NaN,4" href=#></map>
+<img srcset="a 1x,, b 999999999999999999999x" sizes="calc(100% - )" alt="x">
+<canvas width="-1" height="999999999999999999999999">fallback</canvas>
+<noscript><div><p>raw fallback</noscript>
+<template><table-not-table><trick>nope</trick></table-not-table></template>
+</body></html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<head><meta http-equiv=Content-Type content=text/html;charset=unknown>
+<script>
+<!--
+if (a < b && c > d) { document.write("<p>x"); }
+/* </script> */
+</script>
+</head>
+<body bgcolor=#GGG text=rgb(999,-1,foo) background="unterminated>
+<center><font face="A&B" size="+999">old <big><small>style</center>
+<dir><li>one<li>two<ul><li>three</dir></ul>
+<dl><dt>alpha<dd>beta<dl><dt>nested<dd>value
+<isindex prompt="Search &copy">
+<hr noshade="maybe" size="NaN" width="1e999">
+<xmp><b>literal</b>&amp;</xmp>
+<plaintext>
+everything after this is text? <tag attr="x">
+```

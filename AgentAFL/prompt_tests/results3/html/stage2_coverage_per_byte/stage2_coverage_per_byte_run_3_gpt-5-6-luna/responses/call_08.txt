@@ -1,0 +1,112 @@
+```html
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <base href="http://example.test/a/../b/">
+    <title>table recovery</title>
+  </head>
+  <body id=main class=test>
+    <table border=1>
+      <caption>Rows &amp; columns</caption>
+      <colgroup><col span=2><col></colgroup>
+      <thead><tr><th>A<th>B<th>C</tr></thead>
+      <tbody>
+        <tr><td rowspan=2>one<td>two<td>three
+        <tr><td colspan=2>four
+      </tbody>
+      <tfoot><tr><td>tail</table>
+    </body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>mixed embedded content</title>
+  <style type="text/css">
+    body { background: url("x&y"); }
+    .bad { color: red; </style>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("<em>script</em>"); }
+    // </script> appears early
+  </script>
+</head>
+<body>
+  <noscript><p>JavaScript is disabled</noscript>
+  <textarea name="t">a < b &amp; c</textarea>
+  <select name=x multiple>
+    <option value=1 selected>One
+    <option value="2">Two</option>
+  </select>
+  <button type=submit disabled=disabled>Send</button>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html lang="x">
+<head><title>attributes</title></head>
+<body>
+  <div data-a="one" data-b='two' data-c=three data-d=unquoted&value
+       empty="" disabled checked=checked style="width: expression(alert(1))">
+    <a href="mailto:a@b.example?x=1&amp;y=2" title="a &quot;quote&quot;">link</a>
+    <img src=x alt="broken" width=0 height=-1>
+    <input type=text name=q value="a>b<c" readonly/>
+  </div>
+  <p id=x id=y class="a  b	c" class='override'>text
+  <hr>
+  <br/>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>declarations and comments</title></head>
+<body>
+<!-- first -- second --->
+<![if IE]>
+  <p>conditional markup</p>
+<![endif]>
+<!unknown something "quoted">
+<?instruction test?>
+<div>
+  <![CDATA[not really cdata in HTML <tag> & value]]>
+  <p>alpha &copy; &#169; &#x1F600; &unknown; omega</p>
+  <!-- nested <!-- comment --> residue -->
+</div>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>forms and lists</title>
+</head>
+<body>
+  <form action="/submit" method="POST" enctype="multipart/form-data">
+    <fieldset disabled>
+      <legend>Account</legend>
+      <label for=u>User:</label>
+      <input id=u name=user>
+      <label>Password <input type=password name=p></label>
+    </fieldset>
+    <input type=file name=upload>
+    <input type=image src="/go.png" alt=go>
+  </form>
+  <dl>
+    <dt>Term 1
+    <dd>Description without closing
+    <dt>Term 2</dt><dd><ul><li>Nested one<li>Nested two</ul>
+  </dl>
+  <ol start="0" reversed><li>zero<li>negative</ol>
+  <menu><li>action A</menu>
+</body>
+</html>
+```

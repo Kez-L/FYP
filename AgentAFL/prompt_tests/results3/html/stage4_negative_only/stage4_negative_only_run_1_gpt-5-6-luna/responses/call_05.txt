@@ -1,0 +1,167 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+  <base href="https://example.invalid/a/">
+  <link rel="alternate" media="print" href="print.css">
+</head>
+<body>
+  <table border="1">
+    leading text
+    <caption><b>Quarterly totals</b></caption>
+    <colgroup span="2"><col width="40%"><col></colgroup>
+    <thead>
+      <tr><th rowspan="2">Name<th colspan="2">Values
+      <tr><th>Raw<th><abbr title="adjusted">Adj.</abbr>
+    </thead>
+    <tbody>
+      <tr><td>Alice<td><input name="a" value="1"><td>2
+      <tr><td colspan="3">
+        <table><tr><td>nested one<td>nested two</table>
+      <tr><td>Bob
+      <form action="/submit" method="post"><td><button type="submit">Send</button></form><td>4
+    </tbody>
+    <tfoot><tr><td>total<td><output name="sum">7</output><td>7</tfoot>
+  </table>
+  <p>After table <a href="/next"><em>continuation</a> text</em>.</p>
+</body>
+</html>
+```
+
+```html
+<html>
+<head>
+  <title>Raw text and character references</title>
+  <script type="application/javascript">
+    if (a < b && c > d) {
+      document.write("<div data-x='&amp;'>&lt;raw&gt;</div>");
+    }
+    // </script> is text in this string: "</scr" + "ipt>"
+  </script>
+  <script type="text/plain"><!--
+    <not-an-element>&copy; &#x41;
+  --></script>
+  <style>
+    @media screen and (min-width: 0px) {
+      body::before { content: "</style><p>escaped"; }
+    }
+  </style>
+</head>
+<body>
+  <noscript><div class="fallback">JavaScript is off</div></noscript>
+  <textarea rows="2" cols="20">&lt;b&gt;typed&lt;/b&gt;
+second line &amp; &#65;</textarea>
+  <input value="&quot;quoted&quot;" title="a > b & c">
+  <p><![CDATA[not really CDATA in HTML]]></p>
+  <x-custom data-json='{"a": [1, true, null]}'></x-custom>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Lists and definition structures</title></head>
+<body>
+  <nav aria-label="crumbs">
+    <ol start="0" reversed>
+      <li value="3">One
+      <li>Two
+        <ul>
+          <li>child A
+          <li>child B
+            <ol type="i"><li>deep</li></ol>
+        </ul>
+      <li><a href="javascript:alert(1)">Three</a>
+    </ol>
+  </nav>
+  <dl>
+    <dt>Term one
+    <dd>Definition one
+    <dd><p>Second definition <q cite="a&b">quoted</q>
+    <dt><ins>Term two</ins><dt>
+    <dd>Orphaned definition
+  </dl>
+  <menu>
+    <li><button accesskey="&">Action</button>
+    <li><details open><summary>Summary</summary><p>Details</details>
+  </menu>
+  <p><del datetime="not-a-date">deleted <mark>marked</del> remainder</mark></p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Forms with unusual controls</title>
+</head>
+<body>
+  <form id="outer" action="" enctype="multipart/form-data">
+    <fieldset disabled>
+      <legend>Profile <strong>information</legend>
+      <label for="user">User
+      <input id="user" name="user" type="text" required autofocus>
+      </label>
+      <label>Choice
+        <select name="choice" multiple size="0">
+          <optgroup label="Group &amp; One">
+            <option value="a" selected>A</option>
+            <option value="b" disabled>B
+          </optgroup>
+          <option>C</option>
+        </select>
+      </label>
+    </fieldset>
+    <input type="image" src="" alt="go" formaction="/image">
+    <input type="file" accept="image/*,.x" multiple>
+    <input type="number" min="10" max="2" step="0" value="NaN">
+    <input type="date" value="2024-99-99">
+    <input type="checkbox" checked="false">
+    <textarea name="notes" wrap="hard" maxlength="-1">line one
+line two</textarea>
+    <button type="button" form="missing" name="b" value="&lt;">Push</button>
+    <output for="user choice">result</output>
+  </form>
+  <form action="/second"><input name="x"><button>second</button></form>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Embedded resources and legacy elements</title>
+</head>
+<body>
+  <header><hgroup><h1>Archive</h1><h2>Edition 4</h2></hgroup></header>
+  <main>
+    <object data="movie.bin" type="application/octet-stream" width="0" height="-2">
+      <param name="autoplay" value="true">
+      <embed src="fallback.swf" type="application/x-shockwave-flash">
+      <p>Object fallback <a href="file:///tmp/x">download</a></p>
+    </object>
+    <map name="m&amp;p">
+      <area shape="rect" coords="0,0,10,10" href="#one">
+      <area shape="poly" coords="1,2,3,4,5" nohref>
+    </map>
+    <img srcset="a.png 1x, b.png 2x," sizes="(min-width: 1px) 50vw" usemap="#m&amp;p" alt="picture">
+    <figure>
+      <picture>
+        <source media="(min-width: 1px)" srcset="wide.webp">
+        <source type="image/avif" src="x.avif">
+        <img src="last.jpg">
+      </picture>
+      <figcaption>Caption <small>with <span>nested</small> span</span></figcaption>
+    </figure>
+    <ruby>漢<rb>字<rt>kanji<rp>(</rp><rt>zi<rp>)</rp></ruby>
+    <iframe srcdoc="<p>inside &amp; frame</p>" sandbox="" name="f"></iframe>
+  </main>
+  <footer><address>Mail <a href="mailto:a@b">author</a></address></footer>
+</body>
+</html>
+```

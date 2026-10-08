@@ -1,0 +1,80 @@
+```html
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Broken &amp entity &#xD800; &#x110000</title>
+<style type="text/css"><![CDATA[
+body { color: red; } ]]></style>
+</head>
+<body>
+<!-- unclosed comment
+<div><span class="x" id='y>text &unknown; &#0; &#x0D;</span>
+<iframe src="javascript:alert('x')"></iframe>
+</body>
+```
+
+```html
+<?xml version="1.0"?>
+<!DOCTYPE note [
+  <!ELEMENT note ANY>
+  <!ENTITY local "replacement &amp; text">
+]>
+<note xmlns="urn:test">
+  <to>A &local; B</to>
+  <data><![CDATA[<not-an-element> & &#xFFFF;]]></data>
+  <item><item><item>deep</item></item>
+  <br/><empty></empty/
+</note>
+```
+
+```html
+<!doctype html>
+<html>
+<body>
+<form action="/search" method="post">
+  <fieldset disabled="disabled">
+    <legend>Options</legend>
+    <input type=text name=q value="a&b" disabled>
+    <select name=x><option selected>one<option>two</select>
+    <button type=submit><b><i>Send</button></i></b>
+  </fieldset>
+</form>
+<ol start="-999999999999999999999999">
+<li value="NaN">alpha
+<li value="&#xFFFFFFFF;">beta
+</ol>
+</body>
+</html>
+```
+
+```html
+<html>
+<head>
+<script type="text/javascript">
+if (a < b && c > d) { document.write("</script><p>"); }
+/* deliberately unterminated script text
+</script>
+<noscript><div title="one" two=three>fallback</div></noscript>
+</head>
+<body onload="x='&quot;">
+  <template><template><div>nested template</template></div>
+  <svg viewBox="0 0 10 10"><foreignObject><p>mixed &copy;</p></foreignObject></svg>
+  <math><mi>x</mi><mo>&InvisibleTimes;</mo><mo></math>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html PUBLIC "bad" "unterminated>
+<!-- -- --!>
+<div id=outer>
+  <p><a href="http://example.com/?x=1&y=2" title="a""b">link
+  <table border=abc><tbody><tr><td>A<td>B
+    <div>cell diversion</div>
+  </tbody><tfoot><tr><th scope=col>Footer
+  </table>
+  <p>after table &notanentity; &#; &#x; &#12345678901234567890;
+</div
+<section><header>header</section><footer>footer</footer>
+```

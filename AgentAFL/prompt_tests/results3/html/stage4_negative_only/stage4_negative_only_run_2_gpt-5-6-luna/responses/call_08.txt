@@ -1,0 +1,153 @@
+```html
+<!doctype html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <base href="http://example.invalid/a/">
+  <meta http-equiv="refresh" content="0;url=page.html">
+  <style type="text/css">
+    @charset "UTF-8";
+    body { background: url("x"); }
+    @media screen and (max-width:0px) { * { color: expression(alert(1)); } }
+  </style>
+  <script type="text/javascript"><!--
+    if (a < b && c > d) { document.write("<p>broken"); }
+  //--></script>
+</head>
+<body bgcolor=#fff text='black' background=foo.gif>
+  <!--[if IE]><table><tr><td>conditional<![endif]-->
+  <h1 id=top><a href=#missing title="unterminated>Heading
+  <p>First paragraph
+  <p>Second paragraph<br><br />after breaks
+  <hr noshade="noshade" size=0 width="100%">
+  <pre>  preserved
+	 tabs &amp; entities &#xD800; &#999999; &unknown;</pre>
+  <address><a href="mailto:x@y">contact</address>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Tables inside tables</title></head>
+<body>
+<table border=1 cellpadding=0 cellspacing=bad width="0" summary="x">
+  <caption><b>Caption <i>left</caption>
+  <colgroup span=2><col width=10><colgroup><col>
+  <thead><tr><th rowspan=999 colspan=0>Header<th>Second
+  <tbody>
+    <tr><td>A<td>B<td>C
+    <tr><td><table>
+      <tr><td>nested one</tr>
+      <tr><th>nested head<td>value
+      <tfoot><tr><td>footer in wrong place
+    </table>
+    <td colspan="not-a-number">outer
+  <tbody><tr><td>orphan section
+  <tfoot><tr><td>tail</table>
+<table><tr><td>
+  <p>paragraph swallowed by table
+  <div>division <table><tbody><tr><td>x</table> end</div>
+</td></tr></table>
+<dl><dt>term<dd>definition<dt><dd>empty</dl>
+</body>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Frameset oddities</title>
+  <meta charset="x-invalid">
+</head>
+<frameset rows="*,0,auto" cols="25%,*,bad" frameborder="maybe">
+  <frame src="a.html" name=one scrolling=bogus noresize>
+  <frameset cols="*">
+    <frame srcdoc="<p>embedded & broken" frameborder=0>
+    <frame src="javascript:alert(1)" marginwidth=-1 marginheight=999999>
+  </frameset>
+  <noframes>
+    <body>
+      <h2>No frames</h2>
+      <object data="movie.bin" type="application/octet-stream" width=0 height=-5>
+        <param name="x" value="&quot;bad">
+        <embed src="x.swf" pluginspage="none" width="NaN"></embed>
+        fallback text
+      </object>
+      <applet code="A.class" archive="a.jar,b.jar" width=1 height=1>
+        <param name=x>
+        applet fallback
+      </applet>
+    </body>
+  </noframes>
+</frameset>
+<frameset>
+  <frame>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lists and ruby</title>
+</head>
+<body>
+  <ol start="zero" reversed="false" type="A">
+    <li value="NaN">one
+    <li>two
+      <ul type="square">
+        <li>nested
+        <li><ol><li>deep<li>deeper</ol>
+      </ul>
+    <li><p>three
+  </ol>
+  <menu compact="compact"><li>menu item<li><a href="">link</menu>
+  <dir><li>legacy one<li>legacy two</dir>
+  <blockquote cite="unterminated>
+    quote <q cite=x>nested <q>double</blockquote>
+  <ruby>
+    base<rp>(</rp><rt>annotation</rt><rp>)</rp>
+    <rb>unclosed <rtc>group <rt>note
+  </ruby>
+  <p><b><i><u><s><strike>formatting
+  <center><font face="A" size=999 color=#ggg>old text</font></center>
+  <marquee direction=sideways behavior=alternate>moving <blink>text</blink></marquee>
+  <x-unknown a=1><y-unknown><z-unknown /></y-unknown></x-unknown>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Declaration and entity stress</title>
+  <!-- comment -- -- malformed --!>
+  <?xml version="1.0"?>
+  <!bogus [ <!ENTITY x "y"> <!ELEMENT html ANY> ]>
+</head>
+<body>
+  <![CDATA[
+    not really cdata in HTML
+    <tag attr="unterminated
+  ]]>
+  <p data-a="&amp" data-b="&#0;" data-c="&#x110000;" data-d="&notanentity;">
+    &copy &reg; &nbsp &apos; &#65 &#x41 &#x000041;
+  <p title='single " quote'>text
+  <input disabled="" checked=0 readonly=no autofocus required="false">
+  <textarea name=t rows=0 cols=-1 wrap=unknown>less-than &lt; and raw </textarea text>
+  <select multiple size="-999" name=s>
+    <option selected value=one>one
+    <option value=two>two
+    <option>three
+  </select>
+  <button type=unknown formaction="/x" formmethod=invalid>
+    <img src=x alt="alt <b>not markup" ismap="false">
+  </button>
+  <template id=t><div><p>template content</template>
+  <slot name=x>fallback</slot>
+  <p>after
+</body>
+</html>
+```

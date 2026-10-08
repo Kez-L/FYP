@@ -1,0 +1,143 @@
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Nested Template Stress</title>
+  <style>
+    :root { --gap: calc(1px + 2%); }
+    @media screen and (max-width: 0px) {
+      body > main article:first-child { display: contents; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <article id="outer">
+      <template shadowrootmode="open">
+        <section>
+          <slot name="missing"></slot>
+          <template>
+            <p>inner template <strong>without a close
+          </template>
+        </section>
+      </template>
+      <div hidden>
+        <template id="t1"><template id="t2"><template id="t3">deep</template>
+        <form><input name="x"><button><span>submit</form>
+      </div>
+    </article>
+  </main>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+  <base href="http://example.invalid/a/b/">
+  <title>&notanentity &amp &copy; &#xD800; &#0; &#99999999;</title>
+</head>
+<body dir="rtl">
+  <p class="a b a" id="x" id="y" data-empty= data-quote="unterminated>
+    Left&nbsp;Right &unknown; &#x1F4A9; &#128169;
+  <p lang=en-US title='single " quote' style="color: rgb(1,2,3);">
+    <a href=javascript:alert(1) onclick = "">broken link
+    <img src="" alt= width=height=10>
+  </p>
+  <textarea name=t>&lt;tag&gt;
+    <div>literal?</div>
+  </textarea>
+  <pre><code>&lt;script&gt;not executable&lt;/script&gt;</pre>
+</body>
+```
+
+```html
+<html>
+<head></head>
+<body>
+  <table border=1>
+    <caption>Rows that do not agree</caption>
+    <colgroup><col span="0"><col><tbody>
+    <tr><td>A<td>B<th>C
+    <tr><th colspan=999 rowspan=-4>D</th></tr>
+    <tfoot><tr><td>footer
+    <tbody>
+      <tr><td><form><input name="inside"><select><option>one<option selected>two</select></form>
+      <tr><td><ul><li>cell list<li>second<li><table><tr><td>nested</table></ul>
+  </table>
+  <p>after table
+  <form id=f method=post action="/submit">
+    <fieldset disabled>
+      <legend><label><input type=checkbox checked>Legend control</label></legend>
+      <input name=a required>
+    </fieldset>
+  </form>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Foreign Content</title>
+  </head>
+  <body>
+    <svg width="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="g"><stop offset="0%"/><stop offset="100%"/></linearGradient></defs>
+      <g transform="translate(1 2) rotate(90)">
+        <foreignObject x="0" y="0" width="100" height="40">
+          <div xmlns="http://www.w3.org/1999/xhtml">
+            <p>HTML inside SVG
+              <math><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mi>y</mi><mn>2</mn></msup></math>
+            </p>
+          </div>
+        </foreignObject>
+        <path d="M0 0 L10 10 Z" fill="url(#g)" weirdAttr="value"></path>
+      </g>
+    </svg>
+    <math display="block">
+      <mrow><mi>a</mi><mo>&lt;</mo><mfrac><mn>1</mn><mn>0</mn></mfrac></mrow>
+      <annotation-xml encoding="text/html"><div><b>annotation</b></div></annotation-xml>
+    </math>
+    <p>tail</p>
+  </body>
+</html>
+```
+
+```html
+<!doctype html>
+<!-- comment with -- bad -- nesting -->
+<?processing instruction?>
+<html>
+<head>
+  <title>Unclosed structures
+  <noscript><meta charset="utf-8"></noscript>
+</head>
+<body>
+  <div class="level0">
+    <div class="level1">
+      <div class="level2">
+        <p>paragraph
+        <blockquote>
+          <div><span><em><strong>formatting
+        </blockquote>
+      </div>
+    </div>
+  </div>
+  <iframe srcdoc="<html><body><p>embedded &amp; text</p></body></html>" name="f">
+    fallback <b>content
+  <object data="data:text/plain,hello" type="text/plain">
+    <param name="x" value="1">
+    fallback object
+  </object>
+  <!--
+    unterminated comment
+  <script type="application/json">{"x":"</script>","y":"&amp;"}</script>
+  <style>body { content: "</style>"; }</style>
+</body>
+```

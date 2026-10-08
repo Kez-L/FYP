@@ -1,0 +1,118 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+<html>
+<head>
+  <?xml-stylesheet type="text/css" href="broken.css"?>
+  <title>Malformed table recovery</title>
+</head>
+<body>
+<table border="1">
+  <caption>Caption without closure
+  <colgroup span="bogus"><col width="*" /><colgroup>
+  <thead><tr><th colspan="NaN">Header<th>Second
+  <tbody>
+    stray text before row
+    <tr><td rowspan="-1">one<td><p>cell paragraph
+    <tr><td><table><tr><td>nested<td>table</table><td>after
+  <tfoot><tr><td>footer</table>
+<address>tail outside table</address>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html lang="x" dir="sideways">
+<head>
+  <title><![CDATA[title ]]> with markup</title>
+  <meta http-equiv=content-type content='text/html; charset="utf-8'>
+</head>
+<body>
+  <ruby>
+    漢<rb>字<rp>(</rp><rt>kanji</rt><rp>)</rp>
+    <rtc><rt lang=ja>かな</rtc>
+  </ruby>
+  <p data-a="one" data-a="two" =broken ="x" disabled="" checked=checked>
+    &notanentity; &amp &apos; &#x110000; &#999999999999999999999;
+  <bdo dir=rtl><wbr><bdi>mixed <q cite=>quotes</q></bdi>
+  <menu type=context><li><command label="x" disabled>Run</command></li></menu>
+  <p><del datetime=2024-99-99>deleted<ins cite=foo>inserted</del>crossed</ins>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Foreign content boundary</title></head>
+<body>
+  <svg width="not-a-number" height="-" viewBox="0 0 100" preserveAspectRatio="xMidYMid?">
+    <title>svg title</title>
+    <g transform="translate(1,2) rotate(foo)" onclick="x<y">
+      <path d="M0 0 L 10 ZZZ L" fill="url(#missing)" />
+      <foreignObject><div xmlns="http://www.w3.org/1999/xhtml">
+        <p>HTML inside SVG <br /></p>
+      </div></foreignObject>
+      <circle cx="NaN" cy="Infinity" r="-4"></circle>
+    </g>
+  </svg>
+  <math display="sideways">
+    <mrow><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mi>y</mi><mn>2</mn></msup>
+    <mtext><b>text in math</b></mtext></mrow>
+    <annotation-xml encoding="application/xhtml+xml"><p>annotation</p></annotation-xml>
+  </math>
+  <p>after foreign content</p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Raw text and comments</title>
+  <style type=text/css>
+    body { color: red; }
+    </style><style><!-- .x { content: "</style><p>fake"; } --></style>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("<div title='x'>"); }
+    /* </script> appears early */
+    var s = "</ScRiPt>";
+  </script>
+  <script type="application/json">{"x":"</script><p>json</p>","y":null}</script>
+</head>
+<body>
+  <!-- unclosed comment
+  <p>hidden</p>
+  <!-- nested-looking --> visible
+  <![if IE]><p>conditional</p><![endif]>
+  <textarea>literal <b>markup</b> &amp; entities</textarea>
+  <xmp><p>old raw text</p></xmp>
+  <plaintext><b>everything after this is text
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<frameset rows="*,0,auto" cols="25%,75%,bad">
+  <frame name=left src="a.html" frameborder=-1 marginwidth=NaN>
+  <frameset>
+    <frame src>
+    <noframes>
+      <body bgcolor=#GGHHII text=rgb(0,0,0)>
+        <center><font face="Arial" size="++++">Legacy content
+        <big><strike><tt>unbalanced legacy tags
+        <applet code="x.class" archive="a.jar,b.jar" width="auto">
+          <param name=movie value>
+          fallback &copy; text
+        </applet>
+        <marquee behavior=sideways loop=-0 scrollamount=NaN>
+          moving <blink>text</blink>
+        </marquee>
+      </body>
+    </noframes>
+  </frameset>
+  <frame src="last.html">
+</frameset>
+```

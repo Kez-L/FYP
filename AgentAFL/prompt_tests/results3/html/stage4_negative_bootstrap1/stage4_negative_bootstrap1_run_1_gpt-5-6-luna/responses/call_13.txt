@@ -1,0 +1,124 @@
+```html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<base href="https://example.invalid/root/">
+<link rel="alternate" media="screen and (min-width:0px)" href="/x">
+<meta http-equiv="refresh" content="0;url=/next">
+</head>
+<body>
+<table border="1">
+<caption><b>caption without closing
+<thead><tr><th scope=col>A<th rowspan=2>B
+<tbody>
+<tr><td><form action="/submit" method=post><input name=a><button name=b>send
+<tr><td colspan=3>orphan cell</form>
+<tfoot><tr><td><select name=s><optgroup label=x><option selected>one<option>two</select>
+</table>
+<p>after table<div><p>nested paragraph <a href=/a><span>link</div>
+<hr><input type=checkbox checked disabled><label for=q>label</label>
+<input id=q value="&notanentity; &ampbroken">
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN">
+<html>
+<head>
+<title>misnested inline formatting</title>
+</head>
+<body>
+<p><b><i><u>one <em>two</b> three</u> four</i> five
+<dl>
+<dt>term 1
+<dd>definition <strong>bold <small>small
+<dt><li>term pretending to be a list item
+<dd><ol start="zero"><li value="NaN">alpha<li value="-3">beta</ol>
+</dl>
+<blockquote cite="&quot;broken"><p>quoted <q>nested <cite>citation</blockquote>
+<pre>  leading
+ &lt;tag&gt; &amp; text
+</pre>
+<center><font color=#ggg size=999>legacy</font></center>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>head boundary confusion</title></head>
+<body>
+<form id=f1>
+<fieldset disabled><legend>Account <input name=legend></legend>
+<label>name <input name=user required minlength=999999999999999999999></label>
+<label>choice <input type=radio name=x checked><input type=radio name=x checked></label>
+<textarea name=t rows=-1 cols=abc>&lt;textarea&gt;
+second line
+</textarea>
+<output for="a b c">result</output>
+<datalist id=opts><option value=one>One<option value=two>Two</datalist>
+<input list=opts type=date value=2024-99-99>
+</fieldset>
+</form>
+<p><button form=f1 type=submit formaction=javascript:bad>go</button>
+<menu><li>first<li>second</menu>
+<details open><summary>summary</summary><p>revealed</details>
+<dialog open><form method=dialog><button>close</button></form></dialog>
+</body>
+</html>
+```
+
+```html
+<?xml version="1.0"?>
+<!DOCTYPE html [
+<!ENTITY local "replacement">
+<!ELEMENT mystery ANY>
+]>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>declaration and namespace edges</title>
+</head>
+<body>
+<!-- unclosed comment
+<p>comment payload</p>
+-->
+<div xmlns:x="urn:example:x" x:data="&local;" data-x="&unknown;">
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+<mi>x</mi><mo>&InvisibleTimes;</mo><mfrac><mn>1</mn><mrow><mi>y</mi><mo>+</mo><mi>z</mi></mrow></mfrac>
+</math>
+<p xmlns="">reset namespace <b>text</b></p>
+</div>
+<ruby>漢<rt>kan</rt><rp>(</rp><rp>)</rp></ruby>
+<p dir=auto><bdi>abc</bdi><bdo dir=sideways>xyz</bdo></p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>void elements and malformed end tags</title>
+<meta charset="utf-8">
+</head>
+<body>
+<header><hgroup><h1>heading<h2>subheading</hgroup><nav><ul><li><a href="#">one<li><a href="#">two</ul></nav></header>
+<main>
+<article>
+<section><h3>section</h3><p>text<br/><br>more<wbr>words<img src alt="missing source"><input></section>
+<aside><p>aside</article></p></aside>
+</main>
+<footer>
+<address>contact <a href="mailto:x@y">x@y</address>
+<ins cite=/a datetime=not-a-date>inserted</ins>
+<del cite=/b datetime=2024-13-99>deleted</del>
+<map name=m><area shape=poly coords="0,0,1,1,foo" href=/map></map>
+<video controls autoplay muted poster=/p><track kind=subtitles srclang=en></video>
+<audio src=/sound preload=invalid></audio>
+</footer>
+</body>
+</html>
+```

@@ -1,0 +1,97 @@
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Mixed markup stress</title>
+  <style>
+    <![CDATA[
+      body { color: #123456; }
+    ]]>
+  </style>
+</head>
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg">
+    <foreignObject><div><p>text &amp; &#xD800; &#x110000;</div></foreignObject>
+    <text><![CDATA[unclosed cdata]]></text>
+  </svg>
+  <math><mi>x</mi><mo>&InvisibleTimes;</mo><mrow><mo>&lt;</mo></mrow></math>
+  <!-- comment -- -- malformed -->
+  <p title="a&quot;b&amp;c&#0;">A<br/>B<hr>C</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><meta http-equiv="refresh" content="0;url=&quot;x"></head>
+<body>
+<form action="" method="post">
+  <input name="a" disabled checked=checked value='unterminated>
+  <select name=x multiple>
+    <option selected>one
+    <option value=two>two</select>
+  <textarea rows=3 cols=4>first
+second &unknown; &#xZZ; </textarea>
+  <button type=submit><b><i>send</form>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-16">
+  <title>nested namespaces</title>
+</head>
+<body>
+  <table border=0><tbody>
+    <tr><th rowspan=2><a href="javascript:&#x0D;alert(1)">head
+    <td><table><tr><td>inner</tr></table>
+    <td><ol><li>one<li><dl><dt>term<dd>definition</ol>
+  </tbody><tfoot><tr><td colspan=99>tail</table>
+  <p>after table<div>block<span>inline</div>tail</span></p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("</script><p>escaped?"); }
+    <!-- fake comment
+    var x = '&amp; &#128512;';
+  </script>
+</head>
+<body>
+  <noscript><iframe src="x"></iframe></noscript>
+  <template><table><tr><td>template<div>orphan</table></template>
+  <pre>one
+  <code>two</pre></code>
+  <p><![CDATA[raw <tag> & entity ]]></p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+  <h1 id="a" id="b" class=test class="other">Heading</h1>
+  <p><ruby>漢<rt>kan<rp>(</ruby> broken <rt>tail</rt></rp>
+  <blockquote cite="&notanentity; &#x10ffff;">quote
+    <address><em><strong>contact</address></em></strong>
+  </blockquote>
+  <div>
+    <ul><li>A<ul><li>B</ul><li>C</ol>
+    <ol start="999999999999999999999999999999999999999">x</ol>
+  </div>
+  <img src=x alt="unterminated <p>after &copy
+  <input type=image src=data:image/png;base64,%%%%>
+</body>
+</html>
+```

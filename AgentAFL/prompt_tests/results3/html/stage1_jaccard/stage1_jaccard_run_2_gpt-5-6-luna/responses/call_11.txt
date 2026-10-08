@@ -1,0 +1,111 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title><meta title="nested">A &amp; B</title>
+</head>
+<body>
+<header id=top class="a b" data-x='one"two' disabled=disabled>
+<nav><a href="javascript:&#x000A;alert(1)" title="&quot;broken">link</a></nav>
+</header>
+<main>
+<article>
+<hgroup><h1>Heading<h2>Subheading</h3></hgroup>
+<p>alpha <b><i>beta <u>gamma</b> delta</i> epsilon</u>
+<figure><img src alt=unquoted><figcaption>caption</figure>
+<dl><dt>term<dd>definition<dt><dd><span>orphan</dl>
+<blockquote cite='a&b'><q cite=x>quoted</blockquote>
+<hr/><br><wbr>
+</article>
+</main>
+<footer><address><a href=mailto:test@example.invalid>mail</a></address></footer>
+</body>
+</html>
+```
+
+```html
+<!doctype html [
+<!ELEMENT html O O>
+<!ENTITY weird "x &amp; y">
+<!ATTLIST div data-test CDATA #IMPLIED>
+]>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:x="urn:broken">
+<head>
+<?xml version="1.0"?>
+<meta charset='utf-16'>
+<link rel=stylesheet href=>
+<base href="//example.invalid///">
+</head>
+<body>
+<div data-test="&weird;" x:thing="&unknown;" style="color:red" style="color:blue">
+<![CDATA[ raw cdata <tag> & stuff ]]>
+<!-- first -- second ---> 
+<div><span><em>deep</div>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>foreign content</title></head>
+<body>
+<svg width="100%" viewBox="0 0 100 100" viewbox="bad">
+<defs><linearGradient id="g"><stop offset="0%"/><stop offset="100%"></linearGradient></defs>
+<g transform="translate(1 2) rotate(3)">
+<path d="M0,0 L10,10 Z" fill="url(#g)"/>
+<text x="1" y="2">SVG <tspan>text</tspan></text>
+<foreignObject><div xmlns="http://www.w3.org/1999/xhtml"><p>embedded html</div></foreignObject>
+</g>
+</svg>
+<math display="block"><mi>x</mi><mo>&InvisibleTimes;</mo><mfrac><mn>1</mn><mrow><mi>y</mi></mrow></mfrac></math>
+<svg><script><![CDATA[if (a < b) { c = "</svg>"; }]]></script></svg>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+<head>
+<title>attribute stress</title>
+</head>
+<body onload=go()>
+<div a=1 a=2 =bad ""=empty / weird=val/ data-empty="" data-space="a b
+c" data-quote='one"two' data-amp="&amp;&quot;&apos;&lt;&gt;">
+<input type=text name=x value="unterminated
+<img src="x" alt="a > b" title='single '' quote'>
+<area href=# coords="1,2,3,4" shape=poly>
+<table border=0 cellpadding=1 cellspacing=2>
+<colgroup span=2><col width=20><col width=30></colgroup>
+<thead><tr><th colspan=0 rowspan=-1>head<th>second
+<tbody><tr><td rowspan="999"><div>cell</td><td>other
+<tfoot><tr><td>foot</table>
+<details open=open><summary>summary</summary><p>content</details>
+</div>
+</body>
+</html>
+```
+
+```html
+<html>
+<head>
+<meta charset="utf-8">
+<title>token boundaries</title>
+</head>
+<body>
+<p>&#0; &#1; &#8; &#11; &#12; &#31; &#127; &#x0; &#xD800; &#xDFFF; &#x10FFFF; &#x110000; &#999999999999999999999;</p>
+<p>&amp &AMP &lt &gt &quot &apos &copy &eacute &notin &CounterClockwiseContourIntegral;</p>
+<p>&#x; &#xG; &#; &#Xdeadbeef; &ampfoo; &a b; &semi;</p>
+<!-- comment --><!----><! -- malformed --><!DOCTYPE><!DOCTYPE html html>
+<?processing instruction?><% percent %>
+<pre>line one
+line two &amp; &#xD800;</pre>
+<template><div>template <b>content</template>
+<slot name="x">fallback</slot>
+<ruby>漢<rt>kan</rp><rp>)</ruby>
+<iframe srcdoc="<p title='x'>inside &amp; iframe</p>" sandbox></iframe>
+</body>
+</html>
+```

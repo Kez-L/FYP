@@ -1,0 +1,144 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Entity and declaration stress</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+  <?xml version="1.0"?>
+  <!---->
+  <!-- unclosed comment starts here
+  <meta name="ignored" content="&amp; &#0; &#xD800; &#1114112;">
+</head>
+<body bgcolor="#zzzzzz" text="&quot;">
+  &unknown; & &amp &apos; &#; &#x; &#x1F600; &#x110000;
+  <p title="a&#13;b&#10;c&#9;d&#x0;">before<br/>after</p>
+  <![CDATA[ <not-a-tag> &amp; ]]>
+  <!-- -- strange -- comment -- >
+  <hr / >
+  <p><b><i><u>three styles</b> after i</u> end</i></p>
+</body>
+</html>
+```
+
+```html
+<!doctype HTML PUBLIC "-//IETF//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <base href="http://example.test/a/b/">
+    <isindex prompt="Search:">
+    <title>Frameset replacement</title>
+  </head>
+  <frameset rows="*,50,0" cols="25%,*,25">
+    <frame src="left.html" name="left" noresize="noresize">
+    <frameset cols="*">
+      <frame src="" frameborder=maybe>
+      <noframes>
+        <body>
+          <h1>Fallback</h1>
+          <a href=http://example.test/?a=1&b=2>broken URL</a>
+          <img src=missing.gif alt="fallback">
+        </body>
+      </noframes>
+    </frameset>
+    <frame src="right.html" scrolling="sometimes">
+  </frameset>
+  <body>
+    <p>Content after frameset that should be recovered.</p>
+  </body>
+</html>
+```
+
+```html
+<html>
+<head>
+  <title>Forms with unusual controls</title>
+  <meta name="viewport" content="width=device-width">
+</head>
+<body>
+  <form action="/submit" method="POST" enctype="multipart/form-data" accept-charset="utf-8">
+    <fieldset disabled>
+      <legend><input type=text value="legend control"></legend>
+      <label for=x>Name <input id=x name=name value="a" checked></label>
+      <textarea name=note rows=0 cols=-1>line one
+line two
+</textarea>
+      <select name=choice multiple size=0>
+        <option value=1 selected>One
+        <option>Two
+        <optgroup label="Group"><option value=3>Three
+      </select>
+    </fieldset>
+    <input type=image src=x alt="go">
+    <input type=radio name=r checked checked>
+    <input type=checkbox name=c disabled=false>
+    <button type=submit><img src=x>Submit</button>
+    <output name=result for="x">old</output>
+  </form>
+  <form>
+    <input name=a>
+  </form>
+  <input name=outside form=no-such>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Embedded content boundaries</title>
+  <style type="text/css">
+    body { background: url("x"); }
+    @import "unterminated
+    </style>
+  <script type="text/javascript">
+    document.write("<p>literal </script> text</p>");
+    if (x < y && y > z) { alert("</style>"); }
+  </script>
+</head>
+<body>
+  <object data="movie.swf" type="application/x-shockwave-flash">
+    <param name="movie" value="movie.swf">
+    <embed src="movie.swf" width="10" height="10">
+    <noembed><p>fallback</p></noembed>
+  </object>
+  <map name=map1>
+    <area shape=rect coords="0,0,10,10" href="#">
+    <area>
+    <area shape=poly coords="1,2,3,4,5">
+  </map>
+  <img src="x" usemap="#map1" ismap>
+  <video controls poster=x><source src=a><track kind=subtitles src=b></video>
+  <p>tail</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Block and inline recovery</title></head>
+<body>
+  <address>contact <a href="mailto:x@y">mail
+  <blockquote cite="/quote"><p>quoted <q>nested <em>words</blockquote>
+  <center>
+    <table><tr><td>text
+    <div class=box><p>paragraph <span>span <font color=red>font</div>
+  </center>
+  <pre> preformatted
+    <b>bold</b>
+  <ol start="zero" type="Z">
+    <li value="x">first
+    <li>second
+  </ol>
+  <menu><li>menu item</menu>
+  <dl>
+    <dd>orphan definition
+    <dt>term <dd>definition <hr>
+  </dl>
+  <p><small>small <big>big <sub>sub</sup> normal
+  <ruby>base<rt>annotation<rp>(</ruby>
+  <iframe srcdoc="<p>embedded &amp; text" frameborder="0">fallback</iframe>
+</body>
+</html>
+```

@@ -1,0 +1,126 @@
+```html
+<!doctype html [
+<!ENTITY writer "Ada &amp; Sons">
+<!ELEMENT note ANY>
+<!ATTLIST note priority CDATA #IMPLIED>
+]>
+<?xml version="1.0"?>
+<!DOCTYPE note SYSTEM "missing.dtd">
+<note priority="high" priority=low>
+  <![CDATA[<not-an-element>&still-unparsed;</not-an-element>]]>
+  <to>&writer;</to>
+  <from><![CDATA[&writer;]]></from>
+  <body><![CDATA[alpha ]]> beta <![CDATA[ gamma]]></body>
+  <?process instruction?>
+  <empty/>
+</note>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Namespace repair</title>
+</head>
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
+    <g transform="translate(1 2)" transform="scale(2)">
+      <foreignObject width="8" height="8">
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>embedded <em>markup</em></p>
+        </div>
+      </foreignObject>
+      <path d="M0 0 L 10 10 Z"></path>
+    </g>
+  </svg>
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <mrow><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+  </math>
+  <custom:widget xmlns:custom="urn:test" custom:flag="yes"/>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <base href="http://example.invalid/">
+  <title>Legacy controls</title>
+</head>
+<body bgcolor="#fff" onload="start()">
+  <isindex prompt="Search:">
+  <form method=post enctype="multipart/form-data" accept-charset="UTF-8, ISO-8859-1">
+    <fieldset disabled>
+      <legend>Account</legend>
+      <label for="u">User</label>
+      <input id=u name=user type=text value="a&amp;b" maxlength=999999999999999999999>
+      <label>Password <input name=p type=password autocomplete=off></label>
+    </fieldset>
+    <fieldset>
+      <select name=mode multiple size=0>
+        <optgroup label="A&amp;B"><option value=1 selected>one</optgroup>
+        <option disabled value="2">two
+      </select>
+      <textarea name=note wrap=hard cols="-1" rows="999999">line 1
+line 2 &amp; <b>raw</b></textarea>
+      <input type=image src="" alt="submit" border=garbage>
+      <button type=submit formaction="/x?a=1&b=2">Send</button>
+    </fieldset>
+  </form>
+  <hr noshade="noshade" width="100%" height="-3">
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Comments and declarations</title>
+  <!-- normal --><!--- strange --><!-- a--b --><!-->--><!--
+  multiline comment
+  <tag attr="value">
+  -->
+  <style type="text/css">
+    /* unterminated comment
+    body { color: red; }
+  </style>
+  <script language="javascript">
+    var x = "</script";
+    var y = "<!--";
+    /* </style> */
+  </script>
+</head>
+<body>
+  <!--[if IE]><table><tr><td>legacy</td></tr></table><![endif]-->
+  <?php echo "<p>server</p>"; ?>
+  <!bad declaration>
+  <!---->
+  <div><!-- nested <!-- comment --> visible</div>
+  <pre>  leading
+	 tabs &lt;tag&gt;
+</pre>
+</body>
+</html>
+```
+
+```html
+<html>
+<head><title>Adoption and implied containers</title></head>
+<body>
+  <p><a href="one"><b>first <i>second</a> third</b> fourth</i>
+  <p><table><td>orphan cell</table>after table
+  <dl>
+    <dt>term 1
+    <dd>definition <p>nested paragraph
+    <dt>term 2
+    <dd><ul><li>one<li>two<ul><li>deep</ul></ul>
+  </dl>
+  <blockquote cite='x"y'><center><font face=serif size=+99 color=#12>centered
+  <dir compact><li>entry A<li>entry B</dir></font></center></blockquote>
+  <p><q>quote <small>small <big>large</q> end</big></small>
+  <address>name<br>street<br></address>
+  <div><span>unclosed <b>bold <i>italic
+</body>
+```

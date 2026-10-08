@@ -1,0 +1,122 @@
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <base href="http://example.invalid/a/../b">
+    <style type="text/css">
+      @media screen and (min-width:0px) { body { color: #12gg; } }
+      /* unterminated comment
+    <title>broken head
+  </head>
+  <body id="x" class=test data-a=one data-b="two" data-c='three>
+    <!-- comment starts
+    <h1 title="a &amp; b &bogus; c">Heading
+    <p>alpha<br/>beta<hr/>gamma
+    <p><strong>bold <em>nested</strong> emphasis</em>
+    <blockquote cite=><q cite="unterminated>quoted</blockquote>
+    <address>name<br>street<br>city
+    </body>
+</html>
+```
+
+```html
+<!doctype html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<?xml version="1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="viewport" content="width=device-width">
+    <link rel=stylesheet href=//example.invalid/x.css />
+    <script type="text/javascript">
+      if (a < b && c > d) { document.write("</script>"); }
+    </script>
+  </head>
+  <body>
+    <dl compact="compact">
+      <dt>one
+      <dd>first
+      <dt><a href="x?y=1&amp;z=2">two
+      <dd><div>second</dl>
+    <ol start="0" reversed>
+      <li value="x">A
+      <li>B
+        <ul><li>C<li>D</ol>
+    <pre>  leading
+	 tabs &lt;tag&gt;
+  trailing</pre>
+  </body>
+</html>
+```
+
+```html
+<html>
+<head><title>table repair variant</title></head>
+<body>
+  <table border="bogus" cellpadding="-" cellspacing="1.2">
+    <colgroup span="NaN"><col width="*"><colgroup><col>
+    <thead><tr><th rowspan="-1">A<th colspan="zero">B
+    <tbody>
+      <tr><td headers=a b>1<td>2
+      <tr><td><p>nested paragraph<td><table><tr><td>inner</table>
+    <tfoot><tr><td colspan=999>footer
+  </table>
+  <map name=main>
+    <area shape=poly coords="1,2,three,4" href=#a alt=>
+    <area href="unterminated>
+  </map>
+  <img src=x alt="a &copy; b" width=none height=-4 usemap=#main>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>raw text and comments</title>
+  <noscript><p>fallback <b>markup</noscript>
+</head>
+<body>
+  <template id=t><section><p>template text</section></template>
+  <script language=javascript>
+    var s = "<div>&amp;</div>";
+    /* comment with </script and <style> */
+    function f(x){ return x ? "<!--" : "-->"; }
+  </script>
+  <style>
+    .x:before { content: "<p>&amp;"; }
+    @import url("x.css");
+  </style>
+  <textarea name=t>one</textarea>two</textarea>
+  <xmp><b>literal</b><xmp>nested</xmp></xmp>
+  <plaintext><h2>everything after this is text
+  <div class="not-an-element">&copy; &#xZZ;</div>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset=UTF-8 />
+    <title>namespace and embedded markup</title>
+  </head>
+  <body>
+    <svg xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id=g><stop offset="50%" stop-color="#fff"/></linearGradient></defs>
+      <use href="#g" xlink:href="#missing"></use>
+      <text x="NaN" y="-Infinity">A &amp; B</text>
+    </svg>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <mstyle mathvariant="unknown"><mfrac><mi>a</mi><mrow><mo>&lt;</mo><mi>b</mi></mrow>
+      <munder><mo>∑</mo><mi>i</mi></munder></mstyle>
+    </math>
+    <div xmlns:foo="urn:test" foo:flag="yes" xml:lang="en">
+      <span style="color: rgb(999,-1,foo)" onclick="if (x < 2) alert('&quot;')">text</span>
+    </div>
+    <!-- -- bad -- comment -- -->
+  </body>
+</html>
+```

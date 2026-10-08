@@ -1,0 +1,111 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<base href="/broken/">
+<meta http-equiv="refresh" content="0;url='x">
+<link rel="stylesheet" href="a.css">
+<style>
+</style><!-- unclosed comment
+</head>
+<body>
+<form id=f action="javascript:alert(1)" method=POST>
+<label for=q>Search
+<input id=q name=q value="&amp; &notanentity; &#xD800;" disabled=maybe>
+<button type=submit><b><i>Go</b></i>
+<select name=s multiple>
+<option selected>one
+<option value=2>two
+<optgroup label="group"><option>three</optgroup>
+</select>
+<textarea name=t rows=2>first</textarea><input>
+</form>
+<p><a href="/one"><a href="/two">nested links</a></p>
+<dl><dt>term<dd>definition<dt><dd>second
+<ol start=0 reversed><li>alpha<li value="NaN">beta<ul><li>nested</ol>
+</body>
+</html>
+```
+
+```html
+<!doctype html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head><title>Raw text boundaries</title></head>
+<body>
+<script type="text/javascript">
+if (a < b) { document.write("</script><p>escaped?"); }
+var x = "</scr" + "ipt>";
+</script>
+<noscript><p>noscript <b>markup</b></noscript>
+<style>
+a::before { content: "</style><div>"; }
+</style>
+<xmp><b>literal</b><xmp>nested</xmp></xmp>
+<plaintext>
+<div>This entire suffix tests plaintext mode
+<p>including apparent tags &amp; entities
+</body>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Template and shadow-like content</title></head>
+<body>
+<template id=t>
+<div class=inside><slot name=x>fallback <span>text</span></slot>
+<table><tr><td>template cell</td></tr></table>
+</div>
+</template>
+<div id=host>
+<template shadowrootmode=open>
+<style>:host { display:block }</style>
+<span part="label">shadow text</span>
+</template>
+<slot>light fallback</slot>
+</div>
+<dialog open><form method=dialog><p>Confirm?</p><button value=ok>OK</button></form>
+<div>dialog sibling</div>
+</dialog>
+<details open><summary><em>Summary</em></summary>
+<section><p>detail content</p></section>
+</details>
+<menu><li><button type=button>one</button><li>two</menu>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Frameset transition</title></head>
+<body>
+<p>body before frameset
+<frameset cols="*,0,garbage" rows="10%,*">
+<frame src="a.html" name=left>
+<frame src="b.html" frameborder=-1>
+<noframes><body><h1>Fallback</h1><p>frame text</noframes>
+</frameset>
+<div>after frameset</div>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>International and malformed inline structure</title></head>
+<body dir=rtl>
+<p lang="ar">مرحبا&nbsp;<bdi>abc</bdi><bdo dir=ltr>123</bdo>
+<ruby>漢<rt>かん<rp>(</rp>字<rt>じ</ruby>
+<p><strong>one <em>two <u>three</strong> four</em> five</u>
+<mark><small><big>sizes</small></big></mark>
+<ins datetime="not-a-date">added<del cite="x">removed</ins>
+<figure><img src alt=broken><figcaption>caption</figure>
+<address>name<br>street<br></address>
+<blockquote cite="&quot;broken"><pre>  preserved
+	whitespace</pre></blockquote>
+<p title="a&quot;b&#0;c&#x110000;">&lt; &gt; &amp; &unknown; &#65;
+</body>
+</html>
+```

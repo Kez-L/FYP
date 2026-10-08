@@ -1,0 +1,101 @@
+```html
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-16">
+<base href="http://example.invalid/a/../b">
+<link rel="stylesheet" href="x.css" disabled>
+<style type="text/css"><!--
+@media all { body > :not(*) { color: #000 } }
+--></style>
+<script type="application/json">{"x":[1,2,]}</script>
+</head>
+<body>
+<header><nav><ul><li><a href="&amp;broken">one<li><a href="two">two</ul></nav></header>
+<main>
+<section><hgroup><h1>alpha</h3><h2>beta</h1></hgroup>
+<p>text <b><i><u>nested</b> crossing</u></i> tail
+<dl><dt>term<dd>definition<dt><dd></dl>
+<figure><img src=x alt="a" /><figcaption>caption</figure>
+</section>
+</main>
+<footer><address><a href="mailto:x@y">contact</address></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html [
+<!ENTITY test "replacement">
+<!ELEMENT weird ANY>
+<!ATTLIST weird data CDATA #IMPLIED>
+]>
+<html xmlns="urn:x"><head><title>entities &amp; &unknown; &#0; &#xD800;</title></head>
+<body>
+<!-- first -- second --->
+<![CDATA[
+  <not-an-element>&still-cdata;</not-an-element>
+]]>
+<weird data='a"b<c&d' x:y="1">
+<svg viewBox="0 0 10 10"><title>vector</title><g><path d="M0 0 L10 10"/></g><foreignObject><div>embedded</div></foreignObject></svg>
+<math><mrow><mi>x</mi><mo>&lt;</mo><mn>2</mn><mfrac><mi>a</mi><mi>b</mi></mfrac></mrow></math>
+</weird>
+</body></html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+<head><title>forms</title></head>
+<body>
+<form action="/submit" method="post">
+<input type=text name=a value="one" checked=checked disabled>
+<input name=b value='two' maxlength=not-a-number>
+<textarea name=c rows=999999 cols=-1>unterminated
+<select name=s multiple size="0">
+<option value=1 selected>first
+<option value=2>second
+<optgroup label="group"><option>third</optgroup>
+</select>
+<button type=submit><span>send</button>
+<fieldset><legend>legend</fieldset>
+</form>
+<form><input><form><label for=x>label<label><output name=o>42</output></form>
+<iframe srcdoc="<p>nested &amp; <b>doc</b>"><p>fallback</iframe>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html><head><title>tables</title></head><body>
+<table border="1">
+<caption><b>caption</caption>
+<colgroup span="2"><col><col width="bad"></colgroup>
+<thead><tr><th rowspan="999">A<th colspan="-2">B</tr></thead>
+<tbody>
+<tr><td><table><tr><td>inner<td>cell</table></td><td>outer</td></tr>
+<tr><td colspan="x">one<td>two<td>three</tr>
+</tbody>
+<tfoot><tr><td>foot</tr></tfoot>
+<tr><td>after-foot</table>
+<table><tr><td>a</table><p>orphan</p><table><tbody><tr><th>x</th></tbody></table>
+</body></html>
+```
+
+```html
+<!DOCTYPE html>
+<html><head><title>raw text and boundaries</title></head>
+<body>
+<script><!--
+if (a < b && c > d) { document.write("</scr" + "ipt>"); }
+/* </script><style> */
+--></script>
+<style>
+body { background: url("x"); }
+</style>
+<pre>line 1
+line 2 &amp; &#x110000;</pre>
+<xmp><p>literal</p><xmp>nested</xmp></xmp>
+<plaintext><html><body><h1>everything raw</h1></body></html>
+```

@@ -1,0 +1,127 @@
+```html
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Nested recovery test</title>
+<style type="text/css">
+  body { color: red; }
+  @media screen { div { display: block; } }
+</style>
+</head>
+<body>
+<div id="outer"><section><article>
+<p>alpha <b><i>beta</b> gamma</i>
+<div><span>delta</section>epsilon</div>
+<blockquote cite="x"><pre>one
+two
+</blockquote>
+</article></section>
+</div>
+<script>
+if (a < b && c > d) { document.write("<p>generated</p>"); }
+</script>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+<!-- unterminated-looking comment --!>
+<base href="http://example.invalid/a/">
+<meta http-equiv="refresh" content="0; URL='next page.html'">
+</head>
+<body bgcolor="#fff" text=black>
+<table border=1 cellpadding="2">
+<caption>Table &amp; caption</caption>
+<colgroup span="2"><col width=20%><col></colgroup>
+<thead><tr><th rowspan=2>Name<th colspan=2>Value</tr></thead>
+<tbody>
+<tr><td>A<td><a href="x" title='broken>link</a>
+<tr><td colspan="oops">B<td><img src alt=missing>
+</tbody>
+<tfoot><tr><td>tail</table>
+<p>After table<br><hr noshade="noshade">
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Foreign content boundary</title>
+</head>
+<body>
+<svg width="100" height="100" viewBox="0 0 100 100">
+<g transform="translate(10 10)">
+<rect x="0" y="0" width="80" height="40" fill="url(#paint)"/>
+<text x="5" y="20">SVG <tspan>text</tspan></text>
+<foreignObject><div xmlns="http://www.w3.org/1999/xhtml">
+  <p>embedded html <em>inside</svg>
+</div></foreignObject>
+</g>
+<defs><linearGradient id="paint"><stop offset="0%"><stop offset="100%"></linearGradient></defs>
+</svg>
+<math display="block"><mrow><mi>x</mi><mo>=</mo><mfrac><mn>1</mn><msqrt><mn>4</mn></msqrt></mfrac></mrow></math>
+<p>tail</p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<head>
+<title>Forms and lists</title>
+</head>
+<body>
+<form method="get" action="/search" enctype="multipart/form-data">
+<fieldset disabled>
+<legend>Options
+<label for=q>Query<input id="q" name=q value="a&amp;b"></label>
+<label><input type="checkbox" checked=checked name=x> X</label>
+<select name="choice" multiple size="3">
+<option selected>one
+<option value=two>two
+<optgroup label="group"><option>three</optgroup>
+</select>
+<textarea name=note rows=2 cols=4>line one
+line &amp; two</textarea>
+<button type=submit formaction="/other">Send</button>
+</fieldset>
+</form>
+<dl>
+<dt>Term
+<dd>Definition
+<dt><a href=#>Another term</dd>
+</dl>
+<ol start="bad"><li value="3">first<li>second</ol>
+</body>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Token edge cases</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<!---->
+<!-- nested <!-- marker --> remainder -->
+<p data-x="&unknown;" data-y='&#x0; &#9999999;'>A&nbsp;&copy;&notanentity;</p>
+<p>before <wbr>after <ins datetime=2020-01-01>inserted</del> text</p>
+<details open="false"><summary>Summary</summary>
+<div contenteditable spellcheck="maybe">editable<br/>content</div>
+</details>
+<iframe srcdoc="<p>inner &amp; text</p>" sandbox="allow-scripts allow-forms"></iframe>
+<object data="file.bin" type="application/octet-stream">
+<param name=name value=value>
+fallback <embed src="x">
+</object>
+<script type="application/json">{"x":"</script>","y":1}</script>
+</body>
+</html>
+```

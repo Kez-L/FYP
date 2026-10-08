@@ -1,0 +1,123 @@
+```html
+<?xml version="1.0"?>
+<!DOCTYPE svg [
+  <!ENTITY weird "alpha &amp; beta">
+  <!ELEMENT note (#PCDATA)>
+]>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
+  <title>XML fragment &weird;</title>
+  <foreignObject x="0" y="0" width="10" height="10">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <p data-x="a&quot;b&amp;c&lt;d">text <![CDATA[<not-an-element>]]></p>
+      <custom-node foo="bar"><![CDATA[x<y>z]]></custom-node>
+    </div>
+  </foreignObject>
+  <path d="M0,0 L10,10 Z" />
+</svg>
+```
+
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+    <title><![CDATA[ x < y && y > z ]]></title>
+  </head>
+  <body>
+    <table border="1">
+      <caption>broken table</caption>
+      <colgroup span="two"><col width="25%"><col><col /></colgroup>
+      <thead><tr><th rowspan="bad">A<th colspan="0">B</tr></thead>
+      <tbody>
+        <tr><td><div>cell one</tr>
+        <tr><td colspan="100"><p>cell two<table><tr><td>nested</td></tr></table></td></tr>
+      </tbody>
+      <tfoot><tr><td>footer</td></tr></tfoot>
+    </table>
+    <map name="m"><area shape="rect" coords="0,0,1,1" href="x"><area></map>
+    <img src="x" usemap="#m" ismap alt="&bad; &copy">
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>raw text boundaries</title>
+  <script type="text/javascript">
+    var a = "</style><textarea>&amp;</textarea>";
+    /* <![CDATA[ <tag attr='x'> ]]> */
+    if (x </* odd */ y) { document.write('<b>q</b>'); }
+  </script>
+  <style>
+    body { content: "</script>"; }
+    @import url("a&b.css");
+  </style>
+  <textarea rows="03" cols="-1">one
+  </textarea broken="yes">
+  <xmp><b>literal</b> &amp; </xmp>
+  <plaintext><h1>everything after here
+</head>
+<body>
+  <p>unreachable-looking markup</p>
+</body>
+```
+
+```html
+<!doctype html>
+<html>
+  <head><title>forms and controls</title></head>
+  <body>
+    <form id=f1 action=/submit method=get>
+      <fieldset disabled="false">
+        <legend>choose <b>one</legend>
+        <label for=q>Query</label>
+        <input id=q name=q type=text value='a"b' maxlength="NaN">
+        <input name=hidden type=hidden value=&amp;>
+        <button type=submit formaction="/other">Go</button>
+      </fieldset>
+    </form>
+    <form id=f2>
+      <select name=pick size=00>
+        <option value=one selected disabled>One
+        <option value="two" selected="selected">Two</option>
+        <optgroup label="group">
+          <option>Three</optgroup>
+      </select>
+      <textarea name=t readonly=maybe>alpha &copy; beta</textarea>
+      <input type=file multiple accept="image/*,">
+      <input type=checkbox checked="no">
+      <output for="q pick">result</output>
+    </form>
+    <form><input form=f1><button><select><option>x</select></button></form>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>misnested flow and lists</title></head>
+<body>
+  <p><b><i><u>alpha</b> beta</i> gamma</u>
+  <div><a href="x"><span><em>link <strong>nest</a> end</strong></em></span></div>
+  <dl>
+    <dt>term one
+    <dd>definition one
+    <dt><div>term two</div>
+    <dd><ul><li>nested A<li>nested B<ul><li>deep</ul></ul>
+  </dl>
+  <ol start="not-a-number" reversed="false" type="Z">
+    <li value="NaN">first
+    <li value="-999999999999999999999">second
+  </ol>
+  <blockquote cite="&quot;bad">
+    <p>quote
+    <address><big><small>contact<br/>name</address>
+  </blockquote>
+  <hr noshade="maybe"><ins datetime="not-a-date"><del cite=x>changed</ins></del>
+  <center><table><tr><td>late table</center></td></tr></table>
+</body>
+</html>
+```

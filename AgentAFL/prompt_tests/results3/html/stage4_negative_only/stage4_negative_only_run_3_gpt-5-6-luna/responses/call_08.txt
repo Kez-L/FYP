@@ -1,0 +1,201 @@
+```html
+<!DOCTYPE html [
+  <!ENTITY local "replacement">
+]>
+<?xml version="1.0"?>
+<!---->
+<!DOCTYPE weird SYSTEM "about:blank">
+<html lang=en dir=rtl>
+<head>
+  <meta charset="utf-8">
+  <base href="//example.invalid/a/">
+  <title>RCDATA &amp; title</title>
+  <style type="text/css">
+    body::before { content: "</style><script>not really</script>"; }
+    @media all and (min-width: 0px) { .x { color: rgb(999,-2,none); } }
+  </style>
+  <noscript><meta http-equiv=refresh content="0;url=&quot;x&quot;"></noscript>
+</head>
+<body id=x id=y>
+  <template shadowrootmode=open>
+    <p>template <b>content</p>
+    <slot name=missing></slot>
+  </template>
+  <details open=maybe>
+    <summary>summary <span>unclosed
+    <p>inside details</details>
+  <dialog open="0"><form method=dialog><button autofocus>close</button></form>
+  <script type="text/javascript">
+    if (a < b && c > d) {
+      document.write("<div title='unterminated>");
+      // </script> ends this raw text
+    }
+  </script>
+  <script type=application/json>{"x":"</script>","y":"&amp;"}</script>
+  <iframe srcdoc="<p class='x'>embedded &amp; text</p>" sandbox="allow-scripts allow-scripts"></iframe>
+  <object data="x" type="application/unknown"><param name=movie value="a&b"><p>fallback</object>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Media and list recovery</title>
+  <link rel=stylesheet href=style.css disabled=false>
+</head>
+<body>
+  <main>
+    <h1>Heading <small>tail</h1>
+    <ol start="0" reversed>
+      <li value=abc>first
+      <li>second
+        <ul compact="compact"><li>nested one<li>nested two</ul>
+      <li>third
+    </ol>
+    <dl>
+      <dt>term one
+      <dd>definition one
+      <dt><em>term two
+      <dd><p>definition <mark>with<p>another paragraph
+    </dl>
+    <figure>
+      <picture>
+        <source media="(min-width: 0px)" srcset="a 1x, b 2x, , c">
+        <source type=image/avif srcset="bad&name">
+        <img src=x alt="quoted & broken" srcset="a 100w b" sizes="(foo)">
+      </picture>
+      <figcaption>caption</figcaption>
+    </figure>
+    <video controls autoplay="false" poster="p" width=bad>
+      <source src=a type="video/mp4; codecs=&quot;x">
+      <track kind=subtitles srclang=en label=English default="no" src=vtt>
+      fallback <b>text
+    </video>
+    <audio preload=garbage><source src=a><source src=b></audio>
+    <map name=main><area shape=poly coords="1,2,3" href=#x alt=a><area href></map>
+    <menu type=context><li><button type=menu>one<li><button>two</menu>
+    <p><embed src=x><wbr><hr noshade><br/></p>
+    <custom-widget data-a=1><unknown attr><span>tail</unknown-widget>
+  </main>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+  <title>Characters &copy; &#0; &#xD800; &#x110000; &bogus;</title>
+  <![if IE]>
+    <style>p { color: red }</style>
+  <![endif]>
+  <!-- one -- two --- three -->
+  <style>
+    .a { background: url("x&y"); }
+    </style bogus>
+  </style>
+</head>
+<body>
+  <!-->
+  bogus comment text
+  <! -- nested-ish -->
+  -->
+  <p title="a&#13;b&#x0;c&#x1f4a9;">A&nbsp;&thinsp;&NotAnEntity; B
+  <pre> pre
+  line 1
+    line 2 &lt;tag&gt;
+  </pre>
+  <textarea rows=2 cols=10>raw &lt;b&gt; text
+  </textarea>
+  <title>title <b>literal?</title>
+  <xmp><b>not markup</b>&amp;</xmp>
+  <plaintext>
+    <div>everything after this is text
+    </body></html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Form controls with damaged markup</title></head>
+<body>
+  <form id=outer action=/a method=post enctype=multipart/form-data>
+    <fieldset disabled=false>
+      <legend><label for=q>Search <strong>form</legend>
+      <label><input id=q name=q type=search value="a" checked=maybe required=0></label>
+      <input type=number min=10 max=1 step=none value=NaN>
+      <input type=date value=2024-99-99>
+      <input type=file multiple accept="image/*,.bad,">
+      <input type=image src=x alt="submit" formaction=/b>
+      <textarea name=note wrap=invalid>one
+      two</textarea>
+      <select name=choice multiple size=x>
+        <option selected value=1>one
+        <option value=2>two
+        <optgroup label=group disabled>
+          <option>three
+        </optgroup>
+        <option>four
+      </select>
+      <select><option>unclosed
+      <datalist id=vals><option value=a><option value=b label="B"></datalist>
+      <input list=vals name=auto>
+      <output for="q missing">result</output>
+      <progress max=-1 value=2>progress</progress>
+      <meter min=10 low=2 optimum=NaN high=3 max=1 value=-9>meter</meter>
+      <button type=submit formnovalidate=maybe>Send
+      <button type=reset>Reset</button>
+      <form action=/nested><input name=nested></form>
+    </fieldset>
+    <input type=hidden name=x value="&amp; &quot; '">
+  </form>
+  <form><input name=outside><select><option>orphan</select></form>
+  <label for=none>dangling label</label>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sections and phrasing repair</title>
+</head>
+<body>
+  <header>
+    <hgroup><h1>One <i>two</h2><h2>three</hgroup>
+    <nav><a href=#a><span>link <b>bold</a> after</span></nav>
+  </header>
+  <article>
+    <section>
+      <h2>Section <em>heading</section>
+      <p>alpha <b>bold <i>italic <u>underline</p>
+      <p>beta <a href=x><strong>strong <code>code</a></strong> tail
+      <blockquote cite="&quot;broken">
+        <p>quoted <q cite=x>nested quote</blockquote>
+      <address><a href=mailto:x@y>author
+    </section>
+    <aside>
+      <div><span>deep <span>nest <span>without closing
+      <p>paragraph after inline elements
+    </aside>
+  </article>
+  <footer>
+    <time datetime="2024-02-30T25:61:61Z">now</time>
+    <data value=abc>data</data>
+    <bdi dir=auto>שלום</bdi><bdo dir=sideways>text</bdo>
+    <ruby>漢<rt>kan<rp>(</rt>字<rt>ji</ruby>
+    <ins cite=x datetime=bad>inserted</ins><del>deleted</del>
+    <pre><code>if (x &lt; y) {
+  print("&quot;");
+}</code></pre>
+    <dir compact><li>old list<li>second</dir>
+    <center><font size=999 color=#gggggg>legacy</font></center>
+  </footer>
+  <div id=a><p>misnested <span>content<div>block</span>after</p></div>
+</body>
+</html>
+```

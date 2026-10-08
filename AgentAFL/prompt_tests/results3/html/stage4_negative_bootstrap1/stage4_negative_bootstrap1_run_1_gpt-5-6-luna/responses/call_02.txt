@@ -1,0 +1,120 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<meta http-equiv="refresh" content="0; url=//example.invalid/a?x=&amp;y">
+<link rel=stylesheet href=style.css media="screen and (min-width:0px)">
+<style type="text/css"><!--
+@import url("x.css"); @media{a{color:rgb(300,-1,none)}}
+--></style>
+</head>
+<body bgcolor="#GGG" text=black>
+<!--- broken comment --!>
+<h1>Entities &copy &notanentity; &#0; &#xD800; &#x110000;</h1>
+<p title="a'b&amp;c" data-x='one"two'>before
+<div class=test id="a b" id=c>nested
+<span><em>one</div>two</em></span>
+<p>after &lt;tag attr='x'&gt; &unknown; &#13;
+<pre>  leading
+	 tabs &amp; &#x20;  trailing  </pre>
+<address><a href="mailto:a@b">a@b</address>
+</body>
+</html>
+```
+
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head><title>table repair</title></head>
+<body>
+<table border=1 cellpadding=0 cellspacing=-1 width="1e309">
+<caption><b>caption <i>mixed</caption>
+<colgroup span=0><col width=auto><colgroup><col span="-4"></colgroup>
+<thead><tr><th rowspan=999 colspan=0>H1<th>H2<td>wrong head
+<tbody>
+<tr><td>A<td>B
+<tr><td colspan="999999999999999999999999">C
+<tfoot><tr><td>foot
+<tbody><tr><td>late body</tr></tbody>
+</table>
+<table><tr><td><table><tr><td>inner</table></td><td>outer</td></tr>
+<tr><th><p>paragraph in header<tr><td>unclosed
+</table>
+<table><tr><td>text<table><caption>x</caption></table>tail
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>raw text boundaries</title>
+<script type="text/javascript">
+if (a < b && c > d) { document.write("</script><p>escaped?"); }
+/* </script> */
+</script>
+<style>
+a:before { content: "</style><div>"; }
+</style>
+</head>
+<body>
+<noscript><p>fallback <b>bold</b></noscript>
+<script type="application/ld+json">{"x":"</script>","y":"&amp;","z":"\u0000"}</script>
+<textarea>one</textarea>tail &lt; two
+<xmp><b>not markup</b><!-- comment --></xmp>
+<plaintext><html><body><h1>everything raw
+</body>
+</html>
+```
+
+```html
+<html>
+<head><title>legacy containers</title></head>
+<body>
+<frameset rows="*,0,auto" cols="50%,50%" border=none>
+<frame src="a.html" name=main scrolling=maybe>
+<frame src="" frameborder=-1>
+<noframes>
+<body>
+<p>No frames <a href="#x">link
+</noframes>
+</frameset>
+<iframe srcdoc="<p>embedded &amp; text</p>" src=about:blank width="1e2" height="-5">
+Fallback <b>content</iframe>
+<object data="x.bin" type="application/octet-stream">
+<param name=movie value="x&amp;y">
+<embed src=x type=bad>
+alternate <img src=x alt="a > b">
+</object>
+<applet code="X.class" archive="a.jar,b.jar"><param name=x value=y>alt</applet>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>lists and definitions</title></head>
+<body>
+<dl compact="compact">
+<dt>term one
+<dd>definition <p>paragraph
+<dt><dd>empty pair
+<dd><dt>reversed
+</dl>
+<ol start="NaN" reversed type="Z"><li value="-999">first
+<li><ul type="square"><li>nested
+<li><ol><li>deep</ol>
+</ul>
+<li>last
+</ol>
+<ul><li>alpha<li>beta<div>block inside item</div><li>gamma</ul>
+<menu><li><a href=#one>one<li><a href=#two>two</menu>
+<dir><li>old<li>list</dir>
+<blockquote cite="&amp;"><div>quoted</div><blockquote>deep</blockquote></blockquote>
+<center><hr noshade size=0 width="Infinity"><big><small>text</center>
+</body>
+</html>
+```

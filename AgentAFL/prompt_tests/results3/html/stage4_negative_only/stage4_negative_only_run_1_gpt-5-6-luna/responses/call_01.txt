@@ -1,0 +1,137 @@
+```html
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head profile="urn:example:profile">
+  <base href="https://example.invalid/a/../b/">
+  <link rel="alternate stylesheet" title="one" href="">
+  <meta http-equiv="refresh" content="0; URL='//invalid.example/%2e%2e/'">
+  <title>&#xD800; &amp; &#0; &#x110000;</title>
+</head>
+<frameset cols="*,0,25%" rows="100,*">
+  <frame src="javascript:alert('x')" name="left" scrolling="no">
+  <frame srcdoc="&lt;p&gt;not really markup&lt;/p&gt;" frameborder="-1">
+  <noframes>
+    <body>
+      <h1>Fallback</h1>
+      <p><a href="http://[invalid">broken link</a></p>
+    </body>
+  </noframes>
+</frameset>
+</html>
+```
+
+```html
+<!DOCTYPE html [
+  <!ENTITY local "replacement">
+  <!ELEMENT mystery ANY>
+]>
+<?processing instruction?>
+<!--- malformed comment -- -- nested <!-- marker -->
+<html>
+<head>
+  <title>Declaration stress</title>
+  <?xml-stylesheet type="text/css" href="style.css"?>
+</head>
+<body>
+  <mystery a="1" a='2' =bad ="unterminated>
+    <![CDATA[
+      <not-an-element>&raw;</not-an-element>
+    ]]>
+    <p>before &local; after &unknown; &#x; &#;</p>
+  </mystery>
+  <!-- comment with -- forbidden -->
+  <!bogus value="x">
+  </body
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Interactive and metadata mix</title>
+  <meta charset="x-user-defined">
+</head>
+<body id="root" contenteditable="maybe">
+  <header>
+    <hgroup><h1>Heading <small>small</h1><h2>orphan</h2></hgroup>
+    <nav aria-label="crumbs">
+      <ol reversed start="0"><li value="-2">one<li>two<li>three</ol>
+    </nav>
+  </header>
+  <main>
+    <details open="false">
+      <summary>Summary <span>text</summary>
+      <dialog open="0"><p>Dialog body</dialog>
+      <menu type="toolbar">
+        <li><button disabled="no" autofocus="false">A</button>
+        <li><button type="menu">B</button>
+      </menu>
+    </details>
+    <dl compact="compact"><dt>term<dd>definition<dt>next<dd><del>removed<ins>inserted</dl>
+    <progress max="-1" value="NaN">fallback</progress>
+    <meter min="10" max="2" low="x" high="y" optimum="z" value="999">meter</meter>
+  </main>
+  <footer><address><a href="mailto:%ZZ">contact</a></address></footer>
+</body>
+```
+
+```html
+<html>
+<head><title>Deep adoption-like nesting</title></head>
+<body>
+  <p><b><i><u><s><em><strong><code><small><big><sub><sup><mark><q>
+    zero
+    <a href="#" name="x"><span class="a"><font color="red"><center>
+      <p>implicit paragraph
+      <b>bold <i>italic <a href="/nested">link <u>underline
+        <span><span><span><span>deep</span></span></span></span>
+      </u></a></i></b>
+    </center></font></span></a>
+  </q></mark></sup></sub></big></small></code></strong></em></s></u></i></b></p>
+  <p><a href="one"><a href="two"><a href="three">overlapping anchors</p>
+  <div><b>unclosed <i>formatting <em>stack
+  <hr><br><br />
+  <div>after breaks</div>
+  <pre>  pre
+    <b>literal?</b>
+  </pre>
+</body>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Raw text and attribute boundaries</title>
+  <style type="text/css">
+    body { content: "</style><script>alert(1)</script>"; }
+    @media (min-width:0) { .x\\3b { color: red } }
+  </style>
+  <script type="text/javascript">
+    var s = "</script>";
+    if (a < b && c > d) { document.write("<p title='x'>&amp;</p>"); }
+    // </script in a string-like context
+  </script>
+  <noscript><div>fallback <b>markup</b></div></noscript>
+</head>
+<body>
+  <input disabled="" checked="checked" readonly=readonly required=required
+    data-x="a&quot;b" data-y='c&apos;d' data-z=a/b?c#d
+    title="line
+break&#10;entity">
+  <textarea cols="999999999999999999999" rows="-4">first
+second</textarea>
+  <select multiple="false" size="0">
+    <option selected="">one<option value=>two<option>three
+  </select>
+  <object data="" type="application/x-unknown">
+    <param name="movie" value="&quot;broken">
+    <embed src="x" />
+    fallback
+  </object>
+</body>
+</html>
+```

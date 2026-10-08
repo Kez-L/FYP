@@ -1,0 +1,162 @@
+```html
+<!DOCTYPE HTML [
+  <!ELEMENT weird - - ANY>
+  <!ENTITY sample "quoted &amp; expanded">
+]>
+<!-- -- malformed comment -- >
+<?xml version="1.0"?>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+  <base href="http://example.invalid/a/">
+  <title>Declaration &sample; <![CDATA[ title ]]></title>
+  <!-- unclosed-looking comment
+  <meta name="ignored" content="&quot; &unknown; &#x0;">
+  -->
+</head>
+<body bgcolor="#fff" text=black>
+  <hgroup><h1>Heading <small>with <b>mixed</hgroup>
+  <p id=x class='a"b' data-value=one/two>
+    Before &copy; &#0; &#xD800; &notanentity; after
+    <a href=foo?x=1&y=2 title="unterminated>link</a>
+  <p><font face="serif" size=+3 color=#12>legacy <i>formatting</font></i>
+  <hr/ ><br//><wbr>
+  <address><span>contact<br>line 2</address>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html lang=en>
+<head>
+  <title>Raw text boundary test</title>
+  <style type=text/css>
+    body { background: url("x"); }
+    </style>
+    .broken { color: red; }
+  </style>
+  <script type="text/javascript">
+    if (a < b && c > d) {
+      document.write("</scr" + "ipt><p>generated</p>");
+    }
+    /* </script> inside string: "</script>" */
+  </script>
+  <noscript><p>fallback <b>bold</noscript>
+</head>
+<body>
+  <div class=outer>
+    <script language=javascript>var x = "<!-- <b> &amp; </textarea>";</script>
+    <textarea name=t rows=2 cols=4>one
+      <b>not markup</b> &amp; </textarea> trailing
+    <title>body title <i>not closed
+    <xmp><p>literal xmp</p></xmp>
+    <plaintext><h1>everything after plaintext
+  </div>
+  <p>unreachable-ish tail</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head><title>Interactive controls</title></head>
+<body>
+  <form method=POST action=/submit enctype=multipart/form-data>
+    <fieldset disabled>
+      <legend><label for=q>Search <input id=q name=q value="a&b"></label></legend>
+      <label>Choice
+        <select name=kind multiple size=0>
+          <optgroup label=One disabled>
+            <option selected value=1>one
+            <option value=2>two
+          </optgroup>
+          <option>three
+          <option label="four &amp; five" value=4>
+        </select>
+      </label>
+      <textarea required readonly>value</textarea>
+    </fieldset>
+    <input type=hidden name=h value=x>
+    <input type=image src=x alt=submit>
+    <button type=submit name=b value="x y"><strong>Send</button>
+    <button type=reset><img src=x></button>
+  </form>
+  <form>
+    <input type=text name=a><input type=text name=b>
+  </form>
+  <label for=missing>orphan label</label>
+  <isindex prompt="Find:">
+  <menu compact><li>first<li>second<ul><li>nested</ul></menu>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Objects and metadata</title>
+  <meta name=description content="a > b & c">
+  <link rel=stylesheet alternate href=one.css media="screen and (x)">
+</head>
+<body>
+  <object classid="clsid:0000" codebase=/bin data=x>
+    <param name=name value="a&b">
+    <param name=value>
+    <embed src=movie type=application/x-shockwave-flash width=0 height=-1>
+    fallback <a href="#"><img src=missing alt="fallback"></a>
+  </object>
+  <map name=nav>
+    <area shape=rect coords="0,0,10,10" href=one>
+    <area shape=poly coords="1,2,3,4,5" nohref>
+    <area>
+  </map>
+  <img src="x" usemap="#nav" ismap border=abc>
+  <dl compact>
+    <dt>Term 1
+    <dd><p>Definition <q cite=http://x>quote</q>
+    <dt><a href=two>Term 2</a></dt>
+    <dd><div>nested<div>unclosed
+  </dl>
+  <blockquote cite="a&b"><pre> preformatted
+  line 2 </blockquote>
+  <center><marquee direction=sideways>moving <blink>text</center>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Adoption and end-tag stress</title>
+</head>
+<body>
+  <p><b><i><u><s>one</b> two</i> three</u> four</s>
+  <div><a href=one>link <em>emphasis <a href=two>nested link</a> tail</div>
+  <table border=0>
+    <tr><td>cell A
+    <tr><th><p>cell B<div>block in header
+    <tr><td><form><input name=z><select><option>x</select></form>
+  </table>
+  <ol start=foo reversed>
+    <li value=1>alpha
+    <li value=>beta
+    <li><p>gamma
+  </ol>
+  <p><ins cite=x datetime=bad>inserted<del>deleted</ins>end</del>
+  <div>
+    <ruby>漢<rt>kanji<rp>(<rt>ji</ruby>
+    <bdo dir=invalid>direction</bdo>
+    <time datetime=2020-99-99>date</time>
+  </div>
+  <!-- first -- second --- third -->
+  <!---->
+  <!-->
+  <section><header>head<footer>foot</section>
+  </nosuch><endtag/>< /body>
+</body>
+</html>
+```

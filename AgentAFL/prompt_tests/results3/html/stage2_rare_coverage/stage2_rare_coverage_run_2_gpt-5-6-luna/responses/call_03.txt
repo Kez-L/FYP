@@ -1,0 +1,149 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Foreign content and malformed attributes</title>
+  <meta charset="utf-8">
+</head>
+<body>
+  <svg viewBox="0 0 100 100" width="100" height="100">
+    <title>svg title</title>
+    <foreignObject x="0" y="0" width="80" height="80">
+      <div xmlns="http://www.w3.org/1999/xhtml">
+        <p class="inside">embedded <em>HTML</em></p>
+      </div>
+    </foreignObject>
+    <path d="M0 0 L10 20 Z" fill="url(#missing)" />
+  </svg>
+  <math display="block">
+    <mrow><mi>x</mi><mo>=</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+  </math>
+  <p data-a="one" data-b='two" three' data-c=unquoted&value>
+    &notanentity; &#x; &#99999999; &#x110000;
+  </p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Comments and declarations</title>
+  <!-- ordinary comment --><!-- comment with -- inside -->
+  <!--[if IE]><style>body{color:red}</style><![endif]-->
+  <! bogus declaration >
+  <!---->
+</head>
+<body>
+  <div>
+    <!--->
+    text after broken comment
+    <!-- nested <!-- comment --> still text
+    <![CDATA[ this is not really CDATA in HTML ]]>
+    <span>visible</span>
+  </div>
+  <?xml version="1.0"?>
+  <p>before &amp; after</p>
+  <div title="unterminated attribute>
+    <b>recovered content
+  </div>
+  <!-- final --!>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Interactive controls</title></head>
+<body>
+  <dialog open=maybe>
+    <form method="dialog" action="/submit?x=1&y=2">
+      <fieldset disabled>
+        <legend>Choose <small>one</small></legend>
+        <label for=a>Alpha</label>
+        <input id=a name=choice type=radio checked=checked value="&quot;">
+        <label><input name=choice type=radio value=beta>Beta</label>
+        <button type=submit formaction="/other" formmethod=post>Go</button>
+      </fieldset>
+      <select name=items multiple size=999999999999999999>
+        <optgroup label="Group one">
+          <option selected value=x>First
+          <option disabled>Second
+        </optgroup>
+        <option>Orphan selection</option>
+      </select>
+      <textarea name=note rows=-1 cols=zero>raw &lt;textarea&gt;
+      </textarea>
+      <output for="a missing">result</output>
+    </form>
+  </dialog>
+  <details open="false"><summary>Summary</summary><p>Details</p></details>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ruby and phrasing edge cases</title>
+</head>
+<body>
+  <p>
+    <ruby>
+      漢<rt>かん</rt><rp>(</rp><rt>kan</rt><rp>)</rp>
+      <rb>字</rb><rtc><span>annotation</span></rtc>
+    </ruby>
+    <bdi dir=rtl>abc123</bdi>
+    <bdo dir=sideways>forced direction</bdo>
+    <wbr><mark>highlight <time datetime="not-a-date">yesterday</time></mark>
+  </p>
+  <p>
+    <ins cite="/a" datetime="2020-99-99"><del cite=none>old</del>new</ins>
+    <dfn title=definition>term</dfn>
+    <abbr title="long title">abbr</abbr>
+    <data value="1&2">payload</data>
+  </p>
+  <pre><code>line 1
+  <kbd>Ctrl</kbd><samp>output</samp>
+  </code></pre>
+  <p><a href="javascript:alert(1)" target="_blank" rel=noopener">link</a>
+  <q cite="x"><cite>citation</q></cite></p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Media and embedded resources</title>
+  <link rel=stylesheet href="a.css" integrity="sha256-">
+  <base target=_blank>
+</head>
+<body>
+  <picture>
+    <source media="(min-width: 1px)" srcset="a 1x, b 2x">
+    <source type=image/avif srcset="broken">
+    <img srcset="one.png 100w, two.png 200w," sizes="(bad)" alt=>
+  </picture>
+  <audio controls autoplay="no" src="sound.ogg">
+    <source src="sound.wav" type=audio/wav>
+    fallback <track kind=subtitles srclang=en label=English>
+  </audio>
+  <video width=bad height=999999999999999999 poster="poster&x">
+    <track default kind=captions>
+    <source type="video/mp4">
+    video fallback
+  </video>
+  <object data="movie.swf" type="application/x-shockwave-flash">
+    <param name=movie value=movie.swf>
+    <embed src="plugin" width=-1 height=NaN>
+  </object>
+  <iframe srcdoc="<p>embedded</p><script>broken & text</script>" sandbox allowfullscreen></iframe>
+  <map name=x><area shape=poly coords="1,2,three,4" href=/map></map>
+</body>
+</html>
+```

@@ -1,0 +1,99 @@
+```html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<base href="http://example.test/a/">
+<link rel="stylesheet" href="x.css">
+<meta http-equiv="refresh" content="0; url=&quot;broken">
+</head>
+<body>
+<header id=top><hgroup><h1>Heading<h6>tail</hgroup></header>
+<nav><a href="one" title="a > b">one<a href=two>two</nav>
+<main>
+<section><article><h2>Nested
+<p>alpha <strong><em>beta</strong> gamma</em> delta
+<aside><blockquote cite='"><'>quoted <q>text</blockquote></aside>
+</article></section>
+<address><span class=x>contact<br/>line</address>
+</main>
+<footer><small>&copy &#xZZ; &ampx &unknown;</small></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>x</title></head>
+<body>
+<svg width="bad" height="-1"><g><circle cx="NaN" cy="1e999" r="&quot;"><text><</text></g></svg>
+<math><mi>x</mi><mo>&lt;</mo><mrow><mn>2</mn><mo>/</mo></mrow></math>
+<div xmlns="urn:test"><custom:item data-x="a&#0;b" /></div>
+<p><img src="a" alt="unterminated><br>
+<![CDATA[not really cdata]]>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<head>
+<title>orphan head
+<style type=text/css>
+a{color:red} </style>
+<script type="text/javascript">
+if (a < b && c > d) { document.write("<p>x</p>"); }
+</script>
+<noscript><meta name=viewport content=width=device-width></noscript>
+</head>
+<body>
+<form method=dialog action=/submit enctype="multipart/form-data">
+<fieldset disabled=0><legend>Choose</legend>
+<label for=a>Name <input id=a name=n value="&quot; ></label>
+<label><select name=s multiple size="not-a-number">
+<option value=1 selected>one
+<option value=2>two
+<optgroup label="group"><option>three</optgroup>
+</select></label>
+<textarea name=t rows=-3 cols=999>raw <b>text</textarea>
+<button type=submit formaction=>Go</button>
+</fieldset>
+</form>
+</body>
+```
+
+```html
+<!-- deliberately tangled table contexts -->
+<html><body>
+<table>
+<caption>cap</caption>
+<colgroup><col span=0><col span="-999"></colgroup>
+<tbody>
+<tr><th scope=col>key<th><div>value</div>
+<tr><td rowspan="abc">a<td colspan="-1">b
+</tbody>
+<tfoot><tr><td>foot</table>
+<table><tr><td>x</table></td></tr>
+<div><table><tr><td><p>inside<table><tr><td>deep</div>
+</body></html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>mixed malformed blocks</title></head>
+<body>
+<pre>pre start
+<div>inside pre</div>
+</pre>
+<xmp><b>literal</b>&amp;</xmp>
+<p>before <ins cite=foo datetime=bad><del><mark>marked</ins>deleted</del></mark>
+<hr noshade="false" size=-- width="1e309">
+<video controls autoplay="no" poster="&quot;" width=nan><source src=a type=video/x><track kind=subtitles srclang=en></video>
+<object data="x"><param name=movie value=y><embed src=z></object>
+<iframe srcdoc="<p>nested &amp; broken"></iframe>
+<template><div><slot name=x></div></template>
+</body>
+</html>
+```

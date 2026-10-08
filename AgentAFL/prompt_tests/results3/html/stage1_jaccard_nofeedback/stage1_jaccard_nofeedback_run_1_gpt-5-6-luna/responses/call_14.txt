@@ -1,0 +1,112 @@
+```html
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>Unclosed metadata &amp; odd entities</title>
+    <base href="http://example.invalid/a/b">
+    <meta name=viewport content='width=device-width,initial-scale=1>
+  </head>
+  <body id=main class=test data-x="a&b">
+    <header><hgroup><h1>Heading <em>with <strong>nested</h1></em></strong></hgroup></header>
+    <main>
+      <p>Broken references: &copy &unknown; &#0; &#xD800; &#x110000; &amp
+      <dl><dt>term<dd>definition<dt><dd>missing text
+      <blockquote cite="x"><p>quote<div>block inside paragraph</blockquote>
+    </main>
+    <footer><address><a href="mailto:x@y">contact</footer>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE svg SYSTEM "about:legacy-compat">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
+  <title>foreign document</title>
+  <foreignObject x="0" y="0" width="10" height="10">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <p>HTML in SVG <br><input disabled="false"></p>
+    </div>
+  </foreignObject>
+  <g transform="translate(1,1"><path d="M0 0 L5 5 Z" fill="#12zz99">
+  <text x="1" y="2">unterminated text
+  <script type="application/ecmascript"><![CDATA[
+    if (a < b) { document.write("<p>generated</p>"); }
+  ]]></script>
+</svg>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>forms and raw text</title></head>
+<body>
+  <form action="/search" method=post>
+    <fieldset disabled>
+      <legend>Choose <b>one</legend>
+      <label for=q>Query<input id=q name=q value="&quot;broken></label>
+      <select name=kind multiple size=3>
+        <option value=a selected>Alpha
+        <option value=b>Beta</optgroup>
+        <optgroup label="Group"><option>Gamma<option>Delta
+      </select>
+      <textarea name=note rows=2 cols=8>text <b>not markup</textarea>
+      <button type=submit>Send</button>
+    </fieldset>
+  </form>
+  <template><table><tr><td>template <template>nested</template></table></template>
+  <script>
+    var s = "</script><div>escaped-looking markup</div>";
+    /* unterminated comment
+  </script>
+</body>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="x">
+<head>
+  <title>tables, ruby, and comments</title>
+  <!-- first <!-- nested --> still comment? -->
+</head>
+<body>
+  <table border=1>
+    <colgroup><col span=2><col>
+    <thead><tr><th scope=col>A<th>B<th>C
+    <tbody>
+      <tr><td rowspan=2>one<td>two
+      <tr><td colspan="0">three<td><div>cell block</div></td>
+    <tfoot><tr><td>footer</table>
+  <ruby>漢<rt>kan<rp>(</rp><rt>ji</ruby>
+  <details open><summary>Summary <summary>Second</summary><p>content
+  <ol start="NaN"><li>first<li value="-3">second<ul><li>nested</ol>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <style type="text/css">
+    body { color: red; }
+    </style><style>p { content: "</style>"; }
+  </style>
+</head>
+<body>
+  <noscript><p>fallback <img src=x alt="unterminated></noscript>
+  <iframe srcdoc="<p>embedded &amp; <b>document</b>"></iframe>
+  <object data="x" type="application/x-test">
+    <param name=name value="v">
+    <embed src=x>
+    fallback text
+  </object>
+  <pre>preserved
+    <code>&lt;tag&gt; &#x1F4A9;</code>
+  <div aria-label='a&#39;b' style="width: expression(alert(1))">
+    <a href="javascript:alert('&quot;')">link
+  <!--
+    <div><span>commented
+  </body>
+</html>
+```

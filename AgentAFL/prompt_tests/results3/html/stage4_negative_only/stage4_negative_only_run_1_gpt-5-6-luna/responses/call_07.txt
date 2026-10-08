@@ -1,0 +1,142 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<html lang="x-klingon">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<base href="http://example.invalid/a/../b/">
+<title>Frames and odd metadata</title>
+<base target="_blank">
+<link rel="alternate stylesheet" title="one" href="">
+<style type="text/css">
+@import url("bad.css");
+@media (min-width: -1px) { body { color: #12; } }
+</style>
+</head>
+<frameset rows="*,0,20" cols="50%,*">
+  <frame src="javascript:alert(1)" name="left" scrolling="maybe" frameborder="-1">
+  <frame srcdoc="<p>nested" src="" noresize>
+  <noframes>
+    <body>
+      <h1>Fallback</h1>
+      <p><a href="http://[broken">broken link</a>
+      <!-- unterminated comment
+      <img src=x alt="&notanentity;" />
+    </body>
+  </noframes>
+</frameset>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Table repair maze</title>
+</head>
+<body>
+<table border="00" cellpadding="-4" cellspacing="NaN" width="200%">
+  <caption align="sideways"><b>Caption <i>crossed</caption>
+  <colgroup span="-2"><col width="25"><colgroup><col>
+  <thead><tr><th rowspan="999" colspan="-1">A<th>B<th>C
+  <tbody>
+    <tr><td headers="a b" rowspan="0">one<td><div>two<tr>
+    <td>three
+  <tfoot><tr><td colspan="x">footer
+</table>
+<table>
+  <tr><td><table><tr><td>inner</table></td><td>after
+  <tr><th><p>paragraph <table><tr><td>deep</table>tail
+</table>
+<p><ins><del><table><tr><td>mixed</ins>text</del>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Raw text and declarations</title>
+<script type="text/javascript">
+if (a < b && c > d) {
+  document.write("<div title='x'>");
+  // </script> in a string should terminate HTML script parsing
+  var s = "</script><textarea>ghost</textarea>";
+}
+</script>
+<style>
+body { background: url("x<!--y"); }
+<!--
+  p { color: red; }
+  -->
+</style>
+</head>
+<body>
+<script type="application/ld+json">{"x":"<tag>","y":"&amp;","z":}</script>
+<textarea name="t" wrap="invalid">first
+</textarea
+><textarea>second &amp; &unknown; <b>literal</b></textarea>
+<plaintext>
+Everything after this is plaintext?
+<html><head><title>not really</title></head>
+<!-- comment-looking text -->
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Lists and ruby reconstruction</title></head>
+<body>
+<ul type="nonsense">
+  <li value="abc">alpha
+  <li>beta
+    <ol start="-999" reversed="false">
+      <li>nested one
+      <li>nested two
+    </ol>
+  <li>gamma
+</ul>
+<dl compact="yes">
+  <dt><b>Term one
+  <dd>Definition <p>new paragraph
+  <dt>Term two
+  <dd><ul><li>embedded<li>unclosed
+</dl>
+<ruby>
+  base <rt>annotation <rp>(</rp>fallback</ruby>
+<menu type="toolbar">
+  <li><button autofocus="maybe" formnovalidate>Action
+  <li><a download="" ping="http://a http://b">Link
+</menu>
+<blockquote cite="::::"><pre>  preserved
+line</blockquote>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Attributes and comments</title>
+  <meta name="viewport" content="width=device-width, initial-scale=nan">
+  <meta http-equiv="refresh" content="0; url=::::">
+</head>
+<body id="" class="a  b" data-x="&quot;&apos;&lt;&gt;&amp;" weird=unquoted weird=second>
+<!-- one -- two --- three -->
+<!---->
+<!-->
+<![CDATA[not xml cdata]]>
+<?xml version="1.0"?>
+<div style="color: rgb(999,-1,none); --custom: &bad;" onclick="&quot;alert(1)">
+  <span title='unterminated><em>text</div>
+<address><a href="mailto:user@@example..com">mail</address>
+<map name="m"><area shape="poly" coords="1,2,three" href="#"><area></map>
+<img usemap="#m" srcset="a 1w, b -2x, c" sizes="calc(100% - )">
+<object data="file:///dev/null" type="x/y"><param name="x" value="&not;">fallback</object>
+</body>
+</html>
+```

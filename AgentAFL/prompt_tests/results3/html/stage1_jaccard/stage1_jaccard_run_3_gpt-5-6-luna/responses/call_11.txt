@@ -1,0 +1,150 @@
+```html
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=windows-1252">
+    <base href="http://example.invalid/a/../b/">
+    <link rel="stylesheet" href="style.css">
+    <style type="text/css">
+      @media screen and (min-width: 0px) { body::before { content: "\0"; } }
+      .x { color: rgb(256,-1,999); }
+    </style>
+    <script type="application/ld+json">{"@context":"http://schema.org","x":"</script><p>"}</script>
+  </head>
+  <body id="a" class="x y" style="--v: url('x');">
+    <header><hgroup><h1>Heading <small>subtitle</small></h1><h2>Second</h2></hgroup></header>
+    <main>
+      <article itemscope itemtype="http://schema.org/Thing">
+        <data itemprop="value" value="001">one</data>
+        <time itemprop="dateCreated" datetime="2024-02-30T25:61:61Z">tomorrow</time>
+        <ruby>漢<rp>(</rp><rt>kan</rt><rp>)</rp></ruby>
+        <bdi dir="auto">abc</bdi><bdo dir="rtl">xyz</bdo>
+        <p><a href="javascript:alert(1)" target="_blank" rel="noopener">link
+          <button type="submit" disabled="disabled">button</a></button>
+        <figure><img srcset="a 1w, b 0w, c -1w" sizes="(min-width: 1px) 50vw" alt=""><figcaption>cap</figcaption></figure>
+      </article>
+      <aside><details open="false"><summary>summary</summary><meter min="10" max="0" value="NaN">bad</meter><progress max="-2" value="8"></progress></details></aside>
+    </main>
+    <footer><address><del cite="x" datetime="bad">removed</del><ins datetime="">inserted</ins></address></footer>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>attributes</title></head>
+<body>
+<form action="/submit" method="get" enctype="multipart/form-data">
+  <fieldset disabled><legend><label for="q">Query</label></legend>
+    <input id="q" name="q" type="text" value="one" value="two" required="required" maxlength="-4">
+    <input name="n" type="number" min="9" max="1" step="0" value="NaN">
+    <input type="date" name="d" value="2024-99-99">
+  </fieldset>
+  <label>Choice <select name="s" multiple size="-1">
+    <option value="a" selected selected>A
+    <option value="b" label="B">B
+    <optgroup label="Group"><option>C</optgroup>
+  </select></label>
+  <textarea name="t" rows="-2" cols="0" wrap="banana">first
+second</textarea>
+  <button formaction="/other" formmethod="post">Go</button>
+  <output for="q n">result</output>
+  <datalist id="list"><option value="x"><option value="y"></datalist>
+  <input list="list" type="text" autocomplete="off">
+</form>
+<table border="0" cellpadding="-1">
+  <colgroup span="0"><col span="-2"><colgroup><col>
+  <thead><tr><th rowspan="0" colspan="-1">A<th>B
+  <tbody><tr><td headers="missing" abbr="x" scope="rowgroup">1
+    <td><input type="checkbox" checked="no"></td></tr>
+  <tfoot><tr><td>foot</table>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>old elements and malformed nesting</title>
+</head>
+<body bgcolor="#gggggg" text="rgb(0,0,0)">
+  <center><font face="serif" size="99" color="not-a-color"><strike><big><small>legacy</small></big></strike></font></center>
+  <dir><li>one<li>two<ul><li>three</dir>
+  <dl><dt>term<dd>definition<dt>next
+  <menu type="toolbar"><li><button>edit<li><button>view</menu>
+  <blockquote cite="http://[bad"><p>quoted <q cite="">nested</blockquote>
+  <div align="middle"><p>alpha<div>beta<span>gamma</div>delta</span></p></div>
+  <hr noshade="false" width="999%" height="-20">
+  <marquee behavior="sideways" direction="diagonal" scrollamount="-1">
+    <table><tr><td>inside <form><input></form></td></tr></table>
+  </marquee>
+  <object data="file:///dev/null" type="text/plain" width="-1" height="0">
+    <param name="x" value="&quot;">
+    <embed src="" type="" pluginspage="x">
+    fallback <applet code="x" archive="a b" codebase="../"><param name="z"></applet>
+  </object>
+  <isindex prompt="Search:"><basefont size="-3">
+  <nobr>unbreakable <wbr>word</nobr>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>processing and declarations</title></head>
+<body>
+<?xml version="1.0" encoding="UTF-8"?>
+<?processing instruction?>
+<!DOCTYPE bogus [ <!ELEMENT root ANY> <!ENTITY x "y"> ]>
+<!---bad-start--!>
+<!-- nested <!-- comment --> tail -->
+<![CDATA[not-html-cdata]]>
+<div>
+  <![CDATA[
+    <span>literal?</span> &amp;
+  ]]>
+  <script language="javascript">
+    if (a < b && c > d) { document.write("</div>"); }
+    <!-- old comment
+      var x = "<!--"; // </script>
+    //-->
+  </script>
+  <noscript><p>fallback <b>bold</noscript>
+  <template id="t"><table><tr><td>template cell</template>
+  <dialog open="maybe"><p>dialog text</p><form method="dialog"><button>close</button></form></dialog>
+  <details><summary>one</summary><summary>two</summary><p>body</p>
+  <video controls autoplay="false" poster="x"><source src="a" type="video/unknown"><track kind="captions" srclang="xx" default><track></video>
+  <audio><source src="a"><source src="b"></audio>
+</div>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html lang="x">
+<head><title>tokens</title></head>
+<body>
+  <p title='a"b&#x; c&#XZZ; d&semi; e&ampersand f&#00000000000000000000000000000000000065;'>
+    &AElig &AElig; &apos; &quot &lt; &gt; &nbsp; &nbspx; &not; &notin; &notin &frac12;
+    &#1; &#7; &#10; &#13; &#26; &#127; &#128; &#55296; &#56320; &#65535; &#65536; &#1114111; &#1114112;
+  </p>
+  <pre>&#x0; &#x1F; &#x7F;	 tabs
+line ending
+</pre>
+  <p>&#xD800; &#xDBFF; &#xDC00; &#xDFFF; &#x10FFFF; &#x110000; &#xffffffffffff;
+  <p>&foo=bar; &foo bar; &#x; &#; &; &&&&; &amp;amp; &amp#65; &amp;#x41;
+  <div class="a&#10;b" data-x="&quot;&apos;&lt;&gt;&amp;&#x41;">
+    <input disabled=disabled readonly= required value="a
+b
+c" data-empty="">
+  </div>
+  <textarea>&lt;/textarea&gt; &amp; &#13;&#10;</textarea>
+  <script type="text/plain">&amp; &#xD800; </script>
+  <p><span style="content:'&amp;';">end</span></p>
+</body>
+</html>
+```

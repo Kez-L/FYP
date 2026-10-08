@@ -1,0 +1,115 @@
+```html
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en" dir="auto">
+<head>
+<meta charset="utf-8">
+<base href="http://example.invalid/a/../b/">
+<link rel="stylesheet" href="//example.invalid/style.css" media="screen and (min-width:0px)">
+<link rel="alternate" type="text/plain" href="x">
+<meta http-equiv="refresh" content="0; URL='unterminated">
+<meta name="viewport" content="width=device-width,initial-scale=999999999999999999999999">
+<noscript><meta http-equiv="refresh" content="1"></noscript>
+<style type="text/css"><!--
+@media (x) { body { color: red; } }
+--></style>
+<script type="application/ld+json">{"x":"</script><p>escaped?","n":1e999}</script>
+</head>
+<frameset rows="0,*,garbage" cols="25%,*">
+<frame src="one.html" name="a" frameborder="maybe">
+<frame src="two.html" scrolling="sideways" noresize="false">
+<noframes><body><p>fallback <a href="x">link</a></p></body></noframes>
+</frameset>
+</html>
+```
+
+```html
+<!doctype HTML>
+<html>
+<head><title>ruby and interactive elements</title></head>
+<body>
+<main>
+<article itemscope itemtype="http://schema.org/Thing">
+<header><hgroup><h1 itemprop="name">Title</h1><h6>small</h6></hgroup></header>
+<p><ruby><rb>漢</rb><rt>かん</rt><rp>(</rp><rt>kan</rt><rp>)</rp><rtc>annotation</rtc></ruby>
+<details open="false" name="group"><summary>Summary <mark>marked</summary><p>hidden-ish content</p></details>
+<details><summary>Second</summary><dialog open="0">dialog text <button command="toggle" commandfor="x">click</button></dialog></details>
+<meter min="10" max="2" low="nan" high="-inf" optimum="999">meter</meter>
+<progress max="-1" value="infinity">progress</progress>
+<dl><div><dt><data value="001">one</data><dd><time datetime="not-a-date">time</time></div>
+<figure><picture><source media="(" srcset="a 1x, b 999999x"><img srcset="a 1w, b" sizes="calc(" alt="broken"></picture><figcaption>caption</figcaption></figure>
+<video controlslist="nodownload nonsense" preload="maybe"><track kind="captions" srclang="xx" default="false"><source srcset="x" type="bad/type"></video>
+</article>
+</main>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>token boundary collisions</title></head>
+<body>
+<div><p class = "a"=b foo=bar=b baz=="x" qux='y"z' empty="" bare disabled/ >
+Text &notinva; &notinva &ampersand &apos &quotx; &#xD800; &#x10FFFF; &#x110000; &#00000000000000000000065;
+<br/><br /> <hr/ > <img/src=x alt=y> <input/disabled>
+</div>
+<!-- normal --><!----><!--a--b--><!-- --><!--- --><!-----><!--unterminated
+<% weird %><%-- server --%><?xml version="1.0"?><!foo bar>
+<!DOCTYPE html [ <!ENTITY x "y"> <!ELEMENT html ANY> ]>
+<p title="line
+break&#x0A;tab&#x09;null&#0;">a&#x0;b</p>
+<custom-element data-a data-b= data-c='unterminated
+<span>one</span2><sp an>two</sp><x:y z="q">three</x:y>
+<div class="a" class="b" ID="upper" id="lower" data-x="1" data-x="2">duplicate attributes
+</div>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>foreign integration boundaries</title>
+<meta charset="utf-8">
+</head>
+<body>
+<div xmlns="urn:example:root">
+<svg:svg xmlns:svg="http://www.w3.org/2000/svg"><svg:use href="#x"/></svg:svg>
+<math:math xmlns:math="http://www.w3.org/1998/Math/MathML"><math:mi>x</math:mi></math:math>
+</div>
+<template shadowrootmode="open"><div><slot name="a"></slot><style>:host{--x:"</style></div></template>
+<template><table><tr><td>template content</td></tr></table></template>
+<p><span><template><p>nested template <b>bold</template>after</span>
+<iframe srcdoc="<!doctype html><html><body><p>inner &amp; text</p></body></html>" sandbox="allow-same-origin allow-forms"></iframe>
+<object data="x" type="application/x-unknown"><param name="movie" value="x"><embed src="y" type="bad"><p>fallback</p></object>
+<canvas width="-1" height="999999999999999999"><fallback>canvas fallback</fallback></canvas>
+<isindex prompt="search?" action="/x">
+<portal src="about:blank">portal fallback</portal>
+<slot>light DOM</slot>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>sectioning and closure pressure</title></head>
+<body>
+<header><nav><a href="#a">A<a href="#b">B<a href="#c">C</nav><address>contact <b>bold</address></header>
+<main>
+<section id=a><h2>One<section><h3>Two</h3><p>text <q>quote <cite>cite <code>code</section>
+<aside><h4>Aside</h4><p>aside <del><ins>both</del> insertion</ins></p></aside>
+<article><header>article head</header><p>body</p><footer>article foot</footer></article>
+<hgroup><h1>heading one<h2>heading two<h3>heading three</hgroup>
+<p>before <b><i><em><strong><small><sub>deep</p>after</strong></em></i></b>
+<blockquote cite="http://example.invalid/"><p>quoted<p>second</blockquote>
+<pre>line 1
+line 2 <code>code</pre><pre>adjacent</pre>
+<div><p>open<div>block switch<span>inline</div>tail</span>
+<footer><p>footer <a href=x>link</footer>
+</main>
+<menu><li type="context">x<li type="bad">y</menu>
+</body>
+</html>
+```

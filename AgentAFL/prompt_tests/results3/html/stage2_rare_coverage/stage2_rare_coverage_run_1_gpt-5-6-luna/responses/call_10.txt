@@ -1,0 +1,135 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<base href="http://example.invalid/a/">
+<title>Entity and declaration stress</title>
+</head>
+<body bgcolor="#fff" text="black">
+<!-- unclosed comment
+<p>hidden <b>markup</b> -- >
+<![if IE]>
+<div class=legacy><![endif]>
+<p title="unterminated>alpha &copy &unknown; &#x110000; &#99999999; &amp
+<br/><hr/><!--><!---->
+<pre>  preformatted
+    <code>nested</pre></code>
+<blockquote cite=http://example.invalid/q>
+<strong>bold <i>italic <u>underlined</strong> still open</u></i>
+</blockquote>
+<![endif]>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>Media and embedded object recovery</title>
+</head>
+<body>
+<object classid="clsid:BAD" data="movie.bin" width="320" height="200">
+<param name="quality" value="high">
+<param name="autoplay" value>
+<embed src="movie.swf" type="application/x-shockwave-flash" hidden="false">
+<object data="nested.dat"><img src=broken alt="fallback"></object>
+</object>
+<picture>
+<source media="(min-width: 1px)" srcset="a 1x, b 2x">
+<img srcset="one.jpg 100w two.jpg 200w" sizes=(max-width:600px)100vw alt="pic">
+</picture>
+<audio controls autoplay="maybe"><source src=test.ogg type=audio/ogg>
+<track kind=subtitles src=caption.vtt srclang=en label=English>
+fallback text
+</audio>
+<video poster="x.jpg"><source src="x.mp4"><![CDATA[raw video text]]></video>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Forms with malformed controls</title>
+</head>
+<body>
+<form id=f1 method=post enctype=multipart/form-data>
+<fieldset disabled="0"><legend>Profile
+<label for=name>Name<input id=name name=name value="A&B" maxlength=-3></label>
+<label>Email<input type=email name=email required=required multiple></label>
+</fieldset>
+<select name=choice size=0 multiple="false">
+<option value=one selected>One
+<optgroup label="Group"><option>Two</optgroup>
+<option disabled=disabled>Three
+</select>
+<textarea name=notes rows="NaN" cols="-1">line one
+line two</textarea>
+<button type=submit formaction=/save>Save</button>
+<input type=unknown checked="no" readonly=maybe>
+</form>
+<form action=second><input name=x><input type=submit value="Go"></form>
+<label><output for="name email">result</output></label>
+</body>
+</html>
+```
+
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<title>Frames and legacy flow</title>
+</head>
+<frameset rows="20%,*,0" cols="50%,50%">
+<frame src="left.html" name=left scrolling=maybe>
+<frame src="right.html" frameborder=none>
+<noframes>
+<body>
+<center><font face="Arial" size="+7" color=red>Fallback</font></center>
+<marquee direction=sideways behavior=loop scrollamount=-9>
+<blink>moving <big>content</small>
+</marquee>
+<applet code="X.class" archive="x.jar" width=0 height=-2>
+<param name=codebase value="/"><param name=object value=x>
+applet fallback
+</applet>
+<dir><li>legacy one<li>legacy two</dir>
+</body>
+</noframes>
+</frameset>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="x">
+<head>
+<title>Foreign-looking names and malformed scripting</title>
+<style type=text/css>
+@import url("x.css"); body { color: #12; } @media screen { p { display: none; }
+</style>
+<script type="text/javascript">
+if (a < b && c > d) { document.write("<p>injected</p>"); }
+/* missing terminator
+</script>
+<script language=vbscript>Sub bad(x): End Sub</script>
+<noscript><p>noscript <span>text</noscript>
+</head>
+<body>
+<div id="root" data-a=1 data-a=2 xml:lang="en" xmlns:x="urn:x">
+<x:item><x:child attr="unterminated>value</x:child></x:item>
+</div>
+<dl compact>
+<dt>Term one
+<dd><span>Definition <q cite='x>quote</q>
+<dt><abbr title="HyperText">HTML
+<dd><ins datetime=2024-01-01>inserted</del>
+</dl>
+<p><a href="javascript:alert('x')" onclick="if (x < 2) alert(&quot;y&quot;)">link
+<iframe srcdoc="<p>nested</p>" sandbox=allow-scripts></iframe>
+</body>
+</html>
+```

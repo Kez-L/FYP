@@ -1,0 +1,135 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="robots" content="noindex,nofollow">
+<title>Frameset and malformed metadata</title>
+</head>
+<frameset rows="20%,*,,">
+  <frame src="left.html" name="nav" scrolling=yes noresize>
+  <frameset cols="33%,33%,*">
+    <frame src="one.html">
+    <frame src="two.html" frameborder="abc">
+    <frame src="three.html" marginwidth="--1">
+  </frameset>
+  <noframes>
+    <body>
+      <h1>Fallback</h1>
+      <p>frame fallback with a stray </body>
+      <p><img src alt=broken width="12 height=20">
+      <hr>
+      <center><font face="Arial" color="#12GG45">text
+    </body>
+  </noframes>
+</frameset>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Lists and definitions</title></head>
+<body>
+<dl compact>
+  <dt>Alpha
+  <dd><p>First description
+  <dt><em>Beta</em></dt>
+  <dd>Second <ol start="zero" type="A">
+    <li value="x">nested one
+    <li>nested two
+      <ul type="square">
+        <li>deep <li>deeper
+      </ul>
+  </ol>
+  <dt>Gamma
+  <dd><blockquote cite="urn:test:<>">quoted
+    <div>inside quote</blockquote>
+  <dd><pre>literal
+      <li>not really a list</pre>
+</dl>
+<menu>
+<li><a href="a b" title='one"two'>A
+<li><button>wrong menu control</button>
+</menu>
+<p>tail</p>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Entities and character boundaries</title>
+</head>
+<body>
+  <p>&amp &AMP; &unknown; &not; &notin; &copy &copy; &nbsp&nbsp; &#
+  <p>&#0; &#1; &#9; &#10; &#13; &#31; &#127; &#55296; &#56319; &#57344; &#65536; &#1114111; &#1114112;</p>
+  <p>&#xD800; &#xDFFF; &#x110000; &#x10FFFF; &#xFFFFFFFF; &#x;</p>
+  <p title="a&amp;b&#65;&#x41;&quot;unterminated>attribute text</p>
+  <p>split&am
+  p;entity & #65; &# x41; &colon; &semi</p>
+  <script type="text/plain">
+    &amp; &#xD800; </script><p>escaped-looking close
+  </script>
+  <style>
+    a:before { content: "</style><p>not markup"; }
+  </style>
+  <textarea>&lt;/textarea&gt; &amp; &#x1F600;</textarea>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>SVG Math and foreign content</title></head>
+<body>
+<svg width="100" viewBox="0 0 10 10">
+  <title>vector</title>
+  <defs><linearGradient id=g><stop offset="0%"><stop offset="100%"></linearGradient></defs>
+  <g transform="translate(1 2)" onclick="x<y">
+    <rect x="0" y="0" width="5" height="5" fill="url(#g)"></rect>
+    <circle cx="4" cy="4" r="3"/>
+    <path d="M0 0 L10 10 Q 4 5 8 2 Z" stroke-width="bad">
+  </g>
+  <foreignObject x=0 y=0 width=9 height=9>
+    <div xmlns="http://www.w3.org/1999/xhtml"><p>embedded html</div>
+  </foreignObject>
+</svg>
+<math display="block">
+  <mi>x</mi><mo>&lt;</mo><mfrac><mn>1</mn><mrow><mi>y</mi><mo>+</mo></mfrac>
+  <annotation encoding="application/x-tex">x_{i}</annotation>
+</math>
+<p>after math <svg><text>text<g>broken</svg> end
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Tables with sections and captions</title></head>
+<body>
+<table border="1" cellpadding="2">
+  <caption align=bottom>Results <b>2024</caption>
+  <colgroup span="2"><col width="20%"><col><colgroup>
+  <thead>
+    <tr><th rowspan=2 scope=col>Key<th colspan="2">Values
+    <tr><th>Low<th>High</thead>
+  <tbody>
+    <tr><th scope=row>A<td>1<td>9
+    <tr><td colspan=4><table><tr><td>nested one<td>nested two</table>
+    <tr><td>orphan row text
+  <tfoot>
+    <tr><th>Total<td><input name=total value="10"><td><select><option>ok</select>
+  <tbody><tr><td>late section
+</table>
+<table>
+  <tr><td>a</tr>
+  <tr><th>b<td>c
+  <th>d</table>
+<p><object data="x" type="text/html"><param name=movie value=x>
+  fallback <embed src=x></object>
+</body>
+</html>
+```

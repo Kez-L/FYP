@@ -1,0 +1,124 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-16">
+<meta http-equiv="Content-Type" content="text/html; charset=unknown">
+<meta http-equiv=refresh content="0;url='x&y">
+<link rel=stylesheet href=//example.invalid/a.css />
+<style type=text/plain>
+@media (min-width:0){a{content:"</style><p>";}}
+</style>
+<title>Head <b>boundary</title>
+</head>
+<body id=one id=two class="a&#0;b&#xD800;c">
+<header><hgroup><h1>Heading<h6>Nested</h6></h1><p>intro
+<nav><ol type=A start="-999999999999"><li><a href="#x">A<li><a href="#">B</ol></nav>
+<main>
+<section><article><figure><img src alt=broken width=1e3 height=NaN><figcaption>caption</figure>
+<details open="false"><summary>Summary</summary><p>Hidden <mark>content</details>
+<dialog open=maybe><form action method=POST enctype=bad>
+<label for=x>Label<input id=x name=x value="a&b<c" maxlength=-1>
+<button type=submit formaction=>Send</button>
+</form></dialog>
+</article></section>
+</main>
+<footer><p>tail</p></footer>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<body>
+<table border="01" cellpadding="-7" cellspacing="NaN" width="100%foo">
+<caption><b>Cap<table><tr><td rowspan=0 colspan=-3>A<td>B
+<thead><tr><th scope=colgroup abbr="x>y">H1<th>H2<tbody>
+<tr><td><div>cell one<tr><td>cell two</div>
+<tfoot><tr><td>footer
+</table>
+<table>
+<colgroup span="0"><col width=*" /><colgroup><col span=-1>
+<tr><th><input type=checkbox name=a><th><select name=s multiple size=0>
+<option selected value=x>One<option value=y>Two</select>
+</table>
+<form><table><tr><td><input name=q></form><tr><td>after</table>
+<table><tr><td><table><tr><td>deep</table></td></tr></table>
+<div align=right><table><tr><td>outside</div></table>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>Foreign Content</title></head>
+<body>
+<svg viewBox="0 0 10 10" width="1e2" height="-4">
+<title>svg title</title>
+<defs><linearGradient id=g gradientUnits=userSpaceOnUse><stop offset="50%" stop-color="#ggg"/></linearGradient></defs>
+<g transform="translate(1 2) rotate(foo)" onclick="&quot;">
+<path d="M0 0 L 10 10 Z garbage" fill="url(#g)" stroke-width="-.5"/>
+<foreignObject x=0 y=0 width=3 height=4><div xmlns="http://www.w3.org/1999/xhtml"><p>HTML in SVG</div></foreignObject>
+</g>
+</svg>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display=sideways>
+<mrow><mi>x</mi><mo>&lt;</mo><mfrac><mn>1</mn><mroot><mi>y</mi><mn>-2</mn></mroot></mfrac></mrow>
+<annotation encoding="application/xhtml+xml"><p>annotation</annotation>
+</math>
+<svg><a href="javascript:bad"><text>link</text></a><metadata><x/></metadata></svg>
+<p xmlns="">back to HTML <svg:path /></p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Entity Stress</title></head>
+<body>
+<p>&; &#; &#0; &#1; &#x; &#x0; &#X10ffff; &#x110000; &notit; &notin; &amp;amp; &unknown;</p>
+<p title="&quot;&apos;&lt;&gt;&amp;&#13;&#10;&#x2028;">&#xD800;&#xDC00;&#xFFFE;&#xFFFF;</p>
+<pre>
+&lt;pre&gt; &amp; &copy; &notin; &AElig; &fjlig;
+</pre>
+<code>&#00000000000000000000000065;</code>
+<textarea>&lt;/textarea&gt;&amp;<!-- not really -->&#x26;</textarea>
+<script type="text/plain">
+&amp; <tag attr='x'> </script text
+</script>
+<script>
+if (a < b) { document.write("</scr" + "ipt>"); }
+</script>
+<style>
+x{background:url("data:text/html,<p>&amp;</p>");}
+</style>
+<p><a href="data:text/html,%3Csvg%20onload%3Dalert(1)%3E">encoded</a>
+<object data="data:application/octet-stream;base64,@@@@"></object>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Adoption And Omission</title></head>
+<body>
+<p><b><i>alpha <a href=#><u>beta</b> gamma</i> delta</u> epsilon</a>
+<p>second
+<dl><dt>one<dd><p>definition<dt>two<div>block<dd>late
+<ul><li>outer<ul><li>inner<li>inner two</ul><li>outer two</ul>
+<ol><li>first<blockquote><li>not a list</blockquote><li>last</ol>
+<table><tr><td>x<table><tr><td>y</td></tr></table>z</td></tr><tr><td>w</table>
+<ruby>漢<rt>kanji<rp>(<rt>alt</ruby>
+<picture><source media="(" srcset="a 1x, b 2x, c"><img srcset="broken, ,d 0w"></picture>
+<video controls preload=maybe poster=><track kind=subtitles srclang=xx default src>
+<source type=video/unknown src><track>
+fallback
+</video>
+<iframe srcdoc="<p><b>embedded</iframe>tail</b>" sandbox="allow-scripts allow-scripts"></iframe>
+<template><p>template <table><tr><td>x</template><p>after
+</body>
+</html>
+```

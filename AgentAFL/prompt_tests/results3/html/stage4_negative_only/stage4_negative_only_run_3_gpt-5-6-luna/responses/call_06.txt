@@ -1,0 +1,128 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<base href="http://example.invalid/a/">
+<link rel="stylesheet" href="x.css" media="screen">
+<meta http-equiv="refresh" content="0;url=&quot;broken">
+<style type="text/css">
+body { color: red; } /* unterminated
+</style>
+<script type="application/javascript">
+if (a < b && c > d) { document.write("<p>raw</p>"); }
+<!-- legacy comment
+</head>
+<body>
+<header id="top"><h1>Heading</h3><p>text &unknown; &amp broken</header>
+<nav><a href="one" title="two>three">One<a href=two>Two</nav>
+<main>
+<section><article><h2>Nested<h4>Skipped level</h2>
+<p>First <strong>bold <i>italic</strong> plain</i>
+<blockquote cite="x"><q>quote <cite>citation</blockquote>
+<pre>  pre &lt; text
+	indented</code></pre>
+</article></section>
+</main>
+<footer><address>user@example.invalid</address></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<frameset rows="20%,*,0" cols="*,*" frameborder="maybe">
+<frame src="left.html" name="left" scrolling="sometimes">
+<frame src="right.html" name=right noresize>
+<noframes>
+<body bgcolor="#12zz00" text="#000000">
+<h1>Fallback</h1>
+<p>This is fallback content.
+<iframe srcdoc="<p>inside <b>frame</p>" src="x" width="wide" height="-1"></iframe>
+</body>
+</noframes>
+</frameset>
+<basefont size="999">
+<center><font face="Arial" color=red size=+999>Old markup
+<dir compact><li>alpha<li>beta<menu><li>gamma</menu></dir>
+<dl><dt>Term<dd>Definition<dt><dd>Missing terms</dl>
+<hr noshade="false" width="200%" align=side>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>Embedded Data</title>
+<script>
+var x = "</script><p>not really";
+var y = "<!--";
+</script>
+<noscript><meta http-equiv=refresh content='1; url=a&b'></noscript>
+</head>
+<body>
+<form id="f" action="/submit" enctype="multipart/form-data" accept-charset="utf-8" method="post">
+<fieldset disabled="false"><legend>Details</legend>
+<label>Name<input type=text name=name required=maybe></label>
+<label>Choice<select name=choice multiple="no"><option selected>One<option value="2">Two</select></label>
+<textarea name=notes rows=999 cols=-2 wrap=invalid>unclosed
+<button formaction="/x" formmethod=bogus>Send</button>
+<output for="name choice">result</output>
+</fieldset>
+</form>
+<details open="0"><summary>Summary</summary><p>Hidden-ish content</details>
+<dialog open=perhaps><p>Dialog</dialog>
+<template><div><span>template <em>content</template>
+<canvas width=NaN height=999999999999999999999>fallback</canvas>
+</body>
+</html>
+```
+
+```html
+<?xml version="1.0"?>
+<!DOCTYPE html [
+<!ENTITY foo "bar">
+<!ELEMENT bogus ANY>
+<!-- declaration comment -->
+]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="x">
+<head><title>Namespaces</title></head>
+<body>
+<div xmlns:svg="urn:example:svg" xmlns:x="urn:example:x">
+<x:widget x:a="1" a:b="2">foreign <x:item /></x:widget>
+<svg:svg><svg:use href="#x"/><svg:text>text</svg:text></svg:svg>
+<math:math><math:mi>z</math:mi></math:math>
+</div>
+<p><![CDATA[ raw <tag> & data ]]></p>
+<!-- -- bad -- comment -- >
+<?processing instruction?>
+<div data-x="&foo;" aria-label='a&#0;b&#x110000;c' weird="a&#xD800;"></div>
+<unknown><inner /></unknown>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Lists and Objects</title></head>
+<body>
+<ol start="999999999999999999999" reversed type="unsupported">
+<li value="x">one
+<li>two
+<ul type="circle"><li>nested<ul><li>deep</ul><li>after</ul>
+</ol>
+<dl compact="no"><dt>alpha<dd><p>paragraph one<p>paragraph two
+<dt>beta<dd><tableish><row><cell>fake</cell></row></tableish>
+</dl>
+<object data="file.bin" type="application/x-unknown" width="-" height="100%">
+<param name=movie value="a&b">
+<embed src="plugin" type="x/y" hidden="maybe">
+<noembed><p>fallback <img src=missing alt=broken></noembed>
+</object>
+<map name="m"><area shape=poly coords="0,0,notnum" href=#x alt="area"><area href></map>
+<img src="x" usemap="#m" ismap="false" width=abc height=-- alt>
+<picture><source srcset="a 1x, b 2q"><source media="("><img srcset="broken"></picture>
+</body>
+</html>
+```

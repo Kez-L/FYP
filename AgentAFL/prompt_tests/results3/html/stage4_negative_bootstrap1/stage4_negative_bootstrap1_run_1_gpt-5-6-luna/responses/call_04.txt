@@ -1,0 +1,118 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>table recovery stress</title>
+</head>
+<body>
+<table border="0" cellpadding="x" cellspacing="-1" width="100000000000000000000">
+<caption><b>caption <i>crossed</caption>
+<colgroup span="NaN"><col span="-2" width="auto"><colgroup><col></colgroup>
+<thead><tr><th rowspan="999999" colspan="-4">A<th>B<td>C</tr></thead>
+<tbody><tr><td><table><tr><td>inner<td></tr><tfoot><tr><td>late footer</table>
+<tr><td colspan="0"><div>block inside cell</tr></div>
+<tbody><tr><td>&#0;&#xD800;&#x110000;&notanentity &amp broken
+<tr><th><a href="x" <span>dangling</span></a></th></tr>
+</tbody>
+<tfoot><tr><td><p>footer<p>second<td>extra</tr></tfoot>
+</table>
+<div><table><tr><td>unclosed outer
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://example.invalid/a
+<![if IE]><html><head><title>conditional</title></head><body><![endif]>
+<!-- ordinary -- comment -- with -- runs -->
+<!--> bogus comment ending -->
+<!---->
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE weird [
+<!ELEMENT html ANY>
+<!ENTITY local "replacement">
+]>
+<html><head>
+<META HTTP-EQUIV=Content-Type CONTENT='text/html; charset=windows-1252'>
+<title>declaration &local; &unknown;</title>
+</head><body>
+<![CDATA[not really cdata <b>inside</b>]]>
+<?processing instruction?>
+<div a b= c="d e" f='g" h="i' j==k =l m
+ n="unterminated><p>after attribute damage
+<!-- nested <!-- comment --> tail -->
+</div>
+</body></html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>math and ruby islands</title></head>
+<body>
+<ruby><rb>漢</rb><rt>kan</rt><rtc><rp>(</rp><rt>かん</rt><rp>)</rp></rtc></ruby>
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mi>x</mi><mo>=</mo>
+<mrow><msup><mi>a</mi><mn>2</mn></msup><mo>+</mo><mfrac>
+<mrow><mi>b</mi><mo>−</mo><mi>c</mi></mrow>
+<msqrt><mn>4</mn><mo>&InvisibleTimes;</mo><mi>z</mi></msqrt>
+</mfrac></mrow>
+<annotation encoding="application/xhtml+xml"><![CDATA[<x>&y;</x>]]></annotation>
+</math>
+<picture><source media="(min-width: 0px)" srcset="a 1x, b 2w">
+<img srcset="one 1x, two 2x" sizes="calc(100% - 2px)" alt="&quot;broken">
+</picture>
+<video controls preload="maybe"><track kind="subtitles" srclang="xx" default><source type="video/unknown"></video>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+@charset "UTF-8";
+@import url("x); /* unterminated
+a,b::before { content: "</style><script>alert(1)</script>"; width: calc(1px + ); }
+@media all and (min-width: ) { .x { color: rgb(999,-1,foo) } }
+</style>
+<script type="text/javascript">
+/* </script> */
+var s = "</script><style>x{}</style>";
+if (a < b && c > d) { document.write("<p title='x>y'>"); }
+// </script trailing
+</script>
+</head>
+<body>
+<template id="t"><div><span>template <b>content</template></b></span></div>
+<noscript><p>fallback <img src=x></noscript>
+<script language="javascript" src="a&b.js" defer=maybe></script>
+<textarea><b>literal</b>&amp; &#xZZ; </textarea>
+<plaintext><h1>everything after plaintext</h1>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><base href="http://[::1"><link rel=stylesheet><link rel="alternate"></head>
+<frameset rows="*,0,NaN" cols="1%,2%,*">
+<frame src="a" name="one" frameborder="-1" scrolling="perhaps">
+<frameset>
+<frame srcdoc="<p>nested &amp; broken" src="b">
+<noframes><body><h1>fallback</h1></body></noframes>
+</frameset>
+</frameset>
+<body background="" bgcolor="#12" text="rgb(0,0,0)">
+<hgroup><h1>heading<h3>skipped<h2>recovered</h2></hgroup>
+<dl><dt>term<dd>definition<dt><dd>orphan
+<ol start="NaN" reversed="false"><li>one<li value="-999999999999">two<ul><li>nested</ol></ul>
+<blockquote cite="javascript:bad"><pre>  pre
+	&nbsp; text</pre></blockquote>
+<hr noshade="false" size="-10"><center><address>mail@example.invalid</address></center>
+</body>
+</html>
+```

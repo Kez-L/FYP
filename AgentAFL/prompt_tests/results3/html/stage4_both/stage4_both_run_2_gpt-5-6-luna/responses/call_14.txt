@@ -1,0 +1,140 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+  <meta http-equiv="refresh" content="0; url='javascript:bad()'">
+  <base href="http://example.invalid/a/b/" target="_blank">
+  <link rel="stylesheet" href="style.css" type="text/css" media="screen and (min-width: 0px)">
+  <style type="text/css">
+    @import url("broken.css"); body { color: #12zz; }
+  </style>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("<p>generated</p>"); }
+  </script>
+  <noscript><meta name="robots" content="none"></noscript>
+</head>
+<frameset rows="20%,*,0" cols="*,*" border="999" frameborder="maybe">
+  <frame src="left.html" name="left" scrolling="sideways" noresize="0">
+  <frameset cols="30%,70%">
+    <frame src="right.html" name="right">
+    <noframes>
+      <body bgcolor="#12GG00">
+        <h1>Frames unavailable</h1>
+        <p><a href="index.html" target="_top">continue</a></p>
+      </body>
+    </noframes>
+  </frameset>
+  <frame src="" name="extra">
+</frameset>
+</html>
+```
+
+```html
+<!doctype html>
+<html lang="x-invalid" dir="sideways">
+<head>
+  <title>sectioning and phrasing repair</title>
+  <meta charset="utf-8">
+</head>
+<body>
+  <header><hgroup><h1>one<h3>three<h2>two</hgroup><nav><a href="/a">A<a href="/b">B</nav></header>
+  <main>
+    <article>
+      <h2>Article <small>heading</h2>
+      <p>alpha <bdi dir="rtl">אבג <bdo dir="ltr">xyz</bdi> tail</bdo>
+      <blockquote cite="urn:test"><p>quoted <q>nested <q>quote</blockquote></q></p>
+      <figure><img src="x" alt="a < b & c"><figcaption>caption
+      <details open="false"><summary>summary <mark>mark</details><p>after details</p>
+      <dialog open=maybe><form><output name=o for="a b">old</output></form></dialog>
+      <template><section><p>template text</section></template>
+      <p><ruby>漢<rt>kan<rp>(</rp><rt>bad</ruby> end
+    </article>
+    <aside><address>writer &lt;mail@example.invalid&gt;<br>line two</address></aside>
+  </main>
+  <footer><menu type="toolbar"><li><button disabled="false">one</button><li><button>two</menu></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>token boundary damage</title></head>
+<body>
+<p>before</p>
+<div class=one
+  id="two"
+  data-a='three
+  data-b=four
+  data-c="five" trailing
+  =broken
+  checked="checked">
+  <span>text
+  <span class='nested " quote>more</span>
+</div>
+<pre>line one
+line two <b>bold
+line three</pre>
+<textarea rows=999 cols=-1>raw &amp; &lt;tag&gt;
+</textarea>
+<p>entities: &notin; &notin &#xD800; &#x10FFFF; &#0; &#x0; &#0000000000000000000000000000001; &apos; &semi; &NewLine;</p>
+<!-- first -- second --- third --!>
+<!--
+  multiline
+  comment without end
+<div>inside comment?</div>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>obsolete vocabulary and empty-element confusion</title>
+</head>
+<body>
+<center><font face="&quot;Times New Roman&quot;" size="999" color="#GGGGGG">
+  <big><big>large <small>small</big> middle</small></big>
+</font></center>
+<dir compact="no"><li>directory one<li>directory two<ul><li>nested</ul></dir>
+<menu><li>menu item<dt>unexpected term<dd>unexpected definition</menu>
+<marquee behavior="sideways" direction="diagonal" loop="-1">scroll <blink>blink</blink></marquee>
+<isindex prompt="Search: &quot;" action="/search">
+<hr></hr><br></br><img src="x"></img><input type="text"></input>
+<p align="justify" valign="middle">text <u><s><strike>old</u> crossed</s></strike>
+<tt><code><kbd>input</tt></code></kbd>
+<acronym title="x">ABC<abbr title="y">DEF</acronym></abbr>
+<object data="movie.bin" type="application/x-unknown" width="bad" height="-20">
+  <param name="movie" value="&broken">
+  <embed src="fallback" pluginspage="nowhere">
+  <noembed><p>fallback</p></noembed>
+</object>
+</body>
+</html>
+```
+
+```html
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ENTITY weird "x &amp; y">
+]>
+<root xmlns="urn:example:root" xmlns:x="urn:example:x">
+  <x:item x:a="1" a:b="2">namespaced text</x:item>
+  <unclosed attr="value">
+    <child><![CDATA[<not markup> & still text]]></child>
+    <?target data "unterminated
+    <child2>text</root>
+<root>
+  <item>second root</item>
+</root>
+<!-- comment with -- inside -- and a fake <!DOCTYPE x> -->
+<!DOCTYPE html PUBLIC "bad " "quote">
+<html><head><title>after XML debris</title></head>
+<body>
+  <p>recovered &amp; text</p>
+  </body>
+</html>
+```

@@ -1,0 +1,164 @@
+```html
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE note [
+  <!ELEMENT note ANY>
+  <!ENTITY local "alpha &amp; beta">
+]>
+<!-- unclosed comment <tag attr="> -->
+<note id=001 id="duplicate" xml:lang="x">
+  <![CDATA[
+    <not-really-an-element>&local; ]]> 
+  <header>
+    <meta http-equiv=Content-Type content=text/html;charset=unknown>
+    <meta name=generator content="&notanentity; &#0; &#xD800; &#x110000;">
+    <title>abc]]></title>
+  </header>
+  <section><item>one<item>two</section>
+  <para>before <em>middle <strong>deep</para> after</strong></em>
+  <empty></empty/>
+  <br/ ><hr / ><img src=>
+  <data a="1" b='2 c=3 d=4>tail</data>
+  <script type=text/plain>
+    if (a < b && c > d) { document.write("</script><x>"); }
+  </script>
+  <style>
+    .x { content: "</style><broken>"; color: rgb(1,2,3 }
+  </style>
+</note>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+  <head>
+    <title>frameset experiment
+    <base target=_blank>
+    <link rel=stylesheet href=//example.invalid/a.css disabled>
+  </head>
+  <frameset rows="*,0,*,">
+    <frame src="a.html" name=left scrolling=maybe frameborder=-1>
+    <frameset cols="25%,bad,">
+      <frame src=javascript:alert(1) noresize>
+      <frame src="" marginwidth=999999 marginheight=-8>
+      <noframes>
+        <body>
+          <h1>Fallback</h1>
+          <p><a href="mailto:x@y">link
+          <form><input><button><select><option selected>one<option>two</select>
+          <textarea rows=999 cols=-1>unterminated
+        </body>
+      </noframes>
+    </frameset>
+    <frame>
+  </frameset>
+  <body>
+    <p>This body follows a frameset and should be relocated.
+    <table border=0>
+      <tr><td>A
+      <tr><th>B</table>
+  </body>
+</html>
+```
+
+```html
+<!doctype HTML>
+<html>
+<head>
+  <title>misnested inline formatting and lists</title>
+</head>
+<body>
+  <ol start="not-a-number" reversed>
+    <li>first
+    <li value="999999999999999999999999">second
+      <ul type="square">
+        <li><b>bold <i>italic <u>under <s>strike</li>
+        <li><font size="+999" color="#gggggg" face=>text</font>
+      </ul>
+    <li>third
+  </ol>
+  <dl>
+    <dt>term <dd>definition
+    <dt><dt><dd><dd>empty chain
+  </dl>
+  <blockquote cite=unquoted&bad>
+    <pre>  leading
+      <code>literal <tag attr='x'> bytes &amp broken</code>
+    </pre>
+  </blockquote>
+  <center><div align=middle><p>one<p>two<p>three</center>
+  <marquee direction=sideways behavior=explode loop=-3>
+    <blink>old <big>elements <small>everywhere</blink></big></small>
+  </marquee>
+  <address><a href="x" target="_self"><b><i>contact</a></i></b></address>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>forms with odd token boundaries</title></head>
+<body>
+  <form name=f action="/a?x=1&y=2" method=get>
+    <input type=text name=x disabled=disabled required=required>
+    <input type=checkbox checked="checked" checked=false>
+    <input type=radio name=r value=1><input type=radio name=r value=2 checked>
+    <select name=s multiple size=zero>
+      <optgroup label="Group 1" disabled>
+        <option value=1 selected>one
+        <option value=2>two
+      </optgroup>
+      <option>three
+    </select>
+    <textarea name=t wrap=sideways rows=0 cols=abc>line1
+line2 &copy &#x; &#9999999999;</textarea>
+    <button type=maybe formaction="/submit">Go <input type=hidden></button>
+    <output for="x y">result</output>
+    <meter min=10 max=2 low=NaN high=Infinity value=-999></meter>
+    <progress max=-1 value=2>loading
+  </form>
+  <form>
+    <label><input type=image src= data-x="a" alt=">"></label>
+    <keygen challenge="unterminated>
+    <isindex prompt="Search:">
+    <fieldset><legend><legend>nested</fieldset>
+  </form>
+  <input form=missing type=file accept="*/*,," capture=maybe>
+  </body attr="after">
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>raw text, entities, and interrupted tags</title>
+  <script language="JavaScript">
+    var x = "<!--";
+    var y = "</scr" + "ipt>";
+    /* <div><p>&amp; &#xD800; */
+  </script>
+  <script type="application/ld+json">
+    {"a":"</script>","b":"\u0000","c":true,}
+  </script>
+  <style type="text/css">
+    @import url("x");
+    @media (min-width: { color: red; }
+    /* comment never ends
+  </style>
+</head>
+<body>
+  <template id=t><div>template <span>content</template><p>after
+  <noscript><div><p>noscript text</noscript>
+  <textarea><b>not markup</b> &amp; &#xZZ; </textarea>
+  <title>title <b>still title</title>
+  <p data-x="&quot; &apos; &#13; &#x0D;">A &unknown; B &amp C &copy;</p>
+  <div class="a b c" style="background:url('x); color: #12;">
+    <!-- one -- two --- three -->
+    <![if IE]><span>conditional</span><![endif]>
+    <svg><text>svg-ish</text></svg>
+    <math><mi>x</mi><mo>&InvisibleTimes;</mo><mn>1</mn></math>
+  </div>
+  </body>
+</html>
+```

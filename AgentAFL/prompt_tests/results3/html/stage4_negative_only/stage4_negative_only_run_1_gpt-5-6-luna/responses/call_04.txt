@@ -1,0 +1,112 @@
+```html
+<!doctype html>
+<!--- malformed comment with -- and a dangling delimiter
+<?xml version="1.0"?>
+<html lang="x" dir="sideways">
+  <head>
+    <meta charset="utf-16">
+    <title>alpha &amp; &unknown;</title>
+    <style type="text/css"><![CDATA[
+      body { color: red; }
+      /* unterminated
+    ]]></style>
+  </head>
+  <body>
+    <h1 id="a" id="b" class=unquoted disabled=checked>Heading
+    <p>First <i>italic <b>bold</p></i></b>
+    <hr/
+    <p>&#0; &#xD800; &#x110000; &copy &#38;</p>
+    <!-- comment <tag attr="x"> -- broken -->
+    text after comment
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>table recovery</title></head>
+<body>
+<table border="1">
+  <caption>caption
+  <colgroup span="2"><col width="20"><col>
+  <thead><tr><th>A<th>B<tbody>
+  <tr><td rowspan="999"><form action="/x"><input name=x><td>
+  <tr><td><select name=s><option>one<option selected>two
+  <optgroup label="g"><option>three</select>
+  <td><textarea cols=0 rows=-1>raw &lt;b&gt; text</textarea>
+  <tfoot><tr><td colspan=garbage>tail
+</table>
+<form><fieldset><legend>legend</fieldset></form>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>raw text boundaries</title>
+  <script>
+    var x = "</script";
+    var y = "<!--";
+    if (x < y) { /* </script> */ }
+  </script>
+  <style>
+    .x:before { content: "</style>"; }
+    @media screen { body { background: url("x"); } }
+  </style>
+</head>
+<body>
+  <pre>one
+two &amp; three
+  <code>four</pre>
+  <xmp><b>not bold</b> &amp; <xmp>nested</xmp></xmp>
+  <plaintext><div>everything after this is plaintext
+  <!-- including comments and </body></html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>forms and lists</title></head>
+<body>
+<dl>
+  <dt>term one
+  <dd>definition <p>paragraph
+  <dt><dt>empty terms
+  <dd><ul><li>first<li>second<ul><li>deep</ul></ul>
+</dl>
+<ol start="not-a-number" reversed="false">
+  <li value="999999999999999999999999999999999999999">large
+  <li><a href="http://[::1"><button type="submit"><input type="text" name="q"></button></a>
+</ol>
+<menu><li>menu item</menu>
+<label for=x>Label <input id=x type="file" accept=",,,"></label>
+<input type="image" src="data:image/svg+xml,%3Csvg%3E" alt>
+<button><select><option>inside button</select></button>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv=content-type content="text/html; charset=unknown">
+  <title>misnested namespaces</title>
+</head>
+<body>
+<p><math><mi>&lt;</mi><mo stretchy="maybe">+</mo><mtext><b>math text</b></mtext></math>
+<svg viewBox="0 0 1 1" preserveAspectRatio="xMidYMid meet">
+  <defs><linearGradient id=g><stop offset="NaN%"/><stop offset="infinite"/></linearGradient></defs>
+  <use href="#g" xlink:href="#missing"></use>
+  <foreignObject><table><tr><td>cross <svg><circle r="1e309"/></svg></td></tr></table></foreignObject>
+</svg>
+<p><iframe srcdoc="&lt;p&gt;inner&lt;/p&gt;" sandbox="allow-scripts allow-scripts"></iframe>
+<object data="file:///dev/null"><param name=x value=y><embed src=bad></object>
+<video controls poster="x"><source src=a type=bad><track kind=subtitles></video>
+</body>
+</html>
+```

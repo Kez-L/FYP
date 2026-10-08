@@ -1,0 +1,134 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+  <?xml version="1.0"?>
+  <!--[if IE 5]>legacy<![endif]-->
+  <title>Frameset stress</title>
+</head>
+<frameset rows="*,120" cols="25%,*">
+  <frame src="left frame.html" name="nav" scrolling="no" noresize="noresize">
+  <frameset cols="50%,50%">
+    <frame src="http://example.invalid/a?x=1&amp;y=2" target="main">
+    <frame srcdoc="<html><body><p>nested</p></body></html>" name="right">
+  </frameset>
+  <noframes>
+    <body bgcolor=#fff text='black' onload="x<y && a>0">
+      <h1>Fallback</h1>
+      <p>Frames are unavailable.
+      <form method=post action=/search?x=1&y=2>
+        <input type=text name=q value="a>b" disabled>
+        <input type=submit value="Go">
+      </form>
+    </body>
+  </noframes>
+</frameset>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Table recovery</title></head>
+<body>
+<table border=1>
+  <caption>Scores &copy;</caption>
+  <colgroup span=2><col width="20%"><col>
+  <thead><tr><th rowspan=2>A<th colspan=2>B
+  <tr><th>C<th>D
+  <tbody>
+    text before row
+    <tr><td>1<td><table><tr><td>inner</table><td>2
+    <tr><th><input name=x value="&quot;"><td><select name=s>
+      <option selected>one
+      <option>two
+      <optgroup label="group"><option>three</select>
+    <tr><td colspan=9><p>paragraph in cell<div>block after
+  <tfoot><tr><td>foot<td>tail
+</table>
+<p>after table<table><tr><td>unclosed
+</body>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Raw text and declarations</title>
+  <style type="text/css">
+    body { color: red; }
+    @media screen { p::before { content: "</style><b>escaped</b>"; } }
+    <!-- old comment -->
+  </style>
+  <script type="text/javascript">
+    if (a < b) { document.write("</scr" + "ipt><p>split</p>"); }
+    // <!--
+    /* </script> appears before the intended end */
+  </script>
+  <noscript><p>no script <b>branch</b></p></noscript>
+</head>
+<body>
+  <p>before<textarea>one
+two &amp; <b>tag-like</b></textarea>after
+  <p>input <input value="&lt;&amp;&quot;&#x41;" title='x" y'>
+  <template id=t><div><p>template <em>content</em></div></template>
+  <p>tail</p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Interactive controls</title></head>
+<body>
+<form id=f action=//example.invalid/post method=dialog enctype=multipart/form-data>
+  <fieldset disabled>
+    <legend>Account <button type=button autofocus>Help</button></legend>
+    <label for=u>User</label><input id=u name=user required pattern="[A-Z]+">
+    <label>Password<input type=password name=p minlength=2 maxlength=1></label>
+  </fieldset>
+  <input type=hidden name=token value="a&amp;b">
+  <output name=result for="u p">unknown</output>
+  <meter min=10 max=0 low=2 high=8 optimum=4 value=5>5</meter>
+  <progress max=-1 value=2>progress</progress>
+  <select multiple size=0>
+    <option value=a>alpha</option>
+    <option label="b &amp; c" selected>beta</option>
+  </select>
+  <textarea name=notes rows=2 cols=3 wrap=hard>line one
+line two</textarea>
+  <button type=submit formaction=/go formmethod=get>Send</button>
+</form>
+<form><input name=outside form=f><button>orphan</button></form>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Odd inline vocabulary</title></head>
+<body>
+<ruby>
+  漢<rb>字<rp>(</rp><rt>kan</rt><rp>)</rp>
+  <rtc><span>annotation</span></rtc>
+</ruby>
+<p><bdi dir=rtl>אבג</bdi> <bdo dir=invalid>xyz</bdo>
+  <time datetime="2024-02-30T25:61:99Z">soon</time>
+  <data value=1.2e3>value</data>
+  <mark>marked <small>small <big>large</big></small></mark>
+</p>
+<dl>
+  <dt>term
+  <dd>definition
+  <dd><div>second <ins cite=/a datetime=bad>inserted</ins>
+  <dt><span>another
+</dl>
+<p><a href="x" ping="a b" download=><img srcset="a 1x, b 2x" sizes="(min-width:1px) 50vw" alt=""><wbr>break</a>
+<figure><img src="x" alt="&unknown;"><figcaption>caption</figcaption></figure>
+<address><span>line one</address><p>after
+</body>
+</html>
+```

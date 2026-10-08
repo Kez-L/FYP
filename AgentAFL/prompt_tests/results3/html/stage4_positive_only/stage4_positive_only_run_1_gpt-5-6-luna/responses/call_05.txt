@@ -1,0 +1,133 @@
+```html
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="http://example.invalid/">
+<link rel="stylesheet" href="a.css" media="screen and (min-width: 1px)">
+<style>
+@media all { body { color: red } }
+</style>
+<script type="application/ld+json">{"@context":"x","items":[1,2,3]}</script>
+</head>
+<body id="root">
+<header><nav><a href="#main">skip</a><a href="javascript:bad()">jump</a></nav></header>
+<main id="main">
+<article itemscope itemtype="https://schema.invalid/Thing">
+<h1 itemprop="name">A &amp; B</h1>
+<p><em><strong><mark>nested <small>text</small></mark></strong></em>
+<figure><img src="missing" srcset="a 1w, b 2w" alt=""><figcaption>caption</figcaption></figure>
+<details open><summary>summary</summary><p>inside details</p></details>
+<dialog open><form method="dialog"><button autofocus>close</button></form></dialog>
+</article>
+</main>
+<footer><address><a href="mailto:x@y">x@y</a></address></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>foreign content</title></head>
+<body>
+<svg width="100%" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+<defs><linearGradient id="g"><stop offset="0%"/><stop offset="120%"/></linearGradient></defs>
+<g transform="translate(1 2) rotate(90)">
+<rect x="-1" y="-2" width="999999999999999999999" height="0" fill="url(#g)"/>
+<path d="M0 0 L10 10 Q 4 5 9 2 Z" stroke-width="-3"/>
+<text x="1" y="2"><tspan>svg &amp; text</tspan></text>
+</g>
+<foreignObject><div xmlns="http://www.w3.org/1999/xhtml"><p>embedded html</div></foreignObject>
+</svg>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+<mrow><mi>x</mi><mo>&lt;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+<annotation encoding="application/xhtml+xml"><p>annotation</p></annotation>
+</math>
+<p>after foreign elements</p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>forms and controls</title></head>
+<body>
+<form id="outer" action="/submit" method="post">
+<label for="u">User</label><input id="u" name="user" required pattern="[">
+<fieldset name="group"><legend>Options</legend>
+<input type="checkbox" checked="false" name="c">
+<input type="radio" name="r" value="1"><input type="radio" name="r" value="2" checked>
+<textarea name="note" rows="-10" cols="999999999999999999">unclosed
+<select id="pick" name="pick" size="-1">
+<option value="a" selected>alpha
+<option value="b">beta
+<optgroup label="broken"><option disabled>gamma
+</select>
+<button type="submit" formaction="/one">Send</button>
+<button type="reset">Reset</button>
+</fieldset>
+</form>
+<form action="/second">
+<input type="file" multiple accept="image/*,.x">
+<output name="result" for="u pick">old</output>
+<progress value="10" max="-2">10</progress>
+<meter min="10" max="1" low="-4" high="999" value="abc">meter</meter>
+<input type="image" src=x alt=y>
+</form>
+</body>
+</html>
+```
+
+```html
+<!-- unterminated comment
+<!DOCTYPE weird [
+<!ENTITY foo "bar">
+<!NOTATION n SYSTEM "x">
+]>
+<html lang=en dir=sideways>
+<head>
+<meta http-equiv=refresh content="0;url='x">
+<title>title
+</head>
+<body>
+<p>one<div>two<span>three</p>four</span></div>
+<pre>pre
+<code>code
+<blockquote cite="&foo;">quote
+<ol start="999999999999999999999" reversed type="Z"><li>first<li value="-999999999999999999999">second</ol>
+<ul><li>a<ol><li>b</ul></li></ol>
+<dl><dt>alpha<dd>beta<p>gamma<dt>delta
+<hr><br/><wbr>
+<!-- nested <!-- comment --> tail
+<template shadowrootmode="open"><p>template <b>content</template>
+<p>end
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>media and embedded resources</title>
+</head>
+<body>
+<picture>
+<source media="(min-width: 0px)" type="image/avif" srcset="x 0w, y -1w">
+<source srcset="data:image/svg+xml,%3Csvg%3E">
+<img src="fallback" width="-1" height="999999999999999999999" loading="lazy">
+</picture>
+<audio autoplay controls loop preload="nonsense">
+<source src="a.ogg" type="audio/ogg"><track kind="subtitles" src="s.vtt" default>
+</audio>
+<video controls poster="" width="abc" height="-8"><source src="v.mp4"><track></video>
+<iframe srcdoc="<p><b>inner</p>" sandbox="allow-scripts allow-scripts" width="0"></iframe>
+<object data="x" type="application/x-unknown"><param name="a" value="b"><p>fallback</p></object>
+<embed src="x" type="x/y" width="-999">
+<map name="m"><area shape="poly" coords="0,1,broken" href="#x"></map>
+<img src="#none" usemap="#m" ismap>
+</body>
+</html>
+```

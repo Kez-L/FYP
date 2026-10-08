@@ -1,0 +1,121 @@
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <base href="//example.invalid/">
+  <meta http-equiv="refresh" content="0;url=/next">
+  <title><span>broken title</title>
+  <style type="text/css"><![CDATA[
+    body { color: red; }
+    @media (width > 1px) { .x { content: "</style>"; } }
+  ]]></style>
+  <script type="application/json">{"x":"</script><div>not markup</div>"}</script>
+</head>
+<body id="root">
+  <template shadowrootmode="open">
+    <table><tr><td>template cell</template></td></tr></table>
+  </template>
+  <main><h1>Heading <em>with <small>unclosed elements
+  <p>paragraph one
+  <div><p>paragraph two</div>
+  <figure><img srcset="a 1w, b 2x" alt="x"><figcaption>caption</figure>
+  <details open><summary>summary</summary><p>hidden-ish content
+  <dialog open>dialog text
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>table recovery</title>
+</head>
+<body>
+  <table border="1">
+    <caption><b>caption
+    <colgroup span="abc"><col><col span="-4"></colgroup>
+    <thead><tr><th rowspan="999999999999">A<th colspan="0">B
+    <tbody>
+      <tr><td>A1<td>A2
+      <tr><td><select><option>one<option selected>two</select>
+    <tfoot><tr><td><textarea name="x">text
+  </table>
+  <table><tr><td>outer<table><tr><td>inner</table>tail
+  <p>after table <a href="x"><button type="submit">click</a></button>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-16">
+  <title>attributes &amp; entities</title>
+</head>
+<body>
+  <form id="f" action="/submit" method="PoSt" accept-charset=",,">
+    <fieldset disabled>
+      <legend><b>Account</legend>
+      <input name="user" value="&unknown; &#x110000; &#999999999999999999999;">
+      <input type="email" multiple list="choices" required>
+      <datalist id="choices"><option value="a@b"><option value="&quot;">
+    </fieldset>
+    <fieldset>
+      <input type="file" accept="image/*,,text/plain" capture="invalid">
+      <input type="number" min="NaN" max="1e999" step="0">
+      <input type="date" value="2024-99-99">
+      <button name="x" value="&notanentity" disabled>send</button>
+    </fieldset>
+  </form>
+  <p title="unterminated < &quot; >">a &copy b &amp; c &#0; d</p>
+  <div class=x y=z=bad =empty data-a='single"quote>payload
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>foreign content</title>
+</head>
+<body>
+  <svg width="1e999" viewBox="0 0 10 10">
+    <foreignObject><div xmlns="http://www.w3.org/1999/xhtml"><p>mixed
+    <math><mi>x</mi><mo>&lt;</mo><mtext><b>y</mtext></math>
+    <path d="M0,0 L10,10 Z" onload="x"></svg>
+  <p><?processing instruction?><![CDATA[raw <b> text]]></p>
+  <iframe srcdoc="<p>nested <b>document</p>" sandbox="allow-scripts allow-scripts"></iframe>
+  <object data="x" type="application/octet-stream"><param name="movie" value="x"><embed src="y"></object>
+</body>
+</html>
+```
+
+```html
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+  <title>misnested sections</title>
+</head>
+<body>
+  <header><nav><ul><li>one<li>two<ul><li>nested</nav>
+  <article>
+    <h2>article <span>heading</h3>
+    <section><p>first <b>bold <i>italic <u>under
+    <address>mail <a href="mailto:x@y">contact</address>
+    <blockquote cite="&quot;"><pre>pre
+      line
+    <code>code</pre></code>
+  </article>
+  <dl>
+    <dt>term 1
+    <dd>definition 1
+    <dt><dt>term 2<dd><div>definition <dd>another
+  </dl>
+  <menu><li><a href="#x">link</menu>
+  <footer><small>footer
+</body>
+</html>
+```

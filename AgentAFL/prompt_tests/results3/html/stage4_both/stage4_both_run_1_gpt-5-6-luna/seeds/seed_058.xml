@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>embedded objects and URL edge cases</title>
+  <meta name="description" content="a & b < c">
+</head>
+<body>
+  <iframe srcdoc="<p><b>nested</p>" src="http://[::1" loading="sometimes"
+    sandbox="allow-scripts allow-unknown" referrerpolicy="bad-policy"
+    width="not-a-number"></iframe>
+  <embed src="file:///dev/null" type="application/x-unknown" width="-20" height="NaN">
+  <object data="data:text/plain,one&two" type="" name="obj" width="auto" height="auto">
+    <param name="movie" value="javascript:alert(1)">
+    <param name="movie" value>
+    <p>fallback <img src alt=broken></p>
+  </object>
+  <canvas width="-1" height="1e9">
+    <svg><circle cx="NaN" cy="-Infinity" r="none"></circle></svg>
+    canvas fallback
+  </canvas>
+  <map id="map id" name="map&amp;name">
+    <area href="javascript:" alt="x" shape="rect" coords="1,2,three,4">
+    <area href="#unterminated" alt="" shape="default">
+  </map>
+  <img src="x" alt="x" usemap="map&amp;name" crossorigin="maybe" decoding="sideways">
+  <form action="https://example.invalid/%zz" method="get">
+    <output for="a b c" name="result">old</output>
+    <progress value="NaN" max="-1">loading</progress>
+    <meter min="high" low="low" optimum="none" high="1" max="0" value="2">meter</meter>
+    <button type=submit formaction="javascript:alert(1)" formenctype="bad">go</button>
+  </form>
+  <p><a href="mailto:?subject=x&body=%ZZ" ping="one two invalid://">mail</a></p>
+</body>
+</html>

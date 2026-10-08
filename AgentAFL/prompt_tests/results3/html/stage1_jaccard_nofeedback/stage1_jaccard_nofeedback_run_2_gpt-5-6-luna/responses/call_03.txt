@@ -1,0 +1,112 @@
+```html
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <base href="http://example.invalid/a/">
+    <style type="text/css">
+      <!--
+      body { color: rgb(12,34,56); }
+      @media (min-width:0px) { .x:before { content: "</style>"; } }
+      -->
+    </style>
+    <script type="text/javascript">
+      if (a < b && c > d) { document.write("<em data-x='1'>x</em>"); }
+      // </script><script>broken
+    </script>
+  </head>
+  <body onload="x&y">
+    <!-- unclosed comment
+    <div class="outer"><span id="a">text</div>
+    <![CDATA[ raw <tag> & stuff ]]>
+    <svg xmlns="http://www.w3.org/2000/svg"><foreignObject><p>svg mix</svg>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>&amp;&copy;&#0;&#xD800;&#x110000;&unknown;</title></head>
+<body>
+  <p title="a<b>c&amp;d&#x;">
+    &lt;&gt;&quot;&apos;&nbsp;&ensp;&thinsp;
+    &#1;&#31;&#127;&#160;&#55296;&#56320;&#x10ffff;&#xFFFFFFFF;
+  </p>
+  <p>one & two &&&amp;amp; &semi &semi; &notanentity trailing</p>
+  <textarea>&lt;div&gt;&amp;not closed</textarea>
+  <option value="&quot;'><">alpha</option>
+</body>
+</html>
+```
+
+```html
+<!doctype html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mixed XML syntax</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="x" />
+</head>
+<body>
+  <p><b><i><u>deep <em>nest</b> break</i></u></em></p>
+  <ul><li>first<li><li>third</ul>
+  <dl><dt>term<dd>definition<dt><dd></dl>
+  <form action="/x" method="post">
+    <input type="text" name="a" disabled="disabled"/>
+    <input type="checkbox" checked>
+    <button type=submit><span>go</button></span>
+  </form>
+  <div><br/><hr /><img src="x" alt="a"/></div>
+</body>
+</html>
+```
+
+```html
+<html>
+<head><title>table repair stress</title></head>
+<body>
+  <table border="1">
+    <colgroup><col span="2"><col></colgroup>
+    <thead><tr><th rowspan="2">A<th colspan="3">B</thead>
+    <tbody>
+      <tr><td>1<td>2<td>3
+      <tr><td><table><tr><td>nested</table><td>after
+    </tbody>
+    <tfoot><tr><td>end</tr></tfoot>
+  </table>
+  <select name="s">
+    <optgroup label="one"><option selected>first<option>second</optgroup>
+    <option>outside
+  </select>
+  <p><label for=x>X<input id=x><fieldset><legend>L</fieldset></label>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>raw text and declarations</title>
+  <?processing instruction?>
+  <!bad declaration [nested < chars]>
+  <!-- first -- second ---> 
+</head>
+<body>
+  <script>
+    var s = "</script";
+    var t = "</script >";
+    var u = "<!-- <body> </body> -->";
+  </script>
+  <style>
+    x { background: url("data:text/html,<p>"); }
+    /* </style> */
+  </style>
+  <noscript><div data-a="1>2">fallback</div></noscript>
+  <template><p>template <b>content</template>
+  <iframe srcdoc="<p title='x'>embedded</p>"></iframe>
+  <div data-a=unquoted data-b='single data-c="double">tail</div>
+</body>
+</html>
+```

@@ -1,0 +1,86 @@
+```html
+<!doctype html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang=en>
+<head><meta charset="utf-8"><title>Table repair</title></head>
+<body>
+<table border=1><caption>broken <b>caption</caption>
+<colgroup span=2><col width=0><col width="auto"></colgroup>
+<thead><tr><th rowspan=9 colspan=0>A<th>B<tbody>
+<tr><td>one<td>two<tr><td colspan=bad>three
+<tfoot><tr><td>foot</table>
+<table><tr><td>x<table><tr><td>nested</table>tail
+<p>after &copy &notanentity; &#0; &#xD800; &amp broken
+</body></html>
+```
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head><title>Raw text boundaries</title></head>
+<body>
+<pre>
+  preserved <b>text</b>
+  &lt;not markup&gt;
+</pre>
+<listing>line one
+line two <em>looks tagged</em>
+</listing>
+<xmp><div class="literal">x &amp; y</div></xmp>
+<noscript><p>fallback <i>content</noscript>
+<iframe srcdoc="<p>inner &amp; broken"><b>fallback</b></iframe>
+<plaintext><h1>everything after here
+<!-- comment-looking text -->
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html><head><title>Formatting recovery</title></head><body>
+<p><b><i><u><s>alpha
+<b>beta</i>gamma</u>delta</b>epsilon</s>
+<a href="one" href="two"><font color=red size=999><big><small>links
+<div><p>paragraph <a href=#x><b>nested</div>
+<table><tr><td><p>cell <b>bold<td>second</b></p></table>
+<dl><dt><dd>term without close
+<ul><li>one<li>two<ul><li>deep</ul><li>three</ul>
+<!--- malformed --!><!----><!invalid --><! [CDATA[ text ]]>
+</body></html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<style type="text/css">body{color:red} </style>
+<style>/* unterminated { content:"</style><script>ignored?</script>
+<script type="text/javascript">
+if (a < b) { document.write("<p>x</p>"); }
+</script>
+<script><!--
+  var s = "</script><div>";
+// --></script>
+<template id=t><table><tr><td><p>template text</template>
+</head>
+<body>
+<template><div><span>unclosed template
+</body></html>
+```
+
+```html
+<?xml version="1.0"?>
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="zz" xml:lang="en" dir=sideways>
+<head><base href="http://example.invalid/a?x=1&y=2"><title>Ruby and widgets</title></head>
+<body>
+<details open=maybe><summary>Summary <mark>mark</details>
+<dialog open>dialog <p>paragraph</dialog>
+<ruby>漢<rt>kan<rp>(</rp><rtc><b>annotation</rtc>字</ruby>
+<ins datetime="not-a-date"><del cite=x>old</del>new</ins>
+<menu type=context><menuitem label="A" checked disabled><li>fallback item</menu>
+<p><bdi dir=auto>abc‮xyz</bdi><bdo dir=rtl>123</bdo>
+<ol start=nan reversed><li value=1>first<li>second</ol>
+<embed src=x type="application/x-unknown"><object data=x><param name=a value=b><p>fallback</object>
+</body></html>
+```

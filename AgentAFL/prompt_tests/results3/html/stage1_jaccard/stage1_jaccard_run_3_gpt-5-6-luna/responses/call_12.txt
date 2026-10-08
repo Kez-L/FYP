@@ -1,0 +1,159 @@
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <base href="http://example.invalid/a/../b/">
+    <link rel=stylesheet href=style.css disabled=disabled>
+    <style type=text/css>
+      @import url("x.css");
+      body { color: #12; background: url("a b"); }
+      <!-- legacy comment
+      .broken { width: expression(alert(1)); }
+    </style>
+    <script type="text/javascript">
+      if (a < b && c > d) { document.write("</script><p>split"); }
+    </script>
+  </head>
+  <body id=main class="a  b" class='c" d' data-x=one/two>
+    <hgroup><h1>Heading<h3>Skipped level</h3></hgroup>
+    <p>alpha <b>bold <i>italic <u>underline</b> after</i></u>
+    <dl><dt>term<dd>definition<dt><dd>orphan definition
+    <ol start="0"><li>first<li value=999>second<li>third</ol>
+    <blockquote cite=><p>quoted<p>nested without closing
+    <address><a href="mailto:x@y">contact</address></a>
+    <hr noshade="false"><br/ ><img src= alt=broken width=-4 height=abc>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zz">
+<head>
+  <title><![CDATA[ title ]]> &amp; more</title>
+  <meta name="robots" content="index,follow" />
+</head>
+<body>
+  <form action="/submit?x=1&y=2" method="POST" enctype="multipart/form-data">
+    <fieldset disabled>
+      <legend>Pick one</legend>
+      <label for=a>A<input id=a name=q type=radio checked value=1 /></label>
+      <label for=b>B<input id=b name=q type=radio checked="no" value=2 /></label>
+      <input type="text" name="x" value="unterminated>
+      <select name=items multiple size="-3">
+        <option selected>one<option value=2>two
+        <optgroup label="group"><option>three</optgroup>
+      </select>
+      <textarea name=note rows=0 cols=-1>first
+second</textarea>
+      <button type=submit><strong>Send</button>
+      <input type=image src="x" alt="go" />
+    </fieldset>
+  </form>
+  <table border=1>
+    <colgroup span=2><col width=10><col width="bad"></colgroup>
+    <thead><tr><th rowspan=0 colspan=-2>Header<th>Other
+    <tbody><tr><td>A<td>B
+      <tr><td colspan=1>C<td>D
+    <tfoot><tr><td>foot</table>
+  <div><form><input name=n></form></div>
+</body>
+</html>
+```
+
+```html
+<!doctype HTML PUBLIC "weird-id" "http://example.com/a?b=c">
+<?processing instruction?>
+<!-- --><!----><! -- malformed -->
+<html>
+<head>
+  <title>R&#x1F600;sum&#55296;&#xDC00;&#xDFFF;</title>
+</head>
+<body>
+  <map name=m><area shape=rect coords="0,0,10" href=#x><area shape=poly coords="a,b,c"></map>
+  <img usemap="#m" srcset="a 1x, b 2w, c 0.5x" sizes="(min-width: 1px) 10vw,">
+  <object data="file:///tmp/x" type="application/x-test" width=0 height=0>
+    <param name=movie value=x>
+    fallback text
+  </object>
+  <iframe srcdoc="<p>inside &amp; outside</p>" src="javascript:alert(1)" scrolling=maybe></iframe>
+  <embed src=x type=application/x-shockwave-flash>
+  <details open="false"><summary>summary</summary><p>detail one</details>
+  <dialog open=0>dialog <menu><li>item</menu></dialog>
+  <ruby>漢<rt>kan<rp>(</rp>字<rtc>annotation</ruby>
+  <p title="a&#0;b&#x0;c&#x0D;&#x0A;">text &invalid; &#; &#x; &#xFFFFFFFFFFFFFFFF;</p>
+  <div style="color: rgb(1,2,3);"><span style="bad">styled</span></div>
+</body>
+</html>
+```
+
+```html
+<html>
+  <head>
+    <title>Frameset and obsolete elements</title>
+    <basefont size=999 color=#ggg>
+    <isindex prompt="Search:">
+    <noframes>
+      <body><p>No frames</p></body>
+    </noframes>
+  </head>
+  <frameset rows="*,*,0,-1" cols="25%,bad">
+    <frame src="a.html" name=left frameborder=maybe marginwidth=-5>
+    <frameset>
+      <frame src="b.html">
+      <frame src="c.html" noresize="false">
+      <frame>
+    </frameset>
+    <noframes><p>fallback <a href=x>link</a></noframes>
+  </frameset>
+  <body bgcolor=red text=blue link=#000000 vlink=#fff alink=>
+    <center><font face="A" size="+999"><big><small>old markup</small></big></font></center>
+    <marquee direction=sideways behavior=unknown loop=-1 width=abc>
+      <blink>moving <strike>content</strike></blink>
+    </marquee>
+    <applet code=Test.class archive="a.jar,b.jar" width= height=-2>
+      <param name=foo value="a&b">
+      applet fallback
+    </applet>
+    <hr><center><table><tr><td>x</center></td></tr></table>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Incremental nesting stress</title>
+</head>
+<body>
+  <header><nav><ul><li><a href="/one">one<li><a href="/two">two<ul><li>sub</ul></a></li></ul></nav></header>
+  <main>
+    <article>
+      <section id=a><h2>A<h4>B</section>
+      <section id=b><p>paragraph <em>em <strong>strong <code>code</section>
+      <aside><p>aside</main></p></aside>
+    </article>
+    <table>
+      <tr><td>implicit one<td>implicit two
+      <caption>late caption</caption>
+      <tbody>
+        <tr><th>h1<th>h2
+        <tr><td><div>cell<div>nested</td><td>tail
+      <col width=10><colgroup><col></table>
+    <p><a href=x><button type=button><span>click</a></span></button>
+    <figure><img src=x><figcaption>caption<figcaption>second</figure>
+    <video controls autoplay="false" preload=bogus poster=x>
+      <source src=a type=video/mp4><track kind=captions src=cap.vtt>
+      fallback <a href=x>download</a>
+    </video>
+    <audio><source src=a><source src=b></audio>
+    <template><div><p>template content</template><div>after
+  </main>
+  <footer><small>foot &copy; &notin; &#x110000; &amp trailing</small></footer>
+</body>
+</html>
+```

@@ -1,0 +1,28 @@
+<!doctype html [
+  <!ELEMENT bogus - - ANY>
+  <!ENTITY local "replacement &amp; text">
+  <!NOTATION weird SYSTEM "x">
+]>
+<html>
+<head>
+  <title>Entity and declaration maze</title>
+  <?processing instruction?>
+  <!-- comment with -- and > and <tag> -->
+</head>
+<body>
+  <p>&local; &#0; &#xD800; &#x110000; &notanentity; &amp &copy &apos;
+  <p title="a&amp;b&#xZZ;<?bad?>">attribute entities
+  <div data-x='one" two' data-y="three' four" =broken = "value">
+    <![CDATA[ not really CDATA in HTML <b>raw</b> ]]>
+    <script>
+      if (a < b && c > d) { document.write("</p><p>"); }
+      <!-- legacy script comment
+    </script>
+    <style>
+      .x:before { content: "</style><script>alert(1)</script>"; }
+    </style>
+  </div>
+  <textarea name=t>text &amp; <b>literal</b></textarea>
+  <x-custom a:b="v" xmlns:q="urn:test"><q:item/></x-custom>
+</body>
+</html>
