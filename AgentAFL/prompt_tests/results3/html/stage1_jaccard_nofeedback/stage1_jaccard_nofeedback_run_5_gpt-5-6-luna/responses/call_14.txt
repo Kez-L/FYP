@@ -1,0 +1,77 @@
+```html
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title>entity stress &amp; broken references</title>
+</head>
+<body>
+<section id="a&#x0; b">
+<p title="unterminated &quot; value">A &amp B &unknown; &#0; &#xD800; &#x110000;</p>
+<ol><li>one<li>two</ol>
+<details open><summary>summary</summary><div><br/></details>
+<!-- comment -- broken -- and -- --><p>after comment</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>foreign content boundary</title></head>
+<body>
+<svg viewBox="0 0 10 10"><foreignObject><div xmlns="http://www.w3.org/1999/xhtml">
+<input disabled=disabled><textarea>text</textarea>
+</div></foreignObject><path d="M0 0 L10 10"/></svg>
+<math><mi>x</mi><mo>&lt;</mo><mrow><mn>2</mn><mtext>units</mtext></mrow></math>
+<p>tail</p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html lang=en>
+<head><title>forms and misnested formatting</title></head>
+<body>
+<form action="/submit" method="post">
+<label for=x>Name<input id=x name=name value="a>b"></label>
+<select name=choice><option>first<option selected>second<optgroup label=group><option>third</select>
+<button type=submit><b><i>send</b></i></button>
+<fieldset disabled><legend>group<input type=text></fieldset>
+</form>
+<p><a href="javascript:alert(1)"><em>link<strong>nested</a>tail</strong></em>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+<meta charset="windows-1252">
+<style>p{color:red} </style>
+<script type="text/javascript">
+if (a < b && c > d) { document.write("</script><p>fake"); }
+</script>
+</head>
+<body>
+<pre>line 1
+line 2 &lt;tag&gt;</pre>
+<noscript><div>fallback</div></noscript>
+<p>before<table><tr><td>x<td>y</tr></table>after
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>adoption agency and abrupt EOF</title></head>
+<body>
+<p><b><i><u>alpha</b> beta</i> gamma</u>
+<div><a href=#one><span>first<a href=#two>second</span>third</a></div>
+<table><tbody><tr><th scope=col>head<th>next<tbody><tr><td colspan=2>cell
+<template><p>inside template<div>nested</template>
+<!-- unterminated comment
+```

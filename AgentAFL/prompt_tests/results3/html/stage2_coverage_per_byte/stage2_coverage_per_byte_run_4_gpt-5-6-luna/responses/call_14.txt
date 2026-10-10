@@ -1,0 +1,105 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Parser &amp; Entity Probe</title>
+<!-- unclosed comment starts
+<div class="hidden">ghost</div>
+--><base href="http://example.test/">
+</head>
+<body bgcolor=#ffffff>
+<p id=x>alpha &copy; &#0; &#xD800; &#x110000; &bogus; omega
+<br/ >
+<img src="x" alt="a&b" width=+00000000000000000012 height=--3>
+<hr class=test>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>Misnested table controls</title>
+</head>
+<body>
+<table border="0" cellpadding="999999999999999999999999999">
+<caption><b>caption <i>crossed</caption></b></i>
+<colgroup span="NaN"><col width="1e309"><col></colgroup>
+<thead><tr><th colspan="0">head<th rowspan="-4">next
+<tbody>
+<tr><td>A<td><table><tr><td>nested</table><td>after
+<tr><td colspan="18446744073709551616">tail
+<tfoot><tr><td>foot</table>
+<p>outside
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML>
+<html lang="x-\x00">
+<head>
+<meta charset="UTF-7">
+<title><![CDATA[ title ]]> &notanentity; </title>
+<script type="text/javascript">
+if (a < b && c > d) { document.write("</script><p>split"); }
+<!-- legacy comment
+var s = "<!--"; // \u0000
+</script>
+<style type="text/css">
+a:before { content: "</style>"; background:url("x&y"); }
+</style>
+</head>
+<body>
+<noscript><iframe src="javascript:alert(1)"></iframe></noscript>
+<template><div>template &amp; content</div></template>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html SYSTEM "urn:weird:doctype[subset]">
+<?xml version="1.0"?>
+<![CDATA[
+not really cdata in HTML
+]]>
+<html>
+<head><title>raw controls</title></head>
+<body>
+<div><span><em>one</div>two</span></em>
+<dl><dt>term<dd>definition<dt>second
+<ol start="999999999999999999999999999999" reversed="maybe">
+<li value="18446744073709551615">item
+<li><p>paragraph without closing
+</ol>
+<pre> leading
+	 tabs &lt; tags
+</pre>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN" "x">
+<html>
+<head>
+<title>Attribute state stress</title>
+</head>
+<body>
+<form>
+<input disabled="" disabled=disabled checked=CHECKED readonly=0>
+<input name="unterminated value>
+<input =bad ="x" / weird="v" = "q">
+<button onclick='alert("x")' data-a=one&two data-b="a"b" data-c=`tick`>
+click
+</button>
+<fieldset><legend>group</legend>
+<label for=a>Label<input id=a type=radio name=r></label>
+</fieldset>
+</form>
+<address>one<br>two<br/>three</address>
+</body>
+</html>
+```

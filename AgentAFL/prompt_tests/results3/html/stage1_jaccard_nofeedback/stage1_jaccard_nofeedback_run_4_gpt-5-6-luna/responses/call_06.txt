@@ -1,0 +1,117 @@
+```html
+<!doctype html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-16">
+  <base href="http://example.invalid/a/b/../c">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>&#xD800;&#x110000;&broken; &amp &quot</title>
+  <style type="text/css">
+    @charset "utf-8";
+    body::before { content: "</style><script>&#0;"; }
+  </style>
+</head>
+<body id="x" id="y" class="a b" disabled="false">
+  <!-- unclosed comment
+  <section><p>hidden</section>
+  <main>
+    <hgroup><h1>Heading<h6>Nested heading</hgroup>
+    <p>alpha<br/>beta<wbr>gamma<hr/>delta
+    <ol start="0"><li>one<li value="-2">two<li>three</ol>
+    <dl><dt>term<dd>definition<dt><dd></dl>
+  </main>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+  <foreignObject x="0" y="0" width="50" height="50">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <p>mixed namespace text &notAnEntity; &#x1F600;
+    </div>
+  </foreignObject>
+  <g transform="translate(1e309,-Infinity) rotate()">
+    <path d="M0 0 L 10 10 Q 1 2 3 ZZZ"/>
+    <text x="NaN" y="&#xDFFF;">A]]>B</text>
+  </g>
+</svg>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>form edge cases</title></head>
+<body>
+  <form action="/submit" method="POST" enctype="multipart/form-data">
+    <label for="field">Name</label>
+    <input type="text" name="field" id="field" value="&quot; onfocus=&quot;x" maxlength="-1">
+    <input type="checkbox" checked checked="no" name="flag">
+    <select name="choice" multiple size="0">
+      <optgroup label="A"><option selected>one<option>two</optgroup>
+      <option value="&amp;">three
+    </select>
+    <textarea name="notes" rows="-3" cols="999">&lt;/textarea&gt;
+      raw & invalid &#999999999999999999999999;
+    <button type="submit"><span>send</button>
+    <fieldset disabled><legend>group</legend><input name="inside"></fieldset>
+    <input type="image" src="data:image/png;base64,AAAA" alt="">
+  </form>
+  <form><input form="missing"><button formaction="">go</button></form>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html lang="">
+<head>
+  <meta charset="windows-1252">
+  <link rel="stylesheet" href="x.css">
+  <script type="application/ld+json">
+    {"name":"</script>","value":"\u0000\uD800"}
+  </script>
+</head>
+<body>
+  <header><nav><a href="javascript:&#x0A;alert(1)" target="_blank">link</a></nav></header>
+  <article>
+    <figure>
+      <img srcset="a 1w, b 0w, c -1x" sizes="(max-width: ) 100vw" src="">
+      <figcaption>caption
+    </figure>
+    <blockquote cite="&quot; broken"><pre>  pre
+	<code>&amp;lt;tag&gt;</code></pre></blockquote>
+    <details open="closed"><summary>summary</summary><div>content</div>
+  </article>
+  <aside><iframe srcdoc="<p>x</p><script>y"></iframe></aside>
+  <footer><small>copyright&nbsp;&copy;&#x;</small></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>table and template recovery</title>
+</head>
+<body>
+  <table border="1">
+    <caption>broken <b>caption</caption>
+    <colgroup><col span="x"><col><tbody>
+    <thead><tr><th rowspan="999">A<th colspan="-1">B
+    <tfoot><tr><td>footer before body
+    <tbody>
+      <tr><td>A<td>B<td>C
+      <tr><th><table><tr><td>nested</table><td>after
+      <tr><td colspan="0">last
+    </tbody>
+  </table>
+  <template><table><tr><td>template cell</template></td></tr></table>
+  <math><mi>x</mi><mo>&InvisibleTimes;</mo><mtext><b>mixed</math>
+  <p><ruby>漢<rt>kan<rp>(</rp></ruby> tail
+  <script type="text/plain"><![CDATA[ <not-a-tag> &amp; ]]></script>
+</body>
+</html>
+```

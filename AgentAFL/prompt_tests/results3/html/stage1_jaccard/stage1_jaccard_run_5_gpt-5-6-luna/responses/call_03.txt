@@ -1,0 +1,109 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+  <title>Broken frames and declarations</title>
+  <?xml-stylesheet type="text/css" href="missing.css"?>
+  <!-- unterminated comment
+</head>
+<frameset rows="*,0,25%" border=garbage>
+  <frame src="left.html" name=left scrolling=no>
+  <frameset cols="50%,50%">
+    <frame src="middle.html">
+    <frame src="right.html" noresize="noresize">
+  </frameset>
+  <noframes>
+    <body background=unquoted.gif>
+      <h1>Fallback</h1>
+      <p>Text before <!-- nested <!-- comment --> remains</p>
+    </body>
+  </noframes>
+</frameset>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Lists in the wrong order</title></head>
+<body>
+<dl compact>
+  <dt>alpha
+  <dd>one
+  <dt><b>beta
+  <dd><i>two
+    <dl><dt>nested<dd>value</dl>
+  <li>orphan item
+</dl>
+<ul type=disc>
+  <li>first
+    <ol start="not-number" reversed>
+      <li>nested one
+      <li>nested two
+        <ul><li>deep
+    </ol>
+  <li>second
+</ul>
+<menu><li>a<menu><li>b</menu></menu>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Preformatted oddities</title>
+</head>
+<body>
+<pre>
+  leading spaces &amp; &#xD800; &#0; &#1114112;
+  <b>bold <i>italic</b> plain</i>
+  <a href="one" href="two">duplicate attributes</a>
+</pre>
+<listing>raw <tag> text &broken; </listing>
+<xmp>
+  <p>This must not become a paragraph</p>
+  &lt;escaped&gt;
+</xmp>
+<plaintext>
+<html><body><h1>everything after this is text</h1>
+</body></html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Inline recovery maze</title></head>
+<body>
+<p><a href=#one><b><i><u>start
+<p>second <a name=one>anchor <em>emphasis
+<div><strong>strong <small>small <big>big</div>
+<center><font color=#12zz size=999 face="a'b">font text</center>
+<address><br><br>contact <q cite="unterminated>quote</q></address>
+<ins datetime=2020-01-01><del cite=broken>changed</ins></del>
+<hr noshade width=50% height=-2>
+</body>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv=Content-Type content=text/html;charset=unknown>
+  <base href="http://[invalid">
+  <title>Attributes and raw delimiters</title>
+</head>
+<body id="a&#x0;b" class="x y" class=z>
+  <div data-empty="" =bad ="value" key=value key=value>
+    text &amp; &notanentity &#x; &#-1; &#999999999999999999999999;
+    <img src="a" alt="one" alt='two' width="-" height="1e309">
+    <map name=><area href=# shape=poly coords="1,2,broken">
+  </div>
+  <script type=text/javascript>
+    if (a < b && c > d) { document.write("</body>"); }
+  </script>
+  <style>body { color: #ggg; } @media (x) {</style>
+</body>
+</html>
+```

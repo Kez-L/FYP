@@ -1,0 +1,118 @@
+```html
+<!doctype html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <base href="http://example.invalid/a/../../b">
+  <style type="text/css">
+    body { color: #123456; }
+    @media screen and (min-width: 0px) { .x { display: none; } }
+  </style>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("<p>raw</p>"); }
+  </script>
+</head>
+<body id="x" class="a b" data-q="&amp; &#0; &#xD800;">
+  <form action="?" method="post">
+    <label for="i">Name &copy; &unknown;</label>
+    <input id="i" disabled="disabled" value="a&quot;b&#39;c" />
+    <textarea cols="0" rows="-1">one
+two</textarea>
+    <button type="submit"><span>go</span></button>
+  </form>
+  <!-- unclosed comment
+  <div><b>commented</b>
+</body>
+```
+
+```html
+<!DOCTYPE svg [
+  <!ENTITY weird "hello">
+]>
+<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10">
+  <foreignObject>
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <p><em>mixed namespace</em></p>
+    </div>
+  </foreignObject>
+  <path d="M0 0 L10 10 &amp; Z"></path>
+  <g><rect x="1" y="2" /><circle cx="3" cy="4"></g>
+</svg>
+<math>
+  <mi>x</mi><mo>&lt;</mo><mfrac><mn>1</mn><mn>0</mn></mfrac>
+</math>
+```
+
+```html
+<html>
+  <head><title>broken</title></head>
+  <body>
+    <h1><i><u><b>nested
+    <p>paragraph starts while formatting remains
+    <ul><li>first<li>second<ol><li>third</ul>
+    <table border=1>
+      <tr><td>A<td rowspan=0>B
+      <tfoot><tr><th>footer</table>
+    <select name=x multiple>
+      <option selected>one
+      <option>two
+      <optgroup label="g"><option>three</optgroup>
+    </select>
+    </b></u></i>
+    <dl><dt>term<dd>definition<dt><dd>empty
+    <hr><br><wbr>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang=en>
+<head>
+  <meta http-equiv=refresh content="0; url='x&y'">
+  <meta name=viewport content="width=device-width,initial-scale=1">
+  <title>attribute fuzz</title>
+</head>
+<body bgcolor=#fff onload="x &amp;&amp; y">
+  <div
+    a
+    =b
+    c='d
+    e="f
+    g=h i==j
+    data-empty=""
+    data-quote='&quot;
+    data-num=&#x110000;
+    style="color: expression(alert(1));"
+  >
+    <img src=foo alt="a > b" title='single " quote' width=+01 height=-2>
+    <a href="javascript:&#x61;lert(1)" target=_blank>link
+    <iframe srcdoc="<p>inner &amp; text</p>" name=x></iframe>
+  </div>
+</body>
+</html>
+```
+
+```html
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE html>
+<!-- first -- -- second -->
+<html>
+<head>
+  <title><![CDATA[title ]]> tail</title>
+</head>
+<body>
+  <![CDATA[
+    <div>not really markup?</div>
+    ]]> 
+  <pre>line 1&#x0A;line 2&#x0D;line 3&#x85;</pre>
+  <p>&#1;&#2;&#8;&#11;&#12;&#14;&#31;&#127;&#x2028;&#x2029;&notit;&ampersand;</p>
+  <div><span><section><header>header</footer></section></span></div>
+  <object data="x" type="application/octet-stream">
+    <param name="x" value="&quot;">
+    fallback
+  </object>
+  <!-- nested <!-- marker --> trailing -->
+</body>
+</html>
+```

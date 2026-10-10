@@ -1,14 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE root [
-  <!ENTITY local "replacement &amp; text">
-  <!ELEMENT root ANY>
-  <!ATTLIST root weird CDATA #IMPLIED>
-]>
-<root xmlns="urn:weird:one" xmlns:q="urn:weird:two" weird="&local;">
-  <q:item a="1" a="2" q:b="&unknown;" />
-  <node><![CDATA[<not><markup>&still-not-entity;</node>]]></node>
-  <broken attr='unterminated>
-    text &copy &amp; &#xD800; &#99999999; &#0;
-  <empty></empty/>
-  <mixed><one><two /></one></mixed>
-</root>
+<!doctype html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+  <title>Token boundaries</title>
+  <!-- comment with -- broken -- markers -->
+  <!----><! bogus declaration >
+  <style type="text/css">
+    body { color: red; }
+    p::before { content: "<tag> &amp;"; }
+  </style>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("<p>raw</p>"); }
+    /* unterminated-looking text </scriptX>
+  </script>
+</head>
+<body class=test id='x"y data-z=unquoted>
+  &amp;&lt;&gt;&quot;&apos;&nbsp;&#0;&#xD800;&#999999;
+  <p title="a>b" data-a='one two' disabled=disabled checked>
+    text &unknown; more
+  <br/><hr/ ><input type=text value="a &amp; b">
+  <!-- one <!-- nested --> after -->
+  <![CDATA[not really cdata <b>markup</b>]]>
+  <p>after declarations</p>
+</body>
+</html>

@@ -1,0 +1,140 @@
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="x-test">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="content-language" content="en">
+  <title>Metadata &amp; odd structures</title>
+  <base href="./relative/">
+  <link rel="alternate" type="text/plain" href="feed.txt">
+</head>
+<body id=test class='a b' data-empty="">
+  <header><hgroup><h1>Heading <small>with <em>unclosed</hgroup></header>
+  <main>
+    <details open=OPEN><summary>Summary <mark>marked</details>
+    <dialog open><p>Dialog text <q cite="a>b">quoted</q></dialog>
+    <ruby>漢<rt>kan<rp>(</rp><rt>bad</ruby>
+    <ol start="-3" reversed>
+      <li>one
+      <li value=0>two<ul><li>nested<li><li>empty
+      <li><input type=number min=1 max=0 step=0 value=nan>
+    </ol>
+    <dl compact><dt>alpha<dd><ins cite="x" datetime="not-a-date">inserted
+      <dt>beta<dd><del>deleted <span title="unterminated>
+    <template id=t1><section><p>template <b>content</template>
+  </main>
+  <footer><address><a href="mailto:x@y">contact</a></address></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Token boundaries</title></head>
+<body>
+<!-- ordinary comment --><!--> bogus close -->
+<!- malformed comment -->
+<![CDATA[raw cdata outside xml]]>
+<p title="a&quot;b&#0;&#x0; &#xD800; &#99999999;">
+  A&amp;B&nbsp;&copy;&#13;&#10;&#x1F4A9;
+  <span data-x="&notanentity;" data-y='&#x;'>" & < > </span>
+</p>
+<pre>line one
+line two &lt;tag&gt; &amp;not;</pre>
+<x-unknown a=1 b=two c="three" d='four' e=`five`>
+  <inner-node><leaf /></inner-node>
+</x-unknown>
+<p><a href="javascript:&#x6a;avascript:alert(1)" target=_blank>link
+  <a href=#second>nested anchor</a>
+</p>
+<hr/>
+<iframe srcdoc="<p>embedded &amp; text</p>" sandbox="allow-scripts allow-same-origin"></iframe>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Raw text termination</title>
+  <style type="text/css">
+    body { background: url("x"); }
+    /* </style> inside comment-like text */
+    .a:before { content: "</style><script>"; }
+  <script>
+    if (a < b && c > d) {
+      document.write("<p>fake </scr" + "ipt>");
+      /* </script> */
+    }
+  </script>
+  <noscript><p>noscript <b>branch</noscript>
+</head>
+<body>
+  <script type="application/json">{"x":"</script>","y":"&amp;","z":null}</script>
+  <textarea rows=2 cols=4>one
+two &amp; <b>not markup</textarea>
+  <title>late title</title>
+  <p>after raw text <code>&lt;/p&gt;</code>
+  <script language=javascript src=x defer async></script>
+  <style>p { color: red; } </style>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Misnested phrasing</title></head>
+<body>
+<p><b><i><u><s><strong>alpha</b> beta</i> gamma</u> delta</s> epsilon</strong>
+<p><a href="#a"><em>first <a href="#b">second <span>third</a> fourth</span></em>
+<blockquote cite="&quot;broken"><p>quote <cite>source</blockquote>
+<figure>
+  <img src=one alt="first" width=auto height=-1>
+  <figcaption>caption <small>small</figure>
+</figcaption>
+<section><h2>section<h4>skipped heading</section>
+<menu type=context>
+  <li><button type=button name=x disabled=maybe>click</button>
+  <li><label for=q>Label<input id=q name=q required="false"></label>
+</menu>
+<p><time datetime="2026-99-99T99:99">future</time>
+   <data value="a&b">value</data>
+   <abbr title="long"><dfn>term</abbr>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-16">
+  <title>Obsolete and malformed controls</title>
+</head>
+<body bgcolor=#fff text="black" link=blue vlink=purple alink=red>
+  <center><font size=+7 face="serif" color><big>legacy</center>
+  <marquee direction=sideways behavior=unknown><blink>moving</blink></marquee>
+  <object classid="clsid:unknown" data="file.bin" type="application/octet-stream">
+    <param name=name value=value>
+    <embed src="plugin.dat" width=0 height=-20></embed>
+    fallback <noembed>fallback text
+  </object>
+  <form action method=post enctype="multipart/form-data" novalidate="no">
+    <fieldset disabled><legend>Group <output name=o for="a b">result</output>
+      <label>Text <input name=a type=text value="x" maxlength=-2></label>
+      <label>File <input type=file accept="*/*,,.x" multiple=maybe></label>
+    </fieldset>
+    <select name=s size=0 multiple="false">
+      <optgroup label="G"><option selected=maybe value=1>one<option>two
+      <option>three
+    </select>
+    <textarea name=t wrap=invalid maxlength=-1>text</textarea>
+    <button type=reset formaction=/reset>reset
+  </form>
+  <hr><isindex prompt="Search:">
+</body>
+</html>
+```

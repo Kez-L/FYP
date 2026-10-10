@@ -1,0 +1,117 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="http://example.invalid/root/">
+<link rel="stylesheet" href="x.css">
+<style>
+@media screen{.a{color:red}/*unterminated-looking*/.b{width:calc(100% - 2px)}}
+</style>
+<script type="application/json">{"x":[1,true,null],"s":"</script>","nested":{"a":"&amp;"}}</script>
+</head>
+<body id="body" class="a  b" data-x="&quot; &apos; &#x0;">
+<header><hgroup><h1>Title</h1><h4>Unexpected level</h4></hgroup></header>
+<nav><ol start="0"><li value="9">one<li>two<ul><li>nested</ol></nav>
+<main>
+<article><section><p>alpha <em>italic <strong>bold</em> plain</strong>
+<ruby>漢<rt>kan<rp>(</ruby></rt>)</ruby>
+<del cite="urn:x">deleted<ins datetime="bad">inserted</del></ins></p></section></article>
+<aside><blockquote cite=""><pre>  pre
+	&amp; &unknown; &#99999999;</pre></blockquote></aside>
+</main>
+<footer><address><a href="mailto:a@b">a@b</a></address></footer>
+</body>
+</html>
+```
+
+```html
+<!doctype html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang=en>
+<head><title>Table maze</title></head>
+<body>
+<table border=1 cellpadding=0>
+<caption><b>caption <i>mixed</caption>
+<colgroup span=2><col width="*"><colgroup><col></colgroup>
+<thead><tr><th rowspan=0>H1<th colspan=99>H2</tr></thead>
+<tbody>
+<tr><td>A<td>B<td>C
+<tr><th><table><tr><td>inner 1<tr><td>inner 2</table>
+<tr><td><div>cell<div>nested</div><td>tail</tr>
+</tbody>
+<tfoot><tr><td>footer</tr></tfoot>
+</table>
+<table><tbody><tr><td>x</tbody><thead><tr><th>late</table>
+<p>after tables</p>
+</body>
+</html>
+```
+
+```html
+<html>
+<head>
+<title>Raw text and comments</title>
+<!-- first <!-- nested --> comment -->
+<!---->
+<![CDATA[not really cdata <tag> & value]]>
+</head>
+<body>
+<script>
+function f(a){if(a<2)return "</div><!--"; return `x${a}`;}
+/* </script> */
+</script>
+<style>
+x{content:"</style>";background:url("data:image/svg+xml,<svg></svg>")}
+</style>
+<textarea name=t>line one
+line two &lt;b&gt;</textarea>
+<template id=t1><div><span>template</div></span></template>
+<p>text &copy &copy; &notanentity; &#0; &#xD800; &#x110000; &#65
+<!-- broken
+<p>comment swallowed?
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head><title>Frames and obsolete controls</title></head>
+<body>
+<frameset rows="10%,*,0" cols="50%,50%">
+<frame src="a.html" name="left">
+<frameset><frame src="b.html"><noframes><body>fallback</body></noframes></frameset>
+</frameset>
+<body>
+<center><font face="x" size="7" color="#ggg">legacy</font></center>
+<marquee behavior=alternate direction=sideways><blink>moving</blink></marquee>
+<isindex prompt="Search:">
+<map name=m><area shape=poly coords="0,0,10,10" href=x><area href=y></map>
+<object data="x.bin" type="application/octet-stream">
+<param name=p value=v><embed src="movie.swf" width="-1">
+fallback<object><img src=x></object>
+</object>
+<hr noshade><wbr><br><br>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Namespaced and malformed structure</title></head>
+<body>
+<svg:svg xmlns:svg="http://www.w3.org/2000/svg" viewBox="0 0 1 1">
+<svg:g><svg:rect width="1" height="1"/></svg:g>
+</svg:svg>
+<foo:root xmlns:foo="urn:foo"><foo:item a:b="c">foreign</foo:item></foo:root>
+<p><a href="one"><a href="two">double anchors</a>
+<dl><dt>term<dd>definition<dt>second<dd><p>paragraph</dl>
+<menu><li>one<li>two</menu>
+<figure><img srcset="a 1x, b 2x," sizes="(bad)" alt="x"><figcaption>caption
+</figure>
+<details><summary>sum</summary><p>inside</details><summary>orphan</summary>
+<iframe srcdoc="<p title='x'>embedded</p>" sandbox="allow-scripts allow-forms"></iframe>
+<div id="a"><span id="b">unclosed
+</html>
+```

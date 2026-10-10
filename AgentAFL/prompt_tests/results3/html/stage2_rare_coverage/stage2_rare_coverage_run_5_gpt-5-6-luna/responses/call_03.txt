@@ -1,0 +1,125 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>broken head controls</TITLE>
+<BASE HREF="http://example.invalid/">
+<ISINDEX PROMPT="Search:">
+<META NAME="keywords" CONTENT="one,two">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff VLINK=#800080>
+<CENTER>
+<H1 ALIGN=CENTER>Old style document</H1>
+<HR NOSHADE SIZE=0 WIDTH=100%>
+</CENTER>
+<DL COMPACT>
+<DT><B>Term one
+<DD>Definition without closing tags
+<DT><IMG SRC=missing.gif ALT=unquoted image BORDER=>
+<DD><FONT SIZE=+7 COLOR=red FACE="serif, sans-serif">large text</FONT>
+</DL>
+<DIR>
+<LI>directory item
+<LI><A HREF=foo.html TITLE='single " quote'>link
+</DIR>
+<ADDRESS>contact &copy; 2026</ADDRESS>
+</BODY>
+</HTML>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>tables with misplaced sections</title>
+</head>
+<body>
+<table width="100%" border="3">
+<col span="3" align="center">
+<tr><th>A<th>B<th>C</tr>
+<tbody>
+<tr><td rowspan="999">first
+<td>second
+<tfoot><tr><td>footer starts early</td></tr></tfoot>
+<tr><td colspan="bogus">after footer<td><input name=x value="a>b"></tr>
+</tbody>
+<caption align=bottom>caption after rows</caption>
+<tr><td><ul><li>list in cell<li><table><tr><td>deep</table></ul>
+</table>
+<table><tr><td>unterminated<table><tr><td>x</td></tr>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>entities and raw text boundaries</title>
+</head>
+<body>
+<p title="a&amp;b&#34;c&#x22;d&#xZZ;">&unknown; &amp &copy &apos; &#65 &#x41 &#x0 &#99999999;</p>
+<script language="javascript">
+if (a < b && c > d) { document.write("<p class='x'>raw</p>"); }
+var s = "</script>" + "<!--" + "\u0000";
+</script>
+<style>
+body { background: url("x); color: #fff; }
+p:before { content: "</style><script>alert(1)</script>"; }
+</style>
+<textarea name=t rows=2 cols=4>text &amp; </textarea extra <b>markup</b>
+<plaintext>
+Everything after this has <tags> and &entities; and never closes
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html xmlns="urn:example:root">
+<head><title>namespaces and processing instructions</title></head>
+<body>
+<?xml version="1.0"?>
+<?target data?>
+<![CDATA[plain cdata outside foreign content]]>
+<svg width="20" height="20">
+<defs><linearGradient id=g><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#000"></linearGradient></defs>
+<use href="#g" xlink:href="x" />
+<text x="1" y="2">svg text</text>
+<foreignObject><math><mi>x</mi><mo>&lt;</mo><mrow><mn>2</mn></mrow></math></foreignObject>
+</svg>
+<math display="block"><mtable><mtr><mtd>a</mtd><mtd><mo>+</mo></mtd></mtr></mtable></math>
+<custom:widget custom:flag="yes"><custom:item /></custom:widget>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>forms and interactive controls</title>
+</head>
+<body>
+<form id=f method=POST action="/submit" enctype="multipart/form-data">
+<fieldset disabled>
+<legend>Options <b>now</legend>
+<label for=a>Alpha</label><input id=a type=text name=a required minlength="x" maxlength="-1">
+<label><input type=checkbox checked=maybe>Beta</label>
+<select name=s multiple size=0>
+<option value=1 selected>One
+<optgroup label="Group"><option>Two<option disabled>Three</optgroup>
+</select>
+<textarea name=t disabled rows=0 cols=-2>value</textarea>
+</fieldset>
+<input type=image src=x alt=submit formaction="/other">
+<button type=reset><span>Reset</button>
+<output name=o for="a b">result</output>
+</form>
+<form><input type=submit><form><input name=n></form></form>
+<iframe srcdoc="<p>inside &amp; <b>frame</b>" sandbox=allow-scripts></iframe>
+<details open="false"><summary>summary</summary><p>details text</p></details>
+</body>
+</html>
+```

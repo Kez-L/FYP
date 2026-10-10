@@ -1,0 +1,143 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html lang="x-test">
+<head>
+<?xml version="1.0"?>
+<meta http-equiv=Content-Type content=text/html;charset=windows-1252>
+<base href="http://example.invalid/a/b/">
+<link rel=stylesheet href=>
+<style type="text/css">
+<!--
+body { color: #123456; }
+@media screen { div > p { margin: 0 } }
+-->
+</style>
+</head>
+<body bgcolor=#FFFFFF text=black link=blue vlink=red alink=green>
+<table border=0 cellpadding=2 cellspacing=-3 width="100%" summary="broken">
+<caption align=bottom>Caption <b>with <i>unclosed formatting</caption>
+<colgroup span=two width=33%>
+<col align=left>
+<colgroup><col span=0>
+<thead>
+<tr><th rowspan=99 colspan=0>Header one<th>Header two</tr>
+</thead>
+<tbody>
+<tr><td>one<td>two<td>three</tr>
+<tr><td colspan="bad">four
+<tr><th><img src="x" border=none><td><hr noshade="maybe">
+</tbody>
+<tfoot><tr><td>foot</table>
+<marquee direction=sideways behavior=loop scrollamount=-4>moving</marquee>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Foreign markup boundary</title></head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10">
+<g id="layer" transform="translate(1 2) scale(foo)">
+<path d="M0,0 L10,10 Z" fill="url(#x)" stroke-width="NaN"/>
+<foreignObject requiredExtensions="">
+<div xmlns="http://www.w3.org/1999/xhtml"><p>inside foreign object</div>
+</foreignObject>
+</g>
+</svg>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+<mi>x</mi><mo>&InvisibleTimes;</mo><mfrac><mn>1</mn><mrow><mo>(</mo><mi>y</mi></mrow>
+</mfrac></math>
+<div><svg><circle cx="1" cy="2"></svg></div>
+<?bad processing instruction ?>
+<![CDATA[not really cdata <tag> & stuff]]>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Raw text and declarations</title></head>
+<body>
+<script language="javascript" type=text/javascript>
+if (a < b && c > d) {
+  document.write("</script><p>escaped?");
+  // </script> inside a comment
+}
+</script>
+<script type="text/plain"><b>raw text</b> &amp; </script>
+<style>
+a[href^="x"]::before { content: "</style>"; }
+<!-- weird -->
+</style>
+<noscript><div>fallback <img src=x></div></noscript>
+<textarea cols=abc rows=-1>line one
+<em>literal tag</em>
+&amp; &unknown; &#x110000; &#999999999999999999999999;
+</textarea>
+<xmp><b>everything is text</b>
+</xmp>
+<plaintext>
+<html><body><p>all remaining markup is text
+```
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head><title>Legacy embedded controls</title></head>
+<body>
+<frameset rows="*,0,25%" cols="100,*" border="-1">
+<frame src="one.html" name="main" scrolling=perhaps frameborder=maybe>
+<frame src="two.html" noresize>
+<noframes>
+<body>
+<object classid="clsid:00000000-0000-0000-0000-000000000000"
+        codebase="http://example.invalid/" standby="wait"
+        usemap="#missing" align=middle>
+<param name=movie value="a&amp;b">
+<param name=quality value=high valuetype=ref>
+<embed src="plugin" type="application/x-shockwave-flash"
+       width="0" height="999999999999" hidden=false>
+fallback text
+</object>
+<applet code="Test.class" archive="" width=abc height=-2>
+<param name=code value="x">
+<param name=unknown>
+Applet fallback
+</applet>
+</body>
+</noframes>
+</frameset>
+<hr>
+</body>
+</html>
+```
+
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>Misnested interactive content</title></head>
+<body>
+<p id="p1">start
+<a href="one" target="_blank"><a href=two>nested link
+<button type=submit><a href=three>button link</a></button>
+</a>
+</p>
+<form action="/submit" method="get" enctype="multipart/form-data">
+<fieldset disabled="false"><legend>Legend
+<label><input type=checkbox name=x checked=checked>Choice</label>
+<label for=y>Other</label><input id=y type=file accept=image/* multiple=maybe>
+<select name=s>
+<option>one
+<optgroup><option selected="selected">two
+</select>
+</fieldset>
+<input type=image src alt="submit"><input type=hidden name=h value="&copy">
+</form>
+<table><tr><td>A<div>B<tr><td>C</div>D</table>
+<ul><li>alpha<ul><li>beta</ul><li>gamma</li></ul>
+</body>
+</html>
+```

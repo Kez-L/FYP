@@ -1,0 +1,130 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<base href="http://example.invalid/a/">
+<title>Parser matrix &copy;</title>
+</head>
+<body bgcolor="#ffffff" text="#000000">
+<table border="1" cellpadding="2" cellspacing="3" width="100%">
+<caption align="bottom">A <b>caption</b> with <i>mixed</i> content</caption>
+<colgroup span="2"><col width="20%"><col style="width:80%"></colgroup>
+<thead><tr><th rowspan="2">Name</th><th colspan="2">Values</th></tr>
+<tr><th>Left</th><th>Right</th></tr></thead>
+<tbody>
+<tr><td headers=name>A &lt; B</td><td><img src="one.gif" alt="one" ismap></td><td><object data="x.dat" type="application/octet-stream"><param name="movie" value="x.swf">fallback</object></td></tr>
+<tr><td><table><tr><td>nested<tr><td>cell</table></td><td colspan=2><map name=m><area shape=rect coords="0,0,4,4" href="#"></map></td></tr>
+</tbody>
+<tfoot><tr><td><input name=q value="a&amp;b" disabled><button type=button>Push</button></td><td></td><td>tail</td></tr></tfoot>
+</table>
+<address>contact: <a href="mailto:x@y.invalid">x@y.invalid</a></address>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>Embedded languages</title>
+<style type="text/css">
+@media screen and (max-width: 4px) {
+  body { background: url("a)b.png"); }
+  .x::before { content: "</style>"; }
+}
+</style>
+<script type="application/javascript">
+if (window.x < 2) {
+  var s = "<tag attr='&amp;'>"; /* </script> in a string */
+  // deliberately unfinished expression
+  foo(s
+}
+</script>
+</head>
+<body>
+<noscript><p>JavaScript is disabled</p></noscript>
+<div id="outer" data-json='{"a":[1,2,3],"b":"&quot;"}'>
+<template><section><h2>template</h2><p>hidden &lt;markup&gt;</p></section></template>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
+<g transform="translate(1 2)"><path d="M0 0L10 10Z"/><foreignObject><div xmlns="http://www.w3.org/1999/xhtml">svg text</div></foreignObject></g>
+</svg>
+<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow></math>
+</div>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html [
+<!ENTITY nbsp "&#160;">
+<!ENTITY weird "a &amp; b">
+]>
+<!-- first -- second --- third -->
+<?processing instruction?>
+<html>
+<head><title>&weird; &unknown; &#0; &#xD800;</title></head>
+<body>
+<dl compact>
+<dt>Term one
+<dd>Definition one
+<dt><span>Term two
+<dd>Definition <div>block inside definition
+<dl><dt>Nested<dd>deep</dl>
+</div>
+</dl>
+<blockquote cite="urn:x-test:one" title="a&quot;b&#39;c">
+<p>quote <q cite="">inner <cite>source</cite></q>
+</blockquote>
+<pre>line one
+  &lt;line two&gt;
+	&amp; line three</pre>
+<hr noshade="noshade">
+<center><font face="serif" size="+7" color=red>legacy</font></center>
+</body>
+</html>
+```
+
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html lang=xx dir=rtl>
+<head>
+<meta name=keywords content="one,two,three">
+<meta name=robots content=noindex,nofollow>
+<link rel=alternate href=/feed.xml title="Feed" type=application/rss+xml>
+</head>
+<body leftmargin=0 topmargin="x" onload="init()" onunload=''>
+<frameset rows="20%,*,20%" cols="*" frameborder="no">
+<frame src="top.html" name=top scrolling=auto noresize>
+<frameset cols="25%,75%">
+<frame src="nav.html" name=nav>
+<frame src="main.html" name=main>
+<noframes><body><h1>Frames unavailable</h1><p>fallback</p></body></noframes>
+</frameset>
+<frame src="bottom.html">
+</frameset>
+<iframe srcdoc="<p>embedded &amp; text</p>" sandbox="allow-scripts allow-forms" width=0 height=0></iframe>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Malformed boundaries</title>
+</head>
+<body>
+<div><p>alpha<span>beta<b>gamma<i>delta</div>
+<table><tr><td>one<td>two</tr><tr><th>three<tbody><tr><td>four</table>
+<ul><li>first<ul><li>sub A<li>sub B</ul><li>second</ul>
+<form><label>Name <input name=name value="unterminated><select><option>one<option>two</select>
+<textarea>raw &lt;text&gt;
+<!-- comment starts
+<p>comment payload</p>
+--><button value=x>go</button></form>
+<p title='single " quote" class="a b" data-x==y>after</p>
+<svg><circle cx="5" cy="5" r="4"></svg>
+</body>
+</html>
+```

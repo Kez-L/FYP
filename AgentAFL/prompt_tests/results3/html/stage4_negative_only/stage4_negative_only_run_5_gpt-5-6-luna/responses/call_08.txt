@@ -1,0 +1,112 @@
+```html
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8">
+<base href="http://example.invalid/a/../b/">
+<link rel="alternate" media="not all" href="x">
+<style type="text/css"><![CDATA[
+  body { color: rgb(1,2,3); }
+  @media screen and (min-width:0px) { .x { content: "</style>"; } }
+]]></style>
+<script type="application/ld+json">{"x":"</script><p>escaped?"}</script>
+</head>
+<body id="root" class=one two=three>
+<header><hgroup><h1>Title<h2>Subtitle</hgroup>
+<nav aria-label="crumbs"><a href="#a">A</a> :: <a href="#b"><span>B</nav>
+<main>
+<section id=a><p>Before <mark>mark <small>small</section>
+<article><header>Nested header</header><p>Text<aside>Aside <q cite="x">quote</q></aside>
+<footer>End</footer></article>
+<svg width=20 height=20><g><title>icon</title><path d="M0 0 L10 10" fill=none></g></svg>
+<math><mrow><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow></math>
+</main>
+<footer><address><a href="mailto:x@y">x@y</a></address></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head><title>Foreign content boundary</title></head>
+<body>
+<p><b><i><u>overlap
+<object data="movie.bin" type="application/octet-stream" width=1 height=1>
+  <param name="autoplay" value="yes">
+  <embed src="fallback.swf" hidden>
+  <noembed><pre>fallback &lt;tag&gt;</pre></noembed>
+</object>
+<iframe srcdoc="<p>inner &amp; text</p>" name=frame></iframe>
+<details open><summary>Summary <span>part</details>
+<dialog open>Dialog <form><button autofocus>OK</button></form></dialog>
+<figure><img src=x alt="a&quot;b"><figcaption>Caption <del>old</del><ins>new</ins></figcaption></figure>
+<hr noshade><br><wbr>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Tokenizer stress</title><!-- unterminated-looking --><meta http-equiv=refresh content='0;url=&quot;x&quot;'></head>
+<body>
+<!-- comment --><! bogus [ stuff ]>
+<p title='a&b&#xZZ;''>A &notanentity; &amp &copy; &#0; &#xD800;</p>
+<textarea cols="0" rows="-1">&lt;/textarea&gt;
+line two
+</textarea>
+<pre>  leading
+	 tabs &amp; &copy; </pre>
+<xmp><b>literal</b>&amp;</xmp>
+<plaintext><h1>not really markup
+<div data-a="one" data-a=two disabled="" =bad>tail</div>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Interactive nesting</title></head>
+<body>
+<main>
+<details><summary>One</summary>
+  <details><summary>Two</summary>
+    <p>Deep <time datetime="2024-02-30">date</time>
+    <meter min=0 max=1 value=2>bad meter</meter>
+    <progress value="not-a-number" max="0">loading</progress>
+  </details>
+  <summary>Late summary</summary>
+</details>
+<menu type=context>
+  <menuitem label="Cut" onclick="return false">
+  <menuitem label="Copy" checked>
+</menu>
+<map name=m><area shape=poly coords="0,0,10,0,10,10" href=#x><area nohref></map>
+<img usemap="#m" srcset="a 1w, b 2x" sizes="(min-width: 1px) 50vw, 100vw">
+<video controls poster=p.jpg><source src=a.mp4 type=video/mp4><track kind=subtitles default></video>
+<audio autoplay loop><source src=a.ogg><track></audio>
+</main>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Malformed sectioning</title></head>
+<body>
+<main><section><h1>A<h1>B
+<article><h2>C</section><section><h3>D</article>
+<p>Text <b>bold <span>span <em>em</b> after</span></em>
+<blockquote cite="&quot;broken"><p>quote one</p><blockquote><p>quote two</blockquote>
+<dl compact><dt>alpha<dd>one<dd>two<dt>beta<dd><p>paragraph in definition
+<address>line one<div>illegal division</div>line two</address>
+<ruby>漢<rt>kan<rp>(<rtc>annotation</ruby>
+<ins cite=x datetime=bad><s>deleted</ins> inserted</s>
+</main>
+<noscript><p>fallback</p><script>if (a < b) c++;</script></noscript>
+</body>
+</html>
+```

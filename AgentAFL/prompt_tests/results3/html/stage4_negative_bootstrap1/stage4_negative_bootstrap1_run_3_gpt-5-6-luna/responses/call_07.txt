@@ -1,0 +1,160 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!-- malformed declaration with unusual quoting -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width">
+<base href="http://example.invalid/a/">
+<link rel="alternate" media="print" href="x.css">
+<style type="text/css"><!--
+  body { background: url("a&b"); }
+  @media screen { .x { color: red; } }
+--></style>
+<script type="text/javascript"><!--
+if (a < b && c > d) { document.write("<p>script</p>"); }
+// --></script>
+</head>
+<body bgcolor="#fff" text=black>
+<table border=1 cellpadding="2" cellspacing=0 width=100%>
+<caption align=top>broken table</caption>
+<colgroup span=2><col width="50%"><col>
+<thead><tr><th rowspan=2>Key<th colspan=2>Value
+<tbody>
+<tr><td>A<td>B<td>C
+<tr><td><table><tr><td>nested<td>table</table><td>D
+<tr><td colspan=4><p>paragraph in a cell
+<tfoot><tr><td>footer
+</table>
+<div class="outer"><p>one<div class=inner>two</p>three</div>four</div>
+<blockquote cite="x"><pre>  preformatted
+	&lt;tag&gt;	&amp;copy;
+</pre></blockquote>
+<dl><dt>term<dd>definition<dt><dd>empty definition</dl>
+<hr noshade="noshade">
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>Entities and attributes</title>
+<meta charset="x-user-defined">
+</head>
+<body id="a&#0;b" class='one"two' data-x="&quot;&apos;&amp;&lt;&gt;&#xD800;&#99999999;">
+<p title=unquoted&broken foo=bar=baz disabled=disabled>
+&copy &copy; &#169 &#xA9; &#x0; &#x110000; &unknown; &ampersand
+</p>
+<!-- unterminated comment
+<div>hidden-looking content</div>
+--!>
+<![if IE]><p>conditional text</p><![endif]>
+<! bogus declaration >
+<?xml version="1.0"?>
+<% server-side %>
+<frameset rows="10%,*,0">
+<frame src="a.html" name=one>
+<frame src="b.html" name=two noresize>
+<noframes><body><p>fallback</p></body></noframes>
+</frameset>
+<address><a href="mailto:a@b">&lt;contact&gt;</a><br>
+Line two
+</address>
+<center><big><font face="serif" size=+7 color=#123456>old markup</font></big></center>
+<marquee behavior=scroll direction=left scrollamount=0 loop=-1>
+<blink>moving &amp; blinking</blink>
+</marquee>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Optional end tags</title></head>
+<body>
+<ul><li>first<ul><li>nested one<li>nested two</ul><li>second
+<ol start="0" reversed type="I"><li>alpha<li value=999>beta<li>gamma</ol>
+<p>p one
+<p>p two
+<p><b><i><u>unbalanced formatting</b> still italic</u> plain</i>
+<a href="#x"><span>link <em>with <strong>many</a> ends</strong></em></span>
+<ruby>漢<rt>kan<rp>(<rt>??</rp></ruby>
+<ins cite=x datetime=bad><del cite=y>changed</ins> text</del>
+<table><tr><td>x</tr><tr><th>y</td></table>
+<form action=/x><input type=text name=a><button>submit
+<div contenteditable=true><p>editable <br>line
+<iframe srcdoc="<p>inner &amp; text</p>" sandbox allowfullscreen></iframe>
+<object data=x type=application/x-test><param name=p value=v><p>fallback</object>
+<video autoplay controls poster=x><source src=a type=video/x-test><track kind=subtitles src=v.vtt><p>video fallback
+<audio loop><source src=s></audio>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Raw text and malformed scripting</title>
+<script>
+  var s = "</script><div>escaped-looking</div>";
+  var t = '<!-- not a comment -->';
+  if (x) {
+</script>
+<style>
+  .a:before { content: "</style><p>fake"; }
+  @import url("x.css");
+</style>
+</head>
+<body>
+<textarea rows=999 cols=-2>
+first line
+</textarea>
+<textarea>nested <textarea>text</textarea> after</textarea>
+<title>title <b>not markup</title>
+<xmp><p>inside xmp</p><xmp>nested</xmp></xmp>
+<plaintext>
+Everything after this point looks like text until EOF.
+<div><table><tr><td>&amp;</td></tr></table>
+</plaintext>
+<p>unreachable-looking tail</p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Misnested sections and maps</title></head>
+<body>
+<header><hgroup><h1>Main<h2>Subheading</hgroup><nav>
+<a href=a>One<a href=b>Two<a href=c>Three</nav></header>
+<main>
+<section id=s1><h2>First</h2>
+<article><h3>Article</h3><aside>aside begins
+<section>inner section</article>
+<footer>wrong footer</section>
+</aside></article>
+</main>
+<map name=world>
+<area shape=rect coords="0,0,10,10" href=a alt=A>
+<area shape=circle coords="5,5,3" href=b>
+<img src="image.png" usemap="#world" ismap alt="map">
+</map>
+<picture>
+<source media="(min-width: 1px)" srcset="a 1x, b 2x">
+<source type=image/webp srcset=c>
+<img src=d alt=x>
+</picture>
+<details><summary>summary one<summary>summary two
+<div>detail content</details>
+<menu><li><button type=button>item one</li><li>item two</menu>
+<dialog open><form method=dialog><button value=ok>OK</form><p>dialog text</dialog>
+<template><table><tr><td>template cell</table><div>template tail</div></template>
+<slot name=x>fallback</slot>
+</body>
+</html>
+```

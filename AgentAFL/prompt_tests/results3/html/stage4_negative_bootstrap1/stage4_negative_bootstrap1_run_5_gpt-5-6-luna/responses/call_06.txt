@@ -1,0 +1,121 @@
+```html
+<!doctype html>
+<html lang="x-invalid">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+  <title>&amp; &copy; &#x110000; &#0; &unknown;</title>
+  <style type="text/css">
+    @media (min-width: calc(100% - 1px)) { body::before { content: "\0"; } }
+    <!-- broken style comment
+  </style>
+  <script type="application/ld+json">
+    {"@context":"https://schema.org","name":"</script><p>escaped?","x":"\u0000"}
+  </script>
+</head>
+<body id="" class="a&#10;b" dir="auto" xml:lang="zz">
+  Text&nbsp;&thinsp;&#xD800;&#x1F4A9;
+  <template shadowrootmode="open"><div><slot name="x"></slot></div></template>
+  <dialog open><form method="dialog"><button autofocus>close</button></form></dialog>
+  <details open><summary><span>Summary</span></summary><p>Body</p></details>
+  <ruby>漢<rt>かん<rp>(</rp></ruby>
+  <bdi><bdo dir="rtl">abc</bdo></bdi>
+  <p><ins datetime="not-a-date">new<del cite="x">old</del></ins>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Foreign content boundaries</title>
+</head>
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+    <title>svg title</title>
+    <foreignObject width="10" height="10">
+      <div xmlns="http://www.w3.org/1999/xhtml">
+        <p>HTML in foreign content <svg><circle r="2"></svg> after</p>
+      </div>
+    </foreignObject>
+    <g transform="translate(1 2)" unknown-attr="&bad;">
+      <use href="#x"></use>
+      <path d="M0 0 L 1 1 Z" />
+    </g>
+  </svg>
+  <math display="block">
+    <mrow><mi>x</mi><mo>&lt;</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></mrow>
+    <annotation-xml encoding="application/xhtml+xml">
+      <div><span>annotation</span></div>
+    </annotation-xml>
+  </math>
+  <p><svg><foreignObject><table><tr><td>mixed</td></tr></table></foreignObject></svg></p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Raw text and token edges</title></head>
+<body>
+  <textarea autofocus rows="0" cols="-1">&lt;/textarea&gt; <b>literal</b>
+    <!-- not a comment -->
+    &amp; &#65;
+  </textarea>
+  <textarea><textarea>nested-looking</textarea></textarea>
+  <xmp><div>raw xmp &amp; </xmp><p>after xmp
+  <plaintext><html><body><script>never-close</script>
+  <div>&amp; everything is text
+</body>
+</html>
+```
+
+```html
+<html>
+<head>
+  <title>Adoption agency fragments</title>
+</head>
+<body>
+  <p><b><i><u>one</b>two</i>three</u>four</p>
+  <p><a href="a"><b>link <a href="b">nested link</a> tail</b></a></p>
+  <p><font color=red><em><strong>x</font>y</em>z</strong></p>
+  <p><nobr>alpha <b>beta <nobr>gamma</nobr> delta</b> epsilon</nobr></p>
+  <div><span><a><i>unclosed
+  <p>paragraph recovery <span>span <b>bold
+  <address><div>address division</div><p>address paragraph</address>
+  <h1><h2>heading switch</h2>heading tail</h1>
+  <select><option>one<option selected>two<optgroup label="g"><option>three</select>
+</body>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <base href="http://[::1]:bad/%zz">
+  <link rel="stylesheet" href="a.css" integrity="sha256-">
+</head>
+<body>
+  <main>
+    <article>
+      <header><hgroup><h1>Title<h3>subtitle</h3></hgroup></header>
+      <section aria-labelledby="missing">
+        <figure>
+          <img srcset="a 1w, b 2x, c," sizes="(min-width: 0px) 50vw" alt="">
+          <figcaption>caption<mark>mark</mark></figcaption>
+        </figure>
+        <time datetime="2024-02-30T25:61:61Z">time</time>
+        <data value="&quot;&gt;">data</data>
+        <meter min="10" max="0" low="20" high="-1" optimum="nan" value="999">meter</meter>
+        <progress max="-5" value="infinity">progress</progress>
+      </section>
+      <footer><small>foot</small><wbr><br><hr /></footer>
+    </article>
+    <aside><iframe srcdoc="&lt;p&gt;inner&lt;/p&gt;&amp;&quot;" sandbox="allow-scripts"></iframe></aside>
+  </main>
+</body>
+</html>
+```

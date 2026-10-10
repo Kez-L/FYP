@@ -3,93 +3,52 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Nested Dialog Case</title>
-  <base href="./assets/">
-  <link rel="stylesheet" href="theme.css">
+  <title>Nested Interactive Document</title>
+  <base href="/assets/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root { --accent: #345; }
+    @media screen and (min-width: 20em) {
+      body > main { display: grid; }
+    }
+  </style>
 </head>
 <body>
-  <main id="shell">
-    <dialog open>
-      <form method="dialog">
-        <label for="choice">Choose a value</label>
-        <select id="choice" name="choice">
-          <optgroup label="Primary">
-            <option selected value="α">Alpha</option>
-            <option value="β">Beta</option>
-          </optgroup>
-          <optgroup label="Empty"></optgroup>
-        </select>
-        <button type="submit">Close</button>
-      </form>
+  <header>
+    <h1><a href="index.html"><span>Archive</span> <em>Explorer</em></a></h1>
+    <nav aria-label="Primary">
+      <ul>
+        <li><a href="#records">Records</a></li>
+        <li><a href="#details">Details</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main id="records">
+    <section>
+      <h2>Selected records</h2>
+      <article itemscope itemtype="https://schema.org/CreativeWork">
+        <h3 itemprop="name">A layered entry</h3>
+        <p itemprop="abstract">Text with <mark>highlighted</mark> and <small>secondary</small> content.</p>
+        <dl>
+          <dt>Format</dt>
+          <dd><data value="html">HTML</data></dd>
+          <dt>Updated</dt>
+          <dd><time datetime="2026-10-08T12:30:00Z">Today</time></dd>
+        </dl>
+      </article>
+    </section>
+    <aside id="details">
       <details open>
-        <summary>Additional information</summary>
-        <p>Text before <mark>highlighted <b>content</b></mark> and after.</p>
+        <summary>Metadata</summary>
+        <ol>
+          <li><span>Owner:</span> <bdi>user-Δ</bdi></li>
+          <li><span>Status:</span> <strong>active</strong></li>
+        </ol>
       </details>
-    </dialog>
+    </aside>
   </main>
-</body>
-</html>
-```
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Table and Template</title>
-</head>
-<body>
-  <table border="1">
-    <caption>Inventory</caption>
-    <colgroup>
-      <col span="2">
-      <col>
-    </colgroup>
-    <thead>
-      <tr><th scope="col">Item</th><th scope="col">Count</th><th scope="col">State</th></tr>
-    </thead>
-    <tbody>
-      <tr><td rowspan="2">Widget</td><td>4</td><td>Ready</td></tr>
-      <tr><td colspan="2">Reserved</td></tr>
-    </tbody>
-    <tfoot>
-      <tr><td>Total</td><td>4</td><td><data value="ok">OK</data></td></tr>
-    </tfoot>
-  </table>
-  <template id="row-template">
-    <tr><td><slot name="name">fallback</slot></td></tr>
-  </template>
-  <p>After the table <ruby>漢<rt>kan</rt>字<rp>(</rp><rt>ji</rt><rp>)</rp></ruby>.</p>
-</body>
-</html>
-```
-
-```html
-<!doctype html>
-<html>
-<head>
-  <meta charset="windows-1252">
-  <title>Embedded Content</title>
-</head>
-<body>
-  <header><h1>Media Archive</h1></header>
-  <section>
-    <picture>
-      <source media="(min-width: 800px)" srcset="large.webp 1x, large@2x.webp 2x">
-      <source type="image/avif" srcset="image.avif">
-      <img src="fallback.jpg" alt="A &amp; B" width="320" height="240" loading="lazy">
-    </picture>
-    <audio controls preload="metadata">
-      <source src="sound.ogg" type="audio/ogg">
-      <source src="sound.mp3" type="audio/mpeg">
-      <track kind="captions" srclang="en" src="captions.vtt">
-    </audio>
-    <iframe srcdoc="<p>Inner &amp; isolated</p>" sandbox="allow-scripts"></iframe>
-  </section>
   <footer>
-    <object data="archive.bin" type="application/octet-stream">
-      <param name="mode" value="preview">
-      <embed src="legacy.swf" type="application/x-shockwave-flash">
-    </object>
+    <address><a href="mailto:info@example.test">Contact</a></address>
   </footer>
 </body>
 </html>
@@ -99,31 +58,140 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Form Controls</title>
+  <title>Forms and Tables</title>
 </head>
 <body>
-  <form id="profile" action="/submit" method="post" enctype="multipart/form-data">
-    <fieldset disabled>
-      <legend>Account details</legend>
-      <input type="text" name="user" value="guest" required>
-      <input type="email" name="mail" placeholder="name@example.test">
-    </fieldset>
+  <form action="/submit" method="post" enctype="multipart/form-data">
     <fieldset>
-      <legend>Preferences</legend>
-      <input type="hidden" name="token" value="x&amp;y">
-      <input type="checkbox" id="news" name="news" checked>
-      <label for="news">Send updates</label>
-      <input type="radio" id="light" name="theme" value="light">
-      <label for="light">Light</label>
-      <input type="radio" id="dark" name="theme" value="dark" checked>
-      <label for="dark">Dark</label>
-      <textarea name="notes" rows="2" cols="20">line one
-line &lt;two&gt;</textarea>
-      <input type="file" name="attachment" multiple accept=".txt,text/plain">
-      <button formaction="/preview" formmethod="get">Preview</button>
+      <legend>Registration</legend>
+      <label for="user">User name</label>
+      <input id="user" name="user" required minlength="2" maxlength="40">
+      <label>
+        <span>Category</span>
+        <select name="category">
+          <optgroup label="Letters">
+            <option value="a">Alpha</option>
+            <option value="b" selected>Beta</option>
+          </optgroup>
+          <optgroup label="Numbers" disabled>
+            <option value="1">One</option>
+          </optgroup>
+        </select>
+      </label>
+      <input list="choices" name="choice">
+      <datalist id="choices">
+        <option value="red">Warm</option>
+        <option value="blue">Cool</option>
+      </datalist>
+      <textarea name="notes" rows="3" cols="28">line one
+line two</textarea>
+      <button type="submit">Send</button>
     </fieldset>
   </form>
-  <output form="profile" name="status">pending</output>
+  <table>
+    <caption>Quarterly values</caption>
+    <colgroup>
+      <col span="2" class="wide">
+      <col class="narrow">
+    </colgroup>
+    <thead>
+      <tr><th scope="col">Name</th><th scope="col">Kind</th><th scope="col">Value</th></tr>
+    </thead>
+    <tbody>
+      <tr><th scope="row">North</th><td rowspan="2">A</td><td>17</td></tr>
+      <tr><th scope="row">South</th><td>23</td></tr>
+    </tbody>
+    <tfoot>
+      <tr><td colspan="2">Total</td><td><output>40</output></td></tr>
+    </tfoot>
+  </table>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Media and Figures</title>
+</head>
+<body>
+  <main>
+    <figure>
+      <picture>
+        <source media="(min-width: 800px)" srcset="wide.webp 1x, wide@2x.webp 2x" type="image/webp">
+        <source srcset="compact.jpg" type="image/jpeg">
+        <img src="fallback.png" alt="A geometric landscape" width="640" height="360" loading="lazy">
+      </picture>
+      <figcaption>Figure 1: A responsive image with alternate sources.</figcaption>
+    </figure>
+    <section>
+      <h2>Audio sample</h2>
+      <audio controls preload="metadata">
+        <source src="sample.ogg" type="audio/ogg">
+        <source src="sample.mp3" type="audio/mpeg">
+        Your browser cannot play this audio.
+      </audio>
+    </section>
+    <section>
+      <h2>Video sample</h2>
+      <video controls width="480" poster="poster.jpg">
+        <track kind="captions" src="captions.vtt" srclang="en" label="English" default>
+        <source src="clip.webm" type="video/webm">
+        <source src="clip.mp4" type="video/mp4">
+      </video>
+    </section>
+    <section>
+      <h2>Embedded content</h2>
+      <object data="diagram.svg" type="image/svg+xml" width="320" height="180">
+        <param name="background" value="transparent">
+        <embed src="fallback.svg" type="image/svg+xml">
+      </object>
+    </section>
+  </main>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ruby and Directionality</title>
+  <meta charset="utf-8">
+</head>
+<body>
+  <article lang="ja" dir="ltr">
+    <header>
+      <h1>Language notes</h1>
+      <p><bdo dir="rtl">reverse sample</bdo> and <bdi>isolated-name</bdi></p>
+    </header>
+    <p>
+      <ruby>
+        明日
+        <rp>(</rp><rt>あした</rt><rp>)</rp>
+      </ruby>
+      is a word with pronunciation guidance.
+    </p>
+    <blockquote cite="https://example.test/source">
+      <p>Quoted text contains <q>an inner quotation</q> and an abbreviation such as <abbr title="HyperText Markup Language">HTML</abbr>.</p>
+    </blockquote>
+    <p>
+      Chemical notation: H<sub>2</sub>O; mathematical notation: x<sup>2</sup> + y<sup>2</sup>.
+      Keyboard input: <kbd>Ctrl</kbd> + <kbd>S</kbd>.
+    </p>
+    <pre><code>function greet(name) {
+  return `Hello, ${name}`;
+}</code></pre>
+    <p>
+      A variable is <var>n</var>, output is <samp>42</samp>, and deleted text is
+      <del datetime="2026-01-01">removed</del> while <ins cite="https://example.test/edit">new</ins> text remains.
+    </p>
+    <footer>
+      <p><cite>Collected Notes</cite> — <time datetime="2026-10-08">2026</time></p>
+    </footer>
+  </article>
 </body>
 </html>
 ```
@@ -132,34 +200,44 @@ line &lt;two&gt;</textarea>
 <!doctype html>
 <html>
 <head>
-  <title>Mixed Legacy Markup</title>
-  <style>
-    body { color: #123456; }
-    .box::before { content: "<tag>"; }
-  </style>
-  <!--[if IE]>
-    <style>.old { behavior: url(old.htc); }</style>
-  <![endif]-->
+  <title>Template and Dialog</title>
 </head>
-<body bgcolor="#fff" text="black">
-  <center>
-    <font face="serif" size="4">
-      <p class="box">A <i>legacy</i> paragraph<br>with a forced break
-      <hr>
-      <blockquote cite="urn:test:quote">
-        <pre>  preserved
-   spacing &lt;and&gt; symbols</pre>
-      </blockquote>
-    </font>
-  </center>
-  <dl>
-    <dt>Term &copy;</dt>
-    <dd><s>obsolete</s> <ins datetime="2024-01-01">replacement</ins></dd>
-  </dl>
-  <script type="application/json">
-    {"html":"&lt;div&gt;","items":[1,2,3]}
-  </script>
-  <noscript><p>Scripts are unavailable.</p></noscript>
+<body>
+  <main>
+    <template id="card-template">
+      <article class="card">
+        <header><h2><slot name="heading">Fallback heading</slot></h2></header>
+        <p><slot>Fallback body</slot></p>
+      </article>
+    </template>
+    <section aria-label="Live examples">
+      <dialog id="notice" open>
+        <form method="dialog">
+          <h1>Notice</h1>
+          <p>This dialog includes a progress indicator.</p>
+          <progress value="3" max="5">60%</progress>
+          <meter min="0" max="100" low="30" high="80" optimum="90" value="72">72</meter>
+          <menu>
+            <li><button value="close">Close</button></li>
+          </menu>
+        </form>
+      </dialog>
+      <details>
+        <summary>Expandable content</summary>
+        <div>
+          <p>Additional content appears after the summary.</p>
+          <ul>
+            <li>First item</li>
+            <li>Second item with <span>inline text</span></li>
+          </ul>
+        </div>
+      </details>
+    </section>
+    <iframe srcdoc="<p>Inline frame content</p>" title="Preview" loading="lazy"></iframe>
+  </main>
+  <noscript>
+    <p>JavaScript is disabled.</p>
+  </noscript>
 </body>
 </html>
 ```

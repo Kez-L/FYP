@@ -1,0 +1,101 @@
+```html
+<!doctype html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-16">
+  <base href="http://example.invalid/a/../../b?x=&amp;y">
+  <style type="text/css">
+    @import url("broken.css");
+    body { color: rgb(300,-1,999); }
+    <!-- nested comment -->
+  </style>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("</script>"); }
+  </script>
+</head>
+<body id="a" id="b" class="x  y" disabled="">
+  <form action="?" method="POST">
+    <input name="q" value="&quot;&apos;&unknown;&amp">
+    <select multiple><option selected>one<option>two</select>
+    <textarea rows="1" cols="0">&lt;tag>&#xD800;&#x110000;</textarea>
+    <button type="submit"><img src alt=foo/bar></button>
+  </form>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<frameset cols="25%,*,25%" border="not-a-number">
+  <frame src="left.html" name="left">
+  <frameset rows="50%,50%">
+    <frame src="top.html">
+    <frame src="javascript:alert('x')">
+  </frameset>
+  <noframes>
+    <body>
+      <hgroup><h1>Frame fallback<h3>Unbalanced heading</hgroup>
+      <p><a href="x" href="y"><img src="x" alt="unterminated></a>
+      <dl><dt>Term 1<dd>Description<dt>Term 2
+      <ol start="-3"><li>alpha<li>beta</ol>
+    </body>
+  </noframes>
+</frameset>
+```
+
+```html
+<!DOCTYPE html>
+<html xmlns="urn:test" xml:lang="x">
+<head>
+  <title>mixed <![CDATA[ title ]]></title>
+</head>
+<body>
+  <svg width="10" height="10">
+    <![CDATA[
+      <path d="M0 0 L10 10 & weird"/>
+    ]]>
+    <foreignObject><div><p>inside svg</svg>
+  </body>
+  <math><mi>x</mi><mo>&InvisibleTimes;</mo><mtext><b>y</math>
+  <p>after math
+</html>
+```
+
+```html
+<!-- first --><!-- second -- --!><!---->
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ENTITY test "replacement">
+]>
+<root>
+  <item a="1&amp;2" b='unterminated>
+    <![CDATA[raw < markup ]]> tail
+  <item>
+    <![if IE]><span>conditional</span><![endif]>
+    <?processing instruction?>
+  </item>
+  <unknown><nested /></unknown>
+</root>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=>
+  <meta name=viewport content="width=device-width,initial-scale=1">
+  <link rel=stylesheet href=//example.invalid/style.css disabled>
+</head>
+<body>
+  <table border=1>
+    <colgroup><col span="0"><col width="auto"></colgroup>
+    <thead><tr><th rowspan="-1">A<th colspan="999">B
+    <tbody>
+      <tr><td><div>cell<div>nested</tr>
+      <tr><td>left<td><table><tr><td>inner</table><p>orphan
+    <tfoot><tr><td colspan="x">footer</tbody>
+  </table>
+  <map name="m"><area shape=poly coords="0,0,1,1"><area></map>
+  <object data="x"><param name=name value=value><embed src=x></object>
+</body>
+```

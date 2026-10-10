@@ -1,48 +1,87 @@
 ```html
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!doctype html>
 <html lang="en">
 <head>
-<title>Odd Forms</title>
-<base href="http://example.invalid/a/">
-<meta http-equiv="refresh" content="0; url=javascript:alert(1)">
-<link rel="alternate" media="print" href="x">
+<meta charset="utf-8">
+<title>Misnested phrasing and legacy controls</title>
 </head>
-<body bgcolor=#fff text='black' onload="x<y && y>z">
-<form action="/submit?a=1&b=2" method=post enctype="multipart/form-data">
+<body>
+<p><b>bold <i>italic <u>underlined</b> crossed</i> tail</u>
+<dl>
+<dt><a href="javascript:void(0)"><em>Term
+<dd><span class="one"><strong>Description <small>with <big>mixed sizing</span></small></strong>
+<dt><img src="x" alt="broken <em>alternate">
+<dd>Second description <br><br><hr>
 <fieldset disabled>
-<legend><u>Profile <input name=hidden type=hidden value="&amp;broken"></u></legend>
-<label for=q>Query</label><input id=q name=q value="a&quot;b&lt;c">
-<select name=choice multiple size=0><optgroup label="A&B"><option selected>one<option value=2>two</optgroup><option>three</select>
-<textarea name=notes rows=1 cols=0>&lt;/textarea&gt;
-<button type=submit formaction="/go">Send</button>
+<legend>Options</legend>
+<label for="q">Query <input id="q" name="q" type="text" value="&quot;&amp;&lt;"></label>
+<label><input type="checkbox" checked> enabled</label>
+<select name="choice"><option>one<option selected>two<optgroup label="more"><option>three</select>
+<textarea name="notes">raw &lt;b&gt; text
+</textarea>
 </fieldset>
-</form>
-<isindex prompt="Search:">
-<address><a href="mailto:x@y">x@y</a></address>
+<p><font color=red face="serif"><center>centered text</font></center>
 </body>
 </html>
 ```
 
 ```html
-<!doctype HTML SYSTEM "about:legacy-compat">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <html>
-<head><title>Frames and maps</title></head>
+<head>
+<title>Frameset fallback and declarations</title>
+<base href="http://example.invalid/root/">
+</head>
+<frameset rows="20%,*,20%" frameborder="no">
+<frame src="top.html" name="top" noresize scrolling="no">
+<frameset cols="30%,70%">
+<frame src="left.html" name="nav">
+<frame src="right.html" name="content">
+<noframes>
 <body>
-<iframe name=left srcdoc="<p>embedded &amp; text</p>" sandbox="allow-scripts"></iframe>
-<object data="file.bin" type="application/octet-stream" width=0 height=-1>
-<param name=movie value="x&y">
-<embed src="x.swf" hidden>
-fallback <a href=#map>fallback</a>
-</object>
-<img src="image" srcset="a 1x, b 2x," usemap="#map" ismap border=0>
-<map name=map>
-<area shape=poly coords="0,0,10,0,10,10," href="javascript:void(0)" alt=x>
-<area shape=default nohref>
-</map>
-<frameset cols="*,0" onload="f()">
-<frame src="a" name="a"><frame src="b" name="b">
-<noframes><p>Frames unavailable</p></noframes>
+<h1>Fallback</h1>
+<p>This body appears inside a malformed nested frameset.
+<iframe src="fallback.html" width="10" height="10"></iframe>
+</body>
+</noframes>
 </frameset>
+<frame src="bottom.html">
+</frameset>
+<noframes>
+<p>Second fallback without a body.
+</noframes>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>Conditional comments and obsolete blocks</title>
+<!--[if IE]><style type="text/css">.old { behavior:url(#default#time); }</style><![endif]-->
+<![if !IE]>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<![endif]>
+</head>
+<body>
+<!--[if lt IE 9]>
+<div class="old"><p>legacy conditional <b>branch</p></div>
+<![endif]-->
+<div>
+  <![CDATA[
+    <not-real> cdata-like markup & text
+  ]]>
+</div>
+<p>Before <object data="movie.bin" type="application/octet-stream">
+  <param name="autoplay" value="true">
+  <param name="loop" value="false">
+  <embed src="movie.bin" width="1" height="1">
+  object fallback
+</object> after
+<applet code="Demo.class" width="2" height="2">
+<param name="x" value="&amp;">
+fallback <img src="missing" alt="a > b">
+</applet>
 </body>
 </html>
 ```
@@ -50,67 +89,52 @@ fallback <a href=#map>fallback</a>
 ```html
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html [
-<!ENTITY local "replacement">
-<!ELEMENT note ANY>
-<!ATTLIST note who CDATA #IMPLIED>
+  <!ENTITY local "replacement">
+  <!ELEMENT phantom ANY>
 ]>
-<html xmlns="urn:example:x">
-<head><?processing instruction?><title>&local; &unknown;</title></head>
-<body>
-<section id="s&#x0;1" data-a="one" data-b='two"three'>
-<ruby>漢<rb>字<rt>か<rp>(</rp>ん</ruby>
-<details open=maybe><summary>Summary</summary><dialog open>Dialog text</dialog></details>
-<p>before<br/>after<wbr>split</p>
-<pre xml:space="preserve">  a &amp; b
-&#0;&#xD800;&#x110000;</pre>
-<q cite="a&b">quoted<del cite=x datetime=bad>removed</del><ins>added</ins></q>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>XHTML fragments with entities</title>
+<link rel="stylesheet" href="a.css"/>
+<meta name="viewport" content="width=device-width"/>
+</head>
+<body id="x" xml:lang="en">
+<section>
+<header><hgroup><h1>Heading <mark>one</h1><h2>Subhead</h2></hgroup></header>
+<article>
+<p>Entity text: &local; &unknown; &#0; &#xD800; &#x110000;</p>
+<ruby>漢<rt>かん<rp>(</rp>字<rp>)</rp></ruby>
+<figure><img src="data:image/gif;base64,R0lGODlh" alt=""><figcaption>caption
+</figure>
+<details open><summary>Summary</summary><p>hidden-ish content</details>
+</article>
+<footer><address><a href="mailto:a@b">contact</a></address></footer>
 </section>
 </body>
 </html>
 ```
 
 ```html
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head><title>Foreign fragments</title></head>
+<head><title>Adoption agency stress</title></head>
 <body>
-<svg width="100%" height="40" viewBox="0 0 40 40" preserveAspectRatio="none">
-<defs><linearGradient id=g x1=0 y1=0 x2=1 y2=1><stop offset="0%" stop-color="#fff"/><stop offset="100%"/></linearGradient></defs>
-<g transform="translate(1e2,-3)rotate(999)">
-<rect x="NaN" y="Infinity" width="calc(10px)" height="-" fill="url(#g)" />
-<text x="0" y="10">a &lt; b</text>
-<use href="#missing" xlink:href="&bad;" />
-</g>
-</svg>
-<math display="block">
-<semantics><mfrac><mroot><mi>a</mi><mn>2</mn></mroot><mrow><mo>&InvisibleTimes;</mo><mi>b</mi></mrow></mfrac>
-<annotation encoding="application/xml"><![CDATA[<x><y/></x>]]></annotation></semantics>
-</math>
-<picture><source media="(min-width: 1px)" srcset="x 1w"><source type=image/avif><img alt="fallback"></picture>
+<div id="outer">
+<p><b><i><a href="#"><font color=blue><u>one</b>two</i>three</a>four</u></font>
+<p><button type="button"><em>button <strong>content</button> after</strong></em>
+<blockquote><p>quote level one
+<blockquote>quote level two</blockquote>
+</blockquote>
+<pre><code>literal <tag attr="x"> &amp; line
+next</code></pre>
+<menu><li>first<li><li><a href="#">third<ul><li>nested</menu>
+<form>
+<input type=text name=x><input type=hidden name=y value="&quot;">
+<label>label<select><option>alpha<option>beta</select></label>
+</form>
+<div><table><tr><td>not much</div></td></tr></table>
+<p>tail
+</div>
 </body>
 </html>
-```
-
-```html
-<!doctype html>
-<head>
-<title>Unbalanced declarations</title>
-<meta charset="utf-16">
-<style type="text/plain">
-@import url("x");
-a{color:red;content:"<!--";} <!-- still style -->
-</style>
-</head>
-<body>
-<!-- unclosed comment
-<div class=x><span y="1>text</div>
-<?server if="x"?>
-<![CDATA[ raw <tag> & stuff ]]>
-<% include file="header" %>
-<article><header><hgroup><h1>Title<h2>Sub</header>
-<main><p>alpha<p>beta</main>
-<footer><small>copyright &copy without semicolon</small>
-</article>
-<script type="text/plain">if (a < b) { /* </script> */ }</script>
-<noscript><meta http-equiv=content-type content=text/html><p>fallback
 ```

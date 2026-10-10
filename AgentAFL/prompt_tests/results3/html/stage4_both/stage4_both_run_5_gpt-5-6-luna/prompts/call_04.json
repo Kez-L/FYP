@@ -1,0 +1,23 @@
+{
+  "call": 4,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a HTML document parser.\nTarget: /home/user/Documents/1git-folder/AgentAFL/AFLPlus/tidy-html5-build/tidy_parse_string_fuzzer-afl.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 HTML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<HTML>\n<HEAD>\n  <TITLE>Frameset and legacy declarations</TITLE>\n  <BASE TARGET=\"_top\" HREF=\"//example.test/root\">\n  <META NAME=viewport CONTENT=width=device-width,initial-scale=1>\n  <?processing instruction?>\n</HEAD>\n<FRAMESET ROWS=\"*,0,25%\" COLS=\"120,*\" BORDER=not-a-number FRAMEBORDER=maybe>\n  <FRAME NAME=left SRC=\"left.html\" SCROLLING=diagonal NORESIZE>\n  <FRAMESET COLS=\"50%,*\" FRAMEBORDER>\n    <FRAME SRC=right.html MARGINWIDTH=-4 MARGINHEIGHT=\"NaN\">\n    <FRAME SRC=\"\" NAME=main>\n  </FRAMESET>\n  <NOFRAMES>\n    <BODY>\n      <H1>Fallback</H1>\n      <P><A HREF=\"next.html\" TARGET=>continue</A></P>\n    </BODY>\n  </NOFRAMES>\n</FRAMESET>\n\n--- example 2 ---\n<!DOCTYPE html>\n<html>\n<head><title>Table reconstruction</title></head>\n<body>\n<table border=0 summary=\"a & b\" rules=sideways>\n  <colgroup span=zero><col width=12*><col span=\"NaN\"></colgroup>\n  <thead><tr><th colspan=0 rowspan=-1>Head<th>Second</thead>\n  orphan before body\n  <tbody>\n    <tr><td>A<td>B<tr><td colspan=\"999\">C\n    <tr><th scope=invalid headers=x><form><input name=q></form>\n  </tbody>\n  <tfoot><tr><td>Footer</tfoot>\n  text between sections\n  <tbody><tr><td><table>\n      <tr><td>nested one\n      <tr><td>nested two</tr>\n    </table>tail\n  </tbody>\n  <caption align=diagonal><span>late caption</span></caption>\n</table>\n<p>after table<table><tr><td>x</table>after second\n</body>\n</html>\n\nTried before \u2014 no new coverage, avoid repeating:\n--- a seed you generated (cycle 4) added 0 new edges ---\n<!doctype html>\n<html>\n<head>\n<meta charset=\"x-unknown\">\n<title>Interactive elements</title>\n</head>\n<body>\n<main id=main>\n  <details open=maybe name=group>\n    <summary><b>Summary <i>with mismatched emphasis</summary>\n    <p>Hidden content <mark>marked <small>small</details>\n  <dialog open=true aria-modal=perhaps>\n    <form method=post enctype=multipart/form-data action=\"?x=1&y=2\">\n      <label for=who>Who <input id=who name=who required=maybe minlength=-2></label>\n      <button type=menu formaction=javascript:void(0) disabled=>Send</button>\n      <fieldset disabled=no>\n        <legend>Options</legend>\n        <input type=checkbox checked=off name=a>\n        <input type=radio name=r value=1...[truncated, 1012 chars total]\n\n--- a seed you generated (cycle 4) added 0 new edges ---\n<!DOCTYPE HTML>\n<html>\n<head>\n  <title>Raw text boundaries</title>\n  <style type=text/x-custom>\n    x { content: \"</style>\"; color: red }\n    y { background: url(\"a&b\"); /* never ends\n  </style>\n  <script language=javascript type=text/plain>\n    var a = \"</script>\";\n    var b = '<!--';\n    if (x < y && y > z) { /* ]] > */ }\n  </script>\n  <noscript>\n    <p>noscript <b>markup</b> &copy;</p>\n  </noscript>\n</head>\n<body>\n  <pre>one\n  <code>two &amp; three</code>\n  <textarea cols=bad rows=-3>value </textarea> trailing\n  <xmp><b>literal</b>&amp;</xmp>\n  <plaintext>\n    <div>everything becomes text\n    &amp; &#x110000; </body></html>\n\nGenerate 5 new HTML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-tidy-20261006",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-10T05:57:53.726444+00:00"
+}

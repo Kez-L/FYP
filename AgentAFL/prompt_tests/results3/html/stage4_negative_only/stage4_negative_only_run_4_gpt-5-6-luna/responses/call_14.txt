@@ -1,0 +1,113 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>table reconstruction</title></head>
+<body>
+<table border="1">
+  <caption><b>Quarterly <em>results</caption>
+  <colgroup span="2"><col width="20%"><col style="color:red"></colgroup>
+  <colgroup><col><col><col></colgroup>
+  <thead><tr><th rowspan="2">Name<th colspan="3">Values</tr><tr><th>A<th>B<th>C</tr></thead>
+  <tbody>
+    <tr><td>alpha<td>1<td><table><tr><td>nested</table><td>3
+    <tr><th scope=row>beta<td colspan=9>2
+  </tbody>
+  <tfoot><tr><td>total<td><form><input value="x"></form><td>?</tr></tfoot>
+</table>
+<table><tr><td>orphan before body</table>
+</body>
+</html>
+```
+
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<?xml version="1.0"?>
+<!-- first <!-- nested --> trailing -->
+<![if IE]><p>conditional text<![endif]>
+<html><head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<base href="http://example.invalid/a/">
+<link rel=stylesheet href=a.css><link rel=stylesheet href=b.css>
+<title>&#xD800; &notanentity &amp;copy; &#0;</title>
+</head><body>
+<p class=x x=1 X=2 data-a="&quot;broken&#x0;" disabled=disabled>
+  A&nbsp;&thinsp;&copy; &unknown; <br/ ><hr class='one two' / >
+</p>
+<?bogus instruction?><!----><!-----><!DOCTYPE nope>
+<div id=a><span id=b>text</div></span>
+</body></html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<style type="text/css">
+  body { color: red; }
+  @media screen { .x { content: "</style>"; } }
+  </style data-x=">">
+  .broken { background: url("x"); }
+</style>
+<script type="text/javascript">
+  if (a < b && c > d) { document.write("<p>raw &amp; text</p>"); }
+  var s = "</script><script>alert(1)</script>";
+</script>
+<noscript><style>.n { display:none }</style><p>fallback <b>bold</noscript>
+</head>
+<body>
+<script type=application/json>{"a":"</script>","b":[1,2,]}</script>
+<iframe srcdoc="<p>inside &amp; quoted</p>" name="f"><!-- fallback --></iframe>
+<object data="movie.swf" type="application/x-shockwave-flash">
+  <param name="movie" value="x">
+  <embed src="x" hidden>
+  fallback <a href="#">link
+</object>
+<textarea>literal <b>tags</b> &amp; entities</textarea>
+</body>
+</html>
+```
+
+```html
+<html><head><title>phrasing and ruby</title></head><body>
+<h1><small>Heading <mark>with <del>crossed</h1>
+<p><a href="x"><b><i>deep <u>formatting</a> repaired</i></b></u>
+<p><ruby>漢<rt>かん<rp>(</rp></rt>字<rtc><span>annotation</span></rtc><rt>じ</ruby>
+<dl>
+  <dt>Term one
+  <dd><p>Definition <code>x &lt; y</code>
+  <dt><dt>Repeated term
+  <dd>Second definition
+</dl>
+<ul><li>one<ul><li>nested one<li>nested two</ul><li>two
+<ol start="0" reversed type="A"><li>alpha<li value="-3">beta<li>gamma</ol>
+<details open="false"><summary>Summary <time datetime="not-a-date">today</time></summary>
+  <p>Hidden-ish <kbd>Ctrl</kbd> + <kbd>Q</kbd>
+</details>
+<menu><li><button type=button>Action</button><li><label>Choice <input type=checkbox checked></label></menu>
+<blockquote cite="urn:x"><pre>  preformatted
+  <span>mixed</span> &lt;angle&gt;</pre></blockquote>
+</body></html>
+```
+
+```html
+<!DOCTYPE html>
+<html><head><title>custom and malformed</title></head><body>
+<main id=main>
+  <article data-json='{"x":1,"y":[true,false]}'>
+    <header><h2>Article</h2><address>author@example.invalid</address></header>
+    <section aria-label="one">
+      <x-widget foo="a&b" foo="c" /><!-- custom element -->
+      <x-widget><x-item>first<x-item>second</x-widget>
+      <p>Before <span>unclosed <em>emphasis
+    </section>
+    <aside><p>Aside <a href="javascript:alert(1)">danger</a></aside>
+    <footer><small>foot</small></footer>
+  </article>
+</main>
+<div style="width: expression(alert(1)); color: &quot;red&quot;" title="a&#13;&#10;b">
+  <img srcset="a 1x, b 2x, c 300w" sizes="(max-width: 600px) 480px, 800px" alt="image">
+  <picture><source media="(x)" srcset="x"><img src="fallback"></picture>
+  <video controls poster="p"><source src="a" type="video/mp4"><track kind=subtitles srclang=en></video>
+</div>
+</body></html>
+```

@@ -1,0 +1,180 @@
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <base href="https://example.invalid/root/">
+  <title>Forms and interactive controls</title>
+</head>
+<body>
+  <header id=top><h1>Account settings</h1></header>
+  <main>
+    <form action="/submit" method="post" enctype="multipart/form-data">
+      <fieldset disabled>
+        <legend>Identity <em>details</em></legend>
+        <label for=user>Name</label>
+        <input id=user name=user value="A&B" required>
+        <label>Email <input type=email name=email multiple></label>
+        <output name=result for=user email>pending</output>
+      </fieldset>
+      <fieldset>
+        <legend>Preferences</legend>
+        <select name=mode required>
+          <option value="">Choose one
+          <option value=a selected>Alpha
+          <optgroup label=Other>
+            <option value=b>Beta</option>
+            <option value=c disabled>Gamma
+          </optgroup>
+        </select>
+        <label><input type=checkbox checked name=alerts> Alerts</label>
+        <label><input type=radio name=level value=low>Low</label>
+        <label><input type=radio name=level value=high checked>High</label>
+        <input type=number min=0 max=10 step=any value=3.14>
+        <input type=date value=2026-13-40>
+        <textarea name=notes rows=2 cols=4>line one
+line two</textarea>
+        <button type=submit formaction="/alternate">Send</button>
+        <button type=reset>Reset</button>
+      </fieldset>
+    </form>
+    <details open><summary>Advanced</summary><p>Hidden-ish <mark>configuration</mark></p></details>
+    <dialog open>Dialog content <button autofocus>OK</button></dialog>
+  </main>
+  <footer><a href="#top">back</a></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Lists and phrasing boundaries</title></head>
+<body>
+<nav aria-label=sections>
+  <ol start=0 reversed>
+    <li value=9>First <ul><li>nested one<li>nested two</ul>
+    <li>Second <ol type=A><li>alpha<li>beta</ol>
+    <li>Third
+  </ol>
+</nav>
+<section>
+  <hgroup><h1>Heading <small>small</small></h1><h2>Subheading</h2></hgroup>
+  <p>Text <b>bold <i>italic <u>underlined</b> after</i></u>
+  <p><ruby>漢<rt>kan</rt><rp>(</rp>字<rt>ji</rt><rp>)</rp></ruby>
+     <q cite=x>quoted <cite>source</cite></q>
+     <abbr title="HyperText Markup Language">HTML</abbr>
+     <kbd>Ctrl</kbd>+<kbd>C</kbd>
+  <pre><code>if (x &lt; y) {
+  return &amp;&amp; z;
+}</code></pre>
+  <blockquote cite="urn:test"><p>Nested <span title="a>b">words</span></blockquote>
+  <hr>
+  <p><ins datetime=bad>added</ins><del cite=x>removed</del>
+  <address><a href="mailto:x@y">contact</a><br>Unknown &copy entity &bogus;</address>
+</section>
+<aside>
+  <menu>
+    <li><button type=button>One</button>
+    <li><button type=button>Two
+  </menu>
+</aside>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Head edge cases</title>
+  <meta charset="utf-8">
+  <style>
+    body > p { color: red; }
+    @media (x) { .a { content: "</style>"; } }
+  </style>
+  <script>
+    const s = "</script><p>not markup";
+    if (x < 2 && y > 1) { /* </script> */ }
+  </script>
+  <noscript><link rel=stylesheet href=x.css></noscript>
+</head>
+<body onload="a< b && c> d">
+  <p class="a b" data-x="1>2" data-y='3"4'>Start
+  <!-- comment -- with -- odd -->
+  <![CDATA[not really cdata]]>
+  <p>&#0; &#x0; &#x10ffff; &#x110000; &lt;&gt;&amp; &quot;
+  <wbr><bdi dir=auto>abc</bdi><bdo dir=rtl>xyz</bdo>
+  <span style="color:red" contenteditable spellcheck=false tabindex=0>editable</span>
+  <div hidden inert aria-hidden=true>
+    <p>nested hidden
+  </div>
+  <script type="application/json">{"x":"</script>","n":null}</script>
+  <style media=screen>.x{background:url("x")}</style>
+  <p id=a><a href=#a target=_blank rel="noopener noreferrer">jump</a>
+</body>
+</html>
+```
+
+```html
+<html>
+<head><title>Sections and orphaned nodes</title></head>
+<body>
+  text before root
+  <article id=story>
+    <header><h1>Story</h1><p>By <span>author</span></header>
+    <section>
+      <h2>Part one
+      <p>Opening <figure><img src=x><figcaption>Caption</figcaption></figure>
+      <p>Continuation
+      <section><h3>Nested</h3><p>Deep text
+    </article>
+    <footer>Article footer</footer>
+  </section>
+  <main>
+    <p>Outside <span>span <div>block inside inline</div> tail
+    <dl>
+      <dt>Term one
+      <dd>Definition one
+      <dt>Term two
+      <dd><p>Definition two</p><dd>Extra definition
+    </dl>
+  </main>
+  <div>
+    <p>Before <a href=x><div>link block</div></a> after
+    <ol><li>one<li>two<ul><li>sub</ol>
+  </div>
+  <footer><small>End</small></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Void and token stress</title></head>
+<body>
+  <input type=text name=x disabled="" checked=checked readonly=0>
+  <img src="a&amp;b" alt="x" width=0 height=-1>
+  <area href=x coords="1,2,3,4">
+  <br/>text<br / >more
+  <hr//>
+  <meta charset='x' />
+  <link rel=icon href=data:text/plain,hello>
+  <p>alpha <span>beta <em>gamma
+  <input value="unterminated>
+  <img src='single
+  <div class=test/ data-v=abc/def>
+    <button name=b value=v/>button</button>
+    <select><option>one<option selected>two</select>
+  </div>
+  <p><!-- nested <!-- comment --> visible
+  <div><template><p>inside template</p><table><tr><td>x</table></template></div>
+  <form id=f><input name=a></form>
+  <form id=f><input name=b form=f></form>
+  <p><label>Label <input><label>Again</label>
+  <iframe src="about:blank" srcdoc="&lt;div&gt;embedded&lt;/div&gt;"></iframe>
+  <video controls poster=x.mp4><track kind=subtitles src=x.vtt default>fallback</video>
+  <audio autoplay loop src=x.ogg></audio>
+</body>
+</html>
+```

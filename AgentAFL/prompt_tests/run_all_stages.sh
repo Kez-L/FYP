@@ -15,6 +15,8 @@
 #   bash run_all_stages.sh                 # run all 27 stages sequentially
 #   bash run_all_stages.sh --dry-run       # print the commands only (no API calls)
 #   bash run_all_stages.sh --only html     # just one format (xml|ical|html)
+#   bash run_all_stages.sh --stages a,b    # just these stage folders, to resume
+#                                          # an aborted sweep (see STAGES below)
 #   bash run_all_stages.sh --skip-eval     # any other args are passed through
 #                                          # to every run_build_context.py call
 #

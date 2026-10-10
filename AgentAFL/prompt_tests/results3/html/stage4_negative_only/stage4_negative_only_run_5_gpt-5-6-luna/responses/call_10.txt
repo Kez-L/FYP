@@ -1,0 +1,125 @@
+```html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<base href="http://example.test/a/">
+<link rel=stylesheet href=main.css media="screen&print">
+<style type=text/css>
+@media screen { body { color: red } }
+<!-- .legacy { background:url("x)"); } -->
+</style>
+<script type="application/ld+json">{"name":"<weird>","items":[1,2,]}</script>
+</head>
+<body id=top>
+<header><hgroup><h1>Old &amp; New</h1><h3>Unclosed heading
+<nav><a href="#one">one<a href="#two">two</nav>
+</header>
+<main>
+<section id=one><article><p class=x y=z>Text &copy &bogus; &#xD800; &#999999;<!-- <p> -->after
+<figure><img src=x alt= width=0 height=-1><figcaption>caption
+<details open><summary>Summary<summary>Second summary<div>inside
+</details></article></section>
+<aside><address>Somewhere<br>near <abbr title="x">X</abbr></address></aside>
+</main>
+<footer><small>End</small></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Foreign islands</title></head>
+<body>
+<svg width="200" height="100" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+  <defs><linearGradient id=g><stop offset="0%"/><stop offset="100%"/></linearGradient></defs>
+  <g transform="translate(2,3)" onclick="x<y">
+    <path d="M0 0 L20 20 Z" fill="url(#g)"/>
+    <text x="4" y="30">A &amp; B <tspan dx="2">C</tspan></text>
+    <foreignObject x=0 y=40 width=100 height=40><div xmlns="http://www.w3.org/1999/xhtml"><p>embedded<br>html</div></foreignObject>
+  </g>
+</svg>
+<math display="block"><mrow><mi>x</mi><mo>&lt;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow><annotation-xml encoding="application/xhtml+xml"><p>math note</p></annotation-xml></math>
+<object data="movie.swf" type="application/x-shockwave-flash"><param name=quality value=high><embed src=x pluginspage=y></object>
+<picture><source srcset="a 1x, b 2x" type=image/png><img src=x alt="fallback"></picture>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<title>Odd delimiters</title>
+</head>
+<body>
+<!-- unterminated-looking text <!-- nested --> still text -->
+<![if IE]><p>conditional<p>legacy</p><![endif]>
+<?xml version="1.0"?>
+<!DOCTYPE foo [
+  <!ELEMENT foo ANY>
+  <!ENTITY bar "expanded">
+]>
+<foo data-a="one" data-a='two' =bad / weird="&bar;">
+  <p>alpha</p>
+  <p/>beta
+  <hr/ >
+  <div style="width: expression(alert(1)); color: #fff; /* broken">
+    <span title='a"b>c'>quoted
+  </div>
+  <textarea>one</textarea>tail</textarea>
+  <pre>  x
+    y &lt; z</pre>
+</foo>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Image map and ruby</title></head>
+<body>
+<map name=planet>
+<area shape=rect coords="0,0,50,50" href=/a alt=A>
+<area shape=circle coords="70,20,10" href=/b>
+<area shape=poly coords="1,2,3,4,5" nohref>
+</map>
+<img src="map.png" usemap="#planet" ismap border=0>
+<ruby>漢<rt>kan<rp>(</rp><rt>かん<rp>)</rp></ruby>
+<bdi dir=rtl>abc<bdo dir=ltr>123</bdo>xyz</bdi>
+<iframe srcdoc="<p>inner &amp; text</p><script>bad()</script>" sandbox allowfullscreen>
+fallback</iframe>
+<video controls autoplay muted width=320><source src=a.mp4 type=video/mp4><track kind=subtitles src=none.vtt default>no video</video>
+<audio><source src=a.ogg><source src=b.wav></audio>
+<menu type=context><command label=Save><li>Not really a list</menu>
+<dl><dt>Unclosed term<dd>value</dl>
+</body>
+</html>
+```
+
+```html
+<html>
+<head><title>Frameset transition</title></head>
+<frameset rows="20%,*,0" cols="*,*" border=2>
+  <frame src="top.html" name=top scrolling=no>
+  <frameset cols="30%,70%">
+    <frame src=left.html frameborder=0>
+    <frame src=right.html>
+    <noframes>
+      <body>
+        <h1>Fallback</h1>
+        <p>Frames are unavailable
+        <form><input type=image src=x><input type=hidden name=a value="&amp;">
+        <button>fallback</button></form>
+      </body>
+    </noframes>
+  </frameset>
+</frameset>
+<script>
+if (a < b) { document.write("<div class='x'>"); }
+</script>
+</html>
+```

@@ -1,0 +1,130 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+  <base href="http://example.invalid/a/../b/">
+  <title>table recovery</title>
+</head>
+<body>
+  <table border="1" summary="broken &amp; table">
+    <caption><em>Caption <span>without closure</caption>
+    <colgroup span="2"><col width="20%"><col></colgroup>
+    <thead><tr><th colspan="3">A<th>B</thead>
+    <tbody>
+      <tr><td rowspan="2">one<td>two
+      <tr><td><p>three<table><tr><td>nested</td></tr></table>four
+      <tr><th><div>heading</div><td>tail</tbody>
+    <tfoot><tr><td>foot</tr></tfoot>
+  </table>
+  <p>after table &copy; &#xD800; &unknown; <!-- unclosed comment
+  <address>contact <b>name</address>
+</body>
+</html>
+```
+
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+  <title>frames and raw text</title>
+  <script type="text/javascript">
+    if (a < b && c > d) {
+      document.write("<p data-x='1'>script &amp; text</p>");
+    }
+    /* </script> appears in a string: </script> */
+  </script>
+  <noscript><div>fallback <b>bold</noscript>
+</head>
+<frameset rows="*,0,25%" border="999" onload="x < y">
+  <frame src="one.html" name="main" scrolling="maybe">
+  <frameset cols="50%,50%">
+    <frame src="two.html">
+    <noframes>
+      <body bgcolor="#ggg">
+        <h1>Frames unavailable</h1>
+        <p>fallback text <a href="javascript:alert('x')">link
+      </body>
+    </noframes>
+  </frameset>
+  <frame>
+</frameset>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>phrasing reconstruction</title></head>
+<body>
+  <hgroup><h1>Outer <small>heading</h1><h2>Second</h3></hgroup>
+  <p><b><i><u>deep <em>formatting</b> split</i> tail</u>
+  <ruby>
+    漢 <rb>字<rt>kanji<rp>(</rp><rt>じ</ruby>
+  <blockquote cite="unterminated>
+    <q>quoted <cite>citation</blockquote>
+  <figure>
+    <figcaption>caption <mark>highlight</figcaption>
+    <img src="x" alt="a &quot; b" width="-4" height="NaN">
+  </figure>
+  <hr>
+  <ins datetime="not-a-date">inserted <del>deleted</ins> text</del>
+  <p><a href="x"><span>link <br><wbr>break</a></span>
+  <time datetime="2024-99-99">yesterday</time>
+  <data value="1"><var>x</data></var>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>interactive elements</title>
+  <template id="card"><article><h2>template title</h2><p>template body</p></article></template>
+</head>
+<body>
+  <details open="false">
+    <summary>Details <b>summary</details>
+    <article><header>hidden header</header><p>content</article>
+  <dialog open><p>dialogue <button autofocus type=button>OK</dialog>
+  <menu type="toolbar">
+    <li><button type=menuitem>One</button>
+    <li><button disabled>Two</menu>
+  <section>
+    <header><h2>section heading</header>
+    <main><p>main text</main>
+    <aside>aside text</aside>
+    <footer>foot</footer>
+  </section>
+  <template><p>unclosed template
+  <p>outside template <slot name=x>slot fallback</slot>
+  <iframe srcdoc="<p>embedded <b>markup</p>" sandbox=allow-scripts>
+    frame fallback
+  </iframe>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>token boundaries</title></head>
+<body>
+  <!--> bogus comment --!>
+  <?processing instruction?>
+  <!weird declaration>
+  <p class = "a" = "b" data-empty= title='unterminated>
+    before &notanentity; &amp missing &#; &#x; &#00000000000000000000065;
+  <pre>
+line one
+  line two &lt; &gt;
+</pre>
+  <textarea cols=999 rows=-2>raw &amp; value
+  <b>not markup</b></textarea>
+  <p><plaintext>
+everything after this is text
+<div><table><tr><td>including tags</td></tr></table>
+</body>
+</html>
+```

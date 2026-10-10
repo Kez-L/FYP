@@ -1,113 +1,96 @@
 ```html
-<!doctype HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!doctype html>
+<!-- unclosed comment starts
 <html>
-<head>
-<meta charset="windows-1252">
-<title>Table Recovery</title>
-</head>
+<head><title>Comment recovery</title></head>
 <body>
-<table border=1 cellpadding=0 cellspacing=2 summary="a & b">
-<caption align=bottom>Caption <b>not closed
-<colgroup span=2><col width=20><col width="bad">
-<thead><tr><th rowspan=3>Header<th colspan=0>Second
-<tbody>
-<tr><td>A<td>B
-<tr><td colspan=99>C</tr></tbody>
-<tfoot><tr><td>Footer</table>
-<table><tr><td>implicit one<tr><th>implicit two</table>
-<table><tbody><tr><td><table><tr><td>nested</tr></table>tail
+<p>This markup is hidden inside a comment --> visible text
+<?processing instruction?>
+<![CDATA[not really cdata]]>
+<div id="outer"><span>alpha</div><span>beta</span>
+<!-- nested <!-- comment --> tail
 </body>
 </html>
-```
-
-```html
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
-<TITLE>Legacy Frames</TITLE>
-<BASEFONT SIZE=7 COLOR=red>
-</HEAD>
-<FRAMESET rows="*,0,20%" cols="50%,*,bogus" border=none>
-<FRAME src="a.html" name=left scrolling=auto frameborder=0 marginwidth=-1>
-<FRAME src="b.html" name=right noresize>
-<NOFRAMES>
-<BODY>
-<CENTER><FONT face="serif, fantasy" size="+4"><STRIKE>Old</STRIKE></FONT></CENTER>
-<DIR><LI>one<LI>two</DIR>
-<MENU><LI>menu item</MENU>
-<DL compact><DT>Term<DD>Definition<DT>Unclosed</DL>
-<HR noshade width="abc" align=middle>
-<APPLET code="X.class" archive="x.jar,y.jar" width=0 height=-2>
-<PARAM name=foo value="a&b"><PARAM name=bar>
-fallback
-</APPLET>
-<EMBED src="movie" hidden=false><NOEMBED>fallback</NOEMBED>
-</BODY>
-</NOFRAMES>
-</FRAMESET>
-```
-
-```html
-<!doctype html>
-<html>
-<head><title>Token Boundaries</title></head>
-<body>
-<!-- comment -- --><!-----><! bogus --><![
-CDATA-looking text ]]> 
-<?xml-stylesheet type="text/css" href="a.css"?>
-<p a=b=c d='unterminated e="x>y" f=bare/>text
-<div><span>one</div>two</span>
-<p><b><i><u>misordered</b>inline</u></i>
-<ul><li>first<li><li>third
-<ol start=0 reversed><li value="x">alpha<li value=-4>beta</ol>
-<blockquote cite=><address>Mail <a href="mailto:x@y">x@y</address>
-<marquee behavior=alternate direction=side loop=-1>moving</marquee>
-<blink>flash</blink><center><big><small>mixed</center>
-<textarea name=t rows=999 cols=-3><b>&amp;</textarea>
-<input type=text disabled=disabled checked=no required=maybe>
-<button type=submit><i>click</button>
-</body>
 ```
 
 ```html
 <!DOCTYPE html>
 <html>
 <head>
-<title>Foreign Content</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
 </head>
 <body>
-<svg width="100%" viewBox="0 0 10 10" preserveAspectRatio="xMidYMid meet">
-<defs><linearGradient id=g x1=0 y1=0 x2=1 y2=1><stop offset="50%" stop-color="#ff00zz"/></linearGradient></defs>
-<g transform="translate(1,2) rotate(90" onclick="a<b">
-<path d="M0 0 L10 10 Z" fill="url(#g)" stroke-width="NaN"/>
-<circle cx="x" cy="1e2" r="-5"></circle>
-<foreignObject><div xmlns="http://www.w3.org/1999/xhtml">HTML <b>inside</b></div></foreignObject>
-</g></svg>
-<math display="block"><mrow><mi>x</mi><mo>&lt;</mo><mn>2</mn><mo>+</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
-<annotation-xml encoding="application/xhtml+xml"><p>embedded</p></annotation-xml></math>
-<svg><use href="#missing" xlink:href="x"><title>svg title</title></use></svg>
+<table border="1">
+<caption>Irregular rows</caption>
+<colgroup><col span="2"><col></colgroup>
+<thead><tr><th>A<th>B<th>C</tr></thead>
+<tbody>
+<tr><td rowspan="2">one<td>two
+<tr><td colspan="2">three
+<tfoot><tr><td>footer
+</tbody>
+<tr><td>orphan after body section
+</table>
+<table><tr><td><table><tr><td>nested<td>cell</tr></table><td>outer</tr></table>
+</body>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Foreign content boundaries</title></head>
+<body>
+<svg viewBox="0 0 100 100"><foreignObject width="80" height="40">
+<div xmlns="http://www.w3.org/1999/xhtml"><p>embedded <b>HTML</b></div>
+</foreignObject><path d="M0 0 L10 10" fill="url(#x)">
+<math><mrow><mi>x</mi><mo>+</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></mrow></math>
+<svg><title>inner</title><g><circle cx="4" cy="5"/></g></svg>
+</svg>
+<p>after foreign content</p>
 </body>
 </html>
 ```
 
 ```html
-<!DOCTYPE HTML>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<head><title>Broken Headings</title><meta name="keywords" content="a,b,c"></head>
+<head>
+<title>Attributes and entity stress</title>
+<meta name="generator" content="x&amp;y&quot;z">
+</head>
+<body bgcolor=#fff onload=alert('x')>
+<div a=1 b='two c="three" d=&bad; e="&amp; &copy &unknown;">
+<pre>  leading
+ &lt;tag&gt; &#0; &#xD800; &#x110000; &notit;</pre>
+<form action="/submit" method="post">
+<input type=text name=x disabled=disabled>
+<button type=submit><span>send</button></span>
+<textarea name=t rows=2 cols=4>first
+second</textarea>
+</form>
+</div>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>End tag and block recovery</title></head>
 <body>
-<h1 id=one>Heading <h2 id=two>Nested <h6>deep</h6>
-<section><header>header text</header><main><article>
-<hgroup><h3>A<h4>B<h5>C</hgroup>
-<p>paragraph <a href="x" target=_blank rel=noopener>link
-<figure><img src=x alt="image" width=auto height=100><figcaption>caption
-<details><summary>open summary</summary>hidden</details>
-</article><aside>side</main><footer>foot</footer></section>
-<map name=m><area shape=poly coords="0,1,2,3,broken" href=x alt=a><area></map>
-<object data="x" type="application/x-unknown" width=bad height=0>
-<param name=movie value=x><embed src=y>
-<object data=z>nested fallback</object>
-</object>
-<iframe srcdoc="<p>x &amp; y</p>" sandbox="allow-scripts allow-what" width=-1></iframe>
+<section><header><hgroup><h1>Heading<h2>Subheading</header>
+<article>
+<p>one
+<p>two<div>block starts <p>three</div>four
+<address>name<br>street
+<blockquote cite=/q><p>quoted
+</address></blockquote>
+<ul><li>first<li>second<ul><li>nested</ul><li>third</ol>
+<ol start="0"><li value="x">bad value<li>next</ol>
+<details open><summary>more</summary><p>content</details>
+</article>
+<footer>foot</section>
 </body>
 </html>
 ```

@@ -1,0 +1,118 @@
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV=Content-Type CONTENT=text/html;CHARSET="utf-8">
+  <BASE HREF="http://example.invalid/a/b/">
+  <TITLE>Unclosed head
+<BODY BACKGROUND=foo.gif>
+  <H1><I><U><FONT SIZE=+7 COLOR=#12ZZ99>Heading
+  <P ALIGN=CENTER>one <B>two <EM>three
+  <BLOCKQUOTE><PRE>
+  line one
+    line two
+  </PRE><P>after quote
+  <DIR>
+    <LI>alpha
+    <LI><A HREF="x" NAME=y>beta
+    <LI><IMG SRC= ALT=broken ISMAP>
+  </DIR>
+  <HR NOSHADE WIDTH=101%>
+  <ADDRESS>contact <A HREF=mailto:x@y>mail</ADDRESS>
+</HTML>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Frameset collision</title></head>
+<frameset rows="20%,*,20%" frameborder="maybe">
+  <frame src="top.html" name=top scrolling=sideways>
+  <frameset cols="25%,75%">
+    <frame src="left.html">
+    <noframes>
+      <body>
+        <p>This text is inside a noframes body.
+        <form method=post enctype=multipart/form-data>
+          <label for=q>Query
+          <input id=q name=q value="unterminated>
+          <button type=submit>Send
+        </form>
+      </body>
+    </noframes>
+  </frameset>
+  <frame src="bottom.html">
+</frameset>
+```
+
+```html
+<!doctype html>
+<html lang="en">
+<head><title>Lists and phrasing damage</title></head>
+<body>
+<ol start="not-a-number" reversed>
+  <li value="1"><p>first
+  <li value="-999999999999999999999999999">second
+    <ol type="i"><li>nested one<li><span><span>nested two</ol>
+  <li><dl><dt>term<dd>definition<dt><dt>orphan
+</ol>
+<menu compact="compact">
+  <li><input type=checkbox checked=checked disabled=maybe> choice
+  <li><select multiple size="999999999999999999">
+    <option selected>one
+    <option value="&amp;broken">two
+    <optgroup label="group"><option>three
+  </select>
+</menu>
+<p><q cite='a"b'>quote <ruby>漢<rt>kanji<rp>(</ruby>
+<p><small><big><s><strike><tt>text
+```
+
+```html
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html>
+<head>
+  <title>Entity and attribute tokenizer stress</title>
+  <meta charset="x-unknown">
+</head>
+<body>
+  <p title="a&amp;b&quot;c&#0;&#xD800;end" data-x='one
+two
+three'>A&nbsp;&#65;&#x41;&#x110000;&unknown;</p>
+  <div class=foo/bar id="a=b?c&d">
+    <input disabled="" checked=checked readonly required autofocus
+           value="x&#13;&#10;y" onload="if (a < b && c > d) { z = 'q'; }">
+    <textarea cols=999999999999999999 rows=-1 wrap=sideways>less &lt; than > and &#x;</textarea>
+  </div>
+  <p>before <!-- comment -- --!> after
+  <!-- nested <!-- fake --> tail -->
+  <script type=text/javascript>if (x < y) { document.write("</p>"); }</script>
+  <style type=text/css>body{content:"</style>";color:rgb(999,-1,foo)}</style>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Object and map recovery</title></head>
+<body>
+<object classid="clsid:bad" data="movie.bin" type="application/x-test" width="0" height="-1">
+  <param name=movie value=one>
+  <param name=movie value=two>
+  <object>
+    fallback <a href="javascript:bad(" title="unterminated>link
+  </object>
+  <map name=main id=main>
+    <area shape=poly coords="0,0,10,0,10" href="#">
+    <area shape=rect coords="a,b,c,d">
+    <img src=image.gif usemap=#main border=999999999999>
+  </map>
+</object>
+<embed src="x" type="x/y" pluginspage=about:blank>
+<noembed><p>fallback <table><tr><td>x</noembed>
+<isindex prompt="Search:"><form><input name=search></form>
+<p><bdo dir=sideways>direction <wbr>break</bdo>
+</body>
+</html>
+```

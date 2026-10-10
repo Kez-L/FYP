@@ -1,33 +1,43 @@
 <!doctype html>
 <html>
 <head>
-  <title>Mixed Legacy Markup</title>
-  <style>
-    body { color: #123456; }
-    .box::before { content: "<tag>"; }
-  </style>
-  <!--[if IE]>
-    <style>.old { behavior: url(old.htc); }</style>
-  <![endif]-->
+  <title>Template and Dialog</title>
 </head>
-<body bgcolor="#fff" text="black">
-  <center>
-    <font face="serif" size="4">
-      <p class="box">A <i>legacy</i> paragraph<br>with a forced break
-      <hr>
-      <blockquote cite="urn:test:quote">
-        <pre>  preserved
-   spacing &lt;and&gt; symbols</pre>
-      </blockquote>
-    </font>
-  </center>
-  <dl>
-    <dt>Term &copy;</dt>
-    <dd><s>obsolete</s> <ins datetime="2024-01-01">replacement</ins></dd>
-  </dl>
-  <script type="application/json">
-    {"html":"&lt;div&gt;","items":[1,2,3]}
-  </script>
-  <noscript><p>Scripts are unavailable.</p></noscript>
+<body>
+  <main>
+    <template id="card-template">
+      <article class="card">
+        <header><h2><slot name="heading">Fallback heading</slot></h2></header>
+        <p><slot>Fallback body</slot></p>
+      </article>
+    </template>
+    <section aria-label="Live examples">
+      <dialog id="notice" open>
+        <form method="dialog">
+          <h1>Notice</h1>
+          <p>This dialog includes a progress indicator.</p>
+          <progress value="3" max="5">60%</progress>
+          <meter min="0" max="100" low="30" high="80" optimum="90" value="72">72</meter>
+          <menu>
+            <li><button value="close">Close</button></li>
+          </menu>
+        </form>
+      </dialog>
+      <details>
+        <summary>Expandable content</summary>
+        <div>
+          <p>Additional content appears after the summary.</p>
+          <ul>
+            <li>First item</li>
+            <li>Second item with <span>inline text</span></li>
+          </ul>
+        </div>
+      </details>
+    </section>
+    <iframe srcdoc="<p>Inline frame content</p>" title="Preview" loading="lazy"></iframe>
+  </main>
+  <noscript>
+    <p>JavaScript is disabled.</p>
+  </noscript>
 </body>
 </html>

@@ -1,0 +1,195 @@
+```html
+<?xml version="1.0"?>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Form control state transitions</title>
+  <base href="/records/">
+  <link rel="alternate" media="print" href="print.css">
+</head>
+<body>
+  <form action="/submit" method="post" enctype="multipart/form-data" accept-charset="utf-8">
+    <fieldset disabled>
+      <legend>Account <em>details</em></legend>
+      <label for="user">User name:</label>
+      <input id="user" name="user" type="text" value="a&amp;b" readonly>
+      <label>Secret <input name="secret" type="password"></label>
+      <input type="hidden" name="token" value="x=y&amp;z">
+    </fieldset>
+    <fieldset>
+      <legend>Preferences</legend>
+      <select name="theme" multiple size="3">
+        <optgroup label="Light">
+          <option value="day" selected>Day</option>
+          <option value="paper">Paper
+        </optgroup>
+        <optgroup label="Dark">
+          <option value="night">Night</option>
+        </optgroup>
+      </select>
+      <textarea name="notes" rows="2" cols="18">line one
+line two</textarea>
+      <button type="submit" name="go" value="1"><strong>Send</strong></button>
+      <button type="reset">Clear</button>
+    </fieldset>
+  </form>
+  <output name="status">pending</output>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+<head>
+  <title>Nested flow and phrasing elements</title>
+</head>
+<body>
+  <main>
+    <article>
+      <header><hgroup><h1>Heading A<h3>Subheading</h3></hgroup></header>
+      <p>First paragraph <b>bold <i>italic <u>underlined</b> repaired?</u></i>
+      <dl>
+        <dt>one
+        <dd>definition with <abbr title="Application Programming Interface">API</abbr>
+        <dt>two
+        <dd><ol start="3">
+          <li>third
+          <li>fourth<ul><li>nested bullet<li>another</ul>
+        </ol>
+      </dl>
+      <blockquote cite="/quote"><p>quoted text
+        <q cite="/source">nested quote</q>
+      </blockquote>
+      <figure>
+        <figcaption>an illustration</figcaption>
+        <object data="image.bin" type="application/octet-stream">
+          <param name="mode" value="raw">
+          fallback <mark>content</mark>
+        </object>
+      </figure>
+      <footer><address>Contact <a href="mailto:x@example.test">editor</a></address></footer>
+    </article>
+    <aside>
+      <details open><summary>More information</summary>
+        <p>hidden until expanded</p>
+      </details>
+    </aside>
+  </main>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Raw text and declaration boundaries</title>
+  <script type="text/javascript">
+    if (a < b && c > d) {
+      document.write("<span data-x='1'>raw &amp; text</span>");
+    }
+    // </script> appears inside a string: "</script>"
+  </script>
+  <style type="text/css">
+    body { background: url("a>b"); }
+    .x::before { content: "<tag> & value"; }
+  </style>
+  <?processing instruction data?>
+</head>
+<body>
+  <![CDATA[
+    <not-an-element> cdata-ish text </not-an-element>
+  ]]>
+  <!-- first comment -->
+  <!-- nested-looking <!-- marker --> remains odd -->
+  <div data-a="one" data-b='two' data-c=three>
+    <template><p>template branch</p></template>
+    <noscript><p>fallback <span>markup</span></p></noscript>
+    <script type="application/json">{"x":"</script>","y":[1,2,3]}</script>
+    <style>/* closing-looking text */ .a { color: red }</style>
+  </div>
+  <!--
+     multiline comment
+     with a lone dash -
+  -->
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Column groups and irregular rows</title>
+</head>
+<body>
+  <table border="1" cellpadding="2">
+    <caption><strong>Quarterly figures</strong></caption>
+    <colgroup span="2"><col class="label"><col width="40%">
+    <colgroup><col span="2">
+    <thead>
+      <tr><th rowspan="2">Item<th colspan="3">Amounts
+      <tr><th>Jan<th>Feb<th>Mar
+    </thead>
+    <tbody>
+      <tr><th scope="row">Alpha<td>10<td>20<td>30
+      <tr><td colspan="2">Beta<td>40<td>50
+      <tr><td>Gamma<td><input type="text" value="60"><td>70<td>
+    </tbody>
+    <tfoot>
+      <tr><th>Total<td>100<td>140<td>180
+    </tfoot>
+    <tr><td>orphan row outside section<td colspan="4">tail
+  </table>
+  <map name="diagram">
+    <area shape="rect" coords="0,0,20,20" href="a">
+    <area shape="circle" coords="30,30,10" alt="circle">
+  </map>
+  <img src="diagram.png" usemap="#diagram" alt="data diagram">
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="x-invalid">
+<head>
+  <title>Embedded replaced content and section edges</title>
+  <meta charset="utf-8">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="#one">one<a href="#two">two</a>
+      <a href="#three"><span>three</span>
+    </nav>
+  </header>
+  <section id="one">
+    <h2>First section</h2>
+    <p>intro
+    <iframe src="about:blank" name="frame" width="0" height="0">
+      iframe fallback <b>fallback text</b>
+    </iframe>
+    <video controls autoplay poster="poster.jpg">
+      <source src="movie.webm" type="video/webm">
+      <source src="movie.mp4" type="video/mp4">
+      <track kind="subtitles" src="captions.vtt" srclang="en">
+      video fallback
+    </video>
+  </section>
+  <section id="two">
+    <h2>Second section</h2>
+    <p>before <ruby>漢<rt>かん</rt><rp>(</rp>字<rp>)</rp></ruby> after</p>
+    <canvas width="20" height="20">canvas fallback</canvas>
+    <hr>
+  </section>
+  <section id="three">
+    <h2>Last section</h2>
+    <p><ins datetime="2020-01-01">added</ins><del datetime="2021-01-01">removed</del>
+    <time datetime="not-a-date">time</time>
+  </section>
+  <footer><small>footer text</small></footer>
+</body>
+</html>
+```

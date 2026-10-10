@@ -1,0 +1,84 @@
+```html
+<!DOCTYPE html [
+  <!ELEMENT note ANY>
+  <!ENTITY local "expanded &amp; text">
+]>
+<?xml version="1.0"?>
+<!--> unterminated-looking comment --!>
+<root xmlns="urn:example" xmlns:x="urn:x">
+  &local;
+  <x:item a="1" a="2" =broken>alpha &bogus; &copy
+  <section><item>one</root>
+  <![CDATA[ <not-a-tag> & still text ]]>
+  <!-- nested <!-- comment --> tail -->
+  <?custom value?>
+</root>
+```
+
+```html
+<!doctype html>
+<table border="1">
+  <caption><b>broken table</caption>
+  <colgroup><col span="2"><col></colgroup>
+  <thead><tr><th rowspan="2">A<th>B
+  <tbody>
+    <tr><td>one<td><div>two<tr><td colspan=foo>three
+    <tr><td><table><tr><td>nested<td>x</table><td>after
+  <tfoot><tr><td>end
+</table>
+<hr><p>outside<table><tr><td>implicit closure</p>
+```
+
+```html
+<!DOCTYPE html>
+<svg width="100%" viewBox="0 0 10 10">
+  <defs>
+    <linearGradient id="g"><stop offset="0%"/><stop offset="100%"></linearGradient>
+    <clipPath id="c"><path d="M0 0L10 0L10 10Z"></clipPath>
+  </defs>
+  <g transform="translate(1,2)" onclick="x<y && a>0">
+    <use href="#missing" xlink:href="#g"></use>
+    <foreignObject><div xmlns="http://www.w3.org/1999/xhtml"><p>html in svg</div></foreignObject>
+    <text><tspan dx="1 2">A</tspan><tspan>B</text>
+    <path d="M 0 0 L bad Z" fill="url(#g)" />
+  </g>
+</svg>
+<math display="block">
+  <mrow><mi>x</mi><mo>&lt;</mo><mn>2</mn><mo>&InvisibleTimes;</mo>
+  <mfrac><msup><mi>a</mi><mn>2</mn></msup><mi>b</mi>
+</math>
+```
+
+```html
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><base href="//x/"></head>
+<body>
+  <p id=test title='a"b&#39;c&amp;d' data-x=unquoted&more>
+    one<br/ >two<wbr>three
+  <dl><dt>term<dd>definition<dt><dd>
+  <address><em>contact</address><pre> a&nbsp; b
+  <blockquote cite="&quot;bad"><ol start="x"><li value=NaN>alpha<li>beta</ol></blockquote>
+  <details open=maybe><summary>sum</summary><div>body</details>
+  <dialog open>dialog text</dialog>
+  <menu><li><a href="javascript:alert(1)">link</a></menu>
+  <p style="color:red; content:'&lt;/style&gt;';" class="a b c">tail
+</body>
+```
+
+```html
+<html><head>
+  <meta http-equiv=content-type content="text/html; charset=windows-1252">
+  <title>abc &amp title < title</title>
+</head><body>
+  <!-- comment with -- bad --- and > -->
+  <div><span>start</div></span>
+  <img src=x onerror="a='&quot;'; b='>'" / >
+  <input type=text disabled= required= name=>
+  <label><output name=o><meter min=10 max=0 value=-1>fallback</meter></output></label>
+  <progress value="1e309" max="0">progress
+  <ruby>漢<rb>字<rt>kan<rp>(<rtc>extra</ruby>
+  <ins datetime=2020-01-01><del>old</ins>new</del>
+  <div data-a="&amp" data-b='&#xD800;' data-c="&#0;">&notanentity;</div>
+  </body></html>
+```

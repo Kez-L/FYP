@@ -1,0 +1,114 @@
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <base href="https://example.invalid/root/">
+  <link rel="alternate" type="application/rss+xml" href="feed.xml">
+  <style>
+    @media (min-width: 2px) { body > main:first-child { color: rgb(1,2,3) } }
+  </style>
+  <script type="application/ld+json">
+    {"@context":"https://schema.org","name":"x"}
+  </script>
+</head>
+<body>
+  <main id="content">
+    <h1>Mixed &amp; unmatched <em>markup</h1>
+    <p title="a&quot;b">alpha<br>beta<wbr>gamma
+    <hr>
+    <section><article><header>News</header><p>One</article></section>
+    <!-- broken comment --!>
+    <details open><summary>More</summary><p>Hidden-ish text</details>
+  </main>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Table stress</title></head>
+<body>
+<table border="1">
+  <caption><b>Inventory</b></caption>
+  <colgroup span="2"><col width="20"><col></colgroup>
+  <thead><tr><th rowspan="2">Item<th colspan="2">Count</tr><tr><th>Old<th>New</tr></thead>
+  <tbody>
+    <tr><td>A<td>1<td>2
+    <tr><td colspan="4">Orphaned row content
+    <tr><td>B<td><table><tr><td>Nested</table><td>tail
+  </tbody>
+  <tfoot><tr><td>total<td><s>3</s><td>4</tr></tfoot>
+</table>
+<p>After table<table><tr><td>Unclosed
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Foreign namespaces</title></head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 60">
+  <defs><linearGradient id="g"><stop offset="0%"/><stop offset="100%"/></linearGradient></defs>
+  <g transform="translate(4 5)">
+    <path d="M0,0 L20,10 Z" fill="url(#g)" stroke-width="2"/>
+    <foreignObject x="0" y="10" width="80" height="30">
+      <div xmlns="http://www.w3.org/1999/xhtml"><b>HTML in SVG</b></div>
+    </foreignObject>
+  </g>
+</svg>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow><mi>x</mi><mo>=</mo><mfrac><mn>1</mn><msup><mi>y</mi><mn>2</mn></msup></mfrac></mrow>
+</math>
+<p>after foreign content</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Ruby and obsolete phrasing</title></head>
+<body>
+  <p><ruby>漢<rt>かん<rp>(</rp>字<rp>)</rp></ruby>
+  <bdo dir="rtl">abc <bdi>123</bdi></bdo>
+  <span style="color: red"><font face="serif" size="7">legacy</font></span>
+  <ins datetime="not-a-date">inserted</ins><del cite="x">removed</del>
+  <pre><code>&lt;tag attr='x'&gt;</code>
+line two</pre>
+  <blockquote cite="urn:test"><p>Quote <q cite="x">nested</q></blockquote>
+  <dl><dt>Term<dd>Definition<dt>Second<dd><ol start="0"><li>zero<li>one</ol></dl>
+  <p><a href="javascript:alert(1)" target="_blank" rel="noopener">link
+</body>
+</html>
+```
+
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Odd declarations</title>
+  <?processing instruction?>
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+</head>
+<body bgcolor="#fff" text="black">
+  <center>
+    <marquee direction="left"><blink>moving</blink></marquee>
+    <table><tr><td><p>cell one</td></tr></table>
+  </center>
+  <object data="movie.bin" type="application/octet-stream" width="1" height="1">
+    <param name="autoplay" value="true">
+    <embed src="fallback.swf">
+    fallback text
+  </object>
+  <iframe srcdoc="<p>embedded &amp; text</p>" sandbox="allow-scripts"></iframe>
+  <script>
+    if (a < b && c > d) { document.write("<i>x</i>"); }
+  </script>
+  <noscript><div>no scripts</div></noscript>
+</body>
+</html>
+```

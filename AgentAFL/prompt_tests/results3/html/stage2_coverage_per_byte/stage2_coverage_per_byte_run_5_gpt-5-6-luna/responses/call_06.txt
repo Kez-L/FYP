@@ -1,0 +1,110 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<?xml version="1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zz">
+<head>
+  <base href="http://example.invalid/a/">
+  <isindex prompt="Search:">
+  <!-- comment -- -- malformed-ish -->
+  <title>alpha &notanentity; &amp broken</title>
+</head>
+<body bgcolor=#fffff onload="if (a < b) alert('x')">
+  <center>
+    <h1>Heading <u><strike>crossed</u> text</strike></h1>
+    <p>one<br/>two<br />three</p>
+  </center>
+  <address>name@example.invalid</address>
+</body>
+</html>
+```
+
+```html
+<!doctype html [
+  <!ELEMENT custom ANY>
+  <!ENTITY local "replacement &amp; value">
+]>
+<html>
+<head><title>declaration stress</title></head>
+<body>
+<custom data-a="1" data-b='2'>&local;</custom>
+<dl compact>
+  <dt>Term one
+  <dd><p>Definition without closing tags
+  <dt><img src alt=broken></dt>
+  <dd><ol start="zero"><li>first<li value=3>third</ol>
+</dl>
+<!-- nested <!-- comment --> tail -->
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>frames and map</title>
+  <script type="text/javascript">
+    if (x < 4 && y > 2) { document.write("<p>raw</p>"); }
+  </script>
+  <style type="text/css">
+    body { background: url("x>y"); } /* unterminated-looking */
+  </style>
+</head>
+<frameset rows="20%,*" border=0>
+  <frame src="left.html" name=nav noresize>
+  <frameset cols="30%,70%">
+    <frame src="middle.html">
+    <frame src=right.html scrolling="maybe">
+  </frameset>
+  <noframes><body><p>fallback</p></body></noframes>
+</frameset>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>form controls</title></head>
+<body>
+<form action="/submit?a=1&b=2" method=POST enctype="multipart/form-data">
+  <fieldset disabled>
+    <legend><b>Account</legend>
+    <label for=user>Name
+    <input id=user name=user type=text value="a > b" checked>
+    <label>Password<input type=password name=pw>
+    <select name=role multiple size=2>
+      <option selected>Admin
+      <option value="guest">Guest
+      <optgroup label=Other><option>Visitor</optgroup>
+    </select>
+  </fieldset>
+  <textarea name=notes rows=2 cols=8>one
+two</textarea>
+  <button type=submit><span>Send</button>
+  <input type=image src=submit.gif alt=>
+</form>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head><title>embedded and obsolete</title></head>
+<body>
+<object classid="clsid:bad" width=10 height="10">
+  <param name=movie value="x&y">
+  <embed src="movie.swf" pluginspage=http://plug.invalid>
+  fallback text
+</object>
+<map name=mainmap>
+  <area shape=rect coords="0,0,10,10" href=#top>
+  <area href="/next" coords=bad>
+</map>
+<img src="diagram.png" usemap="#mainmap" border=1 align=left>
+<marquee direction=sideways behavior=alternate><big>moving</big></marquee>
+<blink>old <font face="serif" size=+3 color=#123456>markup</font>
+<noembed>fallback</noembed>
+</body>
+</html>
+```

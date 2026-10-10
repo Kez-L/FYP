@@ -1,112 +1,147 @@
 ```html
-<!doctype html>
-<html lang="x-klingon">
+<!DOCTYPE html>
+<html>
 <head>
-<meta charset="utf-16">
-<base href="http://example.invalid/a/../b/">
-<meta http-equiv="refresh" content="0; URL='javascript:alert(1)'">
-<style type="text/x-custom"><![CDATA[
-  body > :not(.x) { content: "</style><script>x</script>"; }
-]]></style>
-<script type="application/ld+json">
-{"@context":"https://schema.org","name":"<&","broken":[1,2,}
-</script>
+  <title>Formatting and list recovery</title>
+  <meta name="viewport" content="width=device-width">
 </head>
 <body>
-<!-- --><!----><! -- malformed comment -- >
-<section id="a" id="b" class="x y x">
-<h1><em><strong>heading</h1>tail</strong></em>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
-  <foreignObject width="10" height="10">
-    <div xmlns="http://www.w3.org/1999/xhtml"><p>inside <b>foreign</div>
-  </foreignObject>
-  <path d="M0,0 LNaN,Infinity Z" fill="url(#none)"/>
-</svg>
-<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow></math>
-<template shadowrootmode="open"><p>template <i>content</template>
+  <p><b>bold <i>italic <u>underlined</b> crossed</i> ending</u>
+  <p>first paragraph
+  <div><em>division <strong>strong text
+    <p>nested paragraph with <a href="one"><span>an unfinished link
+    <ul>
+      <li>alpha
+      <li>beta<ul><li>inner one<li>inner two</ul>
+      <li><a href="three">gamma</a>
+    </ul>
+  </div>
+  <dl>
+    <dt>term one
+    <dd>definition <mark>with emphasis
+    <dt><b>term two
+    <dd><p>definition paragraph</p><dd>second definition
+  </dl>
+  <menu><li>menu item one<li>menu item two</menu>
+  <p>tail text
 </body>
 </html>
 ```
 
 ```html
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE root [
-  <!ENTITY local "replacement &amp; text">
-  <!ELEMENT root ANY>
-  <!ATTLIST root weird CDATA #IMPLIED>
-]>
-<root xmlns="urn:weird:one" xmlns:q="urn:weird:two" weird="&local;">
-  <q:item a="1" a="2" q:b="&unknown;" />
-  <node><![CDATA[<not><markup>&still-not-entity;</node>]]></node>
-  <broken attr='unterminated>
-    text &copy &amp; &#xD800; &#99999999; &#0;
-  <empty></empty/>
-  <mixed><one><two /></one></mixed>
-</root>
-```
-
-```html
-<!doctype html SYSTEM "urn:missing">
+<!doctype html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 <head>
-<title>unterminated title
-<link rel=stylesheet href="data:text/css,body{color:red}">
-<style> .a { background: url("x); } </style>
+  <title>Token boundaries</title>
+  <!-- comment with -- broken -- markers -->
+  <!----><! bogus declaration >
+  <style type="text/css">
+    body { color: red; }
+    p::before { content: "<tag> &amp;"; }
+  </style>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("<p>raw</p>"); }
+    /* unterminated-looking text </scriptX>
+  </script>
+</head>
+<body class=test id='x"y data-z=unquoted>
+  &amp;&lt;&gt;&quot;&apos;&nbsp;&#0;&#xD800;&#999999;
+  <p title="a>b" data-a='one two' disabled=disabled checked>
+    text &unknown; more
+  <br/><hr/ ><input type=text value="a &amp; b">
+  <!-- one <!-- nested --> after -->
+  <![CDATA[not really cdata <b>markup</b>]]>
+  <p>after declarations</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head><title>Interactive and ruby elements</title></head>
+<body>
+  <header><hgroup><h1>Heading <small>small</h1><h2>subheading</h3></hgroup></header>
+  <main>
+    <details open><summary>Summary <b>label</details>
+      hidden detail text
+    <dialog open><p>dialog content<button type=button>OK</dialog>
+    <section>
+      <ruby>漢<rt>kan<rp>(</rp><rtc>reading</rtc><rp>)</rp></ruby>
+      <p>score <meter min="0" max="10" value="7">seven</meter>
+      progress <progress max=100 value=40>40%</progress>
+    </section>
+    <aside>
+      <figure><img src="missing.png" alt="image"><figcaption>caption</figure>
+      <picture><source srcset="a.webp" type="image/webp"><img src="a.png"></picture>
+    </aside>
+    <article><h2>article</h2><p>one
+      <section><h3>nested section</h3><p>two</section>
+    <footer>article footer</footer></article>
+  </main>
+  <footer>page footer</footer>
+</body>
+</html>
+```
+
+```html
+<html>
+<head><title>Raw text and preformatted content</title></head>
+<body>
+  <h1>Start
+  <pre>  pre line one
+    pre line two
+  <code>&lt;code&gt; &amp; text</code>
+  <blockquote cite="x"><p>quoted <q>nested quote</blockquote>
+  <address>name<br>street
+  <p>before textarea<textarea name=t cols=3 rows=2>line one
+line two</textarea>after textarea
+  <p>before select
+  <select name=choice multiple>
+    <optgroup label=Group1><option value=a>Alpha<option selected>Beta
+    <option value=c>Gamma
+  <select><option>second select</select>
+  <noscript><div>fallback <b>markup</b></div></noscript>
+  <template id=t><p>template paragraph<table><tr><td>x</template>
+  <p>end <span>unclosed
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <base href="/root/">
+  <title>Forms and replaced elements</title>
 </head>
 <body>
-<main>
-<p>alpha
-<blockquote cite="unterminated>beta
-<pre>
-  line one
-  </pre><code>after-pre</code>
-<address><a href="mailto:test@example.invalid?x=&amp;y=">mail
-<ins cite=/foo datetime=2024-99-99T99:99:99Z>inserted
-<del datetime="">deleted
-<ruby>漢<rt>kan<rp>(</ruby></rp></rt>
-<details open="false"><summary>sum</summary><div>detail
-<dialog open>dialogue
-<menu type=context><li><button popover=auto>click</menu>
-</main>
-<footer><p>last
+  <form action="/submit" method=post>
+    <fieldset disabled>
+      <legend>Account <b>details</legend>
+      <label for=user>User name
+      <input id=user name=user required>
+      <label>Password<input type=password name=pw>
+    </fieldset>
+    <fieldset>
+      <legend>Options</legend>
+      <input type=checkbox name=a checked>
+      <input type=radio name=r value=1><input type=radio name=r value=2 checked>
+      <input type=file accept="image/*,.txt" multiple>
+      <input type=number min=10 max=2 step=0 value=abc>
+      <input type=color value="#12">
+      <input type=date value="2024-99-99">
+      <input list=choices name=search>
+      <datalist id=choices><option value=one><option value=two label=Two></datalist>
+      <output name=result for="user">unknown</output>
+      <button type=submit>Send</button><button type=reset>Reset</button>
+    </fieldset>
+  </form>
+  <form><input name=x></form>
+  <map name=world><area shape=rect coords="0,0,10,10" href=a><area href=b></map>
+  <img src="map.png" usemap="#world" alt="">
+  <video controls autoplay><source src=a.mp4 type=video/mp4><track kind=subtitles src=a.vtt></video>
+  <audio><source src=s.ogg><source src=s.mp3></audio>
 </body>
-```
-
-```html
-<html><head><title>state switches</title></head><body>
-<p><iframe srcdoc="<p>nested &amp; <b>doc</iframe>">
-<object data="x" type="application/x-unknown">
-  <param name=name value="a&b">
-  <embed src="x" pluginspage="about:blank">
-  fallback <form><input name="x"></object>
-<video controls poster="a&b" src="x"><track kind=subtitles src=x srclang=en label="A > B"><source srcset="a 1x, b 2x,">
-fallback video
-</video>
-<audio autoplay="0"><source type=audio/ogg src=x></audio>
-<map name=x><area shape=poly coords="0,0,NaN,4" href=#></map>
-<img srcset="a 1x,, b 999999999999999999999x" sizes="calc(100% - )" alt="x">
-<canvas width="-1" height="999999999999999999999999">fallback</canvas>
-<noscript><div><p>raw fallback</noscript>
-<template><table-not-table><trick>nope</trick></table-not-table></template>
-</body></html>
-```
-
-```html
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<head><meta http-equiv=Content-Type content=text/html;charset=unknown>
-<script>
-<!--
-if (a < b && c > d) { document.write("<p>x"); }
-/* </script> */
-</script>
-</head>
-<body bgcolor=#GGG text=rgb(999,-1,foo) background="unterminated>
-<center><font face="A&B" size="+999">old <big><small>style</center>
-<dir><li>one<li>two<ul><li>three</dir></ul>
-<dl><dt>alpha<dd>beta<dl><dt>nested<dd>value
-<isindex prompt="Search &copy">
-<hr noshade="maybe" size="NaN" width="1e999">
-<xmp><b>literal</b>&amp;</xmp>
-<plaintext>
-everything after this is text? <tag attr="x">
+</html>
 ```

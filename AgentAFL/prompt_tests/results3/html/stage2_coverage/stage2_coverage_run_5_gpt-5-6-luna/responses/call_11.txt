@@ -1,0 +1,137 @@
+```html
+<!DOCTYPE html [
+  <!ENTITY local "expanded &amp; text">
+  <!ELEMENT mystery - O ANY>
+]>
+<?xml version="1.0"?>
+<html lang="x">
+<head>
+  <meta charset="utf-8">
+  <base href="http://example.invalid/a/b/">
+  <title>unterminated &local;</title>
+  <style type="text/css">
+    @media screen { body > *:first-child { color: rgb(1,2,3); } }
+    /* broken comment
+  </style>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("<i>raw</i>"); }
+    // </script text inside a string
+  </script>
+</head>
+<body onload="a&amp;b" data-x="&quot;&apos;">
+  <![CDATA[
+    <not-html> & still text
+  ]]>
+  <?custom instruction?>
+  <section><header><hgroup><h1>Title<h2>Subtitle</header>
+    <main>
+      <article><figure><img src=x alt="a > b"><figcaption>caption</figure>
+      <aside><details open><summary>summary</summary><p>hidden</details></aside>
+    </main>
+  </article>
+  <footer>tail</footer>
+</body>
+</html>
+```
+
+```html
+<html>
+<head>
+  <title>frameset experiment</title>
+</head>
+<frameset rows="*,0,25%" cols="50%,*" border="bad">
+  <frame src="javascript:alert(1)" name="left" scrolling="maybe">
+  <frameset cols="1*,2*">
+    <frame srcdoc="<p>embedded &amp; broken</p>" frameborder="-1">
+    <noframes>
+      <body>
+        <h1>Fallback</h1>
+        <p>inside noframes <b><i>crossed</b></i></p>
+      </body>
+    </noframes>
+  </frameset>
+  <frame>
+</frameset>
+<noframes>
+  <p>after frameset</p>
+</noframes>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>ruby and embedded languages</title></head>
+<body>
+  <p><ruby>漢<rb>字<rt>kan<rtc><b>ji</ruby>
+  <p><bdi dir="auto">abc <bdo dir="sideways">xyz</bdi></bdo>
+  <p><ins cite="x" datetime="not-a-date"><del><mark>marked</ins>deleted</del></mark>
+  <map name="m"><area shape="poly" coords="1,2,3,4,5" href=#x><area></map>
+  <object data="x" type="application/octet-stream">
+    <param name=name value="v">
+    <embed src=x width="NaN" height="-4">
+    <p>fallback<object><p>nested fallback</p></object>
+  </object>
+  <audio controls autoplay="false"><source src=a type=audio/x><track kind=subtitles src=b>
+    audio fallback
+  </audio>
+  <video poster="p"><source src=c><track default></video>
+  <template shadowrootmode="open"><div>template <slot name=x></slot></div></template>
+  <slot>outside</slot>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>lists and phrasing boundaries</title></head>
+<body>
+  <menu>
+    <li>one
+    <li><a href="u"><span><em>two</li>
+    <li><button><label>three<input name=x></button>
+  </menu>
+  <ol start="zero" reversed="perhaps" type="I">
+    <li value="nan">alpha
+    <li><details><summary>beta</summary><ol><li>inner</ol></details>
+  </ol>
+  <p>before <q cite="a">quote <cite>source</q> after
+  <address><time datetime="2020-13-99">yesterday</address>
+  <p><small><big><s><u><var>x</small></big></s></u></var>
+  <pre> pre
+    <code>code <kbd>key</pre></kbd>
+  <blockquote cite="x"><p>block <hr><p>second
+  <dl><dt>term<dd>definition<dt><dt>empty<dd>
+  <div hidden="false"><p>hidden content</div>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>foreign content boundaries</title>
+</head>
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
+    <title>svg title</title>
+    <foreignObject width="10" height="10">
+      <div xmlns="http://www.w3.org/1999/xhtml"><p>html in svg
+        <math><mi>x</mi><mfrac><mn>1</mn><mo>+</mo></mfrac>
+          <annotation-xml encoding="application/xhtml+xml"><p>annotation</p>
+        </math>
+      </div>
+    </foreignObject>
+    <g><path d="M0 0 L 2 2" fill-rule="evenodd"><text x="1">label</text></g>
+  </svg>
+  <math display="block">
+    <mrow><mi>a</mi><mo>&lt;</mo><mtext>text</mtext></mrow>
+    <semantics><mfrac><mi>x</mi><mn>0</mn></mfrac>
+      <annotation encoding="application/x-tex">x/0</annotation>
+    </semantics>
+  </math>
+  <p>back in html</p>
+</body>
+</html>
+```

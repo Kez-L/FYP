@@ -1,0 +1,112 @@
+```html
+<?xml version="1.0"?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Namespace stress</title>
+</head>
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
+    <foreignObject x="0" y="0" width="10" height="10">
+      <div xmlns="http://www.w3.org/1999/xhtml"><b>embedded</b></div>
+    </foreignObject>
+    <path d="M0 0 L10 10 Z" />
+  </svg>
+  <p><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi><mo>&lt;</mo><mn>3</mn></math></p>
+  <p data-x="a&amp;b&lt;c&quot;d" disabled=disabled>tail</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Table recovery</title></head>
+<body>
+<table border="1">
+  <caption>broken grid</caption>
+  <colgroup span="two"><col width="25"><col></colgroup>
+  <thead><tr><th rowspan="4">A<th colspan=0>B</thead>
+  <tbody>
+    <tr><td>one<td>two
+    <tr><td><form><input name=x><table><tr><td>nested</table></form>
+    <tr><td colspan="999"><select><option>choice<option selected>second</select>
+  </tbody>
+  <tfoot><tr><td><textarea>unfinished
+</table>
+<pre>literal <b>tag</b> &amp; entity</pre>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Frames and legacy declarations</title>
+  <base target=_blank>
+</head>
+<frameset rows="20%,*,0" frameborder="wat">
+  <frame src="left.html" name=left scrolling=maybe>
+  <frameset cols="*,*" border="negative">
+    <frame src="a.html">
+    <frame src=javascript:alert(1) noresize>
+  </frameset>
+  <noframes>
+    <body>
+      <h2>Fallback</h2>
+      <iframe srcdoc="<p>inside &amp; quoted</p>" width="abc"></iframe>
+      <p><a href="mailto:a@b">link
+    </body>
+  </noframes>
+</frameset>
+</html>
+```
+
+```html
+<!--[if IE]><html><head><title>conditional</title></head><body><![endif]-->
+<!DOCTYPE bogus [ <!ENTITY weird "value"> ]>
+<html>
+<head>
+  <!-- unterminated comment
+  <meta name="x" content="a > b">
+</head>
+<body>
+  <p>before &unknown; &#0; &#x110000; &#xD800; &amp
+  <div class='one"two' id="x><span title='y>z'>text
+  <script>
+    <![CDATA[
+      if (x < 2) { /* </script> */ y = "]]>"; }
+    ]]>
+  </script>
+  <style>
+    body { background: url("a&b"); }
+    /* </style><table><tr><td> */
+  </style>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<title>Misnested lists and definitions</title>
+</head>
+<body>
+<menu compact="compact">
+  <li>alpha
+  <li><dl><dt>term<dd>definition<ul><li>deep<li>deeper</dl>
+  <li><p>paragraph<div>block<strong>strong<em>em</div>after</li>
+</menu>
+<blockquote cite="http://example.invalid/?a=1&b=2">
+  <q>quote <cite>source</blockquote>
+<center><address>name<br>street</address></center>
+<dir>
+  <li type="square">x
+  <li value="0">y
+</dir>
+<hr width="0" size="-20">
+</body>
+</html>
+```

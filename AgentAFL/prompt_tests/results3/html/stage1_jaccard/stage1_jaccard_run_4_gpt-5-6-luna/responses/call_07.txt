@@ -1,0 +1,154 @@
+```html
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-16">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Mixed namespaces &amp; unusual text</title>
+  <style type="text/css">
+    @supports (display: grid) { .x::before { content: "\0000"; } }
+  </style>
+  <script type="application/javascript">
+    if (a < b && c > d) { document.write("<em data-v='&amp;'>x</em>"); }
+  </script>
+</head>
+<body>
+  <main id="m">
+    <svg width="20" height="20" viewBox="0 0 20 20">
+      <title>icon</title>
+      <g transform="translate(1,2) rotate(45)">
+        <path d="M0 0L10 0L10 10Z" fill="none" />
+        <foreignObject x="0" y="0" width="10" height="10">
+          <div xmlns="http://www.w3.org/1999/xhtml">embedded <b>HTML</b></div>
+        </foreignObject>
+      </g>
+    </svg>
+    <math display="block">
+      <mrow><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+    </math>
+    <p data-json="{&quot;a&quot;:[1,2,3]}">before<![CDATA[ raw <tag> & text ]]><span>after</span></p>
+  </main>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>ruby and phrasing boundaries</title></head>
+<body>
+  <section>
+    <hgroup><h1>Heading <small>one</small></h1><h2>Subheading</h2></hgroup>
+    <p><ruby>漢<rt>かん</rt>字<rp>(</rp><rt>じ</rt><rp>)</rp></ruby>
+      <bdi dir="rtl">אבג</bdi><bdo dir="ltr">xyz</bdo>
+      <wbr>split<mark>highlight</mark><time datetime="2026-10-08T12:34:56Z">today</time></p>
+    <dl>
+      <dt>alpha<dd>first
+      <dt>beta<dd><ins cite="/a" datetime="bad">added</ins>
+      <dt><del>gamma</del><dd><s>removed</s>
+    </dl>
+    <figure>
+      <picture>
+        <source media="(min-width: 1px)" srcset="a.webp 1x, b.webp 2x">
+        <img src="fallback" alt="a &amp; b" loading="lazy">
+      </picture>
+      <figcaption>caption without a closing element
+    </figure>
+  </section>
+  <footer><address><a href="tel:+1-2-3">call</a></address></footer>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>misnested interactive controls</title>
+  <meta name="generator" content="fuzz">
+</head>
+<body>
+  <nav aria-label=main><a href=/one>one<a href=/two>two</nav>
+  <main>
+    <details open="false">
+      <summary>More <span>information</summary>
+      <p>Nested <button type=submit formaction="x&amp;y">click <input type=checkbox checked></button>
+    </details>
+    <dialog open>
+      <form method=dialog>
+        <label>name <input name=n value="a&quot;b" required></label>
+        <textarea cols="0" rows="-1">line one
+line two &copy; &#xD800;</textarea>
+        <select name=s>
+          <option value=x>unclosed
+          <option value=y>next
+        </select>
+        <output>result</output>
+      </form>
+    </dialog>
+    <menu type=context><li>first<li>second<ul><li>deep</ul></menu>
+  </main>
+  <aside><iframe srcdoc="<p><b>inside</b>" sandbox="allow-scripts"></iframe></aside>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+  <title>XHTML-style empty elements</title>
+  <link rel="alternate" type="application/atom+xml" href="feed?x=1&amp;y=2" />
+  <base href="http://example.test/root/" />
+</head>
+<body>
+  <p>first <br /> second <img src="x" alt="x" /></p>
+  <ol start="0" reversed="reversed">
+    <li value="10">ten
+      <ol type="a"><li>nested A</li><li>nested B</li></ol>
+    </li>
+    <li>after</li>
+  </ol>
+  <table>
+    <thead><tr><th scope="col">A</th><th scope="col">B</th></tr></thead>
+    <tbody><tr><td rowspan="2">one</td><td>two</td></tr></tbody>
+    <tfoot><tr><td colspan="3">foot</td></tr></tfoot>
+    <tbody><tr><td>late</td></tr></tbody>
+  </table>
+  <pre xml:space="preserve">  leading
+    spaces&#13;&#10;end</pre>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>comments declarations and abrupt end</title>
+  <!--a--b---c-->
+  <?processing instruction?>
+  <meta http-equiv=refresh content="0;url='x?y=1&amp;z=2'">
+</head>
+<body>
+  <!--[if lt IE 9]><script src="old.js"></script><![endif]-->
+  <template id=t><div><span>template content</div>
+  <article>
+    <header><h1>Article</h1><p>intro</header>
+    <section><p>one<div>block inside paragraph<i>italic</section>
+    <section><span>text <em>emphasis</span> tail</em></section>
+  </article>
+  <form>
+    <fieldset disabled>
+      <legend>Legend <strong>bold</legend>
+      <input type=text name=a>
+    </fieldset>
+  </form>
+  <script type="text/plain"><!--
+    <not-an-element>&#xFFFFFFFF;</script>
+  <noscript><p>fallback <a href="x">link</noscript>
+  <div data-a=1 data-a=2 =broken :::></div>
+</body>
+</html>
+```

@@ -1,0 +1,165 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+  <base href="http://example.test/root/">
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+  <meta name="robots" content="index,follow">
+  <link rel="stylesheet" href="main.css" media="screen">
+  <style type="text/css">
+    body { background: url("a&b.png"); }
+    <!-- .old { color: red; } -->
+  </style>
+</head>
+<frameset rows="20%,*,0" cols="40%,60%" frameborder="yes">
+  <frame src="top.html" name="nav" noresize scrolling="auto">
+  <frameset>
+    <frame src="left.html">
+    <frame src="right.html" marginwidth="0" marginheight="-1">
+  </frameset>
+  <noframes>
+    <body bgcolor="#ffffff">
+      <h1>Frames are unavailable</h1>
+      <p><a target="_blank" href="index.html">Continue</a></p>
+    </body>
+  </noframes>
+</frameset>
+</html>
+```
+
+```html
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg">
+<head>
+  <?xml version="1.0" encoding="UTF-8"?>
+  <title>Mixed vocabulary</title>
+</head>
+<body>
+  <article id="a1" class="x y" data-value="a&b">
+    <header><hgroup><h1>α &amp; β</h1><h2>subtitle</h2></hgroup></header>
+    <p lang="ja"><ruby>漢<rt>かん</rt><rp>(</rp>字<rp>)</rp></ruby>
+      <wbr><bdi>directional</bdi><bdo dir="rtl">abc</bdo></p>
+    <svg:svg width="40" height="30" viewBox="0 0 40 30">
+      <svg:foreignObject x="0" y="0" width="30" height="20">
+        <div xmlns="http://www.w3.org/1999/xhtml">embedded <em>text</em></div>
+      </svg:foreignObject>
+      <svg:path d="M0 0 L40 30 Z"/>
+    </svg:svg>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <mrow><mi>x</mi><mo>&lt;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+    </math>
+    <footer>tail</footer>
+  </article>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Controls and damaged table</title></head>
+<body>
+<form action="/submit?a=1&b=2" method="POST" enctype="multipart/form-data">
+  <fieldset disabled>
+    <legend>Choose <strong>one</legend>
+    <label for="q">Query</label><input id="q" name="q" value="&quot;unterminated">
+    <input type="checkbox" name="c" checked="checked"><input type="radio" name="c">
+    <select name="pick" multiple size="0">
+      <option value="1" selected>One
+      <optgroup label="Group"><option>Two<option disabled>Three
+    </select>
+    <textarea name="notes" rows="2" cols="4">first
+second</textarea>
+    <button type="submit"><span>Send</button>
+  </fieldset>
+  <input type="image" src="/go.gif" alt="go"><input type="hidden" name="x">
+</form>
+<table border="1">
+  <thead><tr><th colspan="3">Report<th>Extra</tr></thead>
+  <tbody>
+    <tr><td rowspan="2">A<td>B
+    <tr><td>C</tbody>
+  <tfoot><tr><td>total</td></tr></tfoot>
+  <caption>caption after sections</caption>
+</table>
+<isindex prompt="Search:">
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Raw text boundaries</title>
+  <script type="text/javascript">
+    if (a < b && c > d) {
+      document.write("<p>literal</p>");
+      x = "</scr" + "ipt>";
+    }
+    /* comment with -- and &amp; */
+  </script>
+  <script type="application/json">{"x":"</script>","y":"&lt;"}</script>
+  <style>
+    @media screen and (max-width: 3px) {
+      .a:before { content: "<tag> &amp;"; }
+    }
+  </style>
+</head>
+<body onload="a='&quot;';">
+  <!-- one -- two --- three -->
+  <![CDATA[
+    <not-an-element> & still raw </not-an-element>
+  ]]>
+  <div title="one" id='two" three=4>
+    <iframe srcdoc="<p>inner &amp; page</p>" sandbox></iframe>
+    <object data="movie.swf" type="application/x-shockwave-flash">
+      <param name="movie" value="x&y.swf">
+      fallback <embed src="x.swf" />
+    </object>
+  </div>
+  <!--[if IE]><p>conditional markup</p><![endif]-->
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en-US">
+<head>
+  <title>Sections and quotations</title>
+</head>
+<body>
+  <header>
+    <nav><a href="#main">skip</a> | <a href="mailto:a@b">mail</a></nav>
+  </header>
+  <main id="main">
+    <section>
+      <h1>Heading
+      <h4>Jumped level</h4>
+      <p>Before <q cite="x">quote <cite>source</cite></q> after
+      <blockquote cite="http://example.test/q">
+        <p>Nested paragraph <small>small <big>large</big></small>
+        <hr>
+        <address>Author<br>Somewhere</address>
+      </blockquote>
+    </section>
+    <aside>
+      <details open="false">
+        <summary>More</summary>
+        <p>Hidden-ish <time datetime="2020-01-01T25:61">time</time></p>
+      </details>
+      <dialog open>dialog text</dialog>
+    </aside>
+    <section>
+      <h2>Images</h2>
+      <figure>
+        <img srcset="a.png 1x, b.png 2x" sizes="(min-width: 2px) 50vw" alt="">
+        <figcaption>caption with <del cite="x">deleted</del> and <ins>inserted</ins></figcaption>
+      </figure>
+    </section>
+  </main>
+  <footer><p>End</footer>
+</body>
+</html>
+```

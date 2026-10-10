@@ -1,0 +1,146 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"[
+<!ENTITY weird "x&y;">
+]>
+<!--- malformed comment --!>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<base href="http://example.invalid/a/">
+<title>&#xD800; &amp; &notanentity;</title>
+<style type="text/css">
+@import url("a.css"); body{background:url(data:text/css,{});}
+</style>
+</head>
+<body bgcolor="#12GG89" text=black background='a"b'>
+<!--[if IE]><p>conditional <![endif]-->
+<marquee direction=sideways behavior="alternate"><blink>moving</blink></marquee>
+<dir compact><li>one<li>two<ul><li>nested</dir>
+<dl compact>
+<dt><b><i>term
+<dd><p>definition <q cite="a&b">quoted</q></dd>
+<dt><img src= alt="broken"><dd>tail
+</dl>
+<address><a href="mailto:test@example.com?x=1&y=2">mail</address>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>Character edge cases</title>
+</head>
+<body>
+<p><span lang="x&#0;y" title="a&#13;&#10;b">start
+&alpha;&beta;&gamma;&copy;&reg;&trade;&euro;
+&#0;&#1;&#9;&#10;&#13;&#31;&#127;&#x10ffff;&#xfffffff;
+</span></p>
+<p>ampersands & &bad; &#; &#x; &#xG; &#999999999999999999999999999999;
+<code>&lt;tag attr=&quot;value&quot;&gt;</code></p>
+<pre>
+  leading
+	 tabs
+&amp; &lt; &gt; &quot; &apos;
+</pre>
+<textarea name="t" rows="2" cols="4">one&lt;/textarea&gt;two
+</TEXTAREA>
+<button type=submit disabled=maybe accesskey=&#x0d;><u>go</u></button>
+<p dir="rtl"><bdo dir="invalid">abc</bdo></p>
+<hr noshade="noshade" size=+01 width="1e2%">
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Nested interactive and phrasing recovery</title>
+</head>
+<body>
+<a href="one"><a href="two"><span><em><strong>deep
+<a name="anchor"><img src="x" usemap="#m"><map name="m"><area shape="rect" coords="0,0,10,10" href="x"><area></map>
+</strong></em></span></a>
+<object classid="cls" codebase="http://x/" data="d" type="x/y">
+<param name="movie" value="a&b">
+<param name="loop" value=1>
+<embed src="movie" width="0" height="-1"></embed>
+<object><p>fallback<object><p>second fallback</object>
+</object>
+<iframe srcdoc="<p>embedded &amp; text</p>" frameborder="bogus" scrolling=maybe>
+fallback
+</iframe>
+<video controls autoplay="false" poster=x>
+<source src=a type=video/a><source src=b>
+<track kind=subtitles srclang=en default>
+fallback video
+</video>
+<audio><source src=""><track></audio>
+<p><label for=x>Label <input id=x type=text></label><label><input type=checkbox>again</label>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Head and metadata repair</title>
+<link rel=stylesheet href=a.css disabled>
+<link rel=alternate stylesheet title="two" href=b.css>
+<meta charset="utf-16">
+<meta http-equiv=refresh content="0; url=http://a/?x=1&y=2">
+<meta name=viewport content="width=device-width,initial-scale=abc">
+<base target=_blank href="//host/%zz">
+<style>
+</style class=x>
+<script language=javascript type="text/javascript" defer async>
+if (a < b && c > d) { document.write("<p>"); }
+</script>
+<noscript><meta http-equiv=x></noscript>
+</head>
+<body>
+<details open="no"><summary><h2>summary</h2></summary><p>content</details>
+<dialog open=true><form method=dialog><output for="a b">result</output></form></dialog>
+<menu type=context><menuitem label="A" checked><menuitem label="B" type=command></menu>
+<picture>
+<source media="(min-width: 1px)" srcset="a 1x, b 2x">
+<img src="fallback" alt="picture">
+</picture>
+<ruby>漢<rt>かん<rp>(</rp><rt>kan</ruby>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Frames and obsolete containers</title></head>
+<frameset rows="*,0,50%" cols="25%,*" border=abc>
+<frame src="a.html" name="a" scrolling="sometimes" noresize="false">
+<frameset cols="1*,2*">
+<frame src="" frameborder="-1">
+<noframes>
+<body>
+<h1>Fallback</h1>
+<center><font face="x" size="999" color="#GGG">text</font></center>
+<layer id=l1 left=nan top=-999999999999999999999 width=auto height=>
+<ilayer><spacer type=block width=100% height=0></ilayer>
+<applet code="A.class" archive="a.jar,b.jar" width="100%" height="100%">
+<param name=foo value="bar"><param name=foo>
+alternative <img lowsrc=x>
+</applet>
+<isindex prompt="Search:" action="/search">
+<form action=/ method=post enctype=multipart/form-data accept-charset="UTF-8,,">
+<input type=file name=f accept="image/*,.txt" multiple=maybe>
+<input type=image src=x border=none>
+</form>
+</body>
+</noframes>
+</frameset>
+</frameset>
+<noframes>outside</noframes>
+</html>
+```

@@ -1,0 +1,140 @@
+```html
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Table repair corpus</title>
+  <meta charset="utf-8">
+</head>
+<body>
+  <table border="1" cellpadding="0" cellspacing="0">
+    <caption><b>Quarterly <i>totals</caption>
+    <colgroup span="2"><col width="*"><col width="0"></colgroup>
+    <colgroup><col><col><col></colgroup>
+    <thead>
+      <tr><th rowspan="2">Name<td colspan="3">Values
+      <tr><th>one<th>two<th>three
+    <tbody>
+      <tr><td>A<td>1<td><em>2<tr><td>B<td><td>3<td>4
+      <tr><td colspan="4">tail
+    <tfoot><tr><td><table><tr><td>nested</table><td>after
+  </table>
+  <form action="/submit" method="post">
+    <fieldset disabled>
+      <legend>Options</legend>
+      <label><input type="checkbox" checked name="a"> Alpha</label>
+      <label><input type="radio" name="a" value="b"> Beta
+      <select multiple size="0" name="pick"><option>one<option selected>two</select>
+    </fieldset>
+    <button type="submit"><span>send</button></span>
+  </form>
+</body>
+</html>
+```
+
+```html
+<!doctype html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Legacy replaced elements</TITLE>
+<ISINDEX PROMPT="Search:">
+<BASEFONT SIZE="7">
+</HEAD>
+<FRAMESET ROWS="*,0,25%" COLS="50%,*">
+  <FRAME NAME="left" SRC="a.html" SCROLLING="no" FRAMEBORDER="0">
+  <FRAMESET>
+    <FRAME SRC="" NORESIZE>
+  </FRAMESET>
+  <NOFRAMES>
+    <BODY BGCOLOR=#ffffff TEXT=black>
+      <CENTER><FONT FACE="serif" SIZE=+4>Fallback</FONT></CENTER>
+      <MAP NAME=nav>
+        <AREA SHAPE=rect COORDS="0,0,10,10" HREF=#one ALT=one>
+        <AREA SHAPE=circle COORDS="5,5,3" NOHREF>
+      </MAP>
+      <IMG SRC="image.gif" USEMAP="#nav" ISMAP WIDTH=0 HEIGHT=0>
+      <OBJECT CLASSID="clsid:00000000-0000-0000-0000-000000000000" WIDTH=1 HEIGHT=1>
+        <PARAM NAME="movie" VALUE="x">
+        <EMBED SRC="x" TYPE="application/octet-stream">
+        fallback <A HREF="x">x</A>
+      </OBJECT>
+    </BODY>
+  </NOFRAMES>
+</FRAMESET>
+```
+
+```html
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ENTITY local "replacement &amp; text">
+  <!ELEMENT item (#PCDATA)>
+]>
+<!-- outer -- -- broken -->
+<?processing instruction?>
+<root xmlns:q="urn:example:one" q:flag="yes">
+  <![CDATA[<not-an-element>&still-text;</not-an-element>]]>
+  <item a="one" a="two" b='unterminated>
+    &local; &unknown; &#x110000; &#-1;
+    <q:item xml:lang="en" q:value="&quot;">content</q:item>
+  </item>
+  <item>
+    <!--[if IE]><div>conditional</div><![endif]-->
+    <!bad declaration>
+    <?x y?>
+  </item>
+</root>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head><title>Mixed phrasing boundaries</title></head>
+<body>
+  <main>
+    <h1><small>Heading <mark>with</h1> broken emphasis</mark>
+    <p>alpha <a href="#"><b>bold <i>italic <u>under</a> still</b> plain</i></u>
+    <dl>
+      <dt>term one
+      <dd>definition <span><dt>not really a term</dt>after</span>
+      <dt><ruby>漢<rt>kan</rt><rp>(</rp><rt>かん</rt><rp>)</rp></ruby>
+      <dd><bdi dir="auto">text</bdi><wbr><bdo dir="rtl">abc</bdo>
+    </dl>
+    <ol start="-2" reversed type="A">
+      <li>first
+      <li><ul><li>nested one<li>nested two</ul>
+      <li><input type="text" value="&quot;" maxlength="-1">
+    </ol>
+    <details open="false"><summary>summary <strong>unfinished
+      <p>inside details</details>
+    <dialog open>dialog <form><button formaction="/x">ok</dialog></form>
+  </main>
+  <footer><address><a href="mailto:x@y">x@y</address></a></footer>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Raw text and whitespace cases</title>
+  <style type="text/css">
+    body { background: url("x</style>y"); }
+    @media all { .a { content: "</textarea>"; } }
+  </style>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("<p>not parsed</p>"); }
+    var s = "</script" + ">";
+  </script>
+</head>
+<body>
+  <pre>  leading
+	 tabs &lt;tag&gt;
+</pre>
+  <textarea name="t" rows="0" cols="-1">one
+</textarea>two</textarea>
+  <xmp><b>literal</b><!-- comment --></xmp>
+  <plaintext>
+    <h1>everything after this is text</h1>
+    &amp; &#65; </body>
+```

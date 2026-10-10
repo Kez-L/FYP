@@ -1,0 +1,144 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <base href="http://example.test/a/">
+  <title>orphaned phrasing content</title>
+  <style>
+    p::before { content: "<&"; }
+    @media screen and (min-width: 0px) { .x { color: red } }
+  </style>
+</head>
+<body>
+  <p id="p1">alpha <em>beta <strong>gamma</p>
+  <p id=p2><a href="x" title="a > b & c">delta <span>epsilon</a></span>
+  <pre> one
+    <code>two &amp; three</pre>
+  <blockquote cite='x'><q>quoted <abbr title="T">text</abbr></blockquote>
+  <hr>
+  <address><b>contact<br>line two</address>
+  <p><img src=x alt="unterminated><object data=x><param name=a value=b>
+  <noscript><div>fallback <i>content</i></noscript>
+</body>
+</html>
+```
+
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>mixed namespaces</title>
+</head>
+<body>
+  <svg width="20" height="20" viewBox="0 0 20 20">
+    <foreignObject x="0" y="0" width="20" height="20">
+      <div xmlns="http://www.w3.org/1999/xhtml">x</div>
+    </foreignObject>
+    <path d="M0 0 L10 10" fill="none"></path>
+  </svg>
+  <math display="block">
+    <mrow><mi>x</mi><mo>&lt;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+  </math>
+  <div xmlns:foo="urn:test"><foo:bar data-x="1">namespaced</foo:bar></div>
+  <iframe srcdoc="<p>inner &amp; text</p>" sandbox="allow-scripts"></iframe>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>form controls</title>
+</head>
+<body>
+  <form action="/submit" method=post enctype="multipart/form-data">
+    <fieldset disabled>
+      <legend>Choose <label><input type=radio name=g checked>one</label></legend>
+      <label for=q>Query</label>
+      <input id=q name=q type="text" value="a&amp;b" maxlength="-5">
+      <select name=s multiple size=0>
+        <optgroup label="group">
+          <option value=1 selected>one
+          <option value=2>two</option>
+        </optgroup>
+        <option>three
+      </select>
+      <textarea name=t rows="x" cols=-1>raw &lt;tag&gt;</textarea>
+      <button type=submit formaction="/other">send</button>
+      <input type=image src=submit.gif alt=go>
+    </fieldset>
+  </form>
+  <form id=f2>
+    <input name=a form=f2>
+    <output for="a b">result</output>
+    <progress value="2" max="1">loading</progress>
+    <meter min=10 low=2 value=abc max=5>meter</meter>
+  </form>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>head edge cases</title>
+  <meta http-equiv=Content-Type content='text/html; charset=windows-1252'>
+  <meta name=viewport content="width=device-width,initial-scale=1">
+  <link rel=stylesheet href=a.css disabled>
+  <link rel="alternate stylesheet" title="alt" href=b.css>
+  <script type="application/ld+json">{"x":"</script>","y":1}</script>
+  <script>
+    if (a < b && c > d) { document.write("<i>z</i>"); }
+  </script>
+  <template id=t><tr><td>template row</td></tr></template>
+</head>
+<body onload="x &amp;&amp; y">
+  <main>
+    <header><hgroup><h1>Heading<h2>Subheading</hgroup></header>
+    <section>
+      <article><h3>one</h3><p>text</article>
+      <article><h3>two</h3><p>more<section>nested section</article>
+    </section>
+    <aside><details open><summary>More</summary><p>hidden-ish</details></aside>
+  </main>
+  <script type=text/plain>literal </script> tail</script>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+<head><title>miscellaneous malformed structure</title></head>
+<body>
+  <table>
+    <tr><td>first</td></tr>
+    <tfoot><tr><td>footer before body</td></tr></tfoot>
+    <tbody>
+      <tr><td>a</td><td>b</td></tr>
+    </tbody>
+  </table>
+  <ul>
+    <li>one
+    <li>two
+      <ol start="zero"><li>nested<li value="-3">last</ol>
+  </ul>
+  <dl><dt>term<dd>definition<dt><dd>empty</dl>
+  <div style="color: rgb(1,2,3); background:url('x')">
+    <marquee direction=sideways><blink>old <font size=999 color=#ggg>tags</font></blink></marquee>
+  </div>
+  <object type="x" width="not-a-number">
+    <param name=movie value="a&b">
+    <embed src="plugin" height="--">
+    fallback text
+  </object>
+  <form><div><input name=x></form></div>
+  <p>unclosed
+  <!-- comment with -- bad -- and & -->
+  <![CDATA[not really cdata]]>
+</body>
+```

@@ -1,0 +1,134 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<!--broken comment --><!----><!bad declaration>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+  <base href="http://example.invalid/a/b/">
+  <title>Entities &amp; odd &#0; &#xD800; &#x110000; &unknown;</title>
+  <?xml version="1.0"?>
+  <style type="text/css">
+    body { color: red; } /* unterminated
+    @media screen and (foo: bar) { p::before { content: "<tag>"; } }
+  </style>
+</head>
+<body>
+  <p id="a" id="b" class='one"two' data-x=unquoted&value>
+    A&nbsp;&copy;&#x2028;&#999999; B
+  <div><span>nested
+  <p>paragraph recovery</span></div>
+  <![CDATA[not really cdata]]>
+  <hr / ><br//><img src="x" alt="y">
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Table repair maze</title></head>
+<body>
+<table border="x" cellpadding="-3">
+  text-before-row
+  <colgroup><col span="foo"><col></colgroup>
+  <thead>
+    <tr><th rowspan="abc">A<th colspan="-1">B<td>implicit cell
+  </thead>
+  <tbody>
+    <tr><td>one<td><table><tr><td>inner</table><td>after inner
+    <tr><th><div>heading block</th></div><td>
+  </tbody>
+  <tfoot><tr><td colspan="999">tail
+  <caption><b>caption after sections</b></caption>
+</table>
+<table><tr><td>a</tr><tr><td>b</table>
+<p>after tables
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Raw text and token boundaries</title>
+  <script>
+    if (a < b && c > d) {
+      document.write("</script><div class='injected'>x</div>");
+    }
+    var s = "<!-- fake --><style>bad</style>";
+  </script>
+  <script type="application/x-custom">
+    <tag attr="value">opaque &amp; text
+  </script>
+  <style>
+    .x { background: url("x&y"); }
+    </styleX>
+    p { content: "</style>"; }
+  </style>
+</head>
+<body>
+  <textarea><b>literal</b>&amp;</textarea>
+  <title>body title</title>
+  <plaintext>
+    <h1>Everything here is text
+    </body>
+    </html>
+```
+
+```html
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Lists and definition reconstruction</title>
+</head>
+<body>
+<ol start="not-a-number" reversed="maybe">
+  <li value="x">first
+  <li>second
+    <ul>
+      <li>nested one
+      <li>nested two
+    </ul>
+  <li>third
+</ol>
+<dl compact="false">
+  <dt>term one
+  <dd>definition <p>paragraph in definition
+  <dt><em>term two</em><dd>
+  <dd>orphan definition
+</dl>
+<menu type="strange"><li>menu item</menu>
+<dir><li>old directory item</dir>
+<blockquote cite="unterminated><p>quote
+<center><div>centered <address>mail</center></div>
+<pre> preformatted
+  <code>code</pre></code>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Obsolete embedded and metadata elements</title></head>
+<body bgcolor="#gggggg" text="rgb(1,2,3)" background="a b">
+  <applet code="x.class" archive="a.jar,b.jar" width="NaN" height="-4">
+    <param name="x" value>
+    fallback <object data="file:///x" type="bad/type">
+      <param name=y value="&quot;">
+      <embed src="movie" hidden="sometimes" loop="-1">
+      object fallback
+    </object>
+  </applet>
+  <marquee behavior=sideways direction="diagonal" scrollamount="huge">
+    moving <blink>blink</blink>
+  </marquee>
+  <isindex prompt="Search &amp; find">
+  <img srcset="a 1x, b 2w, c" sizes="(min-width: 1px) 50vw, nonsense" usemap="#map">
+  <map name=map><area shape=poly coords="1,2,three,4" href="#"></map>
+  <a href="javascript:alert('x')" name="n"><font face="&bad;" size="+99">link
+  <noembed><video src=x><source src=y></video></noembed>
+</body>
+</html>
+```

@@ -1,0 +1,151 @@
+```html
+<!DOCTYPE html [
+  <!ENTITY laugh "ha &amp; ha">
+  <!ELEMENT mystery ANY>
+  <!ATTLIST mystery mode CDATA #IMPLIED>
+]>
+<?xml version="1.0"?>
+<!--> dangling comment --!>
+<html>
+<head profile="http://example.invalid/a b">
+  <meta charset="utf-9999">
+  <meta http-equiv="Content-Type" content='text/html; charset="broken'>
+  <base href="http://example.invalid/dir/" target="_blank">
+  <link rel="stylesheet" href=a=b=c media="screen print">
+  <style type=text/css>
+    body { color: red; } /* unclosed
+  </style>
+</head>
+<body id="x" id="y" data-a data-b="&unknown;" =novalue>
+  <![CDATA[ not really cdata <tag> ]]>
+  <?processing instruction?>
+  <mystery mode="&laugh;">&laugh;</mystery>
+  <ruby>漢<rt>kanji<rp>(</rp></ruby>
+  <p title="one&#0;two&#x110000;three">A &apos; B &quot; C &invalid D</p>
+  <hr /
+  <address><b><i>nested without endings
+</html>
+```
+
+```html
+<!doctype HTML PUBLIC "weird" "urn:x-test">
+<html>
+<head>
+  <title>unterminated title
+  <meta name=viewport content=width=device-width,initial-scale=1>
+</head>
+<body>
+  <details open="maybe"><summary>summary
+    <p>paragraph <button disabled=false formaction=javascript:bad()>click
+  </details>
+  <dialog open><form method=dialog><output name=result>42</output>
+  <select name=x multiple size=-4>
+    <optgroup label="group"><option value=1 selected=selected>one
+    <option>two</optgroup>
+    <option label="unterminated value="3>three
+  </select>
+  <meter min=10 max=2 low=NaN high=Infinity optimum=-1 value=999>meter
+  <progress value="abc" max="0">progress
+  <textarea rows="-1" cols="999999" wrap=sideways>text</textarea>
+  <button><label for=x>label<input name=x></button>
+  </form></dialog>
+  <p><b>bold <em>em <strong>strong</p></em></b></strong>
+</body>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>special character stress</title>
+</head>
+<body>
+  <pre>
+&amp; &amp;amp; &#65; &#x41; &#X4a; &#0000000000000000000000066;
+&; &amp &notanentity; &copy &copycat; &#; &#x; &#xZZ; &#-1; &#999999999999999999;
+  </pre>
+  <p title='a"b' c=d e='f>g' h="i'j" k="l&amp;m" n=>
+    text
+    <!-- ordinary -- comment -- with -- runs -->
+    <!-- unclosed
+  <div class="a&#0;b" style="color: rgb(1,2,3);">div
+    <span>span &thinsp; &ZeroWidthSpace; &NewLine;
+    <wbr>
+    <img srcset="a 1x, b 2w, c," sizes="(max-width: 3px) 1vw, bad" alt=>
+    <object data="x"><param name=name value=value><embed src=x type=bad>
+  </div>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("</script><p>split"); }
+  </script>
+  <noscript><div>fallback</div></noscript>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>interactive content</title>
+</head>
+<body>
+  <header><nav aria-label="main"><ol start="-999999999999999999999999999999999999999">
+    <li value="not-a-number"><a href="//:bad" download="file" ping="a b c">link
+    <li><a href="mailto:" rel="noopener noreferrer" target="bad target">next
+  </ol></nav></header>
+  <main>
+    <article itemscope itemtype="not a url">
+      <hgroup><h1 itemprop="name">heading<h2>subheading</h3></hgroup>
+      <time datetime="2024-99-99T99:99:99Z">time</time>
+      <data value="&notreal;">data</data>
+      <dl><dt>term<dd>definition<dt><dd>missing term</dl>
+      <figure><picture>
+        <source media="(min-width: )" srcset="one,,two 0.5x">
+        <img src="x" alt="alt">
+      </picture><figcaption>caption</figcaption></figure>
+      <blockquote cite="http://[broken"><q cite="">quote</q></blockquote>
+    </article>
+  </main>
+  <footer><address><a href="javascript:">contact</a></address></footer>
+  <template shadowrootmode="open"><style>:host {}</style><slot name=x></slot></template>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>mixed declarations</title>
+  <!--[if IE]><div>conditional markup</div><![endif]-->
+  <!--[if !IE]><!--><span>revealed</span><!--<![endif]-->
+  <?xml-stylesheet type="text/css" href="a.css"?>
+  <style media="all" scoped=true>
+    <![CDATA[
+      @media (x) { a::before { content: "<&"; } }
+    ]]>
+  </style>
+</head>
+<body>
+  <section>
+    <h1>section
+    <div><p>one
+    <div><p>two
+    <p>three</div>
+  </section>
+  <canvas width="18446744073709551615" height="-20">fallback
+    <div>inside canvas</div>
+  </canvas>
+  <map name=map><area shape=poly coords="0,0,foo,999999999" href=#bad><area></map>
+  <img usemap="#map" ismap loading=sideways decoding=maybe>
+  <iframe srcdoc="<p title='x'>nested</p>" sandbox="allow-scripts allow-unknown" width=bad height=>
+    fallback
+  <video autoplay="false" controlslist="nodownload foo" poster="x">
+    <source src="a" type="video/unknown"><track kind=subtitles srclang=xx>
+    video fallback
+  </video>
+  <form><fieldset disabled><legend>legend</legend><input><fieldset><input></fieldset></fieldset></form>
+  <del cite="x" datetime="not-date">deleted</del><ins>inserted</ins>
+</body>
+</html>
+```

@@ -1,0 +1,123 @@
+```html
+<!doctype html>
+<html>
+<head>
+<meta charset="windows-1252">
+<title>Tokenizer stress</title>
+</head>
+<body>
+<p><b><i><u>misnested <em>inline <strong>content</b> shifts</i> around</u></em>
+<p>entities: &amp; &copy; &#0; &#x0; &#x10ffff; &#x110000; &notanentity; &AElig
+<!-- ordinary --><!-- nested <!-- marker --><!---->
+<!bad declaration>
+<?xml version="1.0"?>
+<div data-x="a&b" data-y='one"two' data-z=unquoted/value>
+  text<br/>after<br / >again
+  <span class=test/ >slash spacing</span>
+</div>
+<pre>  leading
+&lt;raw&gt; &amp; unknown&nbsp;
+</pre>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>Foreign islands</title></head>
+<body>
+<svg width="120" height="80" viewBox="0 0 120 80">
+  <title>vector</title>
+  <defs><linearGradient id="g"><stop offset="0%"/><stop offset="100%" stop-color="#fff"/></linearGradient></defs>
+  <g transform="translate(2 3)" fill="url(#g)">
+    <path d="M0,0 L40,0 L40,40 Z" />
+    <text x="4" y="60">svg &amp; text</text>
+  </g>
+  <foreignObject x="1" y="1" width="50" height="20">
+    <div xmlns="http://www.w3.org/1999/xhtml"><b>embedded</b></div>
+  </foreignObject>
+</svg>
+<math display="block">
+  <mrow><mi>x</mi><mo>&lt;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+  <annotation-xml encoding="application/xhtml+xml">
+    <section><p>math payload</p></section>
+  </annotation-xml>
+</math>
+<p>after foreign content</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Raw text boundaries</title></head>
+<body>
+<script type="text/plain">
+  <div>not markup</div>
+  </script-looking text
+  <!-- fake comment -->
+</script>
+<style>
+  body { background: url("</style>"); }
+  .x::before { content: "<tag>&amp;"; }
+</style>
+<noscript><p>fallback <b>markup</b></p></noscript>
+<template id=t>
+  <article><header>template head</header>
+  <main><slot name="x">default</slot><img src=x></main>
+  </article>
+</template>
+<custom-box><shadow-root mode="open"><p>shadow-like</p></shadow-root></custom-box>
+<p>tail</p>
+</body>
+</html>
+```
+
+```html
+<!doctype html public "unexpected" "secondary">
+<head>
+<title>Head recovery</title>
+<meta>
+<base href=//invalid.example/%ZZ>
+<link>
+<style type=text/css>/* unclosed style
+</head>
+<body>
+<article>
+<h1>section one
+<section><h2>section two</article>
+<aside><p>aside text</section>
+<details open=maybe><summary>summary <small>label</details>
+<dialog open>dialog text <form><button>button</dialog>
+<ruby>漢<rt>kan</rt><rp>(</rp>字<rt>ji</rt><rp>)</rp></ruby>
+<mark><time datetime="not-a-date">yesterday</mark>
+<figure><figcaption>caption first</figcaption><img alt=figure src></figure>
+<menu><menuitem label="old">entry</menuitem></menu>
+</body>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Deep adoption and abrupt ends</title></head>
+<body>
+<div><p><a href="#"><b><i><em><strong>alpha
+<span><b>beta</a> gamma</i> delta</b> epsilon</strong>
+<font color=red><font size=7>zeta</font></font>
+</span></em></strong></b>
+</p></div>
+<ol start="-3" reversed>
+<li value=abc>first
+<li><input type=hidden name=x value="&quot;><li>second
+</ol>
+<p><img src="data:image/svg+xml,%3Csvg%3E" alt="a
+b"><object data="x"><param name=p value=v><embed src=x>
+<iframe srcdoc="<p>quoted <b>document</b></p>" sandbox></iframe>
+<iframe src="x"></iframe>
+<hr>
+<details><summary>unfinished
+<div><p>deep <code>code
+<!-- comment never closes
+```

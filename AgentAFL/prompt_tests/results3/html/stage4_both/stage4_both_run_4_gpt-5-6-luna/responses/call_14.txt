@@ -1,0 +1,125 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+  <base href="//example.invalid/root/">
+  <title>Odd declarations &amp; entities</title>
+  <?xml-stylesheet type="text/css" href="x.css"?>
+  <!--- malformed opener -->
+  <![if IE]>
+  <meta http-equiv=refresh content='0; url="next.html"'>
+  <![endif]>
+</head>
+<body>
+  <hgroup><h1>Title<h3>Unexpected level</hgroup>
+  <p>alpha<br/>beta<br />gamma<br>delta
+  <hr class="a" class='b' CLASS=c>
+  <pre>  leading
+    <code>&#xD800; &#xFFFFFFFF; &unknown; &amp</code>
+  trailing</pre>
+  <blockquote cite=foo><p>quoted <q cite="x>y">text</blockquote>
+  <address><a href="mailto:a@b">a@b</a></address>
+  <!-- --><!----><!-- x -- y --><!-->tail</p>
+  <?bogus instruction?>
+  <div><span>one</div>two</span>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Ruby and phrasing boundaries</title></head>
+<body>
+  <p lang=ja><ruby>漢<rb>字<rt>かん<rp>(</rp><rt>じ</ruby>終
+  <p><b><i><u><s><small>deep</b>split</i>tail</u>after</s></small>
+  <p><abbr title="Application Programming Interface">API</abbr>
+     <dfn><em>term</dfn> emphasis</em>
+     <mark>marked <ins datetime=bad>inserted</del></mark>
+  <p><a href="one"><a href="two">nested links</a> outside</a>
+  <p><label for=x>Label <span>wrap <input id=x></label>
+  <p><img src=x alt="a" title='b' /><map name=m><area href=# shape=rect coords="0,0,1,1"></map>
+  <p><object data=x type="x/y"><param name=p value=v><span>fallback</span></object>
+  <p><iframe srcdoc="<p>embedded &amp; text</p>" sandbox=allow-scripts>fallback</iframe>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Malformed containers</title>
+  <meta name="viewport" content="width=device-width">
+</head>
+<body>
+  <main id=main>
+    <header><nav><ul><li>one<li>two<li><ul><li>nested</ul><li>three</nav></header>
+    <section><h2>Section
+      <article><h3>Article A</h3><p>A text
+      <article><h3>Article B<p>B text</section>
+    <aside><dl><dt>Key<dd>Value<dt>Other<dd><p>Paragraph in definition</dl></aside>
+    <footer><ol start=foo reversed><li value=0>zero<li value="-2">negative<li>last</ol></footer>
+  </main>
+  <div class=x><p>before<table><tr><td>cell</table><p>after</div>
+  <p><span title="unterminated>broken <b>markup</p>
+  </body>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Namespaces and unknown elements</title>
+  <meta charset=utf-16>
+</head>
+<body>
+  <custom-card data-a=1>
+    <custom-header><slot name=title>Fallback title</slot></custom-header>
+    <custom-body>
+      <template shadowrootmode=open><style>:host{display:block}</style><slot></slot></template>
+      <p>light content</p>
+    </custom-body>
+  </custom-card>
+  <x-thing><y-thing><z-thing>nested custom elements</x-thing></y-thing>
+  <div xmlns="urn:example:one"><foo:bar xmlns:foo="urn:example:two">prefixed</foo:bar></div>
+  <embed src="movie.bin" width=0 height=-1>
+  <object><a href=#>object fallback</a><embed src=x></object>
+  <p data-json='{"a":[1,2,],"b":null}' data-bad="x&amp;y&#0;">
+    text <wbr><br/><input type=unknown>
+  </p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Document mode transitions</title>
+</head>
+<frameset cols="25%,*,0" border=0>
+  <frame src="left.html" name=left>
+  <frame src="right.html" name=right noresize>
+  <noframes>
+    <body>
+      <h1>No frames</h1>
+      <p>Fallback content <basefont size=7 color=red>legacy</basefont>
+      <center><font face="serif" size="+2">old formatting</font></center>
+      <dir><li>directory item<li>another</dir>
+      <menu compact><li>menu item<li>second</menu>
+      <table><caption>fallback<table><tr><td>inner</td></tr></table></caption></table>
+    </body>
+  </noframes>
+</frameset>
+<body>
+  <p>stray body after frameset</p>
+  <form action=/ method=POST>
+    <fieldset><legend>Data</legend>
+      <input name=a>
+      <input name=b>
+    </fieldset>
+  </form>
+</body>
+</html>
+```

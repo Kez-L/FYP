@@ -1,0 +1,106 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<base href="http://example.invalid/a/../b/">
+<link rel="stylesheet" href="">
+<style type="text/css">
+<!--
+body { color: expression(alert(1)); }
+@import url("a b.css");
+-->
+</style>
+<script type="text/javascript">
+<!--
+if (a < b && c > d) { document.write("</script><p>split"); }
+//--></script>
+</head>
+<body onload="x<y && y>z">
+<p id="a" id="b" class="one two" class="three">text &copy &bad; &#0; &#xD800;</p>
+<pre>  leading
+	 tabs &lt; &amp; &#13;
+</pre>
+<plaintext>
+<div>everything after plaintext, including </body></html>
+```
+
+```html
+<!doctype HTML PUBLIC "about:legacy-compat">
+<html>
+<head><title>raw text boundaries</title></head>
+<body>
+<textarea name="t" rows="999999999999" cols="-8">&lt;tag&gt;
+</textarea>
+<textarea>
+one
+</TEXTAREA
+><b>after malformed end</b>
+</textarea>
+<xmp><i>not markup</i><!-- comment --></xmp>
+<listing>
+<dl><dt>term<dd>definition
+<dt><dd><p>nested
+</listing>
+<p>tail</p>
+</body>
+</html>
+```
+
+```html
+<?xml version="1.0"?>
+<!DOCTYPE html [
+<!ENTITY foo "bar">
+<!ELEMENT weird ANY>
+<!-- internal subset with > and ]]> -->
+]>
+<html xmlns="urn:one" xmlns:x="urn:two">
+<head><title>doctype subset</title></head>
+<body>
+<weird x:a="1" x:a="2"><x:item>&foo;</x:item></weird>
+<svg:svg><svg:circle r="1"/></svg:svg>
+<custom data-a="&quot;" data-b="&#x;"/>
+<p><!-- unclosed comment
+<strong>hidden
+</body>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>select and option recovery</title></head>
+<body>
+<form>
+<select name="s" multiple="multiple" size="not-a-number">
+<option value="1" selected>one
+<option value=2>two
+<optgroup label="group"><option>three</optgroup>
+<option disabled="false">four
+</select>
+<select><option>outer<select><option>inner</select>tail</select>
+<input type="image" src="x" alt="a" formaction="javascript:bad()" formenctype="x">
+<button type="unknown"><span>button</button>
+<label for="x">label <input id="x"></label>
+<fieldset disabled><legend>legend</fieldset>
+</form>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>misnested ruby and phrasing elements</title>
+</head>
+<body>
+<p><b><i><u>alpha</b> beta</i> gamma</u> delta
+<ruby>漢<rt>kanji<rp>(</rt>fallback</rp></ruby>
+<ruby><rb>base<rt>reading</ruby>
+<address><em>contact <a href="mailto:x@y">mail</address></em>
+<blockquote cite="x"><q cite="y">quote <cite>source</blockquote></q>
+<ins datetime="not-a-date"><del cite=""><mark>changed</del></mark></ins>
+<p><a href="one"><a href="two">nested links</a>tail</a></p>
+</body>
+</html>
+```

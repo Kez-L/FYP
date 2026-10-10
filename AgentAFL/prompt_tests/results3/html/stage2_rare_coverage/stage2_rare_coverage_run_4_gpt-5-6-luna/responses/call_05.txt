@@ -1,0 +1,121 @@
+```html
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Table recovery stress</title>
+</head>
+<body>
+  <table border=1 cellpadding=2 cellspacing=3 summary="a &amp; b">
+    <caption align=middle>caption
+    <colgroup span=2><col width=20><col style="width:expression(alert(1))">
+    <thead><tr><th rowspan=0 colspan=-2>Header<th>Second
+    <tbody>
+      <tr><td>A<td>B
+      <tr><td><table><tr><td>nested<td></table><td>after
+    <tfoot><tr><td colspan="999">tail
+  </table>
+  <p>after table &unknown; &#0; &#xD800; &amp
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <!-- comment -- -- malformed -->
+  <?processing instruction?>
+  <!bogus [ internal subset <tag> ]]>
+  <meta http-equiv=Content-Type content="text/html; charset=shift_jis">
+  <title>Unclosed title
+<body>
+  <div id="a" id="b" class=x y= z="unterminated>
+    <p><b><i><u>deep <em>formatting</p>
+    <address><center><pre>one
+two
+</center></address>
+    <blockquote cite=''><q cite=http://a/b?x=1&y=2>quote
+  </div>
+  </p></i></b>
+  <!-- nested <!-- comment --> trailing -->
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Embedded declarations</title>
+</head>
+<body>
+  <dl>
+    <dt>term 1
+    <dd>definition <span>text
+    <dt><dd>termless
+  </dl>
+  <menu compact="compact"><li value=0>zero<li value=-1>negative<li>last</menu>
+  <ol start=0 reversed="maybe"><li type=I>one<li type=roman>two</ol>
+  <dir><li>directory item</dir>
+  <hr noshade="" size=+999 width="50%">
+  <p><![CDATA[ raw <b> markup ]]> after
+  <script language=javascript type=text/plain>
+    if (a < b && c > d) { document.write("</script>"); }
+  </script>
+  <style>
+    body:before { content: "</style><p>injected"; }
+  </style>
+  <p>visible
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Legacy objects and applets</TITLE>
+</HEAD>
+<BODY bgcolor=#GGGGGG text=rgb(0,0,0)>
+<applet code="X.class" archive="a.jar,b.jar" width=NaN height=-10>
+  <param name=movie value="x&y">
+  <param name=value>
+  fallback <object data="file:///tmp/x" type="application/x-test">
+    <param name=broken value
+    <embed src="" pluginspage="about:blank" width="1" height="1">
+  </object>
+</applet>
+<noembed><form><input name="x" value="a>b"><input type=image src=# border=none></form></noembed>
+<isindex prompt="Search &quot;now&quot;">
+<basefont size=0 face="A,B,C"><font size=+7 color=not-a-color>text</font>
+<marquee behavior=alternate direction=sideways loop=-2><blink>old</blink></marquee>
+</BODY>
+</HTML>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Foreign and malformed boundaries</title>
+</head>
+<body>
+  <table>
+    <tr><td>
+      <svg width="20" height="20">
+        <defs><linearGradient id=g><stop offset="0%"/><stop offset="120%"></linearGradient></defs>
+        <use xlink:href="#g" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+        <text x="0" y="10">svg <title>nested title</title>
+      </svg>
+    </td></tr>
+  </table>
+  <p><math><mi>x</mi><mo>&lt;</mo><mrow><mn>1</mn></math>tail
+  <form action="" method="INVALID">
+    <input type=hidden name=csrf value="&quot;><textarea>bad</form>text
+    <select><option value=a>one<option value=b>two</select>
+  <form><button formaction=/x formmethod=weird>submit</button></form>
+  <iframe srcdoc="<p><b>nested</b>" sandbox=allow-scripts allowfullscreen></iframe>
+  <object><fallback>fallback</fallback></object>
+  <p>final
+</body>
+</html>
+```

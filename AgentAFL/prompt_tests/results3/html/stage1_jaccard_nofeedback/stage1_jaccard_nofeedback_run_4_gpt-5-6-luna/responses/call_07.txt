@@ -1,0 +1,118 @@
+```html
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<base href="javascript:alert(1)">
+<style type="text/css">
+@import url("x.css");
+<!-- .a { content: "</style><script>"; } -->
+</style>
+<script type="text/javascript">
+if (1 < 2) { document.write("&amp;"); }
+</script>
+</head>
+<body>
+<header id="top"><hgroup><h1>Nested <em>headings</h1></em></hgroup></header>
+<nav><ol><li><a href="#x">one<li><a href="#y">two</ol></nav>
+<main><article><section><p>alpha<br/>beta<hr>gamma
+<dl><dt>term<dd>definition<dt>second<dd><p>broken description
+<figure><img src=x alt="unterminated><figcaption>caption</figure>
+</section></article></main>
+<footer><address>name@example.test</address></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Forms and foreign content</title>
+</head>
+<body>
+<form action="/submit" method="post">
+<fieldset disabled="disabled"><legend>Account</legend>
+<label for=user>User <input id=user name=user value="a&b" required></label>
+<label>Password <input type=password name=pw></label>
+<select name=choice multiple size=2>
+<option selected>First<option>Second<option disabled>Third
+</select>
+<textarea name=notes rows=2 cols=8>one
+two</textarea>
+<button type=submit>Send</button>
+</fieldset>
+</form>
+<details open><summary>More <b>information</summary>
+<progress value="1.5" max="1">bad</progress>
+<meter min=0 max=10 value=NaN>meter</meter>
+</details>
+<svg viewBox="0 0 10 10"><g><path d="M0 0L10 10"></g><foreignObject><div>svg html</div></foreignObject></svg>
+<math><mi>x</mi><mo>&InvisibleTimes;</mo><mrow><mn>2</mn></mrow></math>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html [
+<!ENTITY bogus "replacement">
+<!ELEMENT html O O ANY>
+]>
+<html>
+<head><title>Comments and declarations</title><!-- one -- --two--></head>
+<body>
+<!-->comment starts oddly
+<!-- nested <!-- comment --> trailing -->
+<![CDATA[not really cdata <tag> &value;]]>
+<div><!-- comment --><span title="a<!--b-->c">text</span></div>
+<p class='x y' class=x y=z data-a=1 data-b='two"three'>attributes
+<pre>  leading
+  &lt;raw&gt;
+</pre>
+<blockquote cite="urn:test"><p>quote</blockquote>
+<address><a href="mailto:x@y">&copy&nbsp;2026</a></address>
+</body>
+</html>
+```
+
+```html
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>Tables with damaged sections</title></head>
+<body>
+<table border=1>
+<colgroup><col span=2><col></colgroup>
+<thead><tr><th rowspan=2>A<th>B<th>C</tr></thead>
+<tbody>
+<tr><td>a<td>b<td>c</tr>
+<tr><td colspan=3><table><tr><td>nested</table></td></tr>
+</tbody>
+<tfoot><tr><td>x<td>y<td>z</tr></tfoot>
+<tr><td>after body</td></tr>
+</table>
+<dl><dt><dd><dt>orphan term</dl>
+<ul><li>first<ul><li>inner</ul><li>last</li></ul>
+<p>text<table><tr><td>implicit paragraph close</td></tr></table>tail
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Token boundaries &amp; entity stress</title>
+</head>
+<body>
+<p>&#0;&#1;&#xD800;&#xDFFF;&#x110000;&#xFFFFFFFF;&unknown; &amp &copyx &; &#x; &#;</p>
+<p title="&#x22; &#x27; &quot; &apos;">&#x00000041;&#X41;&#x41;000; &notit;</p>
+<iframe srcdoc="<p>inner &amp; <b>document</b></p>" sandbox></iframe>
+<template><table><tr><td>template cell</template>outside
+<noscript><p>fallback <b>markup</b></noscript>
+<script type="application/ld+json">{"x":"</script>","n":1}</script>
+<textarea><b>literal</b>&amp; &#xD800;</textarea>
+<div>zero&#x00;width&#xFEFF;marks<br>line
+<!--unterminated
+```

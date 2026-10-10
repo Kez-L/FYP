@@ -1,0 +1,135 @@
+```html
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <base href="https://example.invalid/a/">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Ruby and embedded namespaces</title>
+    <link rel="alternate" media="print" href="print.css">
+  </head>
+  <body id="top" style="margin:0" onload="init()">
+    <header>
+      <hgroup><h1>漢字<ruby>東京<rt>とうきょう</rt></ruby></h1><p>subtitle</p></hgroup>
+      <nav><ol><li><a href="#one">one</a><li><a href="#two">two</a></ol></nav>
+    </header>
+    <main>
+      <section id="one" aria-labelledby="s1">
+        <h2 id="s1">Mixed content</h2>
+        <p>alpha <bdi dir="rtl">אבג</bdi> <bdo dir="ltr">xyz</bdo> <mark>marked</mark></p>
+        <figure><img src="x" alt="a&amp;b" width="0" height="-1"><figcaption>caption</figcaption></figure>
+      </section>
+      <section id="two">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
+          <title>shape</title><g><path d="M0 0 L10 10 Z"/><text x="1" y="2">svg</text></g>
+        </svg>
+        <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></math>
+      </section>
+    </main>
+    <footer><address><a href="mailto:a@b">a@b</a></address></footer>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<html>
+<head>
+  <title>frames and noscript</title>
+  <meta http-equiv="refresh" content="0; url=/next">
+</head>
+<frameset rows="25%,*,0" cols="60%,40%" frameborder="0" border="bad">
+  <frame name="left" src="left.html" scrolling="yes" noresize="noresize">
+  <frameset cols="*,*">
+    <frame src="a.html">
+    <frame src="b.html" marginwidth="none">
+  </frameset>
+  <noframes>
+    <body>
+      <h1>No frames</h1>
+      <p><a target="_top" href="index.html">continue</a></p>
+      <iframe src="fallback.html" width="100%" height="auto" sandbox allowfullscreen></iframe>
+    </body>
+  </noframes>
+</frameset>
+</html>
+```
+
+```html
+<!doctype HTML>
+<!-- leading declaration-like text <?broken?> -->
+<html>
+<head>
+  <title>attributes without values</title>
+</head>
+<body>
+  <dl compact>
+    <dt data-a data-b= data-c="unterminated data-d='single' data-e=one/two>term
+    <dd><p class=test>definition <q cite=foo"bar">quote</q></dd>
+  </dl>
+  <menu type=context>
+    <li value=+001><button type=button disabled aria-label="&copy; &notanentity;">push</button>
+    <li value=-0><input required checked readonly autofocus>
+  </menu>
+  <details open="false"><summary>summary</summary><p>hidden?</p></details>
+  <progress value="1e309" max="NaN">loading</progress>
+  <meter min="10" low="x" high="y" max="0" value="-5">meter</meter>
+  <hr / ><br//><wbr>
+  </bodyx>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>forms and table sections</title></head>
+<body>
+  <form id="f" method="post" enctype="multipart/form-data" action="?a=1&amp;b=2">
+    <label for="choice">Choose:</label>
+    <select id="choice" name="choice" multiple size="0">
+      <optgroup label="A"><option value=1 selected>first</option><option>second</optgroup>
+      <optgroup label="B"><option disabled value="&quot;">third
+    </select>
+    <input type="image" src="submit.png" alt="submit" formaction="/other">
+    <button name="go" value="&lt;go&gt;">Send</button>
+    <output name="result" for="choice">none</output>
+  </form>
+  <table border="1">
+    <caption>irregular grid</caption>
+    <colgroup span="2"><col width="20%"><col></colgroup>
+    <thead><tr><th rowspan="2">A</th><th colspan="3">B</th></tr><tr><th scope=col>b1<th>b2<td>b3</tr></thead>
+    <tbody><tr><td headers="a b" colspan="0">x<td>y</tr></tbody>
+    <tfoot><tr><td>footer</td></tr></tfoot>
+  </table>
+</body>
+</html>
+```
+
+```html
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+  <title>processing instructions and raw text</title>
+  <?server command="&amp;"?>
+  <style type="text/css">
+    <![CDATA[
+      .x:before { content: "</style>"; }
+      @import url("a&b.css");
+    ]]>
+  </style>
+</head>
+<body>
+  <!--[if IE]><div class="legacy">old</div><![endif]-->
+  <template id="t"><p>template <em>content</em></p></template>
+  <div class="x" data-json='{"a":"]]>","b":"&"}'>
+    <![CDATA[ literal markup <b>not bold</b> ]]>
+    <script type="application/ld+json">{"@context":"https://schema.org","name":"x</script>y"}</script>
+  </div>
+  <object data="movie.bin" type="application/octet-stream">
+    <param name="autoplay" value="true">
+    <embed src="movie.bin" pluginspage="about:blank">
+    fallback &copy;
+  </object>
+</body>
+</html>
+```

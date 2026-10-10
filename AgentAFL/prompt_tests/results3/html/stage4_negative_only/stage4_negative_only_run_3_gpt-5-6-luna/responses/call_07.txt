@@ -1,83 +1,21 @@
 ```html
-<!doctype HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
-<head>
-  <title>Table repair case</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-  <!-- comment with -- broken -->
-</head>
-<body>
-  <table border="1">
-    <caption><b>Caption <i>with crossed tags</caption>
-    <colgroup><col span="2"><col>
-    <thead><tr><th rowspan="2">A<td>B<th>C
-    <tbody>
-      <tr><td>one<td><div>block in cell<tr><td colspan=4>two
-      <tr><th><form action="/submit" method=post><input name=x value="a&b"><button>Go</form>
-    <tfoot><tr><td>footer</table>
-  <p>after table <a href='x"y'>link <em>emphasis</p>
-</body>
-</html>
-```
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Interactive controls</title>
-</head>
-<body>
-  <form id=f enctype="multipart/form-data" action=/upload>
-    <fieldset disabled>
-      <legend>Options <small>unfinished
-      <label for=q>Query</label><input id=q type=text value="&quot;quoted">
-      <input type=checkbox checked=checked disabled=false>
-      <select name=mode multiple size=0>
-        <option value=one selected>One
-        <option value=two>Two
-        <optgroup label="Group"><option>Three</optgroup>
-      </select>
-      <textarea name=notes rows="x" cols="-2">raw <b>markup</textarea>
-      <button type=submit formaction="/go">Submit <input type=image src=x></button>
-    </fieldset>
-    <output name=result for="q missing">42</output>
-    <datalist id=list><option value=A><option value=B></datalist>
-    <input list=list pattern="[a-" maxlength="-1">
-  </form>
-  <details open="false"><summary>Summary</summary><p>Details</details>
-  <dialog open>Dialog <menu><li>item<li>second</menu></dialog>
-</body>
-</html>
-```
-
-```html
 <!doctype html>
 <html>
 <head>
-  <title>Legacy embedded resources</title>
-  <isindex prompt="Search:">
-  <basefont size="7">
+<meta charset="utf-8">
+<base href="//example.invalid/a/">
 </head>
-<body bgcolor="#ggg" text=invalid link=#12>
-  <frameset rows="20%,*,0" cols="*,*">
-    <frame src="left.html" name=left scrolling="maybe">
-    <frame src="right.html" name=right noresize>
-    <noframes>
-      <body>
-        <h1>Fallback</h1>
-        <p><img src=missing alt="unterminated><br clear=side>
-        <object data="movie.bin" type="application/octet-stream" width=zero>
-          <param name=autoplay value=true>
-          <embed src="plugin" height="NaN"></embed>
-          fallback text
-        </object>
-      </body>
-    </noframes>
-  </frameset>
-  <applet code="A.class" archive="a.jar,b.jar" width=100 height=-3>
-    <param name=foo>
-    Applet fallback
-  </applet>
+<body>
+<table border="1"><caption>broken grid</caption>
+<colgroup><col span="2"><col></colgroup>
+<thead><tr><th rowspan="2">A<th>B<th>C</tr><tr><td>x<td><input name="q" value="&notanentity;"></tr></thead>
+<tbody>
+<tr><td>one<td colspan="9">two
+<tr><td><ul><li>first<li>second<ul><li>nested</ul><li>third</ul>
+<tr><td><form action=/submit method=POST><label for=x>field</label><input id=x type=text required=maybe><button type=submit>go</form>
+</tbody>
+<tfoot><tr><td>tail</table>
+<p><a href="x" href="y"><img src=missing alt=><br><hr><wbr>
 </body>
 </html>
 ```
@@ -86,54 +24,96 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Ruby and obsolete phrasing</title>
+<title>raw text delimiters</title>
+<script type="text/javascript">
+if (a < b && c > d) {
+  document.write("</scr" + "ipt>");
+  x = "<!-- not really markup -->";
+}
+</script>
+<style>
+a::before { content: "</style>"; }
+<!--
+body { background: url("x"); }
+-->
+</style>
 </head>
 <body>
-  <p><ruby>漢<rt>kan<rp>(</rp><rtc><b>annotation</ruby>
-  <p><bdo dir=side>direction <bdi>isolation <wbr>break</bdi></bdo>
-  <p><ins cite=/a datetime="2024-99-99T25:61">inserted <del>deleted</ins> tail</del>
-  <p><acronym title="Hyper Text">HTML</acronym> <big><small><strike>old</strike>
-  <center><address>Mail <a href=mailto:a@b>author</address></center>
-  <pre>  preformatted
-    <code>code <var>x</var></code>
-  </pre>
-  <dl>
-    <dt>Term 1<dd>Definition 1
-    <dt><span>Term 2<dd><p>Definition <li>not a term
-  </dl>
-  <hr noshade="no" width="100%">
-  <p><marquee direction=diagonal><blink>moving text</blink></marquee>
-  <plaintext>
-    <div>This should become plaintext
-    <p>and these tags are text
+<script><!--
+var s = "<tag attr='value'>";
+/* </script><style> */
+--></script>
+<textarea rows="2" cols="8">one
+</textarea>tail</textarea>
+<pre>  indented
+ &amp; &lt; &unknown; </pre>
+<listing><b>literal?</b>
+</listing>
+<xmp><i>raw xmp</i></xmp>
 </body>
 </html>
 ```
 
 ```html
-<!DOCTYPE html>
 <html>
-<head>
-  <title>Malformed metadata and comments</title>
-  <?xml version="1.0"?>
-  <!ELEMENT note (to,from)>
-  <!-- first -- second ---> 
-  <meta name=viewport content=width=device-width,initial-scale=1>
-  <meta charset="utf-8" >
-</head>
+<head><title>obsolete controls</title></head>
+<body bgcolor=#fff text=black>
+<frameset cols="*,*" rows="100,*">
+<frame src="left.html" name=left noresize>
+<frame src="right.html" name=right>
+<noframes><body><p>fallback</p></body></noframes>
+</frameset>
+<marquee direction=sideways behavior=alternate scrollamount=999>moving</marquee>
+<center><font face="serif" size="+9" color="#12zz00">old</font></center>
+<details open=closed><summary>summary <b>bold</summary><p>details</details>
+<dialog open><form method=dialog><button value=one>one<button value=two>two</form></dialog>
+<ruby>漢<rt>kan<rp>(</rp></ruby>
+<select multiple size=0>
+<option selected value=a>alpha
+<optgroup label=group><option value=b>beta<option value=c>gamma</optgroup>
+<option><option>
+</select>
+<isindex prompt="search:" action=/find>
+</body>
+</html>
+```
+
+```html
+<!doctype html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://example.invalid/loose.dtd">
+<?processing target data?>
+<!bogus-root a="1">
+<!-- first <!-- nested --> trailing -->
+<!- malformed comment
+<![BAD[not cdata]]>
+<html><head>
+<meta http-equiv=content-type content="text/html; charset=windows-1252">
+<meta name=viewport content=width=device-width,initial-scale=1>
+<link rel=stylesheet disabled href>
+</head><body>
+<section id="s1"><header><hgroup><h1>heading<h6>small</h6></h1><p>intro
+<nav><ol start=-3 reversed><li value=abc>one<li value=2>two</ol></nav></header>
+<main><article><aside><p>side <q cite=broken"quote>quote</q>
+<blockquote cite="a b c"><p>quoted <cite>work</cite></blockquote>
+<address>mail &copy &#0; &#xD800; &#99999999; &amp</address>
+</aside></article></main>
+<footer><small>foot</small></footer>
+</section>
+</body></html>
+```
+
+```html
+<!html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>template and metadata</title></head>
 <body>
-  <!--[if IE]><p>conditional<![endif]-->
-  <hgroup><h1>Title<h2>Subtitle</h3></hgroup>
-  <p id="x" id="y" class=a class=b data-empty= aria-label='a'b>
-    Text &copy &amp; &#x110000; &#999999; &notit;
-  <ul start="zero" reversed="false">
-    <li value="NaN">Alpha
-    <li>Beta
-      <ol type="?" start="-2"><li>Nested<li><li>Empty</ol>
-    <li>Gamma
-  </ul>
-  <p><a href="foo" target=_blank><img src title=bad&value alt></a>
-  <section><header>head</header><footer>foot</footer></section>
-  </body extra="x">
-</html trailing>
+<template id=t><div><p>inside template <slot name=x>fallback</slot></div></template>
+<dialog><p>dialog text<form><input type=image src=x alt=submit><button formaction=/x formenctype=text/plain>send</button></form>
+<map name=m><area shape=rect coords="0,0,10,10" href=#a alt=hit><area href></map>
+<picture><source media="(min-width: 1px)" srcset="a 1x, b 2x"><img srcset="c 3x" sizes="bad" alt="pic"></picture>
+<object data="x" type="application/x-unknown"><param name=movie value=y><embed src=z><p>fallback</object>
+<dl><dt>term<dd>definition<dt>second<dd><div>block in definition</div>
+<menu><li><button type=button autofocus>click</button><li><input type=checkbox checked=false></menu>
+<iframe srcdoc="<p>quoted &amp; <b>frame</b>" sandbox="allow-scripts allow-scripts"></iframe>
+</body>
+</html>
 ```

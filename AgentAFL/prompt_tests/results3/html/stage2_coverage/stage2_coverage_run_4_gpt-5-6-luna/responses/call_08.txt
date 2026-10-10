@@ -1,0 +1,139 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+  <title>Malformed frames and areas</title>
+  <base href="http://example.invalid/assets/" target="main">
+</head>
+<frameset cols="25%,*,0" border="7">
+  <frame name="nav" src="nav.html" scrolling="yes" frameborder="0">
+  <frameset rows="40,*">
+    <frame src="header.html" noresize>
+    <frame name=main src="content.html" marginwidth=abc>
+  </frameset>
+  <noframes>
+    <body bgcolor=#fffff text="black" link=>
+      <h1>Fallback <em>content
+      <p><a href="javascript:alert('x')" target=_top>open &broken; page</a>
+      <img src="x" alt="unterminated>
+    </body>
+  </noframes>
+</frameset>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Form controls with broken boundaries</title>
+</head>
+<body>
+<form method="POST" action="/submit" enctype="multipart/form-data">
+  <fieldset disabled>
+    <legend>Account &copy;
+    <label for=u>Name <input id=u name=user value="a&b" maxlength="-1"></label>
+    <label>Password <input type=password name=pw></label>
+  </fieldset>
+  <select name=choice multiple size="zero">
+    <optgroup label="Group one">
+      <option selected value=1>One
+      <option value="2">Two</optgroup>
+    <option>Three
+  </select>
+  <textarea name=notes rows=abc cols=3 wrap=hard>one
+two</textarea>
+  <input type=image src=x border=bad>
+  <button type=submit disabled="maybe">Send <b>now</button>
+  <input type=hidden name=h value="&amp;quot;">
+</form>
+<div contenteditable spellcheck=unknown><br><hr noshade size=bad></div>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Inline legacy elements</title>
+</head>
+<body>
+<center><font face="A&amp;B" size="+9" color="#12GG00">
+  <b><i><u><strike><big><small>Nested inline text
+</center>
+<pre width="not-a-number">  preserved
+  <code>&lt;tag attr='x'&gt;</code></pre>
+<blockquote cite="unterminated>
+  <q cite=/quote>quoted <sup>2</sup><sub>n</sub></q>
+</blockquote>
+<address><a href=mailto:test@example.invalid>Contact</address>
+<marquee behavior=scroll direction=sideways loop=-2>
+  scrolling &copy; text
+</marquee>
+<blink>old <s>formatting</s></blink>
+<p>After <b>unclosed <i>style <u>stack</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Comments and declarations</title>
+  <!-- normal -- comment with -- extra -->
+  <!---->
+  <!-- broken comment
+  <meta name=description content="before close>
+  <![if IE]>
+    <style type="text/css">body { color: red; }</style>
+  <![endif]>
+</head>
+<body>
+  <?xml version="1.0"?>
+  <?processing instruction data?>
+  <!ENTITY sample "replacement">
+  <!ELEMENT document ANY>
+  <div id=a id=b class=x class=y data-x=1/2 data-y="&unknown;">
+    Text
+    <!-- nested <!-- comment --> tail -->
+    <![CDATA[ <not-an-element> & raw ]]> 
+  </div>
+  <!--
+    <p>hidden
+    <img src=x>
+  -->
+  <p>visible</p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html lang=en>
+<head>
+  <title>Objects and alternate content</title>
+  <link rel=alternate media=screen href=feed.xml>
+  <style media="all & invalid">.x{background:url("x");}</style>
+</head>
+<body>
+<object classid="clsid:ABC" codebase=/bad width=zero height=-1>
+  <param name=movie value="clip.mov">
+  <param name=autoplay value=true>
+  <embed src=clip.swf type="application/x-shockwave-flash" width=100 height=bad>
+  <noembed><p>Fallback <img src=missing alt=broken></p></noembed>
+</object>
+<applet code=Test.class archive="a.jar,b.jar" width=10 height=10>
+  <param name=code value="x">
+  applet fallback
+</applet>
+<map name=MAP>
+  <area shape=rect coords="0,0,10" href=/a alt=A>
+  <area shape=poly coords="1,2,3,4,5" href=>
+</map>
+<img src="photo" usemap="#MAP" ismap border>
+<iframe srcdoc="<p>nested</p>" src=/frame frameborder=maybe></iframe>
+</body>
+</html>
+```

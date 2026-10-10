@@ -1,0 +1,140 @@
+```html
+<!doctype html>
+<html lang="x-invalid">
+<head>
+  <meta charset="windows-1252">
+  <base href="http://example.invalid/a/">
+  <style type="text/css">
+    @import url("x.css"); body { color: #12zz99; }
+  </style>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("<i>broken"); }
+  </script>
+</head>
+<body bgcolor="#12">
+  <header><hgroup><h1>Heading <em>one<h2>Heading two</hgroup></header>
+  <nav><ul><li>First<li><a href=#two>Second</ul></nav>
+  <main id="two">
+    <article>
+      <p>Alpha <b>bold <i>italic</b> plain</i>
+      <figure><img src alt=missing><figcaption>caption without closure
+      <details open="maybe"><summary>Summary</summary><div>Hidden content
+    </article>
+    <aside><dl><dt>Term<dd>Definition<dt>Other<dd><p>Paragraph
+  </main>
+  <footer><address><a href="mailto:test@example.invalid">Contact
+</body>
+```
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head><title>Foreign content stress</title></head>
+<body>
+  <svg width="100%" viewBox="0 0 400 200">
+    <defs><linearGradient id="g"><stop offset="0%"/><stop offset="110%"></linearGradient></defs>
+    <g transform="translate(10,20) rotate(foo)">
+      <rect x="0" y="0" width="300" height="100" fill="url(#g)"></rect>
+      <text x="4" y="40">SVG text <tspan dx="bad">piece</tspan></text>
+      <foreignObject width="200" height="80">
+        <div xmlns="http://www.w3.org/1999/xhtml"><p>HTML inside SVG
+      </foreignObject>
+    </g>
+  </svg>
+  <math display="block">
+    <mrow><mi>x</mi><mo>=</mo><mfrac><mi>a</mi><mn>0</mn></mfrac>
+    <annotation-xml encoding="application/xhtml+xml"><p>embedded math HTML</p></annotation-xml>
+  </math>
+  <p>After foreign content <bdi dir="sideways">text</bdi><br><wbr>
+  <iframe srcdoc="<p>inner &amp; <b>document</b>"></iframe>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <meta http-equiv=refresh content="0; url='x">
+  <title>Form labyrinth</title>
+</head>
+<body>
+<form action="/submit" method=WHAT enctype="multipart/form-data" novalidate>
+  <fieldset disabled>
+    <legend>Account <input name=legend value="v"></legend>
+    <label for=user>User:
+      <input id=user type=text name=user required minlength=-3 maxlength=abc value="&amp;&quot;">
+    </label>
+    <label>Password <input type=password name=pw></label>
+  </fieldset>
+  <input type=hidden name=h value="one">
+  <select name=choice multiple size=0>
+    <option selected disabled value=a>Alpha
+    <option value=b>Beta
+    <optgroup label="unterminated><option>Gamma
+  </select>
+  <textarea name=notes wrap=sideways rows=NaN cols=0>line one
+line two &unknown;</textarea>
+  <button type=submit formaction=/go>Send <strong>now</button>
+  <input type=image src="x" alt=submit>
+</form>
+<form>
+  <input name=outside>
+  <select><option>orphan</form></select>
+</form>
+</body>
+</html>
+```
+
+```html
+<!-- leading comment --><!bogus declaration>
+<html><head>
+  <title>Comments and declarations</title>
+  <!-- nested <!-- comment --> tail -->
+  <?processing instruction?>
+  <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+</head><body>
+  <pre> preformatted
+    <code>code <var>v</code> after</var>
+  </pre>
+  <blockquote cite="&notanentity;><p>Quote <q cite=x>nested quote</blockquote>
+  <table>
+    <tr><td>one<td>two
+    <colgroup><col span="x"><colgroup><col>
+    <tbody><tr><th>head<th><div>bad cell
+  </table>
+  <ul><li>one<ul><li>nested</li></ul><li>two</ul>
+  <p>Text<!-- unclosed comment
+  <script type="text/plain">a<!--b</script>
+  <style>body { background: url("unterminated; }</style>
+</body></html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Media and interactive fragments</title></head>
+<body>
+  <map name=mainmap>
+    <area shape=poly coords="0,0,10,10,20" href=/one alt=one>
+    <area shape=circle coords="a,b,c" href="/two">
+  </map>
+  <picture>
+    <source media="(min-width: )" srcset="a 1x, b 2q, c">
+    <source type="image/avif" srcset>
+    <img usemap="#mainmap" srcset="x 100w, y" sizes="calc(100%-foo)" alt>
+  </picture>
+  <video controls autoplay="false" width=-4 height=huge poster=x>
+    <track kind=subtitles srclang=xx default src=vtt>
+    <source src="movie.mp4" type="video/unknown">
+    fallback <a href=video>video</a>
+  </video>
+  <audio preload=perhaps><source src=a><source src=b></audio>
+  <dialog open=closed><form method=dialog><button>Close</button></form>
+    <p>Dialog <mark>text</dialog>
+  <menu type=context><menuitem label="A" command="x"><li>not menuitem</menu>
+  <canvas width=NaN height=-1>Canvas fallback <span>content</canvas>
+  <p contenteditable="maybe" spellcheck="sometimes">End &copy &#x110000; &#12;
+</body>
+</html>
+```

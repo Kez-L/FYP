@@ -1,0 +1,23 @@
+{
+  "call": 3,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a HTML document parser.\nTarget: /home/user/Documents/1git-folder/AgentAFL/AFLPlus/tidy-html5-build/tidy_parse_string_fuzzer-afl.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 HTML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n<html lang=\"fr\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=windows-1252\">\n<meta name=viewport content=\"width=device-width, initial-scale=1\">\n<link rel=stylesheet href=screen.css media=screen>\n<base href=\"http://example.invalid/root/\">\n<title>Table &eacute;trange</title>\n</head>\n<body>\n<table border=1 cellpadding=2 summary=\"mixed cells\">\n<caption>R\u00e9sum\u00e9 <em>non ferm\u00e9</caption>\n<colgroup span=2><col width=25%><col align=center></colgroup>\n<thead><tr><th rowspan=2 scope=col>Nom<th colspan=2>Valeur</tr></thead>\n<tbody>\n<tr><td>A<td>1<td><input type=checkbox checked=checked disabled>\n<tr><td rowspan=2>B<td><del>old<td><ins>new</ins>\n<tr><td><select multiple size=2><option selected>one<option value=\"2\">two</select>\n</tbody>\n<tfoot><tr><td colspan=3><small>fin</small></td></tr></tfoot>\n</table>\n<p><a href=\"#missing\" title=\"a &quot;b&quot;\">jump<br>line</a>\n<blockquote cite='urn:x'><q>quote <cite>source</cite></q></blockquote>\n</body>\n</html>\n\n--- example 2 ---\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n<?xml-stylesheet type=\"text/css\" href=\"x.css\"?>\n<title>alpha &copy; &#0; &#x110000;</title>\n<!--- malformed comment -- --!>\n</head>\n<body xml:lang=\"en\" dir=\"rtl\">\n<section><hgroup><h1>Heading</h1><h2>Subheading</h2></hgroup>\n<p>before <b><i><u>nested</b> crossing</u> text</i>\n<ruby>\u6f22<rt>kan</rt><rp>(</rp></ruby>\n<mark data-x=\"a&amp;b\" =broken>marked</mark>\n</section>\n<article><header>head</header><aside>side</aside><footer>foot</footer></article>\n</body>\n</html>\n\nTried before \u2014 no new coverage, avoid repeating:\n--- a seed you generated (cycle 3) added 0 new edges ---\n<!doctype html>\n<html>\n<head>\n<title>Lists and definitions</title>\n</head>\n<body>\n<ol start=\"03\" reversed type=\"A\">\n<li>first<ul><li>nested one<li>nested two<ol><li>deep</ol></ul>\n<li value=\"7\">second\n</ol>\n<menu compact>\n<li><button type=button onclick=\"x('>')\">Action</button>\n<li><input type=text value=\"a b\" maxlength=abc>\n</menu>\n<dl>\n<dt><abbr title=\"Hyper Text\">HTML</abbr>\n<dd><p>definition <sup>1</sup>\n<dt><dfn>term <var>x</var></dfn>\n<dd><pre><code>if (a < b) {\n  return &amp; c;\n}</code></pre>\n</dl>\n<p><bdo dir=ltr>abc <bdi>xyz</bdi> def</bdo>\n</body>\n</html>\n\n--- a seed you generated (cycle 3) added 0 new edges ---\n<!DOCTYPE html>\n<html>\n<head>\n<title>Raw text and declarations</title>\n<style type=\"text/css\">\nbody { background: url(\"x\"); }\n.invalid { content: \"</style><p>escaped\"; }\n</style>\n<script type=\"text/javascript\">\nif (a < b && c > d) { document.write(\"<div>raw</div>\"); }\n</script>\n<noscript><meta name=robots content=noindex><p>noscript text</noscript>\n</head>\n<body>\n<textarea name=message rows=3 cols=20>literal &amp; <b>tags</b>\nsecond line</textarea>\n<select name=pick>\n<option value='x' label=\"X\">display\n<optgroup label=Group disabled><option>hidden</optgroup>\n</select>\n<object data=\"movie.bin\" type=\"application/octet-stream\" width=1 height=2>\n<param name=autoplay value=true>\n<embed src=plug.s...[truncated, 738 chars total]\n\nGenerate 5 new HTML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-tidy-20261006",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-08T06:30:00.047336+00:00"
+}

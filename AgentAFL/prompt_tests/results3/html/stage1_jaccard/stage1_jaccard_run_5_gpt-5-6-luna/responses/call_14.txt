@@ -1,0 +1,138 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+  <base href="http://example.invalid/a/../b/">
+  <link rel="stylesheet" media=screen// href="style.css">
+  <style type=text/css>
+    @import url("x.css"; body { color: #12g; }
+  </style>
+  <!-- unterminated comment
+<body>
+  <svg width="10" height="10" viewBox="0 0 10 10">
+    <foreignObject x="0" y="0" width="10" height="10">
+      <div xmlns="http://www.w3.org/1999/xhtml"><b>embedded</div>
+    </foreignObject>
+    <path d="M0 0 L10 10 Z" fill="url(#missing)">
+  </svg>
+  <math display="block"><mrow><mi>x</mi><mo>=</mo><mfrac><mn>1</mn><mn>0</mn></mfrac></mrow>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>attribute state stress</title>
+</head>
+<body id="a" id="b" class=test class='one two' data-x=unquoted&broken disabled="" =bad
+  style="color:red; background:url('x)" lang="en-US" xml:lang="fr">
+  <div
+    title="one
+    two"
+    data-empty
+    data-q="&amp &unknown; &#x; &#99999999;"
+    onclick="if (a < b) alert('x')"
+    / >
+    <span>alpha<br/>beta<hr / gamma
+    <img src=x alt="unterminated><input type=text name=q value='v>
+  </div>
+  <p>before <em>italic <strong>bold</em> after</strong>
+  <p><a href="http://example.invalid/?a=1&b=2">link
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>form controls and replaced elements</title>
+</head>
+<body>
+  <form name=f action="" method="dialog">
+    <input type="file" accept="image/*,.txt" multiple="maybe" capture>
+    <input type="range" min=10 max=2 step=0 value=999>
+    <input type="date" min="not-a-date" max="2020-99-99">
+    <input type="radio" name=choice checked="false">
+    <output for="a b">result</output>
+    <meter min=10 low=20 optimum=-1 high=0 max=5 value=100>meter</meter>
+    <progress max=-2 value=NaN>loading</progress>
+    <select name=x>
+      <option value=a selected selected>one
+      <option value=b disabled>two
+      <option>three
+    </select>
+    <textarea wrap=side rows=0 cols=-4>text &amp; more</textarea>
+    <button type=reset formmethod=POST formaction="/submit">go</button>
+  </form>
+  <object data="movie.swf" type="application/x-shockwave-flash" width="0" height="-1">
+    <param name=movie value="x.swf">
+    fallback <embed src="x" hidden="false">
+  </object>
+  <iframe srcdoc="<p>nested &amp; text</p>" sandbox="allow-scripts allow-forms" frameborder=bad></iframe>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>sections and phrasing boundaries</title></head>
+<body>
+<header><hgroup><h1>Heading <small>part</h2><h3>orphan</h3></hgroup>
+<nav><menu type=context><li><a href=#one>one<li><a href=#two>two</menu></nav></header>
+<main>
+  <article id=one>
+    <h2>Article</h2>
+    <p>text <q cite="x">quote <cite>citation</q></cite> tail
+    <figure>
+      <picture>
+        <source srcset="a 1x, b 2x" media="(" type=image/png>
+        <img src="fallback" alt="picture">
+      </picture>
+      <figcaption>caption</figcaption>
+    </figure>
+    <details open="no"><summary>summary</summary><p>hidden content</p></details>
+    <dialog open=maybe><form method=dialog><label>name<input autofocus></label></form></dialog>
+    <ruby>漢<rp>(</rp><rt>kan</rt><rp>)</rp><rtc>annotation</rtc></ruby>
+    <p><bdi dir=side>direction</bdi><bdo dir=rtl>abc</bdo><wbr>after
+  </article>
+  <aside><section><h4>side</h4><address>contact<br>broken</address></section></aside>
+</main>
+<footer><template><div>template <slot name=x>fallback</slot></div></template></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>raw text and comment delimiters</title>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("</scr" + "ipt>"); }
+    /* <!-- fake comment --> &amp; */
+  </script>
+  <noscript><p>fallback <b>markup</noscript></b>
+  <style>
+    .x::before { content: "</style>"; }
+    <!-- old style comment
+    body { background: url("x"); }
+  </style>
+</head>
+<body>
+  <!-- normal -- comment --->
+  <!--><div>after bogus comment</div><!--
+  <pre>  leading
+    &lt;tag&gt; &#xD800; &#0; &#x110000; &bad=thing
+  </pre>
+  <x-custom data-a="1"><y-custom /></x-custom>
+  <div><span></div></span>
+  <![CDATA[not really cdata]]>
+  <!--[if IE]><div>conditional</div><![endif]-->
+</body>
+</html>
+```

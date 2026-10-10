@@ -1,0 +1,118 @@
+```html
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Parser boundary test</title>
+</head>
+<body>
+<!--- malformed comment with nested -- markers --->
+<p id=one><b><i>alpha <u>beta</b> gamma</i></u>
+<div class="a" data-x='unterminated>
+  <input type=text name=q value="a&b" disabled=disabled checked>
+  <label for=q>Search <em>now</label>
+</div>
+<![CDATA[not really cdata <tag> & stuff]]>
+<?xml version="1.0"?>
+<custom><span>text</custom>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Forms and controls</title>
+</head>
+<body>
+<form action="/submit" method=POST enctype="multipart/form-data">
+<fieldset disabled>
+<legend><strong>Account</strong></legend>
+<label>Name<input name=user value='x"y'></label>
+<label>Password<input type=password name=p maxlength=999999999999></label>
+<select name=choice multiple size=0>
+<option selected value=a>Alpha
+<option value=b disabled>Beta
+<optgroup label="Group"><option>Gamma</optgroup>
+</select>
+<textarea name=message rows=-1 cols=999999999999>one
+two</textarea>
+<button type=submit formaction=/go>Send <span>!</button>
+</fieldset>
+<input type=image src=missing alt=submit>
+</form>
+<details open=maybe><summary>Summary</summary><p>Hidden? <output name=result>42</output></details>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Embedded namespaces</title>
+</head>
+<body>
+<svg viewBox="0 0 10 10"><g transform="translate(1 2)">
+<rect x="0" y="0" width="5" height="6"></rect>
+<foreignObject><div xmlns="http://www.w3.org/1999/xhtml"><p>inside svg</p></div></foreignObject>
+<path d="M0 0 L10 10 Z" fill="url(#x)"></path></g></svg>
+<math><mrow><mi>x</mi><mo>&lt;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+<mtext><annotation-xml encoding="application/xhtml+xml"><div>math text</div></annotation-xml></mtext></math>
+<p>after namespaces</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<meta name=keywords content="a,b,c">
+<meta http-equiv=Content-Language content=en-US>
+<title>Old elements mixed with odd nesting</title>
+</head>
+<body bgcolor=#12GG34 text=none>
+<pre> preformatted
+  <a href=foo><code>link <tt>code</a> tail</tt></code>
+</pre>
+<dl compact="false">
+<dt>Term one
+<dd>Definition <p>paragraph without closing
+<dt><font face="Arial" size=0>Term two</font>
+<dd><ol type=Z start=abc><li>first<li>second<ul><li>nested</ol></ul>
+</dl>
+<hr noshade width="wide" height=negative>
+<center><img src alt=><map name=m><area shape=poly coords="1,2,three"></map></center>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>Raw text and entity stress</title>
+<script type="text/javascript">
+if (a < b && c > d) { document.write("</scr" + "ipt>"); }
+var s = "&#xD800; &unknown; </style>";
+</script>
+<style>
+a::before { content: "</style>"; }
+@media (x < 3) { body { background: url("x&y"); } }
+</style>
+<noscript><meta http-equiv=refresh content=0></noscript>
+</head>
+<body>
+<p>&#0;&#x0;&#x10FFFF;&#1114112;&amp;amp;&notanentity;
+<!-- comment <!-- nested --> remains -->
+<table border=foo>
+<caption>Cap</caption>
+<colgroup span=abc><col width=bad><colgroup><col>
+<tbody><tr><th rowspan=-1 colspan=999>H<th>J
+<tfoot><tr><td>foot</tbody>
+</table>
+</body>
+</html>
+```

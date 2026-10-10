@@ -1,0 +1,111 @@
+```html
+<!doctype html>
+<html lang="x" dir="sideways">
+<head>
+<meta charset="not-a-real-encoding">
+<base href="http://[invalid.example:99999/path">
+<link rel="stylesheet" media="(" href="//">
+<style type="text/css">.x{content:"</style><p>escaped?</p>"} @import url("x");</style>
+<script type="application/ld+json">{"x":"</script><img src=x>","n":NaN}</script>
+</head>
+<body>
+<header id=top><hgroup><h1>Broken <em>heading</h1><h2>after</h3></hgroup></header>
+<main>
+<article itemscope itemtype="http://schema.invalid/Thing">
+<meta itemprop=name content="a&quot;b&amp;c">
+<time datetime="2024-99-99T99:99">yesterday</time>
+<p><mark>one <mark>two</p></article>
+<aside><details open=maybe><summary>summary</summary><template><div>hidden</div></template><dialog open>dialog text</dialog></details></aside>
+</main>
+<footer><address><a href="mailto:x@y">x</address></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head><title>frameset collision</title></head>
+<frameset rows="*,0,auto" cols="50%,bad">
+<frame src="javascript:alert(1)" name="a" noresize="false">
+<frameset>
+<frame srcdoc="<p>inner &amp; broken" scrolling=maybe>
+<noframes><body><p>fallback</p></body></noframes>
+</frameset>
+</frameset>
+<noframes>
+<body bgcolor=#ggg>
+<form action="/submit?x=1&y=2" method=wat>
+<input type=text name=a disabled=0 required="">
+<input type=image src=x alt="unterminated
+<button type=submit><img src=x alt=go></form>
+</body>
+</noframes>
+</html>
+```
+
+```html
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
+<title>svg document</title>
+<defs>
+<linearGradient id=g><stop offset="0%"/><stop offset="bad"/></linearGradient>
+<clipPath><path d="M0 0 L10 10 Z"></clipPath>
+</defs>
+<foreignObject x="0" y="0" width="10" height="10">
+<div xmlns="http://www.w3.org/1999/xhtml">
+<p>HTML inside SVG <b>without closing
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+<mrow><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+</math>
+</div>
+</foreignObject>
+<use href="#g" xlink:href="#missing" />
+<text><tspan dy="1e999">label</text>
+</svg>
+```
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head><!-- comment -- --><title><![CDATA[not XML?]]></title></head>
+<body>
+<p id="a" id="b" class="x" class="y">start
+<!-- unclosed comment
+<div hidden="hidden">
+<pre>line 1
+	 line 2</pre>
+<dl><dt>term<dd>definition<dt>next
+<ol start="NaN"><li value="-1">a<li>b</ol>
+<menu><li><input type=checkbox checked=unchecked> item</menu>
+<blockquote cite="&quot;"><p>quote</blockquote>
+<hr />
+</div>
+<script>
+if (a < b) { document.write("<div>script</div>"); }
+// </script still text?
+</script>
+<noscript><iframe src=//example.invalid></iframe></noscript>
+</body>
+</html>
+```
+
+```html
+<html><head><title>form controls</title></head><body>
+<form id=f enctype="multipart/form-data" accept-charset="UTF-999" novalidate>
+<label for=q>Query<label><input id=q name=q value="&notanentity; &#x110000;">
+<select name=items multiple size=zero>
+<option selected=selected>one<option disabled>two
+<optgroup label="A"><option value="v">three
+</select>
+<fieldset disabled><legend>Legend<input name=x></fieldset>
+<textarea name=t wrap=unknown maxlength=-4>first
+second &amp; third</textarea>
+<input type=file accept="image/*,,audio/" capture=maybe>
+<input type=number min=inf max=-inf step=0 value=1e309>
+<output for="q missing">result</output>
+<datalist id=dl><option value=a><option label=b></datalist>
+<button formaction="http://[bad" formmethod=INVALID>Send</button>
+</form>
+<iframe sandbox="allow-scripts allow-scripts" srcdoc="<!doctype html><html><body><p>nested"></iframe>
+</body></html>
+```

@@ -1,0 +1,97 @@
+```html
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <base href="http://example.invalid/a/../b">
+    <style>
+      @media (min-width:0) { body::before { content: "</style><script>x</script>"; } }
+    </style>
+    <title>&#xD800;&#x110000;&ampbroken</title>
+  </head>
+  <body id="a&#0;b" class="x&#x1F;y">
+    <!-- unclosed comment
+    <div data-x="&quot; &#xDFFF; &#999999999999999999;">text
+    <textarea>one</textarea><textarea>two</body>
+</html>
+```
+
+```html
+<!DOCTYPE html [
+  <!ENTITY test "replacement">
+  <!ELEMENT html ANY>
+]>
+<?xml version="1.0"?>
+<root xmlns="urn:one" xmlns:x="urn:two">
+  <x:item x:a="1<2" disabled=disabled/>
+  <mixed><![CDATA[<not-a-tag>&#xD800;</not-a-tag>]]></mixed>
+  <![CDATA[unterminated
+  <section><b><i>crossed</section></b></i>
+  &test; &unknown; &amp &apos &notin;
+</root>
+```
+
+```html
+<html>
+  <head>
+    <title>form controls</title>
+  </head>
+  <body>
+    <form action="/submit" method="post">
+      <input name="a" value="&quot; onfocus=&quot;alert(1)" />
+      <select name="s">
+        <option value="1">one
+        <optgroup label="g"><option>two</select>
+      <button type="submit"><label for=x>go</button>
+      <fieldset disabled><legend>L</legend><input><textarea cols="0" rows="-1">
+        &lt;/textarea&gt;
+      </fieldset>
+    </form>
+    <form><input form="missing"><output><meter value="nan">x</meter>
+    <label><input type=checkbox checked=checked><label>nested
+  </body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("</script>"); }
+    var x = "<!--";
+  <script>
+  <noscript><p>fallback</noscript>
+</head>
+<body>
+  <svg viewBox="0 0 10 10"><foreignObject><div><p>svg html</div></foreignObject>
+    <path d="M0 0 L10 10" />
+  </svg>
+  <math><mi>x</mi><mo>&#x2212;</mo><annotation-xml encoding="text/html">
+    <p>math html</p>
+  </annotation-xml></math>
+  <iframe srcdoc="<p title='&quot;'>embedded</p>"></iframe>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><meta charset="utf-16"><title>deeply malformed</title></head>
+<body>
+  <p><a href="x" title="unterminated><b>bold<i>italic
+  <table border="1">
+    <colgroup><col span="2"><tbody>
+    <tr><th rowspan="999"><div>header<td><img src=x alt="a<b">
+    <tr><td><ul><li>first<li><dl><dt>term<dd>definition
+    <tfoot><tr><td>end
+  </table>
+  <div style="color:red; background:url('x</style>')">
+    <hgroup><h1>one<h6>six</hgroup>
+    <address><pre>line1
+line2</address></pre>
+  </div>
+  <!--><!----><!-----><div>tail
+</body>
+```

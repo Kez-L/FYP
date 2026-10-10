@@ -1,0 +1,122 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <base href="http://example.invalid/a/../b/?x=1&y=2">
+  <meta http-equiv="refresh" content="0; URL='javascript:alert(1)'">
+  <link rel="alternate stylesheet" media="(width <= 0px)" href="">
+  <noscript><meta name="fallback" content="enabled"></noscript>
+</head>
+<body>
+  <!--><!----><!-- unclosed
+  <header><nav><a href="mailto:test@example.invalid?subject=%00&#xD800;">link</a></nav></header>
+  <article>
+    <hgroup><h1>A</h1><h6>B</h6></hgroup>
+    <blockquote cite="&notanentity; &amp &#x;">
+      <p>before <b><i><u>crossed</b> out</i></u> after</p>
+    </blockquote>
+    <figure><img src="" alt="&quot; &apos; &#0;"><figcaption>caption</figcaption></figure>
+  </article>
+  <footer><address><a href="#x">contact</a></address></footer>
+</body>
+</html>
+```
+
+```html
+<!doctype html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://example.invalid/">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>Foreign content probe</title></head>
+<body>
+  <svg viewBox="0 0 10 10" viewbox="1 2 3 4">
+    <title>svg title</title>
+    <foreignObject width="10" height="10">
+      <div xmlns="http://www.w3.org/1999/xhtml"><p>embedded <br/> html</p></div>
+    </foreignObject>
+    <path d="M0 0 LNaN Infinity z" fill-rule="evenodd" />
+    <text x="1e309" y="-0">a &amp; b</text>
+  </svg>
+  <math display="block">
+    <mi>x</mi><mo>&InvisibleTimes;</mo>
+    <mrow><msup><mi>y</mi><mn>2</mn></msup><annotation-xml encoding="application/xhtml+xml"><p>x</p></annotation-xml></mrow>
+  </math>
+  <p>after foreign <span>text</span></p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Table reconstruction</title></head>
+<body>
+  <table border="0" cellpadding="18446744073709551615">
+    <caption>caption</caption>
+    <colgroup span="-1"><col span="0"><col width="1e999"></colgroup>
+    <thead><tr><th rowspan="999999" colspan="-4">head<th scope="col">other</tr></thead>
+    <tbody>
+      <tr><td>a<td>b<tr><td colspan="not-a-number">c</td></tr>
+      <tr><th><form><input name="in-table"></form></th><td><select name="s"><option>one<option selected>two<optgroup label="g"><option>three</select></td></tr>
+    </tbody>
+    <tfoot><tr><td>foot</table>
+  <p>tail</p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Raw text and declarations</title>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("</script><p>escaped-out</p>"); }
+    /* </script> */
+  </script>
+  <style>
+    x { content: "</style><style>y{color:red}</style>"; }
+  </style>
+</head>
+<body>
+  <noscript>
+    <div>literal <b>markup</b> &amp; entities</div>
+  </noscript>
+  <script type="application/json">{"x":"</script>","arr":[null,true,-0.0]}</script>
+  <textarea>line one
+line two
+</textarea>
+  <pre><code>&lt;tag attr=&quot;x&quot;&gt;
+&amp;raw;
+</code></pre>
+  <p>closing tests</body></html></p>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Obsolete and interactive controls</title>
+</head>
+<body>
+  <frameset cols="*,0" rows="1,2">
+    <frame src="about:blank" name="a">
+    <frame src="" name="b">
+    <noframes><p>fallback</p></noframes>
+  </frameset>
+  <form id="f" method="post" enctype="multipart/form-data" accept-charset="x-invalid">
+    <fieldset disabled>
+      <legend><button type="button">legend button</button></legend>
+      <input type="image" src="x" formaction="/x" formmethod="dialog">
+      <meter min="10" max="2" low="NaN" high="-Infinity" value="999">meter</meter>
+      <progress max="-1" value="1">progress</progress>
+    </fieldset>
+    <output name="o" for="a b">result</output>
+    <object data="x" type="application/x-unknown">
+      <param name="movie" value="&amp;">
+      <embed src="y" hidden>
+      fallback<object>nested</object>
+    </object>
+  </form>
+</body>
+</html>
+```

@@ -1,0 +1,145 @@
+```html
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<base href="http://example.invalid/a/">
+<link rel="stylesheet" href="x.css" media="screen and (min-width: 1px)">
+<style type="text/css">
+@media print { body { color: red } }
+a[href^="x"]::before { content: "</style><p>" }
+</style>
+<script type="application/ld+json">
+{"@context":"http://schema.org","broken":[1,2,],"text":"</script>"}
+</script>
+</head>
+<body id=main class='a b' data-x="unterminated>
+<div><span>one</div><b>two<i>three</span></b></i>
+<!-- comment -- --><!----><!bogus data>
+<?processing instruction?>
+<![CDATA[not really cdata]]>
+<p title="a&b&#xD800;">&unknown; &#0; &#x110000; &#x1f4a9; &amp missing</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>forms and controls</title></head>
+<body>
+<form action="/submit" method="post" enctype="multipart/form-data">
+  <fieldset disabled>
+    <legend><input name=legend-value value="x"></legend>
+    <label for=a>Name <input id=a name=name type=text required></label>
+    <select name=choice multiple size=0>
+      <option selected value=one>One
+      <option value=two disabled>Two
+      <optgroup label=group><option>Three</optgroup>
+    </select>
+    <textarea name=notes rows=-1 cols="bad">text
+    <button type=submit formaction="/other">send
+  </fieldset>
+  <input type=image src=x alt=y>
+  <input type=checkbox checked="false">
+  <input type=radio name=r checked>
+  <input type=file accept=",,text/plain" multiple="no">
+  <output for="a b">result</output>
+  <progress value=abc max=-2>loading</progress>
+</form>
+<form><input name=x><form><input name=y></form></form>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>lists and definition blocks</title></head>
+<body>
+<ol start="zero" reversed="false" type="Q">
+  <li>alpha
+  <li>beta
+    <ol><li>nested one</ol>
+  <li>gamma
+</ul>
+<ul>
+  <li>unclosed
+  <dt>term outside
+  <dd>definition
+  <dt><dd>another
+</dl>
+<dl>
+  <div><dt>wrapped term</dt><dd>wrapped definition</dd></div>
+  <dt>one<dd>two<dt>three<dd>four
+</dl>
+<menu>
+  <li><button>item</button>
+  <li><a href=#>link
+</menu>
+<blockquote cite="&quot;broken">
+<p>quote <q>nested <q>quotes</blockquote>
+<pre>  leading
+	 tabs &lt; &amp;
+</pre>
+<figure><figcaption>caption
+<img src="x" alt="image"><figcaption>second</figure>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zz">
+<head>
+<title>mixed embedded data</title>
+</head>
+<body>
+<template id=t><table><tr><td>template</template>
+<canvas width="not-a-number" height="-9">fallback <b>text</canvas>
+<audio controls autoplay="false" preload=garbage src="a&amp;b">
+  <source src=x type="audio/unknown"><track kind=subtitles>
+</audio>
+<video poster=x width=huge><source src=y><track default></video>
+<picture>
+  <source media="(" srcset="a 1x, b 2w,">
+  <img srcset="c 3x" sizes="100vw" alt="pic">
+</picture>
+<map name=x><area shape=rect coords="1,2,3" href=a><area shape=circle coords=1,2></map>
+<object type="application/x-bad" width=x height=y>
+  <param name=p value=v><embed src=z>
+</object>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>raw text and attribute edge cases</title></head>
+<body>
+<script>
+if (a < b && c > d) { document.write("<p>fake</p>"); }
+<!-- legacy comment
+</script>
+<style>
+body { background: url("x>y"); }
+</style>
+<textarea><div>literal &amp; text</textarea>
+<iframe src="javascript:alert('x')" name="a" name="b">fallback
+<details open=0>
+  <summary>first summary</summary>
+  <summary>second</summary>
+  <p>content
+</details>
+<dialog open=maybe><form method=dialog><button value=x>close</form></dialog>
+<div contenteditable spellcheck="maybe" tabindex="not-an-int">
+  <ins cite=x datetime=bad>inserted
+  <del cite=y>deleted</ins>
+  <bdo dir=sideways>direction</bdo>
+  <bdi>isolate</bdi>
+</div>
+<hr/><br><wbr><hr>
+</body>
+</html>
+```

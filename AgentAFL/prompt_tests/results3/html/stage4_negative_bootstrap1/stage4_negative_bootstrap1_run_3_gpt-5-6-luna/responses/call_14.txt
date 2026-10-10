@@ -1,0 +1,119 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<?xml-stylesheet type="text/css" href="style.css"?>
+<!--><title>Comment boundary</title><!--
+<meta name="viewport" content="width=device-width">
+</head>
+<body>
+<div class="outer" data-x="a'b" data-y="1<2" disabled=>
+  Text &copy; &unknown;
+  <!-- nested-looking <!-- comment --> tail -->
+  <p class='one"two>paragraph
+  <div><span>split
+  </div>
+  </span>
+  <![CDATA[not really cdata]]>
+  <?broken instruction?>
+</body>
+</html>
+```
+
+```html
+<!doctype html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>Foreign content</title></head>
+<body>
+<svg width="20" height="20" viewBox="0 0 20 20">
+  <g transform="translate(1 2)">
+    <path d="M0,0 L10,10 Z" fill="none"></path>
+    <foreignObject><div xmlns="http://www.w3.org/1999/xhtml">embedded</div></foreignObject>
+  </g>
+</svg>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+</math>
+<hr/>
+<br />
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Ruby and phrasing</title></head>
+<body>
+<ruby>
+  漢<rb>字<rp>(</rp><rt>かん</rt><rp>)</rp></rb>
+  <rtc><rt>meaning</rt></rtc>
+</ruby>
+<p><b><i><u><s><em>deep <small>text</b> after</i></u></s></em></small>
+<pre>  preserved
+    <code>&lt;tag&gt;</code></pre>
+<blockquote cite="x"><q cite=y>quoted <cite>source</cite></q></blockquote>
+<dl>
+<dt>term
+<dd>definition
+<dt><span>another</span>
+<dd><div>nested definition
+<address>mail <a href="mailto:x@y">contact</a></address>
+</dl>
+<ins datetime=bad><del cite="ref">changed</del></ins>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>Head metadata collision</title>
+<base href="http://example.invalid/a/">
+<link rel=stylesheet href=x media="screen and (min-width: 1px)">
+<meta http-equiv=refresh content="0; url='next page'">
+<meta charset="utf-8" charset="latin1">
+<style type=text/css>
+a { color: red; }
+</style>
+<script type="text/plain">
+<!--
+var x = "</script><div>fake</div>";
+//-->
+</script>
+<noscript><meta name=x content=y></noscript>
+</head>
+<body>
+<header><hgroup><h1>Title<h2>Subtitle</hgroup></header>
+<main id=main><section><article><h3>Heading</h3><p>body</article></section></main>
+<aside>side</aside>
+<footer>foot</footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<frameset rows="20%,*">
+  <frame src="top.html" name=top scrolling=no>
+  <frameset cols="30%,70%">
+    <frame src="left.html">
+    <frame src="right.html" frameborder=0>
+    <noframes>
+      <body>
+        <h1>Fallback</h1>
+        <iframe srcdoc="<p>inline &amp; broken" sandbox="allow-scripts"></iframe>
+        <object data="movie" type="application/x-shockwave-flash">
+          <param name=quality value=high>
+          <embed src=movie width=0 height=-1>
+          fallback
+        </object>
+        <map name=m><area shape=rect coords="0,0,10,10" href=#x></map>
+        <img src=x usemap="#m" ismap alt>
+      </body>
+    </noframes>
+  </frameset>
+</frameset>
+```

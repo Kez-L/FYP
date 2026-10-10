@@ -1,86 +1,142 @@
 ```html
-<!doctype html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html lang=en>
-<head><meta charset="utf-8"><title>Table repair</title></head>
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base href="http://example.invalid/root/">
+  <title>Table recovery specimen</title>
+</head>
 <body>
-<table border=1><caption>broken <b>caption</caption>
-<colgroup span=2><col width=0><col width="auto"></colgroup>
-<thead><tr><th rowspan=9 colspan=0>A<th>B<tbody>
-<tr><td>one<td>two<tr><td colspan=bad>three
-<tfoot><tr><td>foot</table>
-<table><tr><td>x<table><tr><td>nested</table>tail
-<p>after &copy &notanentity; &#0; &#xD800; &amp broken
-</body></html>
+  <table border="1">
+    <caption>broken nesting</caption>
+    <colgroup><col span="2"><col></colgroup>
+    <thead><tr><th rowspan="2">A<th>B<th>C</tr></thead>
+    <tbody>
+      <tr><td><p>one<td>two<td><div>three</tr>
+      <tr><td colspan="4">four
+      <tfoot><tr><td>footer</tbody>
+  </table>
+  <form action="/submit" method="post">
+    <fieldset disabled>
+      <legend>Options</legend>
+      <input type="text" name="x" value="&amp; &notanentity;">
+      <select name="choice"><option>first<option selected>second</select>
+      <button type="submit">Send</button>
+    </fieldset>
+  </form>
+</body>
+</html>
 ```
 
 ```html
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
-<head><title>Raw text boundaries</title></head>
+<head><title>Misnested inline elements</title></head>
 <body>
-<pre>
-  preserved <b>text</b>
-  &lt;not markup&gt;
-</pre>
-<listing>line one
-line two <em>looks tagged</em>
-</listing>
-<xmp><div class="literal">x &amp; y</div></xmp>
-<noscript><p>fallback <i>content</noscript>
-<iframe srcdoc="<p>inner &amp; broken"><b>fallback</b></iframe>
-<plaintext><h1>everything after here
-<!-- comment-looking text -->
+  <p><b>bold <i>italic <u>underlined</b> still italic</u> after
+  <a href="x"><span><strong>link text</a> tail</strong></span>
+  <dl>
+    <dt>term one
+    <dd>definition one
+    <dt><span>term two</span>
+    <dd><blockquote><p>quoted <code>x &lt; y</blockquote> unclosed
+  </dl>
+  <address>name<br>street<br><small>contact</address>
+  <hr>
+  <pre> leading
+    whitespace &amp; entity
+  </pre>
+</body>
+</html>
+```
+
+```html
+<?xml version="1.0"?>
+<!DOCTYPE html [
+  <!ENTITY local "replacement">
+  <!ELEMENT note ANY>
+]>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <?processing instruction?>
+    <title>Entities and declarations</title>
+  </head>
+  <body>
+    <p>&local; &amp; &#65; &#x1F600; &quot; &apos; &unknown;</p>
+    <![CDATA[
+      <not-an-element> & raw cdata
+    ]]>
+    <!-- first comment
+      <!-- nested-looking comment -->
+      -- trailing
+    -->
+    <div id="a" id="b" style="color: rgb(1,2,3)" data-empty="">
+      text<br/>
+      <img src="image.png" alt="a &quot;quoted&quot; image"/>
+    </div>
+  </body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Lists and definition recovery</title>
+</head>
+<body>
+  <ol start="0" reversed type="A">
+    <li>alpha
+    <li value="7">beta
+      <ul>
+        <li>nested one
+        <li>nested two
+      </ul>
+    <li>gamma
+  </ol>
+  <menu>
+    <li><input type="checkbox" checked> check
+    <li><input type="radio" name="r"> radio
+  </menu>
+  <div>
+    <p>paragraph one
+    <div>unexpected division
+      <p>paragraph two
+      <table><tr><td>cell</td></tr></table>
+    </div>
+    <p>paragraph three
+  </div>
+  <figure>
+    <img src="" alt="">
+    <figcaption>caption <mark>highlight</mark></figcaption>
+  </figure>
 </body>
 </html>
 ```
 
 ```html
 <!doctype html>
-<html><head><title>Formatting recovery</title></head><body>
-<p><b><i><u><s>alpha
-<b>beta</i>gamma</u>delta</b>epsilon</s>
-<a href="one" href="two"><font color=red size=999><big><small>links
-<div><p>paragraph <a href=#x><b>nested</div>
-<table><tr><td><p>cell <b>bold<td>second</b></p></table>
-<dl><dt><dd>term without close
-<ul><li>one<li>two<ul><li>deep</ul><li>three</ul>
-<!--- malformed --!><!----><!invalid --><! [CDATA[ text ]]>
-</body></html>
-```
-
-```html
-<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
-<style type="text/css">body{color:red} </style>
-<style>/* unterminated { content:"</style><script>ignored?</script>
-<script type="text/javascript">
-if (a < b) { document.write("<p>x</p>"); }
-</script>
-<script><!--
-  var s = "</script><div>";
-// --></script>
-<template id=t><table><tr><td><p>template text</template>
+  <title>Raw text and embedded data</title>
+  <style>
+    body { background: url(data:image/png;base64,iVBORw0KGgo=); }
+    p::before { content: "</style><script>alert(1)</script>"; }
+  </style>
 </head>
 <body>
-<template><div><span>unclosed template
-</body></html>
-```
-
-```html
-<?xml version="1.0"?>
-<!DOCTYPE html SYSTEM "about:legacy-compat">
-<html lang="zz" xml:lang="en" dir=sideways>
-<head><base href="http://example.invalid/a?x=1&y=2"><title>Ruby and widgets</title></head>
-<body>
-<details open=maybe><summary>Summary <mark>mark</details>
-<dialog open>dialog <p>paragraph</dialog>
-<ruby>漢<rt>kan<rp>(</rp><rtc><b>annotation</rtc>字</ruby>
-<ins datetime="not-a-date"><del cite=x>old</del>new</ins>
-<menu type=context><menuitem label="A" checked disabled><li>fallback item</menu>
-<p><bdi dir=auto>abc‮xyz</bdi><bdo dir=rtl>123</bdo>
-<ol start=nan reversed><li value=1>first<li>second</ol>
-<embed src=x type="application/x-unknown"><object data=x><param name=a value=b><p>fallback</object>
-</body></html>
+  <textarea name="message">literal <b>markup</b> &amp; text</textarea>
+  <title>body title edge</title>
+  <xmp><div>raw xmp <b>content</b></div></xmp>
+  <plaintext>
+    everything after this is text
+    <div><span>not markup</span></div>
+    &amp; &#60;
+  </plaintext>
+  <template id="t">
+    <table><tr><td>template cell</td></tr></table>
+  </template>
+  <iframe srcdoc="<p>embedded &amp; document</p>" sandbox></iframe>
+</body>
+</html>
 ```

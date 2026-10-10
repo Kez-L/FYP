@@ -1,0 +1,178 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<base href="http://example.invalid/a/../b/">
+<meta http-equiv="refresh" content="0; url='next page.html'">
+<meta name="keywords" content="a,b,c">
+<style type="text/css">
+@import url("theme.css");
+body { color: #123456; }
+</style>
+</head>
+<body id="root" class="a b" style="color:red" onload="x<y">
+<header><hgroup><h1>Malformed layout</h1><h2>secondary</h2></hgroup></header>
+<nav><ul><li>one<li>two<ul><li>nested<li></ul></nav>
+<main>
+<table border="1" cellpadding="2">
+<caption align=bottom>caption</caption>
+<colgroup span=2><col width=20><col width="*"></colgroup>
+<thead><tr><th rowspan=2>head<th colspan=3>other</tr><tr><th>sub<th>sub2</tr></thead>
+<tbody><tr><td>A<td>B<td>C
+<tr><td colspan=0>D</td><td><table><tr><td>inner</table>
+<tfoot><tr><td>foot</td></tr></tfoot>
+</table>
+<dl compact><dt>term<dd>definition<dt>another<dd><p>paragraph</p>
+<blockquote cite="urn:test"><p>quoted <q cite=x>nested quote</q></p>
+<blockquote><pre>preformatted
+  second line &lt;tag&gt;</pre></blockquote></blockquote>
+</main>
+<footer><address>mail &lt;user@example.invalid&gt;</address></footer>
+</body>
+</html>
+```
+
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><title>Form controls</title></head>
+<body>
+<form action="/submit?a=1&amp;b=2" method="POST" enctype="multipart/form-data" accept-charset="utf-8" target="_blank">
+<fieldset disabled="false"><legend>Account &amp; preferences</legend>
+<label for=user>Name:</label><input id=user name=user value="&quot;quoted&quot;" required autofocus>
+<label>Email<input type=email name=email multiple></label>
+<input type="text" name="dupe" name="second" maxlength="-1" size=0>
+<input type=number min=10 max=2 step=0 value=nan>
+<input type=range min=100 max=0 value=50>
+<input type=date value=2020-99-99><input type=time value=25:61>
+<input type=color value=#12><input type=file accept="image/*,.txt" multiple>
+<input type=checkbox checked="no" indeterminate><input type=radio checked>
+<select name=choice multiple size=-3>
+<option value=a selected>Alpha
+<option value=b disabled>Beta<option>Gamma</option>
+<optgroup label="Group one"><option value=1>One<option value=2>Two</optgroup>
+</select>
+<input list=names name=person>
+<datalist id=names><option value=Alice label="A"><option value=Bob>Bob</datalist>
+<textarea name=message rows=0 cols=-1 wrap=hard>&lt;textarea&gt;
+second line</textarea>
+<button type=submit formaction="/other" disabled=false>Send <b>now</button>
+<button type=reset><i>Reset</i></button>
+<output name=result for="user choice">old result</output>
+<progress value=12 max=5>12%</progress>
+<meter min=10 low=20 optimum=30 high=40 max=50 value=60>bad</meter>
+</fieldset>
+</form>
+<form><input name=x><form><input name=y></form></form>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Inline language boundaries</title>
+</head>
+<body>
+<p lang="en" dir="ltr">English <span lang=ar dir=rtl>العربية <bdi>123</bdi> نهاية</span>
+<bdo dir="rtl">abc <em>def</em></bdo> end
+<p><ruby>漢<rb>字<rt>かんじ<rp>(</rp><rt>kanji<rp>)</rp></ruby>
+<p><ins cite="/edit" datetime="not-a-date">inserted <del datetime=2020-13-40>removed</del></ins>
+<p><abbr title="HyperText Markup Language">HTML</abbr>
+<cite>citation</cite><dfn title=x>definition</dfn>
+<code>&lt;div&gt;</code><kbd>Ctrl</kbd><samp>output</samp><var>value</var>
+<p><mark>highlight</mark><small>small</small><big>big</big><sub>sub</sub><sup>sup</sup>
+<p><font face="serif" size="+99" color="#gggggg">font
+<center><strike>old</strike><u>under</u><tt>fixed</tt></center>
+<p><marquee behavior=alternate direction=sideways scrollamount=-2>moving
+<blink>blink</blink></marquee>
+<hr noshade="false" width="not-a-number" align=middle>
+<ol type=I start="zero" reversed><li value=3>third<li>fourth</ol>
+<ul type="square"><li><a href="javascript:alert(1)" title='a"b'>link</a>
+<li><span title="unterminated>broken attribute</span></ul>
+<p title="&amp; &copy; &#0; &#xD800; &#x110000;">entities &unknown; &notanentity;</p>
+<!-- comment -- with -- runs --->text<!--
+nested <!-- fake -->
+-->
+</body>
+</html>
+```
+
+```html
+<?xml version="1.0"?>
+<!DOCTYPE html [
+<!ENTITY bogus "replacement">
+]>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<?processing instruction?>
+<title><![CDATA[title < & >]]></title>
+</head>
+<body>
+<section><article><header><h1>Boundary test</h1></header>
+<p>before <br/> middle<br />after <wbr/>end</p>
+<aside><h3>aside heading<h4>unclosed heading</aside>
+<figure>
+<img src="x" alt="image"><figcaption>caption</figcaption>
+</figure>
+</article>
+<article>
+<noscript><p>noscript <b>markup</b></p></noscript>
+<script type="application/json">
+{"x":"</script><p>escaped?","arr":[1,2,3]}
+</script>
+<style>
+.a { content: "</style><div>"; }
+</style>
+<p>after raw text</p>
+</article></section>
+<div><span>one<div>two</span>three</div>four</div>
+<p><a href=x><button type=button>button link</button></a>
+<details><summary>summary</summary><div>detail</div></details>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Legacy and broken containers</title></head>
+<body>
+<address>Address line
+<pre><code>line one
+line two &amp; &lt; three</code></pre>
+<xmp>literal <b>markup</b>
+<table><tr><td>not really a table</xmp>
+<listing>listing <i>content</i>
+</listing>
+<plaintext>
+Everything after this point is intended to exercise plaintext handling.
+<html><head><title>fake</title></head><body><p>raw &amp; text</body></html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Nested phrasing and empty elements</title></head>
+<body>
+<p><b><i><u><s><em><strong><small><big><mark>deep text</p>
+<p><a href=/one><a href=/two>nested anchors</a> tail</a>
+<p><button><button>nested buttons</button>tail</button>
+<p><label><label for=x>double label</label><input id=x></label>
+<p><span><br><br/><br />after breaks</span>
+<table>
+<tr><td>one<td>two<tr><th>three<td>four
+<tbody><tr><td>body cell</tbody>
+</table>
+<div><p>first<p>second<div>third
+<hr><hr/><input><input/><meta><link>
+<dl><dt>A<dd>B<dt>C<dd>D<dt><dd>empty</dl>
+<ol><li>one<li>two<li><ul><li>nested</ul><li>three</ol>
+<blockquote><p>quote <a href="#"><img src=x alt=""></p></blockquote>
+<pre> leading
+trailing </pre>
+</body>
+</html>
+```

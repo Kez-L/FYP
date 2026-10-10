@@ -1,0 +1,95 @@
+```html
+<!DOCTYPE html>
+<!-- unclosed comment with odd delimiters --!>
+<html>
+<head>
+<meta charset="utf-16">
+<base href="http://example.invalid/a/b/" target="_blank">
+<link rel=stylesheet media="screen,,print" href="x.css">
+<style type="text/plain"><!--
+body { color: red; }
+</style>
+</head>
+<body>
+<div id=a><span class='x y' title="a&b&#x110000;">alpha
+<!-- nested <!-- comment? -->
+<p>beta &notanentity &amp &#65 &#x41
+</div>
+</body>
+```
+
+```html
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="40">
+<foreignObject x=0 y=0 width=100 height=30>
+<div xmlns="http://www.w3.org/1999/xhtml">
+<ruby>漢<rt>kan</rt><rp>(</rp></ruby>
+<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi><mo>&InvisibleTimes;</mo><mn>2</mn></math>
+</div>
+</foreignObject>
+<path d="M0 0 L10 10 Z" fill="url(#missing)" />
+</svg>
+```
+
+```html
+<!doctype html>
+<html><head><title>raw text boundaries</title></head>
+<body>
+<script type="text/javascript">
+if (a < b) { document.write("</scr" + "ipt>"); }
+/* <![CDATA[
+  <tag attr='x'> &not-a-real-entity
+]]> */
+</script>
+<script type=application/json>{"x":"</script><div>","n":NaN}</script>
+<style>
+@media (x < 2) { .a::before { content: "</style>"; } }
+</style>
+<textarea name=t>&lt;em&gt;not markup&lt;/em&gt;</textarea>
+<xmp><b>literal</b> &amp; text</xmp>
+</body></html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head><title>frameset branch</title></head>
+<frameset rows="*,0,auto" cols="25%,75%" border=bogus>
+<frame src="javascript:alert(1)" name=f1 scrolling=maybe noresize>
+<frameset>
+<frame src="" frameborder=-1>
+<noframes>
+<body>
+<dl compact="false">
+<dt>term<dd>definition
+<dt><dd><ol start=zero type=Z reversed><li>first<li value="x">second</ol>
+</dl>
+</body>
+</noframes>
+</frameset>
+</frameset>
+</html>
+```
+
+```html
+<!doctype html>
+<html lang=en>
+<body>
+<form action="?" method=get>
+<fieldset disabled="no"><legend>Options</legend>
+<label for=q>Query</label><input id=q name=q value="&quot; &apos; &#x0;">
+<select name=s multiple size=negative>
+<option selected>one<option value=>two
+<optgroup label="broken"><option>three</select>
+<button type=unknown formaction=/x>Submit</button>
+</fieldset>
+</form>
+<details open="false"><summary>More</summary>
+<article><header><hgroup><h1>Heading<h6>tail</h6></h1></hgroup></header>
+<time datetime="2024-99-99T25:61">now</time>
+<figure><img src= alt><figcaption>caption</figcaption></figure>
+</article>
+</details>
+</body>
+</html>
+```

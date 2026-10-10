@@ -1,0 +1,176 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<base href="http://example.invalid/a/">
+<title>Frames and tables</title>
+</head>
+<frameset cols="20%,*,0" border="7" frameborder="maybe">
+  <frame name="left" src="left.html" scrolling="yes" noresize>
+  <frameset rows="15%,*,15%">
+    <frame src="top.html">
+    <frame src="main.html" marginwidth="x" marginheight="-4">
+    <frame src="bottom.html">
+  </frameset>
+  <noframes>
+    <body bgcolor=#gg00ff text="black">
+      <table border="2" cellpadding=3 cellspacing="bad" width="100%">
+        <caption align=side>Fallback &copy; table</caption>
+        <colgroup span="x"><col width="25%"><col></colgroup>
+        <thead><tr><th rowspan="0">A<th colspan="-1">B</tr></thead>
+        <tbody>
+          <tr><td><table><tr><td>nested<tr><td>broken</table>
+          <td valign=middle><img src alt=missing width=none height=-2>
+        </tbody>
+        <tfoot><tr><td>tail</tfoot>
+      </table>
+    </body>
+  </noframes>
+</frameset>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title><!-- unterminated title
+  <meta name="robots" content="index,follow">
+  <![CDATA[ head text ]]> 
+</head>
+<body>
+<!-- comment -- -- weird -- >
+<! bogus declaration
+<?processing instruction?>
+<![CDATA[
+  <not-an-element>&amp; &unknown; ]]>
+  <hgroup><h1>Section <small>one</hgroup>
+  <p>alpha<br/>beta<br >gamma
+  <pre>line 1
+    <code>line 2</code>
+  line 3 &lt; &gt; &#0; &#xD800;</pre>
+  <blockquote cite="a&b" datetime="2024-99-99">
+    <q cite=""><em><strong>nested</q></strong></em>
+  </blockquote>
+  <details open="false">
+    <summary>More</summary>
+    <p>hidden <mark>text</mark>
+  </details>
+  <template id=t><div>template <span>content</template>
+  <p>after template</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="x">
+<head><title>Ruby and legacy inline elements</title></head>
+<body>
+  <p>
+    <ruby>
+      漢<rt>kan</rt><rp>(</rp><rt>かん</rt><rp>)</rp>
+      <rb>字<rtc><span>annotation</span></rtc></rb>
+    </ruby>
+    <bdo dir="sideways">direction</bdo>
+    <bdi>isolate</bdi>
+    <abbr title="&quot;abbr&quot;">A</abbr>
+    <acronym title='x>y'>XYZ</acronym>
+  </p>
+  <center>
+    <font face="A&B" size="999" color="#12">old <tt>type</tt></font>
+    <strike><u><s>crossed</u></strike>
+  </center>
+  <dl compact="no">
+    <dt>Term 1
+    <dd>Definition <dfn>word
+    <dt><ins cite="x" datetime="n">Term 2
+    <dd><del cite="y"><var>value</var></del>
+  </dl>
+  <menu type="toolbar">
+    <li><button autofocus=maybe accesskey=<< type=button>Run</button>
+    <li><command label="Old" onclick="a('>');">Command
+  </menu>
+  <p><a href="javascript:&#x0a;alert(1)" title="a&quot;b">link
+  <isindex prompt="Search: &">
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="x-invalid">
+  <title>Attribute tokenizer stress</title>
+</head>
+<body id="a b" class='one"two' data-x=unquoted&value data-y="line
+break" data-z='single"quote'>
+  <div
+    class
+    = 
+    "alpha"
+    id = beta/
+    style="color: rgb(1,2,3); content: 'unterminated"
+    onclick="if (a < b && c > d) { x = &quot;y&quot;; }"
+    title='x"y' z="q>r">
+    <span / = weird>inside</span>
+    <img src="data:text/plain,%00%FF" alt="a & b" usemap="#m" ismap />
+    <input name=x value="a=b c" disabled checked=0>
+  </div>
+  <map name=m><area shape="poly" coords="0,0,foo,4" href="#x"><area></map>
+  <object data="file:///tmp/x" type="application/x-unknown" width="NaN">
+    <param name="movie" value="&notanentity;">
+    <embed src=x pluginspage="http://invalid/">
+    fallback
+  </object>
+  <div><span><i><b>deep
+    <a href="http://[broken">anchor
+  </div></i></b></span></a>
+  <p title=>end
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html>
+<head><title>Mixed document recovery</title></head>
+<body>
+  <header><nav>
+    <ol start="zero" reversed="false">
+      <li value="NaN">first
+      <li>second
+        <ol type="i"><li>nested
+    </ol>
+  </nav></header>
+  <main>
+    <article>
+      <h2>Article <time datetime="not-a-date">today</h2>
+      <section>
+        <p>One <span>two <div>three <p>four
+        <address>mail &lt;user@example.com&gt;<br>Road</address>
+      </section>
+      <aside>
+        <table>
+          <tr><td>A<td>B
+          <tr><th>C<th>D</th></tr>
+          <tbody><tr><td>E</tbody>
+          <caption>caption after rows</caption>
+        </table>
+      </aside>
+    </article>
+    <hr noshade="false" size="giant">
+    <figure>
+      <img srcset="a 1x, b 2q, c" sizes="(min-width: 1px) nope" alt="">
+      <figcaption>image <small>caption</small></figcaption>
+    </figure>
+  </main>
+  <footer>
+    <p>End <wbr>of <data value="">document</data>
+    <form><button>submit</button></form>
+  </footer>
+  </body>
+</html>
+```

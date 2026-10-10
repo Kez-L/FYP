@@ -1,0 +1,23 @@
+{
+  "call": 2,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a HTML document parser.\nTarget: /home/user/Documents/1git-folder/AgentAFL/AFLPlus/tidy-html5-build/tidy_parse_string_fuzzer-afl.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 HTML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n<?xml-stylesheet type=\"text/css\" href=\"x.css\"?>\n<title>alpha &copy; &#0; &#x110000;</title>\n<!--- malformed comment -- --!>\n</head>\n<body xml:lang=\"en\" dir=\"rtl\">\n<section><hgroup><h1>Heading</h1><h2>Subheading</h2></hgroup>\n<p>before <b><i><u>nested</b> crossing</u> text</i>\n<ruby>\u6f22<rt>kan</rt><rp>(</rp></ruby>\n<mark data-x=\"a&amp;b\" =broken>marked</mark>\n</section>\n<article><header>head</header><aside>side</aside><footer>foot</footer></article>\n</body>\n</html>\n\n--- example 2 ---\n<!DOCTYPE html>\n<head>\n<title>entities &amp; &#xD800; &#99999999; &badname;</title>\n</head>\n<body>\n<dl compact><dt>term<dd><div><span>value\n<address><a href=\"mailto:x@y\"><img src alt=foo/bar></a></address>\n<hr noshade=\"noshade\">\n<div contenteditable spellcheck=\"perhaps\" tabindex=\"1.5\">\n<pre>one\n\t two</pre><code>&lt;tag&gt;</code>\n</div>\n<form id=f><label for=x>name</label><input id=x name=x><button>send\n</body>\n</html>\n\nTried before \u2014 no new coverage, avoid repeating:\n--- a seed you generated (cycle 2) added 0 new edges ---\n<!doctype HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n<frameset rows=\"*,0\" cols=\"50%,50%\">\n<frame src=\"a.html\" name=\"left\" frameborder=maybe>\n<frame src=\"b.html\" name=\"right\">\n<noframes>\n<body bgcolor=#ggg text='unterminated>\n<center><big><font face=Arial size=+9 color=red>fallback</font></big></center>\n</body>\n</noframes>\n</frameset>\n<basefont size=\"3\">\n<isindex prompt=\"Search:\">\n\n--- a seed you generated (cycle 2) added 0 new edges ---\n<!DOCTYPE html>\n<html>\n<head>\n<title>misnested foreign content</title>\n</head>\n<body>\n<svg width=\"10\" height=\"10\" viewBox=\"0 0 10 10\">\n<g transform=\"translate(1 2)\">\n<circle cx=\"4\" cy=\"4\" r=\"3\" fill=\"url(#x)\"/>\n<path d=\"M0 0 L10 10 Z\"></path>\n<text x=\"0\" y=\"9\">svg &amp; text</text>\n</g>\n</svg>\n<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n<mrow><mi>x</mi><mo>&lt;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>\n</math>\n<p><svg><foreignObject><p>html island <b>bold</svg>tail\n</body>\n\nGenerate 5 new HTML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-tidy-20261006",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-08T06:29:43.539053+00:00"
+}

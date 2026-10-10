@@ -1,0 +1,137 @@
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Table mutation</title>
+  <meta charset="utf-8">
+</head>
+<body>
+  <table border="1">
+    <caption><b>caption <i>with crossed tags</caption>
+    <colgroup span="2"><col width="*"><colgroup><col>
+    <thead>
+      <tr><th rowspan="0">A<td>B<td colspan="-1">C
+    <tbody>
+      <tr><td><p>cell one<tr><td>cell two</p>
+      <tr><td><table><tr><td>nested<td><tfoot><tr><td>end
+    <tfoot>
+      <tr><td>footer</table>
+  </table>
+  <div><table><tbody><tr><td>x</div></tbody></table>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Forms and controls</title>
+</head>
+<body>
+  <form action="/submit" method="POST" enctype="multipart/form-data">
+    <fieldset disabled>
+      <legend><label for="q">Search <input id="q" name="q" value="a&quot;b"></label></legend>
+      <input type=text name=q required readonly>
+      <select name=pick multiple size=999>
+        <option selected>one<option disabled value='two>two
+        <optgroup label="group"><option>three</optgroup>
+      </select>
+      <textarea name=note rows=0 cols=-4>first
+second
+</textarea>
+      <button type=submit formaction="::::">Send</button>
+    </fieldset>
+    <input type="image" src="" alt=broken
+    <output name=result for="q"></output>
+    <object data="data:text/plain,hello" type="x/x">
+      <param name=name value=value>
+      fallback <embed src=//invalid.example/a>
+    </object>
+  </form>
+  <label><input type=checkbox checked=maybe> dangling label</label>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html lang=en>
+<head>
+  <title>Frames and metadata</title>
+  <base target=_blank href="//example.invalid/%zz">
+  <meta http-equiv=refresh content="0;url='">
+  <meta name=viewport content="width=device-width,initial-scale=nan">
+  <style type=text/css>
+    @import url("unterminated;
+    body { color: rgb(300,-2,none); content: "</style>"; }
+  </style>
+</head>
+<frameset rows="*,0,garbage" cols="50%,*">
+  <frame src="about:blank" name="a" scrolling=maybe>
+  <frame srcdoc="<p>inside <b>frame" noresize>
+  <frameset>
+    <frame>
+    <noframes>
+      <body><p>fallback</p></body>
+    </noframes>
+  </frameset>
+</frameset>
+<noframes><p>after frameset</p></noframes>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Raw text boundaries</title>
+</head>
+<body>
+  <p>before
+  <script type=text/javascript>
+    if (a < b) { x = "</scr" + "ipt>"; }
+    // </script><div>fake
+  </script>
+  <p>between
+  <style>
+    .x { background: url("'); }
+    <!-- not really a comment -->
+  </style>
+  <textarea>alpha &amp; <b>beta</b>
+  <textarea>nested-looking</textarea>
+  <title>title &copy; <em>markup</em></title>
+  <p>after</p>
+  <![CDATA[ text <tag> & stuff ]]>
+  <!-- comment -- -- broken --!>
+  <?processing instruction?>
+  <![if IE]><div>conditional</div><![endif]>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Misnested interactive content</title>
+</head>
+<body>
+  <p><a href=#one><button><a href=#two>link <b>bold</button> tail</a></b>
+  <ul compact>
+    <li>first
+    <li><div>second<ul><li>deep</ul></div>
+    <dd>definition without dl
+    <dt>term
+  </ul>
+  <ol start="999999999999999999999999999" reversed type="z">
+    <li value="-2147483649">negative
+    <li value="1e2">scientific
+  </ol>
+  <dl><dt><dt>duplicate term<dd><p>description
+  <blockquote cite="http://[bad">
+    <p>quote <q cite="">nested <cite>cite</blockquote>
+  <address><span>address</address></span>
+  <center><font color=#ggg size=999 face="A&B"><strike>legacy</center>
+</body>
+</html>
+```

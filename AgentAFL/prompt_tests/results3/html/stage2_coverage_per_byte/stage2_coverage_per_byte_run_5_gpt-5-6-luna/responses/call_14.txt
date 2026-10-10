@@ -1,0 +1,111 @@
+```html
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<?xml-stylesheet type="text/css" href="style.css"?>
+<!-- comment -- -- malformed -->
+<title>&copy; &amp; &#x1f600;</title>
+</head>
+<body id="x" class="a b" data-k='v"q'>
+<main>
+<article><header><hgroup><h1>Broken <em>heading</h1></hgroup></header>
+<p>alpha <strong>beta <i>gamma</strong> delta</i> &unknown; &#0; &#xD800;</p>
+<hr/>
+<section><blockquote cite=><p>quoted
+<div>implicit close
+<aside><ul><li>one<li>two<li><li>three</ul></aside>
+</section>
+</article>
+</main>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html [
+<!ENTITY writer "external">
+<!ELEMENT bogus ANY>
+]>
+<HTML>
+<HEAD><TITLE>Table stress</TITLE></HEAD>
+<BODY>
+<table border="1" cellpadding=0 width="100%" summary="a&b">
+<caption><b>Caption</caption>
+<colgroup span="2"><col><col width=bad></colgroup>
+<thead><tr><th colspan=0 rowspan=-1>H1<th>H2</tr></thead>
+<tbody>
+<tr><td><table><tr><td>nested<td></tr></table>
+<tr><td rowspan="999"><a href="http://[invalid">cell<td align=sideways>tail
+</tbody>
+<tfoot><tr><td colspan="not-a-number">foot</table>
+</BODY>
+</HTML>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+<head><title>Forms and obsolete controls</title></head>
+<body>
+<isindex prompt="Search:" action=/find>
+<form method="INVALID" action="x y" accept-charset="UTF-8,," name="">
+<input type=text name=q value="one" maxlength="-4" size="NaN">
+<input type=file name=f accept="image/*,,text/plain" multiple=maybe>
+<input type=image src alt width="0" height="-2">
+<select name=s size="0">
+<option value=a>A
+<option value=b>B
+</select>
+<textarea name=t rows="bad" cols="-1">unterminated
+<keygen name=k challenge=abc>
+<button disabled="false" value=>Click</button>
+</form>
+<marquee direction=sideways><blink>old <center>tags</marquee>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Foreign content</title></head>
+<body>
+<svg width="1e999" height="-0" viewBox="0 0 10">
+<title>svg title</title>
+<g transform="translate(foo) rotate()">
+<path d="M0 0 LNaN 2 Z" fill="url(#x)" />
+<foreignObject><div xmlns="http://www.w3.org/1999/xhtml">HTML <b>inside</b></div></foreignObject>
+</g>
+</svg>
+<math display="sideways">
+<mrow><mi>x</mi><mo>&InvisibleTimes;</mo><mfrac><mi>a</mi><mi>b</mi></mfrac>
+<annotation-xml encoding="text/html"><p>math html</p></annotation-xml>
+</mrow>
+</math>
+<script type="text/plain"><!-- <tag attr='unterminated'> &amp; </script>
+<style><!-- body { color: #; } </style>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML>
+<!--><!----><!------><!>
+<html><head>
+<meta http-equiv=Content-Type content="text/html; charset=invalid">
+<base href="http://example.com/a b" target="_self">
+<link rel=stylesheet href=// style=bogus>
+</head><body>
+<dl><dt>term<dd>definition<dt><dd>empty
+<details open=0><summary>Summary</summary><p>content
+<dialog open="no">dialog
+</details>
+<iframe srcdoc="<p title='x>y'>inner</p>" sandbox="allow-scripts allow-">
+<object data="x" type="application/x-unknown"><param name=x value="a&b"><embed src=bad></object>
+<pre>  leading
+	 tabs &lt; unclosed
+</pre>
+</body></html>
+<!-- trailing -- -- -- >
+```

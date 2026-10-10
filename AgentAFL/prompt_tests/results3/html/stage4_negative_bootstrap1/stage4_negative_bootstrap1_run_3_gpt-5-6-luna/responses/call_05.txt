@@ -1,0 +1,108 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-16">
+<meta http-equiv="refresh" content="0; url='x&y'">
+<base href="relative/../base">
+<style>
+@media all { body { color: red } @import url("x"); }
+<!-- legacy <style> nesting -->
+</style>
+<script type="application/ld+json">{"x":"</script><p>split","n":1}</script>
+</head>
+<body>
+<!-- unclosed comment
+<div>hidden</div>
+-->
+<hgroup><h1>A<h2>B<h3>C</hgroup>
+<p>one<div>two<span>three</p>four
+<pre>  leading
+	 tabs &amp; &#xD800; &#0; &#1114112; </pre>
+<blockquote cite="a>b"><q cite='x"y'>quoted</q></blockquote>
+<hr noshade="noshade"><wbr><br><br />
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>table recovery</title></head>
+<body>
+<table border="0">
+<caption><b>caption</caption>
+<colgroup span="2"><col><col span="0"></colgroup>
+<thead><tr><th rowspan="2">A<th colspan="x">B<tbody>
+<tr><td><form><input><td>
+<tr><td><table><tr><td>nested</table>tail
+<tfoot><tr><td>foot</table>
+<table><tr><td>orphan</table>
+<div><table><tbody><tr><td>x</div></td></tr></tbody></table>
+<ul><li>first<li>second<ol><li>inner</ul><li>after
+<dl><dt>term<dd>definition<dt><dd></dl>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>obsolete declarations</title>
+<?processing instruction?>
+<![CDATA[not in html]]>
+<!DOCTYPE bogus "x">
+</head>
+<body bgcolor=#fff text=black>
+<center><font face="x" size="999" color="red"><big><small>mixed</font></center>
+<dir compact><li><a href="javascript:alert(1)" target=_blank>link
+<menu type=context><li>item</menu>
+<marquee behavior=scroll direction=left loop=-1>moving</marquee>
+<isindex prompt="Search:">
+<frameset cols="*,0">
+<frame src="a" name="f">
+<noframes><body>fallback</body></noframes>
+</frameset>
+<applet code="x.class" archive="a.jar"><param name=x value=y>alt</applet>
+<object data="x" type="text/html"><param name="movie" value="x"><embed src=x></object>
+</body>
+</html>
+```
+
+```html
+<html>
+<head><title>raw text and entities</title></head>
+<body>
+<textarea name=x><b>literal</textarea>tail</textarea>
+<script>
+if (a < b && c > d) { x = "</style>"; }
+<!--
+document.write("<p>not a paragraph</p>");
+</script>
+<style>
+x{content:"</script><style>y{}"}
+</style>
+<xmp><b>raw</b>&amp;</xmp>
+<plaintext><h1>everything becomes text
+&amp; &#65; </body></html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>attributes and namespaces</title></head>
+<body>
+<div ID="a" id="b" class=test class="x y" data-X=1 data-x=2 disabled=false>
+<custom-element a:b="v" xlink:href="#z" xmlns:q="urn:q">
+<template shadowrootmode="open"><slot name=x></slot><p>template</p></template>
+</custom-element>
+<svg><foreignObject><div><table><tr><td>inside</foreignObject></svg>
+<math><mtext><table><tr><td>math table</mtext></math>
+<input type=file accept=",,text/plain" name="a&#x0; b" value="&notanentity;">
+<iframe srcdoc="&lt;p&gt;embedded&lt;/p&gt;" sandbox="allow-scripts allow-scripts"></iframe>
+<video controls><source src="a.mp4" type="video/mp4"><track kind=subtitles></video>
+</div>
+</body>
+</html>
+```

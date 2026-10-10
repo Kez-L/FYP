@@ -1,0 +1,122 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="http://example.invalid/a/../b/">
+<link rel="alternate" media="(min-width:0px)" href="x">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+<main>
+<h1><a href="javascript:alert(1)" target="_blank" rel="noopener">A
+<section>
+<p>one
+</main>
+<aside>
+<table border="1">
+<caption>caption
+<colgroup><col span="2"><col></colgroup>
+<thead><tr><th rowspan="2">A<th colspan="2">B
+<tbody><tr><td>x<td><em>y<tr><td><tfoot><tr><td>z
+</table>
+</aside>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>broken entities &amp; &#x;</title>
+</head>
+<body>
+<form action="/submit" method="post">
+<label for=q>Query</label>
+<input id=q name=q type=text required value="&quot; onfocus=&quot;bad">
+<input type=checkbox checked=checked disabled>
+<select name=items multiple size=3>
+<option selected>first
+<optgroup label="group"><option>second<option disabled>third
+</select>
+<textarea name=note rows=2 cols=8>left</textarea>
+<button type=submit>go</button>
+</form>
+<p><b><i><u>misnested</b> text</i></u>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<style>
+@charset "UTF-8";
+a{color:red} @import url("x.css"); /* unterminated
+</style>
+</head>
+<body>
+<details open>
+<summary>summary <mark>mark</summary>
+<dl><dt>term<dd>definition
+<dt><dt>empty
+</dl>
+</details>
+<pre>line one
+line two &lt;tag&gt;</pre>
+<blockquote cite="x"><p>quote<br/>next<hr>after</blockquote>
+<ol start="-2" reversed><li>alpha<li value="100">beta<ul><li>nested</ul></ol>
+<div contenteditable spellcheck="false" data-a="1&bad" data-b="&#13;">
+  <ruby>漢<rt>kan</rt><rp>(</rp></ruby>
+  <ins datetime="not-a-date">inserted</ins><del>deleted</del>
+</div>
+</body>
+</html>
+```
+
+```html
+<html>
+<head><title>raw text boundaries</title></head>
+<body>
+<script type="text/plain">
+  <div>not markup</div>
+  </script><textarea>escaped &amp; </textarea>
+  <script>
+  if (a < b) { document.write("</scr" + "ipt>"); }
+  // </script><p>inside?
+  </script>
+<style>
+x { background: url("data:text/css,</style>"); }
+</style>
+<textarea rows=3>one
+two
+</textarea>
+<x-custom foo="bar" /><!-- comment --!>
+<p>after &notanentity and &#9999999999; end
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-16">
+<title>adoption agency</title>
+</head>
+<body>
+<p><b>bold <i>italic <a href="#">link <b>again</p>
+<table>
+<tr><td>A</td></tr>
+<div>orphan block</div>
+<tr><td>B</table>
+<form><p>form start<input name=x><form><input name=y></form>
+<fieldset disabled><legend>legend</legend><input><select><option>opt</select></fieldset>
+<menu><li><a href="#one">one</a><li>two</menu>
+<p><object data="x" type="application/octet-stream"><param name="x" value="y"><span>fallback</span></object>
+<video controls poster="p"><source src="a" type="video/mp4"><track kind=subtitles src="s"><div>fallback</div></video>
+</body>
+</html>
+```

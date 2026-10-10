@@ -1,0 +1,125 @@
+```html
+<!doctype html [
+  <!ENTITY sample "replacement">
+  <!ELEMENT mystery ANY>
+]>
+<?xml version="1.0"?>
+<!-- malformed declaration with odd nesting -->
+<html>
+  <head profile="urn:test &sample;">
+    <meta charset="utf-8">
+    <base href="http://example.invalid/a/">
+    <title>&sample; &unknown; &#x0d;&#000000;</title>
+  </head>
+  <body id="root" data-x="a&amp;b" =broken>
+    <section><article><header>Start
+      <h2>Heading <em>italic <strong>bold</em></h2>
+      <p>Text <a href='x"y' title="unterminated>link
+      <div><span>orphan</div></span></article>
+    <footer><small>End</small></footer>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Table recovery case</title>
+</head>
+<body>
+  <table border="1">
+    <caption><b>Rows</caption>
+    <colgroup span="2"><col width="20%"><col></colgroup>
+    <thead><tr><th scope=col>A<th>B</thead>
+    <tbody>
+      <tr><td rowspan="2">one<td>two
+      <tr><td colspan=3>three</td></tr>
+    </tbody>
+    <tfoot><tr><td>tail</table>
+  <p>after table<table><tr><td><div>nested cell</tr></table></div>
+  <select name="choice">
+    <optgroup label="Group"><option selected>Alpha<option value=2>Beta
+    <option>Gamma
+  </select>
+  <textarea rows=2 cols=4>raw <b>text</textarea>
+</body>
+```
+
+```html
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+      body { color: red; }
+      /* unterminated style
+    </style>
+    <script type="application/javascript">
+      if (a < b && c > d) { document.write("</script><p>injected"); }
+    </script>
+  </head>
+  <body>
+    <noscript><div>fallback <i>content</noscript>
+    <template><p>template <b>payload</template>
+    <svg width="10" height="10"><foreignObject><div>svg html</div></foreignObject>
+      <path d="M0 0 L10 10"></svg>
+    <math><mrow><mi>x</mi><mo>&InvisibleTimes;</mo><mn>2</mn></mrow></math>
+  </body>
+</html>
+```
+
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+  <head>
+    <meta http-equiv=refresh content="0; URL='x&y'">
+    <title>attributes and entities</title>
+  </head>
+  <body bgcolor=#fff text=black leftmargin=0 onload="a(')">
+    <form method=post action="/submit?x=1&y=2" enctype="multipart/form-data">
+      <input type=text name=user value="a&#34;b&#x22;c" disabled="">
+      <input type=checkbox checked=yes checked=no>
+      <button type=submit name=go value='&lt;send&gt;'>Send</button>
+      <label for=x>Label</label><input id=x>
+    </form>
+    <dl>
+      <dt>Term
+      <dd><p>Description one
+      <dt><img src=x alt=term>
+      <dd>Second &copy &notanentity;
+    </dl>
+    <hr/><br//><img src="a" / class=test>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<!-- comment -- -- broken -->
+<html>
+<head><title>frames and obsolete elements</title></head>
+<frameset cols="50%,*">
+  <frame src="left.html" name="left">
+  <frameset rows="25%,75%">
+    <frame src="top.html">
+    <noframes>
+      <body>
+        <center><font size="+3" color="red">Fallback</font></center>
+        <marquee direction=left behavior=alternate>moving text
+        <isindex prompt="Search:">
+        <dir><li>one<li>two</dir>
+        <menu><li>three</menu>
+      </body>
+    </noframes>
+  </frameset>
+</frameset>
+<body>
+  <object data="movie.bin" type="application/octet-stream">
+    <param name=autoplay value=true>
+    <embed src="x" width=0 height=-1>
+    alternate
+  </object>
+  <applet code="X.class"><param name=x value=y>fallback</applet>
+</body>
+</html>
+```
