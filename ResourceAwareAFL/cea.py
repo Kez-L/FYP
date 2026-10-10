@@ -349,7 +349,10 @@ class CostEffectivenessAnalyzer:
             0.0
         )
 
-        ces_improved = after_ces > before_ces
+        ces_improved = (
+            after_ces > before_ces
+            and after_ces >= self.threshold_ces
+        )
 
         coverage_improved = after_cov > before_cov
 
@@ -365,6 +368,7 @@ class CostEffectivenessAnalyzer:
             (
                 coverage_improved
                 and resource_improved
+                and after_ces >= self.threshold_ces
             )
         )
 

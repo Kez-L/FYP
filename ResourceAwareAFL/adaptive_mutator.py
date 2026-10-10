@@ -14,6 +14,7 @@ SIGNAL_FILE = os.path.join(
 
 LAST_MODE = None
 
+
 # =============================================================
 # AFL++ lifecycle
 # =============================================================
@@ -24,6 +25,13 @@ def init(seed):
 
 
 def deinit():
+
+    pass
+
+
+# We do not use add_buf in fuzz().
+# Tell AFL++ that splice data is unnecessary.
+def splice_optout():
 
     pass
 
@@ -113,7 +121,11 @@ def bit_flip(buf):
         len(mutated)
     )
 
-    mutated[index] ^= 1
+    bit = 1 << random.randrange(
+        8
+    )
+
+    mutated[index] ^= bit
 
     return mutated
 
@@ -181,7 +193,6 @@ def arithmetic_mutation(buf):
     )
 
     mutated[index] = (
-
         mutated[index]
         +
         change
@@ -199,9 +210,7 @@ def delete_bytes(buf):
     mutated = bytearray(buf)
 
     delete_size = random.randint(
-
         1,
-
         min(
             8,
             len(mutated) - 1
@@ -209,9 +218,7 @@ def delete_bytes(buf):
     )
 
     start = random.randint(
-
         0,
-
         len(mutated)
         -
         delete_size
@@ -241,36 +248,34 @@ def insert_bytes(
     )
 
     insert_size = min(
-
         insert_size,
-
         max_size
         -
         len(mutated)
     )
 
+    if insert_size <= 0:
+
+        return mutated
+
     position = random.randint(
-
         0,
-
         len(mutated)
     )
 
-    for _ in range(
-        insert_size
-    ):
-
-        mutated.insert(
-
-            position,
-
-            random.randint(
-                0,
-                255
-            )
+    new_bytes = bytearray(
+        random.randint(
+            0,
+            255
         )
+        for _ in range(
+            insert_size
+        )
+    )
 
-        position += 1
+    mutated[
+        position:position
+    ] = new_bytes
 
     return mutated
 
@@ -279,16 +284,31 @@ def insert_bytes(
 # Strategies
 # =============================================================
 
+# -------------------------------------------------------------
+# DEFAULT
+#
+# Normally the custom-mutator stage is disabled through
+# fuzz_count(), so this function is mainly a fallback.
+# -------------------------------------------------------------
+
 def mutate_default(
     buf,
     max_size
 ):
 
-    return bit_flip(buf)
+    return bit_flip(
+        buf
+    )
 
 
 # -------------------------------------------------------------
 # Coverage slowdown
+#
+# Increase mutation diversity temporarily to try to escape a
+# coverage plateau.
+#
+# Unlike the previous version, EXPLORE_HEAVY performs two small
+# mutation operations and may use insertion.
 # -------------------------------------------------------------
 
 def mutate_explore_heavy(
@@ -296,23 +316,73 @@ def mutate_explore_heavy(
     max_size
 ):
 
-    mutation = random.choice(
-        [
-            bit_flip,
-            byte_flip,
-            random_byte,
-            arithmetic_mutation,
-            delete_bytes
-        ]
+    mutated = bytearray(
+        buf
     )
 
-    return mutation(buf)
+    # Two mutation operations provide stronger exploration
+    # without making the intervention excessively expensive.
+    mutation_count = 2
+
+    for _ in range(
+        mutation_count
+    ):
+
+        mutation_name = random.choice(
+            [
+                "bit_flip",
+                "byte_flip",
+                "random_byte",
+                "arithmetic",
+                "delete",
+                "insert"
+            ]
+        )
+
+        if mutation_name == "bit_flip":
+
+            mutated = bit_flip(
+                mutated
+            )
+
+        elif mutation_name == "byte_flip":
+
+            mutated = byte_flip(
+                mutated
+            )
+
+        elif mutation_name == "random_byte":
+
+            mutated = random_byte(
+                mutated
+            )
+
+        elif mutation_name == "arithmetic":
+
+            mutated = arithmetic_mutation(
+                mutated
+            )
+
+        elif mutation_name == "delete":
+
+            mutated = delete_bytes(
+                mutated
+            )
+
+        elif mutation_name == "insert":
+
+            mutated = insert_bytes(
+                mutated,
+                max_size
+            )
+
+    return mutated
 
 
 # -------------------------------------------------------------
 # CPU spike
 #
-# Keep mutations relatively lightweight.
+# Keep the custom mutation operation simple.
 # -------------------------------------------------------------
 
 def mutate_throttle_power(
@@ -327,13 +397,16 @@ def mutate_throttle_power(
         ]
     )
 
-    return mutation(buf)
+    return mutation(
+        buf
+    )
 
 
 # -------------------------------------------------------------
 # Memory spike
 #
-# Avoid insertion and large mutations.
+# Avoid insertion and size growth.
+# Perform only a very small in-place mutation.
 # -------------------------------------------------------------
 
 def mutate_reduce_mutation_size(
@@ -345,9 +418,10 @@ def mutate_reduce_mutation_size(
 
         return buf
 
-    mutated = bytearray(buf)
+    mutated = bytearray(
+        buf
+    )
 
-    # Small mutation only
     index = random.randrange(
         len(mutated)
     )
@@ -366,7 +440,7 @@ def mutate_reduce_mutation_size(
 # -------------------------------------------------------------
 # CPU + memory spike
 #
-# Strongest lightweight throttling.
+# Strongest lightweight intervention.
 # -------------------------------------------------------------
 
 def mutate_strong_throttle(
@@ -378,8 +452,9 @@ def mutate_strong_throttle(
 
         return buf
 
-    # Very small mutation.
-    mutated = bytearray(buf)
+    mutated = bytearray(
+        buf
+    )
 
     index = random.randrange(
         len(mutated)
@@ -392,6 +467,9 @@ def mutate_strong_throttle(
 
 # -------------------------------------------------------------
 # Timeout adaptation
+#
+# Avoid structural expansion and use small deterministic-style
+# mutations.
 # -------------------------------------------------------------
 
 def mutate_skip_timeouts(
@@ -406,11 +484,16 @@ def mutate_skip_timeouts(
         ]
     )
 
-    return mutation(buf)
+    return mutation(
+        buf
+    )
 
 
 # -------------------------------------------------------------
 # Crash exploitation
+#
+# Stay relatively close to the existing input while applying
+# several local mutation choices.
 # -------------------------------------------------------------
 
 def mutate_exploit_crash(
@@ -426,7 +509,33 @@ def mutate_exploit_crash(
         ]
     )
 
-    return mutation(buf)
+    return mutation(
+        buf
+    )
+
+
+# =============================================================
+# AFL++ custom mutation count
+# =============================================================
+
+def fuzz_count(buf):
+
+    mode = read_adaptation_mode()
+
+    # DEFAULT:
+    # Let normal AFL++ fuzzing continue without requesting
+    # custom-mutator attempts.
+    if mode == "DEFAULT":
+
+        return 0
+
+    # Level-1 adaptive modes:
+    # One custom-mutator attempt per requested queue entry.
+    #
+    # EXPLORE_HEAVY gets its extra exploration inside
+    # mutate_explore_heavy(), rather than requesting many
+    # additional AFL++ custom-stage executions.
+    return 1
 
 
 # =============================================================
@@ -448,11 +557,13 @@ def fuzz(
     mode = read_adaptation_mode()
 
     if mode != LAST_MODE:
+
         print(
             f"[Adaptive Mutator] Mode changed: "
             f"{LAST_MODE} -> {mode}",
             flush=True
         )
+
         LAST_MODE = mode
 
     # ---------------------------------------------------------
@@ -461,58 +572,71 @@ def fuzz(
 
     if mode == "EXPLORE_HEAVY":
 
-        mutated_out = mutate_explore_heavy(
-            buf,
-            max_size
+        mutated_out = (
+            mutate_explore_heavy(
+                buf,
+                max_size
+            )
         )
 
     elif mode == "THROTTLE_POWER":
 
-        mutated_out = mutate_throttle_power(
-            buf,
-            max_size
+        mutated_out = (
+            mutate_throttle_power(
+                buf,
+                max_size
+            )
         )
 
     elif mode == "REDUCE_MUTATION_SIZE":
 
-        mutated_out = mutate_reduce_mutation_size(
-            buf,
-            max_size
+        mutated_out = (
+            mutate_reduce_mutation_size(
+                buf,
+                max_size
+            )
         )
 
     elif mode == "STRONG_THROTTLE":
 
-        mutated_out = mutate_strong_throttle(
-            buf,
-            max_size
+        mutated_out = (
+            mutate_strong_throttle(
+                buf,
+                max_size
+            )
         )
 
     elif mode == "SKIP_TIMEOUTS":
 
-        mutated_out = mutate_skip_timeouts(
-            buf,
-            max_size
+        mutated_out = (
+            mutate_skip_timeouts(
+                buf,
+                max_size
+            )
         )
 
     elif mode == "EXPLOIT_CRASH":
 
-        mutated_out = mutate_exploit_crash(
-            buf,
-            max_size
+        mutated_out = (
+            mutate_exploit_crash(
+                buf,
+                max_size
+            )
         )
 
     else:
 
-        mutated_out = mutate_default(
-            buf,
-            max_size
+        mutated_out = bytearray(
+            buf
         )
 
     # ---------------------------------------------------------
     # AFL++ maximum size
     # ---------------------------------------------------------
 
-    if len(mutated_out) > max_size:
+    if len(
+        mutated_out
+    ) > max_size:
 
         mutated_out = mutated_out[
             :max_size
