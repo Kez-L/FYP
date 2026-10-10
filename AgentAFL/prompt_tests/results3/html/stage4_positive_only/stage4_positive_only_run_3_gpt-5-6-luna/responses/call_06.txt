@@ -1,0 +1,161 @@
+```html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="refresh" content="0; url=/next">
+<base href="https://example.invalid/a/">
+<title>forms and foreign content</title>
+</head>
+<body>
+<header id=top>
+  <hgroup><h1>Inventory</h1><h2>Draft <em>version</em></h2></hgroup>
+  <nav><a href="#form">skip</a><a href=/one>one
+</header>
+<main>
+  <section>
+    <article>
+      <form id=form action="?" method=post enctype=multipart/form-data>
+        <fieldset disabled>
+          <legend>Account <small>(required)</small></legend>
+          <label>User <input type=text name=user value="a&b"></label>
+          <label><input type=checkbox checked=checked name=ok> Accept</label>
+          <select name=choice multiple size=0>
+            <optgroup label=First><option value=1 selected>One<option value=2>Two</optgroup>
+            <option>Unclosed
+          </select>
+          <textarea name=note rows=2 cols=0>less-than: &lt; end?</textarea>
+          <button type=submit formaction=/send>Send <b>now</button>
+        </fieldset>
+      </form>
+    </article>
+    <aside><details open><summary>More</summary><p>Hidden-ish text</details></aside>
+  </section>
+  <svg width="10" height="10"><foreignObject><div xmlns="http://www.w3.org/1999/xhtml">SVG text</div></foreignObject></svg>
+  <math><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mn>2</mn><mn>3</mn></msup></math>
+</main>
+<footer><address>contact@example.invalid</address></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>frameset transition</title>
+<link rel=stylesheet href="x.css">
+<style>body{background:url("x")}</style>
+</head>
+<frameset rows="20%,*,0" border=3 frameborder=yes>
+  <frame src="top.html" name=top scrolling=auto>
+  <frameset cols="30%,70%">
+    <frame src="left.html" name=left noresize>
+    <frame srcdoc="<p>inline &amp; frame</p>" name=right>
+  </frameset>
+  <noframes>
+    <body>
+      <h1>Fallback</h1>
+      <p>Frames are unavailable.
+      <iframe src="fallback.html" sandbox="allow-scripts allow-forms" width="0" height="0">
+        fallback iframe text
+      </iframe>
+    </body>
+  </noframes>
+</frameset>
+<script>
+if (a < b && c > d) { document.write("<div class='x'>write</div>"); }
+</script>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>misnested phrasing</title></head>
+<body>
+<p><b><i><u>alpha <a href="x"><span>beta</b> gamma</i> delta</u></a>
+<p><ruby>漢<rt>kan<rp>(</rt>字<rtc>zi</rtc></ruby>
+<pre><code>&lt;tag attr='x'&gt;
+line two &amp; line three</code></pre>
+<blockquote cite="urn:test"><p>Quote <q cite=x>nested <mark>words</q></mark>.</blockquote>
+<dl compact>
+ <dt>Term one
+ <dd>Definition <br><br>
+ <dt><ins>Term <del>old</ins>
+ <dd><time datetime="not-a-date">tomorrow</time>
+</dl>
+<ol start="-3" reversed type=I>
+ <li value=0>zero
+ <li>one
+ <li><div>block in list<li>two</div>
+</ol>
+<p><bdo dir=rtl>אבג <bdi>xyz</bdi></bdo>
+<wbr><hr><br>
+<table><tr><td>text<div>block</tr></td></table>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head><title>media and metadata</title></head>
+<body>
+<object data="movie.bin" type="application/octet-stream" width="1" height="1">
+  <param name=autoplay value=true>
+  <param name=loop value=0>
+  <embed src="legacy.swf" type="application/x-shockwave-flash">
+  <p>Object fallback <img srcset="a 1x, b 2x," sizes="(x) 10px" alt="fallback">
+</object>
+<picture>
+  <source media="(min-width: 1px)" srcset="small.png 1x, large.png 2x">
+  <source type=image/webp srcset="image.webp">
+  <img src="final.jpg" loading=lazy decoding=async alt="picture">
+</picture>
+<video controls autoplay muted poster="p.jpg">
+  <source src="one.mp4" type="video/mp4">
+  <track kind=subtitles srclang=en label=English default src="sub.vtt">
+  video fallback
+</video>
+<audio preload=none><source src="sound.ogg"><source src="sound.mp3"></audio>
+<map id=weird><area href="javascript:void(0)" coords="1,2,3,4" shape=poly><area nohref></map>
+<img src="x" usemap="#weird">
+<meta name=viewport content="width=device-width,initial-scale=1">
+<basefont size=7><center><font face="serif" color="#ggg">legacy</font></center>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>comments entities and raw text</title><!-- A -- -- B --></head>
+<body>
+<!-- unterminated comment
+<div>comment-looking markup</div>
+-->
+<template id=t>
+  <table><tr><td>template cell</td></tr></table>
+  <script type="application/json">{"x":"</script><p>escaped?","n":01}</script>
+</template>
+<script type=text/plain>
+  <div>raw script text &amp; </div>
+  <!-- tricky -->
+</script>
+<style>
+  .a::before { content: "</style><div>"; }
+</style>
+<textarea><b>not markup</textarea>
+<title>title &amp; &unknown; &#x110000;</title>
+<p title="a&quot;b&amp;c&#0;">A&nbsp;&copy;&notit; &#65; &#x1F600;</p>
+<div data-x='unterminated data-y=z
+  <span class=test>after quote</span>
+  <!-- nested <!-- fake --> tail -->
+</div>
+<![CDATA[ <section> cdata </section> ]]>
+<?processing instruction?>
+<!foo bar>
+</body>
+</html>
+```

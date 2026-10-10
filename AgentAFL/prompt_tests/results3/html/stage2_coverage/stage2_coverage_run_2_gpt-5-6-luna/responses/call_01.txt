@@ -1,0 +1,125 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+  <title>broken table recovery</title>
+  <base href="http://example.invalid/a/">
+  <meta name="viewport" content="width=device-width">
+</head>
+<body bgcolor="#fff" text="black">
+<table border=1 cellpadding=2>
+  <caption align=bottom>caption without closure
+  <colgroup span=2><col width="50%"><col>
+  <thead>
+    <tr><th colspan=3>head
+    <th>extra
+  <tbody>
+    <tr><td>a<td>b<td rowspan=2>c
+    <tr><td>d</tr>
+    <tfoot><tr><td>tail
+</table>
+<table><tr><td><table><tr><td>nested<td></tr></table>after
+<p>text<table><tr><td>x</p>y</td></tr>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>attributes</title>
+</head>
+<body>
+<div id="one" id='two' class=test class="other" data-x=abc=def disabled=checked>
+  <p title="unterminated
+  <span style='color:red; background:url("x")'>quoted <b title='q>r'>text</span>
+  <img src="a" alt="a&amp;b" width=+0000000000000000000000000000000000001 height=-2>
+</div>
+<form method="get" action="?a=1&b=2" enctype="multipart/form-data">
+  <label for=x>Name</label><input name=x value="a&quot;b" required>
+  <select name=s multiple size=999999999999999999999999>
+    <option selected>one<option value='two>two
+    <optgroup label="group"><option>three
+  </select>
+  <textarea cols=0 rows=-1 wrap=hard>one
+two
+</textarea>
+  <button type=submit formaction=/submit>go</button>
+</form>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>misnested inline elements</title>
+</head>
+<body>
+<p><b><i><u>alpha</b> beta</i> gamma</u> delta
+<p><a href=/one><em>first <strong>second</a> third</strong></em>
+<blockquote cite="x"><q>quote <small>small <big>big</blockquote></q>
+<pre>line 1
+  <code>code <kbd>key</pre></kbd>
+<address><span>name<br>street</address></span>
+<dl>
+  <dt>term 1
+  <dd>definition 1
+  <dt><b>term 2
+  <dd><p>definition 2<div>block inside dd</dl>
+<hr><hr/>
+<center><font face=monospace size=+7 color=red>legacy</center>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>raw text and declarations</title>
+  <noscript><p>fallback <b>markup</noscript>
+  <style type=text/css>
+    body { content: "</style>"; }
+    @media screen { a:hover { color: red; }
+  </style extra>
+</head>
+<body>
+<script>
+  var s = "</script";
+  var t = "<!-- not a comment";
+  if (x < y && y > z) { document.write("<p>write</p>"); }
+</scriptx>
+<script type="application/json">{"x":"</script>","y":[1,2,3]}</script>
+<textarea>literal <b>tags</b> &amp; entities</textarea>
+<xmp><p>xmp text</xmp>
+<plaintext><div>everything after this is text
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html [
+  <!ELEMENT note ANY>
+  <!ENTITY test "value">
+]>
+<html xmlns="urn:example:a" xmlns:x="urn:example:b">
+<head><title>foreign and malformed nodes</title></head>
+<body>
+<section>
+  <x:widget x:flag="yes"><x:item>one</x:item><x:item>two</x:widget>
+  <svg width="10" height="10"><g><circle cx="1" cy="2"/><foreignObject>
+    <div><p>embedded</div>
+  </g></svg>
+  <math><mrow><mi>a</mi><mo>&InvisibleTimes;</mo><mn>2</mn></mrow>
+  <table><tbody><tr><td>cell</td></tr></tbody></table>
+</section>
+<!-- comment -- with -- repeated ---->
+<![CDATA[unrecognized cdata]]>
+<?processing instruction?>
+<% server fragment %>
+</body>
+</html>
+```

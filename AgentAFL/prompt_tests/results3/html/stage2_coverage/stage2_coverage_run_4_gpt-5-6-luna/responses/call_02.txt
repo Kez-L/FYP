@@ -1,0 +1,115 @@
+```html
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>Broken table model</title></head>
+<body>
+<table border="1" summary="&not-an-entity;">
+  <caption align="middle">Table <b>caption</caption>
+  <colgroup span="3"><col width="25%"><col><col style="bad:"></colgroup>
+  <thead>
+    <tr><th rowspan="2">A<th colspan="2">B
+    <tr><th>C<td>D
+  </thead>
+  <tbody>
+    <tr><td><p>cell one<tr><td colspan="99">cell two
+    <tr><th><div>heading inside row</div><td>tail</tbody>
+  <tfoot><tr><td>footer</table>
+<p>after the table<table><tr><td>another<table><tr><td>nested</table></td></tr></table>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Foreign element confusion</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+</head>
+<body>
+<section id="outer">
+  <svg width="10" height="10" viewBox="0 0 10 10">
+    <g transform="translate(1 1)"><path d="M0,0 L10,10 Z"></g>
+    <foreignObject width="4" height="4"><div xmlns="http://www.w3.org/1999/xhtml">text</div></foreignObject>
+  </svg>
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <mrow><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+  </math>
+  <custom:widget xmlns:custom="urn:invalid"><custom:item data-x="&bad;">value</custom:item></custom:widget>
+  <p><unknown a=1 b='2" c=`3`>unclosed custom content
+</section>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+  <?xml-stylesheet type="text/css" href="x.css"?>
+  <style type="text/css">
+    body { color: red; }
+    <!-- .x { background: url("a>b"); } -->
+  </style>
+  <script language="JavaScript">
+    <!--
+    if (a < b && c > d) { document.write("<p>x</p>"); }
+    // -->
+  </script>
+</head>
+<body onload="if (x<y){alert('&bad;')}">
+  <hgroup><h1>Header<h3>Skipped level</hgroup>
+  <article><header>head</header><p>one
+    <aside><p>aside <em>emphasized <strong>strong</aside>
+    <footer>foot</footer>
+  </article>
+  <![if IE]><p>conditional <![endif]>
+  <!-- unclosed comment
+  <p>hidden-ish < & > text
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Definition and ruby variants</title></head>
+<body>
+<menu compact="maybe">
+  <li value="0">zero
+  <li value="-999999999999999999999">negative
+  <li><button type="submit" disabled="false">push</button>
+</menu>
+<dl compact>
+  <dt><b>term one
+  <dd>definition <ins cite="x" datetime="not-a-date">inserted
+  <dt><span>term two</span>
+  <dd><del datetime="2020-99-99"><p>deleted block
+</dl>
+<ruby>漢<rt>kan<rp>(</rp><rtc>annotation</rtc><rp>)</rp></ruby>
+<details open="0"><summary>summary</summary><p>details body</details>
+<dialog open>dialogue <q cite="a&b">quoted <cite>citation</cite></q></dialog>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Inline stack and entities</title></head>
+<body>
+<h2><a href="http://example.invalid/?x=1&y=2" title="a>b" target="_top">
+  <span class="a"><b><i><u><s><small><big>deep text
+</a></h2>
+<p><label for=x>Label <input id=x><output name=result>result</output>
+<p><blockquote cite="&quot;broken"><pre>  pre
+  <code>code <var>var <kbd>key</kbd>
+  <samp>sample</samp></var></code>
+</pre></blockquote>
+<center><address>name<br/>street<br>mail@example.invalid</address></center>
+<p title='unterminated><wbr><br clear=bad><hr width="999999999999999999999999">
+<p>&amp &copy; &#0; &#x110000; &#xD800; &unknown; &lt;tag&gt;
+<basefont size="999"><font face="A&B" color="#12" size="-100">font text</font>
+</body>
+</html>
+```

@@ -1,0 +1,111 @@
+```html
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<base href="//[::ffff:192.0.2.1:8080">
+<link rel="stylesheet" href="data:text/css,body{background:url('unterminated}">
+<meta http-equiv="refresh" content="0; url=javascript:alert(1)">
+</head>
+<body>
+<!-- comment -- -- malformed -->
+<![CDATA[not really cdata <tag> &stuff;]]>
+<div>
+  Text &notanentity; &#x110000; &#999999999999999999999999;
+  <svg width="NaN" height="-1" viewBox="0 0 10">
+    <title><b>svg title</b></title>
+    <foreignObject><body><p>foreign body</p></body></foreignObject>
+    <g transform="rotate(foo"><path d="M0 0 LNaN 20 Z"></path>
+    <use href="#missing" xlink:href="javascript:alert(1)"></use>
+  </svg>
+  <math><mi>x</mi><mo>&lt;</mo><mn>1</mn><mtext><b>mixed</b></mtext>
+    <annotation-xml encoding="application/xhtml+xml"><div>embedded</div></annotation-xml>
+  </math>
+</div>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://example.invalid/unterminated>
+<html>
+<head>
+<?xml version="1.0"?>
+<!-- nested <!-- comment -->
+<title>one &amp two &copy</title>
+<style>
+  @import url("x; /* no close
+  body { content: "</style><script>bad</script>"; }
+</style>
+</head>
+<body>
+<iframe srcdoc="<p class='x>broken &amp; text</p><svg><path d='M0'></svg>" sandbox="allow-scripts allow-unknown"></iframe>
+<object data="x" type="application/x-unknown"><param name="movie" value="&quot;><p>fallback</object>
+<embed src="x" width="infinity" height="--">
+<noembed><div>fallback <em>unclosed</noembed>
+<canvas width="999999999999999999999" height="-999999999999999999999"><span>fallback</span></canvas>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>ruby and phrasing repairs</title></head>
+<body>
+<p><ruby><rb>base one<rt>reading one<rp>(<rtc><b>annotation</ruby>
+<p><bdo dir="invalid"><bdi><q cite="http://[::1">quote <cite>citation</q></bdi></bdo>
+<p><dfn><abbr title="unterminated>ABC</abbr></dfn>
+<p><data value="0xFFFFFFFFFFFFFFFF">payload</data>
+<p><output for="a b c" name="out">result</output>
+<p><meter min="maximum" max="-minimum" low="NaN" high="Infinity" optimum="x" value="999">meter</meter>
+<p><progress max="not-a-number" value="-42">progress</progress>
+<p><span style="color:rgb(999,999,999);">span <br/> next<br/ broken>tail</span>
+<ins><del><u><strike><samp>one</del>two</u>three</strike>four</samp></ins>
+<p><a href="data:text/html,<svg onload=alert(1)>">data link
+<kbd><var><code><samp>nested</kbd></var></code></samp>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>template and metadata edge cases</title>
+<meta name="viewport" content="width=device-width,initial-scale=999999999999999999999">
+<meta property="og:title" content="a&quot;b&amp;c">
+</head>
+<body>
+<template id="t"><div><p>template text</p><template><span>nested template</span></template></div></template>
+<slot name="bad name"><template shadowrootmode="invalid"><style></style><div>shadow</div></template></slot>
+<dialog open="false"><form method="dialog"><button type="unknown" formaction="http://[broken">close</button></form></dialog>
+<details><summary><summary>double summary</summary></summary><p>content</p></details>
+<menu type="context"><command type="command" label="x" command="--bad"></command><li>not menu item</menu>
+<dl><div><dt>wrapped term</dt><dd>wrapped definition</dd></div></dl>
+<picture><source media="(min-width: NaNpx)" type="image/unknown" srcset="x 1w, y -2x">
+<img loading="sometimes" decoding="maybe" fetchpriority="urgent" src="x" alt=>
+</picture>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>raw text and abrupt endings</title></head>
+<body>
+<script>
+  if (a < b) { document.write("</script><p>split"); }
+  var x = "</scr" + "ipt>";
+</script>
+<script type="module">
+  import x from "unterminated";
+  const y = `template ${"<tag>"}`;
+</script>
+<textarea cols="999999999999999999999" rows="-1">text &amp; <b>not markup</b> </textarea>
+<ย-invalid attr="x"><![CDATA[hello]]></ย-invalid>
+<xmp><div><p>raw xmp &amp; </xmp>
+<plaintext><html><head><title>everything raw</title></head><body>
+<svg></svg>
+```

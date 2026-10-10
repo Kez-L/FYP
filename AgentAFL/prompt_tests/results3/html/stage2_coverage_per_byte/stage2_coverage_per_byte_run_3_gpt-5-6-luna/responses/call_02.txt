@@ -1,0 +1,128 @@
+```html
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <base href="http://example.invalid/a/">
+    <title><![CDATA[broken < title]]></title>
+    <style>
+      body { background: url("x"); }
+      @media screen and (min-width: 1px) { .x { color: red } }
+    </style>
+    <script type="text/javascript">
+      if (a < b && c > d) { document.write("<em>x</em>"); }
+    </script>
+  </head>
+  <body id=main class=test data-x=one>
+    <header><nav><a href=/one>one<a href=/two>two</nav></header>
+    <main>
+      <section><hgroup><h1>Title</h3><h2>Sub</hgroup>
+      <p>alpha<br/>beta<wbr>gamma
+      <blockquote cite='x"><p>quoted</blockquote>
+      <pre>  <code>&lt;raw&gt;</code>  </pre>
+    </main>
+    <footer><small>tail</small></footer>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<HTML>
+<HEAD>
+  <TITLE>frameset stress</TITLE>
+</HEAD>
+<FRAMESET ROWS="20%,*" COLS="30%,70%">
+  <FRAME NAME=left SRC="left.html" NORESIZE SCROLLING=auto>
+  <FRAMESET>
+    <FRAME SRC='right.html?x=1&y=2'>
+    <NOFRAMES>
+      <BODY>
+        <H1>Fallback</H1>
+        <FORM ACTION=/submit METHOD=POST ENCTYPE=multipart/form-data>
+          <INPUT TYPE=text NAME=user VALUE="a>b">
+          <INPUT TYPE=checkbox CHECKED NAME=x>
+          <SELECT NAME=kind MULTIPLE SIZE=2>
+            <OPTION SELECTED VALUE=1>one
+            <OPTION VALUE='2>two'>two
+          </SELECT>
+          <TEXTAREA NAME=msg ROWS=2 COLS=4>unterminated
+          <BUTTON TYPE=submit>Go</BUTTON>
+        </FORM>
+      </BODY>
+    </NOFRAMES>
+  </FRAMESET>
+</FRAMESET>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>table repair maze</title></head>
+<body>
+<table border=1 cellpadding=0>
+  <caption align=bottom>caption</caption>
+  <colgroup span=2><col width="50%"><col></colgroup>
+  <thead><tr><th rowspan=2>A<th colspan=2>B
+  <tbody>
+    <tr><td>a1<td>a2<td>a3
+    <tr><td><table><tr><td>nested<td>cell</table><td colspan=4>wide
+  <tfoot><tr><td>foot
+</table>
+<table><tr><td>second<tr><th><div>mixed</td></tr></table>
+<p><label for=x>Label<input id=x disabled value="v"></label></p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>foreign content</title>
+</head>
+<body>
+  <svg width="40" height="40" viewBox="0 0 40 40">
+    <defs><linearGradient id=g><stop offset="0%"/><stop offset=1></linearGradient></defs>
+    <g transform="translate(2 3)">
+      <path d="M0,0 L10,10 Z" fill="url(#g)"/>
+      <text x="1" y="2"><tspan>svg &amp; text</tspan></text>
+    </g>
+  </svg>
+  <math>
+    <mrow><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+  </math>
+  <p><object data="movie.bin" type="application/x-test">
+    <param name=name value=demo>
+    <embed src=alt.bin width=1 height=2>
+    fallback <img src=x alt="a &quot; b">
+  </object></p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>token boundary cases</title>
+</head>
+<body>
+<!-- comment with -- and <tag> -->
+<?processing instruction?>
+<!bogus declaration>
+<div a=foo/bar b='single &amp; quote' c="double &quot; quote" d=>
+  text &notanentity; &#0; &#xD800; &#x110000;
+  <wbr/>
+  <span style=color:red; title='unterminated>inside
+  <dl>
+    <dt>term<dd>definition
+    <dt><img src alt><dd><input type=file accept="image/*,.x">
+  </dl>
+</div>
+<details open><summary>sum</summary><p>detail</details>
+<iframe srcdoc="<p>inner &amp; text</p>" sandbox></iframe>
+</body>
+</html>
+```

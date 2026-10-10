@@ -1,0 +1,141 @@
+```html
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<base href="http://example.test/a/b/">
+<meta name=viewport content="width=device-width, initial-scale=1">
+</head>
+<body bgcolor=#ffffcc text=black link=blue vlink=purple alink=red>
+<center>
+<table border=2 cellpadding=3 cellspacing=bad width="100%" height=0>
+<caption align=bottom>broken &copy; caption</caption>
+<colgroup span=2 width="25%">
+<col align=middle>
+<col>
+<thead>
+<tr><th rowspan=99 colspan=0>Header 1<th>Header 2
+</thead>
+<tbody>
+<tr><td valign=baseline><img src=foo alt="unterminated title=bar><td>
+<tr><td><table><tr><td>nested<td></tr></table><td rowspan="x">tail
+</tbody>
+<tfoot><tr><td colspan=abc>foot<td></tfoot>
+</table>
+</center>
+<address><a href="mailto:test@example.test">contact</a></address>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML [
+<!ELEMENT note - - (to,from,heading,body)>
+<!ENTITY writer "A &amp; B">
+]>
+<html>
+<head><title>Entity stress &writer; &#0; &#xD800; &#x110000;</title></head>
+<body>
+<p>&unknown; &amp &lt; &gt; &quot; &apos; &#; &#x; &#xZZ; &#99999999;</p>
+<p title="a&amp;b&#x20;c&#13;&#10;d">one&nbsp;&thinsp;&ensp;&emsp;&NoBreak;</p>
+<dl compact="compact">
+<dt><b>Term without closing
+<dd>definition <q cite="a&b">quoted
+<dt><img src="x&amp;y" alt="A & B">
+<dd><ruby>base<rt>annotation<rp>(</ruby></rp></dl>
+<p><del datetime="not-a-date">old</del><ins datetime="2024-99-99">new</ins></p>
+<blockquote cite="http://[bad"><p>quote</blockquote>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>forms and controls</title></head>
+<body>
+<form method=get action="/submit" enctype="multipart/form-data" accept-charset="UTF-8, BAD" onsubmit="return false;">
+<fieldset disabled="maybe">
+<legend>Account <input name=legend value="x"></legend>
+<label for=user>User:</label>
+<input id=user name=user type=text value="a&quot;b" maxlength="-1" size="NaN">
+<label>Password <input name=pass type=password autocomplete=off></label>
+<input type=hidden name=h value="1">
+<select name=choice multiple size=-2>
+<option value=one selected>One
+<option value=two disabled selected="no">Two
+<optgroup label=Group disabled=false><option>Three</optgroup>
+</select>
+<textarea name=notes rows=0 cols=abc wrap=side>line 1
+line 2</textarea>
+<button type=submit name=go value="&lt;">Send <img src=x></button>
+<input type=image src=x alt=submit width=-4 height=oops>
+</fieldset>
+</form>
+<form><input type=radio name=x checked><input type=radio name=x checked>
+<input type=checkbox checked=unchecked></form>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>lists and definitions</title>
+</head>
+<body>
+<ol start="zero" reversed="false" type="i">
+<li value="NaN">first
+<li value="-999999999999999999999999">second
+<ul type="square">
+<li>nested one
+<li><ol><li>deep A<li>deep B</ol>
+</ul>
+<li>third
+</ol>
+<ul>
+<li>alpha
+<div>block between list items</div>
+<li>beta
+</ul>
+<menu compact="true"><li>menu item 1<li>menu item 2</menu>
+<dl>
+<dt>HTML
+<dd><p>Markup language</p><dd>second definition
+<dt><span>CSS</span>
+<dd><div>style rules</div>
+</dl>
+<dir><li>old directory<li>another</dir>
+<p><b><i><u><s><em>crossed formatting</b> after i</u> after s</em></i></p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+@media screen and (max-width: 0px) {
+  body > p:first-child { color: rgb(300,-1,foo); }
+}
+@unknown { broken: value; }
+</style>
+</head>
+<body>
+<div id=a><span id=a><p>paragraph inside inline
+<table><tr><td>cell<div>block</div></td></tr><p>orphan</p></table>
+<section><header>head</header><article><hgroup><h1>one<h3>three</hgroup>
+<main><aside>aside before close<footer>foot</main>
+<nav><a href=#x>link <span>nested</a> text</span></nav>
+</article></section>
+<details open="false"><summary>Summary</summary><p>hidden content</details>
+<dialog open=maybe><p>dialogue</dialog>
+<figure><img src=x><figcaption>caption</figure>
+<p><time datetime="not-time">yesterday</time><data value="NaN">value</data>
+<mark>marked <small>small <big>big</mark></small></big>
+</div>
+</body>
+</html>
+```

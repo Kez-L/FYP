@@ -1,0 +1,127 @@
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- comment -- --><!----><!bogus attr>
+<?xml version="1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zz">
+  <head>
+    <!-- unclosed comment
+    <meta http-equiv="Content-Type" content="text/html; charset=not-a-charset">
+    <title>head/title mismatch</head>
+  <body>
+    <hgroup><h1>alpha<h3>gamma</hgroup>
+    <p>one <b>two <i>three</b> four</em> five</p>
+    </section>
+    <div><span><em>nested</div>after</span></em>
+    <p title="a'b" data-x='c"d' =bad ?? weird=>attributes</p>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base href="http://example.invalid/a/">
+  <title>raw text and escaped text</title>
+  <style type="text/css">
+    body { color: red; }
+    /* </style> hidden? */
+    p::before { content: "<tag>&value"; }
+  </style>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("</script><p>split"); }
+  </script>
+  <noscript><style>p { display: none }</style><p>fallback</noscript>
+</head>
+<body>
+  <textarea name="t">one &lt; two
+</textarea>
+  <title>body title</title>
+  <script>
+    var s = "</scr" + "ipt>";
+    var q = "<!-- not markup -->";
+  </script>
+  <p>after raw text</p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>entity stress</title></head>
+<body>
+  <p>&amp &amp; &ampx &lt; &gt; &quot; &apos; &nbsp &nbsp; &copy &#0; &#x0; &#xD800; &#x10FFFF; &#x110000; &#999999999999999999999;</p>
+  <p>&#x; &#xG; &#; &#-1; &#+12; &#00000000000065; &unknown; &notanentity;</p>
+  <div
+    a
+    b=
+    c=""
+    d='
+    e="unterminated
+    f=bare
+    disabled
+    ="value"
+    data-empty>
+    text
+  </div>
+  <p title=&amp; data-q="&quot; &apos; &#34;" data-r='&lt;&gt;&amp;'>
+    <a href="x&amp;y?z=1&amp;z=2">link &copy</a>
+  </p>
+  <input value="&notin; &NotEqualTilde; &#x1F4A9;">
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta http-equiv="refresh" content="0; url='">
+  <title>adoption agency</title>
+</head>
+<body>
+  <p><a href="#"><b>bold <i>bold italic <u>all
+  <a href="/second">nested anchor</a>
+  tail</u></i></b></a></p>
+  <p><font color=red><font size=7>fonts <strike>strike</font> end</strike></font></p>
+  <center><big><small>mixed sizing</center>outside</small></big>
+  <dl>
+    <dt>term one
+    <dd>definition one
+    <dt><dd>empty term
+    <dd><div>block in definition</dl>
+  <ol start="not-a-number" reversed>
+    <li>first
+    <li value="x">second
+    <li><p>third</ol>
+  <blockquote cite="x"><q>quote <q>nested</blockquote>
+  <p>final
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>misplaced structure and uncommon elements</title>
+</head>
+<body>
+  <header><nav><a href="#a">A</nav><main id="a">
+    <article>
+      <h2>article
+      <p>paragraph <mark>marked <time datetime="not-a-date">time</article>
+    <aside>aside
+  </main></header>
+  <p><ruby>漢<rt>kan<rp>(</rp>字<rt>ji</ruby></p>
+  <details open="false"><summary>summary</summary><dialog open>dialog text</dialog>
+  <meter min="x" max="y" value="z">meter</meter></details>
+  <map name="m"><area href="#" shape="poly" coords="1,2,three,4"><area></map>
+  <object data="x" type="bad/type"><param name="p" value="v">fallback</object>
+  <iframe srcdoc="<p>inner &amp; text</p><div>broken" sandbox="allow-scripts allow-">
+  <p>tail<br><wbr><hr><img src=x alt=y
+</body>
+</html>
+```

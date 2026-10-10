@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Envelope xmlns="http://www.w3.org/2003/05/soap-envelope"
+          xmlns:wsse="http://schemas.xmlsoap.org/ws/2002/12/secext"
+          xmlns:wsa="http://www.w3.org/2005/08/addressing">
+  <Header>
+    <wsa:Action mustUnderstand="true">urn:example:process</wsa:Action>
+    <wsa:MessageID>urn:uuid:aa11bb22-cc33-4455-8899-aabbccddeeff</wsa:MessageID>
+    <wsa:ReplyTo>
+      <wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>
+    </wsa:ReplyTo>
+    <wsse:Security>
+      <wsse:UsernameToken wsse:Id="token-1">
+        <wsse:Username>operator</wsse:Username>
+        <wsse:Password Type="http://example.invalid/password">not-a-secret</wsse:Password>
+        <wsse:Nonce EncodingType="base64">YWJjMTIzIT8=</wsse:Nonce>
+      </wsse:UsernameToken>
+    </wsse:Security>
+    <trace xmlns="urn:example:diagnostics" level="verbose">
+      <span id="s1">gateway</span>
+      <span id="s2" parent="s1">worker</span>
+    </trace>
+  </Header>
+  <Body>
+    <process xmlns="urn:example:process" requestId="r-88">
+      <input>
+        <item key="alpha">42</item>
+        <item key="beta"><![CDATA[value with ]]> markers</item>
+      </input>
+      <options>
+        <option name="strict" value="true"/>
+        <option name="format">compact</option>
+      </options>
+      <callback xmlns:xlink="http://www.w3.org/1999/xlink"
+                xlink:type="simple" xlink:href="urn:callback:local"/>
+    </process>
+  </Body>
+</Envelope>

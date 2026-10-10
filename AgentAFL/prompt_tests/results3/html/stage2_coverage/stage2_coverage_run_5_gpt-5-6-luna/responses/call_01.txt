@@ -1,0 +1,127 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Foreign Content Boundary</title>
+  <meta charset="utf-8">
+</head>
+<body>
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <title>vector title</title>
+    <g transform="translate(5,5)">
+      <rect x="0" y="0" width="40" height="20" fill="url(#paint)">
+      <circle cx="20" cy="10" r="7" />
+      <foreignObject x="1" y="1" width="30" height="15">
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>embedded <b>text</b>
+        </div>
+      </foreignObject>
+    </g>
+    <defs><linearGradient id="paint"><stop offset="0%"><stop offset="100%"></linearGradient></defs>
+  </svg>
+  <p>after svg</p>
+  <math>
+    <mrow><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+    <annotation-xml encoding="application/xhtml+xml"><div>math payload</div></annotation-xml>
+  </math>
+</body>
+</html>
+```
+
+```html
+<!doctype html [
+  <!ENTITY sample "replacement">
+  <!ELEMENT note ANY>
+]>
+<?xml version="1.0"?>
+<!-- one -- two --- three -->
+<html>
+<head>
+  <?processing instruction?>
+  <title>entity &sample; &unknown; &#0; &#xD800;</title>
+</head>
+<body>
+  <p data-a="&quot;&apos;&lt;&gt;&amp;" data-b='one"two'>&sample;</p>
+  <![CDATA[
+    <not-an-element>&still-markup;</not-an-element>
+  ]]>
+  <div><!-- unclosed comment
+    <span>hidden</span>
+  </div>
+  <p>visible</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN">
+<html>
+<head>
+  <base target=_blank>
+  <title>frameset branch</title>
+</head>
+<frameset rows="*,0,25%" cols="120,*" border="no" frameborder="2">
+  <frame src="left.html" name=left scrolling=maybe noresize>
+  <frameset cols="50%,50%">
+    <frame src="a.html">
+    <frame src="b.html" longdesc="desc.html">
+  </frameset>
+  <noframes>
+    <body>
+      <h1>fallback</h1>
+      <iframe srcdoc="<p>nested &amp; quoted</p>" sandbox="allow-scripts allow-forms"></iframe>
+      <form method=dialog><button formaction=/submit>send</button></form>
+    </body>
+  </noframes>
+</frameset>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>table mode transitions</title></head>
+<body>
+<table>
+  text-before
+  <caption><select><option>one<option selected>two</select></caption>
+  <colgroup><col span=3><tbody>
+  <tr><td>A<td>B
+    <table><tr><th>nested</th></tr><tr><td>cell</table>
+  <tr><td>
+    <form><input type=hidden name=x><p>paragraph in cell
+  </tbody>
+  <tfoot><tr><td>footer</td></tr></tfoot>
+</table>
+<table><tr><td><div>second table</div></td></tr></table>
+<p>tail<table><tr><td>orphan</p></td></tr></table>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>interactive and metadata oddities</title>
+  <meta http-equiv=refresh content="0; URL='x?y=&quot;">
+  <meta name=viewport content="width=device-width,initial-scale=bad">
+</head>
+<body>
+  <details open=maybe>
+    <summary>summary <ruby>漢<rt>kan</ruby></summary>
+    <template shadowrootmode=open>
+      <p>template content</p>
+      <table><tr><td>inside template</td></tr></table>
+    </template>
+    <dialog open><form><label for=q>Query</label><input id=q list=words>
+      <datalist id=words><option value="a"><option value="b"></datalist>
+      <output for=q>result</output>
+    </form></dialog>
+  </details>
+  <p><button type=submit disabled="false"><span>click</button>
+  <menu type=context><li><a download href="data:text/plain,one">item</a></li></menu>
+  <address><a href="mailto:a@b">contact</address>
+</body>
+</html>
+```

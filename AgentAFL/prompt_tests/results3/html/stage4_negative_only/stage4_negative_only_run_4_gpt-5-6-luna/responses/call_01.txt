@@ -1,0 +1,114 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<template id="outer">
+  <table>
+    <tr><td>template-cell</td></tr>
+  </table>
+  <svg viewBox="0 0 10 10">
+    <foreignObject width="10" height="10">
+      <div xmlns="http://www.w3.org/1999/xhtml">embedded</div>
+    </foreignObject>
+  </svg>
+</template>
+</head>
+<body>
+<template>
+  <p>nested template start
+  <template><span>deep</span></template>
+  </p>
+</template>
+<slot name="missing">fallback</slot>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html lang=en>
+<head><title>misnested table modes</title></head>
+<body>
+<table border=1>
+  <caption><b>caption <i>crossed</caption>
+  <colgroup><col span=2><col>
+  <thead><tr><th>H1<th>H2</tr>
+  <tbody>
+    <tr><td>A<td>B
+    <tr><td colspan=3>
+      <table><tr><td>inner
+    </tbody>
+  <tfoot><tr><td>footer</table>
+<p>after table
+<table><tbody><tr><td>x</tbody></table>
+</body>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>foreign content</title>
+</head>
+<body>
+<svg width="200" height="100" viewBox="0 0 200 100">
+  <defs><linearGradient id="g"><stop offset="0"/><stop offset="1"/></linearGradient></defs>
+  <g transform="translate(2,3)">
+    <text x="4" y="12">SVG &amp; text</text>
+    <path d="M0 0L10 10" stroke="url(#g)"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <mrow><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+    </math>
+  </g>
+</svg>
+<math>
+  <mi mathvariant="bold">a</mi>
+  <annotation-xml encoding="application/xhtml+xml"><div>math html</div></annotation-xml>
+</math>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>forms and declarations</title></head>
+<body>
+<form id=f1>
+  <input name=a disabled required readonly>
+  <button formaction=/x formmethod=dialog>send</button>
+  <output for="a b">result</output>
+  <meter min=10 max=0 low=20 high=-2 value=999>meter</meter>
+  <progress max=-1 value=2>progress
+  <fieldset>
+    <legend>one</legend>
+    <input type=number min=bad step=any value="1e999">
+    <input type=image src=x alt=unclosed
+  </fieldset>
+</form>
+<form id=f2><select><option>one<optgroup><option>two</select></form>
+<dialog open><form method=dialog><button>close</button></form></dialog>
+</body>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv=refresh content="0;url=&quot;x">
+  <link rel=stylesheet disabled href=x>
+  <base target=_blank>
+</head>
+<body>
+<section><hgroup><h1>Heading<h3>Skipped level</h3></hgroup>
+<nav><ol start=0 reversed><li value=999>first<li>second<ul><li>nested</ol></nav>
+<details open><summary>Summary</summary><p>detail</details>
+<map name=m><area shape=poly coords="0,0,1,1" href=#><area>
+<img src=x usemap=#m ismap>
+<iframe srcdoc="<p>embedded &amp; <b>broken"></iframe>
+<object data=x type="x/y"><param name=p value=v>fallback
+</object>
+</body>
+</html>
+```

@@ -1,0 +1,107 @@
+```html
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<style><![CDATA[
+body { color: red; }
+]]></style>
+<script type="text/javascript">
+if (a < b && c > d) { document.write("<p>nested</p>"); }
+</script>
+</head>
+<body>
+<section id="outer">
+<article><header><hgroup><h1>Broken heading</h1><h2>Second
+<ruby>base<rt>annotation</ruby></hgroup></header>
+<p><em><strong><a href="x?y=1&z=2">link<span>tail</em></a>
+</article>
+</section>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="x" dir="rtl">
+<head><title>attribute stress</title></head>
+<body>
+<form action="?" method="post">
+<input type=text disabled=checked checked="" name='a"b' value="one
+two">
+<select name="items" multiple size="-1">
+<option selected>alpha
+<option value=beta disabled>beta
+<optgroup label="group"><option>gamma</optgroup>
+</select>
+<textarea cols=999999 rows=0><div>&lt;not markup&gt;
+</textarea>
+<button type=submit formaction=/submit>send</button>
+</form>
+<div class="a b c" class=duplicate id=id1 id=id2 data-x data-x="v" =bad>
+content
+</div>
+</body>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>table reconstruction</title></head>
+<body>
+<table border=1>
+<caption>caption<table><tr><td>nested</td></tr></table></caption>
+<colgroup><col span=0><col></colgroup>
+<thead><tr><th rowspan=999>head<th colspan=-2>other
+<tbody>
+<tr><td>A<td>B<td>C
+<tr><td><div>cell<div>inner</tr>
+<tfoot><tr><td>footer
+</table>
+<table><tr><td>second<table><tbody><tr><th>x</table><p>after</p>
+</body>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>foreign content</title>
+</head>
+<body>
+<svg width="10" height="10" viewBox="0 0 10 10">
+<foreignObject><div xmlns="http://www.w3.org/1999/xhtml">
+<p>html in svg
+</foreignObject>
+<g><circle cx="1" cy="2" r="3"></g>
+</svg>
+<math><mi>x</mi><mo>&InvisibleTimes;</mo><mrow><mn>1</mn><mo>+</mo></mrow>
+<annotation-xml encoding="application/xhtml+xml"><p>raw</annotation-xml>
+</math>
+<iframe srcdoc="<p title='x'>embedded</p>">fallback</iframe>
+<object data="file.bin"><param name=x><embed src=x></object>
+</body>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>comments and raw text</title><!-- unclosed comment
+<div>hidden</div>
+<!-- nested <!-- marker --> visible
+</head>
+<body>
+<script>
+var s = "</script><div>fake</div>";
+var t = "<!-- comment -->";
+</script>
+<style>
+/* unterminated style
+a { background: url("x"); }
+</style>
+<p>before<![if IE]><span>conditional</span><![endif]>after
+<!----><!-><!--x---><!-- -- --><div / ><br/ ><hr class=x/>
+<pre>line 1
+line 2</pre><x-custom><template><p>inside template</template>
+</body>
+```

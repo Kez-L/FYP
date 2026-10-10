@@ -1,0 +1,142 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=windows-1252">
+  <title>comment and declaration stress</title>
+  <?xml version="1.0"?>
+  <!---->
+  <!--->
+  <!-- nested <!-- marker --> tail -->
+  <![CDATA[not really cdata in html]]>
+</head>
+<body>
+  <!--a--b---c---->
+  <div title="x<!--y-->" data-note='a > b &amp; c'>
+    text <!-- unclosed comment
+    <span>hidden markup</span>
+  </div>
+  <?processing instruction?>
+  <!bogus value>
+  <!-->recovery text</p>
+  <p>after comment &unknown; &amp &gt &quot; &#0; &#x0; &#xD800; &#x110000;</p>
+</body>
+</html>
+```
+
+```html
+<!doctype html PUBLIC "broken-id" "missing-system>
+<root xmlns="urn:example:one" xmlns:x="urn:example:two">
+  <x:item x:a="1" x:b='2' c=three/>
+  <foreign>
+    <svg width="20" height="20" viewBox="0 0 20 20">
+      <g transform="translate(1 2) rotate(45)">
+        <path d="M0 0 L10 10 Z" fill="none"></path>
+        <text x="1" y="2">svg text</text>
+      </g>
+    </svg>
+    <math display="block">
+      <mrow><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+    </math>
+  </foreign>
+  <x:item>
+    <x:child>one</x:child>
+    <x:child><![CDATA[two & < three]]></x:child>
+  </x:item>
+</root>
+```
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>form controls and malformed nesting</title>
+</head>
+<body>
+  <form action="/submit" method="POST" enctype="multipart/form-data">
+    <fieldset disabled>
+      <legend><label for=choice>Pick <em>one</legend>
+      <input id=choice name=choice type=radio value=a checked>
+      <input name=choice type=radio value=b>
+      <label><input type=checkbox name=flags value="x" checked=checked> X
+    </fieldset>
+    <select name=items multiple size=3>
+      <optgroup label="A" disabled>
+        <option value=1 selected>one
+        <option value=2>two</optgroup>
+      <option>three</select>
+    <textarea name=message rows=2 cols=4>raw </textarea> tail</textarea>
+    <button type=submit formaction=/x>Send <img src=x alt="submit"></button>
+    <input type=image src="x" alt=go>
+  </form>
+  <form><input name=a><form><input name=b></form></form>
+  <label for=missing>orphan label</label>
+  <output name=result>42</output>
+</body>
+</html>
+```
+
+```html
+<html>
+<head>
+  <title>head insertion and URL attributes</title>
+  <base href="//[invalid-host]/a/../b?x=1&y=2">
+  <meta charset="">
+  <meta http-equiv=refresh content="0; url='javascript:alert(1)'">
+  <meta name=description content="a > b < c & d">
+  <link rel=stylesheet href=style.css disabled>
+  <style type=text/css>
+    body { color: red; }
+    <!-- legacy comment
+    .x { background: url("x); }
+    -->
+  </style>
+  <script type="text/plain"><b>script text</b> &amp;</script>
+</head>
+<body>
+  <iframe srcdoc="<p>embedded &amp; text</p>" src=about:blank></iframe>
+  <object data="file:///tmp/a" type="x/y"><param name=movie value="a&b"><embed src=x></object>
+  <a href="http://example.invalid/a?q=1&bad" ping="/p1 /p2" download="">link</a>
+  <img srcset="a 1x, b 2x, c" sizes="(max-width: 2px) 1vw" alt="">
+  <map name=m><area shape=rect coords="0,0,10,10" href=#x></map>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>lists tables and recovery</title></head>
+<body>
+  <ol start="not-a-number" reversed>
+    <li value="999999999999999999999">first
+    <li>second
+      <ul type="square">
+        <li>nested A
+        <li>nested B
+      </ul>
+    <li>third
+  </ol>
+  <dl>
+    <dt>term one
+    <dd>definition one
+    <dt><dt>duplicate term
+    <dd><dd>duplicate definition
+  </dl>
+  <table border=1>
+    <colgroup span=2><col width=10><col>
+    <thead><tr><th rowspan=9 colspan=0>head<th>extra
+    <tbody>
+      <tr><td>A<td>B<td>C
+      <tr><td colspan=abc>D</tr>
+    <tfoot><tr><td>foot</table>
+  <p>paragraph starts
+  <address>address <b>bold <i>italic</address>
+  <pre>line one
+line two <code>unterminated
+  <blockquote cite="x"><p>quote</blockquote>
+  <center><font size=+999 color=#zzzzzz>old formatting</center>
+  <div><span>left</div>right</span>
+</body>
+</html>
+```

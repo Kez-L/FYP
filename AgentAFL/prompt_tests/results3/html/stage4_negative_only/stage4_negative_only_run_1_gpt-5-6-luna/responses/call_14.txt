@@ -1,0 +1,131 @@
+```html
+<!doctype html>
+<html lang="x-invalid">
+<head>
+<meta charset="utf-16">
+<base href="::::">
+<link rel="stylesheet" href="data:text/css,">
+<meta http-equiv="refresh" content="-1;url=%">
+<style type="text/plain"><!--
+@import url("unterminated;
+--></style>
+</head>
+<body bgcolor="#gggggg" text="rgb(999,-1,0)">
+<!--- malformed comment --!>
+<?xml version="1.0"?>
+<![CDATA[ raw <tag> & text ]]>
+<h1 id="a" id="b">Heading
+<h2><h4>Skipped levels</h4></h2>
+<p><b><i><u>overlap</b> still italic</u></i>
+<pre> preformatted
+  <span>markup</span>
+</pre>
+<address><a href="javascript:alert('x')">contact
+<blockquote cite="not a uri"><q cite="">quoted</blockquote>
+<hr noshade="maybe">
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html [
+<!ELEMENT mystery ANY>
+<!ENTITY weird "value">
+<!ATTLIST mystery hidden CDATA #IMPLIED>
+]>
+<root>
+<mystery hidden="&weird;">
+  <node a="&unknown;" b='unterminated>
+    text &copy &amp; &#0; &#x110000; &#999999999999999999999999;
+  </node>
+  <![CDATA[<not><real>]]>
+</mystery>
+<svg width="nan" height="-Infinity" viewBox="0 0 0 0">
+  <foreignObject><div xmlns="http://www.w3.org/1999/xhtml">
+    <p>embedded html <br></foreignObject>
+  <path d="M 0 0 L NaN NaN Z" fill="url(#missing)" />
+  <use href="#self" xlink:href="#other"/>
+</svg>
+<math display="strange">
+  <mrow><mi>x</mi><mo>&lt;</mo><mfrac><mn>1</mn><mrow></mrow></mfrac>
+  <annotation-xml encoding="application/xhtml+xml"><p>math html
+</math>
+</root>
+```
+
+```html
+<html>
+<head><title>Raw text boundaries</title></head>
+<body>
+<script type="application/json">
+{"key":"</script><div id=x>escape</div>","arr":[1,2,]}
+</script>
+<script>
+if (a < b && c > d) { document.write("<p>broken"); }
+/* </script> hidden? */
+</script>
+<noscript><div><p>fallback</noscript>
+<style>
+body { background: url("data:image/svg+xml,<svg></svg>"); }
+a:before { content: "</style><script>alert(1)</script>"; }
+</style>
+<template id="t"><section><p>template text</section></template>
+<iframe srcdoc="<html><body><p>nested &amp; text</p></body></html>" sandbox="allow-scripts allow-forms">
+fallback <object data="x"><param name="movie" value="x"><embed src="y">
+</object>
+<video controls poster="missing"><source src="a" type="video/unknown"><track kind="subtitles" srclang="zz"></video>
+<audio autoplay><source src="" /></audio>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<body>
+<ul compact="false">
+<li value="999999999999999999999999">one
+<li><ol reversed start="-999999999"><li>nested
+<li><dl compact><dt>term<dd>definition<dt><dd>orphan
+</dl></ol></li>
+</ul>
+<menu type="context"><li><a accesskey="&#x0;">item</a></menu>
+<details open="0"><summary>Summary <small>small</details>
+<dialog open="yes"><p>dialogue <button autofocus="no">OK
+</dialog>
+<progress max="-1" value="Infinity">fallback</progress>
+<meter min="10" max="2" low="NaN" high="-5" optimum="999" value="abc">meter</meter>
+<figure><img srcset="a 1x, b 999999999999999999w, c" sizes="(bad)" alt="x"><figcaption>caption</figure>
+<picture><source media="not media" srcset=""><img src=""></picture>
+<map name="x"><area shape="poly" coords="1,2,garbage" href="#"></map>
+<canvas width="-10" height="9999999999">canvas fallback</canvas>
+</body>
+</html>
+```
+
+```html
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=broken">
+</head>
+<body>
+<div id="outer">
+  <span class="a b" style="color:; ; invalid: x:y; width:calc(1px + );">
+    before
+    <ruby><rb>base<rt>annotation<rtc><b>extra</ruby>
+    <bdi dir="auto"><bdo dir="sideways">direction</bdo></bdi>
+  </span>
+  <div contenteditable="maybe" draggable="perhaps" tabindex="999999999999">
+    <ins datetime="not-date"><del cite="%%%">change</del></ins>
+    <time datetime="2026-99-99T25:61:61Z">when</time>
+  </div>
+</div>
+<dir><li>legacy one<li>legacy two</dir>
+<center><font face="&quot;" size="999" color="notcolor">legacy</font></center>
+<strike><tt><big><small>nested obsolete</strike></tt></big></small>
+<marquee behavior="unknown" direction="diagonal" loop="-1"><blink>moving</blink></marquee>
+<isindex prompt="Search &invalid;">
+<noembed><p>fallback <img src=x></noembed>
+</body>
+</html>
+```

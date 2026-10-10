@@ -1,0 +1,151 @@
+```html
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html [
+  <!ENTITY writer "A &amp; B">
+  <!ELEMENT note (#PCDATA)>
+]>
+<!-- comment -- -- malformed legacy markup -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+  <?processing instruction?>
+  <title>Entity &writer; &unknown;</title>
+  <style type="text/css">
+    body:before { content: "</style><p>escaped"; }
+  </style>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("<span>raw</span>"); }
+  </script>
+</head>
+<body>
+  <p id="x" id="y" class="one two" data-a="&quot; &amp; &#x0;">
+    Alpha &copy; &#0; &#xD800; &#999999; &notanentity;
+  <div><span>unclosed
+  <p>second paragraph
+  <![CDATA[ not really cdata <tag> ]]>
+  <!-- nested <!-- comment --> tail -->
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=Refresh CONTENT='0; URL="javascript:alert(1)"'>
+<TITLE>Unbalanced legacy elements</TITLE>
+</HEAD>
+<BODY BACKGROUND=bg.gif LEFTMARGIN=0 TOPMARGIN=0>
+<DL compact>
+<DT><B>Term one
+<DD>Definition <I>with <U>several</DL>
+<DIR><LI>alpha<LI>beta
+<MENU><LI>gamma</MENU>
+<PRE>
+  preformatted
+  <B>bold</B>
+  <IMG SRC=x ALT="unterminated
+</PRE>
+<CENTER>
+<FORM ACTION=/x>
+  <INPUT TYPE=text NAME=a VALUE='one two'>
+  <INPUT TYPE=submit VALUE=Go>
+</CENTER>
+</FORM>
+<HR WIDTH=50%>
+<ADDRESS><A HREF=mailto:test@example.invalid>contact</A></ADDRESS>
+</BODY>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Table recovery maze</title>
+</head>
+<body>
+<table border="0">
+  <tr><td>outer one
+    <table>
+      <tr><th>inner heading
+      <tr><td>inner value</td></tr>
+    </table>
+  <td>outer two</tr>
+  <tr><td colspan=bogus>
+    <table><caption>nested caption
+      <col><colgroup><col span="x"></colgroup>
+      <tbody><tr><td>A</tbody>
+      <tfoot><tr><td>footer</table>
+  </tr>
+</table>
+<table>
+  <thead><td>orphan head cell</thead>
+  <tbody>
+    <tr><td>one</tr>
+    <td>cell outside row
+    <tr><th><a href="/a">link<th><a href="/b">another
+  </tbody>
+</table>
+<p>after tables<table><tr><td>x</p></td></tr></table>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+  <title>Embedded languages</title>
+  <style>
+    @media screen {
+      .x { background: url("x"); }
+      /* </style> */
+    }
+  </style>
+</head>
+<body>
+<object classid="clsid:deadbeef" data="movie.swf" type="application/x-shockwave-flash">
+  <param name="movie" value="movie.swf">
+  <param name=quality value=high>
+  <embed src=movie.swf width=320 height=200 pluginspage="about:blank">
+  fallback
+</object>
+<iframe srcdoc="<p>inside &amp; <b>frame</b>" name=frame></iframe>
+<script language="VBScript">
+  If x < 10 Then
+    document.write "<!--"
+  End If
+</script>
+<noscript>
+  <textarea name=raw><b>not markup</textarea>
+  <xmp><i>literal</i></xmp>
+</noscript>
+<canvas width=0 height=-1><font color=red>fallback</font></canvas>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Namespaced oddities</title>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40">
+  <foreignObject width="40" height="40">
+    <div xmlns="http://www.w3.org/1999/xhtml"><p>SVG HTML switch</div>
+  </foreignObject>
+  <path d="M0 0 L10 10" fill="none"/>
+</svg>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow><mi>x</mi><mo>&InvisibleTimes;</mo><mfrac><mn>1</mn><mn>0</mn></mfrac></mrow>
+</math>
+<div xmlns:foo="urn:test" foo:item="value" style="color: red; unknown: {">
+  <span title="a&#13;&#10;b" onclick="if (x < 2) alert('&quot;')">text</span>
+</div>
+<template><p>template content<table><tr><td>x</template>
+<dialog open>dialogue <button type=button>close</button>
+<details><summary>summary</summary><p>details
+</body>
+</html>
+```

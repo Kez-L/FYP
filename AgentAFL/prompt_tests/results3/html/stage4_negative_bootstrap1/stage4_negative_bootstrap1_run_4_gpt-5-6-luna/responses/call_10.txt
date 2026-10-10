@@ -1,0 +1,129 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <base href="http://[::1]:65535/a/../b/%2e%2e/">
+  <meta http-equiv="refresh" content="0;url=javascript:/**/void(0)">
+  <title>&notit; &amp; &#xD800; &#0; &#x110000;</title>
+  <!-- unclosed comment
+  <style media="screen and (min-width: calc(1px + 2%))">
+    body { color: red; content: "</style>"; }
+  </style>
+</head>
+<body id="a&#13;b" class="x&#x0;y">
+  <p><a href="foo" title="one > two">alpha
+  <b><i><u>beta</b> gamma</u></i>
+  <a href="#nested"><em>delta</a> epsilon</em>
+  <p>zeta<br/>eta<hr/ weird="x" />
+  <pre> leading
+	 tabs &lt;tag&gt; </pre><textarea>one</textarea>
+</body>
+```
+
+```html
+<!doctype html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://example.invalid/a">
+<frameset rows="*,0" cols="50%,50%">
+  <frame src="about:blank" name="left">
+  <frame srcdoc="<p>embedded &amp; text</p>" src="data:text/html,%3C!--x--%3E" name="right">
+  <noframes>
+    <body>
+      <form action="/submit" method="post" enctype="multipart/form-data">
+        <fieldset disabled>
+          <legend><label for=q>Pick</label></legend>
+          <input id=q name=q type=radio checked>
+          <input name=q type=radio>
+        </fieldset>
+        <select name=s multiple size=0>
+          <optgroup label="A" disabled><option selected>one<option>two
+          <option value="&bad;">three
+        </select>
+        <button type=submit><span>send</button>
+      </form>
+    </body>
+  </noframes>
+</frameset>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>raw text boundaries</title>
+  <script type="application/javascript">
+    if (a < b && c > d) {
+      document.write("<div data-x='&amp;'>x</div>");
+      var s = "</scr" + "ipt>";
+    }
+  </script>
+  <script type="text/plain"><![CDATA[
+    <tag attr="&notanentity;"> literal
+  ]]></script>
+  <style>
+    @import url("x.css");
+    /* </style><style> */
+    :root { --x: "</style>"; }
+  </style>
+  <noscript><meta charset="x"><p>fallback</p></noscript>
+</head>
+<body>
+  <template id=t><div><slot name=x></slot><!-- t --></div></template>
+  <div is="x-thing" data-a="&quot;&apos;&#x1f4a9;">
+    before<template><p>inside</template>after
+  </div>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<body>
+  <form id=f>
+    <input name=a value="first">
+    <input name=b value="second" form=f>
+    <label><input type=checkbox name=c checked=checked>check</label>
+    <input type=file accept="image/*,.x" multiple>
+    <input type=number min=10 max=1 step=0 value="NaN">
+    <input type=date value="2024-02-30">
+    <output for="a b">result</output>
+    <button formaction="/x" formmethod=get disabled=false>go</button>
+  </form>
+  <form>
+    <input name=outer>
+    <form><input name=inner></form>
+    <select>
+      <option>one
+      <optgroup label=group>
+        <option>two
+        <option>three</option></optgroup>
+      <option disabled selected>four
+    </select>
+  </form>
+  <dialog open><p>dialog <button autofocus>OK</button></dialog>
+  <details open><summary>sum</summary><p>body</details>
+</body>
+</html>
+```
+
+```html
+<!--> <?xml version="1.0"?> <html>
+<head><title>broken declarations</title></head>
+<body>
+  <p class=x y="1" z=unquoted/hello data-empty="" data-q='a"b'>
+    &copy &copy; &amp &amp; &#65 &#x41 &#xZZ; &unknown;
+  <div><span>one</div><span>two
+  <dl>
+    <dt>term<dd>definition
+    <dt><dd><dd>extra
+  </dl>
+  <ol start="999999999999999999999999999" reversed>
+    <li value="-2147483649">large
+    <li>next
+  </ol>
+  <blockquote cite="http://x/?a=1&b=2"><q>quote</blockquote>
+  <p><ruby>base<rt>annotation<rp>(</ruby>tail
+  <iframe sandbox="allow-scripts allow-scripts" name="x">fallback</iframe>
+  </body>
+</html
+```

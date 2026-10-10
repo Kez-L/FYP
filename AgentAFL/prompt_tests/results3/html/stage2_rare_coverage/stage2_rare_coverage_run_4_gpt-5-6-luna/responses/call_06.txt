@@ -1,0 +1,137 @@
+```html
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE html [
+  <!ENTITY local "replacement">
+  <!ELEMENT mystery ANY>
+  <!ATTLIST mystery data CDATA #IMPLIED>
+]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zz">
+  <head>
+    <!--><!----><!------><meta charset="x-invalid">
+    <?processing instruction?>
+    <title>Mixed &local; &#x110000; &unterminated</title>
+  </head>
+  <body>
+    <mystery data="&quot; &apos; &local;">before
+      <svg xmlns="http://www.w3.org/2000/svg"><g><path d="M0 0L1 1"/></g></svg>
+      <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>x</mi><mo>&InvisibleTimes;</mo></mrow></math>
+    </mystery>
+    <![CDATA[ <not-an-element> & still text ]]>
+    <p title="a&#x0;b&#x1f; c&#xD800;">after</p>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+  <head>
+    <base href="http://example.invalid/a/b/">
+    <isindex prompt="Search:">
+    <meta http-equiv=refresh content="0; URL='x y'">
+    <title>Head
+  </head>
+  <body bgcolor=#GGGGGG text=red link=#12345 vlink=none alink="&bogus;">
+    <center>
+      <hgroup><h1>One<h4>Four<h2>Two</h6></hgroup>
+      <address><b><i><u><strike>nested</address></b></i></u></strike>
+    </center>
+    <blockquote cite="unterminated>
+      <q>quote <cite>citation</blockquote>
+    <pre>
+      leading
+      <code>literal &lt; tag</code>
+      trailing
+    </pre>
+    <plaintext><div>everything after plaintext
+    <script>if (a < b && c > d) { document.write("</script>"); }</script>
+  </body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Ruby and obsolete phrasing</title></head>
+<body>
+  <dl compact="compact">
+    <dt id=x>Term one
+    <dd>Definition <dfn><abbr title="long">abbr</abbr>
+    <dt><a name="broken" href="javascript:&#x0A;alert(1)">Term two
+    <dd><ins datetime="not-a-date"><del cite=foo>removed</ins>inserted</del>
+  </dl>
+  <ruby>
+    漢<rt lang=ja>かん</rt><rp>(</rp><rt>kan</rt><rp>)</rp>
+    <rb>字<rtc><span>annotation</ruby>
+  <p><bdo dir=side>direction <bdi dir=rtl>isolation</bdi></bdo>
+  <p><font face="A,B" size="+999" color="rgb(1,2,3)">font
+    <big><small><tt><samp><kbd>phrasing</p>
+  <details open="maybe"><summary>summary
+    <dialog open>dialogue</details>
+  <menu type="context"><menuitem label="x" onclick="&quot;bad&quot;">item
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Foreign content boundaries</title>
+  <style type="text/css">
+    <![CDATA[
+      body > x\:y { color: red; }
+      @media (x) { a { content: "</style>"; } }
+    ]]>
+  </style>
+</head>
+<body>
+  <svg width="1e309" height="-Infinity" viewBox="0 0 10 10">
+    <title>svg title</title>
+    <foreignObject><div xmlns="http://www.w3.org/1999/xhtml">
+      <p>html in foreign <svg><desc>nested svg</desc><use href="#x"/></svg>
+    </div></foreignObject>
+    <defs><linearGradient id=g><stop offset="NaN%"/></linearGradient></defs>
+    <use xlink:href="#g" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+  </svg>
+  <math display="sideways">
+    <annotation-xml encoding="application/xhtml+xml">
+      <div xmlns="http://www.w3.org/1999/xhtml"><em>embedded</em></div>
+    </annotation-xml>
+    <mtext><span>text</span></mtext>
+  </math>
+  <iframe srcdoc="<p>quoted <b>markup</b> &amp; text" sandbox=allow-scripts></iframe>
+  <object data="x" type="application/x-unknown"><param name=name value=value><p>fallback</object>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html>
+<head>
+  <title>Adoption and comment recovery</title>
+  <!-- ordinary -- comment -- with -- runs -->
+  <!----!>
+</head>
+<body>
+  <p><a href=#one>start <b>bold <i>italic <u>under <a href=#two>nested link
+    <em>emphasis</b> after</i> tail</u></a>
+  <table><tr><td>cell
+  <p>paragraph inside recovery</p>
+  <form><input name="x"><button>button</table>
+  <section><header>head<footer>foot</section></header></footer>
+  <template shadowrootmode=open>
+    <style>p { color: red; }</style>
+    <p>template <span>content
+  </template>
+  <noscript><div><p>noscript markup <img src=x></noscript>
+  <script type="text/plain"><!--
+    <div>script text</div>
+    --></script>
+  <p id=one title='single " quote'>end
+  <!--[if IE]><div class="conditional">legacy<![endif]-->
+  <![if !IE]><span>downlevel revealed</span><![endif]>
+</body>
+</html>
+```

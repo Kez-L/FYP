@@ -1,0 +1,124 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-16">
+<base href="http://example.test/a/">
+<title><b>Unclosed title
+</head>
+<body bgcolor=#ggg text="&unknown;>
+<table border="999999999999999999999999" cellpadding=-1 cellspacing="NaN" width=0>
+<caption align=middle><center>Table &amp; caption</caption>
+<colgroup span="0"><col width="*" align=sideways></colgroup>
+<thead><tr><th rowspan="-2">A<th colspan="999">B<th>C
+<tbody>
+<tr><td><table><tr><td>nested<td><div><span>text</table>
+<tr><td valign=middle nowrap=nowrap><img src="" alt="x" ismap></td></tr>
+<tfoot><tr><td colspan="nope">footer
+</table>
+<hr noshade="false" size="999999999999999999999">
+<address><a href="mailto:"><b><i>contact</address>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<!-- -- --><!------><!bad declaration
+<?xml version="1.0"?>
+<html>
+<head>
+  <meta charset=>
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel=stylesheet href=foo.css disabled=maybe>
+  <title>&#0; &#xD800; &#x110000; &notanentity; &amp
+</head>
+<body>
+  <p id="a" id="b" class=x y z="unterminated>Alpha
+  <div><p>Beta<br/>Gamma<br />Delta</div>
+  <pre>  leading
+    &lt;tag&gt;
+  trailing</pre>
+  <blockquote cite="a&amp;b" cite="c"><q>quote
+  <dl><dt>term<dd>definition<dt><dd>empty
+  <center><font face="A" size="999" color="#12">legacy</font></center>
+  <!-- comment with -- bad -- and <tags> -->
+  <![CDATA[not really cdata <b>payload</b>]]>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Misnested block recovery</title></head>
+<body>
+<hgroup><h1>One<h2>Two<h6>Six</hgroup>
+<p>before <b>bold <i>italic <u>under <em>emphasis</p>
+<ol start="-999999999999999999999" reversed="false">
+  <li value="abc">first
+  <li value="2">second
+  <li><p>third
+</ol>
+<div class="outer"><section><article><header>head<footer>foot</article>
+<aside><nav><ul><li>A<li>B</nav></aside>
+<table><tr><td>cell <p>paragraph</td></tr></table>
+<p><a href="one"><a href="two">nested links</a> tail</a>
+<dl><dt><b>term<dd><i>definition<div>block in definition
+</body>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Attributes and URI edge cases</title>
+  <meta http-equiv="refresh" content="0;url=javascript:alert(1)">
+</head>
+<body>
+  <img src="http://[::1" alt="" width="18446744073709551615" height="-9223372036854775808">
+  <map name=main><area shape=poly coords="0,0,1,1,broken" href="a b" alt=x><area></map>
+  <a href="http://example.com/%ZZ?x=&amp;y=&#xZZ;" target="_blank" rel="noopener noreferrer ???">link</a>
+  <form method=WHAT action="a&b" accept-charset="UTF-8, ,invalid">
+    <input name=x disabled= checked=false readonly=0>
+    <select multiple size="-2147483649" name=s>
+      <option selected selected value="&">one
+      <option value=>two
+    </select>
+  </form>
+  <button formaction="x" formmethod="UNKNOWN" type="mystery">button</button>
+  <object classid="clsid:broken" codebase="::::" standby="&bad;" width=none height=NaN>
+    <param name="movie" value="x">
+    fallback
+  </object>
+  <embed src="data:text/plain,<&>" type="application/x-unknown" pluginspage="">
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Raw text and embedded declarations</title></head>
+<body>
+<script language="javascript" type="text/plain">
+  if (a < b && c > d) { document.write("</div><p>fake"); }
+  // </script> appears early
+  x = "unterminated
+</script>
+<style type="text/css">
+  body { background: url("x"); }
+  .x::before { content: "<tag> &amp;"; }
+  </styly>
+</style>
+<noscript><div>fallback <strong>content</noscript>
+<template id=t><p>template text</template>
+<textarea cols="999999999999" rows="-1">&lt;/textarea&gt;
+literal
+</textarea>
+<plaintext>
+Everything after here <b>looks like markup</b>
+&entities; and comments <!-- never end
+</body>
+</html>
+```

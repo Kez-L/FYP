@@ -1,0 +1,162 @@
+```html
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<!--><!----><! -- malformed comment -- >
+<?xml version="1.0"?>
+<html lang="en" dir="rtl" id="root" id="duplicate">
+<head>
+  <base href="http://example.invalid/a/b/">
+  <title>&#xD800; &amp; &unknown; title</title>
+  <style type="text/css">
+    body { color: expression(alert("x")); } /* unclosed
+  </style>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("</script>"); }
+  </script>
+</head>
+<body bgcolor="#gggggg" text="red" link=>
+  <hgroup><h1>Heading <em>one<h6>six</hgroup>
+  <p class="a b c" style="color: rgb(999,-1,none)" title="x&quot;y&#0;z">
+    Text <strong><i><u>nested</strong> broken</u></i>
+  </p>
+  <dl compact=maybe>
+    <dt><b>term
+    <dd>definition
+    <dt></dt><dd><q cite="a>b">quote
+  </dl>
+  <pre>  preserved
+	&amp; &#99999999; <code>code</pre>
+  <center><big><small><strike>obsolete</center>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+  <TITLE>Map and embedded content</TITLE>
+  <ISINDEX PROMPT="Search:">
+</HEAD>
+<BODY>
+  <P><IMG SRC="x" ALT="a & b" WIDTH="NaN" HEIGHT="-999" BORDER="none" USEMAP="#m">
+  <MAP NAME="m" ID="m">
+    <AREA SHAPE="rect" COORDS="0,0,10,10" HREF="one">
+    <AREA SHAPE="circle" COORDS="x,y,r" NOHREF>
+    <AREA SHAPE="poly" COORDS="1,2,3" HREF>
+    stray map text
+  </MAP>
+  <OBJECT CLASSID="clsid:invalid" CODEBASE="" DATA="data:text/plain,abc" TYPE="bad/type"
+          WIDTH="0" HEIGHT="%" ALIGN="sideways">
+    <PARAM NAME="movie" VALUE="a&b">
+    <PARAM NAME= VALUE=>
+    fallback <EMBED SRC="plugin" TYPE="application/x-unknown" HIDDEN="false">
+  </OBJECT>
+  <APPLET CODE="X.class" CODEBASE="/x" ARCHIVE="a.jar,b.jar" WIDTH="-" HEIGHT="auto">
+    <PARAM NAME="x" VALUE="1">
+    <TEXTAREA>not really textarea</TEXTAREA>
+  </APPLET>
+  <P><IMG SRCSET="a 1x, b 2w, c" SIZES="(min-width: ) 50vw,">
+  <NOFRAMES><DIV>ordinary fallback <A HREF="#m">anchor</A></DIV></NOFRAMES>
+</BODY>
+</HTML>
+```
+
+```html
+<!doctype HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+<head>
+  <title>Raw text and declarations</title>
+  <!-- comment -- -- nested <!-- marker -->
+  <!ENTITY foo "bar">
+  <!DOCTYPE nested [
+    <!ELEMENT weird ANY>
+    <!ATTLIST weird x CDATA #IMPLIED>
+  ]>
+</head>
+<body>
+  <h1>before <a href="unterminated>after</a>
+  <p>entity &notanentity; &#; &#x; &#x110000; &apos; &Tab; &NewLine;
+  <x-weird a=1 b='2' c="3" / >custom element</x-weird>
+  <script>
+    var s = "<div>";
+    /* </script> */
+    var t = '&lt; &amp;';
+  </script attr=ignored>
+  <style>
+    @import url("x");
+    .a { background: url(data:image/svg+xml,<svg></svg>); }
+  </style>
+  <textarea name="t" disabled="disabled">one &lt; two
+    <b>literal markup</b>
+  </textarea>
+  <xmp><b>raw xmp</b>&amp;</xmp>
+  <plaintext>
+    <html><body><p>everything becomes text
+  </plaintext>
+  <p>unreachable-looking tail</p>
+</body>
+```
+
+```html
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+  <title>Block closure maze</title>
+</head>
+<body>
+  <address>
+    <div>block inside address
+      <p>paragraph <span>span
+    <blockquote cite="x" cite="y">
+      quoted <div>nested block</div>
+    </blockquote>
+  </address>
+  <h2>heading <p>paragraph after heading</h2>
+  <div align="center">
+    <p>one
+    <p>two
+    <blockquote><pre>pre
+    <div>inside pre?</div></pre></blockquote>
+  </div>
+  <hr>
+  <ins cite="a" datetime="not-a-date"><del><p>deleted paragraph</ins>tail</del>
+  <figure>
+    <figcaption>caption <b>bold</figure>
+    <div>after figure</div>
+  </figure>
+  <details open="maybe">
+    <summary>summary
+    <p>details content
+  </details>
+  <dialog open="0"><p>dialog text</dialog>
+  <main><section><article><header>head</section>body</article></main>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 3.0//EN">
+<HTML>
+<HEAD>
+  <TITLE>Malformed token stream</TITLE>
+</HEAD>
+<BODY>
+  <P><A HREF="x" NAME="n" TARGET="_blank" TARGET="_self">link
+  <A HREF=x y z="1"=bad>second
+  <BR/ ><BR //////><WBR/>
+  <B><I><U><TT><S><SUP>deep</B>out</I>tail</U></TT></S></SUP>
+  <P ATTR=one ATTR=two ATTR="three" empty="" novalue>
+    <LABEL FOR="a"><INPUT ID=a VALUE="x
+  <BUTTON TYPE="unknown" NAME="b" VALUE="v" FORM="missing">button
+  <OUTPUT FOR="a b" NAME=o>result</OUTPUT>
+  <METER MIN="10" MAX="0" VALUE="NaN" LOW="-" HIGH="%" OPTIMUM="x">meter</METER>
+  <PROGRESS MAX="-1" VALUE="999">progress</PROGRESS>
+  <TIME DATETIME="2024-99-99T99:99:99Z">time</TIME>
+  <P><SPAN STYLE="font-family:'unterminated; color:red"><FONT FACE="a>b" SIZE="999">
+    text &copy &copy; &amp &lt
+  </FONT></SPAN>
+  <!-- unclosed comment
+  <div>hidden?</div>
+  <p>after comment
+</BODY>
+```

@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!DOCTYPE itinerary [
+  <!ENTITY city "Zürich">
+  <!ENTITY arrow " → ">
+  <!ELEMENT itinerary (traveler, journey)>
+  <!ATTLIST itinerary locale NMTOKEN #IMPLIED>
+  <!ELEMENT traveler (name, contact*)>
+  <!ATTLIST traveler id ID #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT contact (#PCDATA)>
+  <!ATTLIST contact type (email|phone|matrix) #REQUIRED>
+  <!ELEMENT journey (leg+)>
+  <!ELEMENT leg (depart, arrive, transport, luggage?)>
+  <!ATTLIST leg number NMTOKEN #REQUIRED overnight (yes|no) "no">
+  <!ELEMENT depart (place, time)>
+  <!ELEMENT arrive (place, time)>
+  <!ELEMENT place (#PCDATA)>
+  <!ATTLIST place code NMTOKEN #IMPLIED>
+  <!ELEMENT time (#PCDATA)>
+  <!ATTLIST time zone CDATA #REQUIRED>
+  <!ELEMENT transport (#PCDATA)>
+  <!ATTLIST transport kind (rail|air|ferry|walk) #REQUIRED ref NMTOKEN #IMPLIED>
+  <!ELEMENT luggage (bag+)>
+  <!ELEMENT bag EMPTY>
+  <!ATTLIST bag tag NMTOKEN #REQUIRED weight CDATA #IMPLIED>
+]>
+<itinerary xmlns="urn:travel:plan" xmlns:geo="urn:travel:geo" locale="de-CH">
+  <traveler id="p-42">
+    <name>Amira &amp; Kovač</name>
+    <contact type="email">amira@example.invalid</contact>
+    <contact type="matrix">@amira:example.invalid</contact>
+  </traveler>
+  <journey>
+    <leg number="1">
+      <depart><place code="LHR">London</place><time zone="Europe/London">2026-10-03T08:15:00</time></depart>
+      <arrive><place code="ZRH">&city;</place><time zone="Europe/Zurich">2026-10-03T10:55:00</time></arrive>
+      <transport kind="air" ref="LX317"/>
+      <luggage>
+        <bag tag="LX-001" weight="18.4"/>
+        <bag tag="LX-002"/>
+      </luggage>
+    </leg>
+    <leg number="2" overnight="yes">
+      <depart><place code="ZRH">Zürich</place><time zone="Europe/Zurich">2026-10-04T21:10:00</time></depart>
+      <arrive><place code="MIL">Milano</place><time zone="Europe/Rome">2026-10-04T23:05:00</time></arrive>
+      <transport kind="rail" ref="EC-151">&city;&arrow;Milano</transport>
+    </leg>
+  </journey>
+</itinerary>

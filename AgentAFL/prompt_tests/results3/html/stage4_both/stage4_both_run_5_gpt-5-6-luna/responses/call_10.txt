@@ -1,0 +1,166 @@
+```html
+<!doctype html>
+<html lang="x-invalid" dir="sideways">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; report-uri">
+<meta http-equiv="refresh" content="-1;url=::::">
+<link rel="stylesheet" href="data:text/css,body{color:red}" media="not-a-media">
+<style type="text/plain"><!--
+  @import url("unterminated.css");
+  body { content: "</style><script>bad()</script>"; }
+</style>
+<script type="application/ld+json">
+{"@context":,"items":[1,2,],"nested":{"x":"\uD800"}}
+</script>
+</head>
+<body>
+<header><hgroup><h1>Broken <em>heading</h1><h2>second</header>
+<nav><ul><li><a href="one">one<li><a href="two">two</ul></nav>
+<main>
+<section id="a" id="b"><article><p>alpha <b>bold <i>italic</b> tail</i>
+<blockquote cite="&notanentity;"><q cite=>quote</blockquote>
+<details open=maybe><summary>summary</summary><div>details</div></details>
+<dialog open=0><form><button formaction="/x" formmethod=unknown>submit</button></form>
+<pre><code>&lt;tag attr='unterminated&gt;
+&amp; &copy; &#x110000; &#-4;</code></pre>
+</article></section>
+<aside><address><a href="mailto:a@b">a@b</a><br><wbr></address></aside>
+</main>
+<footer><small>footer</small></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Object fallback and media branches</title></head>
+<body>
+<picture>
+  <source srcset="a 1x, b 2x, c 0w" sizes="calc(100% - )" type="image/unknown">
+  <source media="(min-width: nope)" srcset="">
+  <img src="x" srcset="x 1.5x, y -2w" alt="broken
+</picture>
+<video autoplay controlslist="none bogus" width="-1" height="NaN" poster="p">
+  <source src="movie" type="video/unknown; codecs="bad">
+  <track kind=chapters srclang=xx src="chap.vtt" default=maybe>
+  <track kind=metadata label="unterminated>
+  fallback <b>video fallback</video>
+<audio preload=sideways loop="0"><source src=""><source></audio>
+<object data="blob:invalid" type="application/x-unknown" width="999999">
+  <param name=movie value="x">
+  <embed src="x" type="" height="-99">
+  <p>object fallback <a href="#">link</a></p>
+</object>
+<canvas width="-5" height="4294967296">
+  <svg><circle cx="NaN" cy="-1"/></svg>
+  canvas fallback
+</canvas>
+<iframe srcdoc="<p>inner &amp; <b>document</b>" sandbox="allow-scripts allow-unknown" loading=sideways>
+  iframe fallback
+</iframe>
+<map name=map><area shape=polygon coords="a,b,c" href=x><area shape=rect coords="1,2"></map>
+<img src=x usemap="#map" ismap decoding=maybe>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>Ruby and phrasing misnesting</title>
+</head>
+<body>
+<dl>
+<dt><ruby>漢<rt>kan<rp>)</rp><rt>ji</ruby>
+<dd><data value="not-a-number">value</data>
+<dt><time datetime="2024-99-99T99:99:99Z">time</dt>
+<dd><meter min="10" max="-2" low="NaN" high="foo" optimum="999" value="-4">meter</meter>
+<dt><output for="a b" name=x>out</output>
+<dd><progress max="-1" value="999">progress</progress>
+</dl>
+<p><span><b><i><u><s>one</span>two</b>three</i>four</u>five</s>
+<p><mark><del cite=x datetime=bad>deleted <ins cite=y>inserted</del> text</ins></mark>
+<p><abbr title="long <value">abbr</abbr>
+<ruby><rb>base<rt>annotation<rtc>extra</ruby>
+<ol start="NaN" reversed="maybe" type="?">
+<li value="-3">first
+<li><ol><li>nested</ol>
+<li>last
+</ol>
+<ul type="invalid"><li>u1<li><menu><li>menu item</menu></ul>
+<figure>
+<figcaption><a href=><code>caption</a></code></figcaption>
+<blockquote><p>quoted</figure></blockquote>
+<p><bdo dir="not-an-direction">direction</bdo>
+<p><bdi dir=rtl>אבג <span dir=ltr>abc</span></bdi>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://invalid.example/dtd">
+<html>
+<head>
+<?xml version="1.0"?>
+<meta charset="utf-16">
+<base href="http://[::1" target="_blank">
+</head>
+<body>
+<!-- comment starts
+<div><span>hidden</span>
+--!>
+<![CDATA[ <not-html> & broken ]]>
+<!DOCTYPE html [
+  <!ENTITY test "value">
+  <!ELEMENT weird ANY>
+]>
+<div class="a b" class="duplicate" data-x data-y="&quot;" aria-hidden="perhaps">
+  text
+  <section><header>head</header><main>main</main><footer>foot</footer></section>
+</div>
+<!-- -- --><!----><! -- malformed -->
+<template shadowrootmode="open"><div><slot name=x></slot><style>x{}</style></div></template>
+<noscript><p><b>noscript markup</noscript>
+<script>
+if (a < b && c > d) { document.write("<div>"); }
+/* </script> hidden? */
+</script>
+<script type="text/plain">x</script>
+<p>after
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Custom elements and malformed roots</title></head>
+<body>
+<app-shell>
+  <header-bar data-count="18446744073709551616">
+    <x-panel><x-item/><x-item></x-panel>
+  </header-bar>
+  <main-content>
+    <form>
+      <label><input name=a><custom-control tabindex="NaN"></label>
+      <fieldset><legend>Legend</legend><div><input></fieldset>
+      <button type="button"><span>click</button></span>
+    </form>
+    <template id=t><table><tr><td>template cell</template>
+    <slot><span>fallback</slot>
+  </main-content>
+</app-shell>
+<svg:svg xmlns:svg="http://www.w3.org/2000/svg">
+  <svg:foreignObject><html:div><p>mixed</p></html:div></svg:foreignObject>
+</svg:svg>
+<math:math xmlns:math="http://www.w3.org/1998/Math/MathML">
+  <math:annotation-xml encoding="application/xhtml+xml"><div>math fallback</div>
+</math:annotation-xml>
+</math:math>
+<root><child attr="&amp; &bad; &#0;"><![CDATA[text]]></child></root>
+<hr/><input><br><img src=x>
+</body>
+</html>
+```

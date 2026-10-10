@@ -1,0 +1,134 @@
+```html
+<!DOCTYPE html [
+  <!ELEMENT root ANY>
+  <!ENTITY local "replacement &amp; text">
+]>
+<?xml version="1.0"?>
+<!-- comment with -- double hyphen -->
+<html>
+<head>
+  <meta charset="UTF-16">
+  <meta http-equiv="refresh" content="0; url='x&y'">
+  <title>Entity &local; &#x110000;</title>
+  <link rel=stylesheet media="screen and (min-width:0px)" href="">
+</head>
+<body>
+  <header id=top><nav aria-label="&quot;main"><a href=#top>jump</a></nav></header>
+  <main>
+    <article><section><hgroup><h1>Title<h6>subtitle</hgroup>
+      <p><em><strong><small>nested</p></small></strong></em>
+      <aside><p>side <del cite=http://invalid/ datetime=not-a-date>removed</aside>
+    </article>
+  </main>
+  <footer><address><a href="mailto:a@b">contact</a></address></footer>
+</html>
+```
+
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+<html>
+<head><title>controls</title></head>
+<body>
+<form id=f method=dialog enctype=multipart/form-data accept-charset="utf-8, ,x" autocomplete=maybe>
+  <fieldset disabled=false>
+    <legend><label for=x>Choose <input id=x name=n value="a>b"></label></legend>
+    <select name=pick multiple size=-1>
+      <optgroup label="one &amp; two" disabled>
+        <option selected value=a>a
+        <option value="b" label="B &quot;quoted">b</option>
+      </optgroup>
+      <option value=c disabled=0>c
+    </select>
+    <output for="x y" name=result>old</output>
+    <textarea name=notes wrap=weird maxlength=-5>line 1
+line 2 &amp; <b>literal</textarea>
+    <button type=unknown formaction="javascript:alert(1)" formmethod=PATCH>send</button>
+    <input type=image src onerror="x<y" width=nan height=-->
+  </fieldset>
+</form>
+<dialog open=closed><p>dialog text</p><form><input type=submit></form></dialog>
+<menu><menuitem label="legacy" onclick="a();">entry</menu>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>mixed namespaces</title></head>
+<body>
+<svg width="1e309" height="-4" viewBox="0 0 10" preserveAspectRatio="xMidYMid??">
+  <title>svg title</title>
+  <g transform="translate(1,2) rotate(foo)" fill="url(#missing">
+    <path d="M0 0 L 10 10 Z garbage" stroke-width="NaN"/>
+    <text x="1" y="2"><tspan dy="3">vector &amp; text</tspan></text>
+    <foreignObject><div xmlns="http://www.w3.org/1999/xhtml"><p>html in svg</div></foreignObject>
+  </g>
+  <![CDATA[not really cdata]]>
+</svg>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="sideways">
+  <mi>x</mi><mo>&InvisibleTimes;</mo><msup><mn>2</mn><mrow><mi>y</mi></math>
+<object data="x" type="application/x-unknown"><param name=a value="1"><p>fallback
+  <embed src="" width="bad" height="0"></object>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>table repair</title>
+  <style media="not all" type="text/css">
+    table{border-collapse:collapse} @media (width<){a{color:rgb(1,2)}}
+    </style attr="unterminated>
+</head>
+<body>
+<table border="999" cellpadding="-1" cellspacing="NaN" summary="a&b">
+  <caption align=diagonal><b>Caption
+  <colgroup span="0"><col span=2 width="50%"><col width=bad>
+  <thead><tr><th rowspan=999 colspan=-2 scope=maybe>A<th>B
+  <tbody>
+    <tr><td headers="a b" rowspan="x">one<td>two
+    <tr><td><table><tr><td>inner</table><td>after
+  <tfoot><tr><th colspan="0">total<th><form><input name=t></form>
+</table>
+<table><tbody><tr><td>unclosed
+<div>between tables</div>
+<table><tr><td>second</tr></tbody></table>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>raw text boundaries</title>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("</scr" + "ipt>"); }
+    <!-- legacy comment
+    var s = "<!-- &amp; </script>";
+  </script>
+  <noscript><p>fallback <img src=x></noscript>
+  <style>
+    /* unclosed rule */
+    @font-face{src:url("x");} body{background:"</style>";}
+  </style>
+</head>
+<body>
+  <p>before<plaintext>
+  Everything after this point is text, including <tags>, &amp;, and
+  </body>
+  </html>
+  <script>never parsed?</script>
+</plaintext>
+<iframe srcdoc="<p title='x>y'>embedded &amp; page</p>" sandbox="allow-scripts allow-">
+  fallback <b>frame</b>
+</iframe>
+<x-custom data-a=1/ data-b="2//"><template shadowrootmode=open>
+  <p>template <slot name=x>fallback</slot></p>
+</template></x-custom>
+</body>
+</html>
+```

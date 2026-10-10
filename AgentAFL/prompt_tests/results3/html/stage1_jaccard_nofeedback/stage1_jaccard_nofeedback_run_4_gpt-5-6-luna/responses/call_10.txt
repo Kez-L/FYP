@@ -1,0 +1,91 @@
+```html
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <base href="http://example.invalid/a/../../b/">
+    <title>unterminated title
+  </head>
+  <body>
+    <!-- nested <!-- comment --> tail -->
+    <p id="a&#x0D; b" class="x y" disabled=checked data-k='one"two'>
+      &amp &unknown; &#0; &#xD800; &#x10FFFF; &#x110000;
+    <a href="javascript:alert('x')"><b><i>crossed</a></b></i>
+    <hr/>
+    <input type=text value="a>b<c" />
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE svg [
+  <!ENTITY bogus "replacement &amp; text">
+]>
+<svg xmlns="http://www.w3.org/2000/svg">
+  <foreignObject>
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <p>embedded html</p>
+      <table><tr><td>one<td>two</tr></table>
+    </div>
+  </foreignObject>
+  <script><![CDATA[
+    if (a < b && c > d) { /* ]]> */ }
+  ]]></script>
+  <path d="M0 0 L10 10 Z" />
+</svg>
+```
+
+```html
+<form action="/submit" method="POST">
+  <fieldset disabled>
+    <legend>controls
+    <label for=q>Name <input id=q name=name value="&quot; &apos; &nbsp; &#x1f600;"></label>
+    <select name=choice multiple size=0>
+      <optgroup label=First><option selected>one<option>two
+      <optgroup><option value=3>three
+    </select>
+    <textarea name=notes rows=2 cols=4>first
+second
+    <button type=submit><span>send</fieldset>
+  <input type=file accept="image/*,.txt" required>
+</form>
+<output form=missing>result</output>
+```
+
+```html
+<table border="1">
+  <colgroup><col span="2"><col>
+  <thead><tr><th rowspan=2>Group<th colspan=2>Values</thead>
+  <tbody>
+    <tr><td>A<td>1<td>2
+    <tr><th>B<td><div>3<table><tr><td>nested</table></div><td>4
+  <tfoot><tr><td colspan=4>footer
+</table>
+<p>after table</p>
+<table><tr><td>unclosed
+<div>misplaced block
+```
+
+```html
+<!DOCTYPE html>
+<html lang="x-invalid">
+<head>
+  <meta charset="utf-16">
+  <style type=text/css>
+    body { color: red; }
+    @media screen and (max-width: 0px) { .x { content: "</style><p>"; } }
+  </style>
+  <script type="text/javascript">
+    var s = "</script>";
+    var t = "<!-- not markup -->";
+  </script>
+</head>
+<body>
+  <details open><summary>summary</summary><p>details text</details>
+  <dialog open><p>dialog</dialog>
+  <template><table><tr><td>template</template>
+  <object data="data:text/plain,<tag>" type="text/plain"><param name=x value=y>
+  <iframe srcdoc="<p>quoted &amp; document</p>" sandbox></iframe>
+</body>
+</html>
+```

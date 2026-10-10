@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>embedded data and unusual attributes</title>
+  <style>
+    @media (min-width: bad) { body { color: #ggg } }
+    <!-- legacy style marker
+    .x { content: "</style>"; }
+  </style>
+  <script type="application/ld+json">
+    {"name":"x","value":"</script><p>escaped boundary</p>","bad":}
+  </script>
+</head>
+<body>
+  <canvas id="c" width="NaN" height="-2">
+    <p>canvas fallback <img src="data:image/png;base64,%%%%" alt="fallback"></p>
+  </canvas>
+  <iframe srcdoc="<p>embedded &amp; text</p>" src="javascript:void(0)" sandbox="allow-scripts allow-unknown" loading="whenever" referrerpolicy="invalid">
+    iframe fallback
+  </iframe>
+  <embed src="data:application/x-unknown,%00%ff" type="" width="-" height="auto">
+  <object data="data:text/html,%3Cb%3Einside%3C%2Fb%3E" type="text/html" name="obj">
+    <param name="autoplay" value="maybe">
+    <param name="broken" value>
+    <p>Object fallback</p>
+  </object>
+  <form>
+    <input name="a" value="one" disabled>
+    <input name="b" value="two" readonly="false">
+    <button type="submit" formaction="/a?x=1&y=2" formenctype="bad/type">Send</button>
+  </form>
+  <noscript><div>noscript markup <b>bold</b></div></noscript>
+</body>
+</html>

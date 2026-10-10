@@ -1,0 +1,141 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="x-invalid">
+  <base href="http://[invalid.example:bad]/root/">
+  <style>
+    body { color: red; }
+    </style>
+  <script type="application/json">{"x":"</script><p>escaped?","n":1}</script>
+  <title>alpha &unknown; &amp &#x1F4A9;</title>
+</head>
+<body>
+  <main id="outer">
+    <p>Before <b>bold <i>italic <u>underlined</b> crossed</i></u> after
+    <div class="container" data-a="one" data-b='two"three' disabled>
+      <span>text
+      <hr/>
+      <img src=unquoted alt="a > b" width=-1 height=999999999999999999999>
+      <input type=checkbox checked=checked readonly>
+    </div>
+    <p><a href="javascript:alert(1)" target=_blank><button type=submit>click</a></button>
+    <!-- unclosed-looking text with -- separators -- -- -->
+    <![CDATA[not really cdata]]>
+  </main>
+</body>
+```
+
+```html
+<!DOCTYPE html [
+  <!ELEMENT note ANY>
+  <!ENTITY strange "replacement">
+]>
+<?xml version="1.0"?>
+<root xmlns="urn:test" xmlns:x="urn:x">
+  <x:item x:id="001">Namespaced content</x:item>
+  <section>
+    <hgroup><h1>Heading</h1><h6>Small</h6></hgroup>
+    <ruby>漢<rt>kan</rt><rp>(</rp><rt>かん</rt><rp>)</rp></ruby>
+    <details open="false">
+      <summary>Summary</summary>
+      <p>Hidden <mark>marked</mark> <time datetime="not-a-date">now</time></p>
+    </details>
+    <template>
+      <table><tr><td>template cell</td></tr></table>
+      <form><input name="inside-template"></form>
+    </template>
+  </section>
+  <svg width="0" height="-10" viewBox="0 0 10 10">
+    <foreignObject><div xmlns="http://www.w3.org/1999/xhtml">HTML island</div></foreignObject>
+    <path d="M0,0 LNaN,Infinity Z"/>
+  </svg>
+  <math><mrow><mi>x</mi><mo>&lt;</mo><mn>0</mn></mrow></math>
+</root>
+```
+
+```html
+<!doctype html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://example.invalid/xhtml1-strict.dtd">
+<html>
+  <head>
+    <title>Frameset branch</title>
+    <meta http-equiv=content-type content="text/html; charset=UTF-16">
+  </head>
+  <frameset rows="*,0,auto" cols="50%,*">
+    <frame src="a.html" name="left" scrolling="maybe" frameborder="-1">
+    <frameset>
+      <frame src="" name="right">
+      <noframes>
+        <body>
+          <h1>No frames</h1>
+          <iframe srcdoc="<p>nested <b>document</p>" sandbox="allow-scripts allow-forms"></iframe>
+          <object data="data:text/html,<h1>x</h1>" type="text/html">
+            <param name="movie" value="x">
+            fallback
+          </object>
+        </body>
+      </noframes>
+    </frameset>
+  </frameset>
+  <body>
+    <p>Body after frameset</p>
+  </body>
+</html>
+```
+
+```html
+<html lang="">
+<head>
+  <title>Raw text boundaries</title>
+</head>
+<body>
+  <textarea name="t" rows="0" cols="-4">line one
+  </textarea><textarea>line two</textarea>
+  <select name="s">
+    stray text
+    <option value="1">One
+    <option>Two</option>
+    <optgroup label="G"><option>Three</optgroup>
+    <option value="4">Four
+  </select>
+  <form>
+    <input type="image" src="x" alt="&notanentity;" formaction="/x">
+    <button disabled="no" formnovalidate="">B<span>utton</span></button>
+    <label>Label <output for="a b">result</output></label>
+  </form>
+  <script>
+    if (a < b && c > d) { document.write("</div>"); }
+    <!-- old comment -->
+  </script>
+  <style>
+    .x { background: url("</style><p>break"); }
+  </style>
+  <x-unknown a:b="v"><y-z /></x-unknown>
+</body>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+  <title>Malformed table and adoption</title>
+</head>
+<body>
+  <table>
+    <col><tbody>
+    <tr><td>A<table><tr><td>B</table>
+    <tr><th>C</th></tr>
+    </tbody><tfoot><tr><td>D
+    <caption>Late caption</caption>
+  </table>
+  <p><font color=red><b><i>one <em>two</font> three</b> four</i></em>
+  <center><blockquote cite="x"><p>quoted
+  <div><li>orphan item</div></li></blockquote></center>
+  <ul compact="compact"><li>first<ul><li>nested<li>again</ul><li>last</ul>
+  <ol start="not-number" reversed="0"><li value="-999999999">negative</li></ol>
+  <dl><dt>A<dd>B<div><dt>C<dd>D</div></dl>
+  <address>mail <a href="mailto:a@b">a@b</a></address>
+  <p>Tail &amp; &apos; &semi; &#x0; &#x10FFFF; &#999999999999999999999;</p>
+</body>
+</html>
+```

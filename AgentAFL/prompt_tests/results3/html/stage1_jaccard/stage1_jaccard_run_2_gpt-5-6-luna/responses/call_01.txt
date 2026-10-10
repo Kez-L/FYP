@@ -1,0 +1,125 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <base href="http://example.test/a/">
+  <meta http-equiv="refresh" content="0; url=//invalid[host">
+  <title>Mixed content &amp; entities &#x1F600; &#128512; &notanentity;</title>
+  <?processing instruction?>
+  <![CDATA[head cdata]]>
+</head>
+<body>
+  <hgroup><h1>Header</h1><h6>Small heading</h6></hgroup>
+  <main>
+    <article>
+      <header><address><a href="mailto:a@b">a@b</a></address></header>
+      <section>
+        <ol start="-2" reversed="maybe"><li value="x">one<li>two<li><dl><dt>term<dd>definition</dl></ol>
+        <blockquote cite="unterminated><q cite="">quoted <cite>work</cite></q></blockquote>
+      </section>
+      <footer><time datetime="2024-99-99T25:61">not a date</time></footer>
+    </article>
+    <aside><details open="false"><summary>summary</summary><dialog open>dialog text</dialog></details></aside>
+  </main>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>foreign content</title></head>
+<body>
+<svg width="100%" viewBox="0 0 10 10" onload="x<y">
+  <title>svg title</title>
+  <defs><linearGradient id="g"><stop offset="0%"/><stop offset="100%"/></linearGradient></defs>
+  <g transform="translate(1 2) rotate(3)" fill="url(#g)">
+    <path d="M0,0 L10,0 L10,10 Z" stroke-width="NaN"></path>
+    <text x="2" y="3"><tspan>svg &amp; text</tspan></text>
+    <foreignObject x="0" y="0" width="4" height="4">
+      <div xmlns="http://www.w3.org/1999/xhtml"><p>embedded html</p></div>
+    </foreignObject>
+  </g>
+</svg>
+<math display="block">
+  <mi>x</mi><mo>&InvisibleTimes;</mo><mfrac><msup><mi>a</mi><mn>2</mn></msup><mrow><mi>b</mi><mo>+</mo><mi>c</mi></mrow></mfrac>
+  <annotation encoding="application/x-tex">x^2</annotation>
+</math>
+<p>after foreign content</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN">
+<html>
+<head>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>frames and obsolete elements</title>
+</head>
+<frameset rows="20%,*,0" border="1">
+  <frame src="one.html" name="top" scrolling="no" frameborder="0">
+  <frameset cols="30%,70%">
+    <frame srcdoc="<p>srcdoc &amp; <b>nested</b>" src="two.html">
+    <noframes>
+      <body bgcolor="#fff" text="black">
+        <center><font face="serif" size="7">fallback</font></center>
+        <marquee direction="left" behavior="alternate">moving &copy; text</marquee>
+        <hr noshade="noshade" width="bad">
+        <isindex prompt="Search:">
+      </body>
+    </noframes>
+  </frameset>
+  <frame src="javascript:alert('x')" name="_blank">
+</frameset>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>raw text and comments</title>
+</head>
+<body>
+  <!-- ordinary -- comment -- with -- runs -->
+  <!--
+  nested-looking <!-- comment --> tail
+  -->
+  <script type="application/json">
+    {"a":"</script>","b":"&amp;","c":"\u0000"}
+  </script>
+  <script>
+    /* </script */ var s = "<!--"; if (x) { y = /<\//g; }
+  </script>
+  <style>
+    body { content: "</style>"; background: url("x&y"); }
+    @media (x < 3) { a::before { content: "/*"; } }
+  </style>
+  <textarea>
+  </textarea>
+  <xmp><b>literal</b><textarea>still literal</textarea></xmp>
+  <plaintext><html><body><h1>everything becomes text</h1>
+</body></html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>table recovery maze</title></head>
+<body>
+<table border="1">
+  <caption align="side">caption <b>format</b></caption>
+  <colgroup span="2"><col width="20"><col></colgroup>
+  <thead><tr><th rowspan="2" scope="colgroup">A<th colspan="3">B</tr></thead>
+  <tbody>
+    <tr><td>1<td>2<td><table><tr><td>inner<tr><th>head</table><td>4</tr>
+    <tr><th><form><input name="inside"><button>button</button></form><td><select><option>one<option>two</select>
+  </tbody>
+  <tfoot><tr><td colspan="9">foot</td></tr></tfoot>
+</table>
+<table><tr><td>orphan</tr><tr><td><ul><li>list<td>cell</table>
+<div><table><tr><td>division <p>paragraph</div> trailing</td></tr></table></div>
+</body>
+</html>
+```

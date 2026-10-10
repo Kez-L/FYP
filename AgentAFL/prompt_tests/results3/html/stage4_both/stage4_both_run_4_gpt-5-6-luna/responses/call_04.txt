@@ -1,0 +1,159 @@
+```html
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>Ruby and metadata</title>
+  <meta name="description" content="text with > and &amp; entities">
+  <link rel="alternate" hreflang="ja" href="/jp">
+</head>
+<body>
+<header id="masthead">
+  <hgroup>
+    <h1>読み物</h1>
+    <h2>注釈つきの見出し</h2>
+  </hgroup>
+  <nav aria-label="main navigation">
+    <ol><li><a href="/">トップ</a></li><li><a href="/about">概要</a></li></ol>
+  </nav>
+</header>
+<main>
+  <article itemscope itemtype="https://schema.org/Article">
+    <p itemprop="headline">
+      <ruby>漢字<rt>かんじ</rt><rp>(</rp><rt>kanji</rt><rp>)</rp></ruby>
+      <bdi dir="rtl">אבג</bdi>
+      <bdo dir="ltr">ABC</bdo>
+    </p>
+    <p>Line one<br>Line two<wbr>possibly split.</p>
+    <aside><mark>重要</mark> <time datetime="2026-10-08T12:34:56Z">today</time></aside>
+    <details open>
+      <summary>More information</summary>
+      <dl>
+        <dt>term <abbr title="HyperText Markup Language">HTML</abbr></dt>
+        <dd><data value="42">forty-two</data></dd>
+        <dt>quote</dt>
+        <dd><q cite="urn:example">A short quotation</q></dd>
+      </dl>
+    </details>
+  </article>
+</main>
+<footer><small>&copy; 2026 &mdash; <span dir="auto">終わり</span></small></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<!-- ordinary comment -- -- malformed-looking tail -->
+<?xml version="1.0"?>
+<meta http-equiv=refresh content='0; url=javascript:alert(1)'>
+<title>Odd &amp; incomplete entities &copy &#xZZ;</title>
+</head>
+<body>
+<![if IE]>
+<p>conditional markup</p>
+<![endif]>
+<! bogus declaration
+<div class="a" class='b' id=x id=y data-x=one data-x=two disabled="">
+  <p>alpha <em>beta
+  <div>gamma <span>delta</div> epsilon</span>
+</div>
+<!-- unclosed comment
+<p>hidden-looking text &lt;tag&gt;
+--><hr>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>Preformatted source</title>
+<style type="text/css">
+  body { background: url("x&y"); }
+  .broken { color: red; /* missing close
+</style>
+</head>
+<body>
+<pre id="dump">  leading spaces
+		tabbed &lt;markup&gt;
+line with &amp; and &#0;
+</pre>
+<listing>
+&lt;old listing&gt;
+</listing>
+<xmp><b>literal bold</b>&amp;not-parsed</xmp>
+<plaintext>
+Everything after this point is text.
+<div><b>not an element</b></div>
+</body>
+</html>
+```
+
+```html
+<html>
+<head>
+<title>Raw script cases</title>
+<script type="application/javascript">
+if (a < b && c > d) {
+  document.write("<div class='written'>&amp;</div>");
+  var s = "</scr" + "ipt>";
+}
+/* comment with </script> */
+</script>
+<script type="text/plain"><![CDATA[
+  <not-an-element> & unknown;
+]]></script>
+<noscript><meta name="x" content="y"><p>fallback</p></noscript>
+</head>
+<body onload="if (x < 2) alert('x & y');">
+<template id="card">
+  <div class="card"><slot name="title">Default</slot></div>
+</template>
+<iframe srcdoc="<p title='a>b'>embedded &amp; text</p>" sandbox="allow-scripts"></iframe>
+<object data="movie.bin" type="application/octet-stream">
+  <param name="quality" value="high">
+  <embed src="fallback.dat" type="application/octet-stream">
+  alternate object text
+</object>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Misnested flow</title></head>
+<body>
+<section>
+<h1>Section <span>heading</h1>
+<p>First <strong>bold <i>italic <u>underlined</strong> ordinary</u></i>.
+<div>
+  <ul compact>
+    <li>one
+      <ul><li>nested A<li>nested B</ul>
+    <li value="7">two
+  </ul>
+  <menu type="toolbar">
+    <li><button type="button" aria-pressed="false">Action</button>
+    <li><button disabled>Disabled</button>
+  </menu>
+</div>
+<dl compact>
+  <dt>Alpha
+  <dd>first
+  <dd>second
+  <dt>Beta
+  <dd><p>paragraph inside definition</p><p>another paragraph
+</dl>
+<center>
+  <address>Road &amp; Lane<br>contact: <a href="mailto:a@b.invalid">a@b.invalid</a></address>
+</center>
+</section>
+<hr noshade="noshade" width="50%" align="middle">
+</body>
+</html>
+```

@@ -1,0 +1,84 @@
+```html
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE note [
+  <!ELEMENT note ANY>
+  <!ENTITY sample "A &amp; B">
+]>
+<note xml:lang="fr" xmlns="urn:test">
+  <![CDATA[<not-an-element>&sample;</not-an-element>]]>
+  <heading id='a"b' data-x=unquoted/>
+  <body>&sample; &#0; &#xD800; &#99999999;</body>
+  <!-- comment -- broken -->
+  <?processing instruction?>
+</note>
+```
+
+```html
+<!doctype html>
+<html>
+<body>
+<table border=1>
+  <caption><b>Rows</caption>
+  <colgroup span=foo><col width="*"><colgroup>
+  <thead><tr><th colspan=0>A<th rowspan="-1">B
+  <tbody>
+    <tr><td><table><tr><td>nested<td></tr></table>
+    <tr><td><form><input name=x><tr><td>orphan</form>
+  <tfoot><tr><td colspan=999>tail
+</table>
+<menu type=context><li value=abc>one<li>two</menu>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML DIR=rtl>
+<HEAD>
+<TITLE>unclosed title
+<BASE HREF="http://example.invalid/a?x=1&y=2">
+<STYLE type=text/css>
+  body { color: red; } /* unterminated
+</HEAD>
+<BODY bgcolor=#ggg text='a"b' onload=alert("x")>
+<CENTER><H1><I><U>mixed <S>formatting</CENTER>
+<DL><DT>term<DD>definition<DT><DD><BLOCKQUOTE>quote
+<PRE>pre <b>literal?</b>
+  line two
+</PRE>
+<HR width=invalid size=-4>
+</BODY>
+```
+
+```html
+<!doctype html>
+<html><head>
+<meta charset="x-invalid">
+<meta http-equiv=Content-Security-Policy content="default-src 'none'; report-uri=/r?x=1&y=2">
+<script type="text/plain"><!--
+  if (a < b && c > d) { document.write("</script>"); }
+--></script>
+<script language=JavaScript>
+  var s = "unterminated;
+  </scriptx>
+</script>
+</head><body>
+<svg viewBox="0 0 10 10"><foreignObject><div>svg html</div></foreignObject>
+<path d="M0 0 L10 10 Z" stroke-width=NaN /></svg>
+<math><mrow><mi>x</mi><mo>&lt;</mo><mn>2</mn></mrow></math>
+</body></html>
+```
+
+```html
+<!DOCTYPE html>
+<html><head><title>edge cases</title></head><body>
+<p id="a" id="b" class=x class=y data-empty="" disabled=false>
+&amp &#38 &#x26 &#X000026; &unknown; &notanentity
+<a href='one"two' target=_blank download=maybe>link
+<iframe srcdoc="<p>inner &amp; broken" sandbox="allow-scripts allow-forms"></iframe>
+<details open=0><summary>sum</summary><p>inside</details>
+<ol start=zero reversed><li value=><input type=number min=abc max=NaN step=0></li></ol>
+<address><q cite=http://x/?a=1&b=2>quoted<br/>text</address>
+<!--- weird -- --><!----><! bogus declaration>
+</body></html>
+```

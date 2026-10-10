@@ -1,0 +1,106 @@
+```html
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE note [
+  <!ELEMENT note ANY>
+  <!ENTITY writer "A &amp; B">
+]>
+<note id=unquoted data-x="a'b" data-y='c"d'>
+  <?process mode="odd"?>
+  <to>&writer;</to>
+  <from><![CDATA[<not-a-tag>]]></from>
+  <body>alpha &unknown; &#xD800; &#999999999; &copy</body>
+  <empty/>
+  <broken attr="one" attr=two>
+</note>
+```
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <meta charset="windows-1252">
+    <base target=_blank>
+    <link rel=stylesheet media=screen href=style.css disabled>
+  </head>
+  <body id=main onload="if (a < b) { c = '&'; }">
+    <header><hgroup><h1>Heading<h2>Subheading</header>
+    <main>
+      <p>before <b><i><u>crossed</b> out</i></u> after
+      <dl><dt>term<dd>definition<dt><dd>
+      <details open=maybe><summary>summary</summary><p>content
+      <dialog open>dialog text
+    </main>
+    <footer><address>one<br>two<hr>three</address></footer>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zz">
+<head><title>mixed namespaces</title></head>
+<body>
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <mrow><mi>x</mi><mo>&lt;</mo><mn>2</mn><mspace width="thinmathspace"></mrow>
+  </math>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
+    <defs><linearGradient id=g><stop offset="0%"/><stop offset="100%"/></linearGradient></defs>
+    <use href="#missing" xlink:href="#g"/>
+    <path d="M0 0 L10 10 Z" fill="url(#g)" />
+  </svg>
+  <p xmlns="">back to html</p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html><head><title>form controls</title></head><body>
+<form method=post action=/save enctype=multipart/form-data>
+  <fieldset disabled><legend>Account
+    <label for=u>User <input id=u type=text name=user required></label>
+    <label>Password <input type=password name=p minlength=8></fieldset>
+  <input type=checkbox checked=FALSE name=flag>
+  <input type=number min=10 max=2 step=banana value=∞>
+  <input type=file accept="image/*,,.txt" multiple>
+  <select name=choice size=zero>
+    <optgroup label=Group disabled>
+      <option selected value=a>Alpha
+      <option value=b>Beta
+    </optgroup>
+    <option>Gamma
+  </select>
+  <textarea rows=-1 cols=NaN wrap=sideways>first
+second</textarea>
+  <button type=submit formaction="javascript:bad(&quot;">Go</button>
+</form>
+<input form=no-such list=choices>
+<datalist id=choices><option value=one><option value=two></datalist>
+</body></html>
+```
+
+```html
+<!DOCTYPE html>
+<html><head>
+  <title>raw text and declarations</title>
+  <!-- unterminated comment
+  <meta name=x>
+</head>
+<body>
+  <pre>line 1
+line 2 &amp; &#x1F4A9;</pre>
+  <xmp><b>literal markup</b> &amp; text</xmp>
+  <plaintext><div>everything after this is text
+  <script>
+    var s = "</script><p>escaped?"; 
+    /* &notanentity; &#x110000; */
+  </script>
+  <style type=text/garbage>
+    @media (x < y) { .a::before { content: "</style>"; } }
+  </style>
+  <![if IE]><p>conditional</p><![endif]>
+  <noscript><iframe src=about:blank></iframe></noscript>
+</body>
+</html>
+```

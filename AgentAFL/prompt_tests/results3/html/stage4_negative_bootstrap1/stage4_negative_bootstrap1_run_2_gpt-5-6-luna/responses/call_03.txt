@@ -1,0 +1,156 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="https://example.invalid/root/">
+<meta http-equiv="refresh" content="0; URL='next page.html'">
+<link rel="stylesheet" href="a.css" media="screen and (min-width:0px)">
+<style>
+@media all { body > :not(.x) { color: rgb(0,0,0); } }
+</style>
+</head>
+<body>
+<form id=f action="/submit" method=post>
+<table border=1>
+<caption><input name=caption value="before"></caption>
+<colgroup><col span=2><col>
+<thead><tr><th scope=col>A<th>B<th>C</tr></thead>
+<tbody>
+<tr><td>one<td><input name=x disabled><td><button type=submit>go</button>
+<div>misplaced block before row close</div>
+<tr><td colspan=4>short row
+</tbody>
+<tfoot><tr><td><select name=s multiple size=0>
+<option selected>zero<option value="1">one
+<optgroup label=Group><option>two</select>
+</tr></tfoot>
+</table>
+<fieldset disabled><legend>choose</legend><label><input type=checkbox checked> yes</label>
+<textarea name=t rows=0 cols=-1>literal </textarea></fieldset>
+</form>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Foreign content boundary</title></head>
+<body>
+<svg viewBox="0 0 20 20" width="20" height="20">
+<title>vector title</title>
+<g transform="translate(1 2)" onclick="x<y">
+<path d="M0 0 L10 10" fill="none"/>
+<foreignObject width="10" height="10">
+<div xmlns="http://www.w3.org/1999/xhtml"><p>embedded <b>text</b></div>
+</foreignObject>
+<circle cx="4" cy="4" r="2"></circle>
+</g>
+</svg>
+<math display="block">
+<mrow><mi>x</mi><mo>&lt;</mo><mfrac><mi>a</mi><mi>b</mi></mfrac></mrow>
+<annotation-xml encoding="application/xhtml+xml"><p>annotation</p></annotation-xml>
+</math>
+<picture>
+<source srcset="a 1x, b 2x" type="image/avif">
+<source media="(max-width: 2px)" srcset="">
+<img src="fallback" alt="&quot;image&quot;">
+</picture>
+<object data="x" type="application/x-test"><param name="movie" value="x"><p>fallback<object>
+<iframe srcdoc="<p>inside</p>" sandbox="allow-scripts allow-same-origin"></iframe>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://example.invalid/strict.dtd">
+<HTML>
+<HEAD>
+<TITLE>Frames and legacy declarations</TITLE>
+<ISINDEX PROMPT="Search:">
+<META HTTP-EQUIV=Content-Type CONTENT='text/html; charset="utf-7"'>
+</HEAD>
+<FRAMESET ROWS="*,0" COLS="50%,50%" FRAMEBORDER="no">
+<FRAME NAME=left SRC="left.html" NORESIZE SCROLLING=auto>
+<FRAME NAME=right SRC="right.html" MARGINWIDTH="none">
+<NOFRAMES>
+<BODY bgcolor=#fff text=black>
+<DIR compact><LI>alpha<LI>beta</DIR>
+<MENU><LI><A HREF="javascript:alert('x')">item</A></MENU>
+<DL compact><DT>term<DD>definition<DT>orphan
+<HR width="101%" size="0" noshade>
+<PRE>
+preformatted <b>markup</b>
+</PRE>
+</BODY>
+</NOFRAMES>
+</FRAMESET>
+</HTML>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>Template and metadata oddities</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+<template id="card">
+<article itemscope itemtype="https://schema.org/Thing">
+<hgroup><h1 itemprop=name>name<h6>late heading</h6></hgroup>
+<data itemprop=value value="not-a-number">shown</data>
+<time datetime="2024-13-99T25:61:61Z">when</time>
+</article>
+</template>
+<main>
+<header><address><a href="mailto:a@b">a@b</a><br/>line</address></header>
+<section hidden="false" inert="0" aria-hidden="maybe">
+<details open="no"><summary>summary</summary><p>details body</p></details>
+<dialog open="0"><form method=dialog><button value=close>Close</button></form></dialog>
+<article>
+<h2>heading</h2>
+<ruby>漢<rt>kan<rp>(</rp></ruby>
+<ins cite="/i" datetime="bad">added</ins><del cite="/d">removed
+</article>
+</section>
+<footer><map name=m><area shape=poly coords="0,0,1,1" href="#x"><area></map>
+</footer>
+</main>
+</body>
+</html>
+```
+
+```html
+<html>
+<head><title>Tokenizer pressure</title></head>
+<body>
+<p data-a="unterminated data-b='still" data-c=bare/ >
+Text&nbsp;&copy;&notin;&amp;#x41; &#x; &#999999999999999999999; &unknown
+<!--->
+<!--x--!>
+<!-- x--- y -->
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<?bad <tag attr="x"> ?>
+<% server directive %>
+</p
+<div class="a b" class=a&#32;b style="content:'<x>&amp;';">
+<span title="a&amp;b&#34;c">one</span>
+</div>
+<textarea>line1
+</textarea extra>
+<script type="text/plain">
+if (a < b && c > d) { document.write("</script>"); }
+</script>
+<script>
+const s = "</scr" + "ipt>";
+</script>
+<style>
+x { background: url("data:text/css,a;b"); }
+</style>
+<noscript><p>fallback <em>markup</em></noscript>
+<video controls poster="" src="x"><track kind=subtitles srclang=en label=English><p>fallback</p>
+</video>
+</body>
+```

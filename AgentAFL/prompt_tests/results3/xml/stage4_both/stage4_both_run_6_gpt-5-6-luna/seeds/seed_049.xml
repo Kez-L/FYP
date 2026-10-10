@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE graph [
+  <!ENTITY node-kind "vertex">
+  <!ELEMENT graph (description?, vertices, edges, queries?)>
+  <!ATTLIST graph id ID #REQUIRED directed (true|false) "true">
+  <!ELEMENT description (#PCDATA|b)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT vertices (vertex+)>
+  <!ELEMENT vertex (label, property*)>
+  <!ATTLIST vertex id ID #REQUIRED type NMTOKEN #IMPLIED>
+  <!ELEMENT label (#PCDATA)>
+  <!ELEMENT property EMPTY>
+  <!ATTLIST property key NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT edges (edge*)>
+  <!ELEMENT edge EMPTY>
+  <!ATTLIST edge id ID #IMPLIED from IDREF #REQUIRED to IDREF #REQUIRED weight CDATA #IMPLIED relation NMTOKEN #IMPLIED>
+  <!ELEMENT queries (query*)>
+  <!ELEMENT query (select, result*)>
+  <!ATTLIST query name NMTOKEN #REQUIRED>
+  <!ELEMENT select (#PCDATA)>
+  <!ELEMENT result EMPTY>
+  <!ATTLIST result ref IDREF #REQUIRED score CDATA #IMPLIED>
+]>
+<graph id="dependency-map" directed="true">
+  <description>Build <b>&amp;</b> deployment topology for &node-kind; analysis.</description>
+  <vertices>
+    <vertex id="api" type="service">
+      <label>Public API</label>
+      <property key="owner" value="platform"/>
+      <property key="zone">edge</property>
+    </vertex>
+    <vertex id="queue" type="broker">
+      <label>Job Queue</label>
+      <property key="retention" value="72h"/>
+    </vertex>
+    <vertex id="worker" type="service">
+      <label>Worker Pool</label>
+    </vertex>
+    <vertex id="db" type="storage">
+      <label>Primary Database</label>
+    </vertex>
+  </vertices>
+  <edges>
+    <edge id="e1" from="api" to="queue" relation="publishes" weight="1.0"/>
+    <edge id="e2" from="queue" to="worker" relation="dispatches" weight="0.8"/>
+    <edge id="e3" from="worker" to="db" relation="writes" weight="0.6"/>
+    <edge id="e4" from="db" to="api" relation="reads" weight="0.9"/>
+  </edges>
+  <queries>
+    <query name="critical-path">
+      <select>vertex[@type='service']/label</select>
+      <result ref="api" score="0.91"/>
+      <result ref="worker" score="0.77"/>
+    </query>
+  </queries>
+</graph>

@@ -1,0 +1,105 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<base href="https://example.invalid/a/">
+<meta http-equiv="refresh" content="0; url='x&y'">
+<style type="text/css">
+@media screen{body{color:red} @import url("x.css");}
+</style>
+<script type="text/javascript">
+if (a < b && c > d) { document.write("<div class='x'>"); }
+</script>
+</head>
+<body class=test id="root" data-a='1&2' disabled="">
+<!-- unclosed comment
+<div class="inside-comment"><span>ignored</div>
+-->
+<p>Before <![CDATA[ raw <tag> & text ]]></p>
+<hr/><br><wbr>
+<div><span><strong>alpha</div>beta</strong></span>
+<p title="a>b" data-x="&unknown; &amp; &#xD800;">gamma &notanentity; &#0; &#x110000;</p>
+<?processing instruction?>
+<![IGNORE[broken section]]>
+</body>
+</html>
+```
+
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://example.invalid/loose.dtd">
+<article id=story>
+<header><hgroup><h1>News <small>today</h1><h2>Subtitle</h3></hgroup></header>
+<nav aria-label=main><a href=#one>One<a href=#two>Two<a href=#three>Three</nav>
+<section id=one>
+<figure><img src=pic.png alt="A > B"><figcaption>Caption <mark>marked</figure>
+<blockquote cite=http://example.invalid/q><p>Quote <q>nested</blockquote>
+<dl><dt>Term one<dd>Definition one<dt>Term two<dd><p>Definition two</dl>
+</section>
+<section id=two>
+<details open=maybe><summary>Summary</summary><div>Hidden <time datetime=2020-01-01>date</details>
+<address>name<br>street<br>city</address>
+</section>
+<footer><small>copyright &copy; 2020</small></footer>
+</article>
+```
+
+```html
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>Foreign Content</title></head>
+<body>
+<svg width="100%" height="40" viewBox="0 0 100 40" preserveAspectRatio="xMidYMid meet">
+<defs><linearGradient id=g><stop offset="0%"/><stop offset="100%" stop-color="#fff"/></linearGradient></defs>
+<g transform="translate(2,3) rotate(4)">
+<rect x="0" y="0" width="80" height="20" fill="url(#g)"/>
+<text x="4" y="15">x &amp; y</text>
+<path d="M0 0 L 10 10 Z" stroke="black" fill="none"></g>
+</svg>
+<math display=block><mrow><mi>x</mi><mo>=</mo><msup><mi>y</mi><mn>2</mn></msup></mrow><annotation-xml encoding="application/xhtml+xml"><div>math fallback</div></annotation-xml></math>
+<svg><foreignObject><div xmlns="http://www.w3.org/1999/xhtml"><p>embedded <b>HTML</b></div></foreignObject></svg>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Table Stress</title></head>
+<body>
+<table border=1 cellpadding="2" data-grid=x>
+<caption><b>Inventory</caption>
+<colgroup span=2><col width=20><col><colgroup><col span=3>
+<thead><tr><th rowspan=2>A<th colspan=2>B<th>C
+<tbody>
+<tr><td>a1<td>a2<td>a3
+<tr><td colspan=4><table><tr><td>nested one<td>nested two</table>
+<tr><th scope=rowgroup>rowhead<td><input type=text value="x>y"><td><select><option>one<option>two</select>
+<tfoot><tr><td>foot one<td>foot two</tfoot>
+</table>
+<table><tr><td><p>paragraph<td><div>block<td><form><input name=q></form></table>
+<table><tbody><tr><td>x</tbody><thead><tr><th>late head</table>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Odd Metadata</title></head>
+<body>
+<main>
+<template id=t><div><span>template <i>content</template>
+<dialog open>Dialog <p>text</dialog>
+<menu type=context><li><button value=1>First<li><button value="2">Second</menu>
+<video controls autoplay muted poster=a.jpg width=abc><source src=a.mp4 type=video/mp4><track kind=subtitles src=x.vtt></video>
+<audio preload=none><source src=a.ogg><source src=b.wav></audio>
+<object data=x.swf type=application/x-shockwave-flash><param name=movie value=x.swf><embed src=x.swf></object>
+<map name=m><area shape=rect coords="0,0,10,10" href=x><area href=y></map>
+<img src="x" usemap="#m" ismap>
+<p><bdi dir=rtl>אבג</bdi><bdo dir=ltr>abc</bdo><ruby>漢<rp>(</rp><rt>kan</rt><rp>)</rp></ruby>
+<pre>one
+	 two &lt; three</pre>
+</main>
+</body>
+</html>
+```

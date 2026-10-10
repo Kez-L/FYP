@@ -1,0 +1,148 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<base href="http://example.invalid/a/b/">
+<title>Table stress</title>
+</head>
+<body bgcolor=#ffffff text=black>
+<table border=1 cellpadding=2 cellspacing=0 width="100%" summary="broken table">
+<caption align=bottom>Caption <b>with <i>mixed</caption>
+<colgroup span=2 width=25%>
+<col align=right>
+<col>
+<thead>
+<tr><th rowspan=2>Header one<th colspan=3>Header two
+</thead>
+<tbody>
+<tr><td>alpha<td><table><tr><td>nested one<tr><td>nested two</table><td>
+<tr><td colspan=4><font size=+7 color=#ff00zz>large &unknown; text
+<tr><td><input name=x value="a" disabled checked><td><textarea cols=3 rows=1>unterminated
+<tfoot><tr><td>foot<td><td>
+</table>
+<hr noshade="noshade" width=bogus>
+<center><address>mail &copy; 2026<br>line two</address></center>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>Attributes and comments</title>
+<!-- --><!----><! bogus --><!>
+<meta name="x" content='a"b<c&d'>
+</head>
+<body id=one id=two class="a b" style="color:red; width: expression(alert(1))">
+<p><a href="javascript:alert('x')" title="unterminated><img src=x alt='broken></a>
+<div data-x== data-y= data-z="&notanentity; &#x110000;">
+<span><b><u><strike>crossed</b> underlined</u> struck</span>
+<!-- comment -- -- comment with > and < -- >
+<blockquote cite=http://x/y?q=a&b=c>
+Text before <q cite="x">quoted <em>piece</em></q> after
+</blockquote>
+<p><label for=a>Name<input id=a name=name value="one" /></label>
+<label><input type=checkbox checked="no"> choice</label>
+<button type=submit name=b value="v>">Go</button>
+<noscript><p>fallback</p></noscript>
+</div>
+</body>
+</html>
+```
+
+```html
+<?xml version="1.0"?>
+<!DOCTYPE html [
+<!ENTITY local "replacement">
+<!ELEMENT html O O ANY>
+<!ATTLIST p class CDATA #IMPLIED>
+]>
+<html>
+<head><title>Foreign content &local;</title></head>
+<body>
+<svg width="100" height="80" viewBox="0 0 100 80">
+<defs><linearGradient id=g><stop offset="0%"/><stop offset="100%"/></linearGradient></defs>
+<path d="M0,0 L10,20 Z" fill="url(#g)"></path>
+<text x="2" y="3"><![CDATA[<not markup>]]></text>
+</svg>
+<math><mi>x</mi><mo>&InvisibleTimes;</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></math>
+<p>After foreign <iframe srcdoc="<p>inside</p>" sandbox></iframe>
+<object classid="clsid:123" codebase="x">
+<param name=movie value="a&b">
+<param name=autoplay value=true>
+Fallback <embed src="x" type=application/x-shockwave-flash>
+</object>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Lists and forms</title></head>
+<body>
+<dl compact>
+<dt>term one
+<dd>definition <p>paragraph in definition
+<dt><dd><dl><dt>inner<dd>value</dl>
+</dl>
+<menu type=context>
+<li value=0>zero
+<li value="-999999999999999999999">negative
+<li><a href=#a>link item
+</menu>
+<form action="/submit" method=GET target=_blank>
+<fieldset disabled><legend>Account</legend>
+<input type=text name=user maxlength=-1 size=999999999999999999>
+<input type=password name=pass autocomplete=off>
+</fieldset>
+<select name=choice size=0 multiple>
+<option selected value=1>One
+<option value=2 disabled>Two
+<optgroup label="Group"><option>Three</optgroup>
+</select>
+<input type=file accept="image/*,.x" multiple>
+<input type=image src="x" border=abc>
+<textarea name=notes wrap=hard rows=0 cols=-5>line1
+line2</textarea>
+<input type=submit value="Send"><input type=reset>
+</form>
+<ol type=z start=abc><li>first<li><li>third</ol>
+</body>
+</html>
+```
+
+```html
+<html>
+<head>
+<title>End tags and raw text</title>
+<style type=text/css>
+body { background: url("x"); }
+.bad { color: red; /* never ends
+</style>
+<script language=javascript>
+if (a < b && c > d) { document.write("<div>raw</div>"); }
+/* </script> hidden? */
+</script>
+</head>
+<body>
+<p>one
+<div>two
+<table><tr><td>A<td>B
+<div>inside table</div>
+</table>
+<p>three<br><br/><br />four
+<pre>  pre
+  <b>literal?</b>
+</pre>
+<x-custom foo=bar><y-item>unknown <z-item /></x-custom>
+<marquee direction=sideways behavior=alternate scrollamount=-1>
+<blink><font face="A<B" color="rgb(1,2,3)">moving</blink>
+<plaintext>
+Everything after this is text
+<div><p>including tags &amp; entities
+</body>
+</html>
+```

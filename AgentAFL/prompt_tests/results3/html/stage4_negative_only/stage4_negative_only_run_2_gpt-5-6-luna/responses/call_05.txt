@@ -1,0 +1,172 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<html>
+<head>
+  <title>Frame topology</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+</head>
+<frameset cols="25%,*,25%" border="0">
+  <frame name="left" src="javascript:alert('left')" noresize scrolling="auto">
+  <frameset rows="40%,60%">
+    <frame srcdoc="<html><body><h1>Nested</h1></body></html>" frameborder="1">
+    <noframes>
+      <body>
+        <h2>Fallback</h2>
+        <iframe src="about:blank" seamless></iframe>
+        <object data="missing.bin" type="application/octet-stream">
+          <param name="autoplay" value="false">
+          <embed src="broken.swf" hidden>
+        </object>
+      </body>
+    </noframes>
+  </frameset>
+  <frame src="data:text/html,%3Cp%3Eright%3C/p%3E" scrolling="no">
+</frameset>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Interactive controls</title>
+</head>
+<body>
+  <form action="/submit?x=1&amp;y=2" method="dialog" enctype="multipart/form-data">
+    <fieldset disabled>
+      <legend><button type="button" autofocus>Choose <em>one</em></button></legend>
+      <label for="q">Query</label>
+      <input id="q" name="q" type="search" list="suggestions" required pattern="[A-Z]{2,}">
+      <datalist id="suggestions">
+        <option value="ALPHA" label="first">
+        <option value="beta">
+      </datalist>
+      <select name="mode" multiple size="0">
+        <optgroup label="Primary">
+          <option selected value="a">A
+          <option value="b"><!-- unclosed option
+        </optgroup>
+        <option value="c">C</option>
+      </select>
+      <textarea name="notes" rows="2" cols="4">one &amp; two</textarea>
+      <output name="result" for="q mode">pending</output>
+      <progress max="10" value="15">75%</progress>
+      <meter min="10" low="20" optimum="50" high="40" max="30" value="x">x</meter>
+    </fieldset>
+    <input type="image" srcset="a 1w, b 2x" alt="">
+    <button type="submit" formaction="/alternate">Send</button>
+  </form>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Legacy declarations</title>
+  <?processing instruction?>
+  <!bogus declaration>
+  <!-- comment -- -- with odd endings >
+  <style>
+    .a { background: url("x"); }
+    <!-- legacy style marker
+    p { color: red; }
+    -->
+  </style>
+</head>
+<body bgcolor="#fff" text="black">
+  <center><font face="serif" size="+3" color="red">Old</font></center>
+  <dir compact>
+    <li>one
+    <li>two
+  </dir>
+  <menu type="toolbar">
+    <li><a href="#x">link</a>
+    <li><button>button</button>
+  </menu>
+  <dl compact>
+    <dt>Term
+    <dd>Definition
+    <dt><b>Another</b>
+    <dd><p>Paragraph one<p>Paragraph two
+  </dl>
+  <marquee behavior="alternate" direction="up" loop="-1">moving</marquee>
+  <blink>possibly visible</blink>
+  <isindex prompt="Search:">
+  <hr noshade="noshade">
+  <xmp><b>literal</b>&amp;<!-- comment --></xmp>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Sectioning and ruby</title>
+</head>
+<body>
+  <header>
+    <hgroup><h1>Heading <small>small</small></h1><h2>Subheading</h2></hgroup>
+    <nav><a href="/">Home</a><a href="/docs">Docs</a></nav>
+  </header>
+  <main>
+    <article>
+      <header><p>By <bdi dir="auto">name</bdi> <time datetime="2026-10-08T12:00:00Z">today</time></p></header>
+      <section>
+        <h2>Ruby</h2>
+        <ruby>漢<rp>(</rp><rt>kan</rt><rp>)</rp>字<rt>ji</rt></ruby>
+        <p>Alpha <mark>highlight <del>removed</del></mark>
+          <ins cite="/edit" datetime="bad">inserted</ins>
+          <wbr>break</p>
+        <blockquote cite="urn:x"><p>Quote <q cite="">nested</q></p></blockquote>
+        <figure>
+          <picture>
+            <source media="(min-width: 1px)" srcset="one.webp">
+            <source type="image/avif" srcset="two.avif 2x">
+            <img src="fallback" alt="figure">
+          </picture>
+          <figcaption>Caption</figcaption>
+        </figure>
+      </section>
+      <footer><address>contact@example.invalid</address></footer>
+    </article>
+    <aside><details open><summary>More</summary><p>Hidden-ish content</p></details></aside>
+  </main>
+  <footer><small>Copyright</small></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Text token boundaries</title>
+</head>
+<body>
+  <p>&amp &lt; &gt; &quot; &apos; &nbsp; &#0; &#x0; &#xD800; &#x110000; &unknown; &notit;</p>
+  <p>Before<!--a--b---c--><span>middle</span><![CDATA[raw &amp; <tag>]]>after</p>
+  <pre>
+	leading tabs
+  trailing spaces   
+line two
+  </pre>
+  <code>&lt;/script&gt; &lt;/textarea&gt;</code>
+  <template id="t"><div><slot name="x">fallback</slot><template><p>inner</p></template></div></template>
+  <div contenteditable="true" spellcheck="false" dir="rtl" translate="no" title="a&#13;b&#10;c">
+    <span style="font-family: 'x'; width: calc(100% - 2px);">styled</span>
+    <br><br />
+    <hr />
+  </div>
+  <table>
+    <tr><td>A</td></tr>
+    text between rows
+    <tbody><tr><td>B</td></tr></tbody>
+    <tfoot><tr><td>C</td></tr></tfoot>
+  </table>
+  <p>tail</p>
+</body>
+</html>
+```

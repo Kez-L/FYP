@@ -1,0 +1,137 @@
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Nested table recovery</title>
+</head>
+<body>
+  <table border="1">
+    <caption><b>Inventory</b></caption>
+    <colgroup span="2"><col width="25%"><col></colgroup>
+    <thead>
+      <tr><th rowspan="2">Code<th colspan="2">Details
+    <tbody>
+      <tr><td>A-1<td><table><tr><td>inner one<td>inner two</tr><tr><td colspan=3>tail
+      <tr><td> A-2 <td><div><p>broken cell<div>second block</table>
+    <tfoot><tr><td>sum<td><input name=total value=12.50><td></tfoot>
+  </table>
+  <map name=nav><area shape=rect coords=0,0,10,10 href=/a><area href=/b></map>
+  <img src=x usemap=#nav ismap>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Raw text and foreign elements</title>
+  <script type="text/javascript">
+    if (a < b && c > d) {
+      document.write("<p class='x'>script</p>");
+    }
+  </script>
+  <style>
+    @media screen { body > p:first-child { color: rgb(1,2,3); } }
+  </style>
+</head>
+<body>
+  <noscript><p>fallback</p></noscript>
+  <template id=t><div><span>template text</span></div></template>
+  <p>before <svg width="20" height="20"><circle cx="5" cy="5" r="4"></circle><foreignObject><div>svg html</div></foreignObject></svg> after
+  <math><mrow><mi>x</mi><mo>&lt;</mo><mn>2</mn></mrow></math>
+  <textarea>&lt;tag&gt; &amp; not markup
+</textarea>
+  <script type=application/json>{"x":"</script><p>escape</p>"}</script>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Forms and misplaced controls</title></head>
+<body>
+  <form id=f1 action="/submit" method="get">
+    <input type=text name=q value="a&amp;b" required>
+    <input type=checkbox name=c checked=checked>
+    <select name=choice multiple size=2>
+      <option value=one>One
+      <option value=two selected>Two
+      <option>Three
+    </select>
+    <button name=go value=1>Send</button>
+  </form>
+  <fieldset form=f1>
+    <legend>Detached fieldset</legend>
+    <label>Name <input type=text form=f1 autocomplete=off></label>
+    <output for=q>result</output>
+    <meter min=0 max=10 low=3 high=8 optimum=7 value=NaN>bad meter</meter>
+    <progress max=100 value=200>complete</progress>
+  </fieldset>
+  <form>
+    <input type=file accept="image/*,.txt" multiple>
+    <input type=date min=2020-01-01 max=not-a-date value=2020-99-99>
+    <textarea name=notes rows=2 cols=4 wrap=hard>line one
+line two
+line three</textarea>
+  </form>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Head element permutations</title>
+  <base href="http://example.test/root/">
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="alternate" type="application/rss+xml" href=feed.xml>
+  <link rel=icon href=data:image/gif;base64,AAAA>
+  <meta http-equiv=refresh content="0; url='next page.html">
+</head>
+<body>
+  <header><hgroup><h1>News</h1><h2>Today</h2></hgroup></header>
+  <main>
+    <article itemscope itemtype="http://schema.org/Article">
+      <time itemprop=datePublished datetime=2024-13-40>tomorrow</time>
+      <p itemprop=articleBody>Text <wbr>split <mark>highlight</mark>
+      <figure><img srcset="a 1w, b 2x, c 0w" sizes="(max-width: 2px) 1px" alt=""><figcaption>caption</figcaption></figure>
+    </article>
+    <aside><details open=maybe><summary>More</summary><p>hidden content</details></aside>
+  </main>
+  <footer><nav><a href=#one>one<a href=#two>two</nav></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head><title>Legacy frames and mixed declarations</title></head>
+<frameset rows="*,0" cols="50%,50%">
+  <frame src="left.html" name=left scrolling=auto noresize>
+  <frame src="right.html" name=right frameborder=bogus>
+  <noframes>
+    <body>
+      <center><font size=7 color="#12">Fallback</font></center>
+      <dir compact>
+        <li>alpha
+        <li><a href="javascript:">beta</a>
+      </dir>
+      <menu type=context>
+        <li value=999>item
+      </menu>
+      <table>
+        <tr><td>legacy
+      </table>
+      <pre>  preformatted
+  <b>mixed</b> text</pre>
+      <hr width="50%" align=middle>
+      <address>mail &lt;broken@example.test</address>
+    </body>
+  </noframes>
+</frameset>
+</html>
+```

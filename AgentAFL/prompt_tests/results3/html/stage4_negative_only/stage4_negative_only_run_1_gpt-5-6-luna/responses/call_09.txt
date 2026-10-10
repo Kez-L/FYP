@@ -1,0 +1,135 @@
+```html
+<!doctype html>
+<html lang="x-klingon">
+<head>
+<meta charset="utf-16">
+<meta http-equiv="refresh" content="0; URL=::::">
+<base href="http://[invalid">
+<link rel="stylesheet" href="a.css" media="(">
+<style><!--
+@import url("unterminated;
+:root { --x: calc(1px + ); }
+]]>
+</style>
+<script type="application/ld+json">{"x": [1, 2,}</script>
+</head>
+<body id="a&#0;b" class="&#xD800; &unknown;">
+<header><hgroup><h1>Heading <small>small<h2>Second</header>
+<main>
+<article>
+<section><p>alpha<br><br/>beta<wbr>gamma
+<aside><blockquote cite="&quot;'><q>nested <cite>citation</blockquote></aside>
+<pre><code>&lt;!-- not a comment --&gt;
+&amp;broken &copy &#x110000;</code></pre>
+<figure><img src="x" alt="a" loading="lazy"><figcaption>caption</figure>
+</article>
+<nav><ol start="not-a-number"><li value="-999999999999999999999999">one<li>two</ol></nav>
+</main>
+<footer><address><a href="javascript:/*">contact</a></address></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Foreign content</title></head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1e999 -Inf NaN">
+<defs><linearGradient id="g"><stop offset="50%"><stop offset="bogus"></linearGradient></defs>
+<symbol id="s"><path d="M0 0 LNaN 2 Z" fill="url(#g)"/></symbol>
+<use href="#s" xlink:href="&bad;" />
+<foreignObject><div xmlns="http://www.w3.org/1999/xhtml">
+<p>HTML inside SVG <b>bold</foreignObject>
+<g><text x="1" y="2">text<tspan>span</g></text>
+</svg>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+<mrow><mi>x</mi><mo>&lt;</mo><mfrac><mi>a</mi><mroot><mi>b</mi><mn>2</mn></mroot></mfrac></mrow>
+<annotation-xml encoding="application/xhtml+xml"><div><em>embedded</annotation-xml>
+</math>
+<object data="file:///dev/null" type="x/x"><param name="x"><embed src="x" hidden></object>
+<iframe srcdoc="<p>quoted <b>document</b>"></iframe>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>Comment and token boundaries</title>
+<?processing instruction?>
+<!-- ordinary -- comment --- with -- many -->
+<!---->
+<!--> orphan close -->
+<![CDATA[raw <tag> & value]]>
+</head>
+<body>
+<div class="a" class='b" c=unquoted/ d=`tick` e="x&#0;y">
+Text &notanentity; &amp; &apos; &#0; &#x0D; &#999999999999999999999999;
+<!-- unclosed comment
+<span>hidden?</span>
+</div>
+<template shadowrootmode="open"><template><p>nested template</template><table><tr><td>x</template>
+<details open="false"><summary>sum</summary><p>body</details>
+<dialog open><form><output for="a b">1</output><meter min="10" max="2" value="999">m</meter></form>
+<menu type="context"><li><button popover="auto" popovertarget="z">go</button></menu>
+<template id="z"><p>payload</p></template>
+</dialog>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Misnested phrasing</title></head>
+<body>
+<p><b><i><u><s><em>one</b>two</i>three</u>four</s>five</em>
+<p><a href="#"><span><strong>link</a> after</strong> span</span>
+<dl><dt>term<dd>definition<dt><dt>second<dd><p>paragraph
+<ul><li>first<ul><li>deep</ul><li>next</ol>
+<ol><li>numbered<dl><dt>x<dd>y</ol></dl>
+<table>
+<caption>cap
+<col><tbody><tr><th scope="row"><td>a
+<tr><td><details><summary>cell</summary><p>inside</details>
+</tbody><tfoot><tr><td>end</tfoot><thead><tr><td>late</thead>
+</table>
+<picture><source srcset="a 1x, b 2x, , c x"><img srcset="unterminated" sizes="(min-width: ) 2px"></picture>
+<map name="m"><area shape="poly" coords="1,2,three,4"><area href="#" nohref></map>
+<img usemap="#m" src="">
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=nan">
+<script>
+if (a < b && c > d) { document.write("<p>raw"); }
+</script>
+<script type="text/plain"><![CDATA[
+<!-- <tag attr="unterminated">
+]]></script>
+</head>
+<body onload="/*">
+<noscript><iframe src="about:blank"></noscript>
+<form action="http://%" method="INVALID" target="_blank">
+<input name=x><input name=x required readonly checked="no" maxlength="-1">
+<select multiple size="-999999999999999999999999999999">
+<option disabled selected>alpha
+<optgroup><option label="&broken">beta</optgroup>
+</select>
+<button type="unknown" formmethod="get" formaction="::::">button</button>
+</form>
+<canvas width="-1" height="999999999999999999999999">fallback <span>x</span></canvas>
+<video controls autoplay preload="invalid" poster="x"><track kind="subtitles" srclang="-" default><source src="x" type="video/"></video>
+<audio><source srcset="x"></audio>
+<ruby>漢<rp>(</rp><rt>kan</rt><rp>)</rp><rtc>annotation</rtc></ruby>
+<hr/><br//><input/><meta//>
+</body>
+</html>
+```

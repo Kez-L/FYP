@@ -1,0 +1,222 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE scene [
+  <!ENTITY company "Northwind &amp; Sons">
+  <!ENTITY unit "px">
+  <!ELEMENT scene (metadata, viewport, layer+)>
+  <!ATTLIST scene version CDATA #REQUIRED>
+  <!ELEMENT metadata (title, creator+, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT creator (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ELEMENT viewport EMPTY>
+  <!ATTLIST viewport width CDATA #REQUIRED height CDATA #REQUIRED>
+  <!ELEMENT layer (shape|group|text)+>
+  <!ATTLIST layer id ID #REQUIRED hidden (true|false) "false">
+  <!ELEMENT group (shape|text|group)+>
+  <!ATTLIST group transform CDATA #IMPLIED>
+  <!ELEMENT shape EMPTY>
+  <!ATTLIST shape kind (rect|circle|path) #REQUIRED x CDATA #IMPLIED y CDATA #IMPLIED data CDATA #IMPLIED>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST text x CDATA #REQUIRED y CDATA #REQUIRED>
+]>
+<scene xmlns="urn:art:scene" xmlns:svg="http://www.w3.org/2000/svg" version="3.7">
+  <?render profile="draft"?>
+  <metadata>
+    <title>Warehouse map</title>
+    <creator>&company;</creator>
+    <creator>Élodie Sørensen</creator>
+    <note><![CDATA[Coordinates use the local grid; < and > are literal here.]]></note>
+  </metadata>
+  <viewport width="1280&unit;" height="720&unit;"/>
+  <layer id="background">
+    <shape kind="rect" x="0" y="0" data="M0 0 H1280 V720 H0 Z"/>
+  </layer>
+  <layer id="routes" hidden="false">
+    <group transform="translate(18,24) rotate(-2)">
+      <shape kind="path" data="M10 44 C80 12 160 85 240 40"/>
+      <text x="34" y="62">Dock &amp; receiving</text>
+    </group>
+    <svg:circle cx="244" cy="66" r="9"/>
+  </layer>
+</scene>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ATTLIST envelope xmlns:sec CDATA #IMPLIED>
+  <!ELEMENT header (message-id, timestamp, credentials?)>
+  <!ELEMENT message-id (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT credentials (user, token)>
+  <!ELEMENT user (#PCDATA)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT payload (command|batch)>
+  <!ELEMENT command (name, argument*)>
+  <!ATTLIST command id ID #REQUIRED priority (low|normal|urgent) "normal">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT argument (#PCDATA|value)*>
+  <!ATTLIST argument key NMTOKEN #REQUIRED>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT batch (command+)>
+]>
+<envelope xmlns="urn:acme:transport" xmlns:sec="urn:acme:security" sec:mode="signed">
+  <header>
+    <message-id>urn:uuid:5f4e0c1a-8c4f-4c53-9a4b-7e11c018f2a0</message-id>
+    <timestamp>2026-09-30T23:58:04Z</timestamp>
+    <credentials>
+      <user>operator-7</user>
+      <token><![CDATA[opaque-token:<>:&quot;]]></token>
+    </credentials>
+  </header>
+  <payload>
+    <batch>
+      <command id="sync-1" priority="urgent">
+        <name>reconcile</name>
+        <argument key="scope"><value>inventory</value><value>returns</value></argument>
+      </command>
+      <command id="notify-2">
+        <name>publish</name>
+        <argument key="channel">ops &amp; audit</argument>
+      </command>
+    </batch>
+  </payload>
+</envelope>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+)>
+  <!ATTLIST archive created CDATA #IMPLIED>
+  <!ELEMENT entry (path, checksum, resource)>
+  <!ATTLIST entry id ID #REQUIRED state (new|changed|removed) #REQUIRED>
+  <!ELEMENT path (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST checksum algorithm (sha256|blake3|md5) #REQUIRED>
+  <!ELEMENT resource (file|directory|link)>
+  <!ELEMENT file (chunk*)>
+  <!ATTLIST file bytes CDATA #REQUIRED mode NMTOKEN #IMPLIED>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk offset CDATA #REQUIRED encoding (base64|hex|raw) #REQUIRED>
+  <!ELEMENT directory EMPTY>
+  <!ATTLIST directory entries CDATA #REQUIRED>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target URI #REQUIRED>
+]>
+<archive xmlns="urn:example:archive" xmlns:xlink="http://www.w3.org/1999/xlink" created="2026-10-01T00:00:00Z">
+  <entry id="e1" state="new">
+    <path>docs/intro.txt</path>
+    <checksum algorithm="sha256">d6f4c3d9b2a17e00</checksum>
+    <resource>
+      <file bytes="11" mode="0644">
+        <chunk offset="0" encoding="raw">Hello &amp; world</chunk>
+      </file>
+    </resource>
+  </entry>
+  <entry id="e2" state="changed">
+    <path>assets/icons</path>
+    <checksum algorithm="blake3">00ff11aa22bb</checksum>
+    <resource><directory entries="4"/></resource>
+  </entry>
+  <entry id="e3" state="removed">
+    <path>legacy/current</path>
+    <checksum algorithm="md5">00000000000000000000000000000000</checksum>
+    <resource>
+      <link xlink:href="https://example.invalid/archive/legacy"/>
+    </resource>
+  </entry>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE itinerary [
+  <!ENTITY city "Zürich">
+  <!ENTITY arrow " → ">
+  <!ELEMENT itinerary (traveler, journey)>
+  <!ATTLIST itinerary locale NMTOKEN #IMPLIED>
+  <!ELEMENT traveler (name, contact*)>
+  <!ATTLIST traveler id ID #REQUIRED>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT contact (#PCDATA)>
+  <!ATTLIST contact type (email|phone|matrix) #REQUIRED>
+  <!ELEMENT journey (leg+)>
+  <!ELEMENT leg (depart, arrive, transport, luggage?)>
+  <!ATTLIST leg number NMTOKEN #REQUIRED overnight (yes|no) "no">
+  <!ELEMENT depart (place, time)>
+  <!ELEMENT arrive (place, time)>
+  <!ELEMENT place (#PCDATA)>
+  <!ATTLIST place code NMTOKEN #IMPLIED>
+  <!ELEMENT time (#PCDATA)>
+  <!ATTLIST time zone CDATA #REQUIRED>
+  <!ELEMENT transport (#PCDATA)>
+  <!ATTLIST transport kind (rail|air|ferry|walk) #REQUIRED ref NMTOKEN #IMPLIED>
+  <!ELEMENT luggage (bag+)>
+  <!ELEMENT bag EMPTY>
+  <!ATTLIST bag tag NMTOKEN #REQUIRED weight CDATA #IMPLIED>
+]>
+<itinerary xmlns="urn:travel:plan" xmlns:geo="urn:travel:geo" locale="de-CH">
+  <traveler id="p-42">
+    <name>Amira &amp; Kovač</name>
+    <contact type="email">amira@example.invalid</contact>
+    <contact type="matrix">@amira:example.invalid</contact>
+  </traveler>
+  <journey>
+    <leg number="1">
+      <depart><place code="LHR">London</place><time zone="Europe/London">2026-10-03T08:15:00</time></depart>
+      <arrive><place code="ZRH">&city;</place><time zone="Europe/Zurich">2026-10-03T10:55:00</time></arrive>
+      <transport kind="air" ref="LX317"/>
+      <luggage>
+        <bag tag="LX-001" weight="18.4"/>
+        <bag tag="LX-002"/>
+      </luggage>
+    </leg>
+    <leg number="2" overnight="yes">
+      <depart><place code="ZRH">Zürich</place><time zone="Europe/Zurich">2026-10-04T21:10:00</time></depart>
+      <arrive><place code="MIL">Milano</place><time zone="Europe/Rome">2026-10-04T23:05:00</time></arrive>
+      <transport kind="rail" ref="EC-151">&city;&arrow;Milano</transport>
+    </leg>
+  </journey>
+</itinerary>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE telemetry [
+  <!ELEMENT telemetry (device, sample-set+)>
+  <!ATTLIST telemetry generated CDATA #IMPLIED>
+  <!ELEMENT device (model, firmware, sensor+)>
+  <!ATTLIST device serial NMTOKEN #REQUIRED>
+  <!ELEMENT model (#PCDATA)>
+  <!ELEMENT firmware (#PCDATA)>
+  <!ELEMENT sensor EMPTY>
+  <!ATTLIST sensor id ID #REQUIRED kind NMTOKEN #REQUIRED unit CDATA #REQUIRED>
+  <!ELEMENT sample-set (sample+)>
+  <!ATTLIST sample-set at CDATA #REQUIRED interval CDATA #IMPLIED>
+  <!ELEMENT sample (#PCDATA)>
+  <!ATTLIST sample sensor IDREF #REQUIRED quality (good|suspect|missing) "good" min CDATA #IMPLIED max CDATA #IMPLIED>
+]>
+<telemetry xmlns="urn:lab:telemetry" xmlns:cal="urn:lab:calibration" generated="2026-10-01T00:01:17Z">
+  <device serial="MX-7719">
+    <model>Oriole environmental node</model>
+    <firmware>r9.4.0-beta</firmware>
+    <sensor id="s-temp" kind="temperature" unit="°C"/>
+    <sensor id="s-rh" kind="relative-humidity" unit="%"/>
+    <sensor id="s-voc" kind="voc-index" unit="index"/>
+  </device>
+  <cal:calibration sensor="s-temp" offset="-0.12" applied="2026-09-30"/>
+  <sample-set at="2026-10-01T00:00:00Z" interval="PT30S">
+    <sample sensor="s-temp" min="-40" max="85">21.75</sample>
+    <sample sensor="s-rh" min="0" max="100">48.2</sample>
+    <sample sensor="s-voc" quality="suspect">999999999999999999999999</sample>
+  </sample-set>
+  <sample-set at="2026-10-01T00:00:30Z">
+    <sample sensor="s-temp">21.8</sample>
+    <sample sensor="s-rh">48.1</sample>
+    <sample sensor="s-voc" quality="missing"></sample>
+  </sample-set>
+</telemetry>
+```

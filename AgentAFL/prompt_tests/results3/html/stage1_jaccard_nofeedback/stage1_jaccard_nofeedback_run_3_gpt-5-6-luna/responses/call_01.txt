@@ -1,0 +1,108 @@
+```html
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-16">
+<base href="http://example.test//">
+<meta http-equiv="content-type" content="text/html; charset=unknown">
+<style><!--
+  .x{content:"<&amp;";} /* </style> */
+--></style>
+<title>&#xD800;&#xDC00;&invalid; &amp</title>
+</head>
+<body>
+<!-- unclosed comment
+<div class="unterminated" data-x="&#0;&#x110000;">
+<p>alpha &copy &#x1F4A9; &#55357;&#56480;</p>
+</div>
+-->
+<section><hgroup><h1>heading</h3><h4>tail</hgroup>
+<ol start="not-a-number"><li>one<li value="-999999999999999999999">two</ol>
+<dl><dt>term<dd>definition<dt><dd></dl>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>forms</title></head>
+<body>
+<form action="&" method="POST" enctype="multipart/form-data">
+<fieldset disabled="disabled">
+<legend><button type=submit name=x value="&quot;>&">send</button></legend>
+<label for=a>Name <input id=a name=name value="abc" maxlength="999999999999999999999"></label>
+<textarea name=note rows=-1 cols=999999999999999999999>&lt;/textarea><x></textarea>
+<select name=s multiple size="NaN">
+<option selected>one<option>two
+<optgroup label="&notanentity;"><option value='&apos'>three</optgroup>
+</select>
+<input type=image src=x alt="a" checked=maybe>
+</fieldset>
+</form>
+<iframe srcdoc="<p title='&amp;broken'>inside</p>" sandbox></iframe>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>foreign content</title></head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
+<title>svg &amp</title>
+<foreignObject><div xmlns="http://www.w3.org/1999/xhtml"><p>html in svg</div></foreignObject>
+<g><path d="M0 0 LNaN Infinity Z" fill="url(#missing)"><text x="&#xDFFF;">x</text></path></g>
+</svg>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+<mi>&#x1D400;</mi><mo><</mo><mrow><mn>1</mn><annotation-xml encoding="text/html"><b>bold</annotation-xml></mrow>
+</math>
+<template><table><tr><td>template</template><p>after</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html><head><title>raw text boundaries</title></head>
+<body>
+<script type="text/javascript">
+if (a < b) { document.write("</scr" + "ipt>"); }
+var s = "\uD800\uDC00 &#x110000; <!--";
+</script>
+<style>
+body { background: url("x"); } </style broken>
+</style>
+<textarea>line one
+</textareax>
+line two &amp; &#0;
+</textarea>
+<plaintext>
+<html><body><table><tr><td>everything is text &amp; <b>here</b>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="">
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=999999999999999999999">
+<link rel=stylesheet href="a" disabled>
+</head>
+<body>
+<table border="&#xFFFFFFFF;" cellpadding="-9223372036854775808">
+<caption>caption</caption>
+<colgroup span=0><col span=18446744073709551616><colgroup><col>
+<thead><tr><th rowspan=999999999999999999999 colspan=-1>A<th>B
+<tbody>
+<tr><td headers="a b c">1<td>2
+<tr><td><form><input name=x></form><td>4
+<tfoot><tr><td colspan="0">tail
+</table>
+<div><a href="javascript:&#x000A;alert(1)" target="&quot;">link
+<details open=maybe><summary>sum</summary><p>content</details>
+<dialog open="false"><p>dialog</p>
+</body>
+```

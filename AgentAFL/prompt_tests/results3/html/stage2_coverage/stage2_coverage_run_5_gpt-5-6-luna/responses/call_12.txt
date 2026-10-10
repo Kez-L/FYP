@@ -1,0 +1,133 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<base href="http://example.invalid/a/b/">
+<title>Broken table recovery</title>
+</head>
+<body bgcolor=#ffffff>
+<table border=1 cellpadding=2 cellspacing=0 width="100%">
+<caption align=middle>caption<caption>nested</caption></caption>
+<colgroup span=3><col width=25%><col><col style="width:bad">
+<thead><tr><th rowspan=2>Header<th colspan=2>Other
+<tbody>
+<tr><td>A<td>B<td>C
+<tr><td colspan=99>wide cell
+<tr><th><td><table><tr><td>inner</table><td>after
+<tfoot><tr><td>footer
+</tbody>
+<tr><td>orphan row
+</table>
+<table><tr><td><p>paragraph <div>block in cell</div> tail
+</table>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>Comment and declaration stress</title>
+<!-- ordinary -- comment -->
+<!-- unterminated comment
+<p>hidden-looking text
+<!-- nested <!-- marker --> visible -->
+<! bogus declaration >
+<!ELEMENT html O O>
+<![IGNORE[
+<div>ignored declaration text</div>
+]]>
+<?xml version="1.0"?>
+<meta name="x" content="a &amp; b < c > d">
+</head>
+<body>
+<p>before<!-- -- -- --><!---x--->after
+<!-->reopened?</p>
+<!DOCTYPE weird [ <!ENTITY x "y"> <!ELEMENT p O O> ]>
+<section id="a" id="b" class=one class=two>
+<h1 title="unterminated><em>heading</em>
+<p data-x='single " quote' data-y="double ' quote">text
+</section>
+</body>
+</html>
+```
+
+```html
+<HTML>
+<HEAD><TITLE>Frameset with misplaced content</TITLE></HEAD>
+<FRAMESET rows="20%,*,0" cols="bad,,50%" border="-1">
+<FRAME src="a.html" name="left" scrolling=maybe noresize>
+<FRAMESET>
+<FRAME src= b.html>
+<NOFRAMES>
+<body>
+<h2>No frames</h2>
+<p><a href="x" target=_top>link
+<iframe src="nested.html" frameborder=maybe width=auto height=-10>
+fallback <b>bold <i>italic</b> text</i>
+</iframe>
+</body>
+</NOFRAMES>
+</FRAMESET>
+<FRAME src="" longdesc="unterminated>
+</FRAMESET>
+<frameset><frame></frameset>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Lists and inline stack damage</title></head>
+<body>
+<menu compact="false">
+<li value="abc">first
+<li><ol start="NaN" type="UNKNOWN">
+<li value="-999999999999999999999999999999">nested
+<li><dl><dt>term<dd>definition
+</ol>
+</menu>
+<dir>
+<li>one
+<li>two
+</dir>
+<p><b><i><u><s><tt><big><small>deep
+<font size="999" color="#gggggg" face="&quot;broken">content
+</small></big></tt></s></u></i></b></p>
+<address><pre>  pre <b>bold
+line 2 &lt; &gt; &amp; &unknown;</pre></address>
+<center><blockquote cite="x"><q cite=y>quote <cite>cite</blockquote></q></center>
+<hr noshade="maybe" size=huge width="50%%">
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Attribute and URL edge cases</title>
+</head>
+<body>
+<img src="data:text/plain,one&two" alt="a&#0;b&#xD800;c" width="18446744073709551616" height="-9223372036854775808">
+<map name="m" name="duplicate">
+<area shape=poly coords="0,0,foo,999999999999999999999999" href="javascript:alert(1)" alt=x>
+<area shape=rect coords="1,2,3" href>
+</map>
+<object classid="clsid:00000000-0000-0000-0000-000000000000" data="x" type="bad/type">
+<param name="movie" value="a&b">
+<embed src="plugin" width="-" height="auto">
+text inside object
+</object>
+<applet code="X.class" archive="a.jar,b.jar" width=0 height=0>
+<param name=code value="&copy;">
+applet fallback
+</applet>
+<a href="http://[invalid" hreflang="x-" rel="noopener noopener" tabindex="999999999999">anchor
+<base target="unterminated>
+</body>
+</html>
+```

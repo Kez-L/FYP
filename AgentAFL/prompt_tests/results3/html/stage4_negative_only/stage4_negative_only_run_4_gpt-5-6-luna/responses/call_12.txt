@@ -1,0 +1,123 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN">
+<html lang=en>
+<head>
+  <meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+  <!--- unterminated-looking comment --!>
+  <title>frameset stress</title>
+</head>
+<frameset rows="25%,*,0" cols="40%,60%" border=bad>
+  <frame src="javascript:alert('x')" name=left scrolling=maybe>
+  <frame srcdoc="<p>embedded &amp; text" noresize>
+  <noframes>
+    <body bgcolor=#ggg>
+      <h1>Fallback
+      <p>before <b><i>crossed</b> formatting</i>
+      <address>contact &copy &unknown;</address>
+    </body>
+  </noframes>
+</frameset>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>controls</title></head>
+<body>
+<form action=/submit method=maybe enctype="multipart/form-data" accept-charset=utf-8>
+  <fieldset disabled="false"><legend>Account
+    <label for=x>Name <input id=x name=user type=text value="a&b" maxlength=-4></label>
+    <label>Password <input name=p type=password required=required></label>
+  </fieldset>
+  <select name=choice multiple size=zero>
+    <optgroup label="one" disabled>
+      <option selected value=1>First
+      <option value=2>Second
+    <optgroup label=two>
+      <option>Third</select>
+  <textarea name=notes cols=bad rows=-1>&lt;tag&gt;
+    raw </textarea>
+  <button type=unknown><img src=x alt="button">go</button>
+  <input type=image src=missing alt>
+</form>
+<p><input type=checkbox checked=no><output for=x>result
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>mixed lists</title></head>
+<body>
+  <ol start="zero" reversed>
+    <li value=3>alpha
+    <li>beta
+      <ul type=not-a-type>
+        <li>nested one
+        <li>nested two
+          <ol><li>deep<dd>misplaced definition</ol>
+    <li>gamma
+  </ol>
+  <dl compact=maybe>
+    <dt>Term one
+    <dd>Definition <p>paragraph inside
+    <dt><a href=//example.invalid?q=1&x=2>Term two
+    <dd><blockquote cite=x><p>quoted
+  </dl>
+  <dir><li>old item<li><li>empty
+  <ruby>漢<rp>(</rp><rt>kan</rt><rp>)</rp><rtc>annotation</rtc></ruby>
+  <p><bdi dir=sideways>isolate</bdi><bdo dir=rtl>abc</bdo>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>tokens &amp; entities</title>
+  <style type=text/css>
+    <!--
+    body { color: red; /* unclosed
+    .x { content: "\26;"; }
+  </style>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("</script><p>split"); }
+  <!-- broken script comment
+</head>
+<body>
+<!-- normal --><!-- nested <!-- comment --> tail -->
+<![CDATA[not really cdata <b>]]>
+<?processing instruction?>
+<!bogus declaration "unterminated
+<p>&#0; &#xD800; &#x110000; &notanentity; &amp &lt
+<pre>  pre
+	&amp; &#13;
+</pre>
+<xmp><b>literal</b>&amp;</xmp>
+<plaintext><h1>everything becomes text
+```
+
+```html
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head profile="urn:example:profile">
+  <meta http-equiv="refresh" content="0; url='//invalid/%zz'"/>
+  <base href="http://example.invalid/a/../b/" target="_blank"/>
+  <link rel=stylesheet href=data:text/css,body%7Bcolor:red%7D media="screen and (min-width:">
+</head>
+<body id="" class="a  b" style="width: expression(alert(1));">
+  <object data="file:///dev/null" type=application/x-unknown width=auto height=-2>
+    <param name=movie value="&quot;broken">
+    <embed src="about:blank" pluginspage=x></embed>
+    fallback <img srcset="a 1x, b 2q, c" usemap="#m">
+  </object>
+  <map name=m><area shape=poly coords="0,0,10" href=#></map>
+  <details open=false><summary>summary</summary><div>content</details>
+  <dialog open=maybe><form><p>dialog form</dialog></form>
+</body>
+</html>
+```

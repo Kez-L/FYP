@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Envelope [
+  <!ELEMENT Envelope (Header?,Body)>
+  <!ATTLIST Envelope xmlns:soap CDATA #IMPLIED soap:encodingStyle CDATA #IMPLIED>
+  <!ELEMENT Header (auth:Credentials|trace:Context|feature:Flag)*>
+  <!ELEMENT Body (rpc:Call|rpc:Batch|soap:Fault)>
+  <!ELEMENT auth:Credentials (auth:User,auth:Token)>
+  <!ELEMENT auth:User (#PCDATA)>
+  <!ELEMENT auth:Token (#PCDATA)>
+  <!ELEMENT trace:Context (trace:RequestId,trace:Parent?)>
+  <!ELEMENT trace:RequestId (#PCDATA)>
+  <!ELEMENT trace:Parent (#PCDATA)>
+  <!ELEMENT feature:Flag EMPTY>
+  <!ATTLIST feature:Flag name NMTOKEN #REQUIRED enabled (true|false) "true">
+  <!ELEMENT rpc:Call (rpc:Method,rpc:Arguments?)>
+  <!ATTLIST rpc:Call id ID #IMPLIED timeout CDATA #IMPLIED>
+  <!ELEMENT rpc:Method (#PCDATA)>
+  <!ELEMENT rpc:Arguments (rpc:Argument*)>
+  <!ELEMENT rpc:Argument (rpc:Name,rpc:Value)>
+  <!ELEMENT rpc:Name (#PCDATA)>
+  <!ELEMENT rpc:Value (#PCDATA|rpc:List|rpc:Map)*>
+  <!ELEMENT rpc:List (rpc:Item*)>
+  <!ELEMENT rpc:Item (#PCDATA)>
+  <!ELEMENT rpc:Map (rpc:Pair*)>
+  <!ELEMENT rpc:Pair (rpc:Key,rpc:Value)>
+  <!ELEMENT rpc:Key (#PCDATA)>
+  <!ELEMENT rpc:Batch (rpc:Call+)>
+  <!ELEMENT soap:Fault (soap:Code,soap:Reason,soap:Detail?)>
+  <!ELEMENT soap:Code (#PCDATA)>
+  <!ELEMENT soap:Reason (#PCDATA)>
+  <!ELEMENT soap:Detail ANY>
+]>
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:auth="urn:example:auth"
+    xmlns:trace="urn:example:trace"
+    xmlns:feature="urn:example:feature"
+    xmlns:rpc="urn:example:rpc"
+    soap:encodingStyle="urn:example:encoding">
+  <soap:Header>
+    <auth:Credentials>
+      <auth:User>guest&amp;operator</auth:User>
+      <auth:Token><![CDATA[opaque<token>]]></auth:Token>
+    </auth:Credentials>
+    <trace:Context>
+      <trace:RequestId>req-0007</trace:RequestId>
+      <trace:Parent/>
+    </trace:Context>
+    <feature:Flag name="compression" enabled="false"/>
+  </soap:Header>
+  <soap:Body>
+    <rpc:Batch>
+      <rpc:Call id="call-1" timeout="0">
+        <rpc:Method>inventory.lookup</rpc:Method>
+        <rpc:Arguments>
+          <rpc:Argument>
+            <rpc:Name>selector</rpc:Name>
+            <rpc:Value><rpc:List><rpc:Item>red</rpc:Item><rpc:Item>blue</rpc:Item></rpc:List></rpc:Value>
+          </rpc:Argument>
+        </rpc:Arguments>
+      </rpc:Call>
+      <rpc:Call id="call-2">
+        <rpc:Method>inventory.options</rpc:Method>
+        <rpc:Arguments>
+          <rpc:Argument>
+            <rpc:Name>flags</rpc:Name>
+            <rpc:Value><rpc:Map><rpc:Pair><rpc:Key>limit</rpc:Key><rpc:Value>10</rpc:Value></rpc:Pair></rpc:Map></rpc:Value>
+          </rpc:Argument>
+        </rpc:Arguments>
+      </rpc:Call>
+    </rpc:Batch>
+  </soap:Body>
+</soap:Envelope>

@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE package [
+  <!ENTITY % declarations "
+    <!ELEMENT package (manifest, content, signatures?)>
+    <!ATTLIST package id ID #REQUIRED format (bundle|archive) 'bundle'>
+    <!ELEMENT manifest (entry+)>
+    <!ELEMENT entry EMPTY>
+    <!ATTLIST entry path CDATA #REQUIRED media CDATA #REQUIRED size NMTOKEN #IMPLIED>
+    <!ELEMENT content (file|directory)+>
+    <!ELEMENT file (#PCDATA)>
+    <!ATTLIST file path CDATA #REQUIRED encoding (base64|text|hex) 'text'>
+    <!ELEMENT directory (file|directory)*>
+    <!ATTLIST directory path CDATA #REQUIRED>
+    <!ELEMENT signatures (signature+)>
+    <!ELEMENT signature (algorithm, digest, certificate?)>
+    <!ELEMENT algorithm (#PCDATA)>
+    <!ELEMENT digest (#PCDATA)>
+    <!ELEMENT certificate (#PCDATA)>
+  ">
+  %declarations;
+]>
+<package id="pkg-001" format="archive">
+  <manifest>
+    <entry path="bin/start" media="application/octet-stream" size="128"/>
+    <entry path="etc/config.ini" media="text/plain" size="42"/>
+    <entry path="docs/readme.txt" media="text/plain"/>
+  </manifest>
+  <content>
+    <directory path="bin">
+      <file path="bin/start" encoding="base64">IyEvYmluL3NoCmVjaG8gaGk=</file>
+    </directory>
+    <directory path="etc">
+      <file path="etc/config.ini" encoding="text">mode=quiet
+retry=3</file>
+    </directory>
+    <directory path="docs">
+      <file path="docs/readme.txt">Package &amp; contents&#10;validated.</file>
+    </directory>
+  </content>
+  <signatures>
+    <signature>
+      <algorithm>sha256</algorithm>
+      <digest><![CDATA[9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08]]></digest>
+      <certificate>CN=Bundle Authority, O=Example</certificate>
+    </signature>
+  </signatures>
+</package>

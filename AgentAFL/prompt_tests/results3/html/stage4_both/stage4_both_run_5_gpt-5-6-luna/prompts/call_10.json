@@ -1,0 +1,23 @@
+{
+  "call": 10,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a HTML document parser.\nTarget: /home/user/Documents/1git-folder/AgentAFL/AFLPlus/tidy-html5-build/tidy_parse_string_fuzzer-afl.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 HTML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<!doctype html>\n<html>\n<head><title>Table reconstruction</title></head>\n<body>\n<table border=\"999\" cellpadding=\"-2\" cellspacing=\"NaN\" width=\"0\">\n  <caption align=sideways>Caption\n  <colgroup span=\"-3\"><col span=\"zero\" width=\"bad\"><colgroup>\n  <thead>\n    <tr><th rowspan=\"-1\" colspan=\"NaN\">A<th scope=diagonal>B\n  <tbody>\n    <tr><td>one<td><div>two<tr><td colspan=\"999\">three\n    <tr><th><p>four<td>five\n  <tfoot>\n    <tr><td>footer\n</table>\n<table>\n  <tr><td>outer\n    <table><tr><td>inner</table>\n  <td>after\n</tr></table>\n<table><tbody><tr><td>a</tbody><tfoot><tr><td>b</table>\n<div><table><tr><td>x</div><p>outside\n</body>\n</html>\n\n--- example 2 ---\n<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<HTML>\n<HEAD>\n  <TITLE>Frameset and legacy declarations</TITLE>\n  <BASE TARGET=\"_top\" HREF=\"//example.test/root\">\n  <META NAME=viewport CONTENT=width=device-width,initial-scale=1>\n  <?processing instruction?>\n</HEAD>\n<FRAMESET ROWS=\"*,0,25%\" COLS=\"120,*\" BORDER=not-a-number FRAMEBORDER=maybe>\n  <FRAME NAME=left SRC=\"left.html\" SCROLLING=diagonal NORESIZE>\n  <FRAMESET COLS=\"50%,*\" FRAMEBORDER>\n    <FRAME SRC=right.html MARGINWIDTH=-4 MARGINHEIGHT=\"NaN\">\n    <FRAME SRC=\"\" NAME=main>\n  </FRAMESET>\n  <NOFRAMES>\n    <BODY>\n      <H1>Fallback</H1>\n      <P><A HREF=\"next.html\" TARGET=>continue</A></P>\n    </BODY>\n  </NOFRAMES>\n</FRAMESET>\n\nTried before \u2014 no new coverage, avoid repeating:\n--- 2 of your past seeds (cycles 5,9) drove the same already-covered path with 0 new edges ---\n<!DOCTYPE html>\n<html>\n<head><title>Namespaces and foreign content</title></head>\n<body>\n  <svg width=\"1e9\" height=\"-4\" viewBox=\"0 0 100 bad\" preserveAspectRatio=\"sideways\">\n    <title>svg title</title>\n    <defs><linearGradient id=g x1=\"NaN\" y2=\"999%\"><stop offset=\"-2\"/></linearGradient></defs>\n    <g transform=\"matrix(1,0,0,1,foo,bar)\" onclick=\"x<y\">\n      <rect x=-1 y=bad width=999999 height=0 fill=\"url(#missing)\"/>\n      <path d=\"M 0 0 L nope Z Q\" stroke-width=\"-3\"/>\n      <text x=\"1\"><tspan dy=\"bad\">svg text</tspan></text>\n      <foreignObject><div xmlns=\"http://www.w3.org/1999/xhtml\"><p>embedded html</p></div></foreignObject>\n    </g>\n  </svg>\n  <math display=sideways>\n    <mi mathvari...[truncated, 1052 chars total]\n\n--- 2 of your past seeds (cycles 5,6) drove the same already-covered path with 0 new edges ---\n<!doctype html>\n<html>\n<head>\n  <meta charset=\"utf-8\">\n  <title>Forms and interactive controls</title>\n  <form id=f action=\"javascript:alert(1)\" method=bogus enctype=\"bad/type\" accept-charset=\"utf-8, koi8-r\">\n    <fieldset disabled>\n      <legend><label for=q>Search <input id=q name=q value=\"&amp; &lt; &#0; &#xD800;\"></label></legend>\n      <input type=email name=mail multiple required pattern=\"[\" maxlength=-1>\n      <input type=number min=1 max=0 step=0 value=999999999999999999999>\n      <input type=date value=2024-02-31>\n      <input type=file accept=\"image/*,.wat\" multiple>\n      <select name=choice size=-4 multiple>\n        <optgroup label=\"group\" disabled>\n          <option selected val...[truncated, 1310 chars total]\n\nGenerate 5 new HTML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-tidy-20261006",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-10T06:00:15.358880+00:00"
+}

@@ -1,0 +1,136 @@
+```html
+<!DOCTYPE html>
+<html lang="x-klingon">
+<head>
+<meta charset="utf-16">
+<title>Table mutation</title>
+<style><!--
+  body { color: red; }
+--></style>
+</head>
+<body>
+<table border="1" cellpadding="0" cellspacing="-4">
+  <caption>caption<table><tr><td>nested</td></tr></table></caption>
+  <colgroup span="0"><col width="*"><col span="2"></colgroup>
+  <thead><tr><th rowspan="999" colspan="-1">A<th>B</tr></thead>
+  <tbody>
+    <tr><td><form action=""><input name="x"></form></td><td>two
+    <tr><td>three<td><select multiple size="-2"><option selected>one<option>two</select>
+  </tbody>
+  <tfoot><tr><td colspan="100">foot</table>
+<div>after table</div>
+<!--- malformed comment --!>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<?processing instruction?>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Entity boundaries &notit; &ampersand; &#x1F4A9; &#99999999;</title>
+</head>
+<body>
+<p><b><i><u><s>nested formatting
+<p>second <a href="one" target="_blank"><a href="two">double anchor</a>
+<font color="#12GG34" face="" size="999"><big><small>font stack</font>
+<address>mail <a href=mailto:x@y.invalid>x@y.invalid</address>
+<blockquote cite="&quot;unterminated"><pre>  pre
+	indent <code>code</pre></blockquote>
+<hr />
+<br/>
+<img src="" alt="&quot; &apos; &lt; &gt;" width="nan" height="-0">
+<plaintext>
+This is no longer markup
+<div>literal?</div>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Foreign content crossings</title></head>
+<body>
+<svg width="100%" viewBox="0 0 10 10">
+  <title>svg title</title>
+  <g transform="translate(1 2) rotate(90)">
+    <foreignObject width="10" height="10">
+      <div xmlns="http://www.w3.org/1999/xhtml">HTML in foreign content <b>bold</b></div>
+    </foreignObject>
+    <path d="M0,0 L10,10 Z" fill="url(#missing)"/>
+  </g>
+  <text><tspan>text</tspan><circle cx="NaN" cy="Infinity" r="-1"></circle>
+</svg>
+<math display="block">
+  <mrow><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+  <annotation-xml encoding="application/xhtml+xml"><p>embedded</p></annotation-xml>
+</math>
+<p>back in HTML</p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <base href="//[::1">
+  <meta name="viewport" content="width=device-width,initial-scale=wat">
+  <title>Forms and labels</title>
+</head>
+<body>
+<form id="outer" method="POST" enctype="multipart/form-data" accept-charset="UTF-8,">
+  <fieldset disabled="false">
+    <legend><label for="missing">Choose <input id="same" name="a"></label></legend>
+    <input type="text" name="t" value="a&#13;&#10;b" maxlength="-1" minlength="999999">
+    <input type="number" min="foo" max="bar" step="0" value="1e999">
+    <input type="date" value="2024-02-30">
+    <input type="file" accept="image/*,,text/plain" multiple="maybe">
+    <input type="checkbox" checked="false">
+    <input type="radio" name="r" checked>
+    <textarea rows="-1" cols="0" wrap="invalid">one
+two</textarea>
+    <select name="s" required="false">
+      <optgroup label="group" disabled="0"><option value="&amp;">&amp;<option selected value=two>two
+      <option label="only-label"></option>
+    </select>
+    <button type="submit" formaction="javascript:bad()" formmethod="dialog">go</button>
+  </fieldset>
+</form>
+<label for="same">orphan label</label>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Token boundaries</title></head>
+<body>
+<div id="a" id="b" class="x  y	 z" data-empty= data-x="unterminated>
+  <p><span title='single &quot; quote'>text
+  <table><tr><td>x</div></td></tr></table>
+</section>
+</article>
+<template><div>template <em>content</em></template>
+<noscript><p>noscript text</p></noscript>
+<script type="text/plain">
+  <tag attr='value'>&amp;
+</script>
+<script>
+  if (a < b && c > d) { document.write("</p>"); }
+  // </script> inside
+</script>
+<style>
+  .x { content: "</style>"; }
+</style>
+<x-unknown foo bar= baz="q" />
+<?xml version="1.0"?>
+<![CDATA[not really cdata]]>
+<!-- normal -- broken -->
+</body>
+</html>
+```

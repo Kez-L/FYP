@@ -1,0 +1,119 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<title><![CDATA[broken title <&>]]></title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+</head>
+<body bgcolor=#ffffff text="black">
+<h1><u><strike>Header without closure
+<p align=center>text before
+<blockquote cite="a&b"><pre>  pre
+	indented <b>bold <i>italic</blockquote>
+<center>
+<address>mail@example.invalid
+<dl compact>
+<dt>Term <dd>Definition <dt><dd>Empty
+</dl>
+<hr noshade width=999999 size=-3>
+</body>
+```
+
+```html
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-16">
+<style type="text/css">
+@media screen { body { color: rgb(1,2,3); } } <!--
+</style>
+<script type="text/javascript">
+if (a < b && c > d) { document.write("<span>"); }
+</script>
+</head>
+<body>
+<noscript><p>fallback &amp; still open</noscript>
+<main>
+<section id="x" aria-label="a'b&quot;c">
+<header><h2>Heading</h2></header>
+<article><p>one<div>two<p>three</article>
+<aside><q cite="javascript:alert(1)">quoted
+<details open><summary>summary</summary><p>inside</details>
+</main>
+<footer>&copy; &unknown; &#0; &#x110000;</footer>
+</body>
+</html>
+```
+
+```html
+<html>
+<head>
+<title>Foreign and embedded markup</title>
+</head>
+<body>
+<svg width="10" height="10" viewBox="0 0 10 10">
+<foreignObject width="10" height="10">
+<div xmlns="http://www.w3.org/1999/xhtml">html in svg
+<br/></div>
+</foreignObject>
+<path d="M0 0 L10 10" fill="none"></path>
+</svg>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+<mrow><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+</math>
+<object data="blob:invalid" type="application/x-unknown">
+<param name="movie" value="a&b">
+<embed src="x" width="0" height="-1">
+fallback <iframe srcdoc="<p>nested</p>" name="f"></iframe>
+</object>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head><title>Comments and declarations</title></head>
+<body>
+<!-- ordinary -- comment -->
+<!-- malformed -- -- nested <!-- comment -->
+<![if IE]><p>conditional text</p><![endif]>
+<!DOCTYPE weird [ <!ELEMENT foo ANY> <!ENTITY x "y"> ]>
+<?processing instruction?>
+<menu type="toolbar">
+<li><button type=button disabled aria-pressed=true>One</button>
+<li><button type=reset name="b" value="&quot;">Two
+</menu>
+<dialog open><p>dialogue</p><form method=dialog><button>Close</button></form></dialog>
+<template id=t><div><p>template content</template>
+<p>after template
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>Raw text and token boundaries</title>
+</head>
+<body>
+<pre>
+&lt;tag attr="x"&gt;
+&amp; not entity &bogus;
+</pre>
+<textarea rows="2" cols="3">first
+</textarea><textarea>second &lt; /textarea&gt; </textarea>
+<script>
+var s = "</script><p>escaped-looking</p>";
+/* <div> */
+</script>
+<style>
+body { background: url("x"); }
+</style>
+<x-custom data-a=1 data-b="2" / ><span/ ><br/ >
+<p class='unclosed data="value'>tail
+<a href="x" title='y>z'>link
+</body>
+</html>
+```

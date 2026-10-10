@@ -1,0 +1,42 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//SeedLab//Alarm Matrix//EN
+CALSCALE:GREGORIAN
+METHOD:REQUEST
+BEGIN:VEVENT
+UID:alarm-matrix@example.invalid
+DTSTAMP:20261001T170000Z
+DTSTART:20261015T180000Z
+DTEND:20261015T193000Z
+SUMMARY:Customer escalation review
+DESCRIPTION:Review the incident timeline and agree on follow-up actions.
+LOCATION;LANGUAGE=en:Operations bridge
+STATUS:CONFIRMED
+CLASS:PRIVATE
+PRIORITY:5
+SEQUENCE:2
+ORGANIZER;CN="Incident Lead":mailto:lead@example.invalid
+ATTENDEE;CN="Primary";ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:mailto:primary@example.invalid
+ATTENDEE;CN="Observer";ROLE=OPT-PARTICIPANT;RSVP=FALSE;PARTSTAT=ACCEPTED:mailto:observer@example.invalid
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-PT30M
+DESCRIPTION:Customer escalation review begins in 30 minutes
+END:VALARM
+BEGIN:VALARM
+ACTION:AUDIO
+TRIGGER;RELATED=END:-PT5M
+ATTACH;FMTTYPE=audio/basic:https://example.invalid/sounds/alert.wav
+REPEAT:2
+DURATION:PT1M
+END:VALARM
+BEGIN:VALARM
+ACTION:EMAIL
+TRIGGER;VALUE=DATE-TIME:20261015T170000Z
+SUMMARY:Prepare escalation review
+DESCRIPTION:Collect the incident timeline before the meeting.
+ATTENDEE:mailto:lead@example.invalid
+ATTENDEE:mailto:primary@example.invalid
+END:VALARM
+END:VEVENT
+END:VCALENDAR

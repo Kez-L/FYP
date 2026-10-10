@@ -1,0 +1,145 @@
+```html
+<!doctype html>
+<html lang="x-unknown">
+<head>
+<meta charset="utf-999">
+<base href="http://[::1">
+<link rel=stylesheet href=data:text/css,body%7Bcolor:red%7D integrity="sha256-">
+<style type="text/plain"><!--
+@import url("unterminated;
+--></style>
+<script type="application/ld+json">{"a": [1, 2,}</script>
+<script><!-- </script> &amp; <![CDATA[ x ]]></script>
+</head>
+<body>
+<!--- malformed comment --!>
+<!---->
+<![CDATA[not really cdata <tag>]]>
+<?xml version="1.0"?>
+<div id="a" id="b" class="x y" class=unquoted/ data-x="a&#0;b&#x110000;c">
+Text &unknown; &#; &#x; &#xZZ; &amp without semicolon
+</div>
+<svg width="NaN" viewBox="0 0 10" preserveAspectRatio="bad">
+  <title>svg title</title>
+  <foreignObject><p>html in svg</p></foreignObject>
+  <path d="M0 0 L NaN NaN Z"></path>
+</svg>
+<math><mrow><mi>x</mi><mo>&lt;</mo><mn>2</mn></mrow><annotation-xml encoding="application/xhtml+xml"><div>mixed</div></annotation-xml></math>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>optional end tags and implied containers</title></head>
+<body>
+<p>first
+<p>second
+<p>third<div>block interrupts paragraph<span>inline
+<div>nested block</div>
+</span></div>
+<ul><li>one<li>two<li><ol><li>inner one<li>inner two</ol><li>after</ul>
+<ol start=999999999999999999999999 reversed="false">
+<li value="-999999999999999999">negative</li>
+<li>next
+</ol>
+<ruby>base<rt>annotation<rp>(</rp>fallback</rp>tail</ruby>
+<dl><dt>one<dd>definition<dt>two<dd>definition two
+<table border=garbage>
+<caption>caption</caption>
+<tr><td>a<td>b
+<tr><td colspan=-1>c
+</table>
+<address><p>contact</address>
+<blockquote cite="http://%zz"><pre>preformatted
+line two</pre></blockquote>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>embedded raw text and delimiters</title>
+</head>
+<body>
+<script language="javascript" type="text/javascript">
+if (a < b) { document.write("</div>"); }
+var s = "<script> &amp; </script";
+<!-- legacy comment
+</script>
+</script>
+<style>
+body { background: url("x</style>"); }
+@media (x) { .a { content: "</style>"; } }
+</style>
+<textarea rows="not-a-number" cols="-4">&lt;div&gt;
+unterminated textarea </textarea text
+</textarea>
+<source src="a&amp;b" srcset="one 1x, two 2x, broken -1w">
+<video controls autoplay="false" poster="" width="1e309" height="-0">
+<track kind=metadata srclang=xx label="a<b" default=maybe>
+fallback <b>video</b>
+</video>
+<audio src="data:audio/x-test;base64,%%%%" preload=unknown></audio>
+<iframe srcdoc="<p>inside &amp; <b>frame</b></p>" sandbox="allow-scripts allow-invalid"></iframe>
+<noscript><div><p>noscript content</p></div></noscript>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>misnested formatting and adoption agency cases</title></head>
+<body>
+<b><i><u>alpha <em>beta</b> gamma</i> delta</u> epsilon</em>
+<p><a href="one"><b>link <i>text</a> tail</i></b>
+<p><nobr><font color=#12GG34 size=999 face="a&quot;b">font text <big>big</font></nobr>
+<center><div align=middle><table><tr><td><b>cell</div>after</td></tr></table></center>
+<hgroup><h1>heading one<h2>heading two<h7>invalid heading</h7></hgroup>
+<main><header>head</header><section><article><aside>aside</article></section></main>
+<figure><figcaption>caption<figcaption>second caption</figure>
+<ins cite="not a url" datetime="2024-99-99T99:99:99Z"><del>deleted <mark>marked</ins> text</del></mark>
+<button><a href=x>anchor inside button</a><button>nested button</button></button>
+<label><label>nested labels<input></label></label>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>doctype attributes and token boundaries</title>
+<meta http-equiv=refresh content="0;url=javascript:alert(1)">
+<meta name=charset charset="UTF-16">
+</head>
+<body>
+<div/ >
+<span/ class=x>
+<img/src=x alt=test>
+<input disabled/checked="false"/name=x value='a
+b'>
+<hr class="a"=b =c d==e>
+<pre> leading
+  spaces
+	 tabs </pre>
+<x-custom data-a data-b= data-c="unterminated
+  <template><div>template</div></template>
+</x-custom>
+<unknown>
+  <table><tr><td>row</unknown><tbody><tr><td>late</table>
+</unknown>
+<details open><summary>one</summary><div>inside</div></details>
+<details open=false><summary>two</summary></details>
+<menu><li>first<li><div>block item</div><li>third</menu>
+<progress value=NaN max=-Infinity>fallback</progress>
+<meter min=10 max=2 low=NaN high=Infinity optimum=wat value=999>meter</meter>
+<time datetime="2024-13-40">bad date</time>
+<data value=>data</data>
+</body>
+</html>
+```

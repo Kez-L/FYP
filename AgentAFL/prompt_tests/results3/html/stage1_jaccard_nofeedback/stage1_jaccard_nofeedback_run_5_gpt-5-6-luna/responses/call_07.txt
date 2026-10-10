@@ -1,0 +1,109 @@
+```html
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <base href="http://example.invalid/a/">
+    <style>
+      @media screen { body { color: #123456 } }
+      <!-- malformed style close
+    </style>
+  </head>
+  <body id="x" class="a b" data-k="&amp;&#xD800;">
+    <!-- -- --><!----><! -- broken comment -->
+    <main>
+      <h1 title="unterminated&#0;attribute>Heading</h1>
+      <p>alpha &notanentity; &amp &copy &#0 &#x110000; &#xDFFF;</p>
+      <pre>one
+two</pre>
+      <hr />
+      <img src=x alt="a > b" />
+    </main>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>fragment stress</title></head>
+<body>
+  <form action="/submit" method="post">
+    <fieldset disabled>
+      <legend>Choose</legend>
+      <input type=text name=a value="&quot; &apos; &#x26;">
+      <select name=s multiple size=0>
+        <option selected>first
+        <option value='b'>&lt;second</option>
+        <optgroup label=broken><option>third</optgroup>
+      </select>
+      <textarea cols=999 rows=-1>text</textarea>
+      <button type=submit><b><i>go</button></i></b>
+    </fieldset>
+  </form>
+  <details open><summary>summary</summary><div>content</div></details>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+  <head><title>embedded namespaces</title></head>
+  <body>
+    <svg viewBox="0 0 10 10"><g><path d="M0 0L10 10"></g>
+      <foreignObject><div xmlns="http://www.w3.org/1999/xhtml">x</svg>
+    <math>
+      <mi>x</mi><mo>&lt;</mo><mfrac><mn>1</mn><mn>2</mn></mfrac>
+      <annotation-xml encoding="text/html"><p>nested</math>
+    <object data="x">
+      fallback <iframe srcdoc="<p>inside &amp; out"></iframe>
+    </object>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+<head>
+  <title>table reconstruction</title>
+</head>
+<body>
+<table border=0>
+  <colgroup span=2><col width=10><col></colgroup>
+  <thead><tr><th rowspan=2>A<th>B</thead>
+  <tbody>
+    <tr><td>x<td><table><tr><td>nested</table>
+    <tr><td colspan="999">y
+  <tfoot><tr><td>z</td></tr>
+  </tbody>
+</table>
+<dl><dt>term<dd>definition<dt><dd>empty</dl>
+<ol start="&minus;1"><li>one<li value="0">zero</ol>
+</body>
+</html>
+```
+
+```html
+<html>
+<head>
+<meta charset=windows-1252>
+<script type="text/javascript">
+  if (a < b && c > d) { document.write("</script><p>cut"); }
+</script>
+<script>
+  <![CDATA[
+    const s = "]]>";
+  ]]>
+</script>
+</head>
+<body onload="x='&quot;">
+  <p><a href="javascript:alert('x')">link
+  <label for=q>label<input id=q pattern="["><output name=o>result</output>
+  <video controls poster="x"><source src=x type=video/mp4><track kind=subtitles>
+  <canvas width="-1" height="18446744073709551615">fallback</canvas>
+  <template><table><tr><td>template</template></td></tr></table>
+</body>
+</html>
+```

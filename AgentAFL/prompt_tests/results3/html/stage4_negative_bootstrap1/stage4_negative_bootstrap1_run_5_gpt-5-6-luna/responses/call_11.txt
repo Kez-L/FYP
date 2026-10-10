@@ -1,0 +1,126 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<?xml version="1.0"?>
+<meta charset="utf-8">
+<style type="text/css">
+@import url("x.css");
+* { color: expression(alert(1)); }
+</style>
+<script type="text/javascript">
+<!--
+if (a < b && c > d) { document.write("<em>raw</em>"); }
+//-->
+</script>
+</head>
+<body>
+<hgroup><h1>Parser test</h1><h6>nested headings</h6></hgroup>
+<p>before <b><i><u>misnested</b> text</i></u> after</p>
+<dl><dt>one<dd>first<dt>two<dd>second</dl>
+<ul><li>a<li>b<ul><li>nested</ul></ul>
+<ol start="0" reversed><li value="3">three<li>four</ol>
+<blockquote cite="x"><p>quote<br/>line<wbr>break</blockquote>
+<hr><pre>  pre &amp; &copy; &#0; &#xD800; </pre>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><title>table recovery</title></head>
+<body>
+<table border="1" cellpadding="2">
+<caption><b>Caption<table>nested</table></caption>
+<colgroup><col span="2"><col></colgroup>
+<thead><tr><th rowspan="2">A<th colspan="3">B
+<tbody>
+<tr><td>1<td>2<td><form action="/x"><input name="q"><button>go</tr>
+<tr><td colspan="4">tail
+<tfoot><tr><td>foot</table>
+<table><tr><td>outer <table><tr><td>inner</table> text</td></tr></table>
+<div>after tables</div>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>controls and objects</title></head>
+<body>
+<form action="submit" method="POST" enctype="multipart/form-data">
+<fieldset disabled>
+<legend>Account <input type="text" name="legend"></legend>
+<label for="x">Name</label><input id="x" type="text" value="&quot;" required autofocus>
+<label>Choice <select name="s" multiple size="0">
+<option selected>one<option value="2" disabled>two
+<optgroup label="Group"><option>three</optgroup>
+</select></label>
+<textarea name="t" rows="1" cols="0">&lt;textarea&gt;</textarea>
+<input type="image" src="a" alt="A"><input type="file" accept="text/*,.x" multiple>
+<button type="submit" formaction="other">Send</button>
+</fieldset>
+</form>
+<object data="movie.bin" type="application/octet-stream" width="0" height="-1">
+<param name="movie" value="x">
+<embed src="fallback.swf" pluginspage="x">
+<p>object fallback</p>
+</object>
+<details open><summary>summary</summary><dialog open>dialog text</dialog></details>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>raw text and comments</title>
+<!-- normal -- comment -->
+<!-->broken comment<!-- nested <!-- comment --> end -->
+<![if IE]><style>body{background:red}</style><![endif]>
+</head>
+<body>
+<script>
+var s = "</script><div>fake</div>";
+/* <!-- </textarea> &amp; */
+</script>
+<style>
+a:before { content: "</style><p>fake"; }
+</style>
+<textarea><b>not markup</b>&amp; &#65;</textarea>
+<title>title <b>literal</b></title>
+<x-unknown a="1" a="2" =bad ="v" disabled/>
+<p data-x='unterminated data-y="z">text
+<!-- unclosed comment
+</body>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>mixed legacy elements</title></head>
+<body bgcolor="#fff" text="black">
+<center><font face="serif" size="+7" color=red>old <big>markup</big></font></center>
+<marquee behavior="alternate" direction="left">moving <blink>text</blink></marquee>
+<acronym title="test">ABC</acronym>
+<ins datetime="2020-01-01"><del cite="x">removed</del> inserted</ins>
+<table><tr><td>
+<address>Mail <a href="mailto:a@b">a@b</a></address>
+<menu compact><li type="square">item<li>next</menu>
+<dir><li>directory entry</dir>
+<figure><img src="photo" alt="image"><figcaption>caption</figcaption></figure>
+</td><td>
+<map name="legacy"><area href="one" coords="1,2,3,4"><area nohref></map>
+<img src="x" usemap="#legacy" border="0">
+</td></tr></table>
+<applet code="Test.class" archive="a.jar" width="1" height="1">
+<param name="x" value="&">
+fallback
+</applet>
+</body>
+</html>
+```

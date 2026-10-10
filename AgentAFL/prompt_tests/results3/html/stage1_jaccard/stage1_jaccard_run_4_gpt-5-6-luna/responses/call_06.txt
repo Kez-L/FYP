@@ -1,0 +1,121 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<!-- comment -- -- broken -->
+<html>
+  <head>
+    <title>unterminated head<title>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <base href="http://example.invalid/a/b">
+  </head>
+  <body bgcolor=#fff onload="x<y && y>z">
+    <h1 id=test class="a b c" data-x=one disabled>Heading
+    <p>alpha<br/>beta<hr>gamma
+    <blockquote cite=http://example.invalid/"quoted>
+      <pre>  preformatted
+line two &unknown; &#0; &#xD800; &#x110000;</pre>
+    </blockquote>
+    <address><a href="mailto:a@b">contact</a></address>
+  </body
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Comment and declaration stress</title></head>
+<body>
+  <!-- normal -->
+  <!-- nested <!-- inner --> tail -->
+  <!---->
+  <!--->
+  <![if IE]>
+    <p>conditional text</p>
+  <![endif]>
+  <![CDATA[not really cdata <tag> & value]]>
+  <?xml version="1.0"?>
+  <div><span>one</span><span>two</div>
+  <p>text &amp text &bad; &copy &#169 &#x; &#xZZ; &semi;</p>
+  <!-- a very long comment with -- inside -- and another -- ending -->
+  </body>
+```
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Object and legacy controls</title>
+</head>
+<body>
+  <object classid="clsid:123" codebase="/x" width="0" height="-1">
+    <param name=name value="a&b">
+    <param name="movie" value="x.swf">
+    fallback <embed src=x type=application/x-shockwave-flash></embed>
+  </object>
+  <applet code="Foo.class" archive="a.jar,b.jar" align=middle>
+    <param name=code value=Foo>
+    <text>applet fallback</text>
+  </applet>
+  <marquee behavior=alternate direction=sideways loop=-1>
+    <blink><font face=bad size=99 color=#12>moving</font></blink>
+  </marquee>
+  <isindex prompt="Search:">
+  <center><big><small><strike>legacy</strike></small></big></center>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Ruby and list recovery</title></head>
+<body>
+  <dl compact>
+    <dt>Term one
+    <dd>Definition without closing
+    <dt><a href=/term?x=1&y=2>Term two
+    <dd><ul type=disc>
+      <li value=0>zero
+      <li><ol start="not-number" reversed>
+        <li>nested A
+        <li>nested B
+      </ul>
+    </dl>
+  <ruby>
+    漢<rb>字<rt>kanji<rp>)</rp>
+    <rtc><span>annotation</span></rtc>
+  </ruby>
+  <dir><li>old item<li>another item</dir>
+  <menu compact><li><a>missing href<li>unclosed
+  <p>after lists</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Script style and entity boundaries</title>
+  <style type=text/css>
+    body { background: url("x"); }
+    /* </style> inside string */
+    .x:before { content: "&amp; <tag>"; }
+  <script>
+    if (a < b) document.write("</p><p>");
+    // </script> premature
+  </script>
+</head>
+<body>
+  <noscript><p>fallback <b>bold</noscript>
+  <script type="text/javascript">
+    var s = "<!-- &copy; </textarea> </script>";
+    if (x && y > 2) { /* comment */ }
+  </script type="text/javascript">
+  <textarea name=t rows=0 cols=-2>value &amp; <b>literal</textarea>
+  <xmp><b>raw</b>&amp;</xmp>
+  <plaintext>everything after this is text
+  <p>not markup &amp;
+</body>
+</html>
+```

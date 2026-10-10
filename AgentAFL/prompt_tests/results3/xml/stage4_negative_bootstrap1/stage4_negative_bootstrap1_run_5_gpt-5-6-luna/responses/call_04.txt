@@ -1,0 +1,153 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (book+)>
+  <!ELEMENT book (title, author+, summary?)>
+  <!ATTLIST book
+    id ID #REQUIRED
+    category (fiction|reference|poetry) "fiction"
+    related IDREF #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|emph|quote)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ENTITY library "Central Archive">
+  <!ENTITY mark "&#xA9;">
+]>
+<catalog>
+  <book id="b1" category="reference">
+    <title>XML &amp; Parsing</title>
+    <author>&library;</author>
+    <summary>Notes on <emph>tree construction</emph> and <quote>entity expansion</quote> &mark;</summary>
+  </book>
+  <book id="b2" related="b1">
+    <title>Fragments</title>
+    <author>R. Example</author>
+  </book>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:ex="urn:example:record">
+  <rdf:Description rdf:about="urn:record:17">
+    <dc:title xml:lang="en">A compact record</dc:title>
+    <dc:creator rdf:resource="urn:person:4"/>
+    <ex:classification>
+      <ex:code scheme="alpha">A-17</ex:code>
+      <ex:code scheme="numeric">0017</ex:code>
+    </ex:classification>
+    <ex:links>
+      <ex:link href="urn:item:left" position="first"/>
+      <ex:link href="urn:item:right" position="last"/>
+    </ex:links>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="blank1">
+    <dc:title><![CDATA[Text containing <markup> and & symbols]]></dc:title>
+  </rdf:Description>
+</rdf:RDF>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <?origin subsystem="parser"?>
+  <profiles>
+    <profile name="minimal">
+      <option enabled="true">alpha</option>
+      <option enabled="false"><![CDATA[beta < gamma]]></option>
+    </profile>
+    <profile name="extended">
+      <inherits from="minimal"/>
+      <parameters>
+        <parameter key="threshold" type="integer">00042</parameter>
+        <parameter key="pattern" type="regex">[A-Z]+(?:-[0-9]+)?</parameter>
+        <parameter key="empty" type="string"/>
+      </parameters>
+    </profile>
+  </profiles>
+  <!-- A comment between sibling sections -->
+  <outputs>
+    <output format="xml" path="results.xml">
+      <filter>status = "ready" and count &gt; 0</filter>
+    </output>
+    <output format="text" path="results.txt"/>
+  </outputs>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<bookstore xmlns="urn:store"
+           xmlns:i="urn:inventory"
+           xmlns:p="urn:pricing">
+  <section code="A">
+    <name>Stationery</name>
+    <item i:sku="ST-001" p:currency="EUR">
+      <label>Notebook</label>
+      <p:price gross="true">12.50</p:price>
+      <i:stock warehouse="north">
+        <i:quantity>18</i:quantity>
+        <i:reserved>3</i:reserved>
+      </i:stock>
+    </item>
+  </section>
+  <section xmlns="urn:seasonal" code="B">
+    <name>Gifts</name>
+    <offer valid-from="2026-10-01" valid-to="2026-12-31">
+      <product ref="ST-001"/>
+      <discount unit="percent">15</discount>
+    </offer>
+  </section>
+  <receipt xmlns="">
+    <number>R-2048</number>
+    <total currency="EUR">10.62</total>
+  </receipt>
+</bookstore>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+  <!ELEMENT workflow (metadata, step+, transitions)>
+  <!ELEMENT metadata (title, note?)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT note (#PCDATA|linebreak)*>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT step (input*, action, output*)>
+  <!ELEMENT input EMPTY>
+  <!ELEMENT action (#PCDATA)>
+  <!ELEMENT output EMPTY>
+  <!ELEMENT transitions (transition+)>
+  <!ELEMENT transition EMPTY>
+  <!ATTLIST step id ID #REQUIRED type NMTOKEN #REQUIRED>
+  <!ATTLIST input name CDATA #REQUIRED required (yes|no) "no">
+  <!ATTLIST output name CDATA #REQUIRED>
+  <!ATTLIST transition from IDREF #REQUIRED to IDREF #REQUIRED>
+]>
+<workflow>
+  <metadata>
+    <title>Nightly transform</title>
+    <note>Run after <linebreak/> validation and before publication.</note>
+  </metadata>
+  <step id="load" type="source">
+    <output name="document"/>
+  </step>
+  <step id="validate" type="check">
+    <input name="document" required="yes"/>
+    <action>validate-schema</action>
+    <output name="report"/>
+  </step>
+  <step id="publish" type="sink">
+    <input name="report"/>
+    <action>publish</action>
+  </step>
+  <transitions>
+    <transition from="load" to="validate"/>
+    <transition from="validate" to="publish"/>
+  </transitions>
+</workflow>
+```

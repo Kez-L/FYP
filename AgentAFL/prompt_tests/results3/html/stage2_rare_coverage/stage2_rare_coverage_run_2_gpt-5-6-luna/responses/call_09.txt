@@ -1,0 +1,154 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 3.0//EN">
+<!--- malformed comment --!>
+<?xml version="1.0"?>
+<html>
+  <head profile="http://example.invalid/profile">
+    <meta http-equiv=Content-Type content="text/html; charset=unknown">
+    <base href=//example.invalid/a/b>
+    <title>Unclosed title
+    <style type=text/css>
+      body { color: red; }
+      @import "x.css";
+    </style>
+    <noscript><meta name="x" content="&amp;broken"></noscript>
+  </head>
+  <body bgcolor=#12GGzz text="unterminated>
+    <hgroup><h1>Heading<h7>Odd heading</h7></hgroup>
+    <p>Before <b><i><u>nested text</b> after</i></u>
+    <hr />
+    <center><font face="Arial" size=+999 color=rgb(1,2,3)>font</font></center>
+    <blockquote cite=foo bar=baz><q cite="x">quote</q>
+    <pre><code>&lt;tag attr='x'&gt;
+raw &unknown; text
+    <address>mail</address>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Table repair stress</title>
+</head>
+<body>
+  <table border=1 cellpadding=0 cellspacing=-4 summary="x">
+    <caption align=side>Caption
+    <colgroup span="0"><col width=auto><col span=bogus>
+    <thead><tr><th rowspan=999 colspan=-1>Header<th>Second
+    <tbody>
+      <tr><td>A<td>B<td>C
+      <tr><td><table><tr><td>nested without closing
+      <tfoot><tr><td colspan="not-a-number">Footer
+    </tbody>
+  </table>
+  <p>After table
+  <dl compact>
+    <dt>Term one
+    <dd>Definition <div>block inside definition
+    <dt><em>Term two
+    <dd><dd>Repeated definition
+  </dl>
+  <table><tr><td>x</table><tr><td>orphan row</td></tr>
+  <div align=left><span>inline <table><td>cell</table> tail</span></div>
+</body>
+```
+
+```html
+<!doctype html [
+  <!ELEMENT bogus - - ANY>
+  <!ENTITY local "replacement &amp; text">
+  <!NOTATION weird SYSTEM "x">
+]>
+<html>
+<head>
+  <title>Entity and declaration maze</title>
+  <?processing instruction?>
+  <!-- comment with -- and > and <tag> -->
+</head>
+<body>
+  <p>&local; &#0; &#xD800; &#x110000; &notanentity; &amp &copy &apos;
+  <p title="a&amp;b&#xZZ;<?bad?>">attribute entities
+  <div data-x='one" two' data-y="three' four" =broken = "value">
+    <![CDATA[ not really CDATA in HTML <b>raw</b> ]]>
+    <script>
+      if (a < b && c > d) { document.write("</p><p>"); }
+      <!-- legacy script comment
+    </script>
+    <style>
+      .x:before { content: "</style><script>alert(1)</script>"; }
+    </style>
+  </div>
+  <textarea name=t>text &amp; <b>literal</b></textarea>
+  <x-custom a:b="v" xmlns:q="urn:test"><q:item/></x-custom>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+  <head><title>Forms and obsolete controls</title></head>
+  <body>
+    <form name=f method=INVALID enctype=x action=javascript:alert(1) onsubmit="return false">
+      <input type=text name=user value="a" disabled readonly required autofocus multiple>
+      <input type=image src=x alt= submit=submit>
+      <button name=b formaction action="/x" type=unknown><img src=x>Click</button>
+      <select name=s size=zero>
+        text before
+        <option value=a selected selected>Alpha
+        <option value=b label="B"><b>Beta</b>
+        <optiongroup label=wrong><option>Gamma
+      </select>
+      <textarea rows=-1 cols=999999999999999999 wrap=side>one
+two
+      <output for="a b" name=o>result</output>
+      <keygen name=k challenge=x>
+      <isindex prompt="Search:">
+      <input type=file accept=image/* directory webkitdirectory>
+    </form>
+    <form><fieldset><legend><legend>double legend</legend><input></fieldset></form>
+    <label><label for=missing>Nested labels</label></label>
+    <marquee behavior=warp direction=diagonal><blink>old</blink></marquee>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Frames, maps, and mixed nesting</title>
+</head>
+<frameset cols="*,0,100%" rows="bad">
+  <frame src="a.html" name=f1 frameborder=maybe scrolling=side>
+  <frameset>
+    <frame srcdoc="<html><body><p>embedded</p></body></html>">
+    <noframes>
+      <body>
+        <p>Fallback
+        <map name=m>
+          <area shape=poly coords="0,0,10,10,garbage" href=x alt=a>
+          <area shape=rect coords=1,2,3 href>
+          <img src="x" usemap="#m" ismap>
+        </map>
+        <object type="text/html" data="x">
+          fallback <param name=p><div>inside object</div>
+        </object>
+        <applet code=x archive="a,b" width=NaN height=-1>
+          <param name=foo value=bar>
+          applet fallback
+        </applet>
+      </body>
+    </noframes>
+  </frameset>
+</frameset>
+<body>
+  <p>Content after frameset
+  <a href="x"><area href=y><img src=x alt=z></a>
+  <details open=closed><summary>Summary<summary>Again</summary>body</details>
+  <ruby>漢<rt>kanji<rp>(</rp></ruby>
+</body>
+</html>
+```

@@ -1,0 +1,142 @@
+```html
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base href="http://example.invalid/root/">
+  <title>Table recovery specimen</title>
+</head>
+<body>
+  <table border="1">
+    <caption>broken nesting</caption>
+    <colgroup><col span="2"><col></colgroup>
+    <thead><tr><th rowspan="2">A<th>B<th>C</tr></thead>
+    <tbody>
+      <tr><td><p>one<td>two<td><div>three</tr>
+      <tr><td colspan="4">four
+      <tfoot><tr><td>footer</tbody>
+  </table>
+  <form action="/submit" method="post">
+    <fieldset disabled>
+      <legend>Options</legend>
+      <input type="text" name="x" value="&amp; &notanentity;">
+      <select name="choice"><option>first<option selected>second</select>
+      <button type="submit">Send</button>
+    </fieldset>
+  </form>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Misnested inline elements</title></head>
+<body>
+  <p><b>bold <i>italic <u>underlined</b> still italic</u> after
+  <a href="x"><span><strong>link text</a> tail</strong></span>
+  <dl>
+    <dt>term one
+    <dd>definition one
+    <dt><span>term two</span>
+    <dd><blockquote><p>quoted <code>x &lt; y</blockquote> unclosed
+  </dl>
+  <address>name<br>street<br><small>contact</address>
+  <hr>
+  <pre> leading
+    whitespace &amp; entity
+  </pre>
+</body>
+</html>
+```
+
+```html
+<?xml version="1.0"?>
+<!DOCTYPE html [
+  <!ENTITY local "replacement">
+  <!ELEMENT note ANY>
+]>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <?processing instruction?>
+    <title>Entities and declarations</title>
+  </head>
+  <body>
+    <p>&local; &amp; &#65; &#x1F600; &quot; &apos; &unknown;</p>
+    <![CDATA[
+      <not-an-element> & raw cdata
+    ]]>
+    <!-- first comment
+      <!-- nested-looking comment -->
+      -- trailing
+    -->
+    <div id="a" id="b" style="color: rgb(1,2,3)" data-empty="">
+      text<br/>
+      <img src="image.png" alt="a &quot;quoted&quot; image"/>
+    </div>
+  </body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Lists and definition recovery</title>
+</head>
+<body>
+  <ol start="0" reversed type="A">
+    <li>alpha
+    <li value="7">beta
+      <ul>
+        <li>nested one
+        <li>nested two
+      </ul>
+    <li>gamma
+  </ol>
+  <menu>
+    <li><input type="checkbox" checked> check
+    <li><input type="radio" name="r"> radio
+  </menu>
+  <div>
+    <p>paragraph one
+    <div>unexpected division
+      <p>paragraph two
+      <table><tr><td>cell</td></tr></table>
+    </div>
+    <p>paragraph three
+  </div>
+  <figure>
+    <img src="" alt="">
+    <figcaption>caption <mark>highlight</mark></figcaption>
+  </figure>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Raw text and embedded data</title>
+  <style>
+    body { background: url(data:image/png;base64,iVBORw0KGgo=); }
+    p::before { content: "</style><script>alert(1)</script>"; }
+  </style>
+</head>
+<body>
+  <textarea name="message">literal <b>markup</b> &amp; text</textarea>
+  <title>body title edge</title>
+  <xmp><div>raw xmp <b>content</b></div></xmp>
+  <plaintext>
+    everything after this is text
+    <div><span>not markup</span></div>
+    &amp; &#60;
+  </plaintext>
+  <template id="t">
+    <table><tr><td>template cell</td></tr></table>
+  </template>
+  <iframe srcdoc="<p>embedded &amp; document</p>" sandbox></iframe>
+</body>
+</html>
+```

@@ -1,0 +1,99 @@
+```html
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ENTITY local "expanded">
+  <!ELEMENT root ANY>
+  <!ATTLIST root data CDATA #IMPLIED>
+]>
+<root data="&local;" xmlns="urn:example">
+  <section>
+    <![CDATA[<not-an-element>&still-text;</not-an-element>]]>
+    <item id="a" /><item id="b"><value>42</value></item>
+  </section>
+  <?processing instruction?>
+  <!-- comment --><!----><! bogus declaration>
+</root>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <meta charset="x-user-defined">
+  <base href="//example.test/a/">
+  <title>table recovery</title>
+</head>
+<body>
+  <table border="2">
+    <caption><b>Caption<table><tr><td>nested</caption>
+    <colgroup span="zero"><col width="*"><colgroup><col>
+    <thead><tr><th rowspan="-3">A<th colspan="999">B
+    <tbody><tr><td><form><input name="x"><tr><td>unclosed
+    <tfoot><tr><td>footer</table>
+  <p>after table<div><table><tr><td>one</table>tail</div>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>foreign content</title>
+</head>
+<body>
+  <svg viewBox="0 0 10 10" viewbox="bad" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="g"><stop offset="120%"/><stop offset="-1"/></linearGradient></defs>
+    <g transform="translate(1 2) rotate(foo)" onclick="x<y">
+      <path d="M0,0 L10,10 ZZZ" fill="url(#g)"></path>
+      <foreignObject><div xmlns="http://www.w3.org/1999/xhtml"><p>html in svg</div></foreignObject>
+    </g>
+  </svg>
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <mrow><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mn>2</mn></msup></mrow>
+  </math>
+  <p>back in HTML</p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <!--[if IE]><style>p { color: red; }</style><![endif]-->
+  <!--[if !IE]><!--><link rel="stylesheet" href="x"><!--<![endif]-->
+  <script type="text/template"><div data-x=">">literal</div></script>
+</head>
+<body>
+  <noscript><p>fallback <b>markup</noscript>
+  <template shadowrootmode="open"><span>template text</span></template>
+  <details open="OPEN"><summary>summary</summary><p>details body
+  <dialog open>dialog <button popovertarget="x">go</button></dialog>
+  <iframe srcdoc="<p title='a>b'>embedded &amp; text</p>" sandbox="allow-scripts allow-top-navigation-by-user-activation"></iframe>
+  <object data="x" type="application/x-unknown"><param name="movie" value="x"><embed src=x></object>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>token boundaries</title></head>
+<body>
+  <p id="a" id="b" =x disabled/ class = "one" class=two data-empty=>
+    text &ampbroken &; &#; &#x; &#xZZ; &#99999999; &quot
+  <div title="unterminated
+    <span a='single &amp; quote>b
+    <input value="x" / ><input /foo="bar" />
+  <!-- comment with -- bad --!><!>
+  <![if bogus]>
+  <p>conditional-looking text</p>
+  <![endif]>
+  <pre>line one
+line two</pre><xmp><b>raw</b>&amp;</xmp>
+  <textarea><b>literal</textarea>
+  <p><a href="x" target="_blank"><a href="y">nested links</a></a>
+</body>
+</html>
+```

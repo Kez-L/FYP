@@ -1,0 +1,106 @@
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<title>broken &amp title</title
+<?processing instruction?>
+</head>
+<body>
+<div id="outer" class="a b c" data-x="one" data-x=two disabled=disabled>
+  <p>alpha <b>bold <i>italic</b> plain</i> tail
+  <div><span><em>nested</div>after</span></em>
+  <hr/ class="wrong">
+  <p title='single " quote>unterminated attribute
+  <p>&#; &#x; &#x110000; &copy &unknown; &ampersand</p>
+</div>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>table recovery</title></head>
+<body>
+<table border=1 cellpadding="x" summary="a>b">
+<caption>caption
+<colgroup span="no"><col width=50><col><colgroup>
+<thead><tr><th rowspan="999">H1<th colspan=abc>H2
+<tbody>
+<tr><td>A<td>B
+<tr><td><table><tr><td>inner</table><td>orphan
+<tfoot><tr><td>foot
+</tbody>
+<tr><td>after body section
+</table>
+<table><tr><td>one</tr></td></table>
+<table><tbody><tr><td><form><input name=x></form></td></tr></tbody></table>
+</body>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>foreign islands</title>
+</head>
+<body>
+<svg width="100%" viewBox="0 0 10 10" version=1.1>
+  <defs><linearGradient id=g><stop offset="0%"/><stop offset=bad></linearGradient></defs>
+  <g transform="translate(1 2)" onclick="x<y">
+    <path d="M0,0 L10,10 Z" fill="url(#g)">
+    <foreignObject><div xmlns="http://www.w3.org/1999/xhtml"><p>html island
+  </g>
+</svg>
+<math><mi>x</mi><mo>&lt;</mo><mrow><mo>+</mi></mrow></math>
+<x:widget xmlns:x="urn:weird" x:a="1" y:b="2"><x:item /></x:widget>
+</body>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<!-- unterminated comment
+<meta charset="utf-8">
+<title>not really closed
+</head>
+<body>
+<![CDATA[
+  <not-an-element> & raw cdata
+]]>
+<?xml version="1.0"?>
+<!DOCTYPE note [
+  <!ELEMENT note ANY>
+  <!ENTITY writer "A &amp; B">
+]>
+<pre>line one
+line two <tag> still text?</pre>
+<plaintext>
+everything after this looks like markup
+<div><b>but is it?</b></div>
+&amp; &#65; </body>
+```
+
+```html
+<html>
+<head><title>attribute parser maze</title></head>
+<body>
+<form method=post action=/save enctype=multipart/form-data>
+<input type=text name=user value="a b c" checked required>
+<input type="text" name='q' value='x'y' size=+12 maxlength=-1>
+<button type=submit formaction="javascript:alert('x')">go
+<select name=items multiple=maybe size=999999999999>
+<option selected value=one>One
+<option value=two disabled>Two
+<optgroup label="group"><option>Three</optgroup>
+</select>
+<textarea rows=999999999999 cols=-4 wrap=side>text
+</select></textarea>
+<fieldset><legend>Legend</legend><label for=x>Label<input id=x></label></fieldset>
+</form>
+<label><input><label>double label</label></label>
+</body>
+</html>
+```

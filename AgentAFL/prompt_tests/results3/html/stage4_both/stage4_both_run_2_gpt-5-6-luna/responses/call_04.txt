@@ -1,0 +1,155 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+  <meta http-equiv=Content-Type content=text/html; charset="utf-8">
+  <base href="http://example.invalid/a/b/" target="_top">
+  <title>broken &amp title</title>
+  <style type=text/css>
+    @media screen { body { color: #12345; } }
+    /* unterminated style
+  </style>
+</head>
+<body onload="x<y && y>z">
+  <table border=0 cellpadding="x" cellspacing=-1 width=101%>
+    <caption align=side>caption
+    <colgroup span=0><col width="*"><colgroup>
+    <thead>
+      <tr><th rowspan=999 colspan=0>head<th>second
+    <tbody>
+      <tr><td>one<td><table><tr><td>nested</table>
+      <tr><td colspan="abc">two</tr>
+    <tfoot><tr><td>foot
+  </table>
+  <map name=map><area shape=poly coords="0,0,1,foo,999999999999" href=#x></map>
+  <img src="x" usemap="#map" alt="a &bogus; b" border>
+  <object data="" type="application/x-unknown" standby="&quot;">
+    <param name=name value=value>
+    fallback text
+  </object>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>frameset mutation</title></head>
+<frameset rows="*,0,invalid" cols="50%,50%,">
+  <frame src="about:blank" name=left scrolling=maybe frameborder=-7>
+  <frame srcdoc="<p>embedded</p>" src="x" noresize="false">
+  <noframes>
+    <body>
+      <hgroup><h1>fallback<h3>heading mismatch</h2></hgroup>
+      <p>before
+      <blockquote cite="a" cite="b">
+        <q cite=>quoted <cite>citation</blockquote>
+      <details open=maybe>
+        <summary>summary</summary>
+        detail text
+      </details>
+      <ruby>漢<rt>kan<rp>(<rt>bad</ruby>
+      <ins datetime="not-a-date"><del datetime=0>change</ins>
+    </body>
+  </noframes>
+</frameset>
+<form method=get enctype="bad/type" accept-charset="utf-8,,">
+  <label for=x>label<label>nested
+  <input id=x name=x value="a&amp;b" required=required minlength=-1 maxlength=999999999999>
+  <select name=s multiple=0 size=NaN>
+    <optgroup label="group"><option selected=maybe value=>A<option>B</optgroup>
+    <option>C
+  </select>
+  <button type=unknown formaction="http://[bad">submit</button>
+</form>
+</html>
+```
+
+```html
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE root [
+  <!ELEMENT root (item|item)*>
+  <!ATTLIST item kind (a|b) "a">
+  <!ENTITY weird "a&#0;b">
+  <!-- comment inside subset -->
+]>
+<root xmlns="urn:one">
+  <?processing instruction ?>
+  <item kind="c" empty="" weird="&weird;">alpha <![CDATA[ raw < > & ]]></item>
+  <item>
+    <child xmlns="">unclosed
+    <child xmlns:p="urn:two" p:x="1" p:x="2"/>
+  </item>
+  <!-- -- malformed comment -->
+  <![CDATA[unterminated
+</root>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>adoption agency maze</title>
+</head>
+<body>
+  <p><b>bold <i>italic <a href="one"><u>under <b>again</a> after</u></i>
+  <p><table><tr><td><p>cell paragraph
+    <div><span><em>text</div>tail</span></em>
+  </table>
+  <menu type=context label="x">
+    <li><a href="a">A
+    <li><input type=checkbox checked=checked checked=false>
+    <li><hr></li>
+  </menu>
+  <dl compact=maybe>
+    <dt>term 1
+    <dd>definition <p>nested paragraph
+    <dt><dd>termless
+  </dl>
+  <figure>
+    <figcaption>caption
+    <pre>  pre
+      <code>code</pre>
+  </figure>
+  <p><object><embed src=x><noembed>fallback</object>after
+  </p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html lang="x-" dir="sideways">
+<head>
+  <meta charset="bad">
+  <link rel=stylesheet alternate="true" media="(min-width:">
+  <link rel=preload as=script integrity="sha256-">
+  <script type="text/javascript">
+    if (a < b) { document.write("<p>"); }
+    <!-- fake comment
+  </script>
+  <script type=application/json>{"x":[1,2,],"y":"</script>"}</script>
+</head>
+<body>
+  <header><nav><ol start=999999999999 reversed=maybe>
+    <li value="-999999999999">first
+    <li>second
+  </ol></nav></header>
+  <main>
+    <article itemscope itemtype="not a url">
+      <meta itemprop=rating content=NaN>
+      <time datetime="2026-99-99T25:61:61Z">tomorrow</time>
+      <data value="&amp;broken">label</data>
+      <address><a rel="next next nofollow" ping="http://[::">link</a></address>
+    </article>
+    <dialog open=false><form method=dialog><input autofocus><output for="x y">out</output></form></dialog>
+    <canvas width="-1" height="999999999999">fallback</canvas>
+    <video controls autoplay=0 poster="" preload=maybe>
+      <source src="x" type="video/unknown"><track kind=subtitles srclang=zz>
+      video fallback
+    </video>
+  </main>
+  <footer><p>tail</footer>
+</body>
+</html>
+```

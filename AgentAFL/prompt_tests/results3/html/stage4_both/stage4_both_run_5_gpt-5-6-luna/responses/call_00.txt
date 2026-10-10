@@ -1,0 +1,143 @@
+```html
+<!doctype html [
+  <!ENTITY weird "alpha & beta">
+]>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <base href="http://example.invalid/a/">
+    <title><b title="x" =y>Broken head</title>
+    <style type="text/css">
+      @media screen { body { color: red; } }
+      </stylex>
+  </head>
+  <body onload="a&b" bgcolor="#ggg">
+    <header>
+      <h1><em>Nested <strong>heading</h1></em>
+    </header>
+    <main>
+      <section id="a" id="b">
+        <p>Before <span>unclosed <i>inline
+        <hr noshade="maybe">
+        <img src=foo" alt='unterminated>
+        <map name="m"><area shape=rect coords="1,2,3,4"></map>
+        <object data="x" type="text/html"><param name=name value=value>
+      </section>
+    </main>
+    <footer>&weird; &copy; &#x0;</footer>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=unknown">
+<TITLE>Attribute stress</TITLE>
+</HEAD>
+<BODY>
+<TABLE border=1 cellpadding="2" cellspacing=0 width=100%>
+<CAPTION ALIGN=bottom>caption
+<TR VALIGN=middle>
+<TD ROWSPAN=0 COLSPAN="999" NOWRAP=maybe>
+  <FORM METHOD=GET ACTION="">
+    <INPUT NAME=x VALUE="a>b<c" CHECKED DISABLED=>
+    <SELECT NAME=choice MULTIPLE SIZE=-1>
+      <OPTION SELECTED VALUE=one>One
+      <OPTION VALUE=two>Two</OPTION>
+      <OPTION>Three
+    </SELECT>
+    <TEXTAREA ROWS="NaN" COLS=0 WRAP=hard>text</TEXTAREA>
+  </FORM>
+</TD>
+<TD><TABLE><TR><TD>inner</TABLE>
+</TR>
+</TABLE>
+<HR WIDTH="100%" SIZE="bad">
+<ADDRESS><A HREF="javascript:alert(1)">link</A></ADDRESS>
+</BODY>
+</HTML>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Entity and comment maze</title></head>
+<body>
+<!-- outer <!-- nested --> still comment -->
+<p>&amp;amp; &unknown; &#; &#-1; &#xZZ; &#xD800; &#9999999999;</p>
+<div title="one &quot; two &apos; three &lt; four &gt;">
+  <![CDATA[
+    <not-a-tag> & still text
+  ]]>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("<p>x</p>"); }
+    <!-- legacy comment
+  </script>
+  <style>
+    .x:before { content: "</style>"; }
+  </style>
+  <noscript><div>fallback</noscript></div>
+</div>
+<!--
+  unterminated comment
+```
+
+```html
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body>
+    <form id="outer" action="/save">
+      <fieldset disabled>
+        <legend>Controls</legend>
+        <label for=x>Name
+        <input id=x type=text name=user value="abc
+        <button type=submit><span>Send</button>
+      </fieldset>
+      <form id="inner" action="/nested">
+        <input type=hidden name=a value=1>
+        <input type=image src=x alt=go>
+      </form>
+    </form>
+    <details open="false">
+      <summary>Summary
+      <p>Details text
+    </details>
+    <p><a href="x"><button>bad interactive nesting</a></button>
+    <dl><dt>Term<dd>Definition<dt>Next
+    <blockquote cite="x"><pre>  pre
+      <code>code</pre></blockquote>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Table reconstruction and void tags</title>
+</head>
+<body>
+  <table>
+    text before row
+    <colgroup span="x"><col width="20"><col>
+    <thead><tr><th>A<th>B</thead>
+    <tbody>
+      <tr><td>1<td>2
+      <tr><td rowspan="abc">3
+        <table><tr><td>nested
+    <tfoot><tr><td colspan="-4">end
+  </table>
+  <p>after<table><caption>late caption</caption><tr><td>x</table>tail
+  <div>
+    <br/ ><img/><input / ><meta charset='utf-8' />
+    <embed src="x"><wbr></wbr>
+  </div>
+  <iframe srcdoc="<p title='x'>embedded &amp; text</p>" frameborder=wat>
+    fallback
+  </iframe>
+</body>
+</html>
+```

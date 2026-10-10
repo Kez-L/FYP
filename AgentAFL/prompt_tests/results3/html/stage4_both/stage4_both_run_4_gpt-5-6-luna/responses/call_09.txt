@@ -1,0 +1,182 @@
+```html
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-16">
+  <title>Comment and entity stress</title>
+  <!-- ordinary comment -->
+  <!--- malformed comment --->
+  <!---->
+  <meta name="x" content="a &amp; b &unknown; &#0; &#x110000;">
+</head>
+<body>
+  Text before the root
+  <!-- unclosed comment
+  <p>hidden</p>
+  <script>this should be comment text</script>
+  <p>still hidden
+  <p title="unterminated>
+    <b>bold &amp; &#65; &#x41; &copy
+    <i>italic</b> tail
+  </p>
+  <![CDATA[not really cdata]]>
+  <?processing instruction?>
+  <!bogus declaration>
+  <hr>
+  after comment
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Form controls</title>
+</head>
+<body>
+  <form id=f action="/submit" method="post" enctype="multipart/form-data">
+    <fieldset disabled>
+      <legend>Account <em>details</legend>
+      <label for=user>User:</label>
+      <input id=user name=user type=text required value="&quot;quoted&quot;">
+      <label>Password <input name=p type=password minlength=3 maxlength=2></label>
+      <input type=checkbox checked checked=false name=agree>
+      <input type=radio name=role value=a>
+      <input type=radio name=role value=b checked>
+      <textarea name=notes rows=2 cols=4>one
+two</textarea>
+      <select name=choice multiple size=0>
+        <option selected>first
+        <option value=2>second</option>
+        <optgroup label=Group disabled>
+          <option>third
+        </optgroup>
+      </select>
+      <button type=submit formaction="/other">Send</button>
+      <button type=reset>Reset</button>
+      <output name=result for="user p">result</output>
+    </fieldset>
+  </form>
+  <form><input name=x><form><input name=y></form></form>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Raw text and embedded code</title>
+  <script type="text/javascript">
+    if (a < b && c > d) {
+      document.write("<div class='x'>raw</div>");
+      // </script> inside JavaScript
+      var s = "</scr" + "ipt>";
+    }
+  </script>
+  <script type="application/json">
+    {"key":"value","arr":[1,2,3],"close":"</script>"}
+  </script>
+  <style>
+    body { background: url("a"); }
+    /* </style> in a stylesheet */
+    @media screen and (max-width: 2px) { p { color: red } }
+  </style>
+  <noscript>
+    <p>fallback <strong>markup</strong></p>
+  </noscript>
+</head>
+<body>
+  <template id=t>
+    <section><p>template content</section>
+  </template>
+  <script>
+    x = "<!-- comment -->";
+  </script>
+  <div data-x="&lt;tag&gt;" data-y='a"b' data-z=unquoted/>&nbsp;&thinsp;
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html lang="x">
+<head><title>Lists and phrasing boundaries</title></head>
+<body>
+  <p>first
+  <p>second <a href="one"><a href="two">nested anchors</a> tail
+  <p><b><i><u><s>formatting <span>inside</b> outside</i></u></s>
+  <div><p>paragraph<div>block in paragraph</div>continuation</p></div>
+  <ol start="0" reversed type="A">
+    <li value="3">alpha
+    <li>beta
+      <ul>
+        <li>child one
+        <li>child two
+      </ul>
+    <li>gamma
+  </ol>
+  <menu>
+    <li>menu item
+    <li><button>button <span>label</button>
+  </menu>
+  <dl>
+    <dt><code>name</code>
+    <dd>value
+    <dd>second value
+    <dt>orphan term
+    <div>unexpected wrapper</div>
+    <dd>final
+  </dl>
+  <ruby>漢<rt>kan</rt><rp>(</rp><rt>字</rt><rp>)</rp></ruby>
+  <p><abbr title="HyperText Markup Language">HTML</abbr>
+     <time datetime="not-a-date">yesterday</time>
+     <data value=123>one-two-three</data>
+     <meter min=10 max=5 value=99>bad meter</meter>
+     <progress value=abc max=-1>loading</progress>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <base href="//example.invalid/root">
+  <title>Obsolete and malformed structure</title>
+</head>
+<body>
+  <center>
+    <big>large <small>small</big> text</small>
+    <font face="serif" size="7" color="#zzzzzz">legacy</font>
+  </center>
+  <marquee behavior=alternate direction=sideways loop=-1>moving text</marquee>
+  <blink>blink</blink>
+  <spacer type=horizontal width=20>
+  <table>
+    <tr><td>a<td>b
+    <tr><th>header<td>value
+    <caption>caption after rows</caption>
+  </table>
+  <hr noshade="false" width="not%" height=0>
+  <object data="thing.bin" type="application/octet-stream" width=bad>
+    <param name=movie value=x>
+    <param name=movie value=y>
+    fallback
+  </object>
+  <applet code="X.class" archive="a.jar" width=0 height=-4>
+    <param name=foo value=bar>
+    applet fallback
+  </applet>
+  <iframe srcdoc="<p>inner &amp; text</p>" sandbox="allow-scripts allow-forms"
+          width="x" height="y">frame fallback
+  <embed src="x" type="x/y" />
+  <form><input><input><button>go</button></form>
+  <isindex prompt="Search:">
+  <plaintext>
+  <b>everything after plaintext is text
+  <tag attr=value>
+</body>
+</html>
+```

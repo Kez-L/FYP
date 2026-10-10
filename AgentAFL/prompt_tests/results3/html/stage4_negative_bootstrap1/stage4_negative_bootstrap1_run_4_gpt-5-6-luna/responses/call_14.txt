@@ -1,0 +1,158 @@
+```html
+<!doctype html>
+<html lang="x-klingon" dir="rtl">
+<head>
+  <meta charset="windows-1252">
+  <title>table recovery &amp; entities</title>
+</head>
+<body>
+  <table border="1">
+    <caption><em>unclosed caption
+    <colgroup span="2"><col width="*"><col width="0">
+    <thead><tr><th rowspan="2">A<th>B
+    <tbody>
+      <tr><td>one<td>two
+      <tr><td colspan="3"><p>cell paragraph
+        <table><tr><td>nested table</table>
+        text after nested table
+      <tr><td><input name=x value="&quot; &#0; &#xD800;">
+    <tfoot><tr><td>footer
+  </table>
+  <p>after table <select multiple size="0"><option selected>first<option>second
+  <optgroup label="group"><option value="&amp;">third</optgroup></select>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+  <base href="//[bad-host]/a/../b">
+  <isindex prompt="Search: &copy;">
+  <meta http-equiv=refresh content='0; URL="x y">
+  <style type=text/css>
+    body { color: red; }
+    /* unterminated style
+  <script type="text/javascript">
+    if (a < b) { document.write("<p>raw</p>"); }
+  </script>
+  <noscript><p>noscript <b>content
+</head>
+<body bgcolor=#ggg text=rgb(0,0,0) background=foo bar=baz>
+  <center><font size="+99" face="A&amp;B">legacy text
+    <blockquote cite=><q cite="unterminated>quote</blockquote>
+  <div align=middle><p>one
+    <p>two <b>three <i>four</b> five</i>
+  <hr noshade="false">
+  <form action method=post enctype=application/x-www-form-urlencoded>
+    <input type=text name=a disabled checked=maybe>
+    <button type=submit><strong>send</form>tail
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>phrasing and ruby</title></head>
+<body>
+  <ul compact>
+    <li value="0">alpha
+    <li>beta
+      <ol start="-2" reversed>
+        <li>nested one
+        <li>nested two
+      </ol>
+    <li>gamma
+  </ul>
+  <dl>
+    <dt><abbr title="&notanentity;">term
+    <dd><ruby>漢<rt>kan<rp>(</rp><rt>bad</ruby>
+    <dt><samp>definition
+    <dd><ins cite=foo datetime=2024-13-99>inserted <del>deleted</ins>
+  </dl>
+  <p><a href="x"><span><mark>marked <small>small</a> after
+  <p><bdi dir=auto>isolate <bdo dir=sideways>override</bdi>
+  <time datetime="not-a-time">yesterday</time>
+  <meter min=10 max=5 low=nan high=Infinity optimum=-1 value=999>meter</meter>
+  <progress max="0" value="-4">progress
+  <details open="0"><summary>summary</summary><p>details body
+  <dialog open>dialog <output for="a b">result
+</body>
+</html>
+```
+
+```html
+<!-- leading comment --!>
+<?xml version="1.0"?>
+<![if IE]><div>conditional text<![endif]>
+<!DOCTYPE html [
+  <!ENTITY weird "replacement">
+]>
+<html>
+<head>
+  <title>comment -- -- and declarations</title>
+  <!-- one <!-- nested --> still comment -->
+  <meta name="x" content="a&amp;b&#x;">
+</head>
+<body>
+  <template id="t"><div>template <span>payload</span></div></template>
+  <div data-a="1" data-b='2' data-c=3 data-d=`4` data-e=>
+    <![CDATA[not really cdata <b>markup</b>]]>
+    <!-- bogus --!> visible? -->
+    <p>before</p>
+    <script type="application/ld+json">
+      {"x":"</script><p>escaped?","n":1e999}
+    </script>
+    <style>
+      @import url("x"); </style><p>style close in text
+    </style>
+    <p>after
+  </div>
+  <x-custom foo:bar="baz"><y-node /></x-custom>
+  <unknown><self-closing /></unknown>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>form controls</title>
+  <link rel=stylesheet href=data:text/css,body%7Bcolor:red%7D disabled>
+</head>
+<body>
+  <form id=f1>
+    <fieldset disabled><legend>account</legend>
+      <label for=u>User <input id=u type=email multiple required pattern="[">
+      <label>Password <input type=password autocomplete=off minlength=-1 maxlength=999999999999>
+    </fieldset>
+    <input type=number min=Infinity max=-Infinity step=0 value=1e309>
+    <input type=date value=2024-99-99>
+    <input type=file accept="image/*,.bad," multiple>
+    <input type=image src alt>
+    <textarea name=note rows=-4 cols=NaN wrap=sideways>line 1
+      <b>line 2</b>&lt;raw
+    <select name=choice>
+      <option value=a> A
+      <option selected disabled value=b>B
+      orphan text
+      <optgroup label="x"><option>C
+    </select>
+    <button formaction="/x" formmethod=invalid>go</button>
+  </form>
+  <form id=f2 action="/submit">
+    <input name=outside form=f1 value="associated">
+  </form>
+  <div contenteditable spellcheck=mystery tabindex="999999999999999999">
+    <p draggable=maybe>editable <br><wbr><img src alt=broken width=-2 height=Infinity>
+  </div>
+  <object data="x" type="application/octet-stream">
+    <param name=name value=value>
+    fallback <embed src=x type=bad>
+  </object>
+</body>
+</html>
+```

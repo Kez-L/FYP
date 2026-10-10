@@ -1,0 +1,126 @@
+```html
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Malformed table sections</title>
+</head>
+<body>
+<table border="1">
+<caption><b>Inventory</caption>
+<colgroup span="3"><col width="20%"><col><col></colgroup>
+<thead>
+<tr><th>Code<th>Description<th>Qty
+<tbody>
+<tr><td rowspan="2">A-1<td><a href="item?id=1">bolts<td>12
+<tr><td colspan="9">unterminated cell
+<tfoot>
+<tr><td><input name="x" value="a" disabled=disabled><td></tr>
+</table>
+<p><label for=x>Missing control <input id=x type=text value="&quot; &amp; &unknown;"></label>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head><title>Frameset collision</title></head>
+<frameset rows="20%,*,10%" border=0>
+<frame src="top.html" name=top scrolling=no>
+<frameset cols="30%,70%">
+<frame src="left.html" frameborder="false">
+<noframes>
+<body>
+<h2>Fallback</h2>
+<form method=post action="/submit">
+<textarea cols=4 rows=2>one
+two
+<select name=choice multiple size=3>
+<option selected>first
+<option value=2>second
+<option>third
+</select>
+<button type=submit><img src=x alt="go"></button>
+</form>
+</body>
+</noframes>
+</frameset>
+<frame src="bottom.html">
+</frameset>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<style type=text/css>
+@import url("broken.css");
+x { color: red; content: "<tag>&"; }
+</style>
+<script type="text/javascript">
+if (a < b) { document.write("<p class='x'>script & text</p>"); }
+/* no closing script marker
+</head>
+<body>
+<p>text after script</p>
+<noscript><div>fallback</div></noscript>
+<template><section><p>template text</section>
+<details open=maybe><summary>Summary</summary><p>hidden content
+<dialog open>Dialog <form><input type=number min=bad max=2 step=0></form>
+</dialog>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Lists and ruby damage</title></head>
+<body>
+<ol start="zero" reversed>
+<li value="999">outer
+  <ol type="I">
+  <li>nested one
+  <li>nested two
+    <ul>
+    <li><a href="javascript:alert(1)">link
+    <li><img src alt=broken width="NaN" height="-3">
+    </ul>
+  </ol>
+<li>after
+</ol>
+<ruby><rb>漢<rt>kanji<rp>(</rp>reading</ruby>
+<dl>
+<dt>term one
+<dd>definition
+<dt><strong>term two
+<dd><blockquote cite="x"><q>quote</blockquote>
+</dl>
+<hr noshade="false"><wbr><p>tail
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Entity and comment boundaries</title><!---bad--></head>
+<body>
+<p title="a&quot;b&amp;c">A&nbsp;&copy;&#0;&#xD800;&#x110000;&bogus;Z</p>
+<!-- ordinary <!-- nested --> trailing -->
+<![CDATA[ <not-a-tag> & still text ]]>
+<pre>
+line one
+</pre><pre>line two</pre>
+<xmp><b>literal?</xmp>
+<listing>&lt;escaped&gt;
+<table>
+<tr><td>cell
+</tbody></table>
+<p><b><i><u>crossed</b> out</i> end</u>
+<ins datetime="not-a-date">insert <del>delete</ins>
+</body>
+</html>
+```

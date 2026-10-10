@@ -1,0 +1,134 @@
+```html
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <base href="//example.invalid/root/">
+    <title>Encoding &copy; test</title>
+  </head>
+  <body dir=rtl>
+    <header id=top><hgroup><h1>Mixed entities &amp; text</h1><h2>&#0; &#xD800; &#x110000;</h2></hgroup></header>
+    <main>
+      <article>
+        <figure><img src=a alt="one"><figcaption>caption
+          <picture><source srcset="a 1x, b 2x"><img alt=second>
+        </figure>
+        <p>broken entity &amp &lt; &unknown; &#; &#x; &#xZZ; &#99999999;</p>
+        <details open=maybe><summary>summary</summary><p>inside details</p>
+        <dialog open>dialog text</dialog>
+      </article>
+      <aside><nav><a href=#top>top<a href="x y">next</nav></aside>
+    </main>
+    <footer><address>name &lt; mail@example.invalid</address></footer>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Form controls</title></head>
+<body>
+<form action="/submit?a=1&b=2" method=post enctype="multipart/form-data">
+  <fieldset disabled>
+    <legend>Account <input name=legend></legend>
+    <label for=u>User <input id=u name=user value="a&b" required></label>
+    <label>Password <input type=password name=pw minlength=3 maxlength=2></label>
+    <input type=checkbox checked=unchecked name=flag>
+    <input type=radio name=choice checked value=x><input type=radio name=choice value=y>
+  </fieldset>
+  <select name=items multiple size=-1>
+    <optgroup label="A"><option selected>one<option disabled value=two>two</optgroup>
+    <option>three
+  </select>
+  <textarea name=note rows=0 cols=-5>first
+second</textarea>
+  <button type=submit formaction=/go>Go</button>
+  <input type=image src=missing alt=submit>
+  <output for="u pw">result</output>
+  <meter min=10 max=2 low=3 high=4 value=99>meter</meter>
+  <progress max=0 value=-1>progress</progress>
+</form>
+<input form=missing name=outside>
+<label><input type=file accept=image/*,application/x-foo multiple></label>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Embedded namespaces</title>
+</head>
+<body>
+  <svg width="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+    <g transform="translate(1 2)"><path d="M0 0 L10 10" stroke="red"></g>
+    <foreignObject><div xmlns="http://www.w3.org/1999/xhtml"><p>HTML in SVG</foreignObject>
+    <circle cx=5 cy=5 r=3><animate attributeName=r from=1 to=4 dur=1s></circle>
+  </svg>
+  <math display=block>
+    <mrow><mi>x</mi><mo>&#x2212;</mo><mn>1</mn><mo>=</mo><mfrac><mi>a</mi><mi>b</mi></mfrac></mrow>
+    <annotation-xml encoding="application/xhtml+xml"><div>math child</div></annotation-xml>
+  </math>
+  <object data="movie.bin" type="application/octet-stream">
+    <param name=autoplay value=true>
+    <embed src=other.bin width=0 height=-2>
+    fallback <iframe srcdoc="<p>nested &amp; page"></iframe>
+  </object>
+  <template><table><tr><td>template cell</template>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Sections and orphaned nodes</title></head>
+<body>
+  <h1>Heading <span>start
+  <section><h3>Skipped level</h3>
+    <p>paragraph <ins cite=x datetime=bad><em>inserted <del>deleted</ins> tail</em></del>
+    <figure><figcaption>caption first</figcaption><div>not a usual image</div></figure>
+  </section>
+  <h2>after section
+  <p>one<p>two<div>block <span>inline <section>nested section</section> after</div>
+  <blockquote cite="a" hidden="false"><p>quote<q cite=b>nested quote</blockquote>
+  <hr><br><wbr><br />
+  <address><a href="mailto:a@b">contact</a></address>
+  <menu type=context>
+    <li><button type=button>Action</button>
+    <li><a href=# onclick="x<y && z>0">Link</a>
+  </menu>
+  <map name=map><area shape=rect coords="0,0,10,10" href=x><area nohref></map>
+  <img usemap="#map" src=x>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<html>
+<head>
+  <title>Legacy frames and metadata</title>
+  <meta name=viewport content="width=device-width,initial-scale=1">
+  <meta http-equiv=refresh content="0; url=http://invalid/">
+  <link rel=stylesheet alternate href=a.css media="screen and (min-width: 2px)">
+  <style type="text/css">a{color:red} @import url(b.css);</style>
+</head>
+<frameset rows="*,0,25%" cols="50%,*" frameborder=maybe>
+  <frame src="left.html" name=left scrolling=auto noresize>
+  <frameset cols="*,*">
+    <frame src=right.html>
+    <noframes>
+      <body>
+        <p>fallback <b>bold <i>crossed</b> italic</i>
+        <table border=1><tr><th>H<th>H2<tr><td>A<td>B</table>
+        <form><input name=x><input name=y></form>
+      </body>
+    </noframes>
+  </frameset>
+  <frame src="third.html">
+</frameset>
+</html>
+```

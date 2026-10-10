@@ -1,0 +1,101 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @import url("x");
+  body { color: #123456; }
+  @media screen and (max-width: 0px) { p::before { content: "<&"; } }
+</style>
+<script type="text/javascript">
+if (a < b && c > d) { document.write("<em>raw</em>"); }
+</script>
+</head>
+<body id=main data-x="a&b" disabled>
+<!-- unclosed comment
+<p>comment leakage</p>
+--!>
+<p title='one" two' class=a b= c=>mixed &amp &#65; &#x41; &#x0D;
+<br/>after</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>x</title></head>
+<body>
+<form action="/submit" method=post enctype="multipart/form-data">
+<input type=text name=q value="a&b" maxlength="-7">
+<input type="checkbox" checked="false">
+<select name=s size=999999999999999999999999>
+<option value=1 selected>one
+<option value=2>two</select>
+<textarea name=t rows=0 cols=-1>&lt;not markup&gt;
+</textarea>
+<button type=submit><span>send</button>
+</form>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>foreign content</title></head>
+<body>
+<svg width="100%" viewBox="0 0 10 10">
+<g transform="translate(1,2) scale(-1)">
+<path d="M0 0 L10 10 Z" fill="none" stroke-width="NaN"/>
+<text x="1" y="2">a &lt; b</text>
+<foreignObject><div xmlns="http://www.w3.org/1999/xhtml">
+<math display="block"><mrow><mi>x</mi><mo>&lt;</mo><mn>0</mn></mrow></math>
+</div></foreignObject>
+</g>
+</svg>
+<iframe srcdoc="<p>inside &amp; broken" sandbox allowfullscreen></iframe>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<FRAMESET rows="*,0" cols="50%,*">
+<FRAME name=left src="a.html" scrolling=maybe frameborder=-3>
+<FRAMESET>
+<FRAME src=javascript:bad>
+<NOFRAMES>
+<HR>
+<CENTER><FONT face="Arial" size="+999" color=#12G45Z>
+<RUBY>漢<RT>kan<RP>(</RP>ji</RUBY>
+<BLINK><MARQUEE direction=sideways loop=-1>legacy</MARQUEE></FONT></CENTER>
+</NOFRAMES>
+</FRAMESET>
+</FRAMESET>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>token boundaries</title>
+<?processing instruction?>
+<![CDATA[not really cdata]]>
+</head>
+<body>
+<p><b><i><u>crossed <small>formatting</b> tail</u></i></small>
+<details open=maybe><summary>sum</summary><pre>
+line one
+&amp; &#xD800; &#999999999999999999999; &bad
+</pre></details>
+<dl compact="0"><dt>a<dd>b</dl>
+<ol start="abc" reversed="false"><li value=999999999999999999>x<li>y</ol>
+<table><colgroup span="NaN"><col width=-2></colgroup>
+<thead><tr><td>head</thead>
+<tbody><tr><td>x<tfoot><tr><th>z</table>
+</body>
+</html>
+```

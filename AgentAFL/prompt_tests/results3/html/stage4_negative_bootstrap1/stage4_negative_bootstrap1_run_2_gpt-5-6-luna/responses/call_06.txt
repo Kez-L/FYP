@@ -1,0 +1,118 @@
+```html
+<!doctype html>
+<html lang="en" dir="rtl">
+<head>
+<meta charset="utf-16">
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<base href="//example.invalid:bad/path/">
+<link rel=stylesheet href="a.css" media="screen and (min-width:0px)">
+<style type="text/css"><!--
+@import url("x.css");
+a{content:"</style>";} /* unterminated
+</style>
+</head>
+<body>
+<header id=top><hgroup><h1>Title<h6>Nested heading</hgroup></header>
+<nav><ol start="0" reversed><li value=abc>one<li value="-3">two<ul><li>three</ol></nav>
+<main>
+<article><section><p>alpha <strong>beta <small>gamma</p></section>
+<aside><blockquote cite="x"><q>quote<cite>source</blockquote></aside>
+<figure><img src="x" alt="a > b & c" loading=lazy><figcaption>caption</figure>
+<details open=maybe><summary>sum</summary><p>hidden text</p></details>
+</article>
+</main>
+<footer><address><a href="mailto:a@b">contact</a></address></footer>
+<script type="application/json">{"x":"</script><script>bad","n":NaN}</script>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html>
+<head>
+<title>x &copy y &invalid; &#0; &#xD800; &#x110000;</title>
+<meta name="viewport" content="width=device-width,initial-scale=0">
+</head>
+<body>
+<div class=a><span class=b><b class=c><i class=d>deep
+<pre>  pre
+	<code>&lt;tag&gt; &amp; raw </code></pre>
+</i></b></span></div>
+<p>before<br/>after<wbr>break<hr noshade="no" size=huge>
+<dl>
+<dt>one<dd><p>definition 1
+<dt><dt>two<dd>definition 2
+</dl>
+<menu type=context><li><button disabled=false>item</button><li><a download=0 href>link</a></menu>
+<marquee behavior=alternate direction=sideways><plaintext><b>everything after this is text
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>foreign islands</title></head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
+<title>svg title</title>
+<g transform="translate(1 2)" fill="none"><path d="M0 0 L10 10" stroke-width="2"/>
+<foreignObject x="0" y="0" width="5" height="5"><div xmlns="http://www.w3.org/1999/xhtml"><p>HTML island</p><svg><circle cx="1" cy="2" r="3"></circle></svg></div></foreignObject>
+</g>
+</svg>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+<mrow><mi>x</mi><mo>=</mo><mfrac><mn>1</mn><msup><mi>y</mi><mn>2</mn></msup></mfrac></mrow>
+<annotation-xml encoding="application/xhtml+xml"><div><em>embedded</em></div></annotation-xml>
+</math>
+<div><svg><text>unclosed svg text</div>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<?xml-stylesheet type="text/css" href="a.css"?>
+<!-- normal -- -- malformed --><!----><! -- spaced -->
+<meta charset="x"><meta><base target=_blank>
+</head>
+<body>
+<iframe srcdoc="<p>inside &amp; <b>frame</b></p>" sandbox=allow-scripts></iframe>
+<object data="x" type="application/x-unknown"><param name=movie value=x><embed src=x><p>fallback</object>
+<map name=map><area shape=poly coords="0,0,1,1,bad" href=#x><area nohref></map>
+<img usemap="#map" srcset="a 1x, b 2x," sizes="(min-width: 1px) 50vw">
+<video controls autoplay="false" poster=x><source src=a type=video/a><track kind=subtitles src=v.vtt><p>fallback</p></video>
+<audio><source src=b><source><track></audio>
+<canvas width=bad height=-1><div>fallback <span>nested</canvas>
+<p id=x>text</p><template shadowrootmode="open"><div><slot name=x></slot></div></template>
+<dialog open=false><form method=dialog><button>close</button></form></dialog>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>token boundaries</title></head>
+<body>
+<div class="a&#x0; b" data-x="&amp;quot; &notanentity" =bad = "value" / >
+<span a = b c='d"e' f=/>text</span>
+<p>one<!-- comment <b> fake --><![[CDATA[not cdata]]>two</p>
+<script>
+if (a < b && c > d) { document.write("</div>"); }
+/* </script
+still script */
+</script>
+<style>
+x{background:url("a&b");}
+</style>
+<noscript><div><p>noscript <b>content</noscript></div>
+<template><table><tr><td>template cell</td></tr></table></template>
+<ruby>漢<rt>kan<rp>(</rp><rtc><span>reading</rtc>字</ruby>
+<bdi dir=auto>abc<bdo dir=sideways>def</bdo>ghi</bdi>
+<ins datetime=not-a-date cite=foo>insert<del>delete</ins>tail</del>
+</body>
+</html>
+```

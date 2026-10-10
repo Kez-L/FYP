@@ -1,0 +1,23 @@
+{
+  "call": 8,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a HTML document parser.\nTarget: /home/user/Documents/1git-folder/AgentAFL/AFLPlus/tidy-html5-build/tidy_parse_string_fuzzer-afl.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 HTML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<!DOCTYPE html>\n<html>\n<head><title>Tables with changing insertion modes</title></head>\n<body>\n  <table border=999 cellpadding=-3 cellspacing=\"1e9\" width=0>\n    <colgroup span=0><col width=bad><colgroup><col span=-1></colgroup>\n    <thead>\n      <tr><th rowspan=999 colspan=-2 scope=colgroup>head<th>extra\n    <tbody>\n      <tr><td>A\n        <table><tbody><tr><td>nested before close</table>\n      <tr><th><form><input name=x><td>B</form>\n    <tfoot><tr><td colspan=notnum>foot</td></tr>\n    <caption align=sideways>caption <b>bold</caption>\n    text after table\n  </table>\n  <p>before<table>\n    stray text\n    <tr><td>x<td><select><option>opt</table>\n  <dl compact>\n    <dt>term\n    <dd>definition\n    <dt><dd>double\n  </dl>\n  <p><b><i><u>format <table><tr><td>cell</b>tail</i></u>\n</body>\n</html>\n\n--- example 2 ---\n<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<HTML>\n<HEAD>\n  <TITLE>Frameset and legacy declarations</TITLE>\n  <BASE TARGET=\"_top\" HREF=\"//example.test/root\">\n  <META NAME=viewport CONTENT=width=device-width,initial-scale=1>\n  <?processing instruction?>\n</HEAD>\n<FRAMESET ROWS=\"*,0,25%\" COLS=\"120,*\" BORDER=not-a-number FRAMEBORDER=maybe>\n  <FRAME NAME=left SRC=\"left.html\" SCROLLING=diagonal NORESIZE>\n  <FRAMESET COLS=\"50%,*\" FRAMEBORDER>\n    <FRAME SRC=right.html MARGINWIDTH=-4 MARGINHEIGHT=\"NaN\">\n    <FRAME SRC=\"\" NAME=main>\n  </FRAMESET>\n  <NOFRAMES>\n    <BODY>\n      <H1>Fallback</H1>\n      <P><A HREF=\"next.html\" TARGET=>continue</A></P>\n    </BODY>\n  </NOFRAMES>\n</FRAMESET>\n\nTried before \u2014 no new coverage, avoid repeating:\n--- 2 of your past seeds (cycles 5,6) drove the same already-covered path with 0 new edges ---\n<!doctype html>\n<html>\n<head>\n  <meta charset=\"utf-8\">\n  <title>Forms and interactive controls</title>\n  <form id=f action=\"javascript:alert(1)\" method=bogus enctype=\"bad/type\" accept-charset=\"utf-8, koi8-r\">\n    <fieldset disabled>\n      <legend><label for=q>Search <input id=q name=q value=\"&amp; &lt; &#0; &#xD800;\"></label></legend>\n      <input type=email name=mail multiple required pattern=\"[\" maxlength=-1>\n      <input type=number min=1 max=0 step=0 value=999999999999999999999>\n      <input type=date value=2024-02-31>\n      <input type=file accept=\"image/*,.wat\" multiple>\n      <select name=choice size=-4 multiple>\n        <optgroup label=\"group\" disabled>\n          <option selected val...[truncated, 1310 chars total]\n\n--- a seed you generated (cycle 8) added 0 new edges ---\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n<html>\n<head>\n  <title>Legacy object and parameter markup</title>\n  <isindex prompt=\"Search:\">\n  <basefont size=\"999\">\n  <link rel=stylesheet type=text/css href=//invalid/%2>\n</head>\n<body bgcolor=#12GG34 text=\"&unknown;\" link=000000 vlink=-1 alink=\"1e4\">\n  <center>\n    <font face=\"A&#0;B\" size=\"-99\" color=\"rgb(300,-2,NaN)\">\n      Before\n      <object classid=\"clsid:\" codebase=\"\" data=\"file:///bad\" type=\"application/x-unknown\"\n              width=\"not-a-number\" height=\"-0\">\n        <param name=name value>\n        <param name=value valuetype=ref>\n        <param name=movie value=\"a&amp;b\" val...[truncated, 1303 chars total]\n\nGenerate 5 new HTML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-tidy-20261006",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-10T05:59:28.523425+00:00"
+}

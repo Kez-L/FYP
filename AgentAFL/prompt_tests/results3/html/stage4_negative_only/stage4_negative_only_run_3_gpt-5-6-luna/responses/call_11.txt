@@ -1,0 +1,108 @@
+```html
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Table repair case</title></head>
+<body>
+<table border="1">
+  <caption><b>broken <i>caption</caption>
+  <colgroup><col span="2"><col></colgroup>
+  <thead><tr><th rowspan="2">A<th>B<td>C
+  <tbody>
+    <tr><td>one<td>two
+    <tr><td colspan="4"><p>cell paragraph<tr><td>after orphan row
+  <tfoot><tr><td>footer</table>
+<div>outside <table><tr><td>nested attempt</div>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Form controls</title>
+  <base href="http://example.invalid/a/">
+</head>
+<body>
+<form action="/submit" method="POST" enctype="multipart/form-data">
+  <fieldset disabled><legend>Choose <em>one</legend>
+    <label for=x>First <input id=x type=radio name=q checked>
+    <label>Second <input type="radio" name="q" value="2"></fieldset>
+  <input type=text name=user value="a&amp;b" required readonly>
+  <textarea name=note rows=2 cols=4>one
+two</textarea>
+  <select name=items multiple size=3>
+    <optgroup label="Group"><option selected>alpha<option value='b'>beta
+    <option>gamma
+  </select>
+  <button type=submit>Send <input type=image src=x alt=go></button>
+  <output name=result>unclosed
+</form>
+<form><input name=second><button>other</form>
+</body>
+</html>
+```
+
+```html
+<html>
+<head><title>Token boundary stress</title></head>
+<body>
+<h1 id="a&b" class="x  y" data-empty="" =bad>Header</h1>
+<p>text &amp;&lt;&gt;&quot;&apos;&nbsp;&copy;&notin;&unknown; &#1; &#9; &#10; &#13; &#31; &#127; &#x1f; &#x7fffffff; &#x110000;</p>
+<p><b><i><u>three levels</b> tail</u> end</i>
+<!-- comment with -- double -- and <tag> -->
+<!-- unterminated-looking
+<div class="inside-comment">hidden?</div>
+<p>more text
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Legacy document modes</title>
+  <meta http-equiv="refresh" content="0; url='javascript:alert(1)'">
+  <link rel=stylesheet href="//example.invalid/style.css" />
+  <style type="text/css">
+    body { color: red; } <!-- legacy
+    p { background: url("x"); }
+  </style>
+</head>
+<frameset cols="20%,*,0" rows="*">
+  <frame src="a.html" name=left noresize>
+  <frameset>
+    <frame src='b.html'><frame src=c.html>
+  </frameset>
+  <noframes><body><p>fallback</p></body></noframes>
+</frameset>
+<noframes>trailing fallback</noframes>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Raw text and unusual sections</title></head>
+<body>
+<template id=t><div><span>template content</span></div></template>
+<noscript><p>no script <b>branch</b></noscript>
+<script type="text/javascript">
+  if (a < b) { document.write("</scr" + "ipt><p>injected"); }
+  var s = "<!-- fake comment -->";
+</script>
+<style>
+  .x::before { content: "</style><div>oops"; }
+</style>
+<pre> pre
+  text &amp; &lt;tag&gt;
+</pre>
+<textarea>raw &amp; text
+</textarea>
+<plaintext>
+everything after this is text
+<div><b>not elements</b>
+</body>
+</html>
+```

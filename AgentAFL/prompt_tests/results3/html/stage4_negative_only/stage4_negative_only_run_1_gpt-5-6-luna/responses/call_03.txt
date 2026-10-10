@@ -1,0 +1,139 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN">
+<html>
+<head>
+  <base href="http://example.invalid/a/">
+  <meta http-equiv="refresh" content="0; URL='x?y=1&amp;z=2'">
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("<p>raw</p>"); }
+    </script>
+  <noscript><p>JavaScript is disabled</noscript>
+</head>
+<frameset rows="20%,*,">
+  <frame src="one.html" name="top" scrolling="yes">
+  <frameset cols="*,0">
+    <frame src="" frameborder="no">
+    <frame src="javascript:alert(1)">
+  </frameset>
+  <noframes>
+    <body>
+      <h1>Fallback</h1>
+      <p>This body is inside a noframes branch.</p>
+    </body>
+  </noframes>
+</frameset>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Ruby and inline phrasing</title></head>
+<body>
+<p>
+  <ruby>漢<rb>字<rt>かん<rp>(</rp><rt>じ<rp>)</rp></ruby>
+  <b><i><u><s>nested</b> crossing</i> text</u>
+  <a href="http://[broken" title="unterminated>link
+  <abbr title="full">abbr</abbr>
+  <bdi dir="rtl">שלום</bdi><bdo dir="ltr">abc</bdo>
+</p>
+<dl compact>
+  <dt>first<dd>definition one
+  <dt><span>second</span>
+  <dd><blockquote cite="x"><q cite="y">quoted &notanentity; &amp incomplete</q></blockquote>
+</dl>
+<address><a href="mailto:test@example.invalid">contact</a><br>line</address>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Interactive controls</title>
+</head>
+<body>
+  <form method="post" enctype="multipart/form-data" accept-charset="x-invalid">
+    <fieldset disabled>
+      <legend><label for="missing">Choose &copy; <input></label></legend>
+      <label>Text <input type=text name=a value="one" disabled></label>
+      <input type="file" name="upload" multiple accept=",,">
+      <button type="submit"><span>Submit</button>
+    </fieldset>
+    <select name="items">
+      <optgroup label="Group">
+        <option value="1" selected>One
+        <option value="2" label="Two">Ignored text
+      </optgroup>
+      <option>Unclosed
+    </select>
+    <textarea rows="0" cols="-2">text &lt;tag&gt;
+      </textarea>
+    <output for="a b">result</output>
+    <progress value="2" max="1">fallback</progress>
+  </form>
+  <details open="maybe"><summary>More</summary><p>hidden-ish</p></details>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Declarations and raw sections</title>
+  <?xml version="1.0"?>
+  <!bogus internal [ <!ENTITY x "y"> ]>
+</head>
+<body>
+  <!-- normal -- comment -- with -- runs -->
+  <![CDATA[
+    <not-an-element>&still raw;</not-an-element>
+  ]]>
+  <div class="a&#0;b&#xD800;c&#x110000;d" data-x="&quot; &apos; &amp;">
+    <p>before
+    <hr/>
+    after</p>
+  </div>
+  <?processing instruction?>
+  <!DOCTYPE nested SYSTEM "weird">
+  <pre>
+line one
+  <span>literal</span>
+line &lt; two
+</pre>
+  <x-unknown a b= c="d" =bad ="value">custom</x-unknown>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Images and metadata</title></head>
+<body>
+  <picture>
+    <source media="(min-width: 0px)" srcset="a 1x, b 2x, c 0w">
+    <source type="image/avif" srcset="">
+    <img srcset="one.png 400w, two.png 50%, three.png" sizes="(bad) 10vw, 100vw"
+         src="data:image/svg+xml,%3Csvg%3E" width="not-a-number" height="-10"
+         alt="&lt;broken">
+  </picture>
+  <map name="M">
+    <area shape="rect" coords="0,0,10" href="#a">
+    <area shape="poly" coords="0,0,1,1,2" nohref>
+  </map>
+  <object data="missing.bin" type="application/octet-stream">
+    <param name="movie" value="x">
+    <embed src="plugin://" width="0" height="NaN">
+    <p>fallback <button disabled="">click</button></p>
+  </object>
+  <audio controls autoplay loop src="not-audio">
+    <track kind="captions" src="captions.vtt" srclang="xx" default>
+    audio fallback
+  </audio>
+  <video poster="" preload="invalid"><source src="x" type=""><track></video>
+</body>
+</html>
+```

@@ -1,0 +1,129 @@
+```html
+<!DOCTYPE html [
+  <!ELEMENT note ANY>
+  <!ENTITY weird "a &amp; b">
+]>
+<?xml version="1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-16">
+<base href="http://example.invalid/a/../../b">
+<link rel="stylesheet" href="">
+<style type="text/css">
+  @import url("broken.css";
+  body { color: rgba(1,2,3,999999); }
+</style>
+<script type="text/javascript">
+  if (a < b && c > d) { document.write("</script><p>split"); }
+</script>
+</head>
+<body id="a&#0;b" class="x&#xD800;y">
+<header><hgroup><h1>Heading<h7>Unexpected</h7></hgroup></header>
+<main>
+  <section><article><p>alpha<em>beta<strong>gamma</p></em></strong></article>
+  <aside><details open=maybe><summary>Summary</summary><div>hidden content</details></aside>
+</main>
+<footer><address>one<br/>two<hr/></address></footer>
+</body>
+</html>
+```
+
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://example.invalid/loose.dtd">
+<html>
+<head><title>Attributes</title></head>
+<body>
+<div
+  id="first"
+  ID="second"
+  data-x="unterminated
+  disabled disabled="false"
+  =novalue
+  class = "a" class='b'
+  style="color: red; width: calc(100% - );"
+  title="&amp;&quot;&apos;&lt;&gt;&#x110000;&#999999999;"
+>
+  <span / >text<span><span>nested</div>
+<label for=field>Label<input name=field value="a&#13;&#10;b" readonly=false></label>
+<textarea rows="-1" cols="999999999999999999999">first
+second</textarea>
+<select multiple="no" size="bad">
+<option selected>one
+<option value=>two
+<optgroup label="group"><option>three</select>
+<output for="field missing">result</output>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Foreign content</title></head>
+<body>
+<svg width="1e309" height="-Infinity" viewBox="0 0 10">
+  <title>svg title</title>
+  <foreignObject>
+    <div xmlns="http://www.w3.org/1999/xhtml"><p>inside svg</div>
+  </foreignObject>
+  <path d="M0 0 L NaN NaN Z" fill="url(#missing)" />
+  <use href="#x" xlink:href="&bad;" />
+</svg>
+<math>
+  <mi>x</mi><mo>&InvisibleTimes;</mo><mfrac><mn>1</mn><mrow><mi>y</mi>
+  <annotation-xml encoding="application/xhtml+xml"><p>math html</annotation-xml>
+</math>
+<svg><g><circle cx="0" cy="0" r="0"></g></svg>
+<iframe srcdoc="<p>embedded &amp; broken</iframe>">
+<object data="x"><param name="movie" value="y"><embed src="z"></object>
+</body>
+</html>
+```
+
+```html
+<!-- orphan comment --!>
+<!foo bar baz>
+<![CDATA[
+  <not-an-element> & still text
+]]>
+<html>
+<head>
+  <!-- nested <!-- comment --> remainder -->
+  <title> &notanentity; &#x; &#-1; </title>
+</head>
+<body>
+  <p>before
+  <![CDATA[raw <b> markup & data]]>
+  <template id="t"><div><slot name="x"></slot><template><p>deep</template></div>
+  <noscript><p>noscript<p><b>unterminated</noscript>
+  <script language="javascript">
+    var s = "</script";
+    var t = "<!--";
+  </scriptx>
+  <script type=text/plain><!-- arbitrary <tag> & --></script>
+  <p>after</p>
+</body>
+</html
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Mixed malformed forms</title></head>
+<body>
+<form id="outer" method="dialog" enctype="multipart/form-data">
+  <fieldset disabled="0"><legend>Fields</legend>
+    <input type="text" name="a" form="other" minlength="-10" maxlength="999999999999">
+    <input type="date" min="not-a-date" max="2024-99-99" step="NaN">
+    <button type="unknown" formaction="http://[invalid" formenctype="">Go</button>
+  </fieldset>
+</form>
+<form id="other"><input name="b"></form>
+<menu type="toolbar"><menuitem label="one" checked command="x"><li>loose item</menu>
+<dialog open=0><p>dialog text<form><input><button>nested</button></form></dialog>
+<figure><img src="x" alt="a" /><figcaption>caption</figure>
+<video controls preload="maybe"><source src=one><track kind=subtitles src=two default></video>
+<canvas width="bad" height="-4">fallback <b>text</canvas>
+</body>
+</html>
+```

@@ -1,0 +1,138 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<base href="http://example.invalid/a/b/">
+<style type="text/css">
+@media screen{.x{color:red}/*unterminated
+</style>
+<script type="text/javascript">
+if (a < b && c > d) { document.write("<p title='x'>"); }
+</script>
+</head>
+<body bgcolor="#fff" text=black>
+<!-- comment -- -- broken -->
+<table border=1 cellpadding=0>
+<caption align=bottom>one &amp; two</caption>
+<colgroup span=2><col width="50%"><col width=auto>
+<thead><tr><th rowspan=2>A<th colspan=3>B
+<tbody><tr><td>1<td>2<td><b>3
+<tr><td colspan=4><table><tr><td>nested</table>
+<tfoot><tr><td>tail</td></tr></tfoot>
+</table>
+<p class= x= y>after table &copy &#0; &#xD800;</p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html lang="x" xml:lang="y">
+<head>
+<title>attributes</title>
+<meta name=viewport content="width=device-width,initial-scale=1">
+</head>
+<body>
+<div id="a" id="b" class=test test=one disabled="" =bad>
+<span style="color:red; width: expression(alert(1));">alpha
+<a href="javascript:alert('x')" target=_blank title="a &quot; b">link
+<img src="x" alt="broken" width="NaN" height=-1>
+</a></span></div>
+<dl compact>
+<dt>term 1
+<dd>definition <em>nested <strong>deep</dl>
+<ul type=disc start=0>
+<li>first
+<li>second
+<ol reversed start="abc"><li>inner one<li>inner two</ol>
+<li>third
+</ul>
+<blockquote cite=http://example.invalid><p>quote
+<p>another paragraph without closing tags
+</blockquote>
+<hr noshade="noshade">
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>raw text and declarations</title></head>
+<body>
+<?processing instruction?>
+<![CDATA[
+not really cdata in html & <tag>
+]]>
+<!DOCTYPE bogus "unterminated>
+<!-- one <!-- two --> three -->
+<script>
+var s = "</script><div>fake</div>";
+/* comment with < and & and null-like &#x0; */
+</script>
+<noscript><p>fallback <i>italic</noscript>
+<template id=t><section><p>template text</section>
+<textarea>line 1
+line 2 &amp; &lt; / &gt;
+</textarea>
+<pre>  leading
+	 tabs
+&lt;not-a-tag&gt;</pre>
+<x-custom data-a=1 data-b="2"><![CDATA[x]]></x-custom>
+<p>end
+</body>
+</html>
+```
+
+```html
+<html>
+<head><title>frames and maps</title></head>
+<frameset rows="10%,*,0" cols="50%,50%">
+<frame src="left.html" name=left scrolling=no>
+<frame src="right.html" name=right>
+<noframes>
+<body>
+<h1>fallback</h1>
+<object data="movie.bin" type="application/octet-stream" width=0 height=0>
+<param name=movie value="x.swf">
+<object><embed src=x></embed></object>
+</object>
+<map name=planet>
+<area shape=rect coords="0,0,10,10" href=a>
+<area shape=circle coords="5,5,2">
+<area shape=poly coords="0,0,1,1,2,0" href=b>
+</map>
+<img src="map.png" usemap=#planet border=999>
+</body>
+</noframes>
+</frameset>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>misnested blocks</title>
+</head>
+<body>
+<center><font face=Arial size=+3 color=red>
+<h2>heading <i>italic <b>bold</h2>
+</font></i></b></center>
+<p>start <div>block inside paragraph <span>span
+<table><tr><td>A</td></tr><tr><td>B
+</div>
+</table>
+<address>name<br>street<br>city
+<menu>
+<li><a href="#">A</a>
+<li><b>B
+<li><i>C</menu>
+<ins datetime="not-a-date"><del cite=x>changed</ins></del>
+<ruby>漢<rt>kan<rp>(</rp></ruby>
+<marquee direction=sideways><blink>old</blink></marquee>
+<p>&notanentity; &amp;quot; &#99999999; &#x110000; &#13;
+</body>
+</html>
+```

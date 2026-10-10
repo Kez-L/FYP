@@ -1,0 +1,142 @@
+```html
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=windows-1252">
+  <base href="http://example.invalid/a/../b/">
+  <?xml-stylesheet type="text/css" href="x.css"?>
+  <!-- unterminated comment
+  <title>&amp; &#xD800; &#0; &#x110000;</title>
+</head>
+<body id="a&#13;b" class="x  y" data-empty="" disabled="disabled">
+  <hgroup><h1>Heading <small>small</h1><h2>Second</h3></hgroup>
+  <p>alpha<br/>beta<wbr>gamma<hr>delta
+  <blockquote cite="&quot;broken"><pre>  one
+    two</pre><address>name<br>street</address></blockquote>
+  <dl><dt>term<dd>definition<dt><dd>orphan</dl>
+  <figure><img src="x" alt="a&b" width="NaN"><figcaption>caption</figure>
+  <details open><summary>summary</summary><div>content</div>
+  <dialog open>dialog text</dialog></details>
+  <script type="text/plain"><!-- raw <b> &amp; </script> tail
+  <style media="screen & bogus">a{content:"</style>"} </style>
+  <noscript><p>fallback</p></noscript>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>foreign content</title>
+</head>
+<body>
+  <svg width="10" height="10" viewBox="0 0 10 10" preserveAspectRatio="none">
+    <g transform="translate(1 2)" onclick="x<y">
+      <circle cx="2" cy="2" r="1" fill="url(#x)"/>
+      <foreignObject><div xmlns="http://www.w3.org/1999/xhtml">
+        <p>HTML inside SVG <b>bold</p>
+      </div></foreignObject>
+      <path d="M0 0 L 3 4 Z" stroke-width="bad"></path>
+    </g>
+  </svg>
+  <math display="block">
+    <mrow><mi>x</mi><mo>&lt;</mo><mn>2</mn><mo>&amp;</mo>
+      <msup><mi>y</mi><mn>2</mn></msup>
+    </mrow>
+    <annotation-xml encoding="application/xhtml+xml">
+      <div xmlns="http://www.w3.org/1999/xhtml"><em>math payload</em></div>
+    </annotation-xml>
+  </math>
+  <svg><title>svg title</title><desc>desc</desc><use href="#missing"></use>
+    <text x="1" y="2">text &amp; &#x1F4A9;</text>
+  </svg>
+  <p>after foreign content</p>
+</body>
+</html>
+```
+
+```html
+<!doctype html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="x" xml:lang="y">
+<head>
+  <meta charset="utf-16">
+  <title>attributes</title>
+  <link rel="stylesheet" href="a.css" disabled>
+  <link rel="alternate stylesheet" title="alt" href="b.css">
+</head>
+<body>
+  <form id="f" action="" enctype="multipart/form-data" novalidate>
+    <input type="text" name="q" value="&quot; onfocus=&quot;bad" maxlength="-1" minlength="999999">
+    <input type="file" accept="image/*,.x" multiple directory>
+    <input type="date" min="tomorrow" max="yesterday" step="0" value="not-a-date">
+    <label><input type="checkbox" checked="false" required>check</label>
+    <select name="v" size="-7">
+      <optgroup label="one"><option value="a" selected selected>a
+      <option disabled>b</optgroup><option>c
+    </select>
+    <textarea wrap="strange" cols="abc" rows="NaN">x&amp;y</textarea>
+    <button type="reset" formmethod="dialog" formaction="/x">go</button>
+    <output name="o" for="q f" aria-live="polite">result</output>
+  </form>
+  <form><input form="f"><button formnovalidate>outside</button></form>
+  <iframe srcdoc="<p>embedded &amp; text</p>" sandbox="allow-scripts allow-same-origin"></iframe>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>misnested phrasing and ruby</title></head>
+<body>
+  <p><b><i><u>one</b> two</i> three</u> four</p>
+  <p><a href="/x"><span><strong>link</a> text</strong></span>
+     <mark><small><big>nested</small></big></mark></p>
+  <ruby>漢<rp>(</rp><rt>kan</rt><rp>)</rp><rtc>annotation</rtc></ruby>
+  <ins cite="/a" datetime="not-a-time">insert<del cite="/b">delete</ins>tail</del>
+  <q cite="x">quote <code><var>x</code></var> end</q>
+  <pre><code>&lt;tag attr='x'&gt;
+line 2</pre></code>
+  <menu type="toolbar">
+    <li><a href="#">one</li>
+    <li><button type="button">two</a></button></li>
+    <li>three
+      <ul><li>nested one<li>nested two</ol>
+  </menu>
+  <p><span style="color:red">style</span></p></p></p>
+  <!-- good --> <!-- bad -- extra --> <!-- --><!---->
+  <![CDATA[not really cdata <b> & stuff]]>
+</body>
+</html>
+```
+
+```html
+<html>
+<head>
+  <meta http-equiv=refresh content="0; URL=javascript:alert(1)">
+  <title>head recovery</title>
+  <meta name=viewport content="width=device-width,initial-scale=1">
+</head>
+<body>
+  <template id="t"><section><h2>template</h2><p>inside</section></template>
+  <main>
+    <article>
+      <header><h1>Article</h1><time datetime="2024-99-99">soon</time></header>
+      <p>first
+      <section><h2>Nested section</h2><p>second</article>
+    <aside><h2>Aside</h2><p>aside text</main>
+  <meter min="10" max="2" low="x" high="-1" optimum="NaN" value="999">meter</meter>
+  <progress max="-4" value="12">progress</progress>
+  <picture>
+    <source media="(min-width: 1px)" srcset="a 1w, b 2x, c">
+    <img src="fallback" alt="fallback">
+  </picture>
+  <map name="m"><area shape="poly" coords="a,b,c" href="#x"><area></map>
+  <object data="x" type="application/x-unknown"><param name="x" value="y"><p>fallback</p></object>
+  <canvas width="-1" height="NaN">canvas fallback</canvas>
+  <footer><nav><a href="#a">a<a href="#b">b</nav></footer>
+</body>
+</html>
+```

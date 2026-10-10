@@ -1,0 +1,137 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<HTML>
+<HEAD>
+  <TITLE>Frameset and legacy declarations</TITLE>
+  <BASE TARGET="_top" HREF="//example.test/root">
+  <META NAME=viewport CONTENT=width=device-width,initial-scale=1>
+  <?processing instruction?>
+</HEAD>
+<FRAMESET ROWS="*,0,25%" COLS="120,*" BORDER=not-a-number FRAMEBORDER=maybe>
+  <FRAME NAME=left SRC="left.html" SCROLLING=diagonal NORESIZE>
+  <FRAMESET COLS="50%,*" FRAMEBORDER>
+    <FRAME SRC=right.html MARGINWIDTH=-4 MARGINHEIGHT="NaN">
+    <FRAME SRC="" NAME=main>
+  </FRAMESET>
+  <NOFRAMES>
+    <BODY>
+      <H1>Fallback</H1>
+      <P><A HREF="next.html" TARGET=>continue</A></P>
+    </BODY>
+  </NOFRAMES>
+</FRAMESET>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<meta charset="x-unknown">
+<title>Interactive elements</title>
+</head>
+<body>
+<main id=main>
+  <details open=maybe name=group>
+    <summary><b>Summary <i>with mismatched emphasis</summary>
+    <p>Hidden content <mark>marked <small>small</details>
+  <dialog open=true aria-modal=perhaps>
+    <form method=post enctype=multipart/form-data action="?x=1&y=2">
+      <label for=who>Who <input id=who name=who required=maybe minlength=-2></label>
+      <button type=menu formaction=javascript:void(0) disabled=>Send</button>
+      <fieldset disabled=no>
+        <legend>Options</legend>
+        <input type=checkbox checked=off name=a>
+        <input type=radio name=r value=1 checked>
+        <output name=result for="who missing">old result</output>
+      </fieldset>
+    </form>
+  </dialog>
+  <template id=t><section><p>template <b>content</section></template>
+  <slot name=one>fallback <br></slot>
+</main>
+<footer><address><del cite=unquoted>contact</address></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Table reconstruction</title></head>
+<body>
+<table border=0 summary="a & b" rules=sideways>
+  <colgroup span=zero><col width=12*><col span="NaN"></colgroup>
+  <thead><tr><th colspan=0 rowspan=-1>Head<th>Second</thead>
+  orphan before body
+  <tbody>
+    <tr><td>A<td>B<tr><td colspan="999">C
+    <tr><th scope=invalid headers=x><form><input name=q></form>
+  </tbody>
+  <tfoot><tr><td>Footer</tfoot>
+  text between sections
+  <tbody><tr><td><table>
+      <tr><td>nested one
+      <tr><td>nested two</tr>
+    </table>tail
+  </tbody>
+  <caption align=diagonal><span>late caption</span></caption>
+</table>
+<p>after table<table><tr><td>x</table>after second
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Raw text boundaries</title>
+  <style type=text/x-custom>
+    x { content: "</style>"; color: red }
+    y { background: url("a&b"); /* never ends
+  </style>
+  <script language=javascript type=text/plain>
+    var a = "</script>";
+    var b = '<!--';
+    if (x < y && y > z) { /* ]] > */ }
+  </script>
+  <noscript>
+    <p>noscript <b>markup</b> &copy;</p>
+  </noscript>
+</head>
+<body>
+  <pre>one
+  <code>two &amp; three</code>
+  <textarea cols=bad rows=-3>value </textarea> trailing
+  <xmp><b>literal</b>&amp;</xmp>
+  <plaintext>
+    <div>everything becomes text
+    &amp; &#x110000; </body></html>
+```
+
+```html
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang=en>
+<head><title>Foreign namespaces</title></head>
+<body>
+<svg viewBox="0 0 100 100" width="100%" height="-1" preserveAspectRatio="bad">
+  <title>SVG title</title>
+  <defs><linearGradient id=g x1=0% y1=0% x2=100% y2=100%>
+    <stop offset="0%" stop-color="#zzzzzz"><stop offset=110% stop-opacity=NaN>
+  </linearGradient></defs>
+  <g transform="translate(1 2) rotate(foo)" onclick="a<b">
+    <path d="M0,0 L10,10 Z junk" fill=url(#g) stroke-width="-3"/>
+    <foreignObject x=0 y=0 width=20 height=20>
+      <div xmlns="http://www.w3.org/1999/xhtml">foreign <b>text</div>
+    </foreignObject>
+  </g>
+</svg>
+<math display=sideways>
+  <mrow><mi>x</mi><mo>&lt;</mo><msup><mi>y</mi><mn>2</mn></msup>
+  <annotation-xml encoding=application/xhtml+xml><p>math html</annotation-xml>
+  <mo>+</mo><mtext><b>bad nesting</mtext></mrow>
+</math>
+<iframe srcdoc="<p>inner &amp; <b>frame</b>" sandbox=allow-scripts,foo></iframe>
+</body>
+</html>
+```

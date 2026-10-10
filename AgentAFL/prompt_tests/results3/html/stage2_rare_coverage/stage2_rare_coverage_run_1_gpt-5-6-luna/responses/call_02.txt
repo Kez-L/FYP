@@ -1,0 +1,107 @@
+```html
+<!doctype html>
+<html>
+<head>
+<meta charset=utf-8>
+<base href="http://example.invalid/a/">
+<style>
+@media screen and (min-width:0) {
+  body::before { content: "</style><iframe src=x>"; }
+}
+</style>
+</head>
+<body onload="if (a < b) { document.write('<p>late</p>'); }">
+<header><hgroup><h1>Mixed &amp; Markup</h1><h2>Title</h2></hgroup></header>
+<nav><a href=#main>jump</a><a href="javascript:/*x*/void(0)">run</a></nav>
+<main id=main>
+<article>
+<figure><img srcset="a 1x, b 2x" src=x alt="a > b"><figcaption>caption</figure>
+<p>before <em>italic <strong>bold</em> loose</strong> after</p>
+<blockquote cite="x"><q cite=y>quoted <abbr title="T">text</abbr></q></blockquote>
+<hr/><details open><summary>More</summary><div>hidden-ish</div></details>
+</article>
+</main>
+<footer><address><a href=mailto:test@example.invalid>contact</a></address></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Table repair</title></head>
+<body>
+<table border=1 cellpadding="2" summary="x">
+<caption>Rows</caption>
+<colgroup span=2><col width=20><col><colgroup><col></colgroup>
+<thead><tr><th rowspan=2>A<th colspan=3>B
+<tbody>
+<tr><td>one<td><table><tr><td>nested</table><td rowspan=2>tail
+<tr><th><div>two</div><td>three<td>four
+<tfoot><tr><td colspan=99>footer
+</table>
+<table><tr><td><p>unclosed<td><form><input name=x><tr><td>after</form></table>
+<map name=map><area shape=rect coords="0,0,10,10" href=#x><area href></map>
+<img usemap="#map" src="x">
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>Embedded languages</title>
+<script type="application/ld+json">
+{"@context":"http://schema.org","name":"</script>","nested":{"x":1}}
+</script>
+<script type=text/x-template>
+<div data-x="{{ value }}"><template><span>raw</span></template></div>
+</script>
+</head>
+<body>
+<template id=t><div><slot name=x></slot><script>broken < /script still text</div></template>
+<video controls poster="p.jpg"><source src=a type=video/mp4><track kind=subtitles src=v.vtt></video>
+<audio autoplay><source src=a.ogg><source src=b.wav></audio>
+<iframe srcdoc="<p class='x'>srcdoc &amp; <b>bold</b></p>" sandbox="allow-scripts"></iframe>
+<object data="x.swf" type="application/x-shockwave-flash"><param name=movie value=x><embed src=x></object>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Foreign content boundaries</title></head>
+<body>
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<defs><linearGradient id=g><stop offset="0%" stop-color="red"/><stop offset=1 stop-color="blue"></linearGradient></defs>
+<g transform="translate(1,2)"><rect x=0 y=0 width=10 height=20 fill=url(#g)>
+<foreignObject x=2 y=3 width=40 height=20><div xmlns="http://www.w3.org/1999/xhtml"><p>HTML in SVG<br><input disabled></div></foreignObject>
+<text x=4 y=8><![CDATA[angle < text & stuff]]></text>
+</g></svg>
+<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi><mo>&lt;</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><annotation-xml encoding="application/xhtml+xml"><div>math child</div></annotation-xml></math>
+<p>back in HTML <svg><circle r=4></svg> end</p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=5"><![endif]--></head>
+<body>
+<dialog open aria-labelledby=title><h1 id=title>Dialog</h1><p>content</dialog>
+<menu type=context><menuitem label="A" onclick="x()"><menuitem disabled label=B></menu>
+<progress max=10 value=3>30%</progress>
+<meter min=0 max=100 low=20 high=80 optimum=50 value=not-a-number>meter</meter>
+<ruby>漢<rt>kan</rt><rp>(</rp><rt>かん</rt><rp>)</rp></ruby>
+<picture><source media="(min-width: 1px)" srcset=a><source type=image/webp srcset=b><img alt=x></picture>
+<dl><dt>alpha<dd>one<dt>beta<dd><ins cite=x datetime=bad>two</ins><del>old</del></dl>
+<pre>  preserve
+  <code>literal &lt;tag&gt;</code>
+</pre>
+<noscript><p><b>fallback</noscript>
+</body>
+</html>
+```

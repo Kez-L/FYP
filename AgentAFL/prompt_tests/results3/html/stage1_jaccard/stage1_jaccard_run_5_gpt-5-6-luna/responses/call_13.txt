@@ -1,0 +1,125 @@
+```html
+<!DOCTYPE html [
+  <!ENTITY demo "replacement text">
+  <!ELEMENT note - - (#PCDATA)>
+]>
+<html>
+<head>
+  <title>Declaration and entity stress</title>
+  <!-- unterminated comment
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+</head>
+<body bgcolor=#GGG text='unterminated>
+  <![CDATA[
+    <not-really-an-element>&demo; ]]>
+  <note>&demo; &unknown; &#0; &#x110000; &#xD800;</note>
+  <?processing instruction?>
+  <p title="a&#13;b&#10;c&#9;d">before &amp after &#x;</p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Forms and controls</title></head>
+<body>
+<form action="/search" method=POST enctype="multipart/form-data" accept-charset="utf-8, iso-8859-1">
+  <fieldset disabled="false">
+    <legend>Account
+    <label for=x>Name <input id=x name=name type=text value="a&b" maxlength=-1></label>
+    <label><input type=checkbox checked=no> enabled?</label>
+    <select name=mode multiple size=0>
+      <optgroup label="one" disabled>
+        <option selected value=1>first
+        <option value='2>second</option>
+      </optgroup>
+      <option>third
+    </select>
+  </fieldset>
+  <textarea name=message rows=-2 cols=not-a-number>unclosed
+  <button type=submit formaction=javascript:alert(1)>Send</button>
+  <input type=image src= data-x>
+</form>
+<hr noshade="nonsense">
+</body>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN">
+<html>
+<head>
+  <base href="http://[invalid.example/">
+  <title>Frameset recovery</title>
+</head>
+<frameset rows="*,0,50%" cols="25%,*,bad" border=-3 frameborder=maybe>
+  <frame src="a.html" name=left scrolling=perhaps noresize>
+  <frameset>
+    <frame src="b.html">
+    <noframes>
+      <body>
+        <p>fallback <a href="x" target=_top>link
+        <iframe srcdoc="<p>embedded & broken" width="NaN" height="-1"></iframe>
+      </body>
+    </noframes>
+  </frameset>
+  <frame>
+</frameset>
+<noframes><p>orphan fallback</p></noframes>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Foreign-looking inline elements</title>
+  <style type=text/css>
+    body { color: red; }
+    </stylex>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("</script>"); }
+  </script>
+</head>
+<body>
+  <center><font face="Arial" size="+99" color=#12GGZZ>
+    <b><i><u><s><strike>mixed formatting
+    </center></b></i></u></s></strike>
+  <pre>  leading
+	 tabs &lt;tag&gt; </pre>
+  <address><a href=mailto:test@example.com?x=1&y=2>mail</address>
+  <marquee behavior=sideways direction=diagonal loop=-4>
+    <blink>legacy <wbr> break <nobr>nowrap
+  </marquee>
+  <object classid="clsid:bad" data=test type=unknown>
+    <param name=movie value="x&y">
+    fallback<object><embed src=x>
+  </object>
+  <applet code=Missing.class archive=a.jar width=zero height=none>
+    <param name=foo value=bar>
+  </applet>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="">
+<head>
+<meta charset="utf-16">
+<title>Adoption and misnesting cases</title>
+</head>
+<body>
+<p><a href="one"><b>bold <em>emphasized <strong>strong</a> after</b></em></strong>
+<div><p>paragraph one<div>div inside paragraph</p>tail
+<section><header>header <main>main <article>article</header>
+<aside>aside</article></main></section>
+<details open="0"><summary>summary <span>span</details>after
+<dialog open=false><form><input><p>dialog text</dialog></form>
+<ruby>base<rt>annotation<rp>(</ruby>)</rp>
+<ins datetime=bad><del cite='unterminated>changed</ins>
+<!-- nested <!-- comment --> visible -->
+<!bad declaration>
+</body>
+</html>
+```

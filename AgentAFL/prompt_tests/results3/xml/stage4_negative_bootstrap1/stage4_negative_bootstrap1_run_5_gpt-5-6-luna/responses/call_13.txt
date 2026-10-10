@@ -1,0 +1,134 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:m="urn:example:meta" xml:lang="fr">
+  <?index priority="high"?>
+  <!-- multilingual catalog entry -->
+  <entry id="é-01" xml:space="preserve">
+    <title>Crème &amp; Thé</title>
+    <m:metadata>
+      <m:created>2026-10-01T12:34:56Z</m:created>
+      <m:tag><![CDATA[alpha<beta>&gamma]]></m:tag>
+    </m:metadata>
+    <description>Texte <emphasis>accentué</emphasis> avec <link href="urn:x">lien</link>.</description>
+    <variants>
+      <variant code="A" available="yes"/>
+      <variant code="B" available="no">
+        <note>indisponible</note>
+      </variant>
+    </variants>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (record+)>
+  <!ELEMENT record (key, value, reference?)>
+  <!ATTLIST record uid ID #REQUIRED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ELEMENT reference EMPTY>
+  <!ATTLIST reference target IDREF #REQUIRED>
+  <!ENTITY greeting "hello &amp; welcome">
+  <!ENTITY mark "&#x2605;">
+]>
+<archive>
+  <record uid="r1">
+    <key>first</key>
+    <value>&greeting;<part>one</part>&mark;</value>
+    <reference target="r2"/>
+  </record>
+  <record uid="r2">
+    <key>second</key>
+    <value><![CDATA[raw ]]> <part>two</part></value>
+  </record>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<env:Envelope
+    xmlns:env="http://www.w3.org/2003/05/soap-envelope"
+    xmlns:app="urn:app"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <env:Header>
+    <app:Trace env:mustUnderstand="true" app:id="t-7">
+      <app:Hop>edge</app:Hop>
+      <app:Hop>worker</app:Hop>
+    </app:Trace>
+    <app:Options xsi:nil="true"/>
+  </env:Header>
+  <env:Body>
+    <app:Execute timeout="0">
+      <app:Command><![CDATA[
+        select * from "items"
+        where note < 'z'
+      ]]></app:Command>
+      <app:Arguments>
+        <app:Argument name="limit">000</app:Argument>
+        <app:Argument name="filter"/>
+      </app:Arguments>
+    </app:Execute>
+  </env:Body>
+</env:Envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<root xml:base="https://example.invalid/a/" xml:lang="und">
+  <level n="0">
+    <level n="1">
+      <level n="2">
+        <level n="3">
+          <payload>
+            <item key="ключ" value="値">😀</item>
+            <item key="" value="&quot;&apos;&lt;&gt;&amp;">
+              <inner><![CDATA[]]></inner>
+            </item>
+          </payload>
+        </level>
+      </level>
+    </level>
+  </level>
+  <tail>
+    leading
+    <b>bold</b>
+    trailing
+  </tail>
+</root>
+```
+
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, section*, footer)>
+  <!ELEMENT header (title, author)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author EMPTY>
+  <!ATTLIST author name CDATA #REQUIRED role CDATA "unknown">
+  <!ELEMENT section (heading?, paragraph+)>
+  <!ATTLIST section id ID #IMPLIED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|code|br)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT footer (#PCDATA)>
+]>
+<report>
+  <header>
+    <title>Parser Notes</title>
+    <author name="A. &amp; B" role="qa"/>
+  </header>
+  <section id="intro">
+    <heading>Overview</heading>
+    <paragraph>Text before <code>token</code><br/>text after.</paragraph>
+  </section>
+  <section>
+    <paragraph><![CDATA[<literal node="x"/>]]></paragraph>
+    <paragraph>second paragraph</paragraph>
+  </section>
+  <footer>— end —</footer>
+</report>
+```

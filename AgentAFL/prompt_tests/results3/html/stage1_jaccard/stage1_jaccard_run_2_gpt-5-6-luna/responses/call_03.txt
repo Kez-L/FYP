@@ -1,0 +1,148 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Malformed list and definition structures</title>
+  <!-- unclosed comment
+  <meta name="author" content="commented">
+</head>
+<body>
+  <ul compact="compact">
+    <li>first
+    <li><b>second <i>nested emphasis</b> still italic
+    <li><a href=broken?x=1&y=2>third
+      <ul>
+        <li>nested one</li>
+        <li>nested two
+          <ol start="zero">
+            <li value="999">deep item</li>
+          </ol>
+      </ul>
+  </ul>
+  <dl>
+    <dt>term one
+    <dd>definition without closing tag
+    <dt><em>term two</em></dt>
+    <dd><p>paragraph in definition</p><blockquote cite="unterminated>
+  </dl>
+  <hr noshade="false">
+  <center><big><small>mixed obsolete formatting</center>
+</body>
+</html>
+```
+
+```html
+<!doctype HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<frameset rows="25%,*,0" cols="50%,50%" border=abc>
+  <frame src="left.html" name=left scrolling=maybe noresize>
+  <frame src="right.html" name="right>
+  <frameset>
+    <frame src="">
+    <noframes>
+      <body>
+        <h1>Fallback content</h1>
+        <p>This frameset has conflicting fallback containers.</p>
+        <iframe srcdoc="<p>embedded &amp; text" width=bad height=-4></iframe>
+      </body>
+    </noframes>
+  </frameset>
+  <noframes>
+    <p>second fallback</p>
+  </noframes>
+</frameset>
+```
+
+```html
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html [
+  <!ENTITY local "replacement">
+  <!ELEMENT note (#PCDATA)>
+]>
+<html>
+  <head>
+    <title>entity &local; &unknown; &#; &#x; &#xFFFFFF;</title>
+    <?processing instruction?>
+    <style type="text/css">
+      body { color: red; }
+      <!-- hide this -->
+      .x { content: "</style>"; }
+    </style>
+  </head>
+  <body>
+    <![CDATA[
+      <not-an-element>&raw;]]>
+    <p data-a="one" data-a="two" =bad empty="" checked>
+      &copy &notanentity; &#x1F600; &#55296; &#57344;
+    </p>
+    <script type="text/javascript">
+      if (a < b && c > d) { document.write("<tag>"); }
+      </script>
+    <p>after script</p>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>table correction maze</title>
+</head>
+<body>
+  <table border="1">
+    <colgroup span="two"><col width="bad"><col></colgroup>
+    <thead>
+      <tr><th rowspan="x">A<th colspan="-1">B</tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><p>cell paragraph
+        <td>
+          <table>
+            <tr><td>inner one
+            <tr><td>inner two</table>
+        <td>orphan third
+      <tr><th>header without row close
+    </tbody>
+    <tfoot><tr><td colspan=999>footer</tfoot>
+  </table>
+  <table>
+    <caption>caption <b>with formatting</caption>
+    <tr><td>text<div>block inside cell</div></td></tr>
+  </table>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html lang=en>
+<head>
+  <base href=//example.invalid/a/b>
+  <title>raw text and form controls</title>
+</head>
+<body>
+  <form method=dialog action="/x? a=b" accept-charset="UTF-8, BAD">
+    <fieldset disabled>
+      <legend>Options <input type=checkbox checked="maybe"></legend>
+      <input type=text name=q value="unterminated>
+      <input type=image src=missing alt=foo/bar>
+      <button type=unknown formaction=/next>Push <strong>button</strong>
+      <select multiple size="-7">
+        <option value=a selected>one
+        <option value=b>two
+        <option value=c disabled>three
+      </select>
+      <textarea cols="NaN" wrap=hard>first line
+second line &amp; &#x110000;</textarea>
+    </fieldset>
+    <input type=hidden name=x value="a&amp;b">
+  </form>
+  <pre><code>&lt;div&gt;
+  literal preformatted text
+</code></pre>
+  <x-custom a:b="v"><template><p>template body</p></template></x-custom>
+  <noscript><p>fallback <img src=x alt=y></noscript>
+</body>
+</html>
+```

@@ -1,0 +1,159 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Legacy layout and implied elements</TITLE>
+<BASE HREF="http://example.invalid/root/">
+</HEAD>
+<BODY BGCOLOR=#ffffcc TEXT=black LINK=blue VLINK=purple ALINK=red>
+<CENTER><H1>Archive</H1></CENTER>
+<TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0 WIDTH="90%">
+<CAPTION ALIGN=bottom>Records &amp; references</CAPTION>
+<COLGROUP><COL WIDTH=25%><COL SPAN=2 WIDTH=37%></COLGROUP>
+<THEAD><TR><TH ROWSPAN=2>ID<TH COLSPAN=2>Details
+<TR><TH>Label<TH>Status
+<TBODY>
+<TR><TD><A NAME=one>001<TD><B>Alpha</B><TD NOWRAP>open
+<TR><TD>002<TD><FONT SIZE=+2 COLOR=red>Beta</FONT><TD ALIGN=right>closed
+<TFOOT><TR><TD COLSPAN=3><HR WIDTH=50%></TD></TR></TFOOT>
+</TABLE>
+<DL COMPACT>
+<DT>HTML<DD><I>HyperText</I> &copy; 1994
+<DT>URL<DD><TT>http://example.invalid/?x=1&amp;y=2</TT>
+</DL>
+<PRE>
+line one
+  line two &lt;literal&gt;
+</PRE>
+<ADDRESS>Mailbox<br>Somewhere</ADDRESS>
+</BODY>
+</HTML>
+```
+
+```html
+<!doctype html>
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><title>Comment boundaries</title></head>
+<body>
+<!-- ordinary -- comment -- with -- runs -->
+<!---->
+<!-->
+<p>after broken opener</p>
+<![if IE]>
+<table><tr><td>conditional branch</td></tr></table>
+<![endif]>
+<?xml version="1.0"?>
+<?processing instruction?>
+<!DOCTYPE weird [
+  <!ENTITY local "replacement">
+  <!ELEMENT note ANY>
+]>
+<note>
+  <![CDATA[not really XML in ordinary HTML: <x> & y]]>
+  &local;
+  <p title="a>b" data-x='one"two'>Text &bogus; &#0; &#xD800;</p>
+</note>
+<!-- unclosed comment
+<div>hidden-looking content
+</body>
+```
+
+```html
+<!DOCTYPE html>
+<html lang=en>
+<head><title>Interactive nesting maze</title></head>
+<body>
+<p>Paragraph begins
+<div class=outer>
+  text before nested blocks
+  <p>second paragraph <a href=#target>link <a href=#other>nested link</a> tail
+  <ul>
+    <li>first
+      <ol start="03">
+        <li>inner one
+        <li>inner two
+      </ol>
+    <li>second
+      <blockquote cite="urn:x">
+        <p>quoted <q cite="x">speech <b>bold <i>italic</b> remains</i></q>
+      </blockquote>
+  </ul>
+  <div><span>span <em>emphasis</div>after span</em></span>
+</div>
+<center>
+  <marquee direction=left behavior=alternate scrollamount=0>
+    <blink>old <big>presentation</big></blink>
+  </marquee>
+</center>
+<a name=target></a>
+<hr>
+<p>tail without closing
+</body>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Tables with shifting cells</title>
+</head>
+<body>
+<table border=0>
+  <tr><td>outer one</td><td>
+    <table>
+      <tr><td rowspan=4>a<td>b
+      <tr><td>c<td>d<td>extra
+      <tr><th colspan=0>heading
+      <tr><td>
+        <table><tbody><tr><td>deep
+  <tr><td colspan=99>after malformed nesting
+</table>
+<table>
+  <caption>second</caption>
+  <thead>
+    <tr><td>head cell</td></tr>
+  </thead>
+  <tbody>
+    <tr><td>one
+    <tr><td>two</td></tr>
+  </tbody>
+  <tfoot><tr><td>foot</td></tr>
+  <tr><td>orphan row outside section
+</table>
+<table><col><colgroup><col><tr><th>x</th></tr></table>
+<p>text between tables<table><tr><td>adjacent</table>ending
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Entities and odd attributes</title>
+<meta name=keywords content="a,b,c">
+</head>
+<body id="" class=one class=two data-empty disabled>
+<h1 title="unterminated?">Characters</h1>
+<p title='single quoted &amp; value' data-a=bare data-b="x y" data-c='z>q'>
+  &lt;tag attr=&quot;value&quot;&gt; &amp; &copy; &reg; &trade;
+  &#1; &#9; &#10; &#13; &#31; &#127; &#160; &#x20; &#x0D; &#x110000;
+</p>
+<pre>&nbsp;&ensp;&emsp;&thinsp;&hellip;&mdash;&ndash;&lsaquo;&rsaquo;
+&lt;!-- fake comment --&gt;
+</pre>
+<ol type=I start=-2 reversed compact>
+<li value=0>zero
+<li value="x">bad value
+<li>three
+</ol>
+<menu type=context>
+<li>menu item
+<li><a href="mailto:a@b.invalid?subject=x&amp;body=y">mail</a>
+</menu>
+<details open=maybe><summary>Summary</summary><p>hidden? content</p></details>
+<ruby>漢<rt>kan<rp>(</rp>ji</ruby>
+<del cite=foo datetime=bad><ins datetime="2020-13-99">changed</ins></del>
+</body>
+</html>
+```

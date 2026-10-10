@@ -1,0 +1,143 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=unknown">
+<base href="http://[broken.example:99999/path">
+<style type="text/css">
+a { color: expression(alert("x")); }
+@import url("unterminated.css);
+</style>
+<script type="text/javascript">
+if (a < b && c > d) { document.write("<p>"); }
+</script>
+</head>
+<body>
+<header id=top><hgroup><h1>Malformed heading<h2>secondary</hgroup></header>
+<nav><a href="one" tabindex=abc>one<a href=two>two</nav>
+<main>
+<section><article><p>alpha<div>block inside paragraph<span>inline
+<aside><p>aside content</section>
+<figure><img src alt=broken><figcaption>caption</figure>
+<details open="false"><summary>summary</summary><p>hidden-ish</details>
+<dialog open=maybe>dialog text</dialog>
+</main>
+<footer><address><a href="mailto:x@y">contact</address></footer>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>table repair stress</title></head>
+<body>
+<table>
+<caption>caption<table>nested caption</table>
+<col span=999999999999999999>
+<colgroup><col><colgroup span=-7>
+<thead>
+<tr><th rowspan=0 colspan=bad>A<th>B
+<tbody>
+<tr><td rowspan="999999999999999999">one<td>two
+<tr><td>three
+<tfoot><tr><td>footer</tbody>
+<tr><td>orphan
+</table>
+<table border>
+<tr><td><table><tbody><tr><td>x</td></tbody></table><td>y
+</table>
+<table><tr><th><p>paragraph<td><ul><li>list</table>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>forms and controls</title>
+</head>
+<body>
+<form id=f action="/submit" method=UNKNOWN enctype="multipart/form-data" accept-charset="x,,utf-99">
+<fieldset disabled="maybe"><legend>credentials
+<label for=missing>User <input name=user type=text value="&quot; onfocus=alert(1)"></label>
+<label>Password <input type=password name=pass></fieldset>
+<fieldset><legend>options</legend>
+<input type=checkbox checked=false required=wat>
+<input type=radio name=r value=one checked>
+<input type=radio name=r value=two checked=checked>
+<select name=s multiple=0 size=not-a-number>
+<option selected=maybe value>first
+<option value=two>second
+<optgroup label="group"><option>third</optgroup>
+</select>
+<textarea rows=-1 cols=999999999999999999 wrap=diagonal>one
+two</textarea>
+<button type=submit formaction="::::">Send</button>
+<input type=image src="" width=-4 height=NaN>
+</fieldset>
+</form>
+<form><input list=choices><datalist id=choices><option value=a><option value=b></datalist></form>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>lists and phrasing boundaries</title></head>
+<body>
+<dl compact=maybe>
+<dt>term 1
+<dd>definition <p>paragraph
+<dt><b>term <i>nested</dt>
+<dd><ol start=foo reversed="false" type="?">
+<li value=-999999999999999999>first
+<li><ol><li>nested one<li>nested two</ol>
+<li>last
+</dl>
+<menu type=context><li>menu one<li>menu two</menu>
+<p><em><strong><code><samp>text</em></strong></code></samp>
+<pre><code>pre <b>markup</pre></code>
+<blockquote cite="http://[bad"><p>quoted</blockquote>
+<q cite="">quote <abbr title=unclosed>abbr</q>
+<ruby>漢<rt>kanji<rp>(</rp>字<rt>ji</ruby>
+<ins datetime=not-a-date>inserted</ins><del cite="x">deleted
+<small><big><mark>highlight</small></big></mark>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>media and metadata oddities</title>
+<link rel=stylesheet href=//[invalid media=screen,unknown>
+<link rel=icon sizes="16x16 0x0 any" href=data:text/plain,foo>
+<meta http-equiv=refresh content="0;url='::::">
+</head>
+<body>
+<picture>
+<source media="(min-width:)" srcset="a 1x, b -2w, c">
+<source type="image/" srcset="">
+<img srcset="x 999999999999999999w, y 0.1x" src="fallback" alt>
+</picture>
+<video autoplay=maybe controlslist="nodownload unknown" width=NaN height=-10 poster="">
+<track kind=subtitles src="" srclang=xx default=false>
+<source src=one type=video/unknown>
+fallback video text
+</video>
+<audio loop=false preload=impossible><source srcset="x"><track></audio>
+<iframe srcdoc="<html><body><p>embedded</p></body></html>" sandbox="allow-scripts allow-unknown" loading=whenever></iframe>
+<canvas width=-1 height=999999999999999999>canvas fallback</canvas>
+<map name="m"><area shape=poly coords="1,2,three,4" href="" alt><area href></map>
+<img usemap="#m" ismap="false" border=bad>
+<object data="x" type="application/octet-stream" width=auto>
+<param name=name value><param name=value>
+<object>nested fallback</object>
+</object>
+</body>
+</html>
+```

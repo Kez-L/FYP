@@ -1,0 +1,96 @@
+```html
+<!doctype html>
+<!-- unclosed comment starts
+<html>
+<head><title>Comment recovery</title></head>
+<body>
+<p>This markup is hidden inside a comment --> visible text
+<?processing instruction?>
+<![CDATA[not really cdata]]>
+<div id="outer"><span>alpha</div><span>beta</span>
+<!-- nested <!-- comment --> tail
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+</head>
+<body>
+<table border="1">
+<caption>Irregular rows</caption>
+<colgroup><col span="2"><col></colgroup>
+<thead><tr><th>A<th>B<th>C</tr></thead>
+<tbody>
+<tr><td rowspan="2">one<td>two
+<tr><td colspan="2">three
+<tfoot><tr><td>footer
+</tbody>
+<tr><td>orphan after body section
+</table>
+<table><tr><td><table><tr><td>nested<td>cell</tr></table><td>outer</tr></table>
+</body>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Foreign content boundaries</title></head>
+<body>
+<svg viewBox="0 0 100 100"><foreignObject width="80" height="40">
+<div xmlns="http://www.w3.org/1999/xhtml"><p>embedded <b>HTML</b></div>
+</foreignObject><path d="M0 0 L10 10" fill="url(#x)">
+<math><mrow><mi>x</mi><mo>+</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></mrow></math>
+<svg><title>inner</title><g><circle cx="4" cy="5"/></g></svg>
+</svg>
+<p>after foreign content</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Attributes and entity stress</title>
+<meta name="generator" content="x&amp;y&quot;z">
+</head>
+<body bgcolor=#fff onload=alert('x')>
+<div a=1 b='two c="three" d=&bad; e="&amp; &copy &unknown;">
+<pre>  leading
+ &lt;tag&gt; &#0; &#xD800; &#x110000; &notit;</pre>
+<form action="/submit" method="post">
+<input type=text name=x disabled=disabled>
+<button type=submit><span>send</button></span>
+<textarea name=t rows=2 cols=4>first
+second</textarea>
+</form>
+</div>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>End tag and block recovery</title></head>
+<body>
+<section><header><hgroup><h1>Heading<h2>Subheading</header>
+<article>
+<p>one
+<p>two<div>block starts <p>three</div>four
+<address>name<br>street
+<blockquote cite=/q><p>quoted
+</address></blockquote>
+<ul><li>first<li>second<ul><li>nested</ul><li>third</ol>
+<ol start="0"><li value="x">bad value<li>next</ol>
+<details open><summary>more</summary><p>content</details>
+</article>
+<footer>foot</section>
+</body>
+</html>
+```

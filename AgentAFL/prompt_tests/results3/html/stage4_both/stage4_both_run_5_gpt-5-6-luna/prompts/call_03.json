@@ -1,0 +1,23 @@
+{
+  "call": 3,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a HTML document parser.\nTarget: /home/user/Documents/1git-folder/AgentAFL/AFLPlus/tidy-html5-build/tidy_parse_string_fuzzer-afl.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 HTML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<!DOCTYPE HTML PUBLIC \"-//W3O//DTD W3 HTML 3.0//EN\">\n<HTML>\n<HEAD>\n  <TITLE>Malformed token stream</TITLE>\n</HEAD>\n<BODY>\n  <P><A HREF=\"x\" NAME=\"n\" TARGET=\"_blank\" TARGET=\"_self\">link\n  <A HREF=x y z=\"1\"=bad>second\n  <BR/ ><BR //////><WBR/>\n  <B><I><U><TT><S><SUP>deep</B>out</I>tail</U></TT></S></SUP>\n  <P ATTR=one ATTR=two ATTR=\"three\" empty=\"\" novalue>\n    <LABEL FOR=\"a\"><INPUT ID=a VALUE=\"x\n  <BUTTON TYPE=\"unknown\" NAME=\"b\" VALUE=\"v\" FORM=\"missing\">button\n  <OUTPUT FOR=\"a b\" NAME=o>result</OUTPUT>\n  <METER MIN=\"10\" MAX=\"0\" VALUE=\"NaN\" LOW=\"-\" HIGH=\"%\" OPTIMUM=\"x\">meter</METER>\n  <PROGRESS MAX=\"-1\" VALUE=\"999\">progress</PROGRESS>\n  <TIME DATETIME=\"2024-99-99T99:99:99Z\">time</TIME>\n  <P><SPAN STYLE=\"font-family:'unterminated; color:red\"><FONT FACE=\"a>b\" SIZE=\"999\">\n    text &copy &copy; &amp &lt\n  </FONT></SPAN>\n  <!-- unclosed comment\n  <div>hidden?</div>\n  <p>after comment\n</BODY>\n\n--- example 2 ---\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n<HTML>\n<HEAD>\n<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=unknown\">\n<TITLE>Attribute stress</TITLE>\n</HEAD>\n<BODY>\n<TABLE border=1 cellpadding=\"2\" cellspacing=0 width=100%>\n<CAPTION ALIGN=bottom>caption\n<TR VALIGN=middle>\n<TD ROWSPAN=0 COLSPAN=\"999\" NOWRAP=maybe>\n  <FORM METHOD=GET ACTION=\"\">\n    <INPUT NAME=x VALUE=\"a>b<c\" CHECKED DISABLED=>\n    <SELECT NAME=choice MULTIPLE SIZE=-1>\n      <OPTION SELECTED VALUE=one>One\n      <OPTION VALUE=two>Two</OPTION>\n      <OPTION>Three\n    </SELECT>\n    <TEXTAREA ROWS=\"NaN\" COLS=0 WRAP=hard>text</TEXTAREA>\n  </FORM>\n</TD>\n<TD><TABLE><TR><TD>inner</TABLE>\n</TR>\n</TABLE>\n<HR WIDTH=\"100%\" SIZE=\"bad\">\n<ADDRESS><A HREF=\"javascript:alert(1)\">link</A></ADDRESS>\n</BODY>\n</HTML>\n\nTried before \u2014 no new coverage, avoid repeating:\n--- a seed you generated (cycle 3) added 0 new edges ---\n<!DOCTYPE html SYSTEM \"about:legacy-compat\">\n<!--><!----><! -- malformed comment -- >\n<?xml version=\"1.0\"?>\n<html lang=\"en\" dir=\"rtl\" id=\"root\" id=\"duplicate\">\n<head>\n  <base href=\"http://example.invalid/a/b/\">\n  <title>&#xD800; &amp; &unknown; title</title>\n  <style type=\"text/css\">\n    body { color: expression(alert(\"x\")); } /* unclosed\n  </style>\n  <script type=\"text/javascript\">\n    if (a < b && c > d) { document.write(\"</script>\"); }\n  </script>\n</head>\n<body bgcolor=\"#gggggg\" text=\"red\" link=>\n  <hgroup><h1>Heading <em>one<h6>six</hgroup>\n  <p class=\"a b c\" style=\"color: rgb(999,-1,none)\" title=\"x&quot;y&#0;z\">\n    Text <strong><i><u>nested</strong> broken</u></i>\n  </p>\n  <dl compact=...[truncated, 905 chars total]\n\n--- a seed you generated (cycle 3) added 0 new edges ---\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n<HTML>\n<HEAD>\n  <TITLE>Map and embedded content</TITLE>\n  <ISINDEX PROMPT=\"Search:\">\n</HEAD>\n<BODY>\n  <P><IMG SRC=\"x\" ALT=\"a & b\" WIDTH=\"NaN\" HEIGHT=\"-999\" BORDER=\"none\" USEMAP=\"#m\">\n  <MAP NAME=\"m\" ID=\"m\">\n    <AREA SHAPE=\"rect\" COORDS=\"0,0,10,10\" HREF=\"one\">\n    <AREA SHAPE=\"circle\" COORDS=\"x,y,r\" NOHREF>\n    <AREA SHAPE=\"poly\" COORDS=\"1,2,3\" HREF>\n    stray map text\n  </MAP>\n  <OBJECT CLASSID=\"clsid:invalid\" CODEBASE=\"\" DATA=\"data:text/plain,abc\" TYPE=\"bad/type\"\n          WIDTH=\"0\" HEIGHT=\"%\" ALIGN=\"sideways\">\n    <PARAM NAME=\"movie\" VALUE=\"a&b\">\n    <PARAM NAME= VALUE=>\n    fallback <EMBED SRC=\"plugin\" TYPE=\"application/x-unknown\" HIDDEN=...[truncated, 1048 chars total]\n\nGenerate 5 new HTML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-tidy-20261006",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-10T05:57:32.071823+00:00"
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:example:config" xmlns:sec="urn:example:security">
+  <profile name="staging" active="true">
+    <parameters>
+      <parameter key="timeout" type="integer">45</parameter>
+      <parameter key="endpoint" type="uri">https://service.example.invalid/api</parameter>
+      <parameter key="features" type="list">
+        <value>delta</value>
+        <value>snapshot</value>
+        <value>audit</value>
+      </parameter>
+    </parameters>
+    <credentials>
+      <sec:principal realm="internal">svc-deployer</sec:principal>
+      <sec:permission resource="artifacts" action="read"/>
+      <sec:permission resource="artifacts" action="write"/>
+    </credentials>
+    <routing>
+      <rule priority="10">
+        <match field="region" operator="equals">eu-west</match>
+        <forward weight="80">pool-eu</forward>
+        <forward weight="20">pool-fallback</forward>
+      </rule>
+      <rule priority="20">
+        <match field="region" operator="exists"/>
+        <forward weight="100">pool-global</forward>
+      </rule>
+    </routing>
+  </profile>
+</configuration>

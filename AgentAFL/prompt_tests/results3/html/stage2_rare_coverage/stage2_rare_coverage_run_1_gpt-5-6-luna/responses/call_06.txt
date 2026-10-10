@@ -1,0 +1,124 @@
+```html
+<!DOCTYPE html [
+  <!ENTITY local "replacement &amp; text">
+  <!ELEMENT note ANY>
+]>
+<?xml version="1.0"?>
+<!-- comment -- -- broken -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8">
+<base href="http://example.invalid/a/../b/">
+<link rel="stylesheet" href="x.css">
+<style type="text/css">
+  @media screen { body { color: expression("x"); } }
+  /* unterminated
+</style>
+</head>
+<body id="root" data-x="a&#0;b&#xD800;c">
+<svg width="1" height="1" viewBox="0 0 10 10">
+  <foreignObject><div xmlns="http://www.w3.org/1999/xhtml">SVG text</div></foreignObject>
+  <path d="M0 0 L10 10 Z" onload="x&y">
+</svg>
+<math><mrow><mi>x</mi><mo>&InvisibleTimes;</mo><mn>2</mn></mrow></math>
+<![CDATA[ <not-a-tag> & still text ]]>
+&local;
+</body>
+</html>
+```
+
+```html
+<html>
+<head>
+<title>Misnested inline controls</title>
+</head>
+<body>
+<p><b><i><u><em>alpha
+<a href="javascript:alert(1)" name="n"><span><font color="#12">beta</b>
+<small><big>gamma</a></font></span></i>
+<q cite="x"><abbr title="A > B">delta</q></abbr></u>
+<br><br />
+<hr noshade="noshade" size=bad width="%">
+<ins datetime="not-a-date"><del cite="&quot;"><s>epsilon</ins></del>
+<address><center><strike>zeta</address></center></strike>
+<p><a><a href=#one>nested links</a></a>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<isindex prompt="Search:">
+<noscript><meta http-equiv=refresh content="0;url='x&y'"></noscript>
+</head>
+<body bgcolor=#GGG text="&unknown;" link=foo vlink=bar alink=baz>
+<marquee direction=sideways behavior=maybe scrollamount=-1>
+  <blink><font face="A&B" size="9">moving text
+</marquee>
+<applet code="x.class" archive="a.jar,b.jar" width="NaN" height=-5>
+  <param name=name value="a=b&c">
+  fallback <object data=x type=application/octet-stream>
+    <param name=broken>
+    <embed src="movie" pluginspage="x">
+  </object>
+</applet>
+<map name=m><area shape=poly coords="1,2,three,4" href="#"><area></map>
+<img src="x" alt="unterminated
+<table><tr><td>x</table>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Raw text and declarations</title></head>
+<body>
+<script type="text/javascript">
+  if (a < b && c > d) { document.write("</script><p>injected</p>"); }
+  /* </script> inside a string */
+</script>
+<style>
+  .x:after { content: "</style><div>"; }
+  @import url("a&b.css");
+</style>
+<textarea rows="x" cols="y">first</textarea>
+<xmp><div><b>literal</b></xmp>
+<plaintext>
+<html><body><table><tr><td>everything becomes text
+</plaintext>
+<!-- one <!-- nested --> comment -->
+<!---->
+<!-- unclosed
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=bogus">
+<title>&#x110000; &#99999999; &#0; &amp
+</head>
+<body>
+<details open="false"><summary>Summary</summary>
+<section><header><hgroup><h1>One<h6>Six</h6></hgroup></header>
+<article><figure><figcaption>caption</figcaption>
+<video src="v" poster="p" controlslist="a b" autoplay muted>
+<source srcset="a 1x, b 200w"><track kind=subtitles srclang=en>
+fallback
+</video>
+<canvas width="999999999999999999999999" height="-1">canvas fallback</canvas>
+</figure></article>
+<footer><time datetime="2024-99-99T99:99:99Z">when</time>
+<data value="&quot;broken">value</data></footer>
+</section>
+</details>
+<dialog open><form><output for="a b">result</output><meter min=10 max=1 value=NaN></meter>
+<progress value="-3" max="0">%</progress></form></dialog>
+</body>
+</html>
+```

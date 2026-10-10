@@ -1,0 +1,121 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>Table repair stress</title>
+</head>
+<body>
+  <table border="1">
+    <caption><b>Results<table><tr><td>nested caption</b></caption>
+    <colgroup span="2"><col><col width="bad"></colgroup>
+    <thead><tr><th rowspan="0">A<th colspan="-2">B<th>C</tr></thead>
+    <tbody>
+      <tr><td>one<td>two
+      <tr><td colspan="99">three
+      <div>stray block inside table</div>
+      <tr><th><p>broken paragraph<td><ul><li>list<li>item</ul>
+    </tbody>
+    <tfoot><tr><td>footer<td><td>extra</tfoot>
+  </table>
+  <p>after<table><tr><td>second table</table>tail
+</body>
+</html>
+```
+
+```html
+<!doctype html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://example.invalid/strict.dtd">
+<?xml version="1.0"?>
+<!-- comment -- -- malformed -->
+<html><head>
+  <title>Declarations &unknown; &#0; &#xD800; &#x110000;</title>
+  <meta name="x" content="a&#13;&#10;b">
+  <![CDATA[head cdata <tag> & stuff]]>
+</head><body>
+  <!bad declaration>
+  <![CDATA[body <b>not really</b>]]>
+  <p title="a&quot;b&amp;c&#39;d&#xZZ;">one
+  <p><b><i><u>unclosed
+  <br/ ><hr//><img src=foo/bar alt='x<y &z'>
+  <?processing instruction?>
+  <!-- unterminated comment
+</body>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head><title>Ruby and phrasing boundaries</title></head>
+<body>
+  <hgroup><h1>Heading <small>small</h1><h2>orphan</h2></hgroup>
+  <p><bdi><bdo dir="ltr">abc <ruby>漢<rp>(</rp><rt>kan</rt><rp>)</rp></ruby></bdo></bdi>
+  <p><mark><time datetime="not-a-date">yesterday</time></mark>
+     <data value="1"><meter min="10" max="2" low="x">bad</meter></data>
+     <progress value="wat" max="-1">loading</progress>
+  <details open="false"><summary>Summary <summary>duplicate</summary>
+    <menu type="toolbar"><li><button type="unknown">One</button>
+      <li><a href="javascript:alert(1)" download>Two
+    </menu>
+    <p>detail text
+  </details>
+  <dl><dt>term<dd>definition<dt><dd>empty
+  <p><ins><del><s><strike>crossed</ins>out</del></s></strike>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <base href="//example.test/a/">
+  <title>Embedded resource switching</title>
+</head>
+<body>
+  <picture>
+    <source media="(min-width: 1px)" srcset="a 1x, b 2x" sizes="calc(100% - 1px)">
+    <source type="image/unknown" srcset="">
+    <img srcset="fallback.png 400w, broken 0w" sizes="auto" alt="fallback">
+  </picture>
+  <video controls autoplay="maybe" poster="x">
+    <source src="movie.mp4" type="video/mp4; codecs=&quot;avc1&quot;">
+    <track kind="subtitles" srclang="xx" default src="captions.vtt">
+    video fallback <a href="x">link
+  </video>
+  <audio><source src="sound" type=""><track></audio>
+  <object data="file.bin" type="application/octet-stream" width="NaN">
+    <param name="x" value="&quot;quoted">
+    <embed src="plugin" type="application/x-test" hidden="false">
+    <iframe srcdoc="<p>inner &amp; <b>document</b>" name="frame" sandbox="allow-scripts allow-scripts"></iframe>
+  </object>
+  <noscript><div>fallback <img src=x></div></noscript>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Template and obsolete mixtures</title></head>
+<body>
+  <template id="t"><table><tr><td>template <b>content</b></td></tr></table></template>
+  <main>
+    <header><nav><a href="#a">A<a href="#b">B</nav></header>
+    <article>
+      <section><h2>First<section><h3>Nested without closing</h2>
+        <center><font face="serif" size="999" color="#ggg">legacy
+          <dir><li>directory item</dir>
+        </font></center>
+      </section>
+      <aside><blockquote cite="x"><q>quote <q>nested</blockquote></q></aside>
+      <pre>  pre <code>code <kbd>kbd</pre></code>
+      <x-custom a="1" a="2"><span>custom</x-custom>
+      <div contenteditable="true" spellcheck="maybe" style="width: expression(alert(1))">
+        <wbr><br><br></div>
+    </article>
+    <footer><address>name<br>mail@example.test</address></footer>
+  </main>
+  <template><p>unclosed template
+</body>
+</html>
+```

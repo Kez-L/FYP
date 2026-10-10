@@ -1,0 +1,145 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Form controls and obsolete attributes</title>
+  <base href="http://example.invalid/forms/">
+  <style type="text/css">
+    form { color: red; }
+  </style>
+</head>
+<body bgcolor="white" text="#000000">
+  <form action="/submit" method="POST" enctype="multipart/form-data">
+    <fieldset disabled="maybe">
+      <legend>Registration &amp; preferences</legend>
+      <label for="user">User name:</label>
+      <input id="user" name="user" type="text" value="a&#x0;b" maxlength="-2" size="wide">
+      <label>Password <input name=password type=password autocomplete="off"></label>
+      <input type="hidden" name="token" value="&quot;&apos;&gt;">
+      <input type="checkbox" name="news" checked="false"> News
+      <input type="radio" name="mode" value="one" selected> One
+      <input type="radio" name="mode" value="two" disabled> Two
+      <textarea name="notes" rows="0" cols="-1">first &lt;tag&gt;
+second &#xD800; line</textarea>
+      <select name="color" multiple="no" size="not-a-number">
+        <option value="r" selected="no">Red
+        <option value="g">Green</option>
+        <optgroup label="Blues"><option>Blue</optgroup>
+      </select>
+      <button type="mystery" formaction="/other">Send &amp; continue</button>
+      <input type="image" src="" alt="submit" width="1e2" height="--3">
+    </fieldset>
+  </form>
+  <p><a href="javascript:&#x0A;alert(1)" target="_blank">after form</a></p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xlink="http://www.w3.org/1999/xlink">
+<head><title>Namespaced embedded content</title></head>
+<body>
+  <svg width="120" height="80" viewBox="0 0 120 80" preserveAspectRatio="bad">
+    <title>vector</title>
+    <g transform="translate(1,2) rotate(foo)">
+      <rect x="-1" y="NaN" width="100%" height="20" fill="url(#missing)"/>
+      <circle cx="20" cy="20" r="-4"></circle>
+      <path d="M0 0 L 10,10 Q bad" stroke-width="1e3"></path>
+      <foreignObject width="50" height="20"><div>HTML in SVG</div></foreignObject>
+    </g>
+    <use xlink:href="#unknown" href="##double"></use>
+  </svg>
+  <math display="sideways">
+    <mrow><mi>x</mi><mo>&InvisibleTimes;</mo><mfrac><mn>1</mn><mroot><mi>y</mi></mroot></mfrac></mrow>
+    <annotation encoding="application/x-unknown"><![CDATA[<not markup>]]></annotation>
+  </math>
+  <p><custom-widget data-a="&bad;" /><x-one><x-two>nested</x-one>tail</x-two></custom-widget></p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<!-- unterminated comment starts here
+<html>
+<head>
+  <?processing instruction?>
+  <!bad declaration>
+  <meta http-equiv=refresh content='0;url="x&y">
+  <title>title <!-- nested <!-- comment --> residue</title>
+</head>
+<body>
+  <![CDATA[
+    <p>cdata-looking text</p>
+  ]]>
+  <hgroup><h1>Heading <h4>wrong level</h4></hgroup>
+  <p>before <b><i><u>crossed</b> tags</u></i> and <q cite="a>b">quote</q>
+  <br/><br / ><wbr><hr style="color:red" / >
+  <img src="a&b" alt="unterminated title=" title="x" />
+  <p>entities: &amp &unknown; &#; &#x; &#x110000; &#-1; &#55357;&#56832;</p>
+  <address>one<br>two
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Objects, maps, and media fallbacks</title>
+</head>
+<body>
+  <object data="movie.bin" type="application/x-test" width="bad" height="-20" usemap="#map">
+    <param name="autoplay" value="maybe">
+    <param name="empty">
+    <embed src="plugin.dat" hidden="sometimes" loop="-1">
+    <p>Object fallback <a href="">link
+  </object>
+  <map name="map" id="map">
+    <area shape="poly" coords="0,0,10,ten,0" href="one">
+    <area shape="circle" coords="1,2" alt="missing radius">
+    <area shape="rect" coords="1,2,3" nohref>
+  </map>
+  <video controls="false" autoplay="0" poster="poster&amp;x">
+    <source src="a.mp4" type="video/mp4; codecs=&quot;x">
+    <track kind="captions" srclang="xx" label="&lt;bad&gt;" default="no">
+    <p>video fallback <code>&lt;video&gt;</code></p>
+  </video>
+  <audio src="" preload="perhaps"><source src="sound.ogg"></audio>
+  <iframe srcdoc="<p>embedded &amp; text</p>" sandbox="allow-scripts allow-what" width="none"></iframe>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en" dir="sideways">
+<head>
+  <meta charset="UTF-16LE">
+  <meta name="viewport" content="width=device-width, initial-scale=banana">
+  <title>Sections, ruby, and bidi controls</title>
+</head>
+<body>
+  <header><nav aria-label="main"><a href="#z">Home</a><a href="#z">Home</a></nav></header>
+  <main id="z">
+    <section><h1>Alpha <small>subtitle</small></h1>
+      <article>
+        <ruby>漢<rb>字<rt>kanji<rp>(</rp>かんじ</ruby>
+        <bdi dir="auto">abc‮def‬</bdi>
+        <bdo dir="invalid">left <span dir="rtl">right</span></bdo>
+        <time datetime="not-a-date">tomorrow</time>
+        <data value="&quot;">value</data>
+      </article>
+    </section>
+    <aside><details open="false"><summary>More</summary><p>hidden-ish content</p></details></aside>
+    <div contenteditable="maybe" spellcheck="truth" tabindex="NaN">
+      <del cite="x" datetime="2020-99-99">removed <ins>added</del> text</ins>
+      <pre><code>  literal &amp; &#xD800;
+	&lt;/pre&gt;</code></pre>
+    </div>
+  </main>
+  <footer><small>© &#x1F4A9; &copy</small></footer>
+</body>
+</html>
+```

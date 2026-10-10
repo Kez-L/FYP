@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (header, payload)>
+  <!ATTLIST envelope xmlns:sec CDATA #IMPLIED>
+  <!ELEMENT header (message-id, timestamp, credentials?)>
+  <!ELEMENT message-id (#PCDATA)>
+  <!ELEMENT timestamp (#PCDATA)>
+  <!ELEMENT credentials (user, token)>
+  <!ELEMENT user (#PCDATA)>
+  <!ELEMENT token (#PCDATA)>
+  <!ELEMENT payload (command|batch)>
+  <!ELEMENT command (name, argument*)>
+  <!ATTLIST command id ID #REQUIRED priority (low|normal|urgent) "normal">
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT argument (#PCDATA|value)*>
+  <!ATTLIST argument key NMTOKEN #REQUIRED>
+  <!ELEMENT value (#PCDATA)>
+  <!ELEMENT batch (command+)>
+]>
+<envelope xmlns="urn:acme:transport" xmlns:sec="urn:acme:security" sec:mode="signed">
+  <header>
+    <message-id>urn:uuid:5f4e0c1a-8c4f-4c53-9a4b-7e11c018f2a0</message-id>
+    <timestamp>2026-09-30T23:58:04Z</timestamp>
+    <credentials>
+      <user>operator-7</user>
+      <token><![CDATA[opaque-token:<>:&quot;]]></token>
+    </credentials>
+  </header>
+  <payload>
+    <batch>
+      <command id="sync-1" priority="urgent">
+        <name>reconcile</name>
+        <argument key="scope"><value>inventory</value><value>returns</value></argument>
+      </command>
+      <command id="notify-2">
+        <name>publish</name>
+        <argument key="channel">ops &amp; audit</argument>
+      </command>
+    </batch>
+  </payload>
+</envelope>

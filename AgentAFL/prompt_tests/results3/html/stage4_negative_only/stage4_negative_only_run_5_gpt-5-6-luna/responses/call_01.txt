@@ -1,0 +1,122 @@
+```html
+<!DOCTYPE html>
+<!-- comment -- malformed -- >
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <base href="http://example.test/a/">
+  <style type="text/css">
+    body > p:first-child { color: #fff; }
+    @media screen and (max-width: 4px) { .x { display: none } }
+  </style>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("<!-- not markup -->"); }
+  </script>
+</head>
+<body>
+  <hgroup><h1>Title<h2>Subtitle</hgroup>
+  <p class="x">A &bogus; B &amp C &#x110000; D &#0; E</p>
+  <pre>  one
+	 two &lt; three
+</pre>
+  <!-- unterminated comment
+  <div id="hidden">this is inside what may be a comment</div>
+</body>
+</html>
+```
+
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><title>Frameset document</title></head>
+<frameset rows="20%,*,20%" cols="50%,50%">
+  <frame src="top.html" name="top" scrolling="no">
+  <frameset cols="30%,70%">
+    <frame src="left.html">
+    <frame src="right.html">
+  </frameset>
+  <noframes>
+    <body>
+      <p>This fallback contains <a href="x">a link
+      <img src="missing.gif" alt="fallback">
+      <map name="m"><area shape="rect" coords="0,0,10,10" href="a"><area href="b"></map>
+    </body>
+  </noframes>
+</frameset>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg">
+<head><title>Foreign content</title></head>
+<body>
+  <svg:svg width="120" height="80" viewBox="0 0 120 80">
+    <svg:defs><svg:linearGradient id="g"><svg:stop offset="0%"/><svg:stop offset="100%" stop-color="red"/></svg:linearGradient></svg:defs>
+    <svg:g transform="translate(4 5)">
+      <svg:rect x="0" y="0" width="100" height="40" fill="url(#g)"/>
+      <svg:text x="5" y="25">vector text</svg:text>
+    </svg:g>
+  </svg:svg>
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <mrow><mi>x</mi><mo>=</mo><mfrac><mn>1</mn><msqrt><mn>2</mn></msqrt></mfrac></mrow>
+  </math>
+  <object data="movie.bin" type="application/octet-stream">
+    <param name="autoplay" value="true">
+    <embed src="fallback.swf" width="1" height="1">
+  </object>
+</body>
+</html>
+```
+
+```html
+<html>
+  <head>
+    <?xml-stylesheet type="text/css" href="style.css"?>
+    <title>Odd declarations</title>
+  </head>
+  <body>
+    <div>
+      <![CDATA[
+        <not-an-element> & still text
+      ]]>
+      <p>Before
+      <hr>
+      <p>After
+    </div>
+    <dl>
+      <dt>Term one
+      <dd>Description one
+      <dd><dt>Term two</dt><dd>Description two</dd>
+    </dl>
+    <blockquote cite="http://example.test/q">
+      <p>Quoted <q cite='x"y'>words</q>
+      <cite>Source</cite>
+    </blockquote>
+    <address>Written by <a href="mailto:a@b">A & B</a></address>
+  </body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Table model stress</title></head>
+<body>
+  <table>
+    <caption><b>Inventory</caption>
+    <colgroup span="2"><col width="20%"><col></colgroup>
+    <thead><tr><th rowspan="2">ID<th colspan="2">Values</tr></thead>
+    <tbody>
+      <tr><td>A<td>1<td>2
+      <tr><td>B<td><form><input value="x"></form><td>3
+      <tr><td>C<table><tr><td>nested</table><td>4
+    </tbody>
+    <tfoot><tr><td colspan="3">total
+  </table>
+  <p>After table <ins datetime="bad"><del>old</del>new</ins>
+  <table><tr><td>unclosed
+  <div>text moved around <span>and around</div></span>
+</body>
+</html>
+```

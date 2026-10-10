@@ -1,0 +1,130 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>table recovery</title>
+</head>
+<body>
+<table border="1">
+<caption><b>Unclosed caption
+<colgroup span="2"><col><col>
+<thead>
+<tr><th rowspan="2">A<th>B
+<tbody>
+<tr><td><form action="/x"><input name="q"><button type="submit">go</form>
+<tr><td colspan="3">orphan cell
+<tfoot>
+<tr><td><select name="x"><option>one<option selected>two</select>
+</table>
+<table>
+<tr><td>outer
+<table><tr><td>inner</td></tr></table>
+</td></tr>
+</table>
+</body>
+</html>
+```
+
+```html
+<html>
+<head>
+<title>misnested phrasing</title>
+</head>
+<body>
+<p><b><i><u>alpha
+<p>beta <a href="/a"><b>bold <em>emphasis</a> tail</b></em>
+<div><span>one <strong>two <small>three</div> four</strong></small></span>
+<dl>
+<dt>Term 1
+<dd>Definition <p>nested paragraph
+<dt><abbr title="x"><code>Term 2</abbr>
+<dd><pre>line 1
+line 2</pre>
+</dl>
+<address><a href="mailto:x@y">contact <b>here</address>
+</body>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>comments and declarations</title>
+<!-- normal -->
+<!-- nested <!-- marker --> trailing -->
+<! bogus declaration >
+<?processing instruction?>
+<![CDATA[not really cdata]]>
+</head>
+<body>
+<!-->
+text before
+<!---->
+<!-- unclosed comment
+<p>hidden-looking text &copy; &#0; &#x110000; &notanentity; &amp
+<plaintext>
+everything <b>after</b>
+</plaintext>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>form controls</title>
+</head>
+<body>
+<form id="f" method="post">
+<fieldset disabled>
+<legend>Account <input type="text" name="label"></legend>
+<label for="u">User</label><input id="u" type="text" name="user" required>
+<label>Password<input type="password" name="pass"></label>
+<textarea name="bio" rows="2" cols="8">first
+second</textarea>
+</fieldset>
+<input type="checkbox" checked="checked"><input type="radio" name="r" checked>
+<select multiple size="3">
+<optgroup label="Group"><option value="1">One<option>Two</optgroup>
+<option>Three
+</select>
+<button formaction="/submit">Submit</button>
+</form>
+<form><input name="outside"><input type="image" src="x" alt=""></form>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>raw text and embedded data</title>
+<style>
+body { background: url("x"); }
+</style>
+<script type="text/javascript">
+if (a < b) { document.write("<div class='x'>"); }
+</script>
+<script>
+/* </script> */
+var s = "</title><p>";
+</script>
+<noscript>
+<div>fallback <span>content</span></div>
+</noscript>
+</head>
+<body>
+<iframe srcdoc="<p>quoted &amp; fragment</p>" src="frame.html"></iframe>
+<object data="movie.bin" type="application/octet-stream">
+<param name="quality" value="high">
+<embed src="thing.swf">
+fallback
+</object>
+<video controls poster="p.jpg"><source src="a.mp4" type="video/mp4"><track kind="subtitles" src="s.vtt"></video>
+<template><p>template <b>contents</b></template>
+</body>
+</html>
+```

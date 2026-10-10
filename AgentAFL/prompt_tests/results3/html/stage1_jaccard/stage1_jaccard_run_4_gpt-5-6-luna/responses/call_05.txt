@@ -1,0 +1,160 @@
+```html
+<!doctype html>
+<html>
+  <head>
+    <title>Form control state transitions</title>
+    <base href="https://example.invalid/forms/">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+  </head>
+  <body>
+    <form action="/submit?x=1&amp;y=2" method="post" enctype="multipart/form-data">
+      <fieldset disabled>
+        <legend>Account <b>details</legend>
+        <label for="user">User</label>
+        <input id="user" name="user" type="text" value="a&quot;b" required>
+        <label>Password <input name="pw" type="password"></label>
+        <select name="role" multiple size="3">
+          <option value="one" selected>One
+          <option value="two">Two</option>
+          <optgroup label="Group &amp; More">
+            <option>Three
+        </select>
+        <textarea name="notes" rows="2" cols="8">first
+second</textarea>
+      </fieldset>
+      <input type="file" name="upload" accept="image/*,.txt" multiple>
+      <button type="submit" formaction="/different">Send</button>
+      <output name="result" for="user pw">pending</output>
+    </form>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Embedded foreign content</title>
+</head>
+<body>
+  <svg width="120" height="80" viewBox="0 0 120 80">
+    <defs>
+      <linearGradient id="g"><stop offset="0%"/><stop offset="100%"/></linearGradient>
+      <clipPath id="c"><circle cx="40" cy="40" r="30"/></clipPath>
+    </defs>
+    <g transform="translate(2,3)" clip-path="url(#c)">
+      <rect x="0" y="0" width="90" height="60" fill="url(#g)"/>
+      <text x="4" y="20">A &amp; B</text>
+      <foreignObject x="4" y="25" width="100" height="30">
+        <div xmlns="http://www.w3.org/1999/xhtml"><em>embedded</em></div>
+      </foreignObject>
+    </g>
+  </svg>
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <mrow><mi>x</mi><mo>=</mo><mfrac><mn>1</mn><msup><mi>y</mi><mn>2</mn></msup></mfrac></mrow>
+  </math>
+  <p>after foreign content</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lists and definition structures</title>
+</head>
+<body>
+  <ol start="0" reversed type="A">
+    <li>alpha
+      <ul>
+        <li>nested one</li>
+        <li>nested two
+          <ol><li>deep item</ol>
+      </ul>
+    <li value="9">omega</li>
+  </ol>
+  <dl>
+    <dt>term one
+    <dd>definition one
+    <dt><span>term two</span></dt>
+    <dd>definition <a href="#missing">with link
+    <dt></dt>
+    <dd><p>paragraph in definition</p><dd>second definition
+  </dl>
+  <menu>
+    <li><button type=button>Action</button>
+    <li><a href="mailto:a@b.invalid">Mail</a>
+  </menu>
+  <hr>
+  <pre>  preserved
+ &lt;not-a-tag&gt; &#x1F600;</pre>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <meta charset="ISO-8859-1">
+  <title>Media and metadata</title>
+  <link rel=stylesheet href=a.css media="screen and (min-width: 2px)">
+  <link rel="alternate" type="application/json" href="/data">
+</head>
+<body>
+  <picture>
+    <source media="(min-width: 800px)" srcset="large.jpg 1x, large-2.jpg 2x">
+    <source type="image/webp" srcset="small.webp">
+    <img src="fallback.jpg" alt="fallback" width="20" height="10" loading=lazy>
+  </picture>
+  <audio controls autoplay loop preload="metadata">
+    <source src="sound.ogg" type="audio/ogg">
+    <source src="sound.mp3">
+    fallback <a href="sound.mp3">download</a>
+  </audio>
+  <video width="320" height="180" poster=cover.jpg controls>
+    <track kind=subtitles src="sub.vtt" srclang=en label=English default>
+    <track kind=chapters src=chap.vtt>
+    video fallback
+  </video>
+  <iframe srcdoc="<p>inside &amp; frame</p>" sandbox="allow-scripts" loading=lazy></iframe>
+  <object data="movie.bin" type="application/octet-stream">
+    <param name="autoplay" value="false">
+    object fallback
+  </object>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <title>Parsing boundaries</title>
+  <!-- comment -- with odd -- markers -->
+  <?processing instruction?>
+</head>
+<body>
+  <template id=t1><p>template text <b>bold</b></p></template>
+  <slot name="main">default slot</slot>
+  <div data-a data-b="" data-c='x&y' data-d=unquoted/ >
+    before<br/>after<wbr>break
+    <span title="unterminated>text
+  </div>
+  <p>entities: &amp; &apos; &quot; &lt; &gt; &nbsp; &#65; &#x41; &#x0;</p>
+  <![CDATA[ raw <tag> & stuff ]]>
+  <script type="application/ld+json">
+    {"name":"x","value":"</script><p>escaped boundary</p>"}
+  </script>
+  <noscript><div>noscript content</div></noscript>
+  <table border=1>
+    <caption>caption</caption>
+    <colgroup><col span=2><col></colgroup>
+    <thead><tr><th scope=col>A</th><th>B</th></tr></thead>
+    <tbody><tr><td>x<td>y</tr></tbody>
+    <tfoot><tr><td colspan=2>foot</td></tr></tfoot>
+  </table>
+</body>
+</html>
+```

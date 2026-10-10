@@ -1,0 +1,132 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="refresh" content="0; URL='javascript:alert(1)'">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <!--[if lt IE 9]><script>document.write("<b>legacy</b>")</script><![endif]-->
+  <style type="text/css">
+    @import url("x.css");
+    :root:has(body > p:first-child) { --x: "unterminated; }
+    a[href^="x"]::before { content: "\\3c"; }
+  </style>
+  <script type="application/ld+json">
+    {"name":"</script><p>escaped</p>","value":"\u2028"}
+  </script>
+</head>
+<body>
+  <p><b><i><u>one <b>two</i> three</u> four</b> five
+  <p><a href="http://example.invalid/?q=&amp;#x41">link
+  <br><br class="a" class="b">
+  <!-- comment -- --><!---->
+  <div><span>alpha</div>omega</span></p>
+</body>
+</html>
+```
+
+```html
+<!doctype html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://example.invalid/legacy.dtd">
+<html>
+<head>
+  <title>broken <![CDATA[ title ]]></title>
+  <base href="//example.invalid/a/">
+</head>
+<body>
+  <table border="1">
+    <caption>caption</caption>
+    <colgroup span="2"><col width="20"><col></colgroup>
+    <thead><tr><th colspan="2">A<th>B</tr></thead>
+    text before row
+    <tbody>
+      <tr><td rowspan="2">x<td><input></tbody>
+      <tr><td>y<td>z</td>
+    </tbody>
+    <tfoot><tr><td>total</table>
+  <p>after table <table><tr><td>nested <div>block</div></td></tr></table> tail
+  <address><div>not really an address</div></address>
+</body>
+</html>
+```
+
+```html
+<html>
+<head>
+  <title>&notanentity; &amp &copy &0; &#0; &#xD800; &#x110000;</title>
+</head>
+<body>
+  <hgroup><h1>Heading <small>small</h1><h2>sub</hgroup>
+  <dl>
+    <dt>Term one
+    <dd>Definition one
+    <dt><em>Term two
+    <dd><p>Paragraph in definition</p><dd>Second definition
+  </dl>
+  <menu type="toolbar">
+    <li><button type="button" aria-label="A &quot;quoted&quot; B">A</button>
+    <li><a download href="data:text/plain,%00%FF">download</a>
+    <li><details><summary>More</summary><ol><li>deep<li value="0">zero</ol></details>
+  </menu>
+  <blockquote cite="&quot;unterminated"><pre>  leading
+    <code>&lt;tag&gt; &amp; raw</code></pre></blockquote>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>raw text boundaries</title>
+  <noscript><p>head noscript <meta charset="x"></noscript>
+</head>
+<body>
+  <template id="t"><div><p>template one</template><p>outside
+  <script>
+    var a = "</script>";
+    var b = "<!--";
+    /* <script> </script> */
+  </script>
+  <style>
+    body { background: url("</style>"); }
+    /* </textarea> */
+  </style>
+  <textarea name="x">first &lt;textarea&gt; second</textarea>
+  <x-widget data-x="&quot; &apos; &unknown;">
+    <template shadowrootmode="open">
+      <slot name="missing"></slot>
+      <p>shadow content
+    </template>
+    <slot>fallback</slot>
+  </x-widget>
+  <iframe srcdoc="<p>embedded &amp; <b>document</b>">
+    fallback <b>content</b>
+  </iframe>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>sectioning and obsolete edges</title></head>
+<body>
+  <header><h1>Root</h1><nav><ul><li>one<li>two</ul></nav></header>
+  <main>
+    <article>
+      <h2>Article</h2>
+      <section><h3>First<section><h4>Nested</h4>text</article>
+      <aside>aside after article close</aside>
+    </section>
+    <figure><img src="" alt="a&amp;b" ismap><figcaption>caption
+    <video controls poster="x.jpg"><source src="a.mp4" type="video/mp4"><track kind="captions"></video></figure>
+    <p><marquee behavior="alternate"><blink>obsolete</blink></marquee>
+    <center><font color=red size=+3>legacy <strike>text</strike></font></center>
+    <hr><br><wbr>
+  </main>
+  <footer>
+    <p>footer
+    <object data="x" type="application/x-test"><param name="a" value="1"><embed src="y">fallback</object>
+  </footer>
+</body>
+</html>
+```

@@ -1,0 +1,149 @@
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (book+)>
+  <!ELEMENT book (title, author+, summary?, price)>
+  <!ATTLIST book isbn ID #REQUIRED category (fiction|history|science) "fiction">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT author (#PCDATA)>
+  <!ELEMENT summary (#PCDATA|emph|quote)*>
+  <!ELEMENT emph (#PCDATA)>
+  <!ELEMENT quote (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ENTITY publisher "Northwind Press">
+  <!ENTITY note "A carefully selected edition">
+]>
+<catalog>
+  <book isbn="bk-001" category="science">
+    <title>Signals &amp; Systems</title>
+    <author>R. Ada</author>
+    <author>L. Turing</author>
+    <summary><![CDATA[An introduction to waves, filters, and feedback.]]><emph>Revised</emph><quote>&note;</quote></summary>
+    <price currency="USD">&publisher; 42.50</price>
+  </book>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="urn:pkg" xmlns:x="urn:extra" xml:base="https://example.invalid/root/">
+  <?build profile="fuzz"?>
+  <!-- Namespaced attributes and a mixed-content manifest. -->
+  <manifest version="2.7" x:checksum="sha256:deadbeef">
+    <entry path="bin/tool" mode="0755" size="17">
+      <name>tool</name>
+      <data encoding="base64">AAECAwQFBgcICQ==</data>
+      <link rel="manual" href="../docs/tool.html"/>
+    </entry>
+    <entry path="share/config.xml" mode="0644" size="0">
+      <name>config</name>
+      <data><![CDATA[<settings enabled="true"/>]]></data>
+      <link rel="schema" href="schemas/config.xsd"/>
+    </entry>
+  </manifest>
+  <signature algorithm="ed25519">
+    <x:key-id>build-key-9</x:key-id>
+    <x:value>4f6b2d616263</x:value>
+  </signature>
+</package>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, section*)>
+  <!ELEMENT header (title, period)>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT period EMPTY>
+  <!ATTLIST period from CDATA #REQUIRED to CDATA #REQUIRED>
+  <!ELEMENT section (heading, paragraph+, table?)>
+  <!ATTLIST section id ID #IMPLIED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|strong|code|br)*>
+  <!ELEMENT strong (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+]>
+<report>
+  <header>
+    <title>Quarterly &amp; Operational Report</title>
+    <period from="2026-07-01" to="2026-09-30"/>
+  </header>
+  <section id="overview">
+    <heading>Overview</heading>
+    <paragraph>Demand remained <strong>steady</strong>.<br/>Exceptions are listed in <code>appendix-a</code>.</paragraph>
+    <paragraph><![CDATA[Raw note: <not-an-element> & still text]]></paragraph>
+    <table>
+      <row><cell>Region</cell><cell>Count</cell><cell>Rate</cell></row>
+      <row><cell>North</cell><cell>18</cell><cell>0.92</cell></row>
+      <row><cell>South</cell><cell>7</cell><cell>0.81</cell></row>
+    </table>
+  </section>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<directory xmlns="urn:directory" xmlns:hr="urn:hr" xmlns:contact="urn:contact">
+  <organization id="org-42" type="nonprofit">
+    <name xml:lang="en">Open Research Group</name>
+    <name xml:lang="de">Offene Forschungsgruppe</name>
+    <contact:address>
+      <contact:street>12 Example Lane</contact:street>
+      <contact:city>Riverton</contact:city>
+      <contact:postal>2048</contact:postal>
+      <contact:country code="ZZ">Nowhere</contact:country>
+    </contact:address>
+    <hr:people>
+      <hr:person employee-id="e-001" active="true">
+        <hr:name family="Quinn" given="Mira"/>
+        <hr:role since="2024-03-01">Analyst</hr:role>
+        <hr:skills>
+          <hr:skill level="expert">XML</hr:skill>
+          <hr:skill level="intermediate">C</hr:skill>
+        </hr:skills>
+      </hr:person>
+      <hr:person employee-id="e-002" active="false">
+        <hr:name family="Vale" given="Jon"/>
+        <hr:role since="2021-11-18">Archivist</hr:role>
+        <hr:skills/>
+      </hr:person>
+    </hr:people>
+  </organization>
+</directory>
+```
+
+```xml
+<?xml version="1.0"?>
+<conversation xmlns="urn:chat">
+  <thread key="t-88" locked="false">
+    <message id="m1" author="alice" time="2026-10-01T08:00:00Z">
+      <body>Hello <mention user="bob"/>—please review this.</body>
+      <attachment media-type="text/plain" name="notes.txt"><![CDATA[line one
+line two
+]]></attachment>
+      <reactions>
+        <reaction emoji="✓" count="2"/>
+        <reaction emoji="?" count="1"/>
+      </reactions>
+    </message>
+    <message id="m2" author="bob" time="2026-10-01T08:04:11+00:00">
+      <reply-to ref="m1"/>
+      <body>I found <format style="italic">two</format> cases:
+        <list ordered="true">
+          <item>an empty payload</item>
+          <item>an escaped value: &lt;none&gt;</item>
+        </list>
+      </body>
+      <attachment media-type="application/octet-stream" name="sample.bin">AAEC/w==</attachment>
+    </message>
+    <event type="rename" actor="alice">
+      <from>initial-review</from>
+      <to>final-review</to>
+    </event>
+  </thread>
+</conversation>
+```

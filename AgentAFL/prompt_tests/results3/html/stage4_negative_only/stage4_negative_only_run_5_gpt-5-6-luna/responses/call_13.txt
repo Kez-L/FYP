@@ -1,0 +1,156 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<!--><!----><! -- malformed comment -->
+<?xml version="1.0"?>
+<html lang=en dir="rtl">
+<head>
+  <meta http-equiv=Content-Type content="text/html; charset=UTF-8">
+  <meta name=viewport content=width=device-width,initial-scale=1>
+  <base href="http://example.invalid/a/">
+  <title>Unbalanced head elements
+  <link rel=stylesheet href="x.css">
+  <style type=text/css>
+    @media screen { body { color: red; } }
+    <!-- legacy comment
+  </style>
+</head>
+<body onload="x<y && y>z">
+  <h1 id=a id=b>Heading <small>small <em>emphasized</h1>
+  <p class='one two' data-x="a&amp;b" disabled=disabled>Text &copy &unknown; &#0; &#xD800;
+  <ul compact>
+    <li>one
+    <li><span>two
+      <ol start=-2><li>nested</ol>
+    <li>three</li></ul>
+  <blockquote cite='unterminated>
+    <p>Quote<br/>continued<hr></blockquote>
+  <script type="text/javascript">
+    if (a < b) { document.write("<p>literal</p>"); }
+    // </script> appears early
+  </script>
+  <p>tail</p>
+</body>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Adoption agency stress</title></head>
+<body>
+  <p><b><i><u>alpha <b>beta <i>gamma</p>
+  <div><a href="one"><span>link <a href=two>nested anchor</span></a>
+  <center><font color=red size=+3>legacy <strike>formatting
+    <big>large <small>small</font></center>
+  <address>name<br>street<br><a href=mailto:x@y>mail</address>
+  <pre>  preformatted
+    <code>code <kbd>key</pre></kbd>
+  <hr noshade="false">
+  <dir><li>old one<li>old two</dir>
+  <menu><li>menu one<li><p>menu paragraph</menu>
+  <dl>
+    <dt>first <dd>answer
+    <dt>second
+    <dd><div>answer with block <p>and paragraph
+  </dl>
+  <p><b><i><a href="#x">end</b></a></i></p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Object and embedded content</title>
+  <noscript><p>head fallback</p></noscript>
+</head>
+<body>
+  <object classid="clsid:bad" data="movie.bin" type="application/x-test"
+          width=320 height=240>
+    <param name=movie value="x&amp;y">
+    <param name=autoplay value=true>
+    <p>fallback <img src=missing alt="image < text"></p>
+    <embed src="nested.swf" width="10" height="10">
+  </object>
+  <video controls autoplay poster=poster.jpg>
+    <source src=a.mp4 type=video/mp4>
+    <source src=b.ogg type=video/ogg>
+    <track kind=subtitles src=sub.vtt srclang=en label=English>
+    video fallback
+  </video>
+  <audio loop><source src=sound.wav><a href=download>download</a></audio>
+  <map name=m>
+    <area shape=rect coords="0,0,10,10" href="#a">
+    <area shape=poly coords="1,2,3,4,5,6">
+  </map>
+  <img src="x" usemap="#m" ismap border=0>
+  <iframe srcdoc="<p>inside &amp; quoted</p>" sandbox="allow-scripts"
+          name=f><frame src=frame.html></iframe>
+  <noscript><div>fallback <b>bold</b></div></noscript>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Metadata and malformed attributes</title></head>
+<body>
+  <hgroup><h1>Main<h2>Subheading</hgroup>
+  <figure>
+    <figcaption>Caption before image</figcaption>
+    <img srcset="a.png 1x, b.png 2x" sizes="(max-width: 600px) 480px, 800px"
+         alt="a &quot;quoted&quot; image">
+  </figure>
+  <details open=><summary>Summary</summary><div>detail text</div></details>
+  <dialog open>dialog content</dialog>
+  <mark title="x&#x;bad">marked</mark>
+  <time datetime=2024-13-99T25:61>not a time</time>
+  <ruby>漢<rt>kan<rp>(</rp>ji<rp>)</rp></ruby>
+  <bdi dir=auto>abc</bdi><bdo dir=sideways>xyz</bdo>
+  <p data-empty data-q='a"b' data-r="c'd" =broken value==>
+    entities &amp; &lt; &gt; &quot; &apos; &nbsp; &#65; &#x41; &invalid-name;
+  <template id=t><section><p>template content</section></template>
+  <p><label for=x>Name <input id=x type=text value="v"></label>
+  <input type=checkbox checked=maybe required readonly>
+  <meter min=0 max=1 value=.5>half</meter>
+  <progress max=100 value=101>done</progress>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sections and raw text edge cases</title>
+  <style>
+    body { background: url("x"); }
+    </style><style>p{content:"</style>";}</style>
+  <script>
+    var s = "</scr" + "ipt>";
+    /* <script><script> */
+  </script>
+</head>
+<body>
+  <header><nav><a href=#one>one<a href=#two>two<a href=#three>three</nav></header>
+  <main>
+    <section id=one><h2>One</h2><article><header>Article head</header>
+      <p>Text <q cite="a>b">quoted <cite>citation</article>
+    <section id=two><h2>Two</h2><aside><h3>Aside</h3><p>side text</aside>
+    <article><footer>article footer</footer></article>
+  </main>
+  <footer><p>page footer</p></footer>
+  <![CDATA[ this is not XML in HTML ]]>
+  <!-- comment with -- bad -- and <tags> -->
+  <textarea rows=2 cols=4>value &lt;b&gt;
+  </textarea>
+  <select multiple size=0>
+    <optgroup label=Group disabled><option selected>one<option>two</optgroup>
+    <option value=x>three
+  </select>
+  <button type=submit><span>button</button>
+  <p>after</p>
+</body>
+</html>
+```

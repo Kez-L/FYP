@@ -1,0 +1,130 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Table repair stress</title>
+</head>
+<body>
+<table border="1" cellpadding="0">
+<caption><em>Inventory</em></caption>
+<colgroup><col span="2"><col></colgroup>
+<thead>
+<tr><th rowspan="2">Item<th colspan="2">Amount
+<tr><th>Left<th>Right
+</thead>
+<tbody>
+<tr><td>A<td>1<td>2
+<tr><td colspan=3><p>paragraph inside a cell
+<tr><td>B<div><td>3</div><td>4
+</tbody>
+<tfoot><tr><td>Total<td><strong>4</strong>
+</table>
+<p>after table
+<table><tr><td><ul><li>nested<td>cell</ul></table>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>Legacy and malformed metadata</title>
+<base href="http://example.invalid/a/">
+<meta http-equiv=refresh content="0; url='x&y'">
+<link rel=stylesheet href=style.css disabled>
+<style type=text/css>
+<!--
+body { color: red; }
+.bad { background: url("x"); }
+/* unterminated
+</style>
+</head>
+<body bgcolor=#fff text=black>
+<center><font face="serif" size=+3>old <b>markup</center>
+<dir><li>alpha<li>beta<ul><li>gamma</dir>
+<blockquote cite="a&b"><p>quoted <q cite=x>text</blockquote>
+<address>mail: <a href="mailto:x@y">x@y</a>
+<hr noshade width="100%" height=0>
+<marquee direction=left><blink>moving</blink></marquee>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Raw text boundaries</title></head>
+<body>
+<script type="text/javascript">
+var a = "</script><p>escaped-looking</p>";
+if (a < 3 && a > 1) { document.write("<b>x</b>"); }
+/* comment with </script> */
+</script>
+<noscript><p>fallback <i>content</i></p></noscript>
+<template id=t><section><h2>template</h2><p>inside</section></template>
+<xmp><b>literal</b><p>not parsed?</xmp>
+<plaintext>
+<html><body><h1>everything after plaintext</h1>
+&amp; &lt; <!-- comment -->
+</body></html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Lists and definitions</title></head>
+<body>
+<dl compact>
+<dt>one<dd>first description
+<dt><a href=#two>two<dd><p>second <span>description
+<dt id=three><dd>
+</dl>
+<ol start="0" reversed type=A>
+<li value=5>five
+<li>six
+<li><div>seven</div><li>eight
+</ol>
+<ul type=square>
+<li>outer
+<ul><li>inner one<li><li>inner two</ul>
+<li>tail
+</ul>
+<menu><li>command one<li>command two</menu>
+<p><ins cite=a datetime=bad><del cite=b>changed</ins> text</del>
+<ruby>漢<rt>kan<rp>(</rp><rt>ji</ruby>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Embedded and obsolete containers</title>
+</head>
+<body>
+<iframe srcdoc="<p>frame &amp; text</p>" name=main scrolling=yes>
+fallback frame text
+</iframe>
+<object data="movie.bin" type="application/octet-stream" width=0 height=-1>
+<param name=loop value=true>
+<embed src="x" pluginspage="about:blank">
+<object data="nested"><p>object fallback</p></object>
+</object>
+<map name=map1>
+<area shape=rect coords="0,0,10,10" href=#a alt=A>
+<area href=#b>
+</map>
+<img src=x usemap="#map1" ismap border=0>
+<figure align=left>
+<figcaption>caption <small>with <big>mixed</small></big></figcaption>
+<p>figure text
+</figure>
+<isindex prompt="Search:">
+<listing>&lt;tag&gt;
+</listing>
+</body>
+</html>
+```

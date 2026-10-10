@@ -1,0 +1,134 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Table recovery case</TITLE>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<CENTER>
+<TABLE BORDER=1 CELLPADDING=2 CELLSPACING=0 WIDTH="100%">
+<CAPTION ALIGN=bottom>caption <B>before</CAPTION>
+<TR><TH ROWSPAN=2>header<TH COLSPAN=3>broken
+<TR><TD>a<TD>b<TD>
+<TR><TD><TABLE><TR><TD>nested without closing
+<TR><TD colspan=99>tail
+</TABLE>
+<P>After table <IMG SRC="x" ALT="unterminated &amp; text" WIDTH=abc HEIGHT=-4>
+</CENTER>
+<!-- comment -- -- malformed -->
+</BODY>
+</HTML>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <base href="http://example.invalid/a/">
+  <meta charset="utf-8">
+  <title>Entities and declarations</title>
+  <?xml version="1.0"?>
+  <![CDATA[not really cdata in html <tag> & stuff]]>
+</head>
+<body>
+  <p title="a&quot;b&#xZZ; c&amp;d" data-x='one
+two
+three'>A&nbsp;&copy;&euro;&unknown; &#0; &#xD800; &#99999999;</p>
+  <pre>  leading
+    <b>literal-ish</b> &lt; &gt; &amp;
+</pre>
+  <blockquote cite=foo/bar?x=1>
+    <q>quote <em>nested <strong>deep</q> mismatch</strong></em>
+  </blockquote>
+  <hr><br/><br / ><wbr>
+  <address>mail@example.invalid
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Lists and definitions</title></head>
+<body>
+<dl compact>
+  <dt>term one
+  <dd>definition one
+  <dt><b>term <i>two</dt>
+  <dd><p>paragraph in definition
+  <ul>
+    <li>outer
+      <ol start="zero" type="I">
+        <li value="NaN">inner one
+        <li>inner two
+      </ol>
+    <li>outer two
+  </ul>
+</dl>
+<menu>
+  <li><a href>missing value
+  <li><a href="#x" target="_blank">link
+</menu>
+<ol reversed start="-3">
+  <li>alpha
+  <li>beta
+</ol>
+<p id=x><a name=x>duplicate anchors</a></p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Raw text and comments</title>
+  <style type="text/css">
+    body { background: url("x"); }
+    /* </style> appears in a comment */
+    p::before { content: "<tag>&"; }
+  </style>
+  <script language="javascript">
+    if (a < b && c > d) {
+      document.write("</script><p>injected</p>");
+    }
+    // </script>
+  </script>
+</head>
+<body>
+  <noscript><p>fallback <b>content</b></noscript>
+  <iframe src="about:blank" name="f">fallback</iframe>
+  <object data="movie" type="application/octet-stream">
+    <param name="movie" value="x">
+    <embed src="x" pluginspage="about:blank">
+    fallback <a href="x">object link</a>
+  </object>
+  <script>var s = "<!-- still script -->";</script>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN">
+<html>
+<head><title>Frameset recovery</title></head>
+<frameset rows="*,25%,0" cols="50%,*" frameborder="maybe">
+  <frame src="a.html" name="left" scrolling="sideways" noresize>
+  <frameset cols="bad">
+    <frame src="b.html">
+    <noframes>
+      <body>
+        <h1>Fallback</h1>
+        <p>This body occurs inside a malformed frameset.</p>
+        <table><tr><td>cell<td>another</table>
+      </body>
+    </noframes>
+  </frameset>
+  <frame>
+</frameset>
+<frameset>
+  <frame src="orphan">
+</frameset>
+</html>
+```

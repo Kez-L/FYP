@@ -1,0 +1,23 @@
+{
+  "call": 11,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a HTML document parser.\nTarget: /home/user/Documents/1git-folder/AgentAFL/AFLPlus/tidy-html5-build/tidy_parse_string_fuzzer-afl.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 HTML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<base href=\"http://example.invalid/a/../b/\">\n<meta http-equiv=\"refresh\" content=\"0; url='next page.html'\">\n<meta name=\"keywords\" content=\"a,b,c\">\n<style type=\"text/css\">\n@import url(\"theme.css\");\nbody { color: #123456; }\n</style>\n</head>\n<body id=\"root\" class=\"a b\" style=\"color:red\" onload=\"x<y\">\n<header><hgroup><h1>Malformed layout</h1><h2>secondary</h2></hgroup></header>\n<nav><ul><li>one<li>two<ul><li>nested<li></ul></nav>\n<main>\n<table border=\"1\" cellpadding=\"2\">\n<caption align=bottom>caption</caption>\n<colgroup span=2><col width=20><col width=\"*\"></colgroup>\n<thead><tr><th rowspan=2>head<th colspan=3>other</tr><tr><th>sub<th>sub2</tr></thead>\n<tbody><tr><td>A<td>B<td>C\n<tr><td colspan=0>D</td><td><table><tr><td>inner</table>\n<tfoot><tr><td>foot</td></tr></tfoot>\n</table>\n<dl compact><dt>term<dd>definition<dt>another<dd><p>paragraph</p>\n<blockquote cite=\"urn:test\"><p>quoted <q cite=x>nested quote</q></p>\n<blockquote><pre>preformatted\n  second line &lt;tag&gt;</pre></blockquote></blockquote>\n</main>\n<footer><address>mail &lt;user@example.invalid&gt;</address></footer>\n</body>\n</html>\n\n--- example 2 ---\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n<HTML>\n<HEAD>\n<TITLE>Frameset navigation</TITLE>\n</HEAD>\n<FRAMESET rows=\"20%,*,20%\" border=0 frameborder=no>\n<FRAME name=top src=\"top.html\" scrolling=auto noresize>\n<FRAMESET cols=\"30%,70%\">\n<FRAME src=\"left.html\" marginwidth=0 marginheight=0>\n<FRAME src=\"right.html\" target=_top>\n<NOFRAMES>\n<BODY bgcolor=#ffffff text=black>\n<H1>Frames unavailable</H1>\n<BASEFONT size=3>\n<DIR>\n<LI><A HREF=\"one.html\">One</A>\n<LI><A HREF=\"two.html\">Two</A>\n</DIR>\n<HR width=75% align=center>\n</BODY>\n</NOFRAMES>\n</FRAMESET>\n<FRAME src=\"status.html\">\n</FRAMESET>\n</HTML>\n\nTried before \u2014 no new coverage, avoid repeating:\n--- 3 of your past seeds (cycles 2,7,11) drove the same already-covered path with 0 new edges ---\n<!DOCTYPE html>\n<html>\n<head>\n<title>misnested foreign content</title>\n</head>\n<body>\n<svg width=\"10\" height=\"10\" viewBox=\"0 0 10 10\">\n<g transform=\"translate(1 2)\">\n<circle cx=\"4\" cy=\"4\" r=\"3\" fill=\"url(#x)\"/>\n<path d=\"M0 0 L10 10 Z\"></path>\n<text x=\"0\" y=\"9\">svg &amp; text</text>\n</g>\n</svg>\n<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n<mrow><mi>x</mi><mo>&lt;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>\n</math>\n<p><svg><foreignObject><p>html island <b>bold</svg>tail\n</body>\n\n--- 2 of your past seeds (cycles 4,10) drove the same already-covered path with 0 new edges ---\n<!DOCTYPE html>\n<html>\n<head>\n<title>Malformed metadata</title>\n<meta name=\"description\" content=\"one &amp; two\">\n<meta http-equiv=refresh content=\"0; URL=next.html\">\n<link rel=alternate type=\"application/rss+xml\" href=\"feed.xml\">\n</head>\n<body>\n<!-- normal --><!----><!-- unclosed\n<div class=\"outer\" id=x id=y>\n<span title='unterminated>text &unknown; &#xD800;</span>\n<img src=x alt=\"broken\" /\n<br class=test>\n<p>one\n<div>two</p></div>\n<table><tr><td>x</tr><td>y</td></table>\n<custom-element data-a=1><template><div>inside</div></template></custom-element>\n</body>\n\nGenerate 5 new HTML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-tidy-20261006",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-08T06:33:34.870514+00:00"
+}

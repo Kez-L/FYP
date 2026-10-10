@@ -1,0 +1,128 @@
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Table repair case</title>
+</head>
+<body>
+  <table border="1">
+    <caption>irregular rows</caption>
+    <colgroup><col span="2"><col></colgroup>
+    <thead>
+      <tr><th scope=col>A<th scope=col>B<th scope=col>C
+    </thead>
+    <tbody>
+      <tr><td rowspan="2">one<td>two
+      <tr><td colspan=2>three
+      <tr><th>four<td><p>paragraph in cell<tr><td>five
+    </tbody>
+    <tfoot><tr><td>tail</td></tr></tfoot>
+  </table>
+  <p>text after table
+  <table><tr><td>second<table><tr><td>nested</td></tr></table></td></tr></table>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Form controls</title>
+</head>
+<body>
+  <form action="/submit" method="post">
+    <fieldset disabled>
+      <legend>Account <strong>details</legend>
+      <label for=user>Name <input id=user name=user value="a<b" required></label>
+      <label>Email <input type=email name=email multiple></label>
+      <select name=kind size=3>
+        <option selected value=x>Alpha
+        <option value=y>Beta
+        <optgroup label="More"><option>Gamma<option disabled>Delta</optgroup>
+      </select>
+      <textarea name=notes rows=2 cols=4>one
+two</textarea>
+    </fieldset>
+    <input type=hidden name=token value="&quot;broken">
+    <button type=submit formaction=/go>Send</button>
+    <button type=reset>Clear</button>
+  </form>
+  <form><input name=outside><div><button>nested</button></form></div>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Metadata and embedded text</title></head>
+<body>
+  <header id=top><hgroup><h1>Heading <small>minor</h1><h2>Second</h2></hgroup></header>
+  <main>
+    <article>
+      <section><h3>First</h3><p>alpha
+      <section><h4>Second <mark>highlight</section>
+      <aside><p>side <time datetime=2024-02-30>date</time></aside>
+    </article>
+    <details open="false"><summary>More</summary><p>hidden-ish content</details>
+    <dialog open><form method=dialog><p>Choose:</p><button value=yes>Yes</button></form></dialog>
+    <figure><img src=missing alt="image"><figcaption>caption</figcaption></figure>
+    <audio controls preload=auto><source src=a.ogg type=audio/ogg><source src=b.mp3><track kind=subtitles srclang=en label=English></audio>
+    <video width=0 height=-1 poster=bad><source src=x.mp4></video>
+  </main>
+  <footer><address>contact <a href="mailto:x@y">x@y</a></address></footer>
+</body>
+</html>
+```
+
+```html
+<?xml version="1.0"?>
+<!DOCTYPE html [
+  <!ENTITY local "replacement">
+]>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Declaration stress</title>
+  <?processing instruction?>
+  <meta charset='utf-8' />
+</head>
+<body>
+  <![CDATA[
+    <not-an-element> & still text
+  ]]>
+  <p data-a='one"two' data-b="three'four" data-c=`backtick` disabled=disabled>
+    &local; &unknown; &#0; &#xD800; &#99999999;
+  </p>
+  <pre>line one
+line two &lt;tag&gt;</pre>
+  <hr/>
+  <br />
+  <input type="text" value="x" />
+  <div class="a" class="b" id="first" id="second">duplicate attributes</div>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Deep mixed structure</title></head>
+<body>
+  <div><div><div><div><div>
+    <p><b><i><u><s><em><strong><small>nested formatting
+    <a href="#"><span><code><kbd>content</b></i></u></s></em></strong></small></a>
+    </span></code></kbd></p>
+  </div></div></div></div></div>
+  <ul>
+    <li>one
+      <ol><li>sub one<li>sub two<ul><li>deep</ul></ol>
+    <li>two
+  </ul>
+  <dl><dt>key<dd>value<dt>next<dd><div>block</div><dd>orphan</dl>
+  <p>before <ins>inserted <del>deleted <q>quoted</ins> text</q></del> after
+  <marquee><blink>obsolete <center>centered</blink></marquee>
+</body>
+</html>
+```

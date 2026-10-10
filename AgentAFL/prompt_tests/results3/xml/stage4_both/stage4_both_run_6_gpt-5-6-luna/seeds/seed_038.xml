@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE transform [
+  <!ELEMENT transform (xsl:template+,xsl:variable*)>
+  <!ATTLIST transform
+    xmlns:xsl CDATA #IMPLIED
+    version CDATA #REQUIRED
+    extension-element-prefixes CDATA #IMPLIED
+  >
+  <!ELEMENT xsl:template (xsl:param*,xsl:apply-templates|xsl:for-each|xsl:choose|xsl:value-of|xsl:text|xsl:element|xsl:attribute|xsl:copy-of|literal)*>
+  <!ATTLIST xsl:template match CDATA #IMPLIED name NMTOKEN #IMPLIED mode NMTOKEN #IMPLIED>
+  <!ELEMENT xsl:param EMPTY>
+  <!ATTLIST xsl:param name NMTOKEN #REQUIRED select CDATA #IMPLIED>
+  <!ELEMENT xsl:variable (#PCDATA|xsl:value-of|xsl:choose)*>
+  <!ATTLIST xsl:variable name NMTOKEN #REQUIRED select CDATA #IMPLIED>
+  <!ELEMENT xsl:apply-templates EMPTY>
+  <!ATTLIST xsl:apply-templates select CDATA #IMPLIED mode NMTOKEN #IMPLIED>
+  <!ELEMENT xsl:for-each (xsl:sort*,xsl:if|xsl:value-of|xsl:copy-of|xsl:text)*>
+  <!ATTLIST xsl:for-each select CDATA #REQUIRED>
+  <!ELEMENT xsl:choose (xsl:when+,xsl:otherwise?)>
+  <!ELEMENT xsl:when (xsl:value-of|xsl:text|xsl:apply-templates|xsl:copy-of)*>
+  <!ATTLIST xsl:when test CDATA #REQUIRED>
+  <!ELEMENT xsl:otherwise (xsl:value-of|xsl:text|xsl:apply-templates|xsl:copy-of)*>
+  <!ELEMENT xsl:value-of EMPTY>
+  <!ATTLIST xsl:value-of select CDATA #REQUIRED disable-output-escaping (yes|no) "no">
+  <!ELEMENT xsl:text (#PCDATA)>
+  <!ELEMENT xsl:element (xsl:attribute*,xsl:apply-templates|xsl:value-of|xsl:text)*>
+  <!ATTLIST xsl:element name CDATA #REQUIRED namespace CDATA #IMPLIED>
+  <!ELEMENT xsl:attribute (#PCDATA|xsl:value-of)*>
+  <!ATTLIST xsl:attribute name NMTOKEN #REQUIRED>
+  <!ELEMENT xsl:copy-of EMPTY>
+  <!ATTLIST xsl:copy-of select CDATA #REQUIRED>
+  <!ELEMENT xsl:sort EMPTY>
+  <!ATTLIST xsl:sort select CDATA #REQUIRED order (ascending|descending) "ascending">
+  <!ELEMENT xsl:if (xsl:value-of|xsl:text|xsl:copy-of)*>
+  <!ATTLIST xsl:if test CDATA #REQUIRED>
+  <!ELEMENT literal ANY>
+]>
+<transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+           xmlns:fn="urn:example:functions"
+           version="1.0"
+           extension-element-prefixes="fn">
+  <xsl:output method="xml" omit-xml-declaration="no" indent="yes"/>
+  <xsl:variable name="separator"> :: </xsl:variable>
+  <xsl:template match="/">
+    <xsl:element name="report" namespace="urn:example:report">
+      <xsl:attribute name="generated"><xsl:value-of select="'now'"/></xsl:attribute>
+      <xsl:apply-templates select="feed/item" mode="row"/>
+    </xsl:element>
+  </xsl:template>
+  <xsl:template match="item" mode="row">
+    <row>
+      <xsl:attribute name="key"><xsl:value-of select="@id"/></xsl:attribute>
+      <xsl:choose>
+        <xsl:when test="@priority = 'high'"><xsl:text>urgent</xsl:text></xsl:when>
+        <xsl:otherwise><xsl:value-of select="title"/></xsl:otherwise>
+      </xsl:choose>
+      <xsl:for-each select="tag">
+        <xsl:sort select="." order="descending"/>
+        <tag><xsl:value-of select="."/></tag>
+      </xsl:for-each>
+    </row>
+  </xsl:template>
+  <xsl:template name="unused">
+    <xsl:param name="fallback" select="'none'"/>
+    <xsl:if test="string-length($fallback) &gt; 0">
+      <xsl:value-of select="$fallback" disable-output-escaping="no"/>
+    </xsl:if>
+  </xsl:template>
+</transform>

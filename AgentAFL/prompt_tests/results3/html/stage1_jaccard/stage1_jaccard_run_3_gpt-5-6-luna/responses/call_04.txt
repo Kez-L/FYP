@@ -1,0 +1,131 @@
+```html
+<!doctype html>
+<html>
+  <head>
+    <title>Mixed namespaces and broken tokens</title>
+    <meta charset=UTF-16>
+  </head>
+  <body>
+    <svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+      <foreignObject width="10" height="10">
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p data-x="&amp;&#xD800;&#1114112;" class='unterminated>
+            text </div></foreignObject>
+      <path d="M0 0 L10 10 Z" />
+      <script><![CDATA[if (a < b) { /* ]] </script>]]></script>
+    </svg>
+    <math>
+      <mrow><mi>x</mi><mo>&InvisibleTimes;</mo><mn>2</mn></mrow>
+      <annotation-xml encoding="application/xhtml+xml">
+        <p>crossed foreign content</p>
+      </annotation-xml>
+    </math>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE html [
+  <!ENTITY broken "replacement">
+  <!ELEMENT html O O ANY>
+]>
+<html>
+<head>
+  <title>Internal subset and declarations</title>
+  <?xml version="1.0"?>
+  <!---->
+  <!-- nested-looking <!-- comment --> tail -->
+</head>
+<body>
+  <form action="/submit" method=post enctype="multipart/form-data">
+    <fieldset disabled>
+      <legend>choose &broken; &unknown;</legend>
+      <input type=text name=a value="one" disabled>
+      <input type=checkbox name=b checked=checked>
+      <select name=pick multiple size=0>
+        <optgroup label="A &amp; B">
+          <option selected>first<option value=two>second
+        </optgroup>
+        <option>third
+      </select>
+      <textarea name=notes rows=2 cols=0>raw <b>markup &amp; entity</textarea>
+      <button type=submit formaction='unterminated>Send</button>
+    </fieldset>
+  </form>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html lang="x">
+  <head>
+    <meta http-equiv=Content-Type content="text/html; charset=unknown">
+    <base target=_blank>
+  </head>
+  <body>
+    <p>before
+    <table border=0>
+      <caption>caption<table><tr><td>nested attempt
+      <colgroup span=abc><col width=0><colgroup>
+      <thead><tr><th rowspan=999 colspan=-1>head
+      <tbody>
+        <tr><td>a<td>b<td><div>cell div</tr>
+        <tr><th><p>paragraph in header<td><form><input name=x></form>
+      <tfoot><tr><td>footer
+    </table>
+    <p>after table</p>
+    <dl>
+      <dt>term <dd>definition
+      <dt><div>misplaced block</dt><dd>tail
+    </dl>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Raw text and character references</title>
+  <style type="text/css">
+    body { background: url("x</style>y"); }
+    /* unterminated comment
+  </style>
+  <script type="text/javascript">
+    var s = "</script";
+    var q = '<!-- &amp; &#0; &#x110000; -->';
+    if (x < y && y > z) { document.write("<b>raw</b>"); }
+  </script>
+  <noscript>
+    <meta name=viewport content="width=device-width">
+    <p>fallback</p>
+  </noscript>
+</head>
+<body>
+  <pre><code>&lt;tag attr='x'&gt;
+&amp; &#65; &#x41; &#X0D; &#12; &#-1;
+</code></pre>
+  <x-custom a=b c="d&e" =bad / >payload</x-custom>
+</body>
+</html>
+```
+
+```html
+<!doctype HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+  <head><title>Adoption agency stress</title></head>
+  <body>
+    <p><b><i><u>one
+    <a href=http://x.test/?a=1&b=2><em>two</b>three</a></i>
+    <p><font color=#12 size=+99><big><small>four</font></big>
+    <center><table><tr><td><p>five</center></td></tr></table>
+    <div><span><a><b>six</span></a></b></div>
+    <hr><hr><hr>
+    <address><strong>seven</address></strong>
+    <p><img src alt=broken width=none height=-7><input type=image src>
+    <!-- comment with -- bad -- sequence --!>
+    <iframe srcdoc="&lt;p&gt;embedded&lt;/p&gt;" sandbox=allow-scripts></iframe>
+  </body>
+</html>
+```

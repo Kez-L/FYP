@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope"
+              xmlns:app="urn:example:inventory"
+              xmlns:sec="urn:example:security"
+              env:encodingStyle="http://www.w3.org/2003/05/soap-encoding">
+  <env:Header>
+    <sec:Credentials env:mustUnderstand="true" env:role="http://www.w3.org/2003/05/soap-envelope/role/next">
+      <sec:User>scanner</sec:User>
+      <sec:Token algorithm="urn:example:token:opaque">bXktdGVzdC10b2tlbg==</sec:Token>
+    </sec:Credentials>
+    <app:RequestContext correlationId="c-88f1" locale="en-GB">
+      <app:ClientVersion>6.0</app:ClientVersion>
+      <app:Flags>
+        <app:Flag>include-retired</app:Flag>
+        <app:Flag>include-history</app:Flag>
+      </app:Flags>
+    </app:RequestContext>
+  </env:Header>
+  <env:Body>
+    <app:InventoryQuery>
+      <app:Warehouse code="LON-2"/>
+      <app:Filter>
+        <app:Sku operator="starts-with">ZX-</app:Sku>
+        <app:Quantity comparator="gte">0</app:Quantity>
+        <app:UpdatedAfter>2026-09-01T00:00:00Z</app:UpdatedAfter>
+      </app:Filter>
+      <app:Projection>
+        <app:Field name="sku"/>
+        <app:Field name="description"/>
+        <app:Field name="stock" unit="items"/>
+      </app:Projection>
+    </app:InventoryQuery>
+    <app:ResponseHints>
+      <app:Page size="25" cursor="first"/>
+      <app:Sort field="sku" direction="ascending"/>
+    </app:ResponseHints>
+  </env:Body>
+</env:Envelope>

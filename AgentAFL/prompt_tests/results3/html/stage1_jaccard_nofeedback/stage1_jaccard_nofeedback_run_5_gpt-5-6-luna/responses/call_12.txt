@@ -1,0 +1,115 @@
+```html
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <base href="http://example.invalid/a/../b">
+    <style><!--
+      @import url("x");
+      body { content: "</style><p>"; }
+    </style>
+    <title>&#xD800;&#x110000;&bogus;</title>
+  </head>
+  <body id="a&#0;b">
+    <!--- nested <!-- comment --> tail -->
+    <p title="one&#x0D;&#x0A;two&#xFFFE;">alpha &amp; &notanentity; &x;</p>
+    <plaintext><b>not really plaintext?</b>&copy;
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>foreign content</title></head>
+<body>
+  <svg width="1" height="1" viewBox="0 0 1 1">
+    <title>svg &amp; title</title>
+    <foreignObject>
+      <div xmlns="http://www.w3.org/1999/xhtml">
+        <p>html in svg</p>
+      </div>
+    </foreignObject>
+    <path d="M0 0 L1 1 Z" fill="url(#x)" />
+    <script><![CDATA[
+      if (a < b && c > d) { /* ]]> */ }
+    ]]></script>
+  </svg>
+  <math>
+    <mi>x</mi><mo>&InvisibleTimes;</mo>
+    <mrow><mo>&lt;</mo><mn>0</mn></mrow>
+  </math>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="windows-1252">
+  <title>form controls</title>
+</head>
+<body>
+  <form action="/submit" method="post" enctype="multipart/form-data">
+    <fieldset disabled>
+      <legend><label for=x>Pick</legend>
+      <input id=x name=a type="text" value="&quot; &apos; &#x1f4a9;">
+      <select name=s multiple size="-1">
+        <option selected>one
+        <option value="two"><option><optgroup label="g"><option>three
+      </select>
+    </fieldset>
+    <button type=submit formaction="javascript:void(0)">go</button>
+    <textarea name=t rows="0" cols="-4"><!-- x --></textarea>
+    <output for="x y">result</output>
+  </form>
+  <details open><summary>summary <summary>nested</summary></summary><p>body</p></details>
+</body>
+</html>
+```
+
+```html
+<html>
+<head>
+  <title>misnested formatting</title>
+</head>
+<body>
+  <p><b><i><u>one</b>two</i>three</u>four
+  <a href="#"><b>link <em>emphasis</a> tail</b>
+  <nobr><font color=red><center><small>text</font></nobr></center></small>
+  <p>paragraph <div>division <span>span</div>after</span>
+  <dl><dt>term<dd>definition<dt><dd>empty
+  <ol start="999999999999999999999999999999999999999999999">
+    <li value="--">first<li>second
+  </ol>
+  <hr / ><br/ ><img src=x alt="a > b" width="0x10">
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-16">
+  <title>raw text boundaries</title>
+</head>
+<body>
+  <script type="text/javascript">
+    var a = "</script";
+    var b = "</SCRIPT>";
+    var c = "\uD800\uDC00";
+    /* <textarea> fake </textarea> */
+  </script>
+  <noscript><p>shown? &amp; &#xD800;</noscript>
+  <template id=t><table><tr><td>x</template>
+  <table border="1">
+    <colgroup span="2"><col><colgroup><col>
+    <thead><tr><th colspan="999999999999999999">A<th>B
+    <tbody><tr><td><div>cell</tr><tfoot><tr><td>end
+  </table>
+  <x-custom><template shadowrootmode="open"><p>shadow</p></template></x-custom>
+</body>
+</html>
+```

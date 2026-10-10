@@ -1,0 +1,223 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:example:config" xmlns:sec="urn:example:security">
+  <profile name="staging" active="true">
+    <parameters>
+      <parameter key="timeout" type="integer">45</parameter>
+      <parameter key="endpoint" type="uri">https://service.example.invalid/api</parameter>
+      <parameter key="features" type="list">
+        <value>delta</value>
+        <value>snapshot</value>
+        <value>audit</value>
+      </parameter>
+    </parameters>
+    <credentials>
+      <sec:principal realm="internal">svc-deployer</sec:principal>
+      <sec:permission resource="artifacts" action="read"/>
+      <sec:permission resource="artifacts" action="write"/>
+    </credentials>
+    <routing>
+      <rule priority="10">
+        <match field="region" operator="equals">eu-west</match>
+        <forward weight="80">pool-eu</forward>
+        <forward weight="20">pool-fallback</forward>
+      </rule>
+      <rule priority="20">
+        <match field="region" operator="exists"/>
+        <forward weight="100">pool-global</forward>
+      </rule>
+    </routing>
+  </profile>
+</configuration>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report [
+  <!ELEMENT report (header, observations, conclusion)>
+  <!ATTLIST report ref ID #REQUIRED>
+  <!ELEMENT header (subject, issued, laboratory)>
+  <!ELEMENT subject (#PCDATA)>
+  <!ELEMENT issued (#PCDATA)>
+  <!ELEMENT laboratory EMPTY>
+  <!ATTLIST laboratory code NMTOKEN #REQUIRED accreditation CDATA #IMPLIED>
+  <!ELEMENT observations (observation+)>
+  <!ELEMENT observation (metric, reading, reference?)>
+  <!ATTLIST observation id ID #REQUIRED status (normal|warning|critical) "normal">
+  <!ELEMENT metric (#PCDATA)>
+  <!ELEMENT reading (#PCDATA)>
+  <!ATTLIST reading units CDATA #REQUIRED uncertainty CDATA #IMPLIED>
+  <!ELEMENT reference (#PCDATA)>
+  <!ELEMENT conclusion (#PCDATA)>
+]>
+<report ref="r-2026-041">
+  <header>
+    <subject>Atmospheric sample A-17</subject>
+    <issued>2026-10-01T14:22:09+00:00</issued>
+    <laboratory code="LAB-7" accreditation="ISO-17025"/>
+  </header>
+  <observations>
+    <observation id="o1" status="normal">
+      <metric>pressure</metric>
+      <reading units="kPa" uncertainty="0.02">101.325</reading>
+      <reference>99.0 - 102.0</reference>
+    </observation>
+    <observation id="o2" status="warning">
+      <metric>particulate-matter</metric>
+      <reading units="ug/m3" uncertainty="1.5">38.7</reading>
+    </observation>
+    <observation id="o3" status="critical">
+      <metric>ozone</metric>
+      <reading units="ppb">146</reading>
+      <reference>&lt; 100</reference>
+    </observation>
+  </observations>
+  <conclusion><![CDATA[Review the third observation before release.]]></conclusion>
+</report>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="urn:example:workflow" xmlns:ext="urn:example:workflow:extension" version="5">
+  <start id="receive" next="validate"/>
+  <task id="validate" owner="system" retry="2">
+    <input name="payload" required="true"/>
+    <output name="validated" type="boolean"/>
+    <on event="success" next="classify"/>
+    <on event="failure" next="reject"/>
+  </task>
+  <branch id="classify" expression="priority &gt; 7">
+    <case value="true" next="expedite"/>
+    <case value="false" next="queue"/>
+    <default next="queue"/>
+  </branch>
+  <parallel id="expedite" join="merge">
+    <task-ref ref="notify"/>
+    <task-ref ref="reserve"/>
+  </parallel>
+  <queue id="queue" channel="standard" next="merge">
+    <limit>250</limit>
+    <delay unit="seconds">30</delay>
+  </queue>
+  <merge id="merge" next="finish" strategy="all">
+    <artifact name="receipt" format="json"/>
+    <ext:telemetry sample-rate="0.25">
+      <ext:tag name="pipeline">intake</ext:tag>
+    </ext:telemetry>
+  </merge>
+  <task id="notify" owner="alerts" retry="0">
+    <message priority="high">Expedited item accepted</message>
+  </task>
+  <task id="reserve" owner="inventory" retry="3">
+    <resource class="cold-storage" quantity="1"/>
+  </task>
+  <terminal id="reject" code="400"/>
+  <terminal id="finish" code="204"/>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ENTITY copyright "Copyright 2026 Example Press">
+  <!ELEMENT package (manifest, payload)>
+  <!ELEMENT manifest (name, publisher, license, checksum)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT publisher (#PCDATA)>
+  <!ELEMENT license (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST checksum algorithm (sha1|sha256|sha512) #REQUIRED>
+  <!ELEMENT payload (section+)>
+  <!ELEMENT section (heading, paragraph+, table?)>
+  <!ATTLIST section number NMTOKEN #REQUIRED>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT paragraph (#PCDATA|code|link|linebreak)*>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT link (#PCDATA)>
+  <!ATTLIST link href CDATA #REQUIRED>
+  <!ELEMENT linebreak EMPTY>
+  <!ELEMENT table (row+)>
+  <!ELEMENT row (cell+)>
+  <!ELEMENT cell (#PCDATA)>
+]>
+<package>
+  <manifest>
+    <name>Markup Interoperability Notes</name>
+    <publisher>&copyright;</publisher>
+    <license>permissive</license>
+    <checksum algorithm="sha512">9f3b1d7c00ab44e8</checksum>
+  </manifest>
+  <payload>
+    <section number="1">
+      <heading>Escaping rules</heading>
+      <paragraph>Use <code>&amp;lt;</code> when serializing a literal less-than sign.<linebreak/>See the <link href="https://example.invalid/spec">reference</link>.</paragraph>
+      <paragraph>Names may contain accents: naïve, façade, and Ελληνικά.</paragraph>
+    </section>
+    <section number="2">
+      <heading>Comparison</heading>
+      <paragraph>Three representations are shown below.</paragraph>
+      <table>
+        <row><cell>source</cell><cell>encoded</cell></row>
+        <row><cell>A &amp; B</cell><cell>A&amp;nbsp;B</cell></row>
+        <row><cell>quote</cell><cell>&quot;value&quot;</cell></row>
+      </table>
+    </section>
+  </payload>
+</package>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:geo="urn:example:geo">
+  <collection code="NORTH">
+    <label xml:lang="en">Northern Expeditions</label>
+    <item sku="N-001">
+      <name>Basalt ridge</name>
+      <availability from="2026-01-01" until="2026-12-31"/>
+      <location>
+        <geo:point>
+          <geo:latitude>64.1466</geo:latitude>
+          <geo:longitude>-21.9426</geo:longitude>
+        </geo:point>
+        <geo:accuracy unit="m">12</geo:accuracy>
+      </location>
+      <tags>
+        <tag>geology</tag>
+        <tag>field</tag>
+      </tags>
+      <media>
+        <image role="thumbnail" width="320" height="180">images/n001-small.jpg</image>
+        <image role="original" width="2400" height="1350">images/n001.jpg</image>
+      </media>
+    </item>
+    <item sku="N-002" discontinued="true">
+      <name>Glacial lagoon</name>
+      <availability/>
+      <location>
+        <geo:point>
+          <geo:latitude>64.0485</geo:latitude>
+          <geo:longitude>-16.1798</geo:longitude>
+        </geo:point>
+      </location>
+      <tags>
+        <tag>water</tag>
+        <tag>seasonal</tag>
+        <tag>photography</tag>
+      </tags>
+    </item>
+  </collection>
+  <collection code="WEST">
+    <label xml:lang="is">Vesturleið</label>
+    <item sku="W-019">
+      <name>Ocean shelf</name>
+      <location>
+        <geo:point>
+          <geo:latitude>65.0214</geo:latitude>
+          <geo:longitude>-21.4371</geo:longitude>
+        </geo:point>
+      </location>
+      <tags><tag>marine</tag></tags>
+    </item>
+  </collection>
+</catalog>
+```

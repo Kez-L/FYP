@@ -1,0 +1,132 @@
+```html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<base href="http://example.invalid/a/">
+<link rel="stylesheet" href="x.css">
+<style type="text/css">
+@media screen { body { color: red; } }
+</style>
+<script type="text/javascript">
+if (a < b && c > d) { document.write("<p>generated</p>"); }
+</script>
+</head>
+<body id=main>
+<header><h1>Header <em>unclosed</header>
+<nav><a href=/one>one<a href="/two">two</nav>
+<main>
+<section aria-label='x & y'>
+<p>alpha<br/>beta<hr>gamma
+<blockquote cite="x"><q>nested <span>text</blockquote>
+<figure><img srcset="a 1x, b 2x" src=broken alt="figure"><figcaption>caption</figure>
+<details open><summary>Summary</summary><p>Hidden-ish text</details>
+</section>
+</main>
+<footer><small>&copy; &amp; &#x41;</small></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>form mutation</title></head>
+<body>
+<form action="/submit" method=post enctype="multipart/form-data">
+<fieldset disabled>
+<legend>Account <b>details</legend>
+<label for=user>User:</label><input id=user name=user value="a" required>
+<label>Password<input type=password name=p value='unterminated></label>
+<textarea name=note rows=3 cols=5>line one
+line two</textarea>
+<select name=choice multiple size=2>
+<option selected>one
+<option value=two>two</option>
+<optgroup label="group"><option>three</optgroup>
+</select>
+<button type=submit>Send <i>now</button>
+<input type=checkbox checked=maybe>
+<input type=image src=x alt=y>
+</fieldset>
+</form>
+<iframe srcdoc="<p>inside &amp; outside</p>" name=f></iframe>
+<noscript><p>fallback <b>bold</noscript>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>mixed foreign content</title></head>
+<body>
+<svg width="20" height="20" viewBox="0 0 20 20">
+<defs><linearGradient id=g><stop offset="0%"/><stop offset="100%" /></linearGradient></defs>
+<g transform="translate(1 2)">
+<circle cx=5 cy=5 r=4 fill="url(#g)"></circle>
+<path d="M0 0 L10 10 Z"><title>svg title</title></path>
+</g>
+</svg>
+<math display=block>
+<mrow><mi>x</mi><mo>&lt;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+</math>
+<object data="movie" type="application/x-test">
+<param name=autoplay value=true>
+<embed src="fallback">
+fallback text
+</object>
+<picture><source media="(min-width: 1px)" srcset=a><source srcset=b><img src=c></picture>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>frames and obsolete</title></head>
+<frameset cols="25%,*,0" rows="*">
+<frame src="left.html" name=left scrolling=no>
+<frameset>
+<frame src=right.html>
+<noframes>
+<body bgcolor=white>
+<center><font size=+2>Fallback</font></center>
+<dir><li>first<li>second</dir>
+<menu compact><li><a href=#a>A</a><li>B</menu>
+<pre>  preserved
+ <code>mixed</code>
+</pre>
+<marquee direction=left behavior=alternate>moving</marquee>
+</body>
+</noframes>
+</frameset>
+</frameset>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>comments cdata entities</title>
+<!-- normal --><!-- broken --!>
+<meta http-equiv="refresh" content="0; url='x?y=1&z=2'">
+</head>
+<body>
+<!-- nested <!-- comment --> trailing -->
+<p data-a="&quot;" data-b='&apos; &unknown;'>Text &notanentity; &#0; &#x110000;</p>
+<table>
+<tr><td>one</td></tr>
+<col width=10>
+<tbody><tr><td>two</td></tbody>
+<caption>late caption</caption>
+</table>
+<ul><li>outer<ul><li>inner</ul><li>again</ul>
+<dl><dt>term<dd>definition<dt>next
+<address>mail <a href="mailto:x@y">x@y</a></address>
+<script type="text/plain"><![CDATA[
+<not-an-element>&stuff;</script>
+]]></script>
+</body>
+</html>
+```

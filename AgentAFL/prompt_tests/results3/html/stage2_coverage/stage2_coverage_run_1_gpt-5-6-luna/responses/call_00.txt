@@ -1,0 +1,145 @@
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Nested parser stress</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      <![CDATA[
+        body { color: red; }
+      ]]>
+    </style>
+  </head>
+  <body>
+    <main id="root">
+      <section>
+        <h1><em>Unclosed heading
+        <p class="a" class='b data="c'>
+          Alpha &amp; Beta &#x110000; &#0; &unknown;
+          <span><b><i>deep <u>text</span>
+        </p>
+      </section>
+      <aside>
+        <template><div><slot name="x"></template>
+        <details open="maybe"><summary>Summary
+          <p>Inside details <mark>marker</details>
+      </aside>
+    </main>
+    <script type="text/plain">
+      <div>&broken;</div>
+    </script>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://example.invalid/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
+  <foreignObject x="0" y="0" width="10" height="10">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <p>foreign <input disabled=disabled checked=unknown>
+      <textarea rows=abc cols=" &quot;>unterminated
+      <select multiple>
+        <option value=one selected>One
+        <option value='two>Two</select>
+    </div>
+  </foreignObject>
+  <g transform="translate(1 2" fill="url(#paint">
+    <path d="M0 0 L 1 1 Z" stroke-width=>
+    <use href="#missing"></use>
+  </g>
+  <script><![CDATA[
+    if (a < b && c > d) { x = "</svg>"; }
+  ]]></script>
+</svg>
+```
+
+```html
+<!HTML>
+<head profile="x y"><base href="http://[invalid"><link rel=stylesheet href=>
+  <meta http-equiv="refresh" content="0;url='unterminated">
+  <title>title < title &copy
+</head>
+<body>
+  <table border=0>
+    <caption><b>Caption
+    <colgroup span=2><col width=bad><col>
+    <thead><tr><th colspan=wat>Head<th>Second
+    <tbody>
+      <tr><td rowspan=-1>A<td>
+        <table><tr><td>Nested
+      </tr>
+      <tr><td colspan="999999999999999999999">B
+    <tfoot><tr><td>Foot
+  </table>
+  <p>after table
+  <form method=get enctype="application/x-www-form-urlencoded" action="?a=<b>">
+    <fieldset disabled><legend>Legend
+      <label for=x>Name <input id=x name=n value="a&b" />
+      <button type=submit formaction>Send
+    </fieldset>
+  </form>
+</body>
+```
+
+```html
+<!-- deliberately mixed declarations and processing instructions -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root [
+  <!ELEMENT root ANY>
+  <!ENTITY weird "a > b & c">
+]>
+<root>
+  <![CDATA[ raw <text> & bytes ]]>
+  <item key="one" key="two" =bad>value
+    <empty />
+    <broken attr='x" attr2=y><child>text
+  </item>
+  <item>
+    <![if IE]>
+      conditional content
+    <![endif]>
+  </item>
+  <?processing data "unterminated
+  <mixed>
+    text
+    <child><![CDATA[]]></child>
+    tail
+  </mixed>
+</root
+```
+
+```html
+<!doctype html>
+<html>
+<body>
+  <header>
+    <nav aria-label="main"><a href="#a">A<a href="#b">B<a>B3</nav>
+  </header>
+  <main>
+    <article>
+      <h2>Article</h2>
+      <p>one
+      <blockquote cite="x" cite=y><p>quoted
+        <ol start="not-a-number" reversed>
+          <li value="1">first
+          <li value=>second
+          <li><dl><dt>term<dd>definition</dl>
+        </ol>
+      </blockquote>
+      <figure>
+        <img src=x alt="image" width="-" height=999999999999999999999>
+        <figcaption>caption
+      </figure>
+    </article>
+    <iframe srcdoc="<p class='x>embedded &amp; text</p><div>tail"></iframe>
+    <video controls poster="x"><source src=one type=video/mp4><track kind=subtitles srclang=en>
+      fallback <audio autoplay><source>
+    </video>
+  </main>
+  <footer>
+    <p>footer
+  </footer>
+</html>
+```

@@ -1,0 +1,335 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg [
+  <!ENTITY title "Coverage &amp; Diagnostics">
+  <!ENTITY nbsp "&#160;">
+  <!ELEMENT svg (title,desc,defs?,g+)>
+  <!ATTLIST svg
+    xmlns CDATA #IMPLIED
+    viewBox CDATA #IMPLIED
+    version CDATA #IMPLIED
+  >
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT desc (#PCDATA)>
+  <!ELEMENT defs (linearGradient|filter|clipPath)*>
+  <!ELEMENT linearGradient (stop+)>
+  <!ATTLIST linearGradient id ID #REQUIRED x1 CDATA #IMPLIED x2 CDATA #IMPLIED>
+  <!ELEMENT stop EMPTY>
+  <!ATTLIST stop offset CDATA #REQUIRED stop-color CDATA #IMPLIED>
+  <!ELEMENT filter (feGaussianBlur|feOffset)*>
+  <!ATTLIST filter id ID #REQUIRED>
+  <!ELEMENT feGaussianBlur EMPTY>
+  <!ATTLIST feGaussianBlur stdDeviation CDATA #IMPLIED>
+  <!ELEMENT feOffset EMPTY>
+  <!ATTLIST feOffset dx CDATA #IMPLIED dy CDATA #IMPLIED>
+  <!ELEMENT clipPath (circle|rect|path)*>
+  <!ATTLIST clipPath id ID #REQUIRED>
+  <!ELEMENT g (rect|circle|path|text|foreignObject|use)*>
+  <!ATTLIST g id ID #IMPLIED transform CDATA #IMPLIED>
+  <!ELEMENT rect EMPTY>
+  <!ATTLIST rect x CDATA #IMPLIED y CDATA #IMPLIED width CDATA #REQUIRED height CDATA #REQUIRED fill CDATA #IMPLIED>
+  <!ELEMENT circle EMPTY>
+  <!ATTLIST circle cx CDATA #IMPLIED cy CDATA #IMPLIED r CDATA #REQUIRED>
+  <!ELEMENT path EMPTY>
+  <!ATTLIST path d CDATA #REQUIRED fill CDATA #IMPLIED clip-path CDATA #IMPLIED>
+  <!ELEMENT text (#PCDATA)>
+  <!ATTLIST text x CDATA #IMPLIED y CDATA #IMPLIED>
+  <!ELEMENT foreignObject (html:div)>
+  <!ATTLIST foreignObject x CDATA #IMPLIED y CDATA #IMPLIED width CDATA #IMPLIED height CDATA #IMPLIED>
+  <!ELEMENT use EMPTY>
+  <!ATTLIST use href CDATA #IMPLIED xlink:href CDATA #IMPLIED>
+]>
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     xmlns:html="http://www.w3.org/1999/xhtml"
+     version="1.1" viewBox="0 0 320 180">
+  <title>&title;</title>
+  <desc>Vector &amp; raster &nbsp; interoperability</desc>
+  <defs>
+    <linearGradient id="shade" x1="0%" x2="100%">
+      <stop offset="0%" stop-color="#001122"/>
+      <stop offset="1" stop-color="#ddeeff"/>
+    </linearGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="1.25"/><feOffset dx="2" dy="3"/></filter>
+    <clipPath id="window"><rect x="8" y="8" width="304" height="164"/></clipPath>
+  </defs>
+  <g id="scene" transform="translate(4,5) rotate(0)">
+    <rect x="0" y="0" width="300" height="160" fill="url(#shade)" clip-path="url(#window)"/>
+    <circle cx="80" cy="70" r="34"/>
+    <path d="M10 145 C 70 90, 120 170, 190 110 S 280 80, 310 140" fill="none"/>
+    <text x="18" y=" thirty">XML &amp; entities</text>
+    <foreignObject x="20" y="100" width="180" height="35">
+      <html:div><html:strong>embedded</html:strong>&nbsp;markup</html:div>
+    </foreignObject>
+    <use xlink:href="#missing-shape" x="9" y="9"/>
+  </g>
+</svg>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Envelope [
+  <!ELEMENT Envelope (Header?,Body)>
+  <!ATTLIST Envelope xmlns:soap CDATA #IMPLIED soap:encodingStyle CDATA #IMPLIED>
+  <!ELEMENT Header (auth:Credentials|trace:Context|feature:Flag)*>
+  <!ELEMENT Body (rpc:Call|rpc:Batch|soap:Fault)>
+  <!ELEMENT auth:Credentials (auth:User,auth:Token)>
+  <!ELEMENT auth:User (#PCDATA)>
+  <!ELEMENT auth:Token (#PCDATA)>
+  <!ELEMENT trace:Context (trace:RequestId,trace:Parent?)>
+  <!ELEMENT trace:RequestId (#PCDATA)>
+  <!ELEMENT trace:Parent (#PCDATA)>
+  <!ELEMENT feature:Flag EMPTY>
+  <!ATTLIST feature:Flag name NMTOKEN #REQUIRED enabled (true|false) "true">
+  <!ELEMENT rpc:Call (rpc:Method,rpc:Arguments?)>
+  <!ATTLIST rpc:Call id ID #IMPLIED timeout CDATA #IMPLIED>
+  <!ELEMENT rpc:Method (#PCDATA)>
+  <!ELEMENT rpc:Arguments (rpc:Argument*)>
+  <!ELEMENT rpc:Argument (rpc:Name,rpc:Value)>
+  <!ELEMENT rpc:Name (#PCDATA)>
+  <!ELEMENT rpc:Value (#PCDATA|rpc:List|rpc:Map)*>
+  <!ELEMENT rpc:List (rpc:Item*)>
+  <!ELEMENT rpc:Item (#PCDATA)>
+  <!ELEMENT rpc:Map (rpc:Pair*)>
+  <!ELEMENT rpc:Pair (rpc:Key,rpc:Value)>
+  <!ELEMENT rpc:Key (#PCDATA)>
+  <!ELEMENT rpc:Batch (rpc:Call+)>
+  <!ELEMENT soap:Fault (soap:Code,soap:Reason,soap:Detail?)>
+  <!ELEMENT soap:Code (#PCDATA)>
+  <!ELEMENT soap:Reason (#PCDATA)>
+  <!ELEMENT soap:Detail ANY>
+]>
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:auth="urn:example:auth"
+    xmlns:trace="urn:example:trace"
+    xmlns:feature="urn:example:feature"
+    xmlns:rpc="urn:example:rpc"
+    soap:encodingStyle="urn:example:encoding">
+  <soap:Header>
+    <auth:Credentials>
+      <auth:User>guest&amp;operator</auth:User>
+      <auth:Token><![CDATA[opaque<token>]]></auth:Token>
+    </auth:Credentials>
+    <trace:Context>
+      <trace:RequestId>req-0007</trace:RequestId>
+      <trace:Parent/>
+    </trace:Context>
+    <feature:Flag name="compression" enabled="false"/>
+  </soap:Header>
+  <soap:Body>
+    <rpc:Batch>
+      <rpc:Call id="call-1" timeout="0">
+        <rpc:Method>inventory.lookup</rpc:Method>
+        <rpc:Arguments>
+          <rpc:Argument>
+            <rpc:Name>selector</rpc:Name>
+            <rpc:Value><rpc:List><rpc:Item>red</rpc:Item><rpc:Item>blue</rpc:Item></rpc:List></rpc:Value>
+          </rpc:Argument>
+        </rpc:Arguments>
+      </rpc:Call>
+      <rpc:Call id="call-2">
+        <rpc:Method>inventory.options</rpc:Method>
+        <rpc:Arguments>
+          <rpc:Argument>
+            <rpc:Name>flags</rpc:Name>
+            <rpc:Value><rpc:Map><rpc:Pair><rpc:Key>limit</rpc:Key><rpc:Value>10</rpc:Value></rpc:Pair></rpc:Map></rpc:Value>
+          </rpc:Argument>
+        </rpc:Arguments>
+      </rpc:Call>
+    </rpc:Batch>
+  </soap:Body>
+</soap:Envelope>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE registry [
+  <!ENTITY % commonAttrs "xml:lang NMTOKEN #IMPLIED xml:space (default|preserve) 'preserve'">
+  <!ENTITY productName "A &amp; B Registry">
+  <!ELEMENT registry (header,namespace*,record*)>
+  <!ATTLIST registry %commonAttrs; revision NMTOKEN #REQUIRED>
+  <!ELEMENT header (name,created,comment?)>
+  <!ELEMENT name (#PCDATA)>
+  <!ELEMENT created (#PCDATA)>
+  <!ELEMENT comment (#PCDATA|b|i|code)*>
+  <!ELEMENT b (#PCDATA)>
+  <!ELEMENT i (#PCDATA)>
+  <!ELEMENT code (#PCDATA)>
+  <!ELEMENT namespace EMPTY>
+  <!ATTLIST namespace prefix NMTOKEN #REQUIRED uri CDATA #REQUIRED>
+  <!ELEMENT record (key,value,metadata?,history?)>
+  <!ATTLIST record id ID #REQUIRED state (new|active|retired) "active">
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|part|ref)*>
+  <!ELEMENT part (#PCDATA)>
+  <!ATTLIST part role NMTOKEN #IMPLIED>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED kind (soft|hard) "soft">
+  <!ELEMENT metadata (property*)>
+  <!ELEMENT property (#PCDATA)>
+  <!ATTLIST property name NMTOKEN #REQUIRED type (text|integer|boolean|date) "text">
+  <!ELEMENT history (event+)>
+  <!ELEMENT event (actor,when,change)>
+  <!ATTLIST event seq NMTOKEN #REQUIRED>
+  <!ELEMENT actor (#PCDATA)>
+  <!ELEMENT when (#PCDATA)>
+  <!ELEMENT change (#PCDATA|add|remove)*>
+  <!ELEMENT add (#PCDATA)>
+  <!ELEMENT remove (#PCDATA)>
+]>
+<registry revision="r&amp;7" xml:lang="en-US">
+  <header>
+    <name>&productName;</name>
+    <created>2026-10-01T12:34:56Z</created>
+    <comment>Use <b>escaped</b> values, <i>not</i> raw <code>&lt;tags&gt;</code>.</comment>
+  </header>
+  <namespace prefix="cfg" uri="urn:config:v2"/>
+  <namespace prefix="ext" uri="urn:vendor:extension"/>
+  <record id="item-1" state="active">
+    <key>threshold</key>
+    <value>12<part role="unit">ms</part><ref target="item-2" kind="hard"/></value>
+    <metadata>
+      <property name="enabled" type="boolean">true</property>
+      <property name="retries" type="integer">004</property>
+      <property name="when" type="date">2026-09-30</property>
+    </metadata>
+    <history>
+      <event seq="1">
+        <actor>system</actor>
+        <when>2026-09-30</when>
+        <change><add>initial value</add></change>
+      </event>
+      <event seq="2">
+        <actor>operator</actor>
+        <when>2026-10-01</when>
+        <change><remove>temporary override</remove><add><![CDATA[stable]]></add></change>
+      </event>
+    </history>
+  </record>
+  <record id="item-2" state="retired">
+    <key>legacy</key>
+    <value>old &amp; obsolete</value>
+  </record>
+</registry>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE transform [
+  <!ELEMENT transform (xsl:template+,xsl:variable*)>
+  <!ATTLIST transform
+    xmlns:xsl CDATA #IMPLIED
+    version CDATA #REQUIRED
+    extension-element-prefixes CDATA #IMPLIED
+  >
+  <!ELEMENT xsl:template (xsl:param*,xsl:apply-templates|xsl:for-each|xsl:choose|xsl:value-of|xsl:text|xsl:element|xsl:attribute|xsl:copy-of|literal)*>
+  <!ATTLIST xsl:template match CDATA #IMPLIED name NMTOKEN #IMPLIED mode NMTOKEN #IMPLIED>
+  <!ELEMENT xsl:param EMPTY>
+  <!ATTLIST xsl:param name NMTOKEN #REQUIRED select CDATA #IMPLIED>
+  <!ELEMENT xsl:variable (#PCDATA|xsl:value-of|xsl:choose)*>
+  <!ATTLIST xsl:variable name NMTOKEN #REQUIRED select CDATA #IMPLIED>
+  <!ELEMENT xsl:apply-templates EMPTY>
+  <!ATTLIST xsl:apply-templates select CDATA #IMPLIED mode NMTOKEN #IMPLIED>
+  <!ELEMENT xsl:for-each (xsl:sort*,xsl:if|xsl:value-of|xsl:copy-of|xsl:text)*>
+  <!ATTLIST xsl:for-each select CDATA #REQUIRED>
+  <!ELEMENT xsl:choose (xsl:when+,xsl:otherwise?)>
+  <!ELEMENT xsl:when (xsl:value-of|xsl:text|xsl:apply-templates|xsl:copy-of)*>
+  <!ATTLIST xsl:when test CDATA #REQUIRED>
+  <!ELEMENT xsl:otherwise (xsl:value-of|xsl:text|xsl:apply-templates|xsl:copy-of)*>
+  <!ELEMENT xsl:value-of EMPTY>
+  <!ATTLIST xsl:value-of select CDATA #REQUIRED disable-output-escaping (yes|no) "no">
+  <!ELEMENT xsl:text (#PCDATA)>
+  <!ELEMENT xsl:element (xsl:attribute*,xsl:apply-templates|xsl:value-of|xsl:text)*>
+  <!ATTLIST xsl:element name CDATA #REQUIRED namespace CDATA #IMPLIED>
+  <!ELEMENT xsl:attribute (#PCDATA|xsl:value-of)*>
+  <!ATTLIST xsl:attribute name NMTOKEN #REQUIRED>
+  <!ELEMENT xsl:copy-of EMPTY>
+  <!ATTLIST xsl:copy-of select CDATA #REQUIRED>
+  <!ELEMENT xsl:sort EMPTY>
+  <!ATTLIST xsl:sort select CDATA #REQUIRED order (ascending|descending) "ascending">
+  <!ELEMENT xsl:if (xsl:value-of|xsl:text|xsl:copy-of)*>
+  <!ATTLIST xsl:if test CDATA #REQUIRED>
+  <!ELEMENT literal ANY>
+]>
+<transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+           xmlns:fn="urn:example:functions"
+           version="1.0"
+           extension-element-prefixes="fn">
+  <xsl:output method="xml" omit-xml-declaration="no" indent="yes"/>
+  <xsl:variable name="separator"> :: </xsl:variable>
+  <xsl:template match="/">
+    <xsl:element name="report" namespace="urn:example:report">
+      <xsl:attribute name="generated"><xsl:value-of select="'now'"/></xsl:attribute>
+      <xsl:apply-templates select="feed/item" mode="row"/>
+    </xsl:element>
+  </xsl:template>
+  <xsl:template match="item" mode="row">
+    <row>
+      <xsl:attribute name="key"><xsl:value-of select="@id"/></xsl:attribute>
+      <xsl:choose>
+        <xsl:when test="@priority = 'high'"><xsl:text>urgent</xsl:text></xsl:when>
+        <xsl:otherwise><xsl:value-of select="title"/></xsl:otherwise>
+      </xsl:choose>
+      <xsl:for-each select="tag">
+        <xsl:sort select="." order="descending"/>
+        <tag><xsl:value-of select="."/></tag>
+      </xsl:for-each>
+    </row>
+  </xsl:template>
+  <xsl:template name="unused">
+    <xsl:param name="fallback" select="'none'"/>
+    <xsl:if test="string-length($fallback) &gt; 0">
+      <xsl:value-of select="$fallback" disable-output-escaping="no"/>
+    </xsl:if>
+  </xsl:template>
+</transform>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE scene [
+  <!NOTATION png SYSTEM "image/png">
+  <!NOTATION text SYSTEM "text/plain">
+  <!ENTITY logo SYSTEM "logo.png" NDATA png>
+  <!ELEMENT scene (layer+)>
+  <!ATTLIST scene xmlns:draw CDATA #IMPLIED xmlns:meta CDATA #IMPLIED width NMTOKEN #REQUIRED height NMTOKEN #REQUIRED>
+  <!ELEMENT layer (draw:group|draw:shape|draw:image|draw:label|meta:note)*>
+  <!ATTLIST layer name NMTOKEN #REQUIRED z CDATA #IMPLIED visible (yes|no) "yes">
+  <!ELEMENT draw:group (draw:shape|draw:label|draw:image|draw:group)*>
+  <!ATTLIST draw:group id ID #IMPLIED opacity CDATA #IMPLIED>
+  <!ELEMENT draw:shape EMPTY>
+  <!ATTLIST draw:shape id ID #IMPLIED type (rect|ellipse|polygon|line) #REQUIRED points CDATA #IMPLIED>
+  <!ELEMENT draw:image EMPTY>
+  <!ATTLIST draw:image id ID #IMPLIED href CDATA #IMPLIED source ENTITY #IMPLIED>
+  <!ELEMENT draw:label (#PCDATA)>
+  <!ATTLIST draw:label x CDATA #IMPLIED y CDATA #IMPLIED rotate CDATA #IMPLIED>
+  <!ELEMENT meta:note (#PCDATA|meta:author|meta:tag)*>
+  <!ELEMENT meta:author (#PCDATA)>
+  <!ELEMENT meta:tag (#PCDATA)>
+]>
+<scene xmlns:draw="urn:example:drawing"
+       xmlns:meta="urn:example:metadata"
+       width="1024" height="768">
+  <layer name="background" z="-10">
+    <draw:shape id="base" type="rect" points="0,0 1024,768"/>
+    <meta:note><meta:author>renderer</meta:author><meta:tag>generated</meta:tag></meta:note>
+  </layer>
+  <layer name="content" z="0">
+    <draw:group id="cluster" opacity="0.875">
+      <draw:shape id="ellipse-1" type="ellipse"/>
+      <draw:shape id="poly-1" type="polygon" points="1,2 3,5 8,13 21,34"/>
+      <draw:label x="48.5" y="77" rotate="-12">A &amp; B &lt; C</draw:label>
+      <draw:image id="remote" href="https://example.invalid/assets/a.svg"/>
+    </draw:group>
+    <draw:image id="binary" source="logo"/>
+    <draw:label x="0" y="767"><![CDATA[line
+break
+and ]]> brackets</draw:label>
+  </layer>
+  <layer name="overlay" visible="no">
+    <draw:group id="empty"/>
+    <meta:note>hidden <!-- annotation --> remains metadata</meta:note>
+  </layer>
+</scene>
+```

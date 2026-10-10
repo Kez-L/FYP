@@ -1,0 +1,129 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ELEMENT catalog (entry+)>
+  <!ELEMENT entry (title, price, note?)>
+  <!ATTLIST entry code ID #REQUIRED ref IDREF #IMPLIED>
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT price (#PCDATA)>
+  <!ELEMENT note (#PCDATA)>
+  <!ENTITY company "A&amp;B Research">
+  <!ENTITY quoted "Use &quot;quoted&quot; values">
+]>
+<catalog>
+  <entry code="a7">
+    <title>&company; annual report</title>
+    <price currency="EUR">19.95</price>
+    <note>&quoted;</note>
+  </entry>
+  <entry code="b7" ref="a7">
+    <title>Replacement parts</title>
+    <price currency="JPY">2400</price>
+  </entry>
+</catalog>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<r:request xmlns:r="urn:acme:request"
+          xmlns:d="urn:acme:data"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xml:base="https://example.invalid/api/">
+  <r:header>
+    <r:token xml:space="preserve">  K-17-XY  </r:token>
+    <r:flags>
+      <r:flag enabled="1">cache</r:flag>
+      <r:flag enabled="0">trace</r:flag>
+    </r:flags>
+  </r:header>
+  <r:body>
+    <d:record key="alpha" xlink:type="simple" xlink:href="records/alpha">
+      <d:value><![CDATA[ left < middle & right ]]></d:value>
+      <d:tags>
+        <d:tag>one</d:tag>
+        <d:tag>two</d:tag>
+      </d:tags>
+    </d:record>
+    <d:record key="omega">
+      <d:value>終端</d:value>
+    </d:record>
+  </r:body>
+</r:request>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>urn:uuid:4d2a</id>
+  <title type="html">Signals &amp; Samples</title>
+  <updated>2026-10-01T12:34:56Z</updated>
+  <author>
+    <name>parser-lab</name>
+    <email>lab@example.invalid</email>
+  </author>
+  <link rel="self" type="application/atom+xml" href="https://example.invalid/feed"/>
+  <entry>
+    <id>urn:item:01</id>
+    <title type="text">First observation</title>
+    <summary type="xhtml">
+      <div xmlns="http://www.w3.org/1999/xhtml">
+        <p>Nested <em>markup</em> inside a summary.</p>
+        <ul><li>cold</li><li>hot</li></ul>
+      </div>
+    </summary>
+    <category term="experimental"/>
+  </entry>
+</feed>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<archive>
+  <section name="binary">
+    <item id="img-1" media-type="image/png">
+      <data encoding="base64">
+        iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB
+      </data>
+      <checksum algorithm="sha256">00ff11ee22dd</checksum>
+    </item>
+    <item id="empty" media-type="application/octet-stream">
+      <data encoding="hex"/>
+    </item>
+  </section>
+  <section name="relations">
+    <link from="img-1" to="empty" kind="derived"/>
+    <link from="empty" to="img-1" kind="reverse"/>
+  </section>
+  <metadata>
+    <property key="created">2026-10-01</property>
+    <property key="comment"><![CDATA[ ]]> </property>
+  </metadata>
+</archive>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE envelope [
+  <!ELEMENT envelope (meta?, payload)>
+  <!ELEMENT meta (item*)>
+  <!ELEMENT item EMPTY>
+  <!ATTLIST item name NMTOKEN #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT payload ANY>
+  <!ENTITY left "[" >
+  <!ENTITY right "]" >
+]>
+<envelope>
+  <meta>
+    <item name="mode" value="stream"/>
+    <item name="retry" value="3"/>
+  </meta>
+  <payload>
+    <message priority="high">&left;hello&right;</message>
+    <chunks>
+      <chunk index="0">A</chunk>
+      <chunk index="1"/>
+      <chunk index="2"><![CDATA[B&C]]></chunk>
+    </chunks>
+  </payload>
+</envelope>
+```

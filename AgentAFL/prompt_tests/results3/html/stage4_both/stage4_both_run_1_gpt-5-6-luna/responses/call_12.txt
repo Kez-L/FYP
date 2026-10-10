@@ -1,0 +1,162 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=unknown">
+  <title>frameset recovery</title>
+  <base href="http://[broken.example/">
+</head>
+<frameset rows="*,0,25%" cols="50%,*,bad" border="-1" frameborder="maybe">
+  <frame src="one.html" name="main" scrolling="sideways" noresize="false" marginwidth="-9">
+  <frameset cols="*,*">
+    <frame src="javascript:bad(" name="left">
+    <frame srcdoc="<p>embedded & broken" name="right">
+  </frameset>
+  <noframes>
+    <body>
+      <h1>Fallback</h1>
+      <p>Text before <iframe src="x" loading="never"><b>fallback</iframe> after</p>
+      <!-- unclosed comment
+      <p>comment confusion --><p>visible &amp; text &bogus; &#x110000;</p>
+    </body>
+  </noframes>
+</frameset>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>raw text and token boundaries</title>
+  <script type="text/javascript">
+    if (a < b && c > d) {
+      document.write("</scr" + "ipt>");
+      var s = "<!-- fake --><div>&amp;</div>";
+    }
+  </script>
+  <script type="application/json">{"x":"</script><p>escaped?","y":1}</script>
+  <style>
+    /* </style> */
+    @media (x:y) { body { background: url("a&b"); } }
+  </style>
+  <noscript><style>body{display:none}</style><p>fallback</noscript>
+</head>
+<body>
+  <textarea rows="bad" cols="-1">one &amp; two
+</textarea>
+  <title>misplaced title &copy;</title>
+  <pre><code>&lt;tag attr='x'> raw </code></pre>
+  <xmp><b>not bold</b><!-- not comment --></xmp>
+  <plaintext>
+    <b>everything after plaintext</b>
+    <!-- including comments and </body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="xx" dir="sideways">
+<head>
+  <title>ruby and phrasing repair</title>
+  <meta charset="UTF-16LE">
+</head>
+<body>
+  <p><ruby>漢<rb>字<rt>kanji<rp>(<rtc>annotation</ruby> tail
+  <p><b><i><em><strong><small><s><mark><q cite="x">nested
+  <sup>2<sub>n</sup>+1</sub></q></mark></s></small></strong></em></i></b>
+  <p><abbr title="unclosed>HTML</abbr>
+  <p><time datetime="2024-99-99T25:61:61Z">tomorrow</time>
+  <data value="NaN">value</data>
+  <ins cite="http://[bad" datetime="not-a-date">inserted
+  <del cite="" datetime="">deleted</del>
+  <wbr><br><hr>
+  <p><span style="color: expression(alert(1));" class="a b c" id="a b">styled</span>
+  <p><a href="mailto:user@@example" rel="noopener garbage" target="_blank">link
+  <p><button type="unknown" disabled="false" autofocus="maybe">click
+  <select multiple size="-2" required="no">
+    <optgroup label="group" disabled="0">
+      <option selected="false" value="&amp;">one
+      <option value='unterminated>two
+    </optgroup>
+  </select>
+</body>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>lists and definition structures</title></head>
+<body>
+  <menu type="context" compact="false">
+    <li value="abc">alpha
+    <li>beta
+      <menu>
+        <li>nested one
+        <li>nested two
+      </menu>
+    <li>gamma
+  </menu>
+  <ol type="Z" start="-999" reversed="0">
+    <li value="1.5">first
+    <li value="">second
+  </ol>
+  <ul type="invalid">
+    <li>unclosed one
+    <li><p>paragraph inside item
+    <li><div>block inside item</div>
+  </ul>
+  <dl compact="maybe">
+    <dt>term one
+    <dd>definition one
+    <dt><b>term two
+    <dd><p>definition two
+    <dd>extra definition
+  </dl>
+  <div role="list">
+    <div role="listitem" aria-setsize="NaN" aria-posinset="-1">item</div>
+    <div role="separator" aria-hidden="perhaps"></div>
+  </div>
+  <blockquote cite="http://[invalid">
+    <p>quoted <cite>source</cite>
+  </blockquote>
+  <address><a href="tel:+">contact</address>
+  <center>legacy <dir><li>directory item</dir></center>
+</body>
+</html>
+```
+
+```html
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html [
+  <!ENTITY local "replacement">
+  <!ELEMENT mystery ANY>
+  <!-- declaration comment -->
+]>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:x="urn:unknown">
+<head>
+  <?processing instruction?>
+  <meta http-equiv="refresh" content="bad; url=http://[">
+  <title><![CDATA[title <&>]]></title>
+</head>
+<body>
+  <x:box x:value="1" data-x="&local;" />
+  <section>
+    <![CDATA[
+      <not-html attr="&raw;">cdata body</not-html>
+    ]]>
+    <p>after cdata &lt; &gt; &quot; &apos; &#0; &#xD800;
+  </section>
+  <table border="NaN">
+    <tr><td>A</td></tr>
+  </table>
+  <?broken
+  <p>processing tail</p>
+  <!-- a -- b --- c -->
+  <!-->
+  <div class="one" class="two" =bad ="x" data-empty=>
+    text
+  </div>
+</body>
+</html>
+```

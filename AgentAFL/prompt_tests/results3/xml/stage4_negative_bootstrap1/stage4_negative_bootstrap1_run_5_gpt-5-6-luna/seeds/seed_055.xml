@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY writer "A &amp; B">
+  <!ENTITY nested "&writer; / C">
+  <!ELEMENT catalog (entry+, note?)>
+  <!ELEMENT entry (title, meta*, body)>
+  <!ATTLIST entry id ID #REQUIRED status (draft|final) "draft">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT meta EMPTY>
+  <!ATTLIST meta key CDATA #REQUIRED value CDATA #IMPLIED>
+  <!ELEMENT body (#PCDATA|em|br|ref)*>
+  <!ELEMENT em (#PCDATA)>
+  <!ELEMENT br EMPTY>
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref target IDREF #REQUIRED>
+  <!ELEMENT note (#PCDATA)>
+]>
+<catalog>
+  <entry id="e1" status="final">
+    <title>One &nested;</title>
+    <meta key="owner" value="&quot;root&quot;"/>
+    <meta key="empty"/>
+    <body>alpha<em>mixed</em><br/>omega<ref target="e1"/></body>
+  </entry>
+  <entry id="e2">
+    <title><![CDATA[x<y && z>q]]></title>
+    <body>tail</body>
+  </entry>
+  <note>after entries</note>
+</catalog>

@@ -1,0 +1,23 @@
+{
+  "call": 5,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a HTML document parser.\nTarget: /home/user/Documents/1git-folder/AgentAFL/AFLPlus/tidy-html5-build/tidy_parse_string_fuzzer-afl.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 HTML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Frameset//EN\">\n<html>\n<head>\n  <title>frameset recovery</title>\n  <meta http-equiv=\"refresh\" content=\"0; URL=javascript:alert(1)\">\n</head>\n<frameset rows=\"*,0,25%\" cols=\"70%,*,*\">\n  <frame src=\"left.html\" name=\"nav\" scrolling=\"maybe\" frameborder=\"-1\">\n  <frameset cols=\"*,*\" border=\"not-a-number\">\n    <frame srcdoc=\"<p>embedded &amp; broken\" name=\"main\">\n    <frame src=\"right.html\" noresize=\"false\">\n  </frameset>\n  <noframes>\n    <body>\n      <h1>Fallback</h1>\n      <p><a href=\"x\" target=\"_top\">open</a>\n      <frameset><frame src=\"recursive.html\"></frameset>\n    </body>\n  </noframes>\n</frameset>\n</html>\n\n--- example 2 ---\n<!DOCTYPE html>\n<html>\n<head>\n  <title>lists and definitions</title>\n</head>\n<body>\n<ol start=\"not-a-number\" type=\"Z\" reversed=\"maybe\">\n  <li value=\"999999999999999999999999999999999999999\">first\n  <li><dl compact=\"compact\">\n    <dt><b>term <dd>definition\n    <dt><dd><p>second definition\n  </dl>\n  <li>third\n</ol>\n<ul type=\"square\">\n  <li>outer\n    <ul>\n      <li>inner one\n      <li><ul><li>deep</ul>\n      <li><div>block in item</div></li>\n    </ul>\n  <li><p>paragraph item\n</ul>\n<menu>\n  <li type=disc>menu one\n  <li type=\"circle\">menu two\n</menu>\n<dir><li>a<li>b</dir>\n</body>\n</html>\n\nTried before \u2014 no new coverage, avoid repeating:\n--- a seed you generated (cycle 5) added 0 new edges ---\n<!doctype html>\n<html lang=\"x\" dir=\"rtl\">\n<head>\n<meta charset=\"utf-16\">\n<base href=\"//[::1]:bad/path\">\n<link rel=stylesheet href=\"data:text/css,body{color:red}\" media=\"screen and (\">\n<style type=\"text/plain\">body { color: red; } </style>\n<script type=\"application/ld+json\">{\"x\":\"</script><p>escaped?\",\"y\":[1,2,]}</script>\n</head>\n<body>\n<table border=999 cellpadding=\"-1\" cellspacing=\"NaN\" width=\"1e309\">\n<caption><strong>caption<table><tr><td>nested caption repair</strong></caption>\n<colgroup span=\"999\"><col span=0 width=garbage><colgroup><col>\n<thead><tr><th rowspan=\"-1\" colspan=\"999999999999999999\">A<th>B\n<tbody>\n<tr><td headers=\"a b\" rowspan=abc>one<td><table><tr><td>inner\n<tr><td>two\n<tfoo...[truncated, 832 chars total]\n\n--- a seed you generated (cycle 5) added 0 new edges ---\n<!DOCTYPE html>\n<html>\n<head><title>foreign islands</title></head>\n<body>\n<svg width=\"1e999\" height=\"-Infinity\" viewBox=\"0 0 10\">\n  <title>svg title</title>\n  <g transform=\"translate(1,2) rotate(foo)\" onclick=\"x<y\">\n    <foreignObject width=\"100%\" height=\"20\">\n      <div xmlns=\"http://www.w3.org/1999/xhtml\"><p>html island\n        <svg><circle cx=\"NaN\" cy=\"-\" r=\"999999999999999999999\"></circle></svg>\n      </div>\n    </foreignObject>\n    <path d=\"M0 0 Lgarbage 20 Z\" fill-rule=\"weird\"/>\n    <use href=\"#missing\" xlink:href=\"javascript:bad()\"></use>\n  </g>\n  <metadata><![CDATA[<not markup> & weird]]></metadata>\n</svg>\n<math display=\"sideways\" alttext=\"a&b\">\n  <mrow><mi>x</mi><mo>&</mo><msup><mi>...[truncated, 1003 chars total]\n\nGenerate 5 new HTML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-tidy-20261006",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-08T02:14:51.779439+00:00"
+}

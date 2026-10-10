@@ -1,0 +1,132 @@
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en dir=rtl>
+<head>
+<meta charset="UTF-16">
+<meta http-equiv=refresh content="0;url='x&y">
+<base href="//example.invalid/a/../../b/" target=_blank>
+<link rel=stylesheet href="style.css" media="screen and (min-width:0px)">
+<style type=text/css>
+<!--
+body { color: red; content: "</style><p>escaped"; }
+-->
+</style>
+<script type="text/javascript">
+if (a < b && c > d) { document.write("<p>raw</p>"); }
+</script>
+<title>head <b>markup</title>
+</head>
+<body background=x bgcolor=#ggg text=rgb(1,2,3) alink=none>
+<marquee behavior=alternate direction=sideways scrollamount=-1>
+<blink><big><small><center>legacy <font face="A&B" size=+99 color="#12345">text</font></center></small></big></blink>
+</marquee>
+<hr noshade="false" size="0" width="200%">
+<img src=x alt="a > b" ismap border=-1 hspace=999999999999>
+<br clear=diagonal>
+<applet code="x.class" archive="a.jar,b.jar" width=0 height=-3>
+<param name=name value="a&b">
+<object data="x" type="application/x-unknown"><param name=x><p>fallback<object data=y></object></object>
+</applet>
+<noembed><p>fallback <a href="javascript:alert(1)">link</a></noembed>
+<address><tt>contact <s>obsolete</s></tt></address>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>raw text and tokenizer boundaries</title></head>
+<body>
+<script>
+<!--
+var x = "</script";
+var y = "</script >";
+var z = "<!-- -->";
+if (x < y) document.write("<textarea>fake</textarea>");
+--></script>
+<script type=module>const s = `</script>${"<x>"}`;</script>
+<noscript>
+  <div>inside noscript <script>not executable</script> &amp; text</div>
+</noscript>
+<textarea rows=999999999999999999999999 cols=-999 wrap=sideways>
+first &amp; second
+</textarea>
+<textarea>one</textarea>tail</textarea>
+<title>a < b &amp; c </title> after</title>
+<xmp><b>literal</b> &amp; <!-- comment --></xmp>
+<plaintext>
+everything after this should be text
+<div><p>&amp;</p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>ruby and phrasing repair</title></head>
+<body>
+<p><ruby>漢<rt>kanji<rp>(</rt>字<rtc><b>annotation</ruby>
+<p><bdi dir=invalid>start <bdo dir=rtl>override <wbr> boundary</bdo> end</bdi>
+<p><abbr title="x<y & z">A<sup>2<sub>n</sup>+1</sub></abbr>
+<p><mark><time datetime="2024-13-99T99:99:99Z">now<del cite=x datetime=bad>old<ins datetime=0>new</del> tail</ins></time></mark>
+<p><a href=x><area href=y><button><label for=a>label<input id=a></button></a>
+<p><i><b><u><s><em><strong><small><big>deep</i>repair</b>tail</u>end</s></em></strong></small></big>
+<p><span title="a&#0;b&#xD800;c&#x110000;d">entities&nbsp;&Tab;&NewLine;&not;&notin;</span>
+<ruby><rb>one<rb>two<rt>first<rt>second<rp>fallback
+<p><dfn><cite><q cite="unterminated>quote</q></cite></dfn>
+<kbd><samp><var>x</kbd> y</samp></var>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>obsolete containers and omitted ends</title></head>
+<body>
+<dl compact><dt>alpha<dd>one<dt>beta<dd>two<dd>three</dl>
+<menu compact><li value=0>zero<li value=-1>negative<li>last</menu>
+<dir><li>directory<li><li>empty text</dir>
+<blockquote cite=about:blank><p>quote one<p>quote two</blockquote>
+<figure><figcaption><a href=#><b>caption</a></figcaption><pre>pre
+line <code>code</pre><figcaption>late caption</figcaption></figure>
+<details open=maybe><summary><b>summary</summary><p>detail one</details>
+<dialog open><p>dialog <div>block</div></dialog>
+<main><header><hgroup><h1>one<h2>two</hgroup><section><h3>three</section></header>
+<aside><p>aside <footer>foot</aside></footer>
+<section><h1>heading<h7>bad heading</h7><p>text</section>
+<article><header>nested<header>again</header></header><footer><address>x</footer></article>
+<legend>outside legend</legend>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>frameset and malformed declarations</title></head>
+<frameset rows="*,0,-1,auto" cols="25%,bad,*">
+<frame src="a" name="a" frameborder=maybe scrolling=diagonal marginwidth=-9>
+<frameset>
+<frame src="b">
+<noframes><body><p>fallback</p></body></noframes>
+</frameset>
+<frame>
+</frameset>
+<body>
+<p>body after frameset
+<!doctype html PUBLIC "x" "y" extra>
+<!DOCTYPE bogus>
+<![CDATA[<p>cdata</p>]]>
+<!-- one -- two --- three -->
+<!--
+unclosed
+<div>
+<?xml version="1.0"?>
+<% server %>
+<svg><path></svg>
+</body>
+</html>
+```

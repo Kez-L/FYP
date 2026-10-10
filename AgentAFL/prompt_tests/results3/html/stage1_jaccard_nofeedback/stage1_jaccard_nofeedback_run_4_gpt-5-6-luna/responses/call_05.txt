@@ -1,0 +1,112 @@
+```html
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=windows-1252">
+    <base href="http://example.invalid/a/../b/">
+    <title>Unclosed &amp; entities &#0; &#xD800; &#x10FFFF;</title>
+    <style>
+      body { color: red; }
+      @media screen { .x { display: none } }
+    </style>
+  </head>
+  <body id="root" class="a b" data-x="&quot; ' < >">
+    <header><hgroup><h1>Heading<h2>Nested heading</header>
+    <main>
+      <article>
+        <p>Alpha <b>bold <i>italic</b> tail</i> &unknown; &amp
+        <dl><dt>Term<dd>Definition<dt>Second term<dd>Second definition</dl>
+        <blockquote cite="x"><p>Quoted text<br/>line two<hr>after rule</blockquote>
+      </article>
+    </main>
+    <footer><small>Footer without closing tags
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<frameset rows="25%,*,0" cols="*" border="not-a-number">
+  <frame src="javascript:alert(1)" name="top" scrolling="maybe">
+  <frame src="/frame.html" noresize>
+  <noframes>
+    <body>
+      <form action="/submit" method="post" enctype="multipart/form-data">
+        <input type=text name=user value="a&b" disabled checked>
+        <input type="file" name=upload accept=image/* multiple>
+        <select name=choice size=2><option>One<option selected>Two</select>
+        <textarea name=notes rows=2 cols=4>one
+two</textarea>
+        <button type=submit><em>Send</button>
+      </form>
+    </body>
+  </noframes>
+</frameset>
+```
+
+```html
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>Foreign content</title></head>
+<body>
+  <svg viewBox="0 0 10 10" width="10" height="10">
+    <g transform="translate(1 2)"><path d="M0 0L5 5Z"></g>
+    <foreignObject x="0" y="0"><div xmlns="http://www.w3.org/1999/xhtml">
+      <p>inside foreign object<img src=x alt=></p>
+    </div></foreignObject>
+  </svg>
+  <math display="block">
+    <mrow><mi>x</mi><mo>&lt;</mo><mn>42</mn><mo>&amp;</mo><mi>y</mi></mrow>
+  </math>
+  <p><svg><circle cx="1" cy="2"></svg>text after</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+  <title>Conditional and comment stress</title>
+  <!-- ordinary comment -- -- broken -->
+  <![if IE]><p>old conditional<![endif]>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("</script>"); }
+  </script>
+  <style>
+    /* comment with */ and <tag> { content: "</style>"; }
+  </style>
+</head>
+<body>
+  <!--[if lt IE 9]><div class="legacy">legacy</div><![endif]-->
+  <p><!-- nested <!-- comment --> visible</p>
+  <![CDATA[ raw text with <tags> & entities ]]>
+  <pre>  leading
+	 tabs &amp; &#x1F600;</pre>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Lists and malformed attributes</title></head>
+<body>
+  <nav aria-label="main" data-a=one data-b='two" data-c="three>
+    <ul compact><li value="3">Third<li>Fourth<ul><li>Nested A<li>Nested B</ul>
+    <ol start="-2" reversed><li>Negative<li>Next</ol>
+  </nav>
+  <table border=0 cellpadding="x">
+    <caption align=bottom>Caption
+    <colgroup span=2><col width=20><col>
+    <thead><tr><th scope=col>Name<th colspan=wat>Value
+    <tbody><tr><td rowspan=0>A<td>B
+      <tr><td>C<td><input name=n value=v></tbody>
+    <tfoot><tr><td>Total</tfoot>
+  </table>
+  <map name=map><area shape=rect coords="0,0,10,10" href="#x"><area></map>
+  <img src="x" usemap="#map" alt="map">
+</body>
+</html>
+```

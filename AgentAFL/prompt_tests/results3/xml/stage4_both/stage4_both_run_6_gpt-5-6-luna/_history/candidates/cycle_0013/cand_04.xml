@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE telemetry [
+  <!ELEMENT telemetry (device, sample-set+)>
+  <!ATTLIST telemetry generated CDATA #IMPLIED>
+  <!ELEMENT device (model, firmware, sensor+)>
+  <!ATTLIST device serial NMTOKEN #REQUIRED>
+  <!ELEMENT model (#PCDATA)>
+  <!ELEMENT firmware (#PCDATA)>
+  <!ELEMENT sensor EMPTY>
+  <!ATTLIST sensor id ID #REQUIRED kind NMTOKEN #REQUIRED unit CDATA #REQUIRED>
+  <!ELEMENT sample-set (sample+)>
+  <!ATTLIST sample-set at CDATA #REQUIRED interval CDATA #IMPLIED>
+  <!ELEMENT sample (#PCDATA)>
+  <!ATTLIST sample sensor IDREF #REQUIRED quality (good|suspect|missing) "good" min CDATA #IMPLIED max CDATA #IMPLIED>
+]>
+<telemetry xmlns="urn:lab:telemetry" xmlns:cal="urn:lab:calibration" generated="2026-10-01T00:01:17Z">
+  <device serial="MX-7719">
+    <model>Oriole environmental node</model>
+    <firmware>r9.4.0-beta</firmware>
+    <sensor id="s-temp" kind="temperature" unit="°C"/>
+    <sensor id="s-rh" kind="relative-humidity" unit="%"/>
+    <sensor id="s-voc" kind="voc-index" unit="index"/>
+  </device>
+  <cal:calibration sensor="s-temp" offset="-0.12" applied="2026-09-30"/>
+  <sample-set at="2026-10-01T00:00:00Z" interval="PT30S">
+    <sample sensor="s-temp" min="-40" max="85">21.75</sample>
+    <sample sensor="s-rh" min="0" max="100">48.2</sample>
+    <sample sensor="s-voc" quality="suspect">999999999999999999999999</sample>
+  </sample-set>
+  <sample-set at="2026-10-01T00:00:30Z">
+    <sample sensor="s-temp">21.8</sample>
+    <sample sensor="s-rh">48.1</sample>
+    <sample sensor="s-voc" quality="missing"></sample>
+  </sample-set>
+</telemetry>

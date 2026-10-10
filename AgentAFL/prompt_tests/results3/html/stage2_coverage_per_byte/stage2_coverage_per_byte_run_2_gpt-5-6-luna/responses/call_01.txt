@@ -1,0 +1,110 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<HTML>
+<HEAD>
+<TITLE>unterminated &amp; malformed</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT=text/html; charset=windows-1252>
+</HEAD>
+<BODY BGCOLOR=#fff TEXT=black>
+<H1 ALIGN=CENTER>Header
+<HR NOSHADE WIDTH=75%>
+<P>First paragraph
+<UL COMPACT>
+<LI>one
+<LI>two
+  <OL START=0>
+  <LI><B>nested</I>
+  </OL>
+</UL>
+<CENTER><IMG SRC=missing ALT=broken BORDER=abc></CENTER>
+</BODY>
+```
+
+```html
+<!DOCTYPE HTML [
+<!ELEMENT NOTE - - ANY>
+<!ENTITY local "expanded text">
+]>
+<note>
+  <to><![CDATA[recipient <name>]]></to>
+  <from>&local;</from>
+  <body>
+    <table border="1">
+      <caption align=left>caption</caption>
+      <colgroup span=2><col width=25><col>
+      <tbody>
+        <tr><th rowspan=2>A<td colspan=2>B
+        <tr><td>C</tr>
+      </tbody>
+      <tfoot><tr><td>footer</table>
+  </body>
+</note>
+```
+
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/TR/REC-html32.dtd">
+<html>
+<head><base href="http://example.invalid/a/b/" target=_blank>
+<isindex prompt="Search:">
+</head>
+<body>
+<frameset rows="20%,*,0" cols="80%,20%">
+  <frame src="left.html" name=left scrolling=no>
+  <frame src=right.html name=right>
+  <noframes>
+    <body>
+      <p>This frame document has <a href=#x>fallback</a>.
+      <map name=nav><area shape=rect coords=0,0,10,10 href=x></map>
+    </body>
+  </noframes>
+</frameset>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang=en dir=rtl>
+<head>
+  <title>Entities &#65; &#x1F600; &unknown; &#0;</title>
+  <style type=text/css>
+    body { color: red; }
+    <!-- legacy comment
+  </style>
+  <script language=javascript>
+    if (a < b) document.write("</script><p>injected");
+  </script>
+</head>
+<body>
+  <dl>
+    <dt>term<dd>definition
+    <dt><em>second term</em>
+  </dl>
+  <pre>  preformatted
+	&lt;tag&gt; &amp; text</pre>
+  <blockquote cite="x"><q cite='y'>quoted</q></blockquote>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN">
+<html>
+<head><title>attribute stress</title></head>
+<body>
+  <form method=GET action=/search enctype="multipart/form-data">
+    <input type=text name=q disabled=disabled checked=maybe maxlength=-1>
+    <input type=image src= alt=>
+    <button name=b value="x'y>z" onclick="if (x < 2) { y = '&'; }">Go
+    <select name=s size=3>
+      <optgroup label="Group one">
+        <option value=1>One
+        <option value="2>Two">Two
+      </optgroup>
+      <option selected=selected>Three
+    </select>
+  </form>
+  <address>contact<br>next line</address>
+  <x-unknown foo=bar / >
+</body>
+</html>
+```

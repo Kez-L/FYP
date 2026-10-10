@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<message xmlns="urn:example:messaging" xmlns:soap="http://www.w3.org/2003/05/soap-envelope" message-id="m-8841">
+  <routing>
+    <source host="relay-a" port="443" protocol="tls"/>
+    <destination queue="events.high" durable="true"/>
+    <retry limit="4" backoff="exponential">
+      <delay unit="milliseconds">250</delay>
+      <delay unit="milliseconds">1000</delay>
+      <delay unit="milliseconds">4000</delay>
+    </retry>
+  </routing>
+  <headers>
+    <header name="trace-id">00-abcd1234ef567890-abcd1234ef567890-01</header>
+    <header name="content-type">application/octet-stream</header>
+    <header name="quoted">a &quot;delimited&quot; value &amp; more</header>
+  </headers>
+  <body content-type="application/xml">
+    <soap:Envelope>
+      <soap:Header>
+        <soap:mustUnderstand soap:role="urn:receiver">true</soap:mustUnderstand>
+      </soap:Header>
+      <soap:Body>
+        <event type="telemetry">
+          <device id="dev-π-01" firmware="7.0.0">
+            <reading unit="°C" timestamp="2026-10-01T12:00:00Z">21.75</reading>
+            <reading unit="%" timestamp="2026-10-01T12:00:01Z">48</reading>
+          </device>
+          <annotations>
+            <annotation><![CDATA[raw bytes: <00><ff><7f>]]></annotation>
+            <annotation language="fr">température stable</annotation>
+          </annotations>
+        </event>
+      </soap:Body>
+    </soap:Envelope>
+  </body>
+</message>

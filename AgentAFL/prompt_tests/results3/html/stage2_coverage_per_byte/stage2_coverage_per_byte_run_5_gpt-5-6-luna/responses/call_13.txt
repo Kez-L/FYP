@@ -1,0 +1,106 @@
+```html
+<!doctype html>
+<html>
+<head>
+<title>Parser Boundary Test</title>
+</head>
+<body>
+<!--><!----><! -- malformed comment -->
+<section id=outer>
+  <header><h1>Alpha &amp; Omega</h1></header>
+  <article>
+    <p>Text before <b><i>crossed formatting</b></i> and after.</p>
+    <p title='unterminated attribute>broken value <span data-a="1" data-b=two>content</span></p>
+  </article>
+  <footer>&copy; &#65; &#x1f600; &unknown;</footer>
+</section>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="x">
+<head>
+<meta charset=utf-8>
+<style>
+body { color: red; }
+@media screen and (min-width: 1px) { .x { content: "</style>"; } }
+</style>
+<script type="text/javascript">
+if (a < b) { document.write("<p>raw & text</p>"); }
+</script>
+</head>
+<body>
+<noscript><div>fallback <img src=x></noscript>
+<template><p>template content</p></template>
+<main><pre>one
+  two <tag> three</pre><textarea>left <b>right</textarea></main>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+<head><title>Frames and Legacy Elements</title></head>
+<frameset rows="20%,*">
+  <frame src="top.html" name=top scrolling=no>
+  <frameset cols="30%,70%">
+    <frame src='left.html' frameborder=0>
+    <frame src=right.html>
+    <noframes>
+      <body>
+        <h2>No frames</h2>
+        <p><a href="index.html">Return</a></p>
+      </body>
+    </noframes>
+  </frameset>
+</frameset>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Interactive Form</title></head>
+<body>
+<form action="/submit?x=1&amp;y=2" method=post enctype="multipart/form-data">
+<fieldset disabled>
+<legend>Account <small>details</small></legend>
+<label for=u>User:</label><input id=u name=user value="a&b" required>
+<label>Password<input name=p type=password></label>
+<select name=role multiple size=3>
+<option value=one selected>One
+<option>Two
+<optgroup label="Group"><option value=three>Three</optgroup>
+</select>
+<textarea name=notes rows=2 cols=8>line 1
+line 2</textarea>
+</fieldset>
+<input type=checkbox checked><button type=submit>Send</button>
+</form>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Embedded Data</title></head>
+<body>
+<figure>
+<picture>
+<source media="(min-width: 800px)" srcset="large.png 2x">
+<source srcset="small.png">
+<img src="fallback.png" alt="fallback">
+</picture>
+<figcaption>Image <mark>caption</mark></figcaption>
+</figure>
+<details open><summary>More</summary><ol reversed start=4><li>four<li>three<li value=1>one</ol></details>
+<dl><dt>A<dd>first<dt>B<dd>second</dl>
+<iframe srcdoc="<p class='inner'>embedded &amp; text</p>" sandbox></iframe>
+<canvas width=20 height=10>Canvas fallback</canvas>
+</body>
+</html>
+```

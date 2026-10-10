@@ -1,0 +1,109 @@
+```html
+<!doctype html>
+<html lang="x" xmlns="urn:example:broken" xmlns:x="http://www.w3.org/1999/xlink">
+<head>
+<meta charset="x-unknown">
+<base href="http://[::1">
+<link rel=stylesheet href=data:text/css,a{color:red} media=screen>
+<style type="text/css">.a{color:red} </style>
+<script type="application/ld+json">{"x":"</script><p>escaped?"}</script>
+</head>
+<body id="a&#0;b" class="one	 two
+three">
+<!-- unclosed comment
+<?xml version="1.0"?>
+<![CDATA[not really cdata <b>]]
+<div xmlns="">alpha &badentity; &#x110000; &#999999999999999999999999;
+<span x:href="u" xlink:actuate="onLoad">beta</span>
+</div>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>misnested phrasing</head>
+<body>
+<p><b><i><u>one</b>two</i>three</u>
+<p><a href="javascript:&#x0a;alert(1)"><a href="/second">nested anchors</a></a>
+<font size="999999999999999999999999" color="#12" face="">font
+<center><div>centered <em>text</center> after</em></div>
+<q cite="&quot;broken">quote <blockquote cite=foo>block <q>nested</blockquote> tail
+<ruby>base<rt>annotation<rp>(</ruby>fallback</rp>
+<abbr title=>abbr</abbr><acronym>acro</acronym>
+<br/><hr /><wbr/>
+</body>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>lists and definition corruption</title>
+</head>
+<body>
+<ol start="not-a-number" reversed="false" type="Z">
+<li value="-999999999999999999999999">first
+<li><p>paragraph in item<ul compact="maybe"><li>nested one<li>nested two</ul>
+<li>last
+</ol>
+<ul>
+<div>illegal wrapper</div>
+<li>alpha<ol><li>numbered<li><dl><dt>term<dd>definition</dl>
+</ul>
+<dl compact>
+<dt><dt>duplicate term
+<dd><p>definition paragraph</p><dd>second definition
+<div><dt>late term</div>
+</dl>
+<menu>
+<li><a href="">link item</a>
+<dt>wrong dt</dt>
+</menu>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>embedded content boundary cases</title>
+</head>
+<body>
+<object data="x" type="application/x-unknown" width="NaN" height="-1">
+<param name="movie" value="&quot;bad">
+<embed src="file:///dev/null" type="" width=none>
+fallback <img srcset="a 0w,b 999999999999999999999999w,c 1.5x" sizes="(max-width: -1px) 50vw, bogus" src alt>
+</object>
+<map name="m"><area shape="poly" coords="1,2,NaN,999999999999999999" href="http://[bad"></map>
+<img usemap="#m" ismap="false" alt="a
+b" src="data:image/svg+xml,<svg><script>x</script></svg>">
+<iframe srcdoc="<p><b>inside</iframe>" sandbox="allow-scripts allow-unknown" referrerpolicy=invalid></iframe>
+<video autoplay="no" controls="sometimes" poster="x"><source src=x type=video/unknown><track kind=invalid src=x default=maybe></video>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>raw text and declaration confusion</title>
+</head>
+<body>
+<script>
+if (a < b && c > d) { document.write("<div>raw</div>"); }
+<!-- legacy comment
+</script>
+<style>
+/* unterminated style
+.a > .b { content: "</style><p>after"; }
+</style>
+<textarea rows="999999999999999999" cols="-4" wrap="mystery"><b>literal</textarea>
+<xmp><i>literal markup</i> &amp; &#65;</xmp>
+<plaintext><html><body><h1>everything raw
+</body>
+</html>
+```

@@ -1,0 +1,23 @@
+{
+  "call": 9,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "temperature": 1.0,
+  "history_dir_passed": true,
+  "system": "Generate seed files for AFL++ fuzzing of a HTML document parser.\nTarget: /home/user/Documents/1git-folder/AgentAFL/AFLPlus/tidy-html5-build/tidy_parse_string_fuzzer-afl.\nBuilt with ASan \u2014 a memory-safety crash is as valuable as new coverage.\nRespond with exactly 5 HTML document files, each in its own fenced ``` code block. Nothing else.",
+  "user": "Reached new coverage:\n--- example 1 ---\n<!DOCTYPE html>\n<html>\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=unknown\">\n<base href=\"http://[broken.example:99999/path\">\n<style type=\"text/css\">\na { color: expression(alert(\"x\")); }\n@import url(\"unterminated.css);\n</style>\n<script type=\"text/javascript\">\nif (a < b && c > d) { document.write(\"<p>\"); }\n</script>\n</head>\n<body>\n<header id=top><hgroup><h1>Malformed heading<h2>secondary</hgroup></header>\n<nav><a href=\"one\" tabindex=abc>one<a href=two>two</nav>\n<main>\n<section><article><p>alpha<div>block inside paragraph<span>inline\n<aside><p>aside content</section>\n<figure><img src alt=broken><figcaption>caption</figure>\n<details open=\"false\"><summary>summary</summary><p>hidden-ish</details>\n<dialog open=maybe>dialog text</dialog>\n</main>\n<footer><address><a href=\"mailto:x@y\">contact</address></footer>\n</body>\n</html>\n\n--- example 2 ---\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n<html>\n<head>\n  <title>head leftovers</title>\n  <meta http-equiv=\"refresh\" content=\"0; url=&quot;>\n  <link rel=\"stylesheet alternate\" media=\"not all\" href=\"\">\n  <noscript><meta name=x content=y><p>head paragraph</p></noscript>\n</head>\n<body>\n<header>header text</header>\n<iframe srcdoc=\"<p>embedded &amp; text</p>\" name=\"f\" sandbox=\"allow-scripts allow-scripts\"></iframe>\n<object data=\"x\" type=\"x/y\" width=\"bad\" height=\"-\" standby=\"wait\">\n  <param name=movie value=x>\n  <embed src=x type=bad>\n  fallback <a href=#>fallback link\n</object>\n<video autoplay controls muted preload=invalid poster=x>\n  <track kind=subtitles srclang=\"zz\" label=\"L\" src=\"\">\n  <source src=x type=\"video/unknown\">\n  video fallback\n</video>\n<canvas width=\"-1\" height=\"999999999999\">canvas fallback <table><tr><td>x</td></tr></table></canvas>\n<ruby>\u6f22<rt>kan<rp>(</rp><rtc>annotation</rtc></ruby>\n<dialog open=\"false\">dialog <form><input></form></dialog>\n</body>\n</html>\n\nTried before \u2014 no new coverage, avoid repeating:\n--- 2 of your past seeds (cycles 2,9) drove the same already-covered path with 0 new edges ---\n<!doctype html>\n<html>\n<head>\n  <title>table repair laboratory</title>\n</head>\n<body>\n<table>\n  <col span=foo>\n  <caption><b>Caption <table><tr><td>nested</td></tr></table></caption>\n  <tbody>\n    <tr><td rowspan=999>one<td>two\n    <tr><th><input type=submit value=\"x\"></th><td>\n      <ul><li>inside cell</ul>\n  </tbody>\n  <tfoot>\n    <tr><td colspan=0>\n  <thead>\n    <tr><th>late header</th></tr>\n  </thead>\n</table>\n<table><tr><td>unterminated\n<div>block in cell</div>\n</body>\n\n--- 2 of your past seeds (cycles 4,9) drove the same already-covered path with 0 new edges ---\n<!DOCTYPE html>\n<html>\n<head>\n<title>forms and controls</title>\n</head>\n<body>\n<form id=f action=\"/submit\" method=UNKNOWN enctype=\"multipart/form-data\" accept-charset=\"x,,utf-99\">\n<fieldset disabled=\"maybe\"><legend>credentials\n<label for=missing>User <input name=user type=text value=\"&quot; onfocus=alert(1)\"></label>\n<label>Password <input type=password name=pass></fieldset>\n<fieldset><legend>options</legend>\n<input type=checkbox checked=false required=wat>\n<input type=radio name=r value=one checked>\n<input type=radio name=r value=two checked=checked>\n<select name=s multiple=0 size=not-a-number>\n<option selected=maybe value>first\n<option value=two>second\n<optgroup label=\"group\"><option>third...[truncated, 1028 chars total]\n\nGenerate 5 new HTML document files, structurally different from all of the above.",
+  "n_seeds": 2,
+  "n_history_failure": 2,
+  "feedback": true,
+  "seed_selector": "coverage",
+  "positive_feedback": true,
+  "positive_feedback_jaccard_max": 0.7,
+  "good_seeds_first_round_only": false,
+  "used_history": true,
+  "campaign_root": "/home/user/Documents/1git-folder/AgentAFL/afl-output-tidy-20261006",
+  "instance": "main",
+  "asan_hint": true,
+  "strategy": "single-batch",
+  "neg_hypothesis": false,
+  "ts": "2026-10-08T05:47:59.993179+00:00"
+}

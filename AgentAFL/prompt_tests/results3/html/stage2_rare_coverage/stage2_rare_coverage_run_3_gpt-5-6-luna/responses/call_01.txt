@@ -1,0 +1,132 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=windows-1252">
+  <base href="http://example.test/path/">
+  <title><![CDATA[broken title < & >]]></title>
+  <style type="text/css">
+    @media screen and (min-width:0px) { body { background: url("x"); } }
+    <!-- .x { color: expression(alert(1)); } -->
+  </style>
+</head>
+<body id="root" class="a b" style="color:red" onload="if (a < b) c();">
+  <header>
+    <hgroup><h1>Heading <em>with <strong>layers</strong></em></h1><h2>Subhead</h2></hgroup>
+    <nav><a href="a&amp;b" title="one&#10;two">first</a><a href="">second</a></nav>
+  </header>
+  <main>
+    <article>
+      <section><p>alpha <mark>beta <small>gamma</small></mark></p>
+      <aside><dl><dt>term<dd>definition<dt>next<dd><q cite="x">quote</q></dl></aside></section>
+      <figure><img src="image" alt><figcaption>caption</figcaption></figure>
+    </article>
+  </main>
+  <footer><address><a href="mailto:x@y">x@y</a></address></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>forms with unusual controls</title></head>
+<body>
+<form method="get" action="/search" enctype="multipart/form-data">
+  <fieldset disabled="disabled"><legend>Options</legend>
+    <label for="q">Query</label><input id="q" name="q" type="search" required minlength="2" maxlength="999999">
+    <input name="hidden" type="hidden" value="&bad;">
+    <textarea name="memo" rows="0" cols="-1" wrap="hard">first
+second</textarea>
+    <select name="choice" multiple size="0">
+      <optgroup label="group"><option value="1" selected>One<option value="2">Two</optgroup>
+      <option label="unclosed">Three
+    </select>
+  </fieldset>
+  <fieldset><legend><b>More</b></legend>
+    <input type="number" min="nan" max="1e999" step="0">
+    <input type="date" value="2020-99-99">
+    <input type="file" accept="text/html,image/*" multiple>
+    <button type="submit" formaction="/x" formmethod="dialog">Go</button>
+    <button type="reset"><img src="r" alt="reset"></button>
+  </fieldset>
+</form>
+<details open="false"><summary>summary</summary><p>details body</details>
+<dialog open>dialog <button autofocus>close</button></dialog>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>svg math and foreign content</title></head>
+<body>
+<svg width="10" height="10" viewBox="0 0 10 10">
+  <defs><linearGradient id="g"><stop offset="0%"/><stop offset="100%"/></linearGradient></defs>
+  <g transform="translate(1,2) rotate(3)"><path d="M0 0 L1 1 Z" fill="url(#g)"/>
+    <text x="0" y="1">svg <tspan>text</tspan></text>
+  </g>
+  <foreignObject><div xmlns="http://www.w3.org/1999/xhtml"><p>embedded html</p><table><tr><td>x</td></tr></table></div></foreignObject>
+</svg>
+<math display="block"><mrow><mi>x</mi><mo>=</mo><mfrac><mn>1</mn><msqrt><mn>4</mn></msqrt></mfrac></mrow></math>
+<object data="movie.bin" type="application/octet-stream" width="0" height="0">
+  <param name="quality" value="high"><embed src="fallback.swf" type="application/x-shockwave-flash">
+  fallback <iframe srcdoc="<p>nested</p>" sandbox="allow-scripts"></iframe>
+</object>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>lists maps and tables</title></head>
+<body>
+<ol start="-999" reversed type="i">
+  <li value="0">zero</li>
+  <li>one
+    <ol><li>nested A<li>nested B<ul><li>deep</ul></ol>
+  <li>two
+</ol>
+<menu><li>menu item<li><input type="checkbox" checked>checked item</menu>
+<table summary="data" border="0" cellpadding="x" cellspacing="-4">
+  <colgroup span="3"><col width="*"><col width="0"><col></colgroup>
+  <thead><tr><th scope="col" colspan="0">A<th rowspan="-1">B<th>C</thead>
+  <tbody>
+    <tr><td rowspan="999">1<td>2<td>3
+    <tr><td colspan="999">wide
+  </tbody>
+  <tfoot><tr><td>footer</table>
+<map name="m"><area shape="rect" coords="0,0,10,10" href="#"><area href="no-shape"></map>
+<img src="map.png" usemap="#m" width="NaN" height="-2">
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>processing and malformed declarations</title>
+  <?xml version="1.0" encoding="UTF-8"?>
+  <?processing instruction ?>
+  <!--[if IE]><script>alert("x")</script><![endif]-->
+</head>
+<body>
+  <template id="t"><div><p>template text</div></p></template>
+  <script type="application/ld+json">{"name":"x","items":[1,2,],"bad":}</script>
+  <script>
+    if (a < b && c > d) { document.write("</textarea><p>x"); }
+    /* unterminated-looking <tag> */
+  </script>
+  <noscript><p>fallback <b>bold</noscript>
+  <blockquote cite="urn:test"><p>quoted <cite>source</cite></blockquote>
+  <time datetime="not-a-date">tomorrow</time>
+  <data value="&amp;broken">value</data>
+  <ruby>漢<rb>字<rp>(</rp><rt>kan</rt><rp>)</rp></ruby>
+  <div><span><br><wbr><hr><img src alt="a" title="b"></span>
+  <p>after unclosed division
+</body>
+</html>
+```

@@ -1,0 +1,157 @@
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<base href="http://example.invalid/a/b/">
+<link rel=stylesheet href="style.css">
+<style type=text/css>
+@import url("broken.css"); body { color: #12zz; }
+</style>
+<script language="javascript">
+if (a < b) { document.write("<p>unterminated"); }
+<!-- legacy comment
+</script>
+</head>
+<body bgcolor=#ggffee text="red" link=blue vlink="#000000">
+<h1 id=top><font face="Arial" size=+9 color="#xyz">Heading
+<h2>Second heading</h3>
+<p align=justify>This paragraph contains &bogus; &amp &copy;&#xZZ; and
+a <a href="javascript:alert('x')" target=_blank>broken link</a>.
+<hr width="not-a-number" noshade="false">
+<blockquote cite="%%%" datetime="never">
+<q cite=><big><small>nested text</small></big></q>
+</blockquote>
+<pre><code>one
+two &lt; three</code></pre>
+<address><bdo dir=sideways>contact@example.invalid</bdo></address>
+<center><img src alt="unterminated title="x><br></center>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Entity and comment stress</title>
+<!-- one -- two --- three -->
+<meta charset="utf-8">
+</head>
+<body>
+<div class=outer><div class=middle><div class=inner>
+<span><em><strong><u><strike><tt>deep inline
+</div>
+</span>
+</em>
+<strong>
+<p>Text <![CDATA[ <not-an-element> & still text ]]> after cdata</p>
+<!-- bogus -- comment -- with -- many dashes -->
+<![if IE]>
+<p>conditional section <![endif]>
+<![endif]>
+<marquee behavior=scroll direction=diagonal loop=-1 scrollamount=NaN>
+<b>moving</marquee>
+<blink><sup>2</sup><sub>10</sub></blink>
+<ruby>漢<rt>kan</rt><rp>(</rp></ruby>
+<wbr>
+<p>&#0;&#x0D;&#x110000;&unknown; &quot; &apos; &nbsp
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Object and media elements</title>
+<noscript><p>head fallback</p></noscript>
+</head>
+<body>
+<header id=hdr><nav><a href=#one>one<a href=#two>two</nav></header>
+<main>
+<section><article>
+<hgroup><h1>Title<h4>Unexpected level</hgroup>
+<figure>
+<object data="movie.bin" type="application/x-unknown" width=wide height=-3>
+<param name=movie value="a&b">
+<param name=autoplay value>
+<object data=second><p>fallback
+</object>
+</object>
+<figcaption>caption without closure
+</figure>
+<video controls autoplay="sometimes" width="1e9" poster="x">
+<source src="a.mp4" type=video/mp4>
+<track kind=subtitles src="captions.vtt" srclang=xx>
+fallback video text
+</video>
+<audio src="" loop=-2 preload=maybe></audio>
+<canvas width=bad height=999999><p>canvas fallback</canvas>
+</article>
+<aside><details open=perhaps><summary>sum</summary><p>hidden text</details></aside>
+</section>
+</main>
+<footer><address><a href="mailto:">x</a></address></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>SVG and foreign markup</title>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" width="bad" height="-1" viewBox="0 0 10">
+<defs><linearGradient id=g x1="0%" y1=bad x2="Infinity" y2="100%"><stop offset="50%" stop-color="#gggggg"></linearGradient></defs>
+<g transform="translate(foo) rotate()">
+<path d="M0,0 Lbad Z" fill=url(#g) stroke-width=NaN/>
+<text x=none y=2><tspan>svg text</text></tspan>
+<use href="#missing" xlink:href="" />
+</g>
+</svg>
+<div xmlns="http://www.w3.org/1999/xhtml"><p>back to html
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+<mrow><mi>x</mi><mo>&lt;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+</math>
+</div>
+<iframe srcdoc="<p>nested & broken" sandbox="allow-scripts allow-unknown" width=abc>
+fallback
+</iframe>
+<embed src="x" type="bad/type" height=huge>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Malformed headings and blocks</title></head>
+<body>
+<ol start=abc reversed="no" type="roman">
+<li value="NaN">alpha
+<li><p>paragraph inside item<div>block inside item</ol>
+<dl class=x>
+<dt>term one
+<dd>definition one
+<dt><dt>term two<dd><dd>definition two
+</dl>
+<menu compact="false">
+<li>menu one
+<li><button type=submit name=n value="a>b"><label>button label</button>
+</menu>
+<dir><li>legacy directory<li>second</dir>
+<tableish><tr><td>not really a table</td></tr></tableish>
+<p><ins cite="bad date" datetime=tomorrow>inserted<del cite=</p>
+<del><ins>crossed formatting</del></ins>
+<fieldset disabled=maybe><legend>legend
+<input name=orphan>
+</fieldset>
+<isindex prompt="Search >" action="%%%">
+<plaintext>
+Everything after this line <b>may be literal
+</body>
+</html>
+```

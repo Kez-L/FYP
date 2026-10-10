@@ -1,0 +1,157 @@
+```html
+<!doctype html>
+<html>
+<head>
+  <base href="http://example.invalid/a/">
+  <meta charset="utf-8">
+  <link rel=stylesheet href=//example.invalid/x.css>
+  <style type="text/css">
+    <![CDATA[
+      body { background: url("x"); }
+      @media screen and (min-width: 1px) { p::before { content: "<tag>"; } }
+    ]]>
+  </style>
+  <script type="text/javascript">
+    if (a < b && c > d) { document.write("<i>raw</i>"); }
+    // </script is hidden in this string: "\x3c/script>"
+  </script>
+</head>
+<body onload="a&b< c">
+  <header><hgroup><h1>Heading<h4>Skipped level</h4></hgroup></header>
+  <main>
+    <article>
+      <p>one<q cite="a>b">two<ruby>漢<rt>kan</ruby><rp>(</rp></rt></q>three</p>
+      <figure><img src=foo alt="x" /><figcaption>caption</figure>
+      <details open=maybe><summary>Summary</summary><p>Hidden text</details>
+    </article>
+    <aside><address>name<br>street</address></aside>
+  </main>
+  <footer><small>bottom</small></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<title>frameset experiment
+</head>
+<frameset rows="20%,*,bad" cols="*" border=none>
+  <frame src="one.html" name=left scrolling=yes>
+  <frame src='two.html name=right noresize>
+  <frameset cols="50%,50%">
+    <frame src=three.html>
+    <noframes>
+      <body>
+        <h1>Fallback</h1>
+        <p>Frame text &copy; 2026
+        <form method=POST enctype=multipart/form-data>
+          <input type=text name=user value="a&b">
+          <input type=image src=x alt=go>
+          <select name=x multiple size=zero>
+            <optgroup label=group disabled>
+              <option selected>one
+              <option value='two>two
+            </optgroup>
+          </select>
+          <textarea rows=2 cols=3>literal <b> markup &amp unfinished</textarea>
+          <button type=submit><b>Send</button>
+        </form>
+      </body>
+    </noframes>
+  </frameset>
+</frameset>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>foreign content</title></head>
+<body>
+<svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+  <title>svg title</title>
+  <defs><linearGradient id=g><stop offset="0%"><stop offset=100%></linearGradient></defs>
+  <g transform="translate(1,2)" onclick="x<y">
+    <path d="M0 0 L10 10 Z" fill="url(#g)"/>
+    <foreignObject width=10 height=10>
+      <div xmlns="http://www.w3.org/1999/xhtml"><b>inside</b></div>
+    </foreignObject>
+  </g>
+</svg>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow><mi>x</mi><mo>=</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+</math>
+<p>after foreign content</p>
+<object data="x" type="application/x-test">
+  <param name=movie value="x">
+  <embed src=x />
+  fallback <a href="#">link</a>
+</object>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- comment with -- illegal -- and a bogus end -->
+  <!bad declaration [abc>
+  <?xml version="1.0"?>
+  <title>entities &#65 &#x41; &notit; &amp; &apos; &quot</title>
+</head>
+<body>
+  <p>Before
+  <![CDATA[ raw <tag> & stuff ]]>
+  <template id=t>
+    <table><tr><td>template cell</template>
+  <p>Between
+  <noscript><div>noscript <span>text</span></div></noscript>
+  <p title=unquoted/next=attr disabled checked=false data-a='x
+  <ul>
+    <li>first
+    <li><div>second</li>
+    <li>third
+  </ul>
+  <dl><dt>term<dd>definition<dt>another<dd><p>nested
+  <p>End&nbsp
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>interactive controls</title></head>
+<body>
+  <form id=f1 action="/submit" method="dialog">
+    <fieldset disabled>
+      <legend><label for=x>Choose <input id=x type=checkbox></label></legend>
+      <label><input type=radio name=g checked=checked> A</label>
+      <label><input type=radio name=g CHECKED="false"> B</label>
+    </fieldset>
+    <input type=file accept="image/*,.txt" capture multiple>
+    <input type=number min=10 max=2 step=0 value=nan>
+    <input type=date value=2026-99-99>
+    <output for="x y">result</output>
+    <meter min=high low=0 value=2 max=1 optimum=none></meter>
+    <progress value=abc max=-1>progress</progress>
+    <select>
+      <option value=a>a
+      <option value=b>b
+    </select>
+  </form>
+  <form id=f2>
+    <input form=f1 name=outside>
+  </form>
+  <menu type=context>
+    <li><button type=button autofocus>Open</button>
+    <li><button formaction=/x formmethod=GET>Go</button>
+  </menu>
+  <dialog open=true><p>dialog text<form><input></dialog>
+  <iframe srcdoc="<p>nested &amp; text</p>" sandbox="allow-scripts allow-forms"></iframe>
+</body>
+</html>
+```

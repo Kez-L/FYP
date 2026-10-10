@@ -1,0 +1,115 @@
+```html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Frames and metadata</title>
+<base href="http://example.invalid/root/">
+<meta http-equiv="refresh" content="0;url=javascript:alert(1)">
+<link rel="alternate" media="all" href="x">
+<style type="text/css">
+@import url("broken.css");
+body { color: red; }
+</style>
+<script type="application/ld+json">{"name":"x","items":[1,2,]}</script>
+</head>
+<body>
+<noscript><iframe src="about:blank">fallback</noscript>
+<frameset cols="20%,*,bad">
+<frame src="one.html" name="left">
+<frame src="two.html" scrolling="maybe">
+<noframes><body><p>frame fallback</p></body></noframes>
+</frameset>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 100 100">
+<title>mixed document</title>
+<foreignObject x="0" y="0" width="100" height="100">
+<div xmlns="http://www.w3.org/1999/xhtml">
+<p><b><i>embedded <span style="color:red">text</div>
+</foreignObject>
+<g transform="translate(1,2) rotate(foo)">
+<path d="M0 0 L10 10 Z" fill="url(#missing)" />
+<use href="#x" xlink:href="#y"></use>
+</g>
+<text x="4" y="20"><tspan dx="bad">hello</text>
+</svg>
+```
+
+```html
+<html>
+<head>
+<title>Ruby and obsolete phrasing</title>
+</head>
+<body bgcolor="#zzzzzz">
+<hgroup><h1>Heading <small>small</h1><h9>unknown heading</h9></hgroup>
+<p><ruby>漢<rt>kan<rp>(</rp>字</ruby> tail
+<abbr title=unclosed>ABC
+<acronym>old <bdo dir="sideways">direction</bdo></acronym>
+<del cite="x" datetime="not-a-date">removed <ins>inserted</del> text</ins>
+<font face="x" size="huge" color="rgb(0,0,0)">font
+<center><blink>blink <marquee direction="diagonal">move</center>
+<wbr><br/><hr noshade="false" width="calc(1px)">
+</p>
+<address><a href="mailto:test@example.invalid">contact</address>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Lists and definitions</title></head>
+<body>
+<ol start="zero" reversed="sometimes" type="q">
+<li value="NaN">first
+<ol><li>nested one<li><dl><dt>term<dd>definition
+<dt><dt>orphan
+</dl></li></ol>
+<li>second
+</ol>
+<ul compact="maybe">
+<li><dir><li>directory child</dir>
+<li><menu><li>menu child</menu>
+</ul>
+<blockquote cite="http://[bad">
+<pre>  preserved
+  <code>code <var>value</pre>
+</blockquote>
+<figure>
+<figcaption>caption <p>paragraph in caption</figcaption>
+<img src="x" alt="missing"
+<map name=x><area shape=poly coords="bad" href=#></map>
+</figure>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Objects and controls</title></head>
+<body>
+<object data="movie.bin" type="application/x-unknown" width="bad" height="-1">
+<param name="autoplay" value="yes">
+<object><embed src="nested" hidden="perhaps"><noembed>fallback</noembed></object>
+</object>
+<details open="closed"><summary>More <summary>again</summary>
+<p>inside details
+<dialog open="0">dialog text
+<form id=f1>
+<input name=x required=maybe readonly=false pattern="[">
+<output for="x y">result</output>
+<progress value="abc" max="-2">loading</progress>
+<meter min="high" max="low" value="NaN">meter</meter>
+<select><option label="a" value="1">one
+<optgroup disabled="false"><option>two</optgroup></select>
+</form>
+<template><table><tr><td>template</template></td></tr></table></template>
+</body>
+</html>
+```

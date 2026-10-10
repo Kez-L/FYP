@@ -1,0 +1,110 @@
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD XHTML 1.1//EN">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>&#xD800;&#xDC00; &amp; &notanentity</title>
+</head>
+<body>
+<section id="a" id="b">
+<hgroup><h1>broken heading</h3><h2><em>nested</hgroup>
+<p title="a&#0;b&#x110000;c&#xDFFF">alpha &copy beta &amp gamma &#999999999999;</p>
+<pre><code>one
+</pre></code>
+<dl><dt>term<dd>definition<dt><dt><dd><span>tail
+<blockquote cite="&#x0;bad"><q>quote <u>under <s>strike</blockquote>
+<hr/><hr>
+</section>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>comments and declarations</title>
+<!-- normal --><!--- odd ---><!-- -- --><!--
+unterminated comment
+<meta name="x" content="y">
+</head>
+<body>
+<![CDATA[ <not-a-tag> & stuff ]]>
+<?processing instruction?>
+<!ELEMENT html O O>
+<!DOCTYPE bogus [
+  <!ENTITY x "value">
+]>
+<div><!--a--b--><span>text</div></span>
+<p>before<!--x--><!--y-->after</p>
+<!--><input value="unterminated>
+<address>line one<br line two<br/>line three</address>
+</body>
+```
+
+```html
+<html lang=en dir="rtl">
+<head><base href="http://example.test/a"><link rel=stylesheet><meta charset=UTF-16><title>entities &#x1F600;</title></head>
+<body>
+<header><nav><a href=#one>one<a href=#two>two<a href=#three>three</nav></header>
+<main>
+<article id=one>
+<figure><img src=x alt="a" width=nan height=-1><figcaption>caption</figure>
+<details open><summary>summary</summary><p>hidden text</details>
+<ol start="not-a-number"><li value=0>zero<li value="-999999999999999999999">huge</ol>
+<map name=m><area shape=poly coords="0,0,1,1,garbage"></map>
+<table><tr><th rowspan=999 colspan=-3>H<td>A<tr><td>B</table>
+</article>
+<aside id=two><iframe srcdoc="<p>nested &amp; broken"></iframe><embed src=x></aside>
+</main>
+<footer><a id=three href="javascript:&#x0A;alert(1)">end</a></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>raw text and token boundaries</title></head>
+<body>
+<script type="text/javascript">
+if (a < b && c > d) { document.write("</scr" + "ipt>"); }
+/* <div> &amp; &#123; */
+</script>
+<style>
+body { color: red; content: "</style>"; }
+@media (x:y) { .a { background: url("x"); } }
+</style>
+<textarea><b>literal</b> &amp; &#xD800;</textarea>
+<template>
+  <div><p>template <i>content</template>
+  <p>after template
+</template>
+<xmp><div>raw <b>text</xmp>
+<plaintext><h1>everything raw &amp;
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>deep malformed structure</title>
+</head>
+<body>
+<table border="abc">
+<caption>caption
+<colgroup span="NaN"><col span=0><colgroup><col>
+<thead><tr><th>A<th>B
+<tbody><tr><td><table><tr><td>inner<td><form><input></form>
+<tfoot><tr><td>foot
+</table>
+<form><div><p>p1<div>p2<li>orphan<li>second</div></p></div></form>
+<select><optgroup label="x"><option>one<option>two</optgroup><option>three</select>
+<ruby>漢<rt>kan<rp>(<rt>ji</ruby>
+<marquee><center><big><small><blink>obsolete</center></marquee>
+<noscript><iframe><b>fallback</noscript>
+</body>
+</html>
+```

@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+  <title>Raw text and declaration boundaries</title>
+  <script type="text/javascript">
+    if (a < b && c > d) {
+      document.write("<span data-x='1'>raw &amp; text</span>");
+    }
+    // </script> appears inside a string: "</script>"
+  </script>
+  <style type="text/css">
+    body { background: url("a>b"); }
+    .x::before { content: "<tag> & value"; }
+  </style>
+  <?processing instruction data?>
+</head>
+<body>
+  <![CDATA[
+    <not-an-element> cdata-ish text </not-an-element>
+  ]]>
+  <!-- first comment -->
+  <!-- nested-looking <!-- marker --> remains odd -->
+  <div data-a="one" data-b='two' data-c=three>
+    <template><p>template branch</p></template>
+    <noscript><p>fallback <span>markup</span></p></noscript>
+    <script type="application/json">{"x":"</script>","y":[1,2,3]}</script>
+    <style>/* closing-looking text */ .a { color: red }</style>
+  </div>
+  <!--
+     multiline comment
+     with a lone dash -
+  -->
+</body>
+</html>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE archive [
+  <!ELEMENT archive (entry+)>
+  <!ATTLIST archive created CDATA #IMPLIED>
+  <!ELEMENT entry (path, checksum, resource)>
+  <!ATTLIST entry id ID #REQUIRED state (new|changed|removed) #REQUIRED>
+  <!ELEMENT path (#PCDATA)>
+  <!ELEMENT checksum (#PCDATA)>
+  <!ATTLIST checksum algorithm (sha256|blake3|md5) #REQUIRED>
+  <!ELEMENT resource (file|directory|link)>
+  <!ELEMENT file (chunk*)>
+  <!ATTLIST file bytes CDATA #REQUIRED mode NMTOKEN #IMPLIED>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk offset CDATA #REQUIRED encoding (base64|hex|raw) #REQUIRED>
+  <!ELEMENT directory EMPTY>
+  <!ATTLIST directory entries CDATA #REQUIRED>
+  <!ELEMENT link EMPTY>
+  <!ATTLIST link target URI #REQUIRED>
+]>
+<archive xmlns="urn:example:archive" xmlns:xlink="http://www.w3.org/1999/xlink" created="2026-10-01T00:00:00Z">
+  <entry id="e1" state="new">
+    <path>docs/intro.txt</path>
+    <checksum algorithm="sha256">d6f4c3d9b2a17e00</checksum>
+    <resource>
+      <file bytes="11" mode="0644">
+        <chunk offset="0" encoding="raw">Hello &amp; world</chunk>
+      </file>
+    </resource>
+  </entry>
+  <entry id="e2" state="changed">
+    <path>assets/icons</path>
+    <checksum algorithm="blake3">00ff11aa22bb</checksum>
+    <resource><directory entries="4"/></resource>
+  </entry>
+  <entry id="e3" state="removed">
+    <path>legacy/current</path>
+    <checksum algorithm="md5">00000000000000000000000000000000</checksum>
+    <resource>
+      <link xlink:href="https://example.invalid/archive/legacy"/>
+    </resource>
+  </entry>
+</archive>

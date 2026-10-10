@@ -1,0 +1,145 @@
+```html
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Forms and interactive controls</title>
+  <form id=f action="javascript:alert(1)" method=bogus enctype="bad/type" accept-charset="utf-8, koi8-r">
+    <fieldset disabled>
+      <legend><label for=q>Search <input id=q name=q value="&amp; &lt; &#0; &#xD800;"></label></legend>
+      <input type=email name=mail multiple required pattern="[" maxlength=-1>
+      <input type=number min=1 max=0 step=0 value=999999999999999999999>
+      <input type=date value=2024-02-31>
+      <input type=file accept="image/*,.wat" multiple>
+      <select name=choice size=-4 multiple>
+        <optgroup label="group" disabled>
+          <option selected value=one>one
+          <option value=two>two</option>
+        </optgroup>
+        <option>unterminated
+      </select>
+      <textarea name=body rows=NaN cols=-2 wrap=sideways>text</textarea>
+      <button type=submit formaction="/next" formmethod=PATCH>Submit</button>
+      <output for="q missing">result</output>
+    </fieldset>
+  </form>
+</head>
+<body>
+  <input form=f name=outside>
+  <label><input type=checkbox checked=maybe>check</label>
+  <details open=0><summary>summary</summary><p>hidden-ish</p></details>
+  <dialog open=false><form method=dialog><button>close</button></form></dialog>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Tables with changing insertion modes</title></head>
+<body>
+  <table border=999 cellpadding=-3 cellspacing="1e9" width=0>
+    <colgroup span=0><col width=bad><colgroup><col span=-1></colgroup>
+    <thead>
+      <tr><th rowspan=999 colspan=-2 scope=colgroup>head<th>extra
+    <tbody>
+      <tr><td>A
+        <table><tbody><tr><td>nested before close</table>
+      <tr><th><form><input name=x><td>B</form>
+    <tfoot><tr><td colspan=notnum>foot</td></tr>
+    <caption align=sideways>caption <b>bold</caption>
+    text after table
+  </table>
+  <p>before<table>
+    stray text
+    <tr><td>x<td><select><option>opt</table>
+  <dl compact>
+    <dt>term
+    <dd>definition
+    <dt><dd>double
+  </dl>
+  <p><b><i><u>format <table><tr><td>cell</b>tail</i></u>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Raw text and declarations</title>
+  <style type=text/css media="screen,,print">
+    body { color: red; }
+    </style>
+    <script type="text/javascript">
+      if (a < b) { document.write("</script><p>injected"); }
+    </script>
+    <noscript><style>.x{background:url("x")}</style><p>noscript</noscript>
+    <template id=t><div><span>template <template><b>nested</b></template></div></template>
+</head>
+<body>
+  <![CDATA[not really cdata <b>bold</b>]]>
+  <?xml version="1.0"?>
+  <!foo bar baz>
+  <!----><! -- malformed comment --><!-[CDATA[wat]]>
+  <script language=vbscript src=http://x/one?x=1&y=2>
+    <!-- legacy <tag> & entity -->
+  </script>
+  <style>
+    .a { content: "</style>"; } <b>still style?
+  </style>
+  <x-custom a:b="v" @bad="x"><![CDATA[x<y]]></x-custom>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta http-equiv=refresh content="0; URL=//[bad">
+  <meta http-equiv=content-security-policy content="default-src 'none'; report-uri">
+  <base href="http://user:pass@[::ffff:192.0.2.1]:99999/a%zz">
+  <title>Entities &amp; weird &#65; &#x41; &#x110000; &#-1;</title>
+</head>
+<body dir=sideways translate=maybe spellcheck=2>
+  <p id="a b" class="one  two&#x20;three" title="&quot;&apos;&grave;&equals;">
+    &notanentity; &amp;copy; &#0; &#13; &#x10ffff; &#xD800; &NewLine;
+  </p>
+  <div data-empty data-x= data-y="" data-z="unterminated>
+    <a href="http://[::1" hreflang=xx target=_blank rel="noopener   bad" referrerpolicy=unknown>link
+  </div>
+  <img srcset="a 1x, b 0w, c -1x, , d 999999999999999999999999w" sizes="(width > 0px), nonsense" alt>
+  <map name=x><area shape=poly coords="0,0,NaN,-1" href=#></map>
+  <p><br><hr noshade="false" width=NaN><wbr><input disabled=false readonly=0>
+</body>
+</html>
+```
+
+```html
+<html>
+<head><title>Old constructs and mixed delimiters</title></head>
+<body>
+  <center><font face="Arial" size="+999" color="#ggg">legacy <strike>text</center>
+  <marquee behavior=explode direction=sideways loop=-1 scrollamount=NaN>
+    <blink>blink <big>big <small>small</marquee>
+  <table>
+    <tr><td><object classid="clsid:bad" data="file:///dev/null" type=x/y>
+      <param name=movie value="x&y">
+      fallback <embed src=bad width=-10 height=NaN pluginspage=none>
+    </object></td></tr>
+  </table>
+  <p><a href=#one><div id=one>block in link</a></div>
+  <p><button><a href="/x">button link</button>after
+  <ul type=disc start=999999999999999999999999>
+    <li value=NaN>one
+    <li value=-9223372036854775808>two
+      <ol reversed start=abc><li>inner<li>next</ol>
+    <li>three
+  </ul>
+  <hr>
+  <pre>pre <code>code <samp>samp</pre></code>
+  <address><a href=mailto:a@b>mail</a><br>line
+  <div><p>unclosed <em>em <strong>strong <a href="#">anchor
+</body>
+```

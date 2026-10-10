@@ -1,0 +1,113 @@
+```html
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE note [
+  <!ELEMENT note (to,from,heading,body)>
+  <!ENTITY writer "unknown">
+]>
+<?processing instruction?>
+<note data-x="&writer;">
+  <to><![CDATA[Someone <else>]]></to>
+  <from>sender &writer;</from>
+  <heading><![CDATA[<broken heading></heading>]]></heading>
+  <body>Text before <![CDATA[ unclosed-looking ]]> text &#xD800; &bogus; &#0;</body>
+  <extra attr='unterminated>
+    <nested a="1" b=2 c=`3`/>
+  </extra>
+</note>
+```
+
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<meta http-equiv=Content-Type content=text/html;charset=windows-1252>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<base href="http://example.invalid/a/b/">
+<style type="text/css">
+  body { color: red; }
+  .x::before { content: "</style><div class=x>"; }
+  <!-- comment-like CSS
+</style>
+</head>
+<body bgcolor=#fff text=black>
+<!-- first -- second --->
+<pre>  preformatted
+  <b>literal?</b> &copy &amp</pre>
+<blockquote cite=/quote><q cite="x">quoted <i>words</blockquote>
+<center><big><small>nested sizing</small></big></center>
+<hr width=50% noshade="noshade">
+<address><a href="mailto:a@b">contact</address>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Table repair stress</title></head>
+<body>
+<table border=1 cellpadding=2 cellspacing=3>
+<caption align=bottom>Caption <span>with markup</caption>
+<colgroup span=2><col width=25%><col style="x:y"></colgroup>
+<thead><tr><th rowspan=2>One<th colspan=bogus>Two<th>Three</thead>
+<tbody>
+<tr><td>A<td>B<td>C
+<tr><td colspan="999"><div>cell starts<div>nested without closure
+<tr><th>header in body<td><img src=x alt="a > b"><td>
+<tfoot><tr><td>foot</table>
+<table><tr><td>outer <table><tr><td>inner</table> tail</td></tr></table>
+<p>after tables
+</body>
+```
+
+```html
+<!doctype html>
+<html lang=en>
+<head>
+<title>Raw text and comments</title>
+<script language=javascript>
+if (a < b && c > d) {
+  document.write("<p data-x='1'>");
+  /* </script> */
+}
+</script>
+<noscript><p>fallback <strong>bold</noscript>
+<style>
+  @media screen { a[href^="x"] { background: url("a>b"); } }
+  </style attr=wrong>
+</head>
+<body>
+<xmp><b>not bold</b><script>alert(1)</script></xmp>
+<plaintext>
+Everything here is intended to be plain text.
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Attributes and obsolete containers</title></head>
+<body>
+<marquee behavior=scroll direction=left loop=-1>
+  <font face="Arial" size=+7 color="#12zz99">moving text</font>
+</marquee>
+<applet code=Demo.class archive="a.jar,b.jar" width=0 height=-1>
+  <param name=movie value="x&amp;y">
+  <param name=quality value=high>
+  fallback &copy;
+</applet>
+<object classid="clsid:00000000" data=data:text/plain,hello>
+  <embed src="movie.swf" hidden=false></embed>
+  <noembed>alternate</noembed>
+</object>
+<map name=map1>
+<area shape=rect coords="0,0,10,10" href=#one>
+<area shape=circle coords=bad href>
+</map>
+<img src="x" usemap="#map1" ismap="false">
+<dir compact><li>directory item</dir>
+<menu><li>menu item</menu>
+</body>
+</html>
+```

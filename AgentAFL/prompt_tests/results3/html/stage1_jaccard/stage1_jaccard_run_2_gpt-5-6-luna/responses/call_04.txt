@@ -1,0 +1,139 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+  <title>attributes and declarations</title>
+  <?processing instruction?>
+  <!bad declaration [ <tag attr="value"> ]>
+</head>
+<body bgcolor=#GGFFFF text='unterminated>
+  <form action=/search method=POST enctype=multipart/form-data>
+    <input type=text name=q value="a&amp;b&#xD800;">
+    <input type=checkbox checked=disabled checked>
+    <select name=items multiple size=not-a-number>
+      <option selected value=one>One
+      <option value='two>Two</option
+      <option value=three>Three</option>
+    </select>
+    <textarea name=notes rows=-1 cols=999999>line one
+line two &copy; &#0; &#x110000;</textarea>
+    <button type=submit disabled=maybe>submit</button>
+  </form>
+  <isindex prompt="Search & stuff">
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>table recovery</title></head>
+<body>
+<table border="1">
+  <colgroup span="x"><col width="*"><colgroup>
+  <thead><tr><th rowspan="999">A<th colspan="-2">B
+  <tbody>
+    <tr><td>one<td>two
+    <tr><td><table><tr><td>nested without closing outer
+    <tfoot><tr><td>footer in odd place
+  </table>
+  <table>
+    <tr><th>header</th></tr>
+    <tr><td>
+      <form><input name=x></form>
+      <table><caption>inner</caption><tr><td>z</table>
+    </td></tr>
+  </table>
+  <table><tr><td><p>text</table>after table</p>
+  <table><tr><td><marquee><table><tr><td>deep</tr></table></marquee>
+</body>
+```
+
+```html
+<html>
+<head>
+  <title>raw text and strange markup</title>
+  <script type="text/javascript">
+    if (a < b && c > d) {
+      document.write("</scr" + "ipt>");
+      x = "<!-- not a comment -->";
+      y = "</style>";
+    }
+  </script>
+  <style type=text/css>
+    body { background: url("x"); }
+    /* <tag attr='broken> */
+  </style>
+  <noscript><div>fallback <b>bold</noscript></b></div>
+</head>
+<body>
+  <![CDATA[
+    <not-really-xml>&amp; &#xD800;
+  ]]>
+  <!-- first -- second ---> 
+  <!--
+  <div class="inside comment">
+    <!-- nested -->
+  </div>
+  -->
+  <plaintext>
+    <html><body><b>everything after plaintext &amp; &#65;
+  </body></html>
+```
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head><title>frames and legacy content</title></head>
+<frameset rows="*,100,0" cols="25%,bad">
+  <frame src="a.html" name="main" scrolling=maybe noresize>
+  <frame src="b.html" frameborder="-1">
+  <frameset>
+    <frame>
+    <noframes>
+      <body>
+        <h1>fallback</h1>
+        <a href="x" target=_blank>link
+      </body>
+    </noframes>
+  </frameset>
+  <noframes>text outside body
+</frameset>
+<body>
+  <applet code=Test.class archive="a.jar,b.jar" width=1 height=2>
+    <param name=foo value=bar>
+    <param name=foo>
+    fallback text
+  </applet>
+  <object classid="clsid:bad" codebase="http://x/" width=auto height="">
+    <param value>
+    <embed src=x pluginspage=about:blank>
+  </object>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html lang="">
+<head>
+  <title>entities and unusual names</title>
+  <meta charset="utf-16">
+</head>
+<body>
+  <div id="a&#x0D;b" class="one  two	three" data-x="&notanentity; &amp &apos;">
+    &unknown; &notin; &notin &#; &#x; &#xZZ; &#-1; &#999999999999999999999999;
+  </div>
+  <p title="a&quot;b&#34;c&#x22;d">before<br/>after<br / >end</p>
+  <x-custom foo:bar="1" XMLNS:x="urn:x">
+    <y-z><q-r>s</q-r></y-z>
+  </x-custom>
+  <DIV><P>uppercase <B>bold <I>italic</P>tail</B></I></DIV>
+  <p><a href="http://example.com/?a=1&amp;b=2" title='single " quote'>text</a>
+  <p><a href="one"><a href="two">nested anchors</a></a>
+  <ruby>base<rt>annotation<rp>(</rp></ruby>
+  <wbr><hr/><input><img src alt>
+</body>
+</html>
+```

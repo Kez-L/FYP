@@ -1,0 +1,113 @@
+```html
+<!DOCTYPE html [
+  <!ENTITY greeting "hello">
+  <!ELEMENT document ANY>
+  <!ATTLIST document data CDATA #IMPLIED>
+]>
+<?xml version="1.0"?>
+<document data="&greeting;">
+  <!-- -- broken comment -->
+  <section>
+    <heading>Entity &amp; text &unknown;</heading>
+    <![CDATA[
+      <not-real-element attr="&amp;">raw ]]> content
+    ]]>
+    <?processing instruction?>
+    <item a="1" a="2" =bad>value</item>
+  </section>
+</document>
+```
+
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://example.test/a b">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <base href="//example.test/root/">
+  </head>
+  <body>
+    <svg width="100%" viewBox="0 0 10 10" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <defs><linearGradient id="g"><stop offset="0%"><stop offset="100%"></linearGradient></defs>
+      <use xlink:href="#g" href="#missing"></use>
+      <foreignObject><div><p>foreign <b>text</foreignObject></div>
+      <path d="M0 0 L10 10" fill="url(#g)"/>
+    </svg>
+    <math><mrow><mi>x</mi><mo>+</mo><msup><mi>y</mi><mn>2</mrow></math>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Frames and metadata</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <link rel=stylesheet href=style.css media="screen and (min-width: 1px)">
+  <style type="text/css"><!-- body { color: red } --></style>
+</head>
+<frameset cols="*,200" rows="100,*">
+  <frame src="left.html" name=left scrolling=maybe>
+  <frameset>
+    <frame src="right.html">
+    <noframes>
+      <body>
+        <p>fallback</p>
+        <iframe src="nested.html" name="x"></iframe>
+      </body>
+    </noframes>
+  </frameset>
+</frameset>
+<body>
+  <p>content after frameset</p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Mixed declarations</title></head>
+<body>
+  <hgroup><h1>One<h3>Three</h2><h7>Unknown</h7></hgroup>
+  <p class="a" class="b" style="color:red; color: blue; bad">
+    Text <br/> more <hr/> tail
+  <pre>  leading
+    <code>inside</pre></code>
+  <blockquote cite="x"><q cite=y>quoted <em>words</blockquote></q>
+  <address><b>Contact<br>name@example.invalid</address>
+  <ins datetime=bad><del cite><mark>changed</del></ins>
+  <center><font size=999 color=#ggg>legacy</font></center>
+  <!-- unterminated comment
+  <p>hidden?
+</body>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="x">
+<head><title>Lists and ruby</title></head>
+<body>
+  <ol start="zero" reversed="false">
+    <li value="abc">first
+      <ul type="disc">
+        <li>nested
+        <li><dl><dt>term<dd>definition<dt>second<dd><p>paragraph
+      </ul>
+    <li>last
+  </ol>
+  <menu compact="maybe"><li>menu one<li>menu two</menu>
+  <ruby>
+    漢 <rb>字<rt>ji<rp>(</rt>zi<rp>)</ruby>
+  <figure>
+    <figcaption><strong>caption <small>unfinished</figure>
+    <picture>
+      <source srcset="a 1x, b 2x" type="image/x">
+      <img src="fallback" alt>
+    </picture>
+  </figure>
+  <details open="no"><summary>Summary</summary><p>Details</details>
+</body>
+</html>
+```

@@ -1,0 +1,157 @@
+```xml
+<?xml version="1.0" standalone="yes"?>
+<!-- catalog with mixed content, processing instructions, and inherited XML attributes -->
+<?index mode="rebuild"?>
+<catalog xml:lang="en-GB" xml:base="https://example.invalid/data/">
+  <section name="fiction" xml:space="preserve">
+    Introductory text
+    <item id="bk-001" available="true">
+      <name>The Long Way</name>
+      <author>
+        <given>Rhea</given>
+        <family>Vale</family>
+      </author>
+      <summary>Words before <emphasis>and after</emphasis> an inline element.</summary>
+      <?review status="pending"?>
+    </item>
+    <item id="bk-002" available="false">
+      <name>Second Edition</name>
+      <author>
+        <given>Jon</given>
+        <family>Reed</family>
+      </author>
+    </item>
+  </section>
+  <section name="reference" xml:space="default">
+    <item id="ref-01" available="true">
+      <name>Index</name>
+      <author><given>Ada</given><family>North</family></author>
+      <summary>Compact reference material.</summary>
+    </item>
+  </section>
+</catalog>
+```
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE archive [
+  <!ENTITY % common "<!ELEMENT note (#PCDATA)> <!ATTLIST note priority (low|normal|high) 'normal'>">
+  %common;
+  <!ELEMENT archive (section+)>
+  <!ELEMENT section (title, note?, record*)>
+  <!ATTLIST section id ID #REQUIRED ref IDREF #IMPLIED mode (open|closed) "open">
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT record (key, value)>
+  <!ATTLIST record kind NMTOKEN #IMPLIED>
+  <!ELEMENT key (#PCDATA)>
+  <!ELEMENT value (#PCDATA|note)*>
+  <!ENTITY marker "A &lt; B &amp; C">
+]>
+<archive>
+  <section id="alpha" mode="open">
+    <title>Primary</title>
+    <note priority="high">review required</note>
+    <record kind="text">
+      <key>one</key>
+      <value>left <note>inside</note> &marker;</value>
+    </record>
+    <record kind="numeric">
+      <key>two</key>
+      <value>42</value>
+    </record>
+  </section>
+  <section id="beta" ref="alpha" mode="closed">
+    <title>Secondary</title>
+    <record>
+      <key>three</key>
+      <value>archived</value>
+    </record>
+  </section>
+</archive>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<scene xmlns="urn:example:scene" xmlns:g="urn:example:geometry" xmlns:m="urn:example:meta" xml:lang="fr">
+  <m:metadata created="2026-10-01">
+    <m:author>atelier</m:author>
+    <m:keywords>
+      <m:keyword>shape</m:keyword>
+      <m:keyword>layer</m:keyword>
+    </m:keywords>
+  </m:metadata>
+  <layer id="background" visible="yes">
+    <g:rectangle x="0" y="0" width="640" height="480">
+      <g:fill color="#ffffff"/>
+    </g:rectangle>
+  </layer>
+  <layer id="foreground" visible="no">
+    <group transform="translate(12,8) scale(2)">
+      <g:path d="M0 0 L10 0 L10 10 Z"/>
+      <g:circle center-x="5" center-y="5" radius="3"/>
+      <label m:role="caption">forme principale</label>
+    </group>
+  </layer>
+</scene>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow>
+  <step number="1" state="complete">
+    <input source="stdin" format="xml"/>
+    <actions>
+      <action name="parse" retry="0"/>
+      <action name="validate" retry="2"/>
+    </actions>
+    <result code="0" message="ok"/>
+  </step>
+  <step number="2" state="waiting">
+    <input source="cache/item-7" format="binary"/>
+    <actions>
+      <action name="decode" retry="1"/>
+      <action name="publish" retry="3"/>
+    </actions>
+    <result code="pending" message="&quot;not yet&quot;"/>
+  </step>
+  <step number="3" state="failed">
+    <input source="archive/old" format="text"/>
+    <error severity="warning">
+      <code>W-17</code>
+      <detail>Unexpected token at offset 00042.</detail>
+    </error>
+  </step>
+</workflow>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package [
+  <!ELEMENT package (manifest, payload, signature)>
+  <!ELEMENT manifest (entry+)>
+  <!ELEMENT entry EMPTY>
+  <!ATTLIST entry path CDATA #REQUIRED size CDATA #IMPLIED checksum CDATA #IMPLIED>
+  <!ELEMENT payload (chunk*)>
+  <!ELEMENT chunk (#PCDATA)>
+  <!ATTLIST chunk index CDATA #REQUIRED>
+  <!ELEMENT signature (algorithm, digest)>
+  <!ELEMENT algorithm (#PCDATA)>
+  <!ELEMENT digest (#PCDATA)>
+]>
+<package>
+  <manifest>
+    <entry path="bin/tool" size="128" checksum="a1b2c3"/>
+    <entry path="share/doc/readme.txt" size="0"/>
+    <entry path="config/defaults.xml" checksum="deadbeef"/>
+  </manifest>
+  <payload>
+    <chunk index="0">first segment</chunk>
+    <chunk index="1">second segment</chunk>
+    <chunk index="2">final segment</chunk>
+  </payload>
+  <signature>
+    <algorithm>sha256</algorithm>
+    <digest>0123456789abcdef0123456789abcdef</digest>
+  </signature>
+</package>
+```

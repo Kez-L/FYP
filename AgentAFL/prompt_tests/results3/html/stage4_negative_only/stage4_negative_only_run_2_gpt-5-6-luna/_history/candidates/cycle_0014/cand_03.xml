@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+  <meta http-equiv="refresh" content="0; URL=&quot;bad">
+  <title>Raw text boundaries</title>
+  <script type="text/javascript">
+    if (a < b && c > d) {
+      document.write("<div title='x'>raw &amp; text</div>");
+    }
+    // </script is text here
+    /* <!-- fake comment --> */
+  </script>
+  <script>
+    var s = "</script><style>broken{color:red}</style>";
+  </script>
+  <style type="text/css">
+    /* </style> */
+    body > p::before { content: "<tag>&"; }
+  </style>
+</head>
+<body>
+<!-- normal -- -- broken -->
+<script type="application/json">{"x":"&amp;","end":"</script>"}</script>
+<p title="a&#0;b&#xD800;c&#999999;">entities &bogus; &#; &#x; &amp</p>
+<noscript><div><b>noscript markup</noscript>
+<textarea>one</textarea>two</textarea>
+<template id=t><p>template &lt;content&gt;<template><span>nested</template></template>
+<div><![CDATA[not XML in HTML]]></div>
+<!--[if IE]><span>conditional</span><![endif]-->
+</body>
+</html>

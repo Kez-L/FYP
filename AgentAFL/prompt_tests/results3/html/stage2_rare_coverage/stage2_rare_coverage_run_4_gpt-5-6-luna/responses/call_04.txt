@@ -1,0 +1,103 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="http://example.invalid/a/">
+<meta http-equiv="refresh" content="0;url=javascript:alert(1)">
+<style type="text/css">
+@import url("x.css"); body{background:url(data:image/svg+xml,<svg/onload=1>)}
+</style>
+</head>
+<body onload="x<y && z>q">
+<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10">
+  <foreignObject x="0" y="0" width="10" height="10">
+    <div xmlns="http://www.w3.org/1999/xhtml">svg text</div>
+  </foreignObject>
+  <path d="M0 0L1 1" fill="url(#x)"/>
+</svg>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow><mi>x</mi><mo>&InvisibleTimes;</mo><mfrac><mn>1</mn><mn>0</mn></mfrac></mrow>
+</math>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<!-- unclosed comment
+<table border=1 cellpadding="x" cellspacing=-2>
+<caption align=middle>caption
+<colgroup span=0><col width=bad><col>
+<thead><tr><th rowspan=999 colspan=-1>A<th>B
+<tbody>
+<tr><td>a<td>b<td>
+<tr><td colspan="garbage"><div>inside table<div>nested
+<tfoot><tr><td>foot
+</table>
+<table><tr><td><table><tr><td>deep</table></td></tr></table>
+<p>after &copy &#x41; &badentity;</p>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>raw text boundary</title>
+<script>
+if (a < b) { document.write("</scr" + "ipt><p>split"); }
+<!-- comment-like
+]]>
+</script>
+<script type=text/template><div class="x">template &amp; text</script>
+<style>
+.foo { content: "</style>"; color: red }
+</style>
+</head>
+<body>
+<textarea cols="NaN" rows="0">one
+</textarea><textarea>two</textarea>
+<xmp><b>literal</b>&amp;</xmp>
+<plaintext><h1>everything becomes text
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "bad
+<html>
+<head><title>attribute parser</title></head>
+<body>
+<div id==foo class='a"b"c data-x=one/two disabled/ checked = "yes" = stray>
+  <p style="color: expression(alert(1)); background: url('x')">text
+  <a href='http://x/?a=1&b=2' title="unterminated>link</a>
+</div>
+<br/><hr / ><img src=x alt=foo/ >
+<input name="a" value="one" value="two" type=text readonly=false>
+<label for=a><input id=a><button type=weird>go</button></label>
+</body>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<?xml version="1.0"?>
+<![CDATA[head cdata]]>
+</head>
+<body>
+<menu type=context>
+<menuitem label="A" icon=x command=checkable checked>
+<menuitem label=B disabled>
+</menu>
+<details open="no"><summary>sum</summary><section>content
+<dialog open>dialog text<form><output for="a b">result</output>
+<select>
+<option value=1>one
+<optgroup><option value=2>two</optgroup>
+</select></form></dialog></section></details>
+<map name=m><area shape=poly coords="1,2,3" href=#a><area></map>
+<object data=x type="application/x-shockwave-flash"><param name=a value=b><embed src=y></object>
+</body>
+</html>
+```

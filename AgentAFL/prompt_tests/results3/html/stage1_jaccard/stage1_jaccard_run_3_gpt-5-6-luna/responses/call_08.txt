@@ -1,0 +1,107 @@
+```html
+<!DOCTYPE html>
+<html>
+<head><title>foreign content boundary stress</title></head>
+<body>
+  <svg viewBox="0 0 10 10" width="0" height="-1">
+    <title>&#xD800; &#x110000; &ampbroken</title>
+    <g transform="translate(1,2) rotate(foo)">
+      <path d="M0 0 LNaN 10 Z" fill="url(#missing)" />
+      <foreignObject x="1" y="2" width="3" height="4">
+        <div xmlns="http://www.w3.org/1999/xhtml"><b><i>crossed</div></i></b>
+      </foreignObject>
+      <metadata><![CDATA[<x>&not-an-entity;</x>]]></metadata>
+    </g>
+  </svg>
+  <math display="sideways">
+    <mrow><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mi>y</mi><mn>2</mn></msup>
+    <annotation-xml encoding="text/html"><p><em>embedded</annotation-xml></mrow>
+  </math>
+  <p>after foreign content</p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html lang="">
+<head profile="::::">
+  <base href="http://[invalid">
+  <link rel=stylesheet stylesheet media="screen,,print" />
+  <meta http-equiv=refresh content="0; url='unterminated">
+</head>
+<body>
+  <details open=maybe name=one>
+    <summary><span><strong>Summary without closure
+    <details><summary>Nested</summary><p>deep</details>
+  </details>
+  <dialog open="OPEN"><form><output name=x><meter min=bad max=bad value=999>oops</meter>
+  <ruby>漢<rt>kan<rp>(</ruby><rp>)</rp>
+  <b><i><u><s><mark>misnested <small>formatting</b></u></i></s></mark>
+  <template shadowrootmode=invalid><section><slot name=x></slot></section></template>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "broken-id" "another-id">
+<!-- first comment -- --><!----><! bogus
+<html><head><title>attribute parser</title></head>
+<body class="a&#0;b" id="x=y" data-a='one"two' data-b="three'four"
+      =novalue weird==quoted = "orphan" disabled="">
+  <p / >text<br/ ><img src=foo/bar alt="a>b<c" title='unterminated>
+  <div a b c=d e='f g' h=i"j k=`l` m=&amp n=&#xZZ;>
+    <span>one</span></div garbage
+  </body garbage>
+  <p>tail
+</html extra="value">
+```
+
+```html
+<html>
+<head>
+  <title>processing and character data</title>
+  <?xml version="1.0" encoding="UTF-16"?>
+  <?instruction incomplete
+  <meta charset="x-user-defined">
+</head>
+<body>
+  <section>
+    <hgroup><h1>Heading</h3><h4>Level jump</h2></hgroup>
+    <p>before &copy &unknown; &#; &#x; &#-1; &#xFFFFFFFF; &apos
+      <q cite="a&b">quoted <cite>citation</q></cite>
+    <address><div>block in address</div><address>nested address</address></address>
+  </section>
+  <pre>  leading
+	 tabs
+  <code>literal &lt; markup</code>
+  </pre>
+  <dl><dt>term<dd>definition<dt><dd>empty term
+  <ol start="not-a-number" reversed="false"><li value="x">A<li>B</ol>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<frameset rows="*,0,auto" cols="bad">
+  <frame src="a" name="one" scrolling="maybe">
+  <frame src="b" noresize="false">
+  <noframes>
+    <body>
+      <header><nav><a href><span>link</nav></header>
+      <main>
+        <article>
+          <h2>Article
+          <section><p>Paragraph 1
+          <aside><p>Aside closes wrong</article>
+        </section>
+        <footer><form action method=unknown>
+          <label>Pick <select multiple size="-3"><option>one<option>two</select>
+          <button type=bogus formaction=>Submit
+        </form></footer>
+      </main>
+    </body>
+  </noframes>
+</frameset>
+```

@@ -1,0 +1,142 @@
+```html
+<!doctype html>
+<html lang="x" dir="rtl">
+<head>
+<meta charset="utf-16">
+<base href="//[::1]:bad/path">
+<link rel=stylesheet href="data:text/css,body{color:red}" media="screen and (">
+<style type="text/plain">body { color: red; } </style>
+<script type="application/ld+json">{"x":"</script><p>escaped?","y":[1,2,]}</script>
+</head>
+<body>
+<table border=999 cellpadding="-1" cellspacing="NaN" width="1e309">
+<caption><strong>caption<table><tr><td>nested caption repair</strong></caption>
+<colgroup span="999"><col span=0 width=garbage><colgroup><col>
+<thead><tr><th rowspan="-1" colspan="999999999999999999">A<th>B
+<tbody>
+<tr><td headers="a b" rowspan=abc>one<td><table><tr><td>inner
+<tr><td>two
+<tfoot><tr><td>foot
+</tbody>
+<tr><td>orphan
+</table>
+<table><tr><td><form><input name=x><tr><td>after form</form></table>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>foreign islands</title></head>
+<body>
+<svg width="1e999" height="-Infinity" viewBox="0 0 10">
+  <title>svg title</title>
+  <g transform="translate(1,2) rotate(foo)" onclick="x<y">
+    <foreignObject width="100%" height="20">
+      <div xmlns="http://www.w3.org/1999/xhtml"><p>html island
+        <svg><circle cx="NaN" cy="-" r="999999999999999999999"></circle></svg>
+      </div>
+    </foreignObject>
+    <path d="M0 0 Lgarbage 20 Z" fill-rule="weird"/>
+    <use href="#missing" xlink:href="javascript:bad()"></use>
+  </g>
+  <metadata><![CDATA[<not markup> & weird]]></metadata>
+</svg>
+<math display="sideways" alttext="a&b">
+  <mrow><mi>x</mi><mo>&</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+  <annotation-xml encoding="application/xhtml+xml">
+    <div><b>annotation</b><math><mi>z</mi></math></div>
+  </annotation-xml>
+  <mtext><svg><rect width="bad"/></svg></mtext>
+</math>
+<p><svg><style><!-- broken style --></style><text>tail</text></svg>after
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>raw text boundaries</title>
+</head>
+<body>
+<script language="javascript" type="text/javascript">
+  var a = "</script";
+  var b = "<\/script>";
+  if (a < b) document.write("<div title='x'>");
+  /* </script> */
+</script>
+<style>
+  @media screen { body { background: url("x</style>y"); } }
+  .x:before { content: "<!--"; }
+</style>
+<textarea>
+  <b>not bold</b>
+  &copy; &bogus; &#x110000; &#0;
+</textarea>
+<plaintext>
+<h1>everything becomes text
+<!-- comment-looking text -->
+</plaintext>
+<noscript>
+  <div><p>noscript body <img src=x></div>
+</noscript>
+<template shadowrootmode="open">
+  <section><slot name="a"></slot><template><p>nested template</p></template></section>
+</template>
+<p>after template</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>adoption and table modes</title></head>
+<body>
+<p><b>one <i>two <a href=x><nobr>three</b> four</i> five</a></nobr>
+<h1><a><b><i>heading</h1>tail</i></b></a>
+<div><p>alpha<div>beta<p>gamma</div>delta</p></div>
+<dl>
+<dt>first<dt>second<dd>definition<dd><div>block</div><dt><span>third
+</dl>
+<table>
+<tr><td>A<td>B
+<tr><th>C<td>D
+</table>
+<form action="/a"><div><input name=one></form><input name=two>
+<p><button type=submit><b>click</button> trailing</b></p>
+<blockquote cite="unterminated><p>quote <q>nested</blockquote> end
+<center><font color="#12" size="999"><strike>old <tt>tags</center>
+<isindex prompt="search:"><hr>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<meta http-equiv=content-type content="text/html; charset=unknown">
+<title>attributes and declarations</title>
+</head>
+<body id="a&b" class=one class=two data-x="unterminated>
+<!--- malformed comment --!>
+<!DOCTYPE html PUBLIC "weird" "identifier">
+<?processing instruction?>
+<!foo bar baz>
+<div =bad ="x" / = "y" data-empty= aria-hidden=maybe>
+  text &amp &notanentity; &#12; &#xD800; &#xFFFFFFFF;
+  <img srcset="a 1w, b 0x, c 999999999999999999999w" sizes="(min-width: bad)">
+  <map name=a><area shape=poly coords="1,2,three,4" href=x><area></map>
+  <object data="x" type="bad/type"><param name=name value=one><embed src=x><p>fallback</object>
+  <iframe src="about:blank" sandbox="allow-scripts allow-unknown" allowfullscreen="false">
+    fallback <object><param><div>nested fallback</div></object>
+  </iframe>
+  <picture><source media="(" srcset=x><source type=image/avif><img alt=last></picture>
+</div>
+</body>
+</html>
+```

@@ -1,0 +1,142 @@
+```html
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<base href="http://example.invalid/a/">
+<link rel="stylesheet" href="style.css" />
+<style type="text/css">
+@media screen { body { color: red } }
+</style>
+<script type="text/javascript">
+if (a < b && c > d) { document.write("<p>generated</p>"); }
+</script>
+</head>
+<body bgcolor="#fff" text=black>
+<!-- old comment -- -- broken -->
+<![if IE]>
+<p class=legacy>conditional content
+<![endif]>
+<p title="one" title='two' data-x=unquoted&value>Before &#xD800; &#999999; &unknown;
+<pre>
+  preformatted
+	&nbsp; text
+</pre>
+<blockquote cite=http://example.invalid/q><q cite='x'>nested quote</blockquote>
+<address><a href=mailto:test@example.invalid>mail</address>
+<hr />
+<img src="x" alt="unterminated
+<p>after image
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<frameset cols="20%,*,0">
+<frame src="left.html" name=left frameborder=0>
+<frame src="right.html" name=right noresize>
+<noframes>
+<body>
+<h1>Frames and misplaced roots</h1>
+<dl>
+<dt>alpha
+<dd>first
+<dt><em>beta
+<dd><dl><dt>inner<dd>value</dl>
+</dl>
+<ul type=square>
+<li>one
+<li>two
+<ul><li>nested A<li>nested B</ul>
+<li>three
+</ul>
+<ol start=0 reversed>
+<li value=5>five
+<li>next
+</ol>
+<menu compact><li>menu item</menu>
+<center><big><small><s>mixed presentation</center>
+<dir><li>directory entry</dir>
+</body>
+</noframes>
+</frameset>
+```
+
+```html
+<?xml version="1.0"?>
+<!DOCTYPE html [
+<!ENTITY demo "expanded">
+<!ELEMENT note ANY>
+]>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg">
+<head><title>Foreign content</title></head>
+<body>
+<svg:svg viewBox="0 0 10 10">
+<svg:g transform="translate(1,2)">
+<svg:path d="M0 0 L10 10" fill="none"/>
+<svg:text x="1" y="2">label</svg:text>
+</svg:g>
+</svg:svg>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+<mrow><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+</math>
+<svg><foreignObject><div xmlns="http://www.w3.org/1999/xhtml">embedded</div></foreignObject></svg>
+<p><custom-element data-a="1"><template><span>template text</span></template><shadow-root>raw</shadow-root></custom-element>
+<annotation-xml encoding="application/xhtml+xml"><p>annotation</p></annotation-xml>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>Misnested phrasing and ruby</title>
+</head>
+<body>
+<p><b>bold <i>italic <u>under <em>emphasis</b> split</i> tail</u>
+<font color=red size=7 face="serif"><strike><tt>legacy</font> text</strike></tt>
+<ruby>漢<rt>kan<rp>(</rp></rt><rtc><span>reading</span></rtc>字<rt>ji</ruby>
+<mark><small><big><del>old<ins>new</del> replacement</ins></big></small>
+<a href="#x"><a href="#y">nested anchors</a> after</a>
+<span><b><i><u><s><em><strong>deep formatting</span>
+<p><img alt=x src=y><br><wbr><br/>line
+<abbr title="application programming interface">API</abbr>
+<dfn><code>parse()</dfn></code>
+<kbd><samp>Ctrl <var>V</samp></kbd></var>
+<time datetime="not-a-date">yesterday</time>
+<data value=42>answer</data>
+<ruby><rb>base<rt>annotation</ruby>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Comments, declarations, and raw text</title></head>
+<body>
+<!-- normal --><!----><!-- nested <!-- fake --> remainder -->
+<!bad declaration>
+<?processing instruction?>
+<![CDATA[not really cdata <tag> & stuff]]>
+<script>
+  var s = "</script>";
+  /* </SCRIPT > */
+  if (x < 3) { y = "<!--"; }
+</script>
+<style>
+  body:before { content: "</style>"; }
+  @import url("x.css");
+</style>
+<textarea><b>literal</b>&amp; &unknown;</textarea>
+<title><span>title markup</span> &amp; tail</title>
+<plaintext>
+<html><body><h1>Everything after plaintext</h1>
+&entity; <!-- comment -->
+</plaintext>
+<div>unreachable-looking markup</div>
+</body>
+</html>
+```

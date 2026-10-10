@@ -1,0 +1,174 @@
+```html
+<!DOCTYPE html>
+<!--- malformed comment --!>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html [
+  <!ENTITY test "replacement">
+  <!ELEMENT root ANY>
+]>
+<html>
+<head>
+  <meta charset="utf-16">
+  <base target=_blank href="//:invalid">
+  <title><b>unclosed title
+  <noscript><meta http-equiv=refresh content="0;url=javascript:alert(1)"></noscript>
+</head>
+<body>
+  <!-- comment <!-- nested --> trailing -->
+  <template shadowrootmode="open">
+    <slot name="missing"></slot>
+    <template><p>nested template</template>
+  </template>
+  <script type="application/ld+json">
+    {"x":"</script><script>broken()</script>","n":1e999}
+  </script>
+  <script>
+    if (a < b && c > d) { document.write("</scr" + "ipt>"); }
+  </script>
+  <style>
+    @import url("x
+    .a { content: "</style>"; }
+  </style>
+  <noscript>
+    <iframe srcdoc="<p>embedded &amp; unterminated"></iframe>
+  </noscript>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>ruby and phrasing reconstruction</title>
+</head>
+<body>
+  <p><ruby>漢<rt>kan<rp>)</ruby>字<rtc>annotation</rtc></p>
+  <p><b><i><u><em><strong>crossed
+    <span title="a&#0;b&#xD800;c&#x110000;">text</span>
+  </b></i></u></em></strong>tail</p>
+  <p>
+    <a href="x"><button disabled><label for=x>bad interactive mix
+    <input id=x type=image src alt>
+    </button></a>
+  </p>
+  <p><data value=><dfn title="unterminated>definition</dfn>
+     <abbr title="a&b">abbreviation</abbr>
+     <bdi dir=sideways>direction</bdi>
+     <bdo dir="">override</bdo>
+  </p>
+  <p><span style="color: rgb(1,2,3); content: '&lt;/span&gt;">style</span>
+     <br clear=all>
+     <embed src=none type=application/x-unknown></p>
+  <p><a href=#one><span id=one>fragment</a>after</span></p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>frameset and legacy document modes</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; report-uri=[">
+</head>
+<frameset rows="*,0,garbage" cols="1,,2">
+  <frame name="left" src="a.html" scrolling=maybe frameborder=-1>
+  <frameset>
+    <frame src="b.html" noresize="false">
+    <frame src="" marginwidth="999999999999999999999">
+  </frameset>
+  <noframes>
+    <body bgcolor=#ggg text="unterminated>
+      <center><font face="&bad;" size="999">
+        fallback <blink>obsolete</blink>
+      </font></center>
+      <table border=bad cellpadding=-4>
+        <tr><td>fallback cell
+      </table>
+    </body>
+  </noframes>
+</frameset>
+<isindex prompt="search &">
+<listing><div>raw-ish listing <b>markup</b>
+</listing>
+<xmp><tag attr="x">literal?</xmp>
+<plaintext>
+  everything after this may be text
+  <html><body><img src=x></body></html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>microdata and web components</title></head>
+<body>
+  <div itemscope itemtype="http://schema.org/Person" itemid="not a uri">
+    <meta itemprop="name" content="A & B">
+    <link itemprop="url" href="http://[broken">
+    <data itemprop=age value="NaN">unknown</data>
+    <time itemprop="birthDate" datetime="2024-02-30T25:61:61+99:99">date</time>
+    <div itemprop="knows" itemscope>
+      <span itemprop="name">nested</span>
+      <meta itemprop="name" content="duplicate">
+    </div>
+  </div>
+  <x-card disabled="false" data-a="&amp" data-b='
+    <slot></slot>
+    <template><style>:host { --x: "</style>"; }</style></template>
+  </x-card>
+  <dialog id=d open="0">
+    <form method=dialog>
+      <button value="ok" popovertarget=pop popovertargetaction=toggle>close
+      <input type=number min=inf max=-inf step=0 value=1e309>
+    </form>
+  </dialog>
+  <div popover=manual id=pop anchor=missing>
+    <p>popover <output>unclosed
+  </div>
+  <picture>
+    <source media="(" srcset="a 1x, b 2w,">
+    <source type="image/" srcset>
+    <img alt="fallback" srcset="x,,y" sizes="calc(100% - )">
+  </picture>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>misnested ruby tables and character references</title>
+</head>
+<body>
+  <hgroup><h1>heading one<h4>heading four</hgroup>
+  <p>&amp &unknown; &#; &#x; &#xZZ; &#0; &#x10FFFF; &#x110000; &#-1;</p>
+  <p><ins><mark><del>overlap</ins>middle</mark>end</del></p>
+  <table>
+    <tr><td>implicit one
+    <caption>late caption</caption>
+    <col><colgroup><col span=0></colgroup>
+    <tbody>
+      <tr><th headers="a b" abbr="x" rowspan=999>H
+      <td><select><option>option in cell</select>
+    <tr><td><textarea cols=bad rows=-2>raw &lt;textarea&gt;
+    <tr><td><p>paragraph in cell<div>block in cell
+  </table>
+  <ruby>
+    <rb>base one
+    <rt>reading one
+    <rb>base two
+    <rtc><span>annotation</span>
+    <rt>reading two
+  </ruby>
+  <p><object><param name=x><source src=x><track kind=bogus src=>
+    <video controlslist="autoplay nonsense" poster="[" preload=maybe>
+      <track default kind=subtitles srclang="xx-">
+      fallback
+    </video>
+  </object></p>
+  <footer><address><a href="mailto:a@b">mail</address></a></footer>
+</body>
+</html>
+```

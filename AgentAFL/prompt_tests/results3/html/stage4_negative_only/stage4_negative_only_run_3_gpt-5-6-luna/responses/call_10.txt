@@ -1,0 +1,123 @@
+```html
+<!DOCTYPE html [
+  <!ELEMENT weird ANY>
+  <!ENTITY local "replacement &amp; text">
+  <!NOTATION sample SYSTEM "x">
+]>
+<?xml version="1.0"?>
+<!-- -- malformed comment -- >
+<html lang="x" xml:lang="y">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>&local; &amp; &#0; &#xD800;</title>
+</head>
+<body>
+<![CDATA[ raw cdata in html ]]>
+<p title="a&#13;b&#10;c&#x0;">alpha &unknown; &copy
+<div class="a b" class='unterminated data-x="one>two'>
+  text
+  <!-- nested <!-- comment --> tail -->
+</div>
+<?processing instruction?>
+</body>
+</html>
+```
+
+```html
+<html>
+<head>
+  <title>Misnested interactive elements</title>
+</head>
+<body>
+<a href="one"><b><i>start
+  <a href="two"><button type="button"><em>nested</a>
+  <input type="text" value="x"><textarea>value</button></textarea>
+  <select><option>one<optgroup label="g"><option>two</select>
+  <label><label>double label</label>
+  <details open><summary>summary<summary>again</details>
+  <a href="three"><span>tail</span>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style type="text/css">
+    body { color: red; }
+    /* unterminated style comment
+  </style>
+  <script type="text/javascript">
+    var x = "</script>";
+    var y = '<!--';
+    /* </script> */
+  <noscript><b>fallback</b></noscript>
+</head>
+<body>
+  <script>
+    if (a < b && c > d) {
+      document.write("<p>generated</p>");
+    }
+  </script>
+  <style>
+    @media screen { .x { content: "</style>"; } }
+  </style>
+  <p>after raw text</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Head element reconstruction</title></head>
+<body>
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="x.css">
+  <basefont size="3">
+  <title>late title</title>
+  <form id="outer" action="/a">
+    <input name="a">
+    <form id="inner" action="/b">
+      <input name="b">
+    </form>
+    <p>form text
+  </form>
+  <p><img src=x alt="broken"><br><hr><wbr>
+  <object data="x" type="text/html">
+    <param name="movie" value="x">
+    fallback
+    <embed src="y">
+  </object>
+  <isindex prompt="Search:">
+</body>
+</html>
+```
+
+```html
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://example.invalid/loose.dtd">
+<html>
+<head>
+  <title>Legacy and omitted end tags</title>
+</head>
+<body>
+  <dl>
+    <dt>term one
+    <dd>definition one
+    <dt>term two
+    <dd><p>paragraph in definition
+  </dl>
+  <ol start="-3" reversed>
+    <li>first
+    <li value="not-number">second
+      <ol><li>nested<li>unfinished
+  </ol>
+  <blockquote cite="&quot;bad"><pre>  pre
+  <code>code</pre></code></blockquote>
+  <center><font size="+999" color="#gggggg">old markup</center>
+  <marquee><plaintext>everything after here <b>is text
+</body>
+</html>
+```

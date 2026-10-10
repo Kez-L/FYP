@@ -1,0 +1,139 @@
+```html
+<?xml version="1.0" encoding="UTF-16"?>
+<!DOCTYPE svg [
+  <!ENTITY nbsp "&#160;">
+  <!ELEMENT note ANY>
+  <!ATTLIST note mode CDATA #IMPLIED>
+]>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:x="urn:example:one">
+  <head profile="urn:profile:a urn:profile:b">
+    <?processing instruction?>
+    <title><![CDATA[Title ]]> &nbsp; <![CDATA[ <broken> ]]></title>
+    <meta http-equiv="refresh" content="0; url='a&b'"/>
+    <link rel="stylesheet" type="text/css" media="screen,print" href="a.css"/>
+  </head>
+  <body id="α" xml:lang="zz">
+    <x:note mode="a &amp; b"><![CDATA[
+      <not-an-element>&still-raw;</x:note>
+    ]]></x:note>
+    <div><span><em>alpha</span></em></div>
+    <p><![CDATA[unclosed cdata
+    <hr/>
+    <svg viewBox="0 0 10 10"><foreignObject><p>nested foreign</p></foreignObject></svg>
+  </body>
+</html>
+```
+
+```html
+<!DOCTYPE html [
+  <!ENTITY weird "one &amp; two">
+  <!ENTITY % parameter "ignored">
+]>
+<html>
+<head>
+  <title>Declaration stress</title>
+  <meta charset="x-user-defined">
+</head>
+<body>
+  <table border="1">
+    <caption><b>caption<table><tr><td>inner</caption>
+    <colgroup span="not-a-number"><col width="*"><colgroup><col>
+    <thead><tr><th rowspan="999999999999999999999999">A<th colspan="-4">B
+    <tbody><tr><td><form><input name="q"><button type="submit">go</table>
+  <p>after table
+  <dl><dt>term<dd>definition<dt><dd><div>mixed</dl>
+  <menu><li value="0">zero<li value="-999999999999">negative</menu>
+  &weird; &#0; &#x110000; &copy something; &amp
+</body>
+</html>
+```
+
+```html
+<html>
+<head>
+  <title>Raw text boundary experiment</title>
+  <script>
+    if (a < b && c > d) {
+      document.write("</scr" + "ipt>");
+      var x = "<!-- not really comment -->";
+    }
+  </script>
+  <style>
+    body { content: "</style>"; color: red }
+    @media (x < 2) { p { background: url("a>b"); } }
+  </style>
+  <textarea name="t">first
+</textarea bogus><textarea>second &lt;tag&gt;
+  <xmp><b>xmp</b></xmp>
+  <plaintext>
+    <div>everything after this may be text
+    &amp; &lt; </textarea>
+  <script type="text/plain"><![CDATA[abc</script>def]]></script>
+</head>
+<body>
+  <noscript><iframe src="x"></iframe><p>fallback</p></noscript>
+  <template><div>template <b>content</template>
+  <p>tail</p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Legacy element matrix</TITLE>
+</HEAD>
+<BODY>
+<APPLET CODE="x.class" WIDTH="1" HEIGHT="2" ALIGN="middle">
+  <PARAM NAME="x" VALUE="a>b">
+  <OBJECT DATA="movie.bin" TYPE="application/octet-stream">
+    <EMBED SRC="movie.swf" WIDTH="bad" HEIGHT="-1">
+    fallback
+  </OBJECT>
+</APPLET>
+<MAP NAME="m">
+  <AREA SHAPE="poly" COORDS="1,2,three,4" HREF="x">
+  <AREA NOHREF>
+</MAP>
+<IMG USEMAP="#m" SRC="x" ISMAP BORDER="999999999999999999999">
+<HR NOSHADE SIZE="--" WIDTH="50%">
+<CENTER><DIR><LI>one<LI>two</DIR></CENTER>
+<ADDRESS><B><I>contact</B></ADDRESS>
+<BLINK><FONT SIZE="garbage"><TT>legacy</FONT></TT></BLINK>
+<FORM METHOD="GET" ENCTYPE="multipart/form-data" ACTION="a&b">
+  <SELECT NAME="x">
+    <OPTION VALUE="1" SELECTED=maybe>one
+    <OPTIONGROUP LABEL="wrong"><OPTION>two</OPTIONGROUP>
+  </SELECT>
+</FORM>
+</BODY>
+</HTML>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Token interruption and comment maze</title>
+  <!-- normal -- malformed -- comment --!>
+  <!-- a <!-- nested --> still comment -->
+  <!---->
+  <!-->
+  <meta name="a" content="one" / >
+</head>
+<body>
+  <div class="a" class='b" id="c><p title="x'y" data-a=foo"bar baz>
+    text
+    <!--[if IE]><table><tr><td>conditional</td></tr></table><![endif]-->
+    <![if !IE]><span>downlevel</span><![endif]>
+  </div>
+  <p><b>one<i>two<u>three<s>four</p>five</s></u></i></b>
+  <a href="http://x.test/?a=1&b=2" name="a" name="b">link
+  <a href="#unclosed"><img src alt=alt=next></a>
+  <div><table><tr><td>x</div><tfoot><tr><td>y</table>
+  <ul><li>one<ul><li>nested</ul><li>two</ul>
+  <p><q><cite><code><var>stack</p>
+  <!-- unterminated comment
+</html>
+```

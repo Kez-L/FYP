@@ -1,0 +1,124 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Frameset &amp; fallback</title>
+</head>
+<frameset rows="25%,*,0" onload="top.x&amp;y()">
+  <frame src="about:blank" name="top" scrolling="no" frameborder="0">
+  <frameset cols="40%,60%">
+    <frame srcdoc="<html><body><h1>Nested &amp; text</h1></body></html>" name="left">
+    <frame src="javascript:alert('x')" name="right">
+    <noframes>
+      <body>
+        <p>Frames unavailable</p>
+        <table><tr><td>fallback</td></tr></table>
+      </body>
+    </noframes>
+  </frameset>
+  <frame>
+</frameset>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head><title>Table repair case</title></head>
+<body>
+<table border="1">
+  <caption><b>Caption <i>with</caption>
+  <colgroup span=2><col width="20%"><col>
+  <thead><tr><th rowspan=2>A<th colspan=3>B
+  <tbody>
+    <tr><td>x<td>y
+    <tr><td><table><tr><td>nested<td></table><td>outer
+  <tfoot><tr><th>Total<td><input value="1" disabled><td><select><option>one</select>
+</table>
+<dl><dt>Term 1<dd>Definition <p>broken paragraph
+<dt><dd><form><input><button>go</form>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Foreign content boundaries</title>
+</head>
+<body>
+<svg width="120" height="80" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
+  <title>svg title</title>
+  <g transform="translate(2 3)" fill="red">
+    <rect x="0" y="0" width="40" height="20"/>
+    <foreignObject x="5" y="5" width="80" height="30">
+      <div xmlns="http://www.w3.org/1999/xhtml"><p>HTML <b>inside</div>
+    </foreignObject>
+    <path d="M0 0 L10 10 Q 20 30 40 0 Z"></path>
+  </g>
+</svg>
+<math display="block">
+  <mrow><mi>x</mi><mo>&lt;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+  <annotation-xml encoding="application/xhtml+xml"><p>math html</p></annotation-xml>
+</math>
+<p>after <svg><circle cx=4 cy=4 r=3></svg> tail</p>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-16">
+  <title>Interactive controls</title>
+</head>
+<body>
+<details open=true>
+  <summary>Options <span>summary</details>
+  <menu type=context>
+    <menuitem label="A&amp;B" onclick="x<y"></menuitem>
+    <li>orphan item
+  </menu>
+</details>
+<dialog open>
+  <form method=dialog>
+    <label>Choice <input type=radio name=r checked=checked></label>
+    <label><input type=checkbox name=c>Check</label>
+    <output name=result for="a b">result</output>
+    <meter min=10 max=0 low=20 high=-2 optimum=5 value=nan>bad</meter>
+    <progress max=-1 value=999>loading</progress>
+    <button formmethod=post formaction="/x?y=1&z=2">Submit
+  </form>
+</dialog>
+<template><table><tr><td>template</template></td></tr></table></template>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Raw text and declarations</title>
+</head>
+<body>
+<p id=a&amp;b class='one two' data-q="unterminated>
+<pre>line 1
+  <code>&lt;tag attr='x'&gt;</code>
+line 3</pre>
+<textarea cols=0 rows=-4>first
+</textarea
+second &amp; third</textarea>
+<isindex prompt="Search:">
+<input type=text value='a&#13;&#10;b&#xD;c&NewLine;'>
+<marquee behavior=scroll direction=left><b>moving <i>text</marquee>
+<xmp><div>literal</div>&amp;not parsed</xmp>
+<!-- first -- second --- third >
+<![if IE]><p>conditional</p><![endif]>
+<!DOCTYPE weird [ <!ELEMENT html ANY> <!ENTITY x "value"> ]>
+</body>
+</html>
+```

@@ -1,0 +1,125 @@
+```html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<base href="http://example.invalid/a/../../b/">
+<meta http-equiv="refresh" content="0; url='x&y'">
+<link rel="stylesheet" media="screen and (max-width: 0px)" href="a.css">
+<style type="text/css">
+@media all { body { background: url("x&y"); } }
+<!-- .broken { color: rgb(1,2,3); 
+</style>
+<script type="application/ld+json">
+{"x":"</script><p>escaped?</p>","n":01}
+</script>
+</head>
+<body id="a&#0;b" onload="x<y && z>q">
+<header><hgroup><h1>Title<h2>Subtitle</hgroup></header>
+<nav><a href="#one">one<a href="#two">two</nav>
+<main>
+<section id="one"><article><p>alpha <em>beta<strong>gamma</p></article></section>
+<aside><details open=maybe><summary>More</summary><p>hidden text</details></aside>
+</main>
+<footer><small>&copy; &notanentity; &#x110000;</small></footer>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:x="urn:weird:&amp;">
+<head>
+<title>mixed namespaces</title>
+</head>
+<body>
+<x:widget data-a="1<2" x:flag="yes">
+<x:item><![CDATA[ raw <tag> & stuff ]]></x:item>
+</x:widget>
+<svg width="1e309" viewBox="0 0 10 10">
+<foreignObject><div xmlns="http://www.w3.org/1999/xhtml">inside svg</div></foreignObject>
+<path d="M0 0 L10 10 Z" fill="url(#x)"/>
+</svg>
+<math><mrow><mi>x</mi><mo>&InvisibleTimes;</mo><mn>2</mn></mrow></math>
+<p><bdo dir="sideways">direction</bdo><br/></p>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>raw text boundaries</title></head>
+<body>
+<pre>one
+  &lt;two&gt;
+</pre>
+<xmp><b>not bold</b>&amp; still raw</xmp>
+<textarea name="t">first
+</textarea><div>after textarea</div>
+<script>
+if (a < b) { document.write("<div class='x'>"); }
+// </script is text here?
+var s = "</scr" + "ipt>";
+</script>
+<script type="text/plain"><![CDATA[
+  <p>plain</p>
+  ]]></script>
+<style>
+body { content: "</style>"; }
+</style>
+<plaintext>
+<h1>everything after this is text</h1>
+<!-- even comments -->
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>lists and objects</title></head>
+<body>
+<menu compact="compact">
+<li value="0">zero
+<li value="-999999999999999999999999">negative
+<li><dl><dt>term<dd>definition<dt><dd></menu>
+<ol start="nan" reversed="false">
+<li>first
+<li><ul><li>a<li><li>b</ul>
+</ol>
+<figure>
+<object data="file:///dev/null" type="application/x-test" width="bad" height="-1">
+<param name="movie" value="&quot;x">
+<embed src="x" pluginspage="javascript:alert(1)">
+fallback <img src=x alt="unterminated>
+</object>
+<figcaption>caption</figcaption>
+</figure>
+<iframe srcdoc="<p>nested &amp; broken</p>" sandbox="allow-scripts allow-forms" name="f">fallback</iframe>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<!-- unclosed comment
+<html>
+<head><title>comment recovery</title></head>
+<body>
+<![if IE]>
+<p>conditional text</p>
+<![endif]>
+<?processing instruction?>
+<!DOCTYPE strange [ <!ENTITY foo "bar"> ]>
+<div class="a&#13;&#10;b" style="width: expression(alert(1));">
+<span title='one"two>three'>text</span>
+</div>
+<p>before<q cite="a&b">quote<time datetime="2024-99-99">today</q></time>
+<dl compact><dt><abbr title="x>y">term</abbr><dd><data value="1e999">value</data>
+<template><div><p>template content</div></template>
+<dialog open><form method=dialog><button value="x">Close</button></form>
+<canvas width="not-a-number" height="4294967296">fallback</canvas>
+</body>
+</html>
+```

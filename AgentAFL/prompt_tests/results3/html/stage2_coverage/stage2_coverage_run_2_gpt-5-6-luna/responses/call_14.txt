@@ -1,0 +1,127 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=unknown">
+<title>Nested table recovery</title>
+</head>
+<body bgcolor="#gg00zz" text="black" link="#0000ff">
+<table border="2" cellpadding="x" cellspacing="-1" width="101%">
+<caption align="side">Caption without a sane alignment</caption>
+<colgroup span="two"><col width="25%"><col style="bad:">
+<thead>
+<tr><th colspan="99">Header<th>Second header
+<tbody>
+<tr><td rowspan="0">A<td>B
+<tr><td><table><tr><td>inner one<tr><th>inner two</table>
+<tfoot><tr><td colspan="0">Footer
+</table>
+<table><tr><td><p>paragraph in cell
+<div>division <span>span</td></tr></table>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>Frames and obsolete metadata</title>
+<basefont size="7" face="Courier" color="notacolor">
+<isindex prompt="Search &amp; destroy">
+</head>
+<frameset rows="*,0,25" cols="30%,70%" border="garbage">
+<frame src="one.html" name="left" scrolling="maybe" noresize>
+<frame src="javascript:alert('x')" frameborder="no">
+<noframes>
+<body>
+<h1>Fallback</h1>
+<iframe srcdoc="<p>nested &copy; text" width="bad" height="-20" sandbox="allow-scripts">
+Fallback iframe content
+</iframe>
+<object data="movie.bin" type="application/x-unknown">
+<param name="autoplay" value="true">
+<embed src="x.swf" pluginspage="none" hidden="perhaps">
+</object>
+</body>
+</noframes>
+</frameset>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Foreign content mix</title></head>
+<body>
+<p>Before <svg viewBox="0 0 10 10" viewbox="broken">
+<g transform="translate(1,2) rotate(foo)">
+<path d="M0 0 L10 10 ZZZ" fill="url(#missing)">
+<circle cx="NaN" cy="Infinity" r="-4"></circle>
+<text x="1"><foreignObject><div xmlns="http://www.w3.org/1999/xhtml">
+<strong>HTML inside SVG</strong><br></foreignObject></text>
+</g>
+</svg> after
+<math display="block">
+<mrow><mi>x</mi><mo>&lt;</mo><msup><mi>y</mi><mn>2</mn></msup>
+<annotation-xml encoding="application/xhtml+xml"><table><tr><td>math table</td></tr></table>
+</mrow>
+</math>
+<p><svg><title>unclosed foreign title</body>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+<title>Form controls and entities</title>
+</head>
+<body>
+<form method="POST" action="/submit?x=1&y=2" enctype="multipart/form-data" accept-charset="utf-8,">
+<fieldset disabled="false"><legend>Options
+<label for="q">Query<input id="q" name="q" value="&notanentity; &#x110000; &#99999999;"></label>
+<select name="choice" multiple="no" size="zero">
+<option value=one selected>One
+<option value="two" selected="selected">Two
+<optgroup label="Group"><option>Three</optgroup>
+</select>
+<textarea name="memo" rows="NaN" cols="-3">first
+second <b>literal?</textarea>
+<input type="file" accept="image/*," required="sometimes">
+<button type="submit" formaction="/other" formmethod="TRACE">Send</button>
+<output for="q missing">result</output>
+</fieldset>
+</form>
+<form><input type="text" name="a"><form><input type="hidden" name="b"></form>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Malformed tokens and conditional markup</title>
+<? processing instruction ?>
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=5"><![endif]-->
+<style media="screen,," type="text/unknown">
+.box { color: ; margin: calc(1px + ); }
+@import url("unterminated.css);
+</style>
+</head>
+<body>
+<div id="x" id="y" class="a  b" data-empty= title="broken" =novalue>
+<abbr title="A & B">label<acronym>old</abbr>
+<blockquote cite=http://example.com/a"b>
+<q cite='x>y'>quote
+</blockquote>
+<ol start="not-a-number" reversed="0" type="z">
+<li value="NaN">first
+<li value="-999999999999999999999999">second
+</ol>
+<menu><li><a href="mailto:test@example.com?subject=a+b&x=%ZZ">mail</menu>
+<address><small>contact<br><wbr><hr></address>
+</div>
+</body>
+</html>
+```

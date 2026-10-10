@@ -1,0 +1,117 @@
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Malformed metadata and foreign content</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-16">
+  <base href="javascript:alert(1)">
+  <link rel=stylesheet href="x" disabled="">
+  <style type=text/css><!--
+    body { color: red; content: "</style><svg><script>x</script>"; }
+  </style>
+</head>
+<body>
+  <!--><!----><! -- broken comment -- >
+  <svg viewBox="0 0 10 10"><foreignObject><div xmlns="http://www.w3.org/1999/xhtml">
+    <p>foreign <b>content</svg>
+  <math><mrow><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mn>2</mn>
+  <script type="text/plain"><![CDATA[</script><div>raw</div>]]></script>
+  <p>after foreign content &amp; &#0; &#x110000; &notanentity
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Adoption agency nesting</title></head>
+<body>
+  <p><b><i><u>one
+  <p><b>two <i>three</b> four</u> five</i>
+  <div><a href="x"><b>link <em>emphasis</a> tail</b></em></div>
+  <p><font color=red><nobr><big>legacy <small>mixed</font> tags</nobr>
+  <address><p>address <div>block inside address</div>ending</address>
+  <center><table><tr><td>cell <b>bold</center> after</td></tr></table>
+  <p><button><a href=#><button>nested button</button></a>text
+  <hr><br/><br><img src=x alt="unterminated>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Raw text transitions</title>
+  <script>
+    var a = "</script";
+    var b = "</scr\ipt>";
+    var c = "<!-- <script> &amp; &#65;";
+    if (a < b) { document.write("<textarea>"); }
+  </script>
+  <noscript><div>noscript <b>markup</b></div></noscript>
+</head>
+<body>
+  <textarea cols="x" rows="NaN">first &amp; <b>literal</textarea>second
+  <title>body title <b>not parsed</title>
+  <xmp><p>old raw text</xmp><plaintext><div>everything
+  <template id=t><table><tr><td>template cell</template>
+  <p>visible after template
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="">
+<head>
+  <meta charset="x">
+  <title>Misnested lists and definitions</title>
+</head>
+<body>
+  <ol start="not-a-number" reversed>
+    <li value="999999999999999999999999999999">alpha
+      <ul><li>nested<ul><li>deep</ol>
+    <li>beta
+  </ol>
+  <dl>
+    <dt>term one
+    <dd>definition one
+    <dt><dd>empty term
+    <dd><dt>swapped
+  </dl>
+  <menu type=context>
+    <li><input type=text required readonly disabled>
+    <li><select><optgroup label="g"><option>a<option>b</optgroup><option>c</select>
+  </menu>
+  <blockquote cite="&quot;><p>quoted
+  <pre>  leading
+    spaces &lt;tag&gt;
+  </pre>
+</body>
+</html>
+```
+
+```html
+<html>
+<head><title>Token boundary stress</title></head>
+<body>
+  <div id=one class=two data-a=3data-b=4 disabled=checked=checked>
+    <span title='a"b"c' style="color:red; bad:">
+      text&nbsp;&copy &#xD800; &#55296; &#xFFFFFFFF; &semi &not;
+    </span>
+  </div>
+  <p>ampersands &&&& &amp &amp; &x &#
+  <form><input name=x value="a&quot;b&#34;c&#x22;d" />
+    <input type=image srcset="a 1x,b 2x, c">
+    <label><input type=radio name=r checked>one
+    <label><input type=radio name=r checked=>two
+  </form>
+  <details open=0><summary>summary</summary><div>details</div></details>
+  <dialog open="false">dialog text</dialog>
+  <iframe srcdoc="<p>embedded &amp; text</p><script>"></iframe>
+  <p><!-- unterminated comment
+  <div>after comment</div>
+</body>
+</html>
+```

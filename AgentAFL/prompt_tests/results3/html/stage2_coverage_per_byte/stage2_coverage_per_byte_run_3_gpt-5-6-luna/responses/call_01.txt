@@ -1,0 +1,122 @@
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Legacy parser test</TITLE>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+</HEAD>
+<BODY BGCOLOR="#ffffff" TEXT="#000000">
+<CENTER><H1>Heading &amp; entities</H1></CENTER>
+<DL COMPACT>
+<DT>Alpha
+<DD>One &copy; &unknown;
+<DT><IMG SRC="missing.gif" ALT="image" ISMAP>
+<DD><A HREF="javascript:alert('x')">link</A>
+</DL>
+<HR NOSHADE SIZE=3 WIDTH=75%>
+<ADDRESS>contact@example.invalid</ADDRESS>
+</BODY>
+</HTML>
+```
+
+```html
+<!DOCTYPE html [
+  <!ENTITY writer "Example Author">
+  <!ELEMENT note - - (to,from,heading,body)>
+  <!ATTLIST note id ID #IMPLIED>
+]>
+<?xml version="1.0"?>
+<!-- comment -- -- malformed boundary -->
+<note id="n1">
+  <to>&writer;</to>
+  <from><![CDATA[<sender>raw</sender>]]></from>
+  <heading title="a&#x0;b &amp; c">Reminder</heading>
+  <body>
+    <![if IE]>
+      conditional text
+    <![endif]>
+    <unknown a='1"2' b=bare c="">
+      <to>nested</from>
+    </unknown>
+  </body>
+</note>
+```
+
+```html
+<html>
+<head>
+  <base href="http://example.invalid/root/">
+  <link rel="stylesheet" type="text/css" href="a.css">
+  <isindex prompt="Search:">
+</head>
+<body>
+  <frameset rows="25%,*,0" border="7">
+    <frame src="top.html" name="top" scrolling="no" frameborder="0">
+    <frameset cols="30%,70%">
+      <frame src="left.html">
+      <frame src="right.html">
+      <noframes>
+        <body>
+          <p>Frames fallback <a href="#main">jump
+          <div id="main">content</div>
+        </body>
+      </noframes>
+    </frameset>
+  </frameset>
+  <script language=vbscript>
+    If x < 3 Then
+      document.write("<p>legacy</p>")
+    End If
+  </script>
+</body>
+</html>
+```
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Entity and comment stress</title>
+</head>
+<body>
+<!-- one -- two --- three -->
+<p class=test id='p1 disabled=disabled>
+  &amp &notanentity; &#0; &#xD800; &#999999;
+  <b><u><em>misnested <p>paragraph starts <li>item one
+  <li value=2>item two</ul></em></u></b>
+<ol start="00" type="A">
+  <li><input type=checkbox checked=checked>
+  <li><textarea rows=2 cols=4>first
+second</textarea>
+</ol>
+<pre>  leading
+	 tabs &lt; &gt; </pre>
+</body>
+```
+
+```html
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<HTML LANG=en-US>
+<HEAD><TITLE>Mixed constructs</TITLE></HEAD>
+<BODY>
+<table border=1 cellpadding=0>
+<caption>data</caption>
+<colgroup span=2><col width=50><col width="auto">
+<thead><tr><th rowspan=2>Key<th colspan=2>Value
+<tbody><tr><td>A<td>B<td>C
+<tfoot><tr><td>tail
+</table>
+<map name=nav>
+<area shape=rect coords="0,0,10,10" href=/a>
+<area shape=circle coords=5,5,2 nohref>
+</map>
+<img src=x usemap="#nav" border=0>
+<object classid="clsid:00000000" data="x.bin" width=1 height=1>
+<param name=name value="v">
+<embed src="plug" hidden>
+fallback
+</object>
+<blockquote cite="urn:test"><q>quoted <cite>source</cite></q></blockquote>
+</BODY>
+</HTML>
+```
