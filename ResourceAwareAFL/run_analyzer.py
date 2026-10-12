@@ -8,12 +8,7 @@ from cea import CostEffectivenessAnalyzer
 from controller import AdaptiveFuzzingController
 
 
-# =============================================================
-# Resource analyzer
-# =============================================================
-
 class AdaptiveResourceAnalyzer:
-
     def __init__(
         self,
         calibration_windows=10,
@@ -22,7 +17,6 @@ class AdaptiveResourceAnalyzer:
         memory_growth_threshold_mb=0.5,
         persistence_windows=3
     ):
-
         self.calibration_windows = calibration_windows
         self.cpu_mad_multiplier = cpu_mad_multiplier
 
@@ -33,61 +27,44 @@ class AdaptiveResourceAnalyzer:
 
         self.persistence_windows = persistence_windows
 
-        # Calibration histories
         self.cpu_history = []
         self.memory_history = []
 
-        # CPU threshold
         self.cpu_threshold = None
-
-        # Baseline CPU variability
         self.cpu_mad = None
 
-        # Memory trend samples
         self.memory_recent = []
 
-        # Resource persistence
         self.cpu_abnormal_count = 0
         self.memory_abnormal_count = 0
 
-        # Coverage plateau state
         self.coverage_stagnation_count = 0
         self.coverage_adaptation_triggered = False
 
-        # Recovery after failed Level-1 intervention
-        self.productive_recovery_count = 0
-
-        # Previous Level-1 intervention record
         self.last_adaptation_record = None
 
-        # Number of monitoring windows used to observe recovery
         self.adaptation_wait_windows = 3
         self.adaptation_observation_count = 0
         self.adaptation_observations = []
-
-    # ---------------------------------------------------------
-    # Calibration
-    # ---------------------------------------------------------
 
     def update_baseline(
         self,
         cpu,
         memory
     ):
-
         if (
             len(self.cpu_history)
-            < self.calibration_windows
+            <
+            self.calibration_windows
         ):
-
             self.cpu_history.append(cpu)
             self.memory_history.append(memory)
 
         if (
             len(self.cpu_history)
-            >= self.calibration_windows
+            >=
+            self.calibration_windows
         ):
-
             cpu_median = statistics.median(
                 self.cpu_history
             )
@@ -109,22 +86,13 @@ class AdaptiveResourceAnalyzer:
                 self.cpu_mad_multiplier * cpu_mad
             )
 
-    # ---------------------------------------------------------
-    # Resource-condition detection
-    # ---------------------------------------------------------
-
     def determine_resource_condition(
         self,
         cpu,
         memory
     ):
-
         if self.cpu_threshold is None:
             return None
-
-        # -----------------------------------------------------
-        # CPU
-        # -----------------------------------------------------
 
         cpu_spike = (
             cpu >= self.cpu_threshold
@@ -135,19 +103,15 @@ class AdaptiveResourceAnalyzer:
         else:
             self.cpu_abnormal_count = 0
 
-        # -----------------------------------------------------
-        # Memory trend
-        # -----------------------------------------------------
-
         self.memory_recent.append(memory)
 
         memory_spike = False
 
         if (
             len(self.memory_recent)
-            > self.memory_trend_windows
+            >
+            self.memory_trend_windows
         ):
-
             current_memory_growth = (
                 self.memory_recent[-1]
                 -
@@ -158,7 +122,8 @@ class AdaptiveResourceAnalyzer:
 
             memory_spike = (
                 current_memory_growth
-                >= self.memory_growth_threshold_mb
+                >=
+                self.memory_growth_threshold_mb
             )
 
         max_memory_samples = (
@@ -167,9 +132,9 @@ class AdaptiveResourceAnalyzer:
 
         if (
             len(self.memory_recent)
-            > max_memory_samples
+            >
+            max_memory_samples
         ):
-
             self.memory_recent = (
                 self.memory_recent[
                     -max_memory_samples:
@@ -181,18 +146,16 @@ class AdaptiveResourceAnalyzer:
         else:
             self.memory_abnormal_count = 0
 
-        # -----------------------------------------------------
-        # Persistence
-        # -----------------------------------------------------
-
         cpu_persistent = (
             self.cpu_abnormal_count
-            >= self.persistence_windows
+            >=
+            self.persistence_windows
         )
 
         memory_persistent = (
             self.memory_abnormal_count
-            >= self.persistence_windows
+            >=
+            self.persistence_windows
         )
 
         if cpu_persistent and memory_persistent:
@@ -207,20 +170,11 @@ class AdaptiveResourceAnalyzer:
         return None
 
 
-# =============================================================
-# Main analyzer
-# =============================================================
-
 def run_stream_analyzer(
     log_file="raw_metrics.json",
     calibration_windows=10,
     persistence_windows=3
 ):
-
-    # ---------------------------------------------------------
-    # Cost-effectiveness analyzer
-    # ---------------------------------------------------------
-
     analyzer = CostEffectivenessAnalyzer(
         alpha=0.5,
         beta=0.5,
@@ -229,10 +183,6 @@ def run_stream_analyzer(
         threshold_ces=0.001
     )
 
-    # ---------------------------------------------------------
-    # Resource analyzer
-    # ---------------------------------------------------------
-
     resource_analyzer = AdaptiveResourceAnalyzer(
         calibration_windows=calibration_windows,
         cpu_mad_multiplier=1.5,
@@ -240,10 +190,6 @@ def run_stream_analyzer(
         memory_growth_threshold_mb=0.5,
         persistence_windows=persistence_windows
     )
-
-    # ---------------------------------------------------------
-    # Controller
-    # ---------------------------------------------------------
 
     controller = AdaptiveFuzzingController(
         fuzzer_out_dir="out",
@@ -282,21 +228,11 @@ def run_stream_analyzer(
         f"consecutive windows"
     )
 
-    # ---------------------------------------------------------
-    # Wait for monitor
-    # ---------------------------------------------------------
-
     while not os.path.exists(log_file):
-
         print(
             f"[*] Waiting for {log_file}..."
         )
-
         time.sleep(2)
-
-    # ---------------------------------------------------------
-    # Read monitor stream
-    # ---------------------------------------------------------
 
     last_execs_done = None
     valid_sample_count = 0
@@ -307,9 +243,7 @@ def run_stream_analyzer(
         log_file,
         "r"
     ) as file:
-
         while True:
-
             line = file.readline()
 
             if not line:
@@ -317,7 +251,6 @@ def run_stream_analyzer(
                 continue
 
             try:
-
                 record = json.loads(
                     line.strip()
                 )
@@ -336,10 +269,6 @@ def run_stream_analyzer(
                     "execs_done"
                 )
 
-                # -------------------------------------------------
-                # Ignore AFL++ startup sample
-                # -------------------------------------------------
-
                 if (
                     not startup_sample_skipped
                     and valid_sample_count == 0
@@ -348,47 +277,41 @@ def run_stream_analyzer(
                         or current_execs_done <= 10
                     )
                 ):
-
                     print(
                         "[Analyzer] Skipping AFL++ startup sample "
                         f"(execs_done={current_execs_done})"
                     )
 
-                    last_execs_done = current_execs_done
+                    last_execs_done = (
+                        current_execs_done
+                    )
+
                     startup_sample_skipped = True
 
                     continue
 
-                # -------------------------------------------------
-                # Ignore stale AFL++ fuzzer_stats samples
-                # -------------------------------------------------
-
                 if (
                     last_execs_done is not None
                     and current_execs_done
-                    == last_execs_done
+                    ==
+                    last_execs_done
                 ):
-
                     print(
-                        f"[Analyzer] Skipping stale AFL++ stats "
+                        "[Analyzer] Skipping stale AFL++ stats "
                         f"(execs_done={current_execs_done})"
                     )
 
                     continue
 
-                last_execs_done = current_execs_done
+                last_execs_done = (
+                    current_execs_done
+                )
+
                 valid_sample_count += 1
 
-                # -------------------------------------------------
-                # Calculate new AFL++ edges
-                # -------------------------------------------------
-
                 if last_edges_found is None:
-
                     delta_new_edges = 0
-
                 else:
-
                     delta_new_edges = max(
                         0,
                         current_edges_found
@@ -396,15 +319,17 @@ def run_stream_analyzer(
                         last_edges_found
                     )
 
-                last_edges_found = current_edges_found
-
-                # -------------------------------------------------
-                # Cost-effectiveness calculation
-                # -------------------------------------------------
+                last_edges_found = (
+                    current_edges_found
+                )
 
                 result = analyzer.compute_ces(
                     record
                 )
+
+                result[
+                    "delta_new_edges"
+                ] = delta_new_edges
 
                 window_id = result[
                     "window_id"
@@ -434,10 +359,6 @@ def run_stream_analyzer(
                     "status"
                 ]
 
-                # -------------------------------------------------
-                # Calibration
-                # -------------------------------------------------
-
                 resource_analyzer.update_baseline(
                     cpu,
                     memory
@@ -445,9 +366,9 @@ def run_stream_analyzer(
 
                 if (
                     valid_sample_count
-                    <= resource_analyzer.calibration_windows
+                    <=
+                    resource_analyzer.calibration_windows
                 ):
-
                     print(
                         f"[Calibration] "
                         f"{valid_sample_count}/"
@@ -459,15 +380,10 @@ def run_stream_analyzer(
 
                     continue
 
-                # -------------------------------------------------
-                # Observe and evaluate previous Level-1 intervention
-                # -------------------------------------------------
-
                 if (
                     resource_analyzer.last_adaptation_record
                     is not None
                 ):
-
                     resource_analyzer.adaptation_observation_count += 1
 
                     resource_analyzer.adaptation_observations.append(
@@ -482,21 +398,19 @@ def run_stream_analyzer(
 
                     if (
                         resource_analyzer.adaptation_observation_count
-                        >= resource_analyzer.adaptation_wait_windows
+                        >=
+                        resource_analyzer.adaptation_wait_windows
                     ):
-
                         before_record = (
                             resource_analyzer
                             .last_adaptation_record
                         )
 
                         evaluations = [
-
                             analyzer.evaluate_intervention(
                                 before_record,
                                 observation
                             )
-
                             for observation
                             in resource_analyzer.adaptation_observations
                         ]
@@ -508,26 +422,18 @@ def run_stream_analyzer(
                             ]
                         )
 
-                        # -----------------------------------------
-                        # Trigger-specific recovery evaluation
-                        # -----------------------------------------
-
                         after_cpus = [
-
                             observation[
                                 "cpu_percent"
                             ]
-
                             for observation
                             in resource_analyzer.adaptation_observations
                         ]
 
                         after_memories = [
-
                             observation[
                                 "memory_mb"
                             ]
-
                             for observation
                             in resource_analyzer.adaptation_observations
                         ]
@@ -551,26 +457,18 @@ def run_stream_analyzer(
                         )
 
                         cpu_mad = (
-
                             resource_analyzer.cpu_mad
-
                             if resource_analyzer.cpu_mad
                             is not None
-
                             else 0.0
                         )
 
                         cpu_improved = (
-
                             cpu_reduction >= cpu_mad
-
                             and median_after_cpu
-                            < resource_analyzer.cpu_threshold
+                            <
+                            resource_analyzer.cpu_threshold
                         )
-
-                        # -----------------------------------------
-                        # Memory recovery evaluation
-                        # -----------------------------------------
 
                         observed_memory_intervals = max(
                             1,
@@ -578,35 +476,28 @@ def run_stream_analyzer(
                         )
 
                         allowed_memory_growth = (
-
                             resource_analyzer
                             .memory_growth_threshold_mb
-
-                            * observed_memory_intervals
-
-                            / resource_analyzer
+                            *
+                            observed_memory_intervals
+                            /
+                            resource_analyzer
                             .memory_trend_windows
                         )
 
                         recovery_memory_growth = (
-
                             after_memories[-1]
                             -
                             after_memories[0]
                         )
 
                         memory_improved = (
-
                             recovery_memory_growth
-                            < allowed_memory_growth
+                            <
+                            allowed_memory_growth
                         )
 
-                        # -----------------------------------------
-                        # CPU adaptation
-                        # -----------------------------------------
-
                         if trigger_reason == "CPU_SPIKE":
-
                             improved = cpu_improved
 
                             print(
@@ -622,15 +513,7 @@ def run_stream_analyzer(
                                 f"Improved: {improved}"
                             )
 
-                        # -----------------------------------------
-                        # Memory adaptation
-                        # -----------------------------------------
-
-                        elif (
-                            trigger_reason
-                            == "MEMORY_SPIKE"
-                        ):
-
+                        elif trigger_reason == "MEMORY_SPIKE":
                             improved = memory_improved
 
                             print(
@@ -642,18 +525,11 @@ def run_stream_analyzer(
                                 f"Improved: {improved}"
                             )
 
-                        # -----------------------------------------
-                        # CPU + memory adaptation
-                        # -----------------------------------------
-
-                        elif (
-                            trigger_reason
-                            == "CPU_MEMORY_SPIKE"
-                        ):
-
+                        elif trigger_reason == "CPU_MEMORY_SPIKE":
                             improved = (
                                 cpu_improved
-                                and memory_improved
+                                and
+                                memory_improved
                             )
 
                             print(
@@ -668,18 +544,45 @@ def run_stream_analyzer(
                                 f"Improved: {improved}"
                             )
 
-                        # -----------------------------------------
-                        # Coverage / crash-oriented adaptations
-                        # -----------------------------------------
+                        elif trigger_reason == "COVERAGE_SLOWDOWN":
+                            productive_windows = sum(
+                                1
+                                for observation
+                                in resource_analyzer.adaptation_observations
+                                if observation.get(
+                                    "delta_new_edges",
+                                    0
+                                ) > 0
+                            )
+
+                            total_recovery_edges = sum(
+                                observation.get(
+                                    "delta_new_edges",
+                                    0
+                                )
+                                for observation
+                                in resource_analyzer.adaptation_observations
+                            )
+
+                            improved = (
+                                productive_windows >= 2
+                            )
+
+                            print(
+                                f"[Coverage Evaluation] "
+                                f"Productive Windows: "
+                                f"{productive_windows}/"
+                                f"{resource_analyzer.adaptation_wait_windows} | "
+                                f"New Edges During Recovery: "
+                                f"{total_recovery_edges} | "
+                                f"Improved: {improved}"
+                            )
 
                         else:
-
                             improved_count = sum(
-
                                 evaluation[
                                     "improved"
                                 ]
-
                                 for evaluation
                                 in evaluations
                             )
@@ -688,55 +591,42 @@ def run_stream_analyzer(
                                 improved_count >= 2
                             )
 
-                        best_evaluation = max(
+                            best_evaluation = max(
+                                evaluations,
+                                key=lambda evaluation:
+                                    evaluation[
+                                        "after_ces"
+                                    ]
+                            )
 
-                            evaluations,
-
-                            key=lambda evaluation:
-                                evaluation[
-                                    "after_ces"
-                                ]
-                        )
-
-                        print(
-                            f"[Intervention Evaluation] "
-                            f"Previous Window: "
-                            f"{before_record['window_id']} | "
-                            f"Observed: "
-                            f"{resource_analyzer.adaptation_observation_count} "
-                            f"windows | "
-                            f"Best CES: "
-                            f"{best_evaluation['before_ces']:.6f} -> "
-                            f"{best_evaluation['after_ces']:.6f} | "
-                            f"Improved: {improved}"
-                        )
+                            print(
+                                f"[Intervention Evaluation] "
+                                f"Previous Window: "
+                                f"{before_record['window_id']} | "
+                                f"Observed: "
+                                f"{resource_analyzer.adaptation_observation_count} "
+                                f"windows | "
+                                f"Best CES: "
+                                f"{best_evaluation['before_ces']:.6f} -> "
+                                f"{best_evaluation['after_ces']:.6f} | "
+                                f"Improved: {improved}"
+                            )
 
                         controller.evaluate_adaptation(
                             improved
                         )
 
                         resource_analyzer.last_adaptation_record = None
-
                         resource_analyzer.adaptation_observation_count = 0
-
                         resource_analyzer.adaptation_observations = []
 
-                # -------------------------------------------------
-                # Determine resource condition
-                # -------------------------------------------------
-
                 resource_condition = (
-
                     resource_analyzer
                     .determine_resource_condition(
                         cpu,
                         memory
                     )
                 )
-
-                # -------------------------------------------------
-                # Print metrics
-                # -------------------------------------------------
 
                 print(
                     f"[Window {window_id:03d}] "
@@ -759,144 +649,37 @@ def run_stream_analyzer(
                     f"{resource_analyzer.memory_trend_windows} windows"
                 )
 
-                # -------------------------------------------------
-                # Coverage plateau tracking
-                # -------------------------------------------------
-
                 if (
                     status == "LOW_EFFICIENCY"
                     and delta_new_edges <= 0
                 ):
-
                     resource_analyzer.coverage_stagnation_count += 1
 
                 else:
-
                     resource_analyzer.coverage_stagnation_count = 0
-
                     resource_analyzer.coverage_adaptation_triggered = False
-
-                coverage_stagnant = (
-
-                    resource_analyzer.coverage_stagnation_count
-                    >= resource_analyzer.persistence_windows
-                )
-
-                ces_low = (
-                    status == "LOW_EFFICIENCY"
-                )
-
-                # -------------------------------------------------
-                # Cancel pending Level-2 escalation if productive
-                # progress has genuinely resumed
-                # -------------------------------------------------
-
-                if controller.recovery_failed:
-
-                    if (
-                        delta_new_edges > 0
-                        or status == "HEALTHY"
-                    ):
-
-                        resource_analyzer.productive_recovery_count += 1
-
-                    else:
-
-                        resource_analyzer.productive_recovery_count = 0
-
-                    if (
-                        resource_analyzer.productive_recovery_count
-                        >= resource_analyzer.persistence_windows
-                    ):
-
-                        print(
-                            "[Recovery] Campaign resumed productive "
-                            "progress for multiple valid windows. "
-                            "Cancelling pending Level-2 escalation."
-                        )
-
-                        controller.recovery_failed = False
-
-                        controller.agentafl_escalation_pending = False
-
-                        resource_analyzer.coverage_stagnation_count = 0
-
-                        resource_analyzer.coverage_adaptation_triggered = False
-
-                        resource_analyzer.productive_recovery_count = 0
-
-                        coverage_stagnant = False
-
-                else:
-
-                    resource_analyzer.productive_recovery_count = 0
-
-                # -------------------------------------------------
-                # Recovery failed -> check persistent plateau
-                # -------------------------------------------------
-
-                if (
-                    controller.should_trigger_agentafl(
-                        coverage_stagnant=coverage_stagnant,
-                        ces_low=ces_low
-                    )
-                ):
-
-                    print(
-                        "[Recovery] "
-                        "Level-1 adaptation did not recover "
-                        "the campaign and the coverage "
-                        "plateau persists."
-                    )
-
-                    controller.trigger_agentafl()
-
-                # -------------------------------------------------
-                # Select Level-1 intervention
-                # -------------------------------------------------
 
                 reason = None
 
                 level1_available = (
-
                     not controller.awaiting_recovery
-
-                    and not controller.recovery_failed
-
-                    and not controller.agentafl_escalation_pending
                 )
 
                 if level1_available:
-
-                    # ---------------------------------------------
-                    # Crash has highest priority
-                    # ---------------------------------------------
-
                     if delta_crashes > 0:
-
                         reason = "CRASH_FOUND"
-
-                    # ---------------------------------------------
-                    # Resource pressure + low effectiveness
-                    # ---------------------------------------------
 
                     elif (
                         resource_condition is not None
                         and status == "LOW_EFFICIENCY"
                         and delta_new_edges <= 0
                     ):
-
                         reason = resource_condition
-
-                    # ---------------------------------------------
-                    # Productive resource pressure
-                    # ---------------------------------------------
 
                     elif (
                         resource_condition is not None
                         and delta_new_edges > 0
                     ):
-
                         print(
                             "[Resource] Resource pressure detected, "
                             f"but {delta_new_edges} new edges were found. "
@@ -905,40 +688,27 @@ def run_stream_analyzer(
 
                         reason = None
 
-                    # ---------------------------------------------
-                    # Coverage slowdown
-                    # ---------------------------------------------
-
                     elif (
                         status == "LOW_EFFICIENCY"
-
                         and delta_new_edges <= 0
-
                         and
                         resource_analyzer.coverage_stagnation_count
-                        >= resource_analyzer.persistence_windows
-
+                        >=
+                        resource_analyzer.persistence_windows
                         and not
                         resource_analyzer.coverage_adaptation_triggered
                     ):
-
                         reason = "COVERAGE_SLOWDOWN"
 
                         resource_analyzer.coverage_adaptation_triggered = True
 
-                # -------------------------------------------------
-                # Apply Level-1 adaptation
-                # -------------------------------------------------
-
                 if reason is not None:
-
                     print(
                         f"[Feedback] "
                         f"Trigger = {reason}"
                     )
 
                     mode = (
-
                         controller.apply_level1_adaptation(
                             window_id,
                             ces,
@@ -947,56 +717,18 @@ def run_stream_analyzer(
                     )
 
                     if mode is not None:
-
                         resource_analyzer.last_adaptation_record = (
                             result
                         )
 
-                # -------------------------------------------------
-                # AgentAFL handoff state
-                # -------------------------------------------------
-
-                elif controller.agentafl_escalation_pending:
-
-                    print(
-                        "[Level 2] "
-                        "AgentAFL handoff triggered. "
-                        "AgentAFL not connected - "
-                        "simulating completion."
-                    )
-
-                    controller.agentafl_completed()
-
-                # -------------------------------------------------
-                # Failed recovery but plateau not persistent yet
-                # -------------------------------------------------
-
-                elif controller.recovery_failed:
-
-                    print(
-                        "[Recovery] "
-                        "Level-1 recovery failed. "
-                        "Monitoring whether the plateau persists."
-                    )
-
-                # -------------------------------------------------
-                # Waiting for intervention evaluation
-                # -------------------------------------------------
-
                 elif controller.awaiting_recovery:
-
                     print(
                         "[Recovery] "
                         "Observing campaign after "
                         "Level-1 adaptation."
                     )
 
-                # -------------------------------------------------
-                # Normal fuzzing
-                # -------------------------------------------------
-
                 else:
-
                     print(
                         "[Adaptive Controller] "
                         "No adaptation required."
@@ -1005,11 +737,9 @@ def run_stream_analyzer(
                     controller.reset_counter()
 
             except json.JSONDecodeError:
-
                 continue
 
             except Exception as error:
-
                 print(
                     f"[-] Analyzer error: "
                     f"{error}"
@@ -1018,12 +748,7 @@ def run_stream_analyzer(
                 time.sleep(1)
 
 
-# =============================================================
-# Main
-# =============================================================
-
 if __name__ == "__main__":
-
     parser = argparse.ArgumentParser(
         description="Adaptive Resource Analyzer"
     )
@@ -1031,13 +756,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "--calibration",
         type=int,
-        default=10
+        default=8
     )
 
     parser.add_argument(
         "--persistence",
         type=int,
-        default=3
+        default=2
     )
 
     args = parser.parse_args()
