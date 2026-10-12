@@ -147,6 +147,22 @@ for ((i = 1; i < NUM; i++)); do
 done
 
 # ---------------------------------------------------------------- passive loggers
+# Min Yee's monitor picks which fuzzer_stats path to use ONCE, at startup, and
+# gets stuck on the wrong one if afl-out/main/fuzzer_stats doesn't exist yet at
+# that exact moment (AFL++ can take a while to finish calibrating, especially
+# under ASan with a large seed corpus). Waiting here for the real file first
+# avoids that race without touching her code.
+echo "[*] waiting for AFL++ to write fuzzer_stats before starting the monitor..."
+waited=0
+while [[ ! -f "$OUT/main/fuzzer_stats" && $waited -lt 120 ]]; do
+  sleep 1; ((waited++))
+done
+if [[ -f "$OUT/main/fuzzer_stats" ]]; then
+  echo "[*] fuzzer_stats present after ${waited}s"
+else
+  echo "[!] WARNING: fuzzer_stats still missing after ${waited}s - monitor.py may log nothing"
+fi
+
 # Min Yee's monitor: writes raw_metrics.json to its working dir, so run it from
 # monitor/. Pointing it at afl-out/main makes it read afl-out/main/fuzzer_stats.
 ( cd "$RUN/monitor"; setsid nohup python3 -u "$REPO/ResourceAwareAFL/monitor.py" "$OUT/main" \
