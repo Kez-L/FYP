@@ -155,7 +155,7 @@ done
 echo "[*] waiting for AFL++ to write fuzzer_stats before starting the monitor..."
 waited=0
 while [[ ! -f "$OUT/main/fuzzer_stats" && $waited -lt 120 ]]; do
-  sleep 1; ((waited++))
+  sleep 1; waited=$((waited+1))
 done
 if [[ -f "$OUT/main/fuzzer_stats" ]]; then
   echo "[*] fuzzer_stats present after ${waited}s"
