@@ -29,10 +29,23 @@ while pgrep -f -- "-o $OUT " >/dev/null; do sleep 60; done
 log "all fuzzers have exited"
 
 # 1. stop loggers (give them one more poll so the final state is logged)
+#
+# Explicit list, NOT a glob over pids/*.pid: after 12h the main/sec*.pid files
+# hold recycled PIDs, and nullglob is not set in this script.
+#
+# Order matters. The analyzer goes first so it cannot write a new mode after the
+# last window is logged; signal_log goes last so it records that final mode.
+# This is not optional for minyee: run_analyzer.py is a `while True` with every
+# exception caught inside the loop, so it NEVER exits on its own and would
+# survive to fight the next campaign over the shared .adapt_signal.
+# For baseline the two minyee names simply do not exist, so nothing changes.
 sleep 15
-for p in minyee_monitor plateau_watch; do
+for p in minyee_analyzer minyee_monitor plateau_watch signal_log; do
   f="$RUN/pids/$p.pid"
-  [[ -f "$f" ]] && kill "$(cat "$f")" 2>/dev/null && log "stopped $p"
+  [[ -f "$f" ]] || continue
+  pid="$(cat "$f" 2>/dev/null || true)"
+  [[ -n "$pid" ]] || continue
+  kill "$pid" 2>/dev/null && log "stopped $p" || true
 done
 
 # 2. summary + end time
@@ -42,6 +55,35 @@ for d in "$OUT"/*/; do
   echo "== $(basename "$d")"
   grep -E '^(run_time|execs_done|execs_per_sec|corpus_count|edges_found|total_edges|bitmap_cvg|saved_crashes|saved_hangs|stability) ' "$d/fuzzer_stats"
 done >> "$RUN/summary.txt"
+# minyee health, so a dead loop is visible at unpack time rather than after analysis
+if [[ -f "$RUN/logs/minyee_analyzer.log" || -f "$RUN/adapt_signal_log.csv" ]]; then
+  {
+    echo
+    echo "== ResourceAwareAFL loop"
+    if [[ -f "$RUN/monitor/raw_metrics.json" ]]; then
+      echo "monitor_windows=$(wc -l < "$RUN/monitor/raw_metrics.json" | tr -d ' ')"
+    else
+      echo "monitor_windows=0  <-- monitor.py logged NOTHING"
+    fi
+    if [[ -f "$RUN/adapt_signal_log.csv" ]]; then
+      echo "signal_writes=$(grep -c ',write$' "$RUN/adapt_signal_log.csv" 2>/dev/null || echo 0)"
+      echo "modes_seen=$(awk -F, 'NR>1{print $3}' "$RUN/adapt_signal_log.csv" 2>/dev/null | sort -u | paste -sd' ' -)"
+      echo "final_mode=$(awk -F, 'END{print $3}' "$RUN/adapt_signal_log.csv" 2>/dev/null)"
+    fi
+    if [[ -f "$RUN/logs/minyee_analyzer.log" ]]; then
+      echo "analyzer_errors=$(grep -c '\[-\] Analyzer error' "$RUN/logs/minyee_analyzer.log" 2>/dev/null || echo 0)"
+      echo "analyzer_triggers=$(grep -c 'Trigger = ' "$RUN/logs/minyee_analyzer.log" 2>/dev/null || echo 0)"
+      echo "analyzer_calibrated=$(grep -c 'Calibration complete' "$RUN/logs/minyee_analyzer.log" 2>/dev/null || echo 0)"
+      # Non-zero means the U+0394 encoding trap was hit and NO trigger ever ran.
+      echo "analyzer_unicode_errors=$(grep -c 'UnicodeEncodeError' "$RUN/logs/minyee_analyzer.log" 2>/dev/null || echo 0)"
+    fi
+    for f in "$RUN"/logs/main.log "$RUN"/logs/sec*.log; do
+      [[ -f "$f" ]] || continue
+      echo "$(basename "$f" .log): mutator_loaded=$(grep -c 'installed successfully' "$f" 2>/dev/null || echo 0) mode_changes=$(grep -c 'Adaptive Mutator. Mode changed' "$f" 2>/dev/null || echo 0)"
+    done
+  } >> "$RUN/summary.txt"
+fi
+
 {
   echo "end_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
   echo "end_unix=$(date +%s)"
