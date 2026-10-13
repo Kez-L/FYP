@@ -49,12 +49,20 @@ for RUN in "${runs[@]}"; do
     if [[ -f "$alog" ]]; then
       aerr=$(grep -c '\[-\] Analyzer error' "$alog" 2>/dev/null || true)
       atrg=$(grep -c 'Trigger = ' "$alog" 2>/dev/null || true)
-      acal=$(grep -c 'Calibration complete' "$alog" 2>/dev/null || true)
+      # run_analyzer.py never says "calibration complete". It prints
+      # "[Calibration] n/N windows" while calibrating, then "[Window NNN] ..."
+      # for each window it evaluates, so eval>0 is what proves the trigger
+      # logic is actually running.
+      acal=$(grep -c '\[Calibration\]' "$alog" 2>/dev/null || true)
+      aev=$(grep -c '\[Window ' "$alog" 2>/dev/null || true)
       # A climbing error count with a frozen mode is the run_analyzer.py:420
       # stall: controller.last_adaptation is None, the TypeError is swallowed,
       # awaiting_recovery stays True and the signal pins for the rest of the run.
       flag=""; [[ "${aerr:-0}" -gt 0 ]] && flag="  <-- check for the analyzer stall"
-      echo "    analyzer: triggers=${atrg:-0} calibrated=${acal:-0} errors=${aerr:-0}$flag"
+      # Past calibration but evaluating nothing would mean windows are arriving
+      # and being dropped - the encoding trap, or stale AFL++ stats.
+      [[ "${acal:-0}" -gt 0 && "${aev:-0}" -eq 0 ]] && flag="$flag  <-- calibrating only, 0 windows evaluated yet"
+      echo "    analyzer: calib_windows=${acal:-0} eval_windows=${aev:-0} triggers=${atrg:-0} errors=${aerr:-0}$flag"
     fi
     if [[ -f "$scsv" ]]; then
       writes=$(grep -c ',write$' "$scsv" 2>/dev/null || true)

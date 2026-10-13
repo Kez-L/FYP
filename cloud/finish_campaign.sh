@@ -65,21 +65,29 @@ if [[ -f "$RUN/logs/minyee_analyzer.log" || -f "$RUN/adapt_signal_log.csv" ]]; t
     else
       echo "monitor_windows=0  <-- monitor.py logged NOTHING"
     fi
+    # NOTE: `grep -c` prints "0" AND exits 1 when nothing matches, so `|| echo 0`
+    # would emit a SECOND "0" on its own line. Always use `|| true` here.
     if [[ -f "$RUN/adapt_signal_log.csv" ]]; then
-      echo "signal_writes=$(grep -c ',write$' "$RUN/adapt_signal_log.csv" 2>/dev/null || echo 0)"
+      echo "signal_writes=$(grep -c ',write$' "$RUN/adapt_signal_log.csv" 2>/dev/null || true)"
       echo "modes_seen=$(awk -F, 'NR>1{print $3}' "$RUN/adapt_signal_log.csv" 2>/dev/null | sort -u | paste -sd' ' -)"
       echo "final_mode=$(awk -F, 'END{print $3}' "$RUN/adapt_signal_log.csv" 2>/dev/null)"
     fi
     if [[ -f "$RUN/logs/minyee_analyzer.log" ]]; then
-      echo "analyzer_errors=$(grep -c '\[-\] Analyzer error' "$RUN/logs/minyee_analyzer.log" 2>/dev/null || echo 0)"
-      echo "analyzer_triggers=$(grep -c 'Trigger = ' "$RUN/logs/minyee_analyzer.log" 2>/dev/null || echo 0)"
-      echo "analyzer_calibrated=$(grep -c 'Calibration complete' "$RUN/logs/minyee_analyzer.log" 2>/dev/null || echo 0)"
+      A="$RUN/logs/minyee_analyzer.log"
+      echo "analyzer_errors=$(grep -c '\[-\] Analyzer error' "$A" 2>/dev/null || true)"
+      echo "analyzer_triggers=$(grep -c 'Trigger = ' "$A" 2>/dev/null || true)"
+      # run_analyzer.py has no "calibration complete" message. It prints
+      # "[Calibration] n/N windows" while calibrating and "[Window NNN] ..." for
+      # every window it actually evaluates, so eval_windows > 0 is the real proof
+      # that calibration finished and the trigger logic is running.
+      echo "analyzer_calibration_windows=$(grep -c '\[Calibration\]' "$A" 2>/dev/null || true)"
+      echo "analyzer_eval_windows=$(grep -c '\[Window ' "$A" 2>/dev/null || true)"
       # Non-zero means the U+0394 encoding trap was hit and NO trigger ever ran.
-      echo "analyzer_unicode_errors=$(grep -c 'UnicodeEncodeError' "$RUN/logs/minyee_analyzer.log" 2>/dev/null || echo 0)"
+      echo "analyzer_unicode_errors=$(grep -c 'UnicodeEncodeError' "$A" 2>/dev/null || true)"
     fi
     for f in "$RUN"/logs/main.log "$RUN"/logs/sec*.log; do
       [[ -f "$f" ]] || continue
-      echo "$(basename "$f" .log): mutator_loaded=$(grep -c 'installed successfully' "$f" 2>/dev/null || echo 0) mode_changes=$(grep -c 'Adaptive Mutator. Mode changed' "$f" 2>/dev/null || echo 0)"
+      echo "$(basename "$f" .log): mutator_loaded=$(grep -c 'installed successfully' "$f" 2>/dev/null || true) mode_changes=$(grep -c 'Adaptive Mutator. Mode changed' "$f" 2>/dev/null || true)"
     done
   } >> "$RUN/summary.txt"
 fi
