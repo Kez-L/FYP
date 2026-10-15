@@ -180,52 +180,31 @@ class AdaptiveFuzzingController:
 
         return mode
 
-    def evaluate_adaptation(
-        self,
-        improved
-    ):
+    def evaluate_adaptation(self, improved):
         if self.last_adaptation is None:
             return
 
+        previous_mode = self.last_adaptation["mode"]
+
         if improved:
-            successful_mode = self.last_adaptation[
-                "mode"
-            ]
-
             print(
                 "[Adaptive Controller] "
-                "Intervention improved performance."
+                f"Intervention {previous_mode} improved performance."
             )
-
-            print(
-                "[Adaptive Controller] "
-                f"Retaining successful strategy: "
-                f"{successful_mode}"
-            )
-
-            self.awaiting_recovery = False
-
-            self._write_signal(
-                successful_mode
-            )
-
         else:
             print(
                 "[Adaptive Controller] "
-                "Intervention did NOT improve performance."
+                f"Intervention {previous_mode} did NOT improve performance."
             )
 
-            print(
-                "[Adaptive Controller] "
-                "Returning to DEFAULT and continuing monitoring."
-            )
+        print(
+            "[Adaptive Controller] "
+            "Recovery evaluation completed. "
+            "Returning to DEFAULT."
+        )
 
-            self.awaiting_recovery = False
-
-            self._write_signal(
-                "DEFAULT"
-            )
-
+        self.awaiting_recovery = False
+        self._write_signal("DEFAULT")
         self.last_adaptation = None
 
     def reset_counter(self):

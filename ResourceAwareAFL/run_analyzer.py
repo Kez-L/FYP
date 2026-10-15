@@ -380,6 +380,8 @@ def run_stream_analyzer(
 
                     continue
 
+                coverage_retry_reset_this_window = False    
+
                 if (
                     resource_analyzer.last_adaptation_record
                     is not None
@@ -616,6 +618,17 @@ def run_stream_analyzer(
                             improved
                         )
 
+                        if trigger_reason == "COVERAGE_SLOWDOWN":
+                            if total_recovery_edges == 0:
+                                print(
+                                    "[Coverage Retry] No new edges during recovery. "
+                                    "Allowing another attempt after 2 stagnant windows."
+                                )
+
+                                resource_analyzer.coverage_adaptation_triggered = False
+                                resource_analyzer.coverage_stagnation_count = 0
+                                coverage_retry_reset_this_window = True
+
                         resource_analyzer.last_adaptation_record = None
                         resource_analyzer.adaptation_observation_count = 0
                         resource_analyzer.adaptation_observations = []
@@ -652,6 +665,7 @@ def run_stream_analyzer(
                 if (
                     status == "LOW_EFFICIENCY"
                     and delta_new_edges <= 0
+                    and not coverage_retry_reset_this_window
                 ):
                     resource_analyzer.coverage_stagnation_count += 1
 
