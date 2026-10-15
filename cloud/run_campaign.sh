@@ -5,6 +5,7 @@
 #
 #   ./run_campaign.sh libxml2 baseline 1 3 43200    # 3 instances, 12h
 #   ./run_campaign.sh libxml2 minyee   1 3 43200    # same + ResourceAwareAFL
+#   ./run_campaign.sh libxml2 combined 1 3 43200    # same + AgentAFL escalation
 #
 # What it starts (all detached, so you can close SSH):
 #   - N afl-fuzz instances: main (+CMPLOG) and N-1 secondaries with different
@@ -12,8 +13,12 @@
 #   - Passive loggers that only READ the campaign, never change it:
 #       * Min Yee's ResourceAwareAFL/monitor.py  -> monitor/raw_metrics.json
 #       * AgentAFL/plateau_watch.py               -> plateau_log.csv
-#   - condition=minyee only: ResourceAwareAFL/run_analyzer.py, plus
+#   - condition=minyee|combined: ResourceAwareAFL/run_analyzer.py, plus
 #     adaptive_mutator.py loaded INSIDE each afl-fuzz via AFL_PYTHON_MODULE.
+#   - condition=combined only: ResourceAwareAFL/agentafl_escalation.py, which
+#     reacts to the .agentafl_request her analyzer writes when a coverage
+#     adaptation fails to recover, generates seeds with AgentAFL Stage 4
+#     (positive + negative feedback) and injects them with afl-addseeds.
 #     That mutator is the only thing in her stack that touches the fuzzing;
 #     without it the analyzer logs decisions nothing ever acts on.
 #       * run_analyzer.py -> logs/minyee_analyzer.log
@@ -32,10 +37,29 @@
 #                          against real afl-fuzz. Never use for a real campaign;
 #                          it is recorded as pinned_mode= in meta.txt.
 #
-# Conditions: "baseline" and "minyee" are implemented. "combined" is a
-# placeholder until the integrated pipeline exists.
+# Conditions: baseline | minyee | combined (= minyee + AgentAFL Level 2).
 #
-# Run cloud/preflight_resource_aware.sh once per machine before any minyee campaign.
+# AGENTAFL_* overrides (condition=combined):
+#   AGENTAFL_CALLS=5             LLM calls per escalation
+#   AGENTAFL_SEEDS_PER_CALL=5    seeds per call
+#   AGENTAFL_COOLDOWN_S=1500     minimum gap between escalations (see note below)
+#   AGENTAFL_MAX_ESCALATIONS=0   0 = unlimited
+#   AGENTAFL_PROVIDER=claude     claude | openai
+#   AGENTAFL_MODEL=              empty = provider default
+#   AGENTAFL_FMT="XML document"  format name used in the prompt
+#
+# All conditions export AFL_SYNC_TIME=1 by default, so injected seeds are imported
+# within ~30s instead of up to 10min and the arms differ ONLY by the injection.
+# Override it to reproduce the original fuzzer config:
+#   AFL_SYNC_TIME=20 ./run_campaign.sh libxml2 minyee 1 3 43200
+# (20 is AFL++'s stock value, so that is byte-identical to leaving it unset.)
+#
+# AgentAFL is OFF for baseline and minyee: no daemon, and AGENTAFL_HOOK=0 makes
+# the hook in run_analyzer.py dead code, so Min Yee's layer runs as it did before
+# the integration existed. Both are recorded in meta.txt.
+#
+# Run cloud/preflight_resource_aware.sh once per machine before any minyee or
+# combined campaign.
 set -euo pipefail
 
 usage() { sed -n '2,8p' "$0" | sed 's/^# \{0,1\}//'; exit 1; }
@@ -65,17 +89,56 @@ case "$TARGET" in
 esac
 
 case "$CONDITION" in
-  baseline|minyee) ;;
-  combined)
-    echo "Condition 'combined' isn't wired up yet - needs the integrated pipeline." >&2; exit 2 ;;
+  baseline|minyee|combined) ;;
   *) echo "Unknown condition '$CONDITION' (baseline | minyee | combined)" >&2; exit 2 ;;
 esac
+
+# ADAPTIVE: run Min Yee's Level-1 control loop (monitor + analyzer + mutator).
+# AGENTAFL: additionally run the Level-2 AgentAFL escalation daemon, which reacts
+# to the .agentafl_request her analyzer writes when a coverage adaptation fails to
+# recover. `combined` is both; it is the arm the integrated pipeline is for.
+ADAPTIVE=0; AGENTAFL=0
+[[ "$CONDITION" == "minyee" || "$CONDITION" == "combined" ]] && ADAPTIVE=1
+[[ "$CONDITION" == "combined" ]] && AGENTAFL=1
+
+# The escalation hook inside run_analyzer.py is opt-in, so that a bare
+# `python3 run_analyzer.py` (and her own run_six_experiments.sh) behaves exactly
+# as it did before the hook existed. Set it EXPLICITLY for every condition rather
+# than relying on that default: a `combined` run whose hook never fires would be
+# statistically identical to `minyee` and the mistake would only surface at
+# analysis time. Exported here because both run_analyzer.py (launched below) and
+# agentafl_escalation.py must agree on it, and the daemon refuses to start when it
+# is not 1.
+export AGENTAFL_HOOK="$AGENTAFL"
 
 MINYEE_DIR="$REPO/ResourceAwareAFL"
 SIGNAL_FILE="$MINYEE_DIR/adaptation/.adapt_signal"
 CALIB="${MINYEE_CALIBRATION:-8}"
 PERSIST="${MINYEE_PERSISTENCE:-2}"
 PIN_MODE="${MINYEE_PIN_MODE:-}"
+
+# AgentAFL Level-2 knobs (condition=combined only). The 5x5 budget is not
+# arbitrary: replayed over every stage4_both run in AgentAFL/prompt_tests/results3,
+# the first 5 calls captured 90% (xml) / 81% (ical) of a 15-call run's new edges at
+# the best edges-per-call of any budget retaining ~90% yield, and the single
+# biggest-yield call fell within the first 5 in every xml and ical run.
+#
+# The cooldown is load-bearing, not a safety net. run_analyzer.py's Coverage Retry
+# clears the stagnation latch whenever recovery yields zero edges, so
+# COVERAGE_SLOWDOWN re-fires about every 5 windows (150s); replayed over her
+# six_hour_results that is 98-212 opportunities per 12h. 1500s throttles it to the
+# ~28 escalations the 5x5 budget assumes (~140 LLM calls, ~49min of LLM time).
+AGENTAFL_CALLS="${AGENTAFL_CALLS:-5}"
+AGENTAFL_SEEDS_PER_CALL="${AGENTAFL_SEEDS_PER_CALL:-5}"
+AGENTAFL_COOLDOWN_S="${AGENTAFL_COOLDOWN_S:-1500}"
+AGENTAFL_MAX_ESCALATIONS="${AGENTAFL_MAX_ESCALATIONS:-0}"   # 0 = unlimited
+AGENTAFL_PROVIDER="${AGENTAFL_PROVIDER:-claude}"
+AGENTAFL_MODEL="${AGENTAFL_MODEL:-}"                        # empty = provider default
+AGENTAFL_FMT="${AGENTAFL_FMT:-XML document}"
+case "$AGENTAFL_PROVIDER" in
+  claude|openai) ;;
+  *) echo "AGENTAFL_PROVIDER must be 'claude' or 'openai', got '$AGENTAFL_PROVIDER'" >&2; exit 2 ;;
+esac
 MINYEE_COMMIT="$(git -C "$REPO" rev-parse --short HEAD 2>/dev/null || echo unknown)"
 
 # Secondary power schedules, in order (same layout as run_tidy.sh / run_libical.sh)
@@ -116,10 +179,41 @@ else
   [[ -z "${AFL_NO_PYTHON:-}" ]] || die "AFL_NO_PYTHON is set - it disables the mutator this condition depends on"
 fi
 
-if [[ "$CONDITION" == "minyee" ]]; then
+if [[ "$ADAPTIVE" == 1 ]]; then
   for f in monitor.py run_analyzer.py controller.py cea.py adaptive_mutator.py; do
     [[ -f "$MINYEE_DIR/$f" ]] || die "missing $MINYEE_DIR/$f"
   done
+  if [[ "$AGENTAFL" == 1 ]]; then
+    for f in agentafl_escalation.py agentafl_cycle.py; do
+      [[ -f "$MINYEE_DIR/$f" ]] || die "missing $MINYEE_DIR/$f (condition=combined)"
+    done
+    # Without the hook in her analyzer nothing ever writes .agentafl_request, so
+    # the daemon would idle for 12h and this arm would be identical to minyee.
+    grep -q 'agentafl_request' "$MINYEE_DIR/run_analyzer.py" \
+      || die "run_analyzer.py has no .agentafl_request hook - the escalation would never fire"
+    command -v afl-addseeds >/dev/null \
+      || die "afl-addseeds not on PATH - generated seeds could not be injected"
+    command -v afl-showmap  >/dev/null || die "afl-showmap not on PATH"
+    [[ -d "$REPO/AgentAFL/prompt_tests" ]] || die "missing $REPO/AgentAFL/prompt_tests"
+    # Resolve the API key the same way AgentAFL does, so a missing one fails here
+    # rather than on the first escalation hours in.
+    python3 - "$REPO" "$AGENTAFL_PROVIDER" <<'PYKEY' || die "no API key for provider '$AGENTAFL_PROVIDER' (checked env, AgentAFL/.env, ~/Documents/.env)"
+import sys, os, pathlib
+repo, provider = sys.argv[1], sys.argv[2]
+name = {"claude": "CLAUDE_API_KEY", "openai": "OPENAI_API_KEY"}[provider]
+if os.environ.get(name):
+    sys.exit(0)
+for f in (pathlib.Path(repo) / "AgentAFL" / ".env", pathlib.Path.home() / "Documents" / ".env"):
+    try:
+        for line in f.read_text().splitlines():
+            k, _, v = line.partition("=")
+            if k.strip() == name and v.strip():
+                sys.exit(0)
+    except OSError:
+        pass
+sys.exit(1)
+PYKEY
+  fi
   # afl-fuzz -h EXITS 1, so `afl-fuzz -h | grep -q` is a guaranteed false
   # negative under `set -o pipefail`. Capture first. The env-var list and the
   # "Compiled with Python" line are in -hh, not -h.
@@ -177,9 +271,10 @@ mkdir -p "$OUT" "$RUN/logs" "$RUN/monitor" "$RUN/pids" "$WORK/results"
 INSTANCES="main"
 for ((i = 1; i < NUM; i++)); do INSTANCES="$INSTANCES,sec$i"; done
 
-if [[ "$CONDITION" == "minyee" ]]; then
+if [[ "$ADAPTIVE" == 1 ]]; then
   ACTIVE="ResourceAwareAFL closed loop: monitor.py -> run_analyzer.py --calibration $CALIB --persistence $PERSIST -> controller.py -> adaptive_mutator.py"
   [[ -n "$PIN_MODE" ]] && ACTIVE="ResourceAwareAFL adaptive_mutator.py PINNED to $PIN_MODE (no analyzer - SMOKE TEST, not a campaign)"
+  [[ "$AGENTAFL" == 1 ]] && ACTIVE="$ACTIVE; AgentAFL Level-2: .agentafl_request -> agentafl_escalation.py -> Stage 4 (${AGENTAFL_CALLS}x${AGENTAFL_SEEDS_PER_CALL}) -> afl-addseeds"
 else
   ACTIVE="none (baseline)"
 fi
@@ -208,7 +303,24 @@ SEED_HASH="$(cd "$SEEDS" && find . -type f -print0 | sort -z | xargs -0 sha256su
   echo "mem_total_kb=$(awk '/MemTotal/{print $2}' /proc/meminfo)"
   echo "passive_loggers=ResourceAwareAFL/monitor.py, AgentAFL/plateau_watch.py"
   echo "active_components=$ACTIVE"
-  if [[ "$CONDITION" == "minyee" ]]; then
+  # Recorded for EVERY condition, not just combined. afl_env.txt only captures
+  # ^AFL_|^ASAN_, so AGENTAFL_HOOK would otherwise go unrecorded - and whether
+  # the hook was live is the difference between a minyee run and a crippled
+  # combined one. afl_sync_time is here too because it is the one fuzzer setting
+  # that differs from the committed Oct-13 runs.
+  echo "agentafl_hook=$AGENTAFL_HOOK"
+  echo "afl_sync_time=$AFL_SYNC_TIME  (AFL++ default is 20)"
+  if [[ "$AGENTAFL" == 1 ]]; then
+    echo "agentafl_calls=$AGENTAFL_CALLS"
+    echo "agentafl_seeds_per_call=$AGENTAFL_SEEDS_PER_CALL"
+    echo "agentafl_cooldown_s=$AGENTAFL_COOLDOWN_S"
+    echo "agentafl_max_escalations=$AGENTAFL_MAX_ESCALATIONS"
+    echo "agentafl_provider=$AGENTAFL_PROVIDER"
+    echo "agentafl_model=${AGENTAFL_MODEL:-<provider default>}"
+    echo "agentafl_fmt=$AGENTAFL_FMT"
+    echo "agentafl_request_file=$MINYEE_DIR/adaptation/.agentafl_request"
+  fi
+  if [[ "$ADAPTIVE" == 1 ]]; then
     echo "mutator_scope=$INSTANCES (AFL_PYTHON_MODULE=adaptive_mutator)"
     # monitor.py only watches afl-out/main, so the control signal is derived
     # from ONE instance's process tree and applied to all of them. sec*
@@ -231,6 +343,23 @@ export AFL_SKIP_CPUFREQ=1
 export AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES=1
 export AFL_IMPORT_FIRST=1
 export AFL_NO_UI=1
+
+# Sync cadence. AFL++ defaults to SYNC_TIME=20min, and a main node syncs at half
+# that, so a seed handed to the campaign via afl-addseeds (which lands in
+# $OUT/addseeds/queue and is imported by the main node's sync_fuzzers pass) would
+# sit idle for up to 10 minutes - far longer than the ~25min escalation period,
+# and long enough to blur which coverage came from an injection.
+#
+# Set on EVERY condition, not just `combined`, so the only difference between
+# arms is whether seeds are injected at all. Changing it on one arm only would
+# make the comparison against the committed baselines invalid.
+#
+# Overridable, because the committed Oct-13 runs had it UNSET. `AFL_SYNC_TIME=20`
+# reproduces AFL++'s stock behaviour exactly: SYNC_TIME is 20*60*1000 (config.h)
+# and the env parser computes time*60*1000 (afl-fuzz-state.c), so the two are the
+# same value. Use that to reproduce the original fuzzer config.
+export AFL_SYNC_TIME="${AFL_SYNC_TIME:-1}"
+
 for kv in "${TARGET_ENV[@]+"${TARGET_ENV[@]}"}"; do export "$kv"; done
 
 # AFL++ does NOT add cwd to sys.path, so PYTHONPATH is what makes
@@ -240,13 +369,13 @@ for kv in "${TARGET_ENV[@]+"${TARGET_ENV[@]}"}"; do export "$kv"; done
 # where monitor/controller/cea/main could shadow their imports. With an empty
 # array the expansion below is zero words, so baseline stays byte-identical.
 ENVPFX=()
-if [[ "$CONDITION" == "minyee" ]]; then
+if [[ "$ADAPTIVE" == 1 ]]; then
   export AFL_PYTHON_MODULE=adaptive_mutator   # exported, so it lands in afl_env.txt
   ENVPFX=(env "PYTHONPATH=$MINYEE_DIR")
 fi
 env | grep -E '^(AFL_|ASAN_)' | sort > "$RUN/afl_env.txt"
 # PYTHONPATH is not an AFL_/ASAN_ var, so the snapshot above misses it.
-[[ "$CONDITION" == "minyee" ]] && echo "PYTHONPATH=$MINYEE_DIR" >> "$RUN/afl_env.txt"
+[[ "$ADAPTIVE" == 1 ]] && echo "PYTHONPATH=$MINYEE_DIR" >> "$RUN/afl_env.txt"
 
 launch() {  # name  extra-args...
   local name="$1"; shift
@@ -262,7 +391,7 @@ launch() {  # name  extra-args...
 # raw_metrics.json, so starting it first guarantees the signal is DEFAULT
 # before the mutator's first fuzz_count() instead of racing a stale mode left
 # behind by a previous campaign.
-if [[ "$CONDITION" == "minyee" ]]; then
+if [[ "$ADAPTIVE" == 1 ]]; then
   mkdir -p "$MINYEE_DIR/adaptation"
   if [[ -n "$PIN_MODE" ]]; then
     printf 'MODE=%s;TIMESTAMP=%s\n' "$PIN_MODE" "$(date +%s)" > "$SIGNAL_FILE"
@@ -314,7 +443,7 @@ while [[ ! -f "$OUT/main/fuzzer_stats" && $waited -lt $STATS_WAIT ]]; do
 done
 if [[ -f "$OUT/main/fuzzer_stats" ]]; then
   echo "[*] fuzzer_stats present after ${waited}s"
-elif [[ "$CONDITION" == "minyee" ]]; then
+elif [[ "$ADAPTIVE" == 1 ]]; then
   # monitor.py resolves its stats path ONCE in __init__ and would lock onto
   # afl-out/main/default/fuzzer_stats, which never appears for a -M main
   # instance. It would then log nothing all run, so run_analyzer.py would never
@@ -333,7 +462,7 @@ fi
 # monitor.py writes its first window after window_sec (30s). If raw_metrics.json
 # is still absent well past that, it locked onto the wrong fuzzer_stats path or
 # died - either way the analyzer has nothing to read.
-if [[ "$CONDITION" == "minyee" && -z "$PIN_MODE" ]]; then
+if [[ "$ADAPTIVE" == 1 && -z "$PIN_MODE" ]]; then
   mwait=0
   while [[ ! -f "$RUN/monitor/raw_metrics.json" && $mwait -lt 120 ]]; do
     sleep 2; mwait=$((mwait+2))
@@ -355,10 +484,48 @@ echo $! > "$RUN/pids/plateau_watch.pid"
 # Wall-clock timeline of what the MUTATOR actually saw. controller.py clobbers
 # .adapt_signal on every write and the analyzer's stdout has window_ids but no
 # wall clock, so without this there is no joinable record of mode dwell times.
-if [[ "$CONDITION" == "minyee" ]]; then
+if [[ "$ADAPTIVE" == 1 ]]; then
   setsid nohup bash "$HERE/signal_log.sh" "$SIGNAL_FILE" "$RUN/adapt_signal_log.csv" 5 \
     > "$RUN/logs/signal_log.log" 2>&1 &
   echo $! > "$RUN/pids/signal_log.pid"
+fi
+
+# AgentAFL Level-2 escalation. Passive like the loggers above: it only reacts to
+# the .agentafl_request her analyzer writes when a coverage adaptation failed to
+# recover, so it cannot stall the fuzzers or her control loop. Deliberately NOT
+# called from inside run_analyzer.py - that loop advances on lines of
+# raw_metrics.json, so a ~105s LLM call there would let the windows describing the
+# call itself be consumed as the post-injection recovery evidence.
+if [[ "$AGENTAFL" == 1 ]]; then
+  # -u the mutator vars: this script exports AFL_PYTHON_MODULE for the fuzzers,
+  # but afl-showmap and afl-addseeds honour it too and PROGRAM ABORT when they
+  # cannot import the module (PYTHONPATH is scoped to the fuzzers only). That
+  # failure is silent - build_baseline ignores afl-showmap's exit code, reads an
+  # empty map and reports an empty baseline - so the arm would disable its own
+  # escalation and quietly equal `minyee` for the whole run. The daemon also
+  # strips these itself; both, because this one is cheap and the cost of missing
+  # it is a wasted 12h campaign.
+  setsid nohup env -u AFL_PYTHON_MODULE -u AFL_CUSTOM_MUTATOR_LIBRARY \
+    -u AFL_CUSTOM_MUTATOR_ONLY -u AFL_NO_PYTHON \
+    PYTHONIOENCODING=utf-8 LC_ALL=C.UTF-8 \
+    python3 -u "$MINYEE_DIR/agentafl_escalation.py" \
+      --campaign-root "$OUT" \
+      --work-dir "$RUN/agentafl" \
+      --request-file "$MINYEE_DIR/adaptation/.agentafl_request" \
+      --target "$BIN" \
+      --target-args "${TARGET_ARGS[*]}" \
+      --instance main \
+      --instances "$INSTANCES" \
+      --fmt "$AGENTAFL_FMT" \
+      --calls "$AGENTAFL_CALLS" \
+      --seeds-per-call "$AGENTAFL_SEEDS_PER_CALL" \
+      --cooldown-s "$AGENTAFL_COOLDOWN_S" \
+      --max-escalations "$AGENTAFL_MAX_ESCALATIONS" \
+      --provider "$AGENTAFL_PROVIDER" \
+      ${AGENTAFL_MODEL:+--model "$AGENTAFL_MODEL"} \
+    > "$RUN/logs/agentafl_escalation.log" 2>&1 &
+  echo $! > "$RUN/pids/agentafl_escalation.pid"
+  echo "  agentafl_escalation (pid $!)"
 fi
 
 # ---------------------------------------------------------------- finisher + failsafe
@@ -381,7 +548,7 @@ afl-whatsup -s "$OUT" 2>&1 | sed -n '1,25p' || true
 # AFL++ logs "Python mutator '...' installed successfully." per instance. If that
 # is missing, the mutator never loaded and this run is just baseline with extra
 # logging - which is worth knowing now, not in 12h.
-if [[ "$CONDITION" == "minyee" ]]; then
+if [[ "$ADAPTIVE" == 1 ]]; then
   echo
   loaded=0
   for f in "$RUN"/logs/main.log "$RUN"/logs/sec*.log; do

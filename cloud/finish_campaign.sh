@@ -39,8 +39,15 @@ log "all fuzzers have exited"
 # exception caught inside the loop, so it NEVER exits on its own and would
 # survive to fight the next campaign over the shared .adapt_signal.
 # For baseline the two minyee names simply do not exist, so nothing changes.
+#
+# agentafl_escalation goes FIRST: once it is gone no new escalation can start, so
+# nothing can inject seeds into a campaign that is being torn down. It also has
+# the same never-exits-on-its-own problem as the analyzer (a `while not stop`
+# poll loop), so leaving it alive would let it fight the next campaign over the
+# shared .agentafl_request. SIGTERM lets it finish an escalation already in
+# flight rather than losing that round's seeds.
 sleep 15
-for p in minyee_analyzer minyee_monitor plateau_watch signal_log; do
+for p in agentafl_escalation minyee_analyzer minyee_monitor plateau_watch signal_log; do
   f="$RUN/pids/$p.pid"
   [[ -f "$f" ]] || continue
   pid="$(cat "$f" 2>/dev/null || true)"
@@ -89,6 +96,89 @@ if [[ -f "$RUN/logs/minyee_analyzer.log" || -f "$RUN/adapt_signal_log.csv" ]]; t
       [[ -f "$f" ]] || continue
       echo "$(basename "$f" .log): mutator_loaded=$(grep -c 'installed successfully' "$f" 2>/dev/null || true) mode_changes=$(grep -c 'Adaptive Mutator. Mode changed' "$f" 2>/dev/null || true)"
     done
+  } >> "$RUN/summary.txt"
+fi
+
+# AgentAFL Level-2 health. The failure mode to catch here is "the arm ran but
+# never actually escalated", which looks identical to a minyee run in every other
+# artifact. escalations=0 with requests_dropped=0 means her hook never fired;
+# escalations>0 with injected=0 means afl-addseeds refused; injected>0 with
+# synced_advance=0 means the seeds were written but no fuzzer ever imported them
+# (the single-instance is_main_node trap).
+if [[ -d "$RUN/agentafl" ]]; then
+  {
+    echo
+    echo "== AgentAFL Level-2"
+    J="$RUN/agentafl/escalations.jsonl"
+    if [[ -f "$J" ]]; then
+      python3 - "$J" "$RUN/afl-out" <<'PYESC'
+import json, sys, pathlib
+recs = []
+for line in pathlib.Path(sys.argv[1]).read_text(errors="replace").splitlines():
+    line = line.strip()
+    if line:
+        try:
+            recs.append(json.loads(line))
+        except ValueError:
+            pass
+esc = [r for r in recs if r.get("event") == "escalation"]
+print(f"escalations={len(esc)}")
+print(f"requests_dropped={sum(1 for r in recs if r.get('event') == 'dropped')}")
+print(f"errors={sum(1 for r in recs if r.get('event') == 'error')}")
+print(f"aborted={sum(1 for r in recs if r.get('event') == 'aborted')}")
+print(f"llm_calls={sum(r.get('calls_made', 0) for r in esc)}")
+print(f"seeds_generated={sum(r.get('seeds_generated', 0) for r in esc)}")
+print(f"seeds_injected={sum(r.get('injected', 0) for r in esc)}")
+print(f"seeds_with_new_coverage={sum(r.get('seeds_with_new_coverage', 0) for r in esc)}")
+print(f"new_edges_per_escalation={[r.get('new_edges_total', 0) for r in esc]}")
+
+
+def hms(s):
+    if s is None:
+        return "?"
+    s = int(s)
+    return f"{s // 3600}h{(s % 3600) // 60:02d}m"
+
+
+# When AgentAFL actually ran, relative to afl-fuzz's own start_time - the same
+# clock as afl-out/*/plot_data's relative_time column, so these stamps line up
+# directly with the coverage curve.
+if esc:
+    print("escalation_times_T+=" + " ".join(hms(r.get("elapsed_s")) for r in esc))
+    print("escalation_elapsed_s=" + ",".join(
+        str(r.get("elapsed_s")) for r in esc))
+    gaps = [round(b.get("elapsed_s", 0) - a.get("elapsed_s", 0))
+            for a, b in zip(esc, esc[1:])
+            if a.get("elapsed_s") is not None and b.get("elapsed_s") is not None]
+    if gaps:
+        print(f"escalation_gaps_s={gaps}  (min={min(gaps)} should be >= cooldown)")
+    first = esc[0].get("elapsed_s")
+    if first is not None:
+        print(f"first_escalation_T+={hms(first)}")
+print(f"llm_seconds_total={round(sum(r.get('llm_latency_s', 0) for r in esc), 1)}")
+if esc:
+    m = esc[-1].get("memory_after", {})
+    print(f"final_seed_memory={m.get('positive_seeds', '?')} positive / "
+          f"{m.get('negative_seeds', '?')} negative, "
+          f"cycles={m.get('next_cycle_id', 0) - 1}")
+# Proof the injected seeds actually reached a fuzzer.
+for inst in sorted(p.name for p in pathlib.Path(sys.argv[2]).glob("*") if p.is_dir()):
+    f = pathlib.Path(sys.argv[2]) / inst / ".synced" / "addseeds"
+    try:
+        raw = f.read_bytes()[:4]
+    except OSError:
+        continue
+    if len(raw) == 4:
+        print(f"synced_addseeds_{inst}={int.from_bytes(raw, 'little')}")
+PYESC
+    else
+      echo "escalations=0  <-- escalations.jsonl missing: the daemon never ran"
+    fi
+    if [[ -f "$RUN/logs/agentafl_escalation.log" ]]; then
+      L="$RUN/logs/agentafl_escalation.log"
+      echo "daemon_log_lines=$(wc -l < "$L" | tr -d ' ')"
+      echo "daemon_fatal=$(grep -c 'FATAL' "$L" 2>/dev/null || true)"
+    fi
   } >> "$RUN/summary.txt"
 fi
 

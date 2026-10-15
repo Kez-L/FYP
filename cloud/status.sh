@@ -86,6 +86,43 @@ for RUN in "${runs[@]}"; do
     flag=""; [[ "$mload" -eq 0 ]] && flag="  <-- MUTATOR NEVER LOADED, this is not a valid minyee run"
     echo "    mutator: loaded in $mload instance(s), $mchg mode change(s) seen$flag"
   fi
+
+  # combined condition: is the Level-2 escalation alive, and is it doing anything?
+  ejsonl="$RUN/agentafl/escalations.jsonl"
+  elog="$RUN/logs/agentafl_escalation.log"
+  if [[ -f "$elog" || -d "$RUN/agentafl" ]]; then
+    epid="$(cat "$RUN/pids/agentafl_escalation.pid" 2>/dev/null || true)"
+    if [[ -n "$epid" ]] && kill -0 "$epid" 2>/dev/null; then estate="alive (pid $epid)"
+    elif [[ -n "$epid" ]]; then estate="DEAD  <-- no further escalations will happen"
+    else estate="not started"; fi
+    echo "    agentafl: $estate"
+    if [[ -f "$elog" ]]; then
+      efat=$(grep -c 'FATAL' "$elog" 2>/dev/null || true)
+      [[ "${efat:-0}" -gt 0 ]] && echo "    agentafl: $efat FATAL line(s)  <-- $(grep -m1 'FATAL' "$elog")"
+    fi
+    if [[ -f "$ejsonl" ]]; then
+      enum=$(grep -c '"event": "escalation"' "$ejsonl" 2>/dev/null || true)
+      edrop=$(grep -c '"event": "dropped"' "$ejsonl" 2>/dev/null || true)
+      eerr=$(grep -c '"event": "error"' "$ejsonl" 2>/dev/null || true)
+      # Seeds written but never imported is the single-instance is_main_node trap;
+      # run_campaign.sh uses -M main so this should always advance.
+      esyn=$(python3 -c "
+import pathlib,sys
+f=pathlib.Path('$OUT')/'main'/'.synced'/'addseeds'
+try:
+    b=f.read_bytes()[:4]
+    print(int.from_bytes(b,'little') if len(b)==4 else '?')
+except OSError:
+    print(0)
+" 2>/dev/null || echo '?')
+      eflag=""
+      [[ "${enum:-0}" -eq 0 && "${edrop:-0}" -eq 0 ]] && eflag="  <-- no requests yet (normal early; her hook fires only after a failed coverage adaptation)"
+      [[ "${enum:-0}" -gt 0 && "${esyn:-0}" == "0" ]] && eflag="  <-- seeds injected but main has imported NONE"
+      echo "    agentafl: escalations=${enum:-0} dropped=${edrop:-0} errors=${eerr:-0} main_imported=${esyn}$eflag"
+    else
+      echo "    agentafl: no escalations.jsonl yet"
+    fi
+  fi
 done
 
 echo

@@ -629,6 +629,58 @@ def run_stream_analyzer(
                                 resource_analyzer.coverage_stagnation_count = 0
                                 coverage_retry_reset_this_window = True
 
+                            # --- AgentAFL Level-2 escalation signal (additive) ---
+                            # Level 1 adapted and did not recover the coverage
+                            # plateau, so hand off to AgentAFL. This only writes a
+                            # request file: the escalation runs in a separate
+                            # process (agentafl_escalation.py), because a blocking
+                            # LLM call here would let windows describing the call
+                            # itself be consumed as post-injection recovery evidence.
+                            #
+                            # Opt-IN via AGENTAFL_HOOK=1. Unset (the default) makes
+                            # this dead code, so a bare `python3 run_analyzer.py`
+                            # and run_six_experiments.sh behave exactly as they did
+                            # before this hook existed - not even a file write.
+                            # cloud/run_campaign.sh sets it explicitly per condition
+                            # (1 only for condition=combined) rather than relying on
+                            # the default, and agentafl_escalation.py refuses to
+                            # start when it is not 1, so a `combined` campaign
+                            # cannot silently fail to escalate.
+                            if not improved and os.environ.get(
+                                "AGENTAFL_HOOK"
+                            ) == "1":
+                                try:
+                                    _req = os.path.join(
+                                        controller.signal_dir,
+                                        ".agentafl_request"
+                                    )
+
+                                    with open(_req + ".tmp", "w") as _f:
+                                        json.dump(
+                                            {
+                                                "ts": time.time(),
+                                                "window_id": window_id,
+                                                "trigger_reason": trigger_reason,
+                                                "improved": improved,
+                                                "total_recovery_edges":
+                                                    total_recovery_edges,
+                                                "ces": ces,
+                                                "cpu": cpu,
+                                                "memory": memory,
+                                                "delta_new_edges":
+                                                    delta_new_edges,
+                                            },
+                                            _f
+                                        )
+
+                                    # Atomic, so the reader never sees a partial file.
+                                    os.replace(_req + ".tmp", _req)
+
+                                except Exception:
+                                    # Never let the escalation signal disturb the
+                                    # Level-1 control loop.
+                                    pass
+
                         resource_analyzer.last_adaptation_record = None
                         resource_analyzer.adaptation_observation_count = 0
                         resource_analyzer.adaptation_observations = []

@@ -137,6 +137,14 @@ the project.
    ./run_campaign.sh libxml2 minyee 1 3 43200      # VM 1 ... up to 5
    ```
 
+   For the `combined` condition (minyee + AgentAFL), run both preflights once on the VM,
+   then:
+
+   ```bash
+   ./preflight_agentafl.sh
+   ./run_campaign.sh libxml2 combined 1 3 43200    # VM 1 ... up to 5
+   ```
+
 3. Close your laptop. Each VM fuzzes for 12h, packs its results, and powers itself off.
    (A failsafe also powers it off 13h after start, in case anything hangs.)
 
@@ -170,12 +178,29 @@ libxml2_baseline_run1/
   logs/                    per-process logs
 ```
 
-For `condition=minyee` there are also:
+For `condition=minyee` (and `combined`) there are also:
 
 ```
   adapt_signal_log.csv     wall-clock timeline of .adapt_signal: mode, signal_unix, event
   logs/minyee_analyzer.log run_analyzer.py stdout: CES, triggers, modes, recovery verdicts
   logs/main.log            contains "[Adaptive Mutator] Mode changed: X -> Y" per instance
+```
+
+For `condition=combined` there are also:
+
+```
+  agentafl/agentafl_timeline.csv     WHEN AgentAFL ran: one row per event, with elapsed_s
+                                     on the same clock as afl-out/*/plot_data relative_time
+  agentafl/escalations.jsonl         one record per escalation (and per dropped request):
+                                     calls, seeds, new edges, injection result, seed-memory size
+  agentafl/history/cycles.jsonl      the campaign-wide seed memory, append-only
+  agentafl/history/candidates/       every generated seed, kept because the memory
+                                     references it by path - do not prune
+  agentafl/escalations/esc_NNN/      per-escalation prompts/, responses/, seeds/,
+                                     calls.jsonl, baseline_edges.json, summary.json
+  logs/agentafl_escalation.log       daemon stdout: triggers, drops, per-call yield
+  afl-out/addseeds/queue/            what afl-addseeds handed to the campaign
+  afl-out/main/.synced/addseeds      4-byte LE count of entries main actually imported
 ```
 
 `afl-out/*/plot_data` is the primary coverage-over-time data. Note that in parallel mode
@@ -293,3 +318,165 @@ as committed. Worked around from this side, or detected:
    own analysis scripts discard it.
 8. `main.py` is the superseded predecessor of `run_analyzer.py` - `run_analyzer.py` is the
    entry point this pipeline uses.
+
+## The `combined` condition (AgentAFL Level 2)
+
+`combined` is `minyee` plus the AgentAFL escalation: when Min Yee's Level-1 layer adapts and
+still fails to recover a coverage plateau, AgentAFL generates seeds and injects them into the
+live campaign. It is the arm the two components exist to produce together.
+
+```bash
+./preflight_resource_aware.sh     # once per machine
+./preflight_agentafl.sh           # once per machine, checks the Level-2 pieces
+./run_campaign.sh libxml2 combined 1 3 43200
+```
+
+The chain adds one process and one file to the `minyee` chain:
+
+```
+run_analyzer.py
+  -> (coverage adaptation observed, improved == False)
+  -> ResourceAwareAFL/adaptation/.agentafl_request        one JSON line, atomic rename
+       -> agentafl_escalation.py          separate process, polls every 2s
+            -> re-freeze the baseline (afl-showmap -C over every instance queue)
+            -> AgentAFL Stage 4, 5 calls x 5 seeds, positive + negative feedback
+            -> afl-addseeds -o afl-out    lands in afl-out/addseeds/queue/id:%06d,...
+                 -> afl-out/main imports it on its next sync pass (~30s)
+                      -> secondaries inherit it from main
+```
+
+The hook in `run_analyzer.py` is ~10 additive lines that only write that file, wrapped in
+`try/except`. Everything expensive happens in the separate process, because `run_analyzer.py`
+advances on *lines* of `raw_metrics.json` rather than wall clock: a ~105s LLM call inside her
+loop would let the 2-3 windows describing the call itself be consumed as the post-injection
+recovery evidence, i.e. it would measure the plateau it was trying to escape.
+
+### Seed memory across escalations
+
+`<run>/agentafl/history/cycles.jsonl` is append-only for the whole campaign, with
+`cycle_id` strictly increasing. Each escalation's prompts are built from **every** earlier
+escalation's seeds: coverage-increasing ones as "Reached new coverage:" examples, redundant
+ones clustered at Jaccard 0.9 as "Tried before - avoid repeating:". Only the very first call
+of the very first escalation is cold, and it bootstraps from the AFL++ queue instead.
+
+**Never delete `agentafl/history/candidates/`.** The scan drops any record whose seed file is
+missing, so pruning it silently shrinks the memory rather than erroring. It is ~700 small
+files per 12h run.
+
+### Running Min Yee's layer without AgentAFL
+
+AgentAFL is opt-in at two independent levels, so `minyee` is a clean control:
+
+| condition | `AGENTAFL_HOOK` | daemon | effect |
+|---|---|---|---|
+| `baseline` | `0` | not launched | no mutator either |
+| `minyee` | `0` | not launched | **her layer exactly as before** |
+| `combined` | `1` | launched | full two-level escalation |
+
+```bash
+# minyee control for the three-arm batch (current code, no AgentAFL at all)
+./run_campaign.sh libxml2 minyee 1 3 43200
+
+# ...and also reproduce the committed Oct-13 fuzzer config (stock 20min sync)
+AFL_SYNC_TIME=20 ./run_campaign.sh libxml2 minyee 1 3 43200
+```
+
+With `AGENTAFL_HOOK` unset or `0`, the hook in `run_analyzer.py` is dead code — the `try`
+is never entered and no file is written. Verified by replaying her committed metrics through
+three variants: her file as committed at `HEAD`, the patched file with the gate off, and the
+patched file with the gate on. The first two produce **byte-identical stdout and neither
+creates `.agentafl_request`**; only the third writes it. So a `minyee` run is
+indistinguishable from one against her unpatched code.
+
+`AFL_SYNC_TIME=20` is byte-identical in behaviour to leaving it unset: `SYNC_TIME` is
+`20 * 60 * 1000` in `config.h` and the env parser computes `time * 60 * 1000`. Both
+`agentafl_hook=` and `afl_sync_time=` are recorded in `meta.txt` for every condition —
+`afl_env.txt` only captures `^AFL_|^ASAN_`, so the hook state would otherwise be invisible.
+
+Matching the committed Oct-13 tarballs *exactly* would additionally need her
+`controller.py` and `run_analyzer.py` at `ae015802`, i.e. before the Coverage Retry change.
+That is deliberately not wired up here — you would be comparing against her superseded
+behaviour.
+
+Because the gate defaults to off, a `combined` run could in principle be launched with the
+hook disabled and silently never escalate. Three things prevent that: `run_campaign.sh` sets
+the gate explicitly for every condition rather than relying on the default,
+`agentafl_escalation.py` refuses to start when it is not `1` (override with
+`--allow-hook-off` only for hand-written requests), and `preflight_agentafl.sh` checks both
+the gate and its export are present.
+
+### When did AgentAFL run?
+
+Everything is timestamped against **afl-fuzz's own `start_time`** (from
+`afl-out/main/fuzzer_stats`), which is the same origin as the `relative_time` column in
+`afl-out/*/plot_data`. So an escalation's `elapsed_s` drops straight onto the coverage curve
+with no offset arithmetic.
+
+`agentafl/agentafl_timeline.csv` is the flat, joinable version, in the same spirit as
+`plateau_log.csv` and `adapt_signal_log.csv`:
+
+```
+unix_time,elapsed_s,elapsed_hms,event,escalation_id,calls,seeds,new_edges,injected,synced_main,recovery_edges,detail
+1791889032.4,1830.0,0h30m30s,escalation,1,5,25,70,25,25,0,
+1791889302.1,2100.0,0h35m00s,dropped,,,,,,25,0,"cooldown (1230s left)"
+```
+
+`summary.txt` reports the same thing at a glance:
+
+```
+escalation_times_T+=0h30m 0h57m 1h24m ...
+escalation_gaps_s=[1590, 1620, ...]  (min=1590 should be >= cooldown)
+first_escalation_T+=0h30m
+```
+
+Per-escalation detail is in `agentafl/escalations/esc_NNN/calls.jsonl`, which carries
+`elapsed_s` per individual LLM call alongside its latency and marginal new edges.
+
+### Budget, and why there is a cooldown
+
+5 calls x 5 seeds per escalation: replayed over every `stage4_both` run in
+`AgentAFL/prompt_tests/results3/`, the first 5 calls captured 90% (xml) / 81% (ical) of a
+15-call run's new edges at the best edges-per-call of any budget retaining ~90% of the yield,
+and the single biggest-yield call fell within the first 5 in every xml and ical run.
+
+`AGENTAFL_COOLDOWN_S` (default 1500) is load-bearing, not a safety net. `run_analyzer.py`'s
+Coverage Retry clears the stagnation latch whenever recovery yields zero edges, so
+`COVERAGE_SLOWDOWN` re-fires roughly every 5 windows (150s). Replayed over
+`ResourceAwareAFL/six_hour_results/` that is 49-106 opportunities per 6h run (98-212 per 12h).
+Uncapped that would be ~4.5h of LLM wall time per run; 1500s throttles it to ~28 escalations,
+~140 calls, ~49min. Tune with `AGENTAFL_CALLS`, `AGENTAFL_SEEDS_PER_CALL`,
+`AGENTAFL_COOLDOWN_S`, `AGENTAFL_MAX_ESCALATIONS`, `AGENTAFL_PROVIDER`, `AGENTAFL_MODEL`;
+all are recorded in `meta.txt`.
+
+### `AFL_SYNC_TIME=1` is set on every condition
+
+AFL++ defaults to a 20-minute sync period, and a main node syncs at half that, so an injected
+seed would idle up to 10 minutes. `run_campaign.sh` therefore sets `AFL_SYNC_TIME=1` for
+**baseline, minyee and combined alike**, so the only difference between arms is whether seeds
+are injected at all. A `combined` run compared against baselines fuzzed at the default sync
+period would not be a clean comparison.
+
+### Failure modes to check, in order
+
+All three are silent - the campaign fuzzes happily and the arm just equals `minyee`:
+
+| symptom in `summary.txt` / `status.sh` | meaning |
+|---|---|
+| `escalations=0`, `requests_dropped=0` | her hook never fired; check the hook is present and that coverage adaptations are happening at all |
+| `escalations>0`, `seeds_injected=0` | `afl-addseeds` refused - usually no `*/fuzzer_stats` yet |
+| `seeds_injected>0`, `synced_addseeds_main=0` | seeds written but no fuzzer imported them |
+
+That last one is the trap worth knowing: a campaign started **without** `-M`/`-S`
+auto-configures as `-S default`, which is a *secondary*, and secondaries skip any sync
+directory lacking an `is_main_node` marker - so `afl-addseeds` would import nothing, with no
+error. `run_campaign.sh` always uses `-M main`, which syncs from every sibling directory, so
+this only bites hand-rolled local runs (including `ResourceAwareAFL/run_six_experiments.sh`).
+`agentafl_cycle.ensure_syncable()` writes the marker when it detects no main node.
+
+### Tests
+
+```bash
+cd ResourceAwareAFL && python3 test_agentafl_cycle.py      # 13 tests, no API key needed
+```
+
+The one that matters is `test_second_escalation_sees_first_escalations_seeds`.
