@@ -36,6 +36,56 @@ for RUN in "${runs[@]}"; do
   done
   if [[ -f "$RUN/plateau_log.csv" ]]; then n=$(wc -l < "$RUN/plateau_log.csv"); echo "    plateau_log.csv: $(( n > 0 ? n - 1 : 0 )) rows"; fi
   [[ -f "$RUN/monitor/raw_metrics.json" ]] && echo "    raw_metrics.json: $(wc -l < "$RUN/monitor/raw_metrics.json") windows"
+
+  # minyee condition: is the adaptation loop actually alive and moving?
+  alog="$RUN/logs/minyee_analyzer.log"
+  scsv="$RUN/adapt_signal_log.csv"
+  if [[ -f "$alog" || -f "$scsv" ]]; then
+    apid="$(cat "$RUN/pids/minyee_analyzer.pid" 2>/dev/null || true)"
+    if [[ -n "$apid" ]] && kill -0 "$apid" 2>/dev/null; then astate="alive (pid $apid)"
+    elif [[ -n "$apid" ]]; then astate="DEAD  <-- adaptation has stopped"
+    else astate="not started (pinned-mode smoke test?)"; fi
+    echo "    analyzer: $astate"
+    if [[ -f "$alog" ]]; then
+      aerr=$(grep -c '\[-\] Analyzer error' "$alog" 2>/dev/null || true)
+      atrg=$(grep -c 'Trigger = ' "$alog" 2>/dev/null || true)
+      # run_analyzer.py never says "calibration complete". It prints
+      # "[Calibration] n/N windows" while calibrating, then "[Window NNN] ..."
+      # for each window it evaluates, so eval>0 is what proves the trigger
+      # logic is actually running.
+      acal=$(grep -c '\[Calibration\]' "$alog" 2>/dev/null || true)
+      aev=$(grep -c '\[Window ' "$alog" 2>/dev/null || true)
+      # A climbing error count with a frozen mode is the run_analyzer.py:420
+      # stall: controller.last_adaptation is None, the TypeError is swallowed,
+      # awaiting_recovery stays True and the signal pins for the rest of the run.
+      flag=""; [[ "${aerr:-0}" -gt 0 ]] && flag="  <-- check for the analyzer stall"
+      # Past calibration but evaluating nothing would mean windows are arriving
+      # and being dropped - the encoding trap, or stale AFL++ stats.
+      [[ "${acal:-0}" -gt 0 && "${aev:-0}" -eq 0 ]] && flag="$flag  <-- calibrating only, 0 windows evaluated yet"
+      echo "    analyzer: calib_windows=${acal:-0} eval_windows=${aev:-0} triggers=${atrg:-0} errors=${aerr:-0}$flag"
+    fi
+    if [[ -f "$scsv" ]]; then
+      writes=$(grep -c ',write$' "$scsv" 2>/dev/null || true)
+      mode=$(awk -F, 'END{print $3}' "$scsv" 2>/dev/null)
+      lastw=$(awk -F, '$5=="write"{t=$1} END{print t}' "$scsv" 2>/dev/null)
+      dwell=""
+      if [[ -n "$lastw" ]]; then
+        d=$(( now - lastw ))
+        dwell=" for $((d/60))m"
+        # >30 min in a non-DEFAULT mode is the stall signature.
+        [[ "$mode" != "DEFAULT" && $d -gt 1800 ]] && dwell="$dwell  <-- pinned >30m, likely stalled"
+      fi
+      echo "    adapt: mode=${mode:-?}$dwell, $((${writes:-0})) signal write(s)"
+    fi
+    mload=0; mchg=0
+    for f in "$RUN"/logs/main.log "$RUN"/logs/sec*.log; do
+      [[ -f "$f" ]] || continue
+      c=$(grep -c 'installed successfully' "$f" 2>/dev/null || true); mload=$(( mload + ${c:-0} ))
+      c=$(grep -c 'Adaptive Mutator. Mode changed' "$f" 2>/dev/null || true); mchg=$(( mchg + ${c:-0} ))
+    done
+    flag=""; [[ "$mload" -eq 0 ]] && flag="  <-- MUTATOR NEVER LOADED, this is not a valid minyee run"
+    echo "    mutator: loaded in $mload instance(s), $mchg mode change(s) seen$flag"
+  fi
 done
 
 echo
