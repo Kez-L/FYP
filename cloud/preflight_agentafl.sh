@@ -17,8 +17,20 @@ REPO="${REPO:-$(cd "$HERE/.." && pwd)}"
 MINYEE_DIR="$REPO/ResourceAwareAFL"
 AGENT_DIR="$REPO/AgentAFL"
 PROVIDER="${AGENTAFL_PROVIDER:-claude}"
-TARGET="${TARGET:-$REPO/../targets/libxml2-afl/xmllint}"
-[[ -x "$TARGET" ]] || TARGET="$MINYEE_DIR/xmllint-afl"
+# Prefer exactly the binary run_campaign.sh fuzzes ($BUILD/xmllint-afl, where
+# BUILD=$WORK/targets/libxml2-build), so this validates the campaign's own target
+# rather than the intermediate build tree next to it. Fall back to the build tree,
+# then to the committed local binary for a laptop check.
+WORK="${WORK:-$HOME/fyp}"
+for cand in \
+  "${TARGET:-}" \
+  "$WORK/targets/libxml2-build/xmllint-afl" \
+  "$WORK/targets/libxml2-afl/xmllint" \
+  "$MINYEE_DIR/xmllint-afl"
+do
+  [[ -n "$cand" && -x "$cand" ]] && { TARGET="$cand"; break; }
+done
+TARGET="${TARGET:-}"
 
 PASS=0; FAIL=0
 ok()   { echo "  [+] $1"; PASS=$((PASS+1)); }

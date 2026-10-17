@@ -111,6 +111,35 @@ ADAPTIVE=0; AGENTAFL=0
 # is not 1.
 export AGENTAFL_HOOK="$AGENTAFL"
 
+# Sync cadence. AFL++ defaults to SYNC_TIME=20min, and a main node syncs at half
+# that, so a seed handed to the campaign via afl-addseeds (which lands in
+# $OUT/addseeds/queue and is imported by the main node's sync_fuzzers pass) would
+# sit idle for up to 10 minutes - far longer than the ~25min escalation period,
+# and long enough to blur which coverage came from an injection.
+#
+# Set on EVERY condition, not just `combined`, so the only difference between
+# arms is whether seeds are injected at all. Changing it on one arm only would
+# make the comparison against the committed baselines invalid.
+#
+# Overridable, because the committed Oct-13 runs had it UNSET. `AFL_SYNC_TIME=20`
+# reproduces AFL++'s stock behaviour exactly: SYNC_TIME is 20*60*1000 (config.h)
+# and the env parser computes time*60*1000 (afl-fuzz-state.c), so the two are the
+# same value. Use that to reproduce the original fuzzer config.
+export AFL_SYNC_TIME="${AFL_SYNC_TIME:-1}"
+
+# afl-fuzz rewrites fuzzer_stats only every STATS_UPDATE_SEC (60s) by default, and
+# run_analyzer.py DISCARDS any window whose execs_done has not changed since the
+# last one ("Skipping stale AFL++ stats"). With monitor.py's 30s window that means
+# roughly every other window is thrown away, so her effective plateau-detection
+# granularity is 60s rather than the 30s the window implies - and every discarded
+# window is one that cannot contribute to the stagnation count or to a recovery
+# verdict. Measured locally at a 10s window with the default interval: 2 windows
+# evaluated, 17 skipped.
+#
+# Publish stats at least as often as the monitor samples. Set for EVERY condition,
+# like AFL_SYNC_TIME, so the arms differ only by the injection.
+export AFL_FUZZER_STATS_UPDATE_INTERVAL="${AFL_FUZZER_STATS_UPDATE_INTERVAL:-10}"
+
 MINYEE_DIR="$REPO/ResourceAwareAFL"
 SIGNAL_FILE="$MINYEE_DIR/adaptation/.adapt_signal"
 CALIB="${MINYEE_CALIBRATION:-8}"
@@ -310,6 +339,7 @@ SEED_HASH="$(cd "$SEEDS" && find . -type f -print0 | sort -z | xargs -0 sha256su
   # that differs from the committed Oct-13 runs.
   echo "agentafl_hook=$AGENTAFL_HOOK"
   echo "afl_sync_time=$AFL_SYNC_TIME  (AFL++ default is 20)"
+  echo "afl_fuzzer_stats_update_interval=$AFL_FUZZER_STATS_UPDATE_INTERVAL  (AFL++ default is 60; must be <= monitor window or windows are discarded)"
   if [[ "$AGENTAFL" == 1 ]]; then
     echo "agentafl_calls=$AGENTAFL_CALLS"
     echo "agentafl_seeds_per_call=$AGENTAFL_SEEDS_PER_CALL"
@@ -344,21 +374,6 @@ export AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES=1
 export AFL_IMPORT_FIRST=1
 export AFL_NO_UI=1
 
-# Sync cadence. AFL++ defaults to SYNC_TIME=20min, and a main node syncs at half
-# that, so a seed handed to the campaign via afl-addseeds (which lands in
-# $OUT/addseeds/queue and is imported by the main node's sync_fuzzers pass) would
-# sit idle for up to 10 minutes - far longer than the ~25min escalation period,
-# and long enough to blur which coverage came from an injection.
-#
-# Set on EVERY condition, not just `combined`, so the only difference between
-# arms is whether seeds are injected at all. Changing it on one arm only would
-# make the comparison against the committed baselines invalid.
-#
-# Overridable, because the committed Oct-13 runs had it UNSET. `AFL_SYNC_TIME=20`
-# reproduces AFL++'s stock behaviour exactly: SYNC_TIME is 20*60*1000 (config.h)
-# and the env parser computes time*60*1000 (afl-fuzz-state.c), so the two are the
-# same value. Use that to reproduce the original fuzzer config.
-export AFL_SYNC_TIME="${AFL_SYNC_TIME:-1}"
 
 for kv in "${TARGET_ENV[@]+"${TARGET_ENV[@]}"}"; do export "$kv"; done
 

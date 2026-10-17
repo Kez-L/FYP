@@ -55,6 +55,11 @@ export PERSIST="${PERSIST:-2}"
 # is discarded - the effective plateau-detection granularity there is 60s, not 30s.
 export AFL_FUZZER_STATS_UPDATE_INTERVAL="${AFL_FUZZER_STATS_UPDATE_INTERVAL:-5}"
 
+# Seeds handed to a live campaign sit in $OUT/addseeds/queue until a main node
+# syncs; AFL++ defaults to 20min (10min for main), which is far too slow to see
+# an injection take effect in a short test. run_campaign.sh sets the same thing.
+export AFL_SYNC_TIME="${AFL_SYNC_TIME:-1}"
+
 # The hook in run_analyzer.py is opt-in. Exported here because the whole point of
 # this local test is to exercise the arm, and because BOTH the analyzer terminal
 # and the daemon terminal need to agree on it - sourcing this file in each is what
@@ -67,6 +72,9 @@ export AGENTAFL_HOOK="${AGENTAFL_HOOK:-1}"
 export AF_CALLS="${AF_CALLS:-2}"
 export AF_SEEDS="${AF_SEEDS:-3}"
 export AF_COOLDOWN="${AF_COOLDOWN:-60}"
+# Format name used in the prompt; must match the target. run_campaign.sh has
+# the same knob as AGENTAFL_FMT.
+export AGENTAFL_FMT="${AGENTAFL_FMT:-XML document}"
 
 mkdir -p "$OUT" "$WORKDIR" "$AGENTWORK" "$MINYEE/adaptation"
 
