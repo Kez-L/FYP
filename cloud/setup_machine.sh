@@ -57,9 +57,25 @@ $SUDO apt-get install -y \
 #
 # Installed unconditionally: ~15s and a few MB, against a whole class of
 # 12-hours-wasted failure. PEP 668 means Ubuntu 24.04 needs the override flag.
+# --ignore-installed typing_extensions is REQUIRED on Ubuntu 24.04. The openai
+# SDK wants a newer typing_extensions than noble ships, but noble's comes from
+# apt (python3-typing-extensions) and has no RECORD file, so pip cannot
+# uninstall it to upgrade and aborts the WHOLE transaction:
+#   ERROR: Cannot uninstall typing_extensions 4.10.0, RECORD file not found.
+# --ignore-installed skips the uninstall and writes the new version to
+# /usr/local/lib/python3.12/dist-packages, which precedes
+# /usr/lib/python3/dist-packages on sys.path, so the newer one wins at import.
 echo "[*] Installing LLM SDKs (openai + python-dotenv, for AGENTAFL_PROVIDER=openai)..."
-$SUDO pip3 install --break-system-packages --upgrade openai python-dotenv \
-  || echo "[!] WARNING: pip install failed - AGENTAFL_PROVIDER=openai will NOT work" >&2
+$SUDO pip3 install --break-system-packages --upgrade \
+    --ignore-installed typing_extensions openai python-dotenv \
+  || {
+    echo "[!] pip install failed; falling back to apt (older SDK, but pinned)" >&2
+    $SUDO apt-get install -y python3-openai python3-dotenv \
+      || echo "[!] WARNING: no openai SDK - AGENTAFL_PROVIDER=openai will NOT work" >&2
+  }
+python3 -c 'import openai, dotenv' 2>/dev/null \
+  && echo "[+] openai $(python3 -c 'import openai; print(openai.__version__)') + python-dotenv importable" \
+  || echo "[!] WARNING: openai/python-dotenv still not importable - the combined arm cannot run" >&2
 
 mkdir -p "$WORK"
 

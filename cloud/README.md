@@ -177,18 +177,56 @@ comparison, so for this experiment: don't.
 launching from the AMI, so the key never ends up inside an image snapshot:
 
 ```bash
-echo 'CLAUDE_API_KEY=sk-ant-...' > ~/fyp/FYP/AgentAFL/.env
+echo 'OPENAI_API_KEY=PASTE_KEY_HERE' > ~/fyp/FYP/AgentAFL/.env
 chmod 600 ~/fyp/FYP/AgentAFL/.env
 ```
 
-Only two locations work: the `CLAUDE_API_KEY` environment variable, or
-`AgentAFL/.env`. **Do not** put it in `~/Documents/.env` on the VM: the preflight accepts
-that path, but the code that actually makes the call hardcodes
-`/home/user/Documents/.env` (`AgentAFL/prompt_tests/batch_harness.py:62`), which does not
-exist for user `ubuntu`. That combination passes preflight and then fails on the first
-escalation, hours in.
+This experiment uses **OpenAI** - `run_campaign.sh` defaults to
+`AGENTAFL_PROVIDER=openai` - so the variable is `OPENAI_API_KEY`, and only two locations
+work: that environment variable, or `AgentAFL/.env`.
 
-`baseline` and `minyee` need no key at all.
+Three things silently break it:
+
+- **No `export` inside the file.** The parser compares the whole left-hand side to
+  `OPENAI_API_KEY`, so a line reading `export OPENAI_API_KEY=...` does not match.
+- **Use `>`, not `>>`.** Appending twice leaves two lines and the first one wins.
+- **Not `~/Documents/.env`.** The preflight would accept that path, but the code that
+  makes the call hardcodes `/home/user/Documents/.env`
+  (`AgentAFL/prompt_tests/batch_harness.py:62`), which does not exist for user `ubuntu`.
+  That combination passes preflight and then fails on the first escalation, hours in.
+
+The two providers reach the key by completely different routes, which is why
+`setup_machine.sh` installs two Python packages:
+
+| | how the key is read | needs |
+|---|---|---|
+| `openai` (what we use) | `openai.OpenAI()` reads **`os.environ`**; `AgentAFL/.env` reaches it only via `python-dotenv` | `openai`, `python-dotenv` |
+| `claude` | `load_api_key()` parses `AgentAFL/.env` with stdlib | nothing |
+
+That asymmetry is a trap worth knowing: `batch_harness.py:145-152` wraps the
+`python-dotenv` import in `except ImportError: pass`, so **without that package the `.env`
+file is never opened at all** - `openai.OpenAI()` finds nothing and every escalation dies,
+while a naive check that reads the file by hand would report the key as present.
+`preflight_agentafl.sh` therefore resolves the key the same way the provider will, and
+checks both packages import.
+
+If you install the SDKs by hand, use the same flags `setup_machine.sh` uses:
+
+```bash
+sudo pip3 install --break-system-packages --upgrade \
+     --ignore-installed typing_extensions openai python-dotenv
+```
+
+`--ignore-installed typing_extensions` is not optional on Ubuntu 24.04. Without it pip
+aborts the whole install with `Cannot uninstall typing_extensions 4.10.0, RECORD file not
+found` - noble's copy comes from apt and has no RECORD, so pip cannot replace it. The flag
+skips the uninstall and writes the newer version to
+`/usr/local/lib/python3.12/dist-packages`, which precedes `/usr/lib/python3/dist-packages`
+on `sys.path`, so the newer one wins at import.
+(`sudo apt-get install python3-openai python3-dotenv` also works and is version-pinned,
+but ships openai 1.12.0 from Feb 2024.)
+
+`baseline` and `minyee` need no key and no SDK at all.
 
 ## 4. Smoke test (~15 minutes per target, 2 fuzzers)
 
@@ -256,7 +294,7 @@ Run one target at a time (see the quota note above). `<target>` is one of `libxm
    **`combined`** - write the API key, then both preflights, once per VM:
 
    ```bash
-   echo 'CLAUDE_API_KEY=sk-ant-...' > ~/fyp/FYP/AgentAFL/.env
+   echo 'OPENAI_API_KEY=PASTE_KEY_HERE' > ~/fyp/FYP/AgentAFL/.env
    ./preflight_resource_aware.sh
    AGENTAFL_TARGET=<target> ./preflight_agentafl.sh
    ./run_campaign.sh <target> combined 1 3 43200    # VM 1 ... up to 5
@@ -436,8 +474,19 @@ targets. `run_campaign.sh` records all of it into every run's `meta.txt`, and
 | AFL++ | `v5.03c` (`afl-fuzz++5.03c`), `make source-only` |
 | ASan | **on for all three targets** (`AFL_USE_ASAN=1`) |
 | dictionaries | none, on any target |
+| LLM provider (`combined` only) | `openai` (`AGENTAFL_PROVIDER`) |
+| LLM model (`combined` only) | `gpt-5.6-luna` (`AGENTAFL_MODEL`) - the model the 5x5 budget was measured on |
+| LLM budget (`combined` only) | 5 calls x 5 seeds per escalation, `AGENTAFL_COOLDOWN_S=1500` |
 
-The last two settings are the ones that drifted last time, so they are in the table now:
+The provider and model matter for the write-up as much as the fuzzer settings - they are
+what generated the `combined` arm's seeds. Both land in `meta.txt` as
+`agentafl_provider=` / `agentafl_model=`, and `setup_machine.sh` records the openai SDK
+version in `versions.txt`, since the SDK is part of that path too. `gpt-5.6-luna` is
+pinned rather than left to the SDK default (`gpt-5.4-mini`) because every
+`prompt_tests/results3` run the 5x5 budget was measured on used it - see the `model` key
+in their `summary_*.json`.
+
+The two `AFL_*` settings above are the ones that drifted last time, so they are in the table now:
 both are set for **baseline, minyee and combined alike**, so the only difference between
 arms is which of our layers is active. See the `AFL_SYNC_TIME` section below for why.
 
@@ -610,7 +659,7 @@ live campaign. It is the arm the two components exist to produce together.
 To launch one (the same commands as step 6, repeated here for reference):
 
 ```bash
-echo 'CLAUDE_API_KEY=sk-ant-...' > ~/fyp/FYP/AgentAFL/.env
+echo 'OPENAI_API_KEY=PASTE_KEY_HERE' > ~/fyp/FYP/AgentAFL/.env
 ./preflight_resource_aware.sh                        # once per machine
 AGENTAFL_TARGET=<target> ./preflight_agentafl.sh     # once per machine PER TARGET
 ./run_campaign.sh <target> combined 1 3 43200
