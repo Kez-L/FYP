@@ -29,9 +29,14 @@ $SUDO apt-get update -y
 $SUDO apt-get install -y \
   build-essential git curl jq tmux htop \
   python3 python3-dev python3-pip python3-psutil \
-  autoconf automake libtool pkg-config cmake flex bison libglib2.0-dev \
+  autoconf automake libtool pkg-config cmake ninja-build flex bison libglib2.0-dev \
+  libicu-dev \
   "clang-$LLVM" "llvm-$LLVM" "llvm-$LLVM-dev" "lld-$LLVM" \
   "gcc-$GCCV-plugin-dev"
+# libicu-dev is for libical (it links libicuuc/libicui18n/libicudata - confirmed
+# with ldd against the campaign binary); cmake/ninja-build are for libical and
+# tidy-html5, which are both CMake projects. libxml2 needs none of these, which
+# is why they were absent while this was a single-target setup.
 
 mkdir -p "$WORK"
 
@@ -79,4 +84,5 @@ echo
 echo "[+] Setup done. Versions recorded in $WORK/versions.txt:"
 cat "$WORK/versions.txt"
 echo
-echo "Next: ./build_libxml2.sh"
+echo "Next: ./setup_all.sh builds all three targets and runs both preflights."
+echo "      (Or individually: ./build_libxml2.sh, ./build_libical.sh, ./build_tidy.sh)"

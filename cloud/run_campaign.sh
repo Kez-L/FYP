@@ -66,7 +66,10 @@ usage() { sed -n '2,8p' "$0" | sed 's/^# \{0,1\}//'; exit 1; }
 [[ $# -ge 3 ]] || usage
 
 TARGET="$1"; CONDITION="$2"; RUN_ID="$3"
-NUM="${4:-6}"
+# Default 3, matching the frozen layout (c7i.xlarge, 4 vCPUs: main + sec1 + sec2,
+# leaving one vCPU for the loggers, the analyzer and AgentAFL). It used to default
+# to 6, which silently oversubscribes that box if the argument is forgotten.
+NUM="${4:-3}"
 DUR="${5:-43200}"
 WORK="${WORK:-$HOME/fyp}"
 AUTO_SHUTDOWN="${AUTO_SHUTDOWN:-1}"
@@ -75,18 +78,19 @@ REPO="$WORK/FYP"
 SUDO=""; [[ $EUID -ne 0 ]] && SUDO="sudo"
 
 # ---------------------------------------------------------------- targets
-# Add ical / html here once their build scripts exist.
-case "$TARGET" in
-  libxml2)
-    BUILD="$WORK/targets/libxml2-build"
-    BIN="$BUILD/xmllint-afl"
-    CMPLOG="$BUILD/xmllint-cmplog"
-    TARGET_ARGS=(--noout @@)
-    SEEDS="${SEEDS:-$REPO/AgentAFL/seeds_min}"
-    TARGET_ENV=()
-    ;;
-  *) echo "Unknown target '$TARGET' (only libxml2 is set up so far)" >&2; exit 2 ;;
-esac
+# One definition per target, shared with preflight_agentafl.sh and verify_run.sh
+# so none of them can disagree about a target. Sets BUILD, BIN, CMPLOG,
+# FUZZ_ARGS, SHOWMAP_ARGS, SEEDS, AGENTAFL_FMT_DEFAULT, SANITY_INPUT, TARGET_ENV
+# and the frozen corpus fingerprint.
+#
+# FUZZ_ARGS and SHOWMAP_ARGS are deliberately separate: the libical and tidy
+# harnesses take their input over shared memory under afl-fuzz (no file
+# argument) but need @@ under afl-showmap, and getting that wrong makes every
+# AgentAFL candidate score an identical map. targets.sh has the measurements.
+TARGETS_SH_DIR="$HERE"
+# shellcheck source=targets.sh
+source "$HERE/targets.sh"
+load_target "$TARGET" || exit 2
 
 case "$CONDITION" in
   baseline|minyee|combined) ;;
@@ -163,7 +167,12 @@ AGENTAFL_COOLDOWN_S="${AGENTAFL_COOLDOWN_S:-1500}"
 AGENTAFL_MAX_ESCALATIONS="${AGENTAFL_MAX_ESCALATIONS:-0}"   # 0 = unlimited
 AGENTAFL_PROVIDER="${AGENTAFL_PROVIDER:-claude}"
 AGENTAFL_MODEL="${AGENTAFL_MODEL:-}"                        # empty = provider default
-AGENTAFL_FMT="${AGENTAFL_FMT:-XML document}"
+# Per-target, from targets.sh. These strings are NOT free text: there is no
+# registry validating --fmt anywhere downstream (it is spliced straight into the
+# prompt), so a typo degrades generation silently. The defaults are the exact
+# values recorded in the `fmt` key of the prompt_tests/results3 runs the 5x5
+# budget was derived from: "XML document", "iCalendar document", "HTML document".
+AGENTAFL_FMT="${AGENTAFL_FMT:-$AGENTAFL_FMT_DEFAULT}"
 case "$AGENTAFL_PROVIDER" in
   claude|openai) ;;
   *) echo "AGENTAFL_PROVIDER must be 'claude' or 'openai', got '$AGENTAFL_PROVIDER'" >&2; exit 2 ;;
@@ -309,7 +318,20 @@ else
 fi
 
 SEED_COUNT="$(ls -1 "$SEEDS" | wc -l)"
-SEED_HASH="$(cd "$SEEDS" && find . -type f -print0 | sort -z | xargs -0 sha256sum | sha256sum | cut -c1-16)"
+# LC_ALL=C is load-bearing: `sort -z` collates by locale, so the SAME corpus
+# hashes differently under en_US.UTF-8 than under C. Without it this "drift
+# detector" changes when the machine changes and the corpus has not, which is
+# worse than having none. The frozen libxml2 value 52974a6a2190a399 recorded in
+# every committed baseline run only reproduces under C.
+SEED_HASH="$(cd "$SEEDS" && LC_ALL=C bash -c \
+  'find . -type f -print0 | sort -z | xargs -0 sha256sum | sha256sum | cut -c1-16')"
+if [[ "$SEED_HASH" != "$SEEDS_SHA256_16" || "$SEED_COUNT" != "$SEEDS_COUNT" ]]; then
+  echo "[!] WARNING: seed corpus does not match the frozen fingerprint for $TARGET"
+  echo "[!]   expected $SEEDS_COUNT files / $SEEDS_SHA256_16"
+  echo "[!]   got      $SEED_COUNT files / $SEED_HASH"
+  echo "[!] Runs with different corpora are not comparable. Continuing anyway;"
+  echo "[!] both values are recorded in meta.txt."
+fi
 
 {
   echo "name=$NAME"
@@ -321,7 +343,13 @@ SEED_HASH="$(cd "$SEEDS" && find . -type f -print0 | sort -z | xargs -0 sha256su
   echo "duration_s=$DUR"
   echo "num_instances=$NUM"
   echo "layout=main(-c cmplog, AFL_CYCLE_SCHEDULES=1) + secondaries -p ${SCHEDULES[*]:0:$((NUM-1))}"
-  echo "target_cmd=$BIN ${TARGET_ARGS[*]}"
+  echo "target_cmd=$BIN ${FUZZ_ARGS[*]+"${FUZZ_ARGS[*]}"}"
+  # Recorded separately because they legitimately differ for the persistent-mode
+  # harnesses (no file arg under afl-fuzz, @@ under afl-showmap), and a mismatch
+  # here is the difference between real per-seed coverage scoring and an
+  # identical map for every candidate.
+  echo "showmap_cmd=$BIN ${SHOWMAP_ARGS[*]+"${SHOWMAP_ARGS[*]}"}"
+  echo "target_env=${TARGET_ENV[*]+"${TARGET_ENV[*]}"}"
   echo "seeds_dir=$SEEDS"
   echo "seeds_count=$SEED_COUNT"
   echo "seeds_sha256_16=$SEED_HASH"
@@ -395,7 +423,7 @@ env | grep -E '^(AFL_|ASAN_)' | sort > "$RUN/afl_env.txt"
 launch() {  # name  extra-args...
   local name="$1"; shift
   setsid nohup "${ENVPFX[@]+"${ENVPFX[@]}"}" afl-fuzz -i "$SEEDS" -o "$OUT" -V "$DUR" -m none -t 1000 \
-    "$@" -- "$BIN" "${TARGET_ARGS[@]}" > "$RUN/logs/$name.log" 2>&1 &
+    "$@" -- "$BIN" ${FUZZ_ARGS[@]+"${FUZZ_ARGS[@]}"} > "$RUN/logs/$name.log" 2>&1 &
   echo $! > "$RUN/pids/$name.pid"
   echo "  $name (pid $!)"
 }
@@ -528,7 +556,8 @@ if [[ "$AGENTAFL" == 1 ]]; then
       --work-dir "$RUN/agentafl" \
       --request-file "$MINYEE_DIR/adaptation/.agentafl_request" \
       --target "$BIN" \
-      --target-args "${TARGET_ARGS[*]}" \
+      --target-args "${SHOWMAP_ARGS[*]+"${SHOWMAP_ARGS[*]}"}" \
+      --probe-input "$SANITY_INPUT" \
       --instance main \
       --instances "$INSTANCES" \
       --fmt "$AGENTAFL_FMT" \

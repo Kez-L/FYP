@@ -243,9 +243,20 @@ class Daemon:
         tmp_probe = None
         if probe is None:
             # No queue yet (daemon started before the fuzzers produced one).
-            tmp_probe = Path(tempfile.mkstemp(suffix=".xml")[1])
-            tmp_probe.write_bytes(b"<?xml version=\"1.0\"?><r><a k=\"1\"/></r>")
-            probe = tmp_probe
+            # --probe-input names a small valid input for THIS format; without
+            # it we fall back to an XML document, which is only meaningful for
+            # the libxml2 target. Feeding XML to libical makes the self-test
+            # prove nothing about the real corpus.
+            if self.args.probe_input and Path(self.args.probe_input).is_file():
+                probe = Path(self.args.probe_input)
+            else:
+                tmp_probe = Path(tempfile.mkstemp(suffix=".xml")[1])
+                tmp_probe.write_bytes(b"<?xml version=\"1.0\"?><r><a k=\"1\"/></r>")
+                probe = tmp_probe
+                if self.args.probe_input:
+                    self.log(f"[AgentAFL] WARNING: --probe-input "
+                             f"{self.args.probe_input} not found; falling back "
+                             "to a generic XML probe")
         try:
             from evaluate_seeds import run_showmap
             status, edges = run_showmap(
@@ -462,6 +473,11 @@ def build_parser():
                    help="where history/, escalations/ and escalations.jsonl live")
     p.add_argument("--target", required=True)
     p.add_argument("--target-args", default="--noout @@")
+    p.add_argument("--probe-input", default=None,
+                   help="small valid input for this target's format, used by "
+                        "the afl-showmap self-test when no instance queue "
+                        "exists yet. Defaults to a generic XML document, which "
+                        "is only appropriate for libxml2.")
     p.add_argument("--request-file",
                    default=str(HERE / "adaptation" / ".agentafl_request"),
                    help="written by run_analyzer.py's hook")

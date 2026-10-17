@@ -155,11 +155,25 @@ MODES = ["DEFAULT", "THROTTLE_POWER", "REDUCE_MUTATION_SIZE", "STRONG_THROTTLE",
 # actually does, not what a naive harness would pass.
 ADD_BUF = None
 
+# One buffer shape per target in the matrix, not just XML: the mutator is
+# byte-level so it SHOULD be format-blind, but this preflight exists to prove
+# fuzz() never raises on what it will actually be handed, and ical and html
+# corpora look nothing like xml (CRLF line structure, very long single lines,
+# 8KB entries). A raise inside fuzz() FATALs afl-fuzz mid-campaign.
 BUFS = {
     "empty":      bytearray(b""),
     "one_byte":   bytearray(b"<"),
     "two_byte":   bytearray(b"<a"),
     "small_xml":  bytearray(b"<?xml version='1.0'?><r><a x='1'/></r>"),
+    "small_ical": bytearray(b"BEGIN:VCALENDAR\r\nVERSION:2.0\r\n"
+                            b"BEGIN:VEVENT\r\nUID:a\r\nDTSTART:20260101T000000Z\r\n"
+                            b"END:VEVENT\r\nEND:VCALENDAR\r\n"),
+    "small_html": bytearray(b"<!doctype html><html><head><title>t</title></head>"
+                            b"<body><p>x<table><tr><td>c</td></tr></table></body></html>"),
+    "ical_8k":    bytearray(b"BEGIN:VCALENDAR\r\n"
+                            + b"X-PROP:" + b"A" * 8000 + b"\r\n"
+                            + b"END:VCALENDAR\r\n"),
+    "html_8k":    bytearray(b"<html><body>" + b"<p>x</p>" * 1000 + b"</body></html>"),
     "large_64k":  bytearray(b"<r>" + b"A" * 65536 + b"</r>"),
 }
 
@@ -230,11 +244,16 @@ cat <<'MSG'
 
     This checks the Python layer only. It cannot exercise the C-side type
     conversion, the real -G max_size, module loading, or -c cmplog. Do the
-    pinned-mode smoke test next:
+    pinned-mode smoke test next (TGT is libxml2, libical or tidy):
 
+      TGT=libxml2
       for m in THROTTLE_POWER REDUCE_MUTATION_SIZE STRONG_THROTTLE \
                EXPLOIT_CRASH SKIP_TIMEOUTS EXPLORE_HEAVY; do
-        MINYEE_PIN_MODE=$m AUTO_SHUTDOWN=0 ./run_campaign.sh libxml2 minyee 90 3 600
-        rm -rf ~/fyp/runs/libxml2_minyee_run90
+        MINYEE_PIN_MODE=$m AUTO_SHUTDOWN=0 ./run_campaign.sh $TGT minyee 90 3 600
+        rm -rf ~/fyp/runs/${TGT}_minyee_run90
       done
+
+    This preflight covers the Python layer once per machine; it is not
+    per-target. The per-target checks are in preflight_agentafl.sh, which you
+    run once for each of libxml2, libical and tidy.
 MSG

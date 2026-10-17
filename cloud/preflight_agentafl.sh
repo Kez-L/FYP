@@ -13,24 +13,37 @@
 set -uo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
-REPO="${REPO:-$(cd "$HERE/.." && pwd)}"
+WORK="${WORK:-$HOME/fyp}"
+# Resolve the repo the way run_campaign.sh does ($WORK/FYP), so this validates
+# the checkout the campaign will actually run - not a different one sitting next
+# to this script. Falls back to $HERE/.. for a laptop check, loudly, because a
+# preflight that passes against the wrong tree is worse than no preflight.
+if [[ -d "$WORK/FYP" ]]; then
+  REPO="${REPO:-$WORK/FYP}"
+else
+  REPO="${REPO:-$(cd "$HERE/.." && pwd)}"
+  echo "[!] $WORK/FYP not found - checking $REPO instead."
+  echo "[!] On a campaign VM this is the WRONG tree; run_campaign.sh uses \$WORK/FYP."
+fi
 MINYEE_DIR="$REPO/ResourceAwareAFL"
 AGENT_DIR="$REPO/AgentAFL"
 PROVIDER="${AGENTAFL_PROVIDER:-claude}"
-# Prefer exactly the binary run_campaign.sh fuzzes ($BUILD/xmllint-afl, where
-# BUILD=$WORK/targets/libxml2-build), so this validates the campaign's own target
-# rather than the intermediate build tree next to it. Fall back to the build tree,
-# then to the committed local binary for a laptop check.
-WORK="${WORK:-$HOME/fyp}"
-for cand in \
-  "${TARGET:-}" \
-  "$WORK/targets/libxml2-build/xmllint-afl" \
-  "$WORK/targets/libxml2-afl/xmllint" \
-  "$MINYEE_DIR/xmllint-afl"
-do
+
+# Which target to check. One preflight run validates one target, because the
+# binary, the showmap arg list and the format probe all differ per target.
+AGENTAFL_TARGET="${AGENTAFL_TARGET:-libxml2}"
+TARGETS_SH_DIR="$HERE"
+# shellcheck source=targets.sh
+source "$HERE/targets.sh"
+load_target "$AGENTAFL_TARGET" || exit 2
+
+# Prefer exactly the binary run_campaign.sh fuzzes. Fall back to the committed
+# local libxml2 binary so the script is still usable on a laptop.
+for cand in "${TARGET:-}" "$BIN" "$MINYEE_DIR/xmllint-afl"; do
   [[ -n "$cand" && -x "$cand" ]] && { TARGET="$cand"; break; }
 done
 TARGET="${TARGET:-}"
+echo "=== preflight_agentafl: target=$AGENTAFL_TARGET repo=$REPO"
 
 PASS=0; FAIL=0
 ok()   { echo "  [+] $1"; PASS=$((PASS+1)); }
@@ -119,13 +132,48 @@ then ok "key resolves"; else bad "no key found (env, AgentAFL/.env, ~/Documents/
 echo "== target + coverage measurement"
 if [[ -x "$TARGET" ]]; then
   ok "target $TARGET"
-  if afl-showmap -q -o /dev/null -- "$TARGET" --noout "$MINYEE_DIR/test_libxml.xml" >/dev/null 2>&1; then
-    ok "afl-showmap produces a map for the target"
+  if [[ ! -f "$SANITY_INPUT" ]]; then
+    bad "sanity input missing: $SANITY_INPUT"
   else
-    bad "afl-showmap failed on the target - every seed would score 0 new edges"
+    # Replicate evaluate_seeds.run_showmap() exactly: it passes the candidate
+    # ONLY by substituting @@ in SHOWMAP_ARGS, with no stdin redirect. Count the
+    # edges rather than just checking the exit code, because afl-showmap exits 0
+    # on an empty map and build_baseline ignores the code anyway.
+    args=(); for a in ${SHOWMAP_ARGS[@]+"${SHOWMAP_ARGS[@]}"}; do
+      [[ "$a" == "@@" ]] && args+=("$SANITY_INPUT") || args+=("$a")
+    done
+    n="$(env ${TARGET_ENV[@]+"${TARGET_ENV[@]}"} \
+          afl-showmap -e -q -o - -- "$TARGET" "${args[@]+"${args[@]}"}" 2>/dev/null \
+          | grep -c ':' || true)"
+    if [[ "${n:-0}" -gt 0 ]]; then
+      ok "afl-showmap produces a map for the target ($n edges on $(basename "$SANITY_INPUT"))"
+    else
+      bad "afl-showmap returned 0 edges - every generated seed would score 0 new edges"
+      note "showmap argv was: $TARGET ${args[*]+"${args[*]}"}"
+    fi
+
+    # The trap this whole split exists for. The libical and tidy harnesses take
+    # input over shared memory under afl-fuzz (so FUZZ_ARGS has no @@) but need
+    # @@ under afl-showmap. With no @@ the target runs with NO input, parses an
+    # empty document and returns the SAME map for every candidate - measured at
+    # 1 edge for all seeds on libical. Prove the @@ is actually doing something.
+    if [[ " ${SHOWMAP_ARGS[*]+"${SHOWMAP_ARGS[*]}"} " == *" @@ "* ]]; then
+      bare=(); for a in ${SHOWMAP_ARGS[@]+"${SHOWMAP_ARGS[@]}"}; do
+        [[ "$a" == "@@" ]] || bare+=("$a")
+      done
+      m="$(env ${TARGET_ENV[@]+"${TARGET_ENV[@]}"} \
+            afl-showmap -e -q -o - -- "$TARGET" "${bare[@]+"${bare[@]}"}" 2>/dev/null \
+            | grep -c ':' || true)"
+      if [[ "${m:-0}" -lt "${n:-0}" ]]; then
+        ok "@@ is load-bearing: $n edges with it vs ${m:-0} without"
+      else
+        bad "dropping @@ changed nothing ($n vs ${m:-0}) - the input may not be reaching the target"
+        note "if both numbers are equal and small, seed scoring is measuring nothing"
+      fi
+    fi
   fi
 else
-  bad "no instrumented target found (set TARGET=...)"
+  bad "no instrumented target found for '$AGENTAFL_TARGET' (set TARGET=... or run build_${AGENTAFL_TARGET}.sh)"
 fi
 
 echo "== sync plumbing"
@@ -154,4 +202,5 @@ if [[ "$FAIL" -gt 0 ]]; then
   echo "DO NOT start a 'combined' campaign until these are fixed."
   exit 1
 fi
-echo "Ready for: ./run_campaign.sh libxml2 combined <run_id> 3 43200"
+echo "Ready for: ./run_campaign.sh $AGENTAFL_TARGET combined <run_id> 3 43200"
+echo "(Check the other targets too: AGENTAFL_TARGET=libical ./preflight_agentafl.sh)"
