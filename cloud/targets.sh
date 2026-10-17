@@ -116,7 +116,16 @@ load_target() {
       # bytes per parse upstream (src/alloc.c defaultAlloc), so with LSan on
       # EVERY input is reported as a failure and the crash dir fills with
       # noise. See AgentAFL/common_commands.md lines 135-141.
-      TARGET_ENV=(AFL_OLD_CHILD_SYNC=1 ASAN_OPTIONS=detect_leaks=0)
+      #
+      # abort_on_error=1 and symbolize=0 are NOT optional, and are the reason
+      # this is one string rather than just detect_leaks=0: ASAN_OPTIONS is
+      # replaced wholesale, not merged, so setting detect_leaks=0 alone drops
+      # the defaults AFL++ relies on. afl-fuzz's check_asan_opts()
+      # (src/afl-fuzz-init.c) then PROGRAM ABORTs before writing fuzzer_stats,
+      # which takes out the minyee and combined arms for this target. Without
+      # abort_on_error=1 an ASAN report would exit cleanly instead of raising
+      # SIGABRT, so every real crash would be silently lost.
+      TARGET_ENV=(AFL_OLD_CHILD_SYNC=1 ASAN_OPTIONS=detect_leaks=0:abort_on_error=1:symbolize=0)
       SEEDS_COUNT=317
       SEEDS_SHA256_16=d7bf98169294ab62
       # tidy's parse+repair+diagnostics+serialize is super-linear in document

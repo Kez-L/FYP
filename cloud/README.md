@@ -390,7 +390,7 @@ looks healthy, and you only find out at analysis time.
 | all | execs/s above a per-target floor | one oversized seed pinning the queue (this cost an hour at 4.5 execs/s on tidy once) |
 | all | coverage rising over 45s | nothing is actually progressing |
 | all | `AFL_SYNC_TIME=1`, `AFL_FUZZER_STATS_UPDATE_INTERVAL=10` in `afl_env.txt` | an arm fuzzed with different settings from the others, so it is not comparable |
-| all | `AFL_OLD_CHILD_SYNC=1` (ical, tidy), `ASAN_OPTIONS=detect_leaks=0` (tidy) | the deadlock above; and libtidy's upstream ~168-byte-per-parse leak turning every input into a "crash" |
+| all | `AFL_OLD_CHILD_SYNC=1` (ical, tidy), `ASAN_OPTIONS=detect_leaks=0:abort_on_error=1:symbolize=0` (tidy) | the deadlock above; and libtidy's upstream ~168-byte-per-parse leak turning every input into a "crash" |
 | all | seed count + hash match the frozen fingerprint | a drifted corpus |
 | `baseline` | **no** mutator env vars, **no** mutator loaded, no analyzer/daemon pids, `agentafl_hook=0` | a stray `AFL_PYTHON_MODULE` in your shell quietly making "baseline" adaptive |
 | `minyee` | mutator loaded in **all 3** instances | the arm being statistically identical to baseline |
@@ -561,7 +561,7 @@ arms is which of our layers is active. See the `AFL_SYNC_TIME` section below for
 | `showmap_cmd` | `--noout @@` | `@@` | `@@` |
 | seeds | `AgentAFL/seeds_min` | `cloud/seeds/ical` | `cloud/seeds/html` |
 | seed count / hash | 111 / `52974a6a2190a399` | 33 / `2e4bd513ed8eab50` | 317 / `d7bf98169294ab62` |
-| extra env | *(none)* | `AFL_OLD_CHILD_SYNC=1` | `AFL_OLD_CHILD_SYNC=1`, `ASAN_OPTIONS=detect_leaks=0` |
+| extra env | *(none)* | `AFL_OLD_CHILD_SYNC=1` | `AFL_OLD_CHILD_SYNC=1`, `ASAN_OPTIONS=detect_leaks=0:abort_on_error=1:symbolize=0` |
 | prompt format name | `XML document` | `iCalendar document` | `HTML document` |
 
 Neither libical nor tidy sits on a clean tag, so both are pinned by **commit**, not tag.

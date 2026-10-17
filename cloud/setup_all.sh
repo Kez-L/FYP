@@ -32,6 +32,7 @@ TARGETS_SH_DIR="$HERE"
 source "$HERE/targets.sh"
 
 FAILED=()
+FAILED_WHY=()
 step() {  # <label> <command...>
   local label="$1"; shift
   echo
@@ -43,7 +44,45 @@ step() {  # <label> <command...>
   else
     echo "[-] $label FAILED" >&2
     FAILED+=("$label")
+    FAILED_WHY+=("see the output above")
   fi
+}
+
+# The AgentAFL preflight gets its own runner because exactly one of its failures
+# is EXPECTED here: the API key is written per VM after launch, so it is
+# deliberately absent when the image is baked. Everything else it reports is a
+# real problem. Classifying that here means this script can give a straight
+# GO / NO-GO instead of printing "one of these is fine, you work out which".
+DEFERRED=()
+step_agentafl() {  # <target>
+  local t="$1" label out rc hard
+  label="6/6 preflight_agentafl.sh ($t)"
+  out="$(mktemp)"
+  echo
+  echo "================================================================"
+  echo "== $label"
+  echo "================================================================"
+  env "AGENTAFL_TARGET=$t" "$HERE/preflight_agentafl.sh" 2>&1 | tee "$out"
+  rc=${PIPESTATUS[0]}
+  if [[ "$rc" -eq 0 ]]; then
+    echo "[+] $label OK"
+    rm -f "$out"
+    return
+  fi
+  # Every [-] line that is NOT just the missing key.
+  hard="$(grep -E '^[[:space:]]*\[-\]' "$out" \
+          | grep -vE "no usable (OPENAI|CLAUDE)_API_KEY" || true)"
+  if [[ -z "$hard" ]]; then
+    echo "[=] $label: only the API key is missing, which is expected before"
+    echo "    baking - you write it per VM after launch. Not a blocker."
+    DEFERRED+=("$t")
+  else
+    echo "[-] $label FAILED on something other than the API key:" >&2
+    echo "$hard" >&2
+    FAILED+=("$label")
+    FAILED_WHY+=("$(echo "$hard" | sed 's/^[[:space:]]*/      /' | head -4)")
+  fi
+  rm -f "$out"
 }
 
 step "1/6 setup_machine.sh"  "$HERE/setup_machine.sh"
@@ -52,11 +91,11 @@ step "3/6 build_libical.sh"  "$HERE/build_libical.sh"
 step "4/6 build_tidy.sh"     "$HERE/build_tidy.sh"
 step "5/6 preflight_resource_aware.sh" "$HERE/preflight_resource_aware.sh"
 
-# The AgentAFL preflight is per-target: it checks that target's binary, its
-# showmap path and its format probe. A missing API key is expected at image-bake
-# time, so note it separately rather than counting it as a failure.
+# Per-target: each run checks that target's binary, its showmap @@ handling and
+# its format probe. The shared checks (SDK imports, key, hook, unit tests) are
+# repeated, which is cheap next to the builds above.
 for t in "${ALL_TARGETS[@]}"; do
-  step "6/6 preflight_agentafl.sh ($t)" env "AGENTAFL_TARGET=$t" "$HERE/preflight_agentafl.sh"
+  step_agentafl "$t"
 done
 
 # ---------------------------------------------------------------- corpora
@@ -84,8 +123,14 @@ done
 echo
 echo "================================================================"
 if [[ ${#FAILED[@]} -eq 0 && "$CORPUS_BAD" -eq 0 ]]; then
+  echo "GO - this machine is ready to be imaged."
+  if [[ ${#DEFERRED[@]} -gt 0 ]]; then
+    echo
+    echo "  (The combined preflight reported a missing API key for"
+    echo "   ${DEFERRED[*]} - that is expected: the key is written per VM"
+    echo "   after launch so it never enters the AMI snapshot.)"
+  fi
   cat <<'MSG'
-GO - this machine is ready to be imaged.
 
   1. rm -rf ~/fyp/runs/* ~/fyp/results/*      (don't bake test runs into the AMI)
   2. EC2 console -> Actions -> Image and templates -> Create image
@@ -93,16 +138,24 @@ GO - this machine is ready to be imaged.
      all 45 runs must share one toolchain and one commit or the matrix is void.
 
   Per combined VM, after launch:
-     echo 'CLAUDE_API_KEY=sk-...' > ~/fyp/FYP/AgentAFL/.env
-     ./preflight_agentafl.sh
+     printf 'OPENAI_API_KEY=KEY_ONE\nOPENAI_API_KEY_2=KEY_TWO\n' \
+       > ~/fyp/FYP/AgentAFL/.env
+     AGENTAFL_TARGET=<target> ./preflight_agentafl.sh
 MSG
   exit 0
 fi
 echo "NO-GO - do not image this machine yet."
-[[ "$CORPUS_BAD" -eq 1 ]] && echo "  - a seed corpus does not match its frozen fingerprint"
-for f in ${FAILED[@]+"${FAILED[@]}"}; do echo "  - $f"; done
 echo
-echo "A missing AgentAFL API key is the one expected failure at bake time;"
-echo "if that is the ONLY thing the combined preflight complained about, this"
-echo "machine is fine to image."
+[[ "$CORPUS_BAD" -eq 1 ]] && echo "  - a seed corpus does not match its frozen fingerprint"
+i=0
+for f in ${FAILED[@]+"${FAILED[@]}"}; do
+  echo "  - $f"
+  [[ -n "${FAILED_WHY[$i]:-}" ]] && echo "${FAILED_WHY[$i]}"
+  i=$((i+1))
+done
+echo
+echo "A missing API key is NOT counted above - that one is expected before"
+echo "baking and is reported separately. Everything listed here is a real"
+echo "problem. To see the full detail for one of them again:"
+echo "  AGENTAFL_TARGET=libxml2 $HERE/preflight_agentafl.sh"
 exit 1
