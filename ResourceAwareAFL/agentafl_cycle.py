@@ -78,6 +78,42 @@ def next_cycle_id(history_dir: Path) -> int:
     return top + 1
 
 
+def next_escalation_id(log_path: Path) -> int:
+    """One past the highest escalation_id in escalations.jsonl (1 if none).
+
+    Derived from the log for the same reason as `next_cycle_id`: an in-process
+    counter restarts at 1 when the daemon restarts mid-campaign, and
+    `escalations/esc_%03d/` is keyed on it, so the earlier escalation's prompts,
+    responses, seeds and frozen baseline are silently overwritten. Observed in a
+    real local run: two escalations both logged as id=1, with the second run's
+    baseline replacing the first's in esc_001/.
+    """
+    p = Path(log_path)
+    if not p.is_file():
+        return 1
+    top = 0
+    for line in p.read_text(errors="replace").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            rec = json.loads(line)
+        except ValueError:
+            continue
+        if rec.get("event") == "escalation":
+            top = max(top, int(rec.get("escalation_id") or 0))
+    return top + 1
+
+
+def completed_escalations(log_path: Path) -> int:
+    """How many escalations this CAMPAIGN has already run, from the log.
+
+    Used for --max-escalations so the cost cap is per campaign rather than per
+    daemon process; otherwise a restart would silently double the LLM budget.
+    """
+    return next_escalation_id(log_path) - 1
+
+
 def memory_stats(history_dir: Path) -> dict:
     """Size of the accumulated seed memory, for logging and assertions."""
     hd = Path(history_dir)

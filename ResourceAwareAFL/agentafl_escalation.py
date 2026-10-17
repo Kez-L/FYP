@@ -63,7 +63,7 @@ class Daemon:
         self.edge_cache: dict = {}
         self.call_ctx: dict = {"call": None}
         self.last_escalation_at = 0.0
-        self.escalations = 0
+        self.escalations = 0          # this process only, for the stop message
         self.dropped = 0
         self.stop = False
         self._baseline_cache: tuple[int, set[int]] | None = None
@@ -338,8 +338,13 @@ class Daemon:
             return False, f"trigger_reason={req.get('trigger_reason')!r}"
         if req.get("improved"):
             return False, "Level 1 recovered"
-        if self.args.max_escalations and self.escalations >= self.args.max_escalations:
-            return False, f"max_escalations ({self.args.max_escalations}) reached"
+        # Campaign-wide, not per-process: a daemon restart must not silently
+        # double the LLM budget.
+        if self.args.max_escalations:
+            done = ac.completed_escalations(self.log_path)
+            if done >= self.args.max_escalations:
+                return False, (f"max_escalations ({self.args.max_escalations}) "
+                               f"reached for this campaign ({done} done)")
         waited = time.time() - self.last_escalation_at
         if self.last_escalation_at and waited < self.args.cooldown_s:
             return False, f"cooldown ({self.args.cooldown_s - waited:.0f}s left)"
@@ -381,7 +386,10 @@ class Daemon:
                 continue
 
             self.escalations += 1
-            eid = self.escalations
+            # Derived from the log, NOT the in-process counter: a restart would
+            # otherwise reuse esc_001 and overwrite the first escalation's
+            # prompts, responses, seeds and frozen baseline.
+            eid = ac.next_escalation_id(self.log_path)
             out_dir = self.esc_dir / f"esc_{eid:03d}"
             out_dir.mkdir(parents=True, exist_ok=True)
             self.last_escalation_at = time.time()

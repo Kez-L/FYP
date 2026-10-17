@@ -8,6 +8,18 @@
 # a trigger can fire in ~2 minutes instead of ~6, and the LLM budget is cut.
 # Nothing here is comparable to a cloud run - use run_campaign.sh for that.
 
+# This file only works when SOURCED: its whole job is to export into your shell.
+# Running it (./local_test_env.sh) or piping it (source ... | tail) puts the
+# exports in a subshell that then exits, leaving $TEST and friends unset in the
+# terminal you are actually using. The failure is nasty rather than obvious:
+# `mkdir -p "$TEST/logs"` becomes `mkdir -p /logs`, and afl-fuzz is launched with
+# `-o ""`. Catch it here instead.
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  echo "local_test_env.sh must be SOURCED, not executed:" >&2
+  echo "    source cloud/local_test_env.sh" >&2
+  exit 1
+fi
+
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 export REPO
 export MINYEE="$REPO/ResourceAwareAFL"

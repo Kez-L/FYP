@@ -298,11 +298,67 @@ def test_cooldown_drops_a_second_request():
 
 
 def test_max_escalations_caps_the_run():
+    """The cap counts what the CAMPAIGN has done, read from escalations.jsonl,
+    not what this process has done - see
+    test_max_escalations_is_enforced_across_a_restart."""
     with tempfile.TemporaryDirectory() as td:
         d = _daemon(td, max_escalations=2, cooldown_s=0)
         req = {"trigger_reason": "COVERAGE_SLOWDOWN", "improved": False}
-        d.escalations = 2
+        assert d.should_escalate(req)[0], "nothing done yet -> allowed"
+        _esc_log(d.log_path, [1, 2])
         go, why = d.should_escalate(req)
+        assert not go and "max_escalations" in why, why
+
+
+# ------------------------------------------------- escalation id derivation
+
+def _esc_log(path: Path, ids: list):
+    with path.open("w") as f:
+        for i in ids:
+            f.write(json.dumps({"event": "escalation", "escalation_id": i}) + "\n")
+        f.write(json.dumps({"event": "dropped", "reason": "cooldown"}) + "\n")
+
+
+def test_next_escalation_id_survives_a_daemon_restart():
+    """Regression for an observed bug: an in-process counter restarted at 1 after
+    the daemon was restarted mid-campaign, so both escalations logged id=1 and the
+    second overwrote esc_001/'s prompts, seeds and frozen baseline."""
+    with tempfile.TemporaryDirectory() as td:
+        log = Path(td) / "escalations.jsonl"
+        assert ac.next_escalation_id(log) == 1, "no log yet -> 1"
+        _esc_log(log, [1])
+        assert ac.next_escalation_id(log) == 2, "a restart must not reuse id 1"
+        _esc_log(log, [1, 2, 3])
+        assert ac.next_escalation_id(log) == 4
+
+
+def test_next_escalation_id_ignores_non_escalation_events():
+    with tempfile.TemporaryDirectory() as td:
+        log = Path(td) / "escalations.jsonl"
+        log.write_text(
+            json.dumps({"event": "dropped", "reason": "cooldown"}) + "\n"
+            + json.dumps({"event": "error", "escalation_id": 9}) + "\n"
+            + "not json\n")
+        assert ac.next_escalation_id(log) == 1, (
+            "drops and errors must not consume an escalation id")
+
+
+def test_completed_escalations_counts_the_campaign_not_the_process():
+    """--max-escalations is a cost cap, so it must survive a restart."""
+    with tempfile.TemporaryDirectory() as td:
+        log = Path(td) / "escalations.jsonl"
+        assert ac.completed_escalations(log) == 0
+        _esc_log(log, [1, 2])
+        assert ac.completed_escalations(log) == 2
+
+
+def test_max_escalations_is_enforced_across_a_restart():
+    with tempfile.TemporaryDirectory() as td:
+        d = _daemon(td, max_escalations=2, cooldown_s=0)
+        _esc_log(d.log_path, [1, 2])
+        d.escalations = 0          # fresh process, as after a restart
+        go, why = d.should_escalate(
+            {"trigger_reason": "COVERAGE_SLOWDOWN", "improved": False})
         assert not go and "max_escalations" in why, why
 
 

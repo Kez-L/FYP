@@ -25,13 +25,23 @@ real results).
 sudo apt-get install -y python3-psutil
 ```
 
-No sudo? Install it anywhere and point `PYLIB` at it — `local_test_env.sh` adds it to the
-monitor's `PYTHONPATH` only:
+`apt` is the route to prefer — it is what `cloud/setup_machine.sh` does, so local matches the
+VM, and it survives everything.
+
+No sudo? Install it anywhere **persistent** and point `PYLIB` at it — `local_test_env.sh`
+adds it to the monitor's `PYTHONPATH` only:
 
 ```bash
-~/Documents/1git-folder/AgentAFL/.venv/bin/pip install --target ~/fyp-test/pylibs psutil
-export PYLIB=~/fyp-test/pylibs      # then re-source local_test_env.sh in each terminal
+mkdir -p ~/pylibs
+~/Documents/1git-folder/AgentAFL/.venv/bin/pip install --target ~/pylibs psutil
+export PYLIB=~/pylibs               # set this BEFORE sourcing local_test_env.sh
 ```
+
+Do not put it under `~/fyp-test/` — teardown deletes that, and a `/tmp` path will not
+survive a reboot. The failure mode is quiet from the analyzer's side: `monitor.py` dies on
+`ModuleNotFoundError: No module named 'psutil'` while `run_analyzer.py` just prints
+`[*] Waiting for raw_metrics.json...` forever, so check `logs/monitor.log` if the analyzer
+never starts evaluating windows.
 
 Check everything else is ready:
 
@@ -39,7 +49,7 @@ Check everything else is ready:
 cd ~/Documents/1git-folder && ./cloud/preflight_agentafl.sh
 ```
 
-Expect `15 passed, 0 failed`.
+Expect `17 passed, 0 failed`.
 
 ---
 
@@ -140,6 +150,11 @@ The `PYTHONIOENCODING`/`LC_ALL` are not optional: she prints a literal `Δ` insi
 whose `except` swallows everything, so under a non-UTF-8 locale every window would raise and
 no trigger would ever fire.
 
+**This is the process that needs `AGENTAFL_HOOK=1`**, not the daemon — the hook lives in her
+analyzer, so this terminal's environment decides whether a request is ever written. It comes
+from `local_test_env.sh`, which is why sourcing it in *every* terminal matters. If you only
+set it in Terminal 6, the daemon will start happily and then wait forever.
+
 ---
 
 ## Terminal 6 — the AgentAFL escalation daemon
@@ -172,20 +187,47 @@ just generates no seeds.
 
 ## Terminal 7 — watching it work
 
+This watches only files, so it works whether or not you redirected any terminal to a log.
+The analyzer's own verdicts are in Terminal 5's output — read them there.
+
 ```bash
 cd ~/Documents/1git-folder && source cloud/local_test_env.sh
-watch -n5 '
-echo "--- windows: evaluated / skipped ---"
-grep -c "^\[Window" '"$TEST"'/logs/analyzer.log 2>/dev/null
-grep -c "Skipping stale" '"$TEST"'/logs/analyzer.log 2>/dev/null
-echo "--- adapt signal ---"; cat '"$SIGNAL"' 2>/dev/null
-echo "--- escalations ---"; cat '"$AGENTWORK"'/agentafl_timeline.csv 2>/dev/null
-echo "--- imported by main ---"; od -An -tu4 -N4 '"$OUT"'/main/.synced/addseeds 2>/dev/null
-'
+watch -n5 "
+echo '--- coverage (window,edges,new_edges) ---'
+tail -4 '$WORKDIR/experiment_metrics.csv' | cut -d, -f1,4,5
+echo '--- monitor windows logged ---'
+wc -l < '$WORKDIR/raw_metrics.json'
+echo '--- adapt signal (her Level-1 mode) ---'
+cat '$SIGNAL'
+echo '--- escalation timeline ---'
+cat '$AGENTWORK/agentafl_timeline.csv' 2>/dev/null || echo '(none yet)'
+echo '--- seeds imported by main ---'
+od -An -tu4 -N4 '$OUT/main/.synced/addseeds' 2>/dev/null || echo '(nothing injected yet)'
+echo '--- main corpus / edges ---'
+grep -E '^(corpus_count|edges_found)' '$OUT/main/fuzzer_stats'
+"
 ```
 
-If you ran the fuzzers in their own terminals rather than redirecting to logs, use this
-instead for the analyzer part — it reads the same thing from her stdout in Terminal 5.
+Note the quoting: double quotes outside so `$WORKDIR` and friends expand **now**, into the
+string `watch` re-runs. With single quotes outside they would be empty inside `watch`.
+
+### Expect some triggers NOT to escalate — that is correct
+
+AgentAFL only fires when Level 1 **failed** to recover. Early in a run there is still easy
+coverage about, so `EXPLORE_HEAVY` often does work and you will see:
+
+```
+[Coverage Evaluation] Productive Windows: 3/3 | New Edges During Recovery: 30 | Improved: True
+```
+
+That writes no request, and that is the design — escalating there would waste an LLM call on
+a plateau the cheap layer already broke. You need `Improved: False` to see an escalation, and
+on a fresh local run with 3 tiny seeds that can take a while, because libxml2 has plenty of
+coverage left to find. In the committed 12h cloud runs the ratio is stark: 18-33 failures per
+run against 0-2 successes, so on a real campaign it fires readily.
+
+If you just want to prove the AgentAFL half works, use the manual trigger below rather than
+waiting for the campaign to plateau.
 
 ### Force a trigger immediately
 
