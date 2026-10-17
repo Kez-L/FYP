@@ -47,9 +47,12 @@ done
 TARGET="${TARGET:-}"
 echo "=== preflight_agentafl: target=$AGENTAFL_TARGET repo=$REPO"
 
-PASS=0; FAIL=0
+PASS=0; FAIL=0; WARN=0
 ok()   { echo "  [+] $1"; PASS=$((PASS+1)); }
 bad()  { echo "  [-] $1"; FAIL=$((FAIL+1)); }
+# warn is for things that make a run more fragile but do not make it invalid, so
+# they must not block the campaign. Counted separately and reported in the verdict.
+warn() { echo "  [!] $1"; WARN=$((WARN+1)); }
 note() { echo "      $1"; }
 
 echo "== files"
@@ -132,47 +135,75 @@ echo "== API key for provider '$PROVIDER'"
 # a faithful test. For openai, openai.OpenAI() reads the ENVIRONMENT only, and
 # the .env reaches it solely via python-dotenv - so checking the file by hand
 # would report success for a setup that cannot work.
+# Prints "<source>|<var1,var2,...>"; exit 1 = no usable key, 2 = bad provider.
 KEYSRC="$(python3 - "$AGENT_DIR" "$PROVIDER" <<'PYKEY'
 import sys, os, pathlib
 agent, provider = sys.argv[1], sys.argv[2]
-name = {"claude": "CLAUDE_API_KEY", "openai": "OPENAI_API_KEY"}.get(provider)
-if not name:
+names = {"claude": ["CLAUDE_API_KEY"],
+         "openai": ["OPENAI_API_KEY", "OPENAI_API_KEY_2",
+                    "OPENAI_API_KEY_3"]}.get(provider)
+if not names:
     sys.exit(2)
-if os.environ.get(name):
-    print("environment")
-    sys.exit(0)
 candidates = [pathlib.Path(agent) / ".env", pathlib.Path.home() / "Documents" / ".env"]
+src = "environment"
 if provider == "openai":
     # Mirror ProviderCaller: dotenv loads the file into os.environ, then the
     # client reads os.environ. No dotenv -> the file is dead weight.
-    try:
-        from dotenv import load_dotenv
-    except ImportError:
-        print("NO-DOTENV")
+    if not os.environ.get(names[0]):
+        try:
+            from dotenv import load_dotenv
+        except ImportError:
+            print("NO-DOTENV|")
+            sys.exit(1)
+        for f in candidates:
+            if f.exists():
+                load_dotenv(f, override=False)
+        src = "AgentAFL/.env via python-dotenv"
+    # De-duplicate: the same key in both variables is one key, and reporting
+    # failover as available when it is not is worse than reporting one key.
+    seen, found = set(), []
+    for n in names:
+        v = (os.environ.get(n) or "").strip()
+        if v and v not in seen:
+            seen.add(v)
+            found.append(n)
+    if not found:
         sys.exit(1)
-    for f in candidates:
-        if f.exists():
-            load_dotenv(f, override=False)
-    if os.environ.get(name):
-        print("AgentAFL/.env via python-dotenv")
-        sys.exit(0)
-    sys.exit(1)
+    print(f"{src}|{','.join(found)}")
+    sys.exit(0)
+# claude: load_api_key() parses the .env with stdlib, so reading it is faithful.
+name = names[0]
+if os.environ.get(name):
+    print(f"environment|{name}")
+    sys.exit(0)
 for f in candidates:
     try:
         for line in f.read_text().splitlines():
             k, _, v = line.partition("=")
             if k.strip() == name and v.strip():
-                print(f)
+                print(f"{f}|{name}")
                 sys.exit(0)
     except OSError:
         pass
 sys.exit(1)
 PYKEY
 )"; KEYRC=$?
+KEYFROM="${KEYSRC%%|*}"; KEYVARS="${KEYSRC##*|}"
 VARNAME="$( [[ $PROVIDER == openai ]] && echo OPENAI_API_KEY || echo CLAUDE_API_KEY )"
 if [[ "$KEYRC" -eq 0 ]]; then
-  ok "$VARNAME resolves from $KEYSRC (the way $PROVIDER actually reads it)"
-elif [[ "$KEYSRC" == "NO-DOTENV" ]]; then
+  ok "key(s) resolve from $KEYFROM (the way $PROVIDER actually reads it): $KEYVARS"
+  # A second key is what lets a 12h campaign survive the first one running out
+  # of credits. Without it, exhaustion mid-run stops the campaign and that cell
+  # has to be re-run - so this is worth saying out loud, not a silent default.
+  nkeys="$(awk -F, '{print NF}' <<<"$KEYVARS")"
+  if [[ "$PROVIDER" == "openai" && "${nkeys:-1}" -lt 2 ]]; then
+    warn "only one OpenAI key - no failover if it runs out of credits mid-run"
+    note "set OPENAI_API_KEY_2 in $AGENT_DIR/.env; a 12h run makes ~140 calls"
+    note "the arm still works until credits run out, so this does not block a run"
+  elif [[ "$PROVIDER" == "openai" ]]; then
+    ok "failover available: ${nkeys} distinct keys"
+  fi
+elif [[ "$KEYFROM" == "NO-DOTENV" ]]; then
   bad "$VARNAME not in the environment, and python-dotenv is missing so AgentAFL/.env cannot be read"
   note "install python-dotenv, or: export $VARNAME=..."
 else
@@ -248,7 +279,7 @@ fi
 rm -f /tmp/.pf_agentafl.$$
 
 echo
-echo "$PASS passed, $FAIL failed"
+echo "$PASS passed, $FAIL failed, $WARN warning(s)"
 if [[ "$FAIL" -gt 0 ]]; then
   echo "DO NOT start a 'combined' campaign until these are fixed."
   exit 1

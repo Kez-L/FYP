@@ -163,7 +163,7 @@ PIN_MODE="${MINYEE_PIN_MODE:-}"
 # ~28 escalations the 5x5 budget assumes (~140 LLM calls, ~49min of LLM time).
 AGENTAFL_CALLS="${AGENTAFL_CALLS:-5}"
 AGENTAFL_SEEDS_PER_CALL="${AGENTAFL_SEEDS_PER_CALL:-5}"
-AGENTAFL_COOLDOWN_S="${AGENTAFL_COOLDOWN_S:-1500}"
+AGENTAFL_COOLDOWN_S="${AGENTAFL_COOLDOWN_S:-1800}"
 AGENTAFL_MAX_ESCALATIONS="${AGENTAFL_MAX_ESCALATIONS:-0}"   # 0 = unlimited
 # openai, not claude: this experiment uses an OpenAI key, and the prompt_tests
 # runs the 5x5 budget was measured on were themselves provider=openai (see the
@@ -245,23 +245,42 @@ if [[ "$ADAPTIVE" == 1 ]]; then
     command -v afl-showmap  >/dev/null || die "afl-showmap not on PATH"
     [[ -d "$REPO/AgentAFL/prompt_tests" ]] || die "missing $REPO/AgentAFL/prompt_tests"
     # Resolve the API key the same way AgentAFL does, so a missing one fails here
-    # rather than on the first escalation hours in.
-    python3 - "$REPO" "$AGENTAFL_PROVIDER" <<'PYKEY' || die "no API key for provider '$AGENTAFL_PROVIDER' (checked env, AgentAFL/.env, ~/Documents/.env)"
+    # rather than on the first escalation hours in. Also counts how many keys are
+    # available: a second one lets the campaign survive the first running out of
+    # credits mid-run, which is otherwise a silent degradation to `minyee`.
+    AGENTAFL_KEYS="$(python3 - "$REPO" "$AGENTAFL_PROVIDER" <<'PYKEY'
 import sys, os, pathlib
 repo, provider = sys.argv[1], sys.argv[2]
-name = {"claude": "CLAUDE_API_KEY", "openai": "OPENAI_API_KEY"}[provider]
-if os.environ.get(name):
-    sys.exit(0)
-for f in (pathlib.Path(repo) / "AgentAFL" / ".env", pathlib.Path.home() / "Documents" / ".env"):
+names = {"claude": ["CLAUDE_API_KEY"],
+         "openai": ["OPENAI_API_KEY", "OPENAI_API_KEY_2", "OPENAI_API_KEY_3"]}[provider]
+env = dict(os.environ)
+# .env does not override an exported value, matching batch_harness/load_dotenv.
+for f in (pathlib.Path(repo) / "AgentAFL" / ".env",
+          pathlib.Path.home() / "Documents" / ".env"):
     try:
         for line in f.read_text().splitlines():
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
             k, _, v = line.partition("=")
-            if k.strip() == name and v.strip():
-                sys.exit(0)
+            env.setdefault(k.strip(), v.strip().strip('"').strip("'"))
     except OSError:
         pass
-sys.exit(1)
+seen, found = set(), []
+for n in names:
+    v = (env.get(n) or "").strip()
+    if v and v not in seen:          # dedupe: the same key twice is one key
+        seen.add(v)
+        found.append(n)
+print(len(found))
+sys.exit(0 if found else 1)
 PYKEY
+)" || die "no API key for provider '$AGENTAFL_PROVIDER' (checked env, AgentAFL/.env, ~/Documents/.env)"
+    if [[ "$AGENTAFL_PROVIDER" == "openai" && "${AGENTAFL_KEYS:-0}" -lt 2 ]]; then
+      echo "[!] WARNING: only $AGENTAFL_KEYS OpenAI key configured - no failover."
+      echo "[!] If it runs out of credits mid-run this campaign will STOP and the"
+      echo "[!] cell will need re-running. Set OPENAI_API_KEY_2 in AgentAFL/.env."
+    fi
   fi
   # afl-fuzz -h EXITS 1, so `afl-fuzz -h | grep -q` is a guaranteed false
   # negative under `set -o pipefail`. Capture first. The env-var list and the
@@ -385,6 +404,9 @@ fi
     echo "agentafl_cooldown_s=$AGENTAFL_COOLDOWN_S"
     echo "agentafl_max_escalations=$AGENTAFL_MAX_ESCALATIONS"
     echo "agentafl_provider=$AGENTAFL_PROVIDER"
+    # How many keys the failover had to work with. 1 means a mid-run credit
+    # exhaustion stops the campaign; 2+ means it switches over and carries on.
+    echo "agentafl_keys_available=${AGENTAFL_KEYS:-1}"
     echo "agentafl_model=${AGENTAFL_MODEL:-<provider default>}"
     echo "agentafl_fmt=$AGENTAFL_FMT"
     echo "agentafl_request_file=$MINYEE_DIR/adaptation/.agentafl_request"

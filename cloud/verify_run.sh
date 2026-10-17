@@ -355,25 +355,55 @@ PY
   fi
 
   # A key that does not resolve means every escalation dies at the LLM call.
-  if python3 - "$REPO_FOR_KEY" "${AGENTAFL_PROVIDER:-claude}" <<'PY' >/dev/null 2>&1
+  if python3 - "$REPO_FOR_KEY" "$(meta agentafl_provider)" <<'PY' >/dev/null 2>&1
 import sys, os, pathlib
-agent, provider = sys.argv[1], sys.argv[2]
-name = {"claude": "CLAUDE_API_KEY", "openai": "OPENAI_API_KEY"}.get(provider)
-if name and os.environ.get(name):
-    sys.exit(0)
+agent = sys.argv[1]
+provider = sys.argv[2] if len(sys.argv) > 2 and sys.argv[2] else "openai"
+names = {"claude": ["CLAUDE_API_KEY"],
+         "openai": ["OPENAI_API_KEY", "OPENAI_API_KEY_2",
+                    "OPENAI_API_KEY_3"]}.get(provider, [])
+env = dict(os.environ)
 for f in (pathlib.Path(agent) / "AgentAFL" / ".env",
           pathlib.Path.home() / "Documents" / ".env"):
     try:
         for line in f.read_text().splitlines():
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
             k, _, v = line.partition("=")
-            if k.strip() == name and v.strip():
-                sys.exit(0)
+            env.setdefault(k.strip(), v.strip().strip('"').strip("'"))
     except OSError:
         pass
-sys.exit(1)
+sys.exit(0 if any((env.get(n) or "").strip() for n in names) else 1)
 PY
   then pass "API key resolves"
   else fail "no API key - every escalation will fail at the LLM call"
+  fi
+
+  # ---- key failover state -------------------------------------------------
+  # A retired key is the failsafe WORKING, so it is informational. Having no
+  # fallback at all is worth flagging while there is still time to add one.
+  local keys; keys="$(meta agentafl_keys_available)"
+  if [[ -n "$keys" && "$keys" -ge 2 ]]; then
+    pass "API key failover available ($keys keys)"
+  elif [[ -n "$keys" ]]; then
+    info "only $keys API key - if credits run out mid-run the campaign stops"
+  fi
+  if [[ -f "$RUN/agentafl/dead_keys.json" ]]; then
+    info "key(s) retired so far: $(python3 -c "
+import json
+try:
+    d = json.load(open('$RUN/agentafl/dead_keys.json'))
+    print(', '.join(e.get('var', '?') for e in d.get('dead', [])))
+except Exception:
+    print('?')" 2>/dev/null)"
+  fi
+
+  # The fatal one: every key dead means the campaign was stopped early, so this
+  # is a PARTIAL run rather than a valid combined cell.
+  # Tolerate both json.dumps spacings rather than depending on the separator.
+  if [[ -f "$J" ]] && grep -qE '"event":[[:space:]]*"credits_exhausted"' "$J" 2>/dev/null; then
+    fail "ALL API KEYS OUT OF CREDITS - campaign stopped early; this run is PARTIAL and the cell needs re-running"
   fi
 }
 

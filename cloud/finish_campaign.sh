@@ -126,6 +126,7 @@ print(f"escalations={len(esc)}")
 print(f"requests_dropped={sum(1 for r in recs if r.get('event') == 'dropped')}")
 print(f"errors={sum(1 for r in recs if r.get('event') == 'error')}")
 print(f"aborted={sum(1 for r in recs if r.get('event') == 'aborted')}")
+
 print(f"llm_calls={sum(r.get('calls_made', 0) for r in esc)}")
 print(f"seeds_generated={sum(r.get('seeds_generated', 0) for r in esc)}")
 print(f"seeds_injected={sum(r.get('injected', 0) for r in esc)}")
@@ -138,6 +139,19 @@ def hms(s):
         return "?"
     s = int(s)
     return f"{s // 3600}h{(s % 3600) // 60:02d}m"
+
+# API key failover. key_retired rows are fine - that is the failsafe working.
+# credits_exhausted means every key died and the campaign was stopped early, so
+# this run is PARTIAL: keep it to inspect, but re-run the cell.
+retired = [r for r in recs if r.get("event") == "key_retired"]
+for r in retired:
+    print(f"key_retired={r.get('key_var')} (index {r.get('key_index')})")
+dead = [r for r in recs if r.get("event") == "credits_exhausted"]
+if dead:
+    print(f"credits_exhausted=1 at T+{hms(dead[0].get('elapsed_s'))}"
+          f"  <-- ALL API KEYS DIED; campaign stopped early, run is PARTIAL")
+else:
+    print("credits_exhausted=0")
 
 
 # When AgentAFL actually ran, relative to afl-fuzz's own start_time - the same

@@ -23,6 +23,7 @@ import argparse
 import json
 import os
 import signal
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -68,6 +69,7 @@ class Daemon:
         self.stop = False
         self._baseline_cache: tuple[int, set[int]] | None = None
         self._campaign_start: int | None = None
+        self.caller = None
 
         for d in (self.work_dir, self.history_dir, self.esc_dir):
             d.mkdir(parents=True, exist_ok=True)
@@ -136,6 +138,46 @@ class Daemon:
         with self.timeline_path.open("a") as f:
             f.write(",".join(csv_cell(c) for c in row) + "\n")
 
+    # --------------------------------------------------------------- dead keys
+    @property
+    def dead_keys_path(self) -> Path:
+        return self.work_dir / "dead_keys.json"
+
+    def load_dead_keys(self) -> list[int]:
+        """Key indices already known to be out of credits, from a previous run of
+        this daemon. Lets a restart skip straight to the fallback key instead of
+        burning another call discovering the first one is still dead."""
+        try:
+            data = json.loads(self.dead_keys_path.read_text())
+            return sorted({int(e["index"]) for e in data.get("dead", [])})
+        except (OSError, ValueError, KeyError, TypeError):
+            return []
+
+    def note_dead_key(self, index: int, var_name: str) -> None:
+        """Append a retired key to dead_keys.json. Append-only, and it records
+        elapsed_s on afl-fuzz's clock so the switchover lands on the same
+        timeline as plot_data and the escalations."""
+        self.log(f"[AgentAFL] {var_name} is out of credits - "
+                 "retiring it for the rest of this run")
+        try:
+            data = {"dead": []}
+            if self.dead_keys_path.exists():
+                data = json.loads(self.dead_keys_path.read_text())
+                data.setdefault("dead", [])
+            data["dead"].append({
+                "index": int(index),
+                "var": var_name,
+                "ts": time.time(),
+                "elapsed_s": self.elapsed(),
+            })
+            tmp = self.dead_keys_path.with_suffix(".tmp")
+            tmp.write_text(json.dumps(data, indent=2))
+            os.replace(tmp, self.dead_keys_path)
+        except OSError as exc:
+            self.log(f"[AgentAFL] WARNING: could not persist dead key marker: {exc}")
+        self.record({"event": "key_retired", "ts": time.time(),
+                     "key_index": int(index), "key_var": var_name})
+
     # ------------------------------------------------------------------ startup
     def build_caller(self):
         """ProviderCaller is built ONCE and reused for the whole campaign.
@@ -144,7 +186,7 @@ class Daemon:
         the failure is loud, not on the first escalation hours into a run.
         """
         try:
-            return batch_harness.ProviderCaller(
+            caller = batch_harness.ProviderCaller(
                 self.args.provider,
                 self.args.model or batch_harness.DEFAULT_MODEL[self.args.provider],
                 None if self.args.no_temperature else self.args.temperature,
@@ -154,6 +196,50 @@ class Daemon:
             self.log(f"[AgentAFL] FATAL: cannot build LLM caller ({exc}). "
                      "Escalation disabled; the campaign continues without it.")
             raise
+
+        # Key failover. Retire anything a previous run of this daemon already
+        # found exhausted, then register the hook so later retirements persist.
+        dead = self.load_dead_keys()
+        if dead and not caller.skip_dead_keys(dead):
+            self.log(f"[AgentAFL] FATAL: all {caller.key_count()} configured "
+                     "API key(s) are already recorded as out of credits in "
+                     f"{self.dead_keys_path.name}.")
+            raise SystemExit(batch_harness.OUT_OF_CREDITS_EXIT)
+        caller.set_dead_key_hook(self.note_dead_key)
+        n = caller.key_count()
+        self.log(f"[AgentAFL] LLM caller ready: provider={self.args.provider} "
+                 f"keys={n} in_use={caller.key_var or 'n/a'}"
+                 + (f" (skipped {len(dead)} exhausted)" if dead else ""))
+        if n < 2 and self.args.provider == "openai":
+            self.log("[AgentAFL] NOTE: only one API key configured - if it runs "
+                     "out of credits mid-run the campaign will stop. Set "
+                     "OPENAI_API_KEY_2 to enable failover.")
+        return caller
+
+    # ------------------------------------------------------------- hard stop
+    def stop_campaign(self, why: str) -> None:
+        """Stop the fuzzers so the normal teardown runs.
+
+        finish_campaign.sh is already waiting on `pgrep -f -- "-o $OUT "`, so
+        terminating the afl-fuzz processes hands off to it: it stops the loggers,
+        writes summary.txt, packs the tarball and powers the VM off exactly as it
+        would at the 12h mark. Nothing gathered so far is lost.
+
+        SIGTERM against that pgrep pattern rather than <run>/pids/*.pid on
+        purpose: finish_campaign.sh documents that those pid files hold recycled
+        PIDs after 12h, which is why it does not glob them either.
+        """
+        self.log(f"[AgentAFL] STOPPING THE CAMPAIGN: {why}")
+        self.log("[AgentAFL] terminating afl-fuzz; finish_campaign.sh will pack "
+                 "the partial run and shut the machine down as usual.")
+        pattern = f"-o {self.campaign_root} "
+        try:
+            subprocess.run(["pkill", "-TERM", "-f", "--", pattern],
+                           check=False, capture_output=True, timeout=30)
+        except (OSError, subprocess.SubprocessError) as exc:
+            self.log(f"[AgentAFL] WARNING: could not signal the fuzzers ({exc}). "
+                     "Stop them by hand: pkill -f 'afl-fuzz'")
+        self.stop = True
 
     def preflight(self):
         missing = []
@@ -372,6 +458,9 @@ class Daemon:
         if not self.preflight():
             return 2
         caller = self.build_caller()
+        # Kept on self as well: the OutOfCreditsError handler reports how many
+        # keys were tried, and it is out of this function's local scope there.
+        self.caller = caller
         topup = ac.make_selectors(
             target=self.target, target_args=self.target_args,
             showmap_bin=self.args.showmap_bin, edge_cache=self.edge_cache,
@@ -442,6 +531,26 @@ class Daemon:
                 summary["request"] = req
                 self.record(summary)
 
+            except batch_harness.OutOfCreditsError as exc:
+                # Every configured key is exhausted, so no later escalation can
+                # ever succeed. Without this arm the generic handler below would
+                # write an "error" row and fall through, and the daemon would
+                # keep retrying every --cooldown-s for the remaining hours -
+                # zero seeds injected, and nothing saying why.
+                #
+                # Stop the campaign instead of fuzzing on: this arm would be
+                # `minyee` from here, so the run is not a valid `combined` cell.
+                # Better to pack the partial run now, top the account up, and
+                # re-run this cell.
+                self.log(f"[AgentAFL] {exc}")
+                self.record({"event": "credits_exhausted", "ts": time.time(),
+                             "elapsed_s": self.elapsed(),
+                             "escalation_id": eid,
+                             "keys_tried": self.caller.key_count()
+                             if self.caller else None,
+                             "error": str(exc)})
+                self.stop_campaign("all API keys are out of credits")
+                return 0
             except SystemExit as exc:
                 # batch_harness exits 3 when the account is out of credits, and
                 # bails on an empty baseline. Neither should take the campaign

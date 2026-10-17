@@ -36,6 +36,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import shutil
 import sys
@@ -81,13 +82,58 @@ _OUT_OF_CREDITS_MARKERS = _OUT_OF_CREDITS_CODES + (
 )
 
 
+class OutOfCreditsError(RuntimeError):
+    """Every available API key is out of credits.
+
+    Distinct from the provider's own 429: that one means "this key is done", and
+    ProviderCaller reacts by moving to the next key. This one means there is no
+    next key, so the caller above has to decide what to do with the campaign.
+    `is_out_of_credits()` recognises it, so run_batch still exits
+    OUT_OF_CREDITS_EXIT and run_all_stages.sh still aborts the sweep.
+    """
+
+
 def is_out_of_credits(err: BaseException) -> bool:
+    # Raised by ProviderCaller once every key has been retired.
+    if isinstance(err, OutOfCreditsError):
+        return True
     # OpenAI 429 shape: type='insufficient_quota', code='credit_balance_exhausted'
     for attr in ("code", "type"):
         if getattr(err, attr, None) in _OUT_OF_CREDITS_CODES:
             return True
     msg = str(err).lower()
     return any(m in msg for m in _OUT_OF_CREDITS_MARKERS)
+
+
+# Key variables tried in order, highest priority first. A second key lets a 12h
+# campaign survive the first one running out of credits mid-run; without it, an
+# exhausted key silently turns the `combined` arm into `minyee` for the rest of
+# the run. Extend by adding OPENAI_API_KEY_3 etc. to the environment or .env -
+# the scan stops at the first gap.
+OPENAI_KEY_VARS = ("OPENAI_API_KEY", "OPENAI_API_KEY_2", "OPENAI_API_KEY_3")
+
+
+def openai_keys(env: dict | None = None) -> list[tuple[str, str]]:
+    """Return [(var_name, key), ...] in priority order, de-duplicated.
+
+    Reads os.environ, which is the single source of truth once
+    ProviderCaller has run load_dotenv(.env, override=False) - so an exported
+    variable beats the .env file, matching the rest of this pipeline.
+
+    De-duplication matters: the same key pasted into both variables would make
+    failover a no-op that still *looks* like it worked, which is worse than
+    having one key, because the preflight would report failover as available.
+    """
+    src = os.environ if env is None else env
+    out: list[tuple[str, str]] = []
+    seen: set[str] = set()
+    for var in OPENAI_KEY_VARS:
+        val = (src.get(var) or "").strip().strip('"').strip("'")
+        if not val or val in seen:
+            continue
+        seen.add(val)
+        out.append((var, val))
+    return out
 
 
 def model_tag(provider: str, model: str) -> str:
@@ -151,12 +197,89 @@ class ProviderCaller:
             except ImportError:
                 pass
             self._openai = openai
-            self._client = openai.OpenAI()  # reads OPENAI_API_KEY
+            # An ordered key list rather than one key, so a campaign can survive
+            # the first key running out of credits. api_key is passed EXPLICITLY:
+            # openai.OpenAI() would read os.environ, which is the wrong key the
+            # moment we fail over.
+            self._keys = openai_keys()
+            self._key_idx = 0
+            self._dead_keys: list[int] = []
+            self._dead_key_cb = None
+            if not self._keys:
+                raise SystemExit(
+                    "OPENAI_API_KEY not found in env or "
+                    + ", ".join(str(f) for f in _env_candidates(env_file)))
+            self._client = openai.OpenAI(api_key=self._keys[0][1])
         else:
             raise SystemExit(f"unknown provider {provider!r} (use claude or openai)")
 
     def __call__(self, system: str, user: str) -> LLMResult:
         return getattr(self, f"_run_{self.provider}")(system, user)
+
+    # ------------------------------------------------------------------ keys
+    @property
+    def key_var(self) -> str | None:
+        """Name of the key variable currently in use (never the key itself)."""
+        if self.provider != "openai" or self._key_idx >= len(self._keys):
+            return None
+        return self._keys[self._key_idx][0]
+
+    def key_count(self) -> int:
+        return len(self._keys) if self.provider == "openai" else 1
+
+    def set_dead_key_hook(self, cb) -> None:
+        """cb(index, var_name) is called when a key is retired, so the caller can
+        persist it and never probe that key again after a restart."""
+        if self.provider == "openai":
+            self._dead_key_cb = cb
+
+    def skip_dead_keys(self, indices) -> bool:
+        """Retire keys already known dead (e.g. from a previous daemon run).
+
+        Returns False if that leaves nothing usable. No-op for non-openai
+        providers so the claude path and the prompt_tests entry points are
+        unaffected.
+        """
+        if self.provider != "openai":
+            return True
+        dead = {int(i) for i in indices}
+        if not dead:
+            return True
+        self._dead_keys = sorted(dead)
+        while self._key_idx < len(self._keys) and self._key_idx in dead:
+            self._key_idx += 1
+        if self._key_idx >= len(self._keys):
+            return False
+        self._client = self._openai.OpenAI(api_key=self._keys[self._key_idx][1])
+        return True
+
+    def _advance_key(self) -> bool:
+        """Retire the current key and move to the next. False if none are left.
+
+        The log line deliberately names only the VARIABLE and never includes the
+        provider's error text: run_all_stages.sh greps stage logs for
+        "insufficient_quota" and friends and aborts the whole sweep on a match,
+        even when the stage exited 0. A successful failover must not trip that.
+        """
+        dead_idx = self._key_idx
+        dead_var = self._keys[dead_idx][0]
+        self._dead_keys.append(dead_idx)
+        self._key_idx += 1
+        if self._dead_key_cb is not None:
+            try:
+                self._dead_key_cb(dead_idx, dead_var)
+            except Exception:                              # noqa: BLE001
+                # Persisting the marker is best-effort; failing to write it must
+                # not break the failover itself.
+                pass
+        if self._key_idx >= len(self._keys):
+            print(f"  ! {dead_var} exhausted and no further key is configured")
+            return False
+        nxt = self._keys[self._key_idx][0]
+        print(f"  ! {dead_var} exhausted - switching to {nxt} "
+              f"for the rest of this run")
+        self._client = self._openai.OpenAI(api_key=self._keys[self._key_idx][1])
+        return True
 
     def _drop_temp(self, why: str):
         self.temperature = None
@@ -182,21 +305,40 @@ class ProviderCaller:
                                               {"role": "user", "content": user}])
         if self.temperature is not None:
             kw["temperature"] = self.temperature
-        try:
-            r = self._client.chat.completions.create(**kw)
-        except self._openai.BadRequestError as e:
-            if self.temperature is not None and "temperature" in str(e).lower():
-                self._drop_temp("400 bad_request")
-                kw.pop("temperature", None)
+        # Loop only to retry the SAME prompt on the next key after a credits
+        # failure. Bounded by the number of keys, so it cannot spin.
+        attempt = 0
+        while True:
+            attempt += 1
+            try:
                 r = self._client.chat.completions.create(**kw)
-            else:
+                break
+            except self._openai.BadRequestError as e:
+                if self.temperature is not None and "temperature" in str(e).lower():
+                    self._drop_temp("400 bad_request")
+                    kw.pop("temperature", None)
+                    r = self._client.chat.completions.create(**kw)
+                    break
+                raise
+            except Exception as e:                         # noqa: BLE001
+                # An exhausted key is permanent, so fail over rather than retry.
+                # Everything else (rate limits, 5xx) the SDK has already retried
+                # internally and is not ours to swallow.
+                if is_out_of_credits(e) and self._advance_key():
+                    continue
+                if is_out_of_credits(e):
+                    raise OutOfCreditsError(
+                        f"all {len(self._keys)} configured OpenAI key(s) are out "
+                        "of credits") from e
                 raise
         ch = r.choices[0]
         usage = getattr(r, "usage", None)
         return LLMResult(ch.message.content or "", getattr(r, "model", self.model),
                          getattr(usage, "prompt_tokens", None) if usage else None,
                          getattr(usage, "completion_tokens", None) if usage else None,
-                         ch.finish_reason, 1)
+                         # >1 means this call was retried on a fallback key, so a
+                         # jsonl row with attempt_count=2 marks the changeover.
+                         ch.finish_reason, attempt)
 
 
 # ---------------------------------------------------------------------------

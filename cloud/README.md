@@ -177,9 +177,14 @@ comparison, so for this experiment: don't.
 launching from the AMI, so the key never ends up inside an image snapshot:
 
 ```bash
-echo 'OPENAI_API_KEY=PASTE_KEY_HERE' > ~/fyp/FYP/AgentAFL/.env
+printf 'OPENAI_API_KEY=PASTE_KEY_ONE\nOPENAI_API_KEY_2=PASTE_KEY_TWO\n' \
+  > ~/fyp/FYP/AgentAFL/.env
 chmod 600 ~/fyp/FYP/AgentAFL/.env
 ```
+
+`OPENAI_API_KEY_2` is the **failover key** and is optional but strongly recommended - see
+"Key failover" below. One key is enough to run; two is what stops a mid-run credit
+exhaustion from costing you the whole 12h cell.
 
 This experiment uses **OpenAI** - `run_campaign.sh` defaults to
 `AGENTAFL_PROVIDER=openai` - so the variable is `OPENAI_API_KEY`, and only two locations
@@ -227,6 +232,58 @@ on `sys.path`, so the newer one wins at import.
 but ships openai 1.12.0 from Feb 2024.)
 
 `baseline` and `minyee` need no key and no SDK at all.
+
+### Key failover
+
+A 12h `combined` run makes roughly 140 LLM calls (~28 escalations x 5), so ~2100 across
+the 15 combined runs. If the account runs out of credits partway through a run, that run's
+`combined` arm is worthless - and it used to fail **silently**: the daemon logged an
+`error` row and kept retrying every 25 minutes for the remaining hours, injecting nothing.
+
+With two keys configured, the behaviour is now:
+
+1. Key 1 (`OPENAI_API_KEY`) is used for everything.
+2. The first time the API reports exhausted credits, the daemon retires key 1, switches to
+   key 2 (`OPENAI_API_KEY_2`) and **retries the same prompt** so no escalation is lost.
+3. Key 1 is never contacted again for the rest of the run. The retirement is written to
+   `<run>/agentafl/dead_keys.json`, so even a daemon restart starts on key 2 rather than
+   re-probing key 1.
+4. A `key_retired` row goes into `escalations.jsonl` and `summary.txt`, with `elapsed_s` on
+   the same clock as the coverage curve, so you can see exactly when the switch happened.
+
+Detection reuses `is_out_of_credits()` (`AgentAFL/prompt_tests/batch_harness.py`), which
+matches OpenAI's 429 `insufficient_quota` / `credit_balance_exhausted` shape. **Only**
+credit exhaustion fails over - a rate limit or a 5xx is transient and is left to the SDK's
+own retries, so a blip cannot burn your fallback key.
+
+Keys are de-duplicated: pasting the same key into both variables counts as one key, and
+the preflight says so rather than claiming failover is available.
+
+#### If every key runs out
+
+The campaign **stops**. The daemon records a `credits_exhausted` row, then terminates the
+fuzzers, which hands over to `finish_campaign.sh` exactly as at the 12h mark: it stops the
+loggers, writes `summary.txt`, packs the tarball and powers the VM off. Nothing gathered so
+far is lost.
+
+That run is **partial, not a valid `combined` cell** - the arm was effectively `minyee`
+from the moment credits ran out. `verify_run.sh` fails on it and `summary.txt` carries
+`credits_exhausted=1 at T+XhYYm`. Top the account up and **re-run that cell** (~US$2.80).
+
+Do not try to resume it. AFL++ can resume a corpus (`AFL_AUTORESUME=1`), but a resumed run
+would not be comparable to the other 44: `-V 43200` is per-invocation wall clock so it
+would fuzz another full 12h, `plot_data`'s `relative_time` restarts from 0 while the
+escalation timeline is anchored to afl-fuzz's `start_time`, and Min Yee's analyzer re-runs
+its 8-window calibration and loses its stagnation state. A stitched timeline is a confound
+a reviewer can question; a 12h re-run is US$2.80.
+
+#### One note on request count
+
+The OpenAI SDK retries 429s internally (default `max_retries=2`), so key 1 sees ~3
+requests before the error surfaces and failover triggers. Quota rejections are not billed,
+and dropping to `max_retries=0` would also remove useful retries for transient 5xx during
+an unattended 12h run, so the default is left alone. After that one surfaced error, key 1
+is never contacted again.
 
 ## 4. Smoke test (~15 minutes per target, 2 fuzzers)
 
@@ -294,7 +351,7 @@ Run one target at a time (see the quota note above). `<target>` is one of `libxm
    **`combined`** - write the API key, then both preflights, once per VM:
 
    ```bash
-   echo 'OPENAI_API_KEY=PASTE_KEY_HERE' > ~/fyp/FYP/AgentAFL/.env
+   printf 'OPENAI_API_KEY=KEY_ONE\nOPENAI_API_KEY_2=KEY_TWO\n' > ~/fyp/FYP/AgentAFL/.env
    ./preflight_resource_aware.sh
    AGENTAFL_TARGET=<target> ./preflight_agentafl.sh
    ./run_campaign.sh <target> combined 1 3 43200    # VM 1 ... up to 5
@@ -342,6 +399,8 @@ looks healthy, and you only find out at analysis time.
 | `combined` | `agentafl_hook=1`, daemon alive, no `FATAL` | a run that can never escalate |
 | `combined` | showmap self-test sees > 50 edges | **the `@@` trap** - see below |
 | `combined` | API key resolves | every escalation dying at the LLM call |
+| `combined` | `agentafl_keys_available` >= 2 | no failover key, so a mid-run credit exhaustion would stop the campaign (INFO, not a failure) |
+| `combined` | no `credits_exhausted` event | **every key ran out and the campaign stopped early - this run is partial and the cell needs re-running** |
 
 `escalations=0` at 15 minutes is **normal**, not a failure: the hook only fires after a
 Level-1 coverage adaptation has failed to recover, typically ~30 min in. It is reported as
@@ -477,6 +536,7 @@ targets. `run_campaign.sh` records all of it into every run's `meta.txt`, and
 | LLM provider (`combined` only) | `openai` (`AGENTAFL_PROVIDER`) |
 | LLM model (`combined` only) | `gpt-5.6-luna` (`AGENTAFL_MODEL`) - the model the 5x5 budget was measured on |
 | LLM budget (`combined` only) | 5 calls x 5 seeds per escalation, `AGENTAFL_COOLDOWN_S=1500` |
+| LLM keys (`combined` only) | `OPENAI_API_KEY` + `OPENAI_API_KEY_2` failover; recorded as `agentafl_keys_available=` |
 
 The provider and model matter for the write-up as much as the fuzzer settings - they are
 what generated the `combined` arm's seeds. Both land in `meta.txt` as
@@ -659,7 +719,7 @@ live campaign. It is the arm the two components exist to produce together.
 To launch one (the same commands as step 6, repeated here for reference):
 
 ```bash
-echo 'OPENAI_API_KEY=PASTE_KEY_HERE' > ~/fyp/FYP/AgentAFL/.env
+printf 'OPENAI_API_KEY=KEY_ONE\nOPENAI_API_KEY_2=KEY_TWO\n' > ~/fyp/FYP/AgentAFL/.env
 ./preflight_resource_aware.sh                        # once per machine
 AGENTAFL_TARGET=<target> ./preflight_agentafl.sh     # once per machine PER TARGET
 ./run_campaign.sh <target> combined 1 3 43200
@@ -815,6 +875,8 @@ All three are silent - the campaign fuzzes happily and the arm just equals `miny
 | `escalations>0`, `seeds_injected=0` | `afl-addseeds` refused - usually no `*/fuzzer_stats` yet |
 | `seeds_injected>0`, `synced_addseeds_main=0` | seeds written but no fuzzer imported them |
 | `seeds_with_new_coverage=0` across every escalation, on `libical`/`tidy` | the `@@` trap: `showmap_cmd` in `meta.txt` has no `@@`, so every candidate scored an identical map |
+| `credits_exhausted=1` in `summary.txt` | every API key ran out; the campaign stopped itself early and this run is partial |
+| `key_retired=OPENAI_API_KEY` in `summary.txt` | the failover worked - key 1 died and key 2 took over. Not a problem, but top up before the next batch |
 
 On `libical` and `tidy` there is a fourth, which is not specific to the escalation and
 affects **all three conditions**: if `fuzzer_stats` stops updating while `afl-whatsup`

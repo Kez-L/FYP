@@ -481,6 +481,277 @@ def test_inject_seeds_noop_on_empty_list():
         assert r["ok"] and r["injected"] == 0, r
 
 
+# ---------------------------------------------- OpenAI API key failover
+#
+# The campaign's combined arm makes ~140 LLM calls per 12h run. If the account
+# runs out of credits partway through, the arm silently degrades to `minyee`.
+# These tests cover the failover: key 1 is used until the API says it is out of
+# credits, then key 2 takes over PERMANENTLY and key 1 is never contacted again.
+#
+# No network, no API key, no spend: a fake `openai` module records which key each
+# client was constructed with.
+
+
+class _FakeQuotaError(Exception):
+    """Stand-in for openai.RateLimitError with OpenAI's 429 quota shape."""
+    def __init__(self, msg="You exceeded your current quota"):
+        super().__init__(msg)
+        self.code = "insufficient_quota"
+        self.type = "insufficient_quota"
+
+
+class _FakeBadRequest(Exception):
+    pass
+
+
+class _FakeOpenAIModule:
+    """Minimal fake of the `openai` module surface ProviderCaller touches."""
+    BadRequestError = _FakeBadRequest
+    RateLimitError = _FakeQuotaError
+
+    def __init__(self, dead_keys=()):
+        self.dead_keys = set(dead_keys)
+        self.calls = []          # every (key, n) attempted, in order
+        self.clients_built = []  # every key a client was constructed with
+
+    def OpenAI(self, api_key=None, **kw):                   # noqa: N802
+        self.clients_built.append(api_key)
+        return _FakeClient(self, api_key)
+
+
+class _FakeClient:
+    def __init__(self, mod, key):
+        self._mod = mod
+        self._key = key
+        self.chat = self
+
+    @property
+    def completions(self):
+        return self
+
+    def create(self, **kw):
+        self._mod.calls.append(self._key)
+        if self._key in self._mod.dead_keys:
+            raise _FakeQuotaError()
+        return _FakeResponse()
+
+
+class _FakeResponse:
+    def __init__(self):
+        self.choices = [_FakeChoice()]
+        self.usage = None
+        self.model = "fake-model"
+
+
+class _FakeChoice:
+    def __init__(self):
+        self.message = type("M", (), {"content": "<root><a/></root>"})()
+        self.finish_reason = "stop"
+
+
+def _caller_with_keys(keys, dead_keys=(), monkey_env=True):
+    """Build a real ProviderCaller against the fake openai module."""
+    import batch_harness as bh
+    fake = _FakeOpenAIModule(dead_keys=dead_keys)
+    caller = bh.ProviderCaller.__new__(bh.ProviderCaller)
+    caller.provider = "openai"
+    caller.model = "fake-model"
+    caller.requested_temperature = None
+    caller.temperature = None
+    caller.dropped_temperature = False
+    caller._openai = fake
+    caller._keys = list(keys)
+    caller._key_idx = 0
+    caller._dead_keys = []
+    caller._dead_key_cb = None
+    caller._client = fake.OpenAI(api_key=keys[0][1])
+    return caller, fake
+
+
+def test_openai_keys_reads_both_vars_in_order():
+    import batch_harness as bh
+    env = {"OPENAI_API_KEY": "k1", "OPENAI_API_KEY_2": "k2"}
+    assert bh.openai_keys(env) == [("OPENAI_API_KEY", "k1"),
+                                   ("OPENAI_API_KEY_2", "k2")], bh.openai_keys(env)
+
+
+def test_openai_keys_dedupes_the_same_key_pasted_twice():
+    # Otherwise the preflight would report failover as available when it is not.
+    import batch_harness as bh
+    env = {"OPENAI_API_KEY": "same", "OPENAI_API_KEY_2": "same"}
+    assert bh.openai_keys(env) == [("OPENAI_API_KEY", "same")], bh.openai_keys(env)
+
+
+def test_openai_keys_strips_quotes_and_skips_blanks():
+    import batch_harness as bh
+    env = {"OPENAI_API_KEY": '  "k1"  ', "OPENAI_API_KEY_2": "   ",
+           "OPENAI_API_KEY_3": "k3"}
+    assert bh.openai_keys(env) == [("OPENAI_API_KEY", "k1"),
+                                   ("OPENAI_API_KEY_3", "k3")], bh.openai_keys(env)
+
+
+def test_failover_switches_to_second_key_and_retries_same_prompt():
+    caller, fake = _caller_with_keys(
+        [("OPENAI_API_KEY", "k1"), ("OPENAI_API_KEY_2", "k2")], dead_keys={"k1"})
+    res = caller("sys", "usr")
+    assert res.text == "<root><a/></root>", res.text
+    # k1 attempted once, then k2 served the same prompt.
+    assert fake.calls == ["k1", "k2"], fake.calls
+    assert caller.key_var == "OPENAI_API_KEY_2", caller.key_var
+    assert res.attempt_count == 2, res.attempt_count
+
+
+def test_first_key_is_never_contacted_again_after_exhaustion():
+    """The requirement: no continued pinging of key 1 after the first failure."""
+    caller, fake = _caller_with_keys(
+        [("OPENAI_API_KEY", "k1"), ("OPENAI_API_KEY_2", "k2")], dead_keys={"k1"})
+    for _ in range(5):
+        caller("sys", "usr")
+    # exactly one k1 attempt, ever - the rest all went to k2
+    assert fake.calls.count("k1") == 1, fake.calls
+    assert fake.calls.count("k2") == 5, fake.calls
+
+
+def test_all_keys_exhausted_raises_out_of_credits():
+    import batch_harness as bh
+    caller, fake = _caller_with_keys(
+        [("OPENAI_API_KEY", "k1"), ("OPENAI_API_KEY_2", "k2")],
+        dead_keys={"k1", "k2"})
+    try:
+        caller("sys", "usr")
+    except bh.OutOfCreditsError:
+        pass
+    else:
+        raise AssertionError("expected OutOfCreditsError")
+    assert fake.calls == ["k1", "k2"], fake.calls
+
+
+def test_out_of_credits_error_is_recognised_by_is_out_of_credits():
+    # So run_batch still exits OUT_OF_CREDITS_EXIT and run_all_stages.sh still
+    # aborts the sweep.
+    import batch_harness as bh
+    assert bh.is_out_of_credits(bh.OutOfCreditsError("all keys dead"))
+    assert bh.is_out_of_credits(_FakeQuotaError())
+    assert not bh.is_out_of_credits(ValueError("some other failure"))
+
+
+def test_non_credit_errors_are_not_failed_over():
+    caller, fake = _caller_with_keys(
+        [("OPENAI_API_KEY", "k1"), ("OPENAI_API_KEY_2", "k2")])
+
+    def boom(**kw):
+        fake.calls.append("k1")
+        raise RuntimeError("connection reset")
+
+    caller._client.create = boom
+    try:
+        caller("sys", "usr")
+    except RuntimeError as exc:
+        assert "connection reset" in str(exc), exc
+    else:
+        raise AssertionError("expected the original error to propagate")
+    # key 1 must still be in use - a transient error must not burn the fallback
+    assert caller.key_var == "OPENAI_API_KEY", caller.key_var
+
+
+def test_dead_key_hook_fires_with_index_and_var_name():
+    caller, fake = _caller_with_keys(
+        [("OPENAI_API_KEY", "k1"), ("OPENAI_API_KEY_2", "k2")], dead_keys={"k1"})
+    seen = []
+    caller.set_dead_key_hook(lambda i, v: seen.append((i, v)))
+    caller("sys", "usr")
+    assert seen == [(0, "OPENAI_API_KEY")], seen
+
+
+def test_dead_key_hook_failure_does_not_break_failover():
+    """Persisting the marker is best-effort; a write error must not stop the run."""
+    caller, fake = _caller_with_keys(
+        [("OPENAI_API_KEY", "k1"), ("OPENAI_API_KEY_2", "k2")], dead_keys={"k1"})
+    caller.set_dead_key_hook(lambda i, v: (_ for _ in ()).throw(OSError("disk full")))
+    res = caller("sys", "usr")
+    assert res.text, "failover should still have succeeded"
+    assert caller.key_var == "OPENAI_API_KEY_2", caller.key_var
+
+
+def test_skip_dead_keys_starts_on_the_fallback_after_a_restart():
+    caller, fake = _caller_with_keys(
+        [("OPENAI_API_KEY", "k1"), ("OPENAI_API_KEY_2", "k2")], dead_keys={"k1"})
+    assert caller.skip_dead_keys([0]) is True
+    assert caller.key_var == "OPENAI_API_KEY_2", caller.key_var
+    caller("sys", "usr")
+    # k1 never touched at all this time
+    assert fake.calls == ["k2"], fake.calls
+
+
+def test_skip_dead_keys_returns_false_when_nothing_is_left():
+    caller, fake = _caller_with_keys(
+        [("OPENAI_API_KEY", "k1"), ("OPENAI_API_KEY_2", "k2")])
+    assert caller.skip_dead_keys([0, 1]) is False
+
+
+def test_failover_log_line_avoids_the_run_all_stages_abort_regex():
+    """run_all_stages.sh greps stage logs for quota markers and aborts the sweep
+    even on exit 0, so a SUCCESSFUL failover must not echo the provider text."""
+    import io, contextlib
+    caller, fake = _caller_with_keys(
+        [("OPENAI_API_KEY", "k1"), ("OPENAI_API_KEY_2", "k2")], dead_keys={"k1"})
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        caller("sys", "usr")
+    out = buf.getvalue().lower()
+    for marker in ("insufficient_quota", "credit_balance_exhausted",
+                   "no credits remaining", "exceeded your current quota",
+                   "credit balance is too low", "billing_hard_limit_reached",
+                   "out of credits"):
+        assert marker not in out, f"{marker!r} would abort the sweep: {out!r}"
+    assert "OPENAI_API_KEY_2" in buf.getvalue(), buf.getvalue()
+
+
+# ------------------------------- daemon side of the key failover
+
+def test_dead_keys_file_round_trips():
+    with tempfile.TemporaryDirectory() as td:
+        d = _daemon(td)
+        assert d.load_dead_keys() == [], "no file yet"
+        d.note_dead_key(0, "OPENAI_API_KEY")
+        assert d.load_dead_keys() == [0], d.load_dead_keys()
+        # append-only: a second retirement keeps the first
+        d.note_dead_key(1, "OPENAI_API_KEY_2")
+        assert d.load_dead_keys() == [0, 1], d.load_dead_keys()
+        data = json.loads(d.dead_keys_path.read_text())
+        assert [e["var"] for e in data["dead"]] == [
+            "OPENAI_API_KEY", "OPENAI_API_KEY_2"], data
+        # and it never writes the key itself, only the variable name
+        assert "sk-" not in d.dead_keys_path.read_text()
+
+
+def test_dead_keys_file_survives_corruption():
+    """A truncated marker must not stop the daemon starting."""
+    with tempfile.TemporaryDirectory() as td:
+        d = _daemon(td)
+        d.dead_keys_path.write_text("{not json")
+        assert d.load_dead_keys() == [], "corrupt file should read as empty"
+
+
+def test_retiring_a_key_is_recorded_in_escalations_jsonl():
+    with tempfile.TemporaryDirectory() as td:
+        d = _daemon(td)
+        d.note_dead_key(0, "OPENAI_API_KEY")
+        rows = [json.loads(l) for l in d.log_path.read_text().splitlines() if l.strip()]
+        kr = [r for r in rows if r.get("event") == "key_retired"]
+        assert len(kr) == 1, rows
+        assert kr[0]["key_var"] == "OPENAI_API_KEY", kr[0]
+        assert kr[0]["key_index"] == 0, kr[0]
+
+
+def test_stop_campaign_sets_stop_and_does_not_raise():
+    """With no matching fuzzers, pkill finds nothing - must still be clean."""
+    with tempfile.TemporaryDirectory() as td:
+        d = _daemon(td)
+        d.stop_campaign("test")
+        assert d.stop is True, "the poll loop must exit"
+
+
 # ---------------------------------------------------------------- the runner
 
 def main():
