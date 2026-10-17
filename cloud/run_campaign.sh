@@ -44,8 +44,8 @@
 #   AGENTAFL_SEEDS_PER_CALL=5    seeds per call
 #   AGENTAFL_COOLDOWN_S=1500     minimum gap between escalations (see note below)
 #   AGENTAFL_MAX_ESCALATIONS=0   0 = unlimited
-#   AGENTAFL_PROVIDER=claude     claude | openai
-#   AGENTAFL_MODEL=              empty = provider default
+#   AGENTAFL_PROVIDER=openai     openai | claude
+#   AGENTAFL_MODEL=gpt-5.6-luna  the model the 5x5 budget was measured on
 #   AGENTAFL_FMT="XML document"  format name used in the prompt
 #
 # All conditions export AFL_SYNC_TIME=1 by default, so injected seeds are imported
@@ -165,8 +165,19 @@ AGENTAFL_CALLS="${AGENTAFL_CALLS:-5}"
 AGENTAFL_SEEDS_PER_CALL="${AGENTAFL_SEEDS_PER_CALL:-5}"
 AGENTAFL_COOLDOWN_S="${AGENTAFL_COOLDOWN_S:-1500}"
 AGENTAFL_MAX_ESCALATIONS="${AGENTAFL_MAX_ESCALATIONS:-0}"   # 0 = unlimited
-AGENTAFL_PROVIDER="${AGENTAFL_PROVIDER:-claude}"
-AGENTAFL_MODEL="${AGENTAFL_MODEL:-}"                        # empty = provider default
+# openai, not claude: this experiment uses an OpenAI key, and the prompt_tests
+# runs the 5x5 budget was measured on were themselves provider=openai (see the
+# `provider` key in any prompt_tests/results3/*/stage4_both/*/summary_*.json).
+# Defaulted rather than left to a per-VM env var because it has to be right on
+# all 15 combined VMs, and getting it wrong means the key never resolves.
+AGENTAFL_PROVIDER="${AGENTAFL_PROVIDER:-openai}"
+# Pinned, not left to the provider default. batch_harness.py's openai default is
+# gpt-5.4-mini, but every prompt_tests/results3 run that the 5x5 budget was
+# measured on used gpt-5.6-luna (the `model` key in their summary_*.json). Using
+# the SDK default would mean the "first 5 calls capture 90% (xml) / 81% (ical) of
+# a 15-call run's new edges" evidence was gathered on a different model from the
+# one actually generating seeds here.
+AGENTAFL_MODEL="${AGENTAFL_MODEL:-gpt-5.6-luna}"
 # Per-target, from targets.sh. These strings are NOT free text: there is no
 # registry validating --fmt anywhere downstream (it is spliced straight into the
 # prompt), so a typo degrades generation silently. The defaults are the exact

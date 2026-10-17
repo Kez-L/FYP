@@ -27,7 +27,9 @@ else
 fi
 MINYEE_DIR="$REPO/ResourceAwareAFL"
 AGENT_DIR="$REPO/AgentAFL"
-PROVIDER="${AGENTAFL_PROVIDER:-claude}"
+# Must match run_campaign.sh's default, or this validates a provider the
+# campaign will not use.
+PROVIDER="${AGENTAFL_PROVIDER:-openai}"
 
 # Which target to check. One preflight run validates one target, because the
 # binary, the showmap arg list and the format probe all differ per target.
@@ -92,7 +94,7 @@ else
   note "it ships with AFL++ >= 4.x; check the AFL++ install"
 fi
 
-echo "== python imports (stdlib only: AgentAFL's Claude path uses urllib)"
+echo "== python imports"
 if python3 -c "
 import sys; sys.path.insert(0, '$MINYEE_DIR')
 import agentafl_cycle, agentafl_escalation
@@ -106,17 +108,56 @@ import sys; sys.path.insert(0, '$MINYEE_DIR')
 import agentafl_cycle" 2>&1 | tail -5 | sed 's/^/      /'
 fi
 
+# The two providers have completely different dependency needs, and only the
+# openai one can fail at runtime after passing a naive check.
+if [[ "$PROVIDER" == "openai" ]]; then
+  python3 -c 'import openai' 2>/dev/null \
+    && ok "openai SDK importable ($(python3 -c 'import openai; print(openai.__version__)' 2>/dev/null))" \
+    || { bad "openai SDK NOT importable - every escalation would die at the first LLM call"
+         note "sudo pip3 install --break-system-packages openai python-dotenv"; }
+  # batch_harness reads the .env for openai ONLY through python-dotenv, and that
+  # import sits in `except ImportError: pass` (batch_harness.py:145-152). Without
+  # it the .env is never opened at all.
+  python3 -c 'import dotenv' 2>/dev/null \
+    && ok "python-dotenv importable (AgentAFL/.env will be read)" \
+    || { bad "python-dotenv NOT importable - AgentAFL/.env will be SILENTLY IGNORED"
+         note "either install it, or export OPENAI_API_KEY in the environment instead"; }
+else
+  ok "claude path needs no SDK (stdlib urllib)"
+fi
+
 echo "== API key for provider '$PROVIDER'"
-if python3 - "$AGENT_DIR" "$PROVIDER" <<'PYKEY'
+# Resolve the key exactly the way the provider actually will, not approximately.
+# For claude, load_api_key() parses the .env with stdlib, so reading the file is
+# a faithful test. For openai, openai.OpenAI() reads the ENVIRONMENT only, and
+# the .env reaches it solely via python-dotenv - so checking the file by hand
+# would report success for a setup that cannot work.
+KEYSRC="$(python3 - "$AGENT_DIR" "$PROVIDER" <<'PYKEY'
 import sys, os, pathlib
 agent, provider = sys.argv[1], sys.argv[2]
 name = {"claude": "CLAUDE_API_KEY", "openai": "OPENAI_API_KEY"}.get(provider)
 if not name:
     sys.exit(2)
 if os.environ.get(name):
-    print("env")
+    print("environment")
     sys.exit(0)
-for f in (pathlib.Path(agent) / ".env", pathlib.Path.home() / "Documents" / ".env"):
+candidates = [pathlib.Path(agent) / ".env", pathlib.Path.home() / "Documents" / ".env"]
+if provider == "openai":
+    # Mirror ProviderCaller: dotenv loads the file into os.environ, then the
+    # client reads os.environ. No dotenv -> the file is dead weight.
+    try:
+        from dotenv import load_dotenv
+    except ImportError:
+        print("NO-DOTENV")
+        sys.exit(1)
+    for f in candidates:
+        if f.exists():
+            load_dotenv(f, override=False)
+    if os.environ.get(name):
+        print("AgentAFL/.env via python-dotenv")
+        sys.exit(0)
+    sys.exit(1)
+for f in candidates:
     try:
         for line in f.read_text().splitlines():
             k, _, v = line.partition("=")
@@ -127,7 +168,17 @@ for f in (pathlib.Path(agent) / ".env", pathlib.Path.home() / "Documents" / ".en
         pass
 sys.exit(1)
 PYKEY
-then ok "key resolves"; else bad "no key found (env, AgentAFL/.env, ~/Documents/.env)"; fi
+)"; KEYRC=$?
+VARNAME="$( [[ $PROVIDER == openai ]] && echo OPENAI_API_KEY || echo CLAUDE_API_KEY )"
+if [[ "$KEYRC" -eq 0 ]]; then
+  ok "$VARNAME resolves from $KEYSRC (the way $PROVIDER actually reads it)"
+elif [[ "$KEYSRC" == "NO-DOTENV" ]]; then
+  bad "$VARNAME not in the environment, and python-dotenv is missing so AgentAFL/.env cannot be read"
+  note "install python-dotenv, or: export $VARNAME=..."
+else
+  bad "no usable $VARNAME for provider '$PROVIDER'"
+  note "write it to $AGENT_DIR/.env, or export it in the environment"
+fi
 
 echo "== target + coverage measurement"
 if [[ -x "$TARGET" ]]; then

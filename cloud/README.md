@@ -151,15 +151,24 @@ want to push a local tree instead of cloning, push the whole repo:
 scp -i afl-key.pem -r /path/to/FYP ubuntu@<ip>:~/fyp/FYP
 ```
 
-Versions are pinned in the scripts and recorded in every run's `meta.txt`; override only
-if you deliberately want to move the whole experiment:
+### What `setup_all.sh` pins (nothing to run here)
 
-```bash
-AFLPP_REF=v5.03c ./setup_machine.sh            # must match `afl-fuzz -h | head -1`
-LIBXML2_REF=v2.15.4 USE_ASAN=1 ./build_libxml2.sh
-LIBICAL_REF=3d0c8c36... USE_ASAN=1 ./build_libical.sh
-TIDY_REF=d08ddc28...   USE_ASAN=1 ./build_tidy.sh
-```
+Every version is already hardcoded as the default inside the build scripts, and
+`setup_all.sh` calls all four of them for you. **You do not need to set any of these** —
+this table is just the record of what you got, and all of it lands in each run's
+`meta.txt`:
+
+| | pinned to | set in |
+|---|---|---|
+| AFL++ | `v5.03c` | `setup_machine.sh` (`AFLPP_REF`) |
+| libxml2 | `v2.15.4` | `build_libxml2.sh` (`LIBXML2_REF`) |
+| libical | branch `4.0` @ `3d0c8c360d98c2211955dd6090bebea2e08e742c` | `build_libical.sh` (`LIBICAL_REF`) |
+| tidy-html5 | branch `next` @ `d08ddc2860aa95ba8e301343a30837f157977cba` | `build_tidy.sh` (`TIDY_REF`) |
+| ASan | on, all three targets | `USE_ASAN=1` in each build script |
+
+Those env vars exist only so a *future* experiment can move a version deliberately, e.g.
+`LIBXML2_REF=v2.16.0 ./build_libxml2.sh`. Changing any of them mid-batch invalidates the
+comparison, so for this experiment: don't.
 
 ### The AgentAFL API key (needed for the `combined` column only)
 
@@ -597,6 +606,8 @@ as committed. Worked around from this side, or detected:
 `combined` is `minyee` plus the AgentAFL escalation: when Min Yee's Level-1 layer adapts and
 still fails to recover a coverage plateau, AgentAFL generates seeds and injects them into the
 live campaign. It is the arm the two components exist to produce together.
+
+To launch one (the same commands as step 6, repeated here for reference):
 
 ```bash
 echo 'CLAUDE_API_KEY=sk-ant-...' > ~/fyp/FYP/AgentAFL/.env

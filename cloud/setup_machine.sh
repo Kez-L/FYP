@@ -38,6 +38,29 @@ $SUDO apt-get install -y \
 # tidy-html5, which are both CMake projects. libxml2 needs none of these, which
 # is why they were absent while this was a single-target setup.
 
+# ---------------------------------------------------------------- LLM SDKs
+# Only the `combined` arm needs these, and only for AGENTAFL_PROVIDER=openai.
+#
+# The two providers resolve their key by COMPLETELY different routes, and the
+# openai one fails silently without these packages:
+#
+#   claude   agentafl_orchestrator.call_claude posts to /v1/messages with stdlib
+#            urllib, and load_api_key() parses AgentAFL/.env by hand. No deps.
+#
+#   openai   batch_harness.ProviderCaller does `import openai`, then reads the
+#            .env ONLY via python-dotenv - and that import is wrapped in
+#            `except ImportError: pass` (batch_harness.py:145-152). So with
+#            python-dotenv missing, the .env file is never opened, openai.OpenAI()
+#            finds no OPENAI_API_KEY in the environment, and the escalation dies.
+#            Meanwhile the preflight's key check reads the .env with stdlib and
+#            reports "key resolves", so nothing warns you.
+#
+# Installed unconditionally: ~15s and a few MB, against a whole class of
+# 12-hours-wasted failure. PEP 668 means Ubuntu 24.04 needs the override flag.
+echo "[*] Installing LLM SDKs (openai + python-dotenv, for AGENTAFL_PROVIDER=openai)..."
+$SUDO pip3 install --break-system-packages --upgrade openai python-dotenv \
+  || echo "[!] WARNING: pip install failed - AGENTAFL_PROVIDER=openai will NOT work" >&2
+
 mkdir -p "$WORK"
 
 # ---------------------------------------------------------------- AFL++
@@ -74,6 +97,10 @@ fi
 {
   echo "setup_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
   echo "aflpp_ref=$AFLPP_REF"
+  # The openai SDK version is part of how the combined arm generated its seeds,
+  # so it belongs in the write-up alongside the model id.
+  echo "openai_sdk=$(python3 -c 'import openai; print(openai.__version__)' 2>/dev/null || echo absent)"
+  echo "python_dotenv=$(python3 -c 'import dotenv; print(getattr(dotenv,"__version__","present"))' 2>/dev/null || echo absent)"
   echo "afl_fuzz_banner=$(afl-fuzz -h 2>&1 | head -1 | sed 's/\x1b\[[0-9;]*m//g')"
   echo "clang=$(clang-$LLVM --version | head -1)"
   echo "fyp_commit=$(git -C "$WORK/FYP" rev-parse HEAD)"
